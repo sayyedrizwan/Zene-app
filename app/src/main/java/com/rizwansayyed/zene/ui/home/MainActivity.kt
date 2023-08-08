@@ -26,6 +26,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            val currentScreen = homeNavViewModel.homeNavigationView.value
             ZeneTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
