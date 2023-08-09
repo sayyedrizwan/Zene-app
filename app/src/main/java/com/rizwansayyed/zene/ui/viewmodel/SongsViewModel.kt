@@ -28,14 +28,13 @@ class SongsViewModel @Inject constructor(private val apiImpl: ApiInterfaceImpl) 
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
-//        if (dataStoreManager.albumHeaderTimestamp)
+        if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
+            dataStoreManager.albumHeaderData.first() != null
+        ) return@launch
 
-        showToast(dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache().toString())
         apiImpl.albumsWithHeaders().catch {}.collectLatest {
             dataStoreManager.albumHeaderData = flowOf(it)
-            it.header?.forEach {
-                showToast(it?.name.toString())
-            }
+            dataStoreManager.albumHeaderTimestamp = flowOf(System.currentTimeMillis())
         }
     }
 }
