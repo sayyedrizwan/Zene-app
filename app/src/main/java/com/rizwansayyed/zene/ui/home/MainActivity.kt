@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,41 +18,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
+import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.ui.viewmodel.SongsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val homeNavViewModel: HomeNavViewModel by viewModels()
+    private val songsViewModel: SongsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
 
             val currentScreen = homeNavViewModel.homeNavigationView.value
+
             ZeneTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
+                Box {
+                    HomepageView()
                 }
             }
         }
+
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ZeneTheme {
-        Greeting("Android")
+    override fun onStart() {
+        super.onStart()
+        songsViewModel.run()
     }
 }
