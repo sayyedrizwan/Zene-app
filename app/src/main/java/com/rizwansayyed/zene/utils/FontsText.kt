@@ -43,6 +43,25 @@ fun QuickSandBold(
     )
 }
 
+
+@Composable
+fun QuickSandSemiBold(
+    v: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    size: Int = 20
+) {
+    Text(
+        text = v,
+        fontFamily = quicksandFamily,
+        fontWeight = FontWeight.SemiBold,
+        color = color,
+        fontSize = size.nonScaledSp,
+        modifier = modifier,
+        textAlign = TextAlign.Center
+    )
+}
+
 @Composable
 fun QuickSandLight(
     v: String,

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Zene</string>
     <string name="play">Play</string>
+    <string name="top_artist_of_week">Top Artist of the Week</string>
 </resources>

@@ -30,4 +30,10 @@ class ApiInterfaceImpl @Inject constructor(private val apiInterface: ApiInterfac
         }
         emit(SongsAlbumsHeaderConverter(scripts).get())
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun topArtistOfWeek() = flow {
+        emit(apiInterface.topArtistOfWeek())
+    }.flowOn(Dispatchers.IO)
+
 }

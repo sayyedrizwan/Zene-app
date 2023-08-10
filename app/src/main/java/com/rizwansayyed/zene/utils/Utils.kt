@@ -14,6 +14,7 @@ object Utils {
 
     object URL {
         const val ALBUMS_WITH_HEADERS = "albumsWithHeaders"
+        const val TOP_ARTIST_THIS_WEEK = "topArtistThisWeek"
     }
 
 

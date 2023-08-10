@@ -1,11 +1,12 @@
 package com.rizwansayyed.zene.presenter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
+import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
+import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -21,6 +22,8 @@ class SongsViewModel @Inject constructor(private val apiImpl: ApiInterfaceImpl) 
 
     fun run() {
         albumsWithHeaders()
+
+        topWeekArtists()
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
@@ -38,6 +41,17 @@ class SongsViewModel @Inject constructor(private val apiImpl: ApiInterfaceImpl) 
         apiImpl.albumsWithYTHeaders(channelUrl).catch {}.collectLatest {
             dataStoreManager.albumHeaderTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.albumHeaderData = flowOf(it)
+        }
+    }
+
+    private fun topWeekArtists() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.topArtistsOfWeekTimestamp.first().is2DayOlderNeedCache() &&
+            dataStoreManager.topArtistsOfWeekData.first() != null
+        ) return@launch
+
+        apiImpl.topArtistOfWeek().catch {}.collectLatest {
+            dataStoreManager.topArtistsOfWeekTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.topArtistsOfWeekData = flowOf(it.toTypedArray())
         }
     }
 

@@ -8,7 +8,10 @@ import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.DB_STORE
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_timestamp
+import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_of_week_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_timestamp
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
+import com.rizwansayyed.zene.presenter.model.TopArtists
 import com.rizwansayyed.zene.utils.DateTime.getPastTimestamp
 import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.flow.Flow
@@ -33,5 +36,21 @@ class DataStoreManager {
         get() = context.dataStore.data.map { it[album_header_timestamp] ?: getPastTimestamp() }
         set(value) {
             SetDataStoreValue(album_header_timestamp, value)
+        }
+
+
+    var topArtistsOfWeekData: Flow<Array<TopArtists>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtists>::class.java)
+                .fromJson(it[top_artists_of_week_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(top_artists_of_week_data, Array<TopArtists>::class.java, value)
+        }
+
+    var topArtistsOfWeekTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[top_artists_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(top_artists_timestamp, value)
         }
 }
