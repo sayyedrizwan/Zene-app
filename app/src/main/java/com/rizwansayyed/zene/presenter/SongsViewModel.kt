@@ -5,13 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
-import com.rizwansayyed.zene.presenter.model.MusicAlbumsItem
-import com.rizwansayyed.zene.presenter.model.MusicsHeader
-import com.rizwansayyed.zene.presenter.model.MusicHeaderAlbumResponse
-import com.rizwansayyed.zene.presenter.model.MusicsAlbum
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
-import com.rizwansayyed.zene.utils.Utils.moshi
-import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
