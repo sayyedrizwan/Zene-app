@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.viewmodel
+package com.rizwansayyed.zene.presenter
 
 sealed class APIResponse<T>(data: T) {
     class Success<T>(data: T) : APIResponse<T>(data)

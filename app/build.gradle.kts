@@ -75,11 +75,14 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
     implementation("com.google.dagger:hilt-android:2.47")
     kapt("com.google.dagger:hilt-compiler:2.44")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha01")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("org.jsoup:jsoup:1.16.1")
 }

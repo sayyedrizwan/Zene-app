@@ -1,27 +1,17 @@
 package com.rizwansayyed.zene.ui.home
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
-import com.rizwansayyed.zene.ui.viewmodel.SongsViewModel
-import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -34,7 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            window.setFlags(windowManagerNoLimit, windowManagerNoLimit)
             val currentScreen = homeNavViewModel.homeNavigationView.value
 
             ZeneTheme {

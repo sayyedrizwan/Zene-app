@@ -1,8 +1,9 @@
 package com.rizwansayyed.zene.di
 
 import com.rizwansayyed.zene.BuildConfig
-import com.rizwansayyed.zene.api.ApiInterface
-import com.rizwansayyed.zene.api.ApiInterfaceImpl
+import com.rizwansayyed.zene.domain.ApiInterface
+import com.rizwansayyed.zene.domain.ApiInterfaceImpl
+import com.rizwansayyed.zene.utils.Utils.moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +20,8 @@ object Module {
     @Provides
     @Singleton
     fun retrofitAPIService(): ApiInterface = Retrofit.Builder()
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BuildConfig.DOMAIN_KEY)
-        .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .create(ApiInterface::class.java)
 
