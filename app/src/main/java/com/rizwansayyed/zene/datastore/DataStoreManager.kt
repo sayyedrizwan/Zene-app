@@ -10,8 +10,10 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_of_week_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_timestamp
+import com.rizwansayyed.zene.datastore.DataStoreUtil.top_global_songs_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.top_global_songs_timestamp
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
-import com.rizwansayyed.zene.presenter.model.TopArtists
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.utils.DateTime.getPastTimestamp
 import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.flow.Flow
@@ -39,18 +41,38 @@ class DataStoreManager {
         }
 
 
-    var topArtistsOfWeekData: Flow<Array<TopArtists>?>
+    var topArtistsOfWeekData: Flow<Array<TopArtistsSongs>?>
         get() = context.dataStore.data.map {
-            moshi.adapter(Array<TopArtists>::class.java)
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
                 .fromJson(it[top_artists_of_week_data] ?: "[]")
         }
         set(value) {
-            SetDataStoreValueClass(top_artists_of_week_data, Array<TopArtists>::class.java, value)
+            SetDataStoreValueClass(
+                top_artists_of_week_data, Array<TopArtistsSongs>::class.java, value
+            )
         }
 
     var topArtistsOfWeekTimestamp: Flow<Long>
         get() = context.dataStore.data.map { it[top_artists_timestamp] ?: getPastTimestamp() }
         set(value) {
             SetDataStoreValue(top_artists_timestamp, value)
+        }
+
+
+    var topGlobalSongsData: Flow<Array<TopArtistsSongs>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
+                .fromJson(it[top_global_songs_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                top_global_songs_data, Array<TopArtistsSongs>::class.java, value
+            )
+        }
+
+    var topGlobalSongsTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[top_global_songs_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(top_global_songs_timestamp, value)
         }
 }

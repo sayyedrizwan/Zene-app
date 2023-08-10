@@ -12,4 +12,5 @@ interface ApiInterfaceImplInterface {
     suspend fun albumsWithYTHeaders(url: String): Flow<AlbumsHeadersResponse>
 
     suspend fun topArtistOfWeek(): Flow<TopArtistsResponseApi>
+    suspend fun topGlobalSongsThisWeek(): Flow<TopArtistsResponseApi>
 }

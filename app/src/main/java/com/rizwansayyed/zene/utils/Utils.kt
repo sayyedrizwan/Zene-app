@@ -15,7 +15,13 @@ object Utils {
     object URL {
         const val ALBUMS_WITH_HEADERS = "albumsWithHeaders"
         const val TOP_ARTIST_THIS_WEEK = "topArtistThisWeek"
+        const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
     }
+
+    object DB{
+        const val RECENT_PLAYED_DB = "recent_played_db"
+    }
+
 
 
     val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()

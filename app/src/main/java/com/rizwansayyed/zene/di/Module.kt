@@ -1,12 +1,20 @@
 package com.rizwansayyed.zene.di
 
+import android.content.Context
+import androidx.room.Room
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
+import com.rizwansayyed.zene.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedDB
+import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedDao
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 import com.rizwansayyed.zene.utils.Utils.moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -29,4 +37,13 @@ object Module {
     @Provides
     @Singleton
     fun apiInterfaceImpl(api: ApiInterface): ApiInterfaceImpl = ApiInterfaceImpl(api)
+
+    @Provides
+    @Singleton
+    fun recentPlayedDB(@ApplicationContext context: Context): RecentPlayedDao =
+        Room.databaseBuilder(context, RecentPlayedDB::class.java, RECENT_PLAYED_DB).build().recentPlayer()
+
+    @Provides
+    @Singleton
+    fun roomDBImpl(dao: RecentPlayedDao): RoomDBImpl = RoomDBImpl(dao)
 }

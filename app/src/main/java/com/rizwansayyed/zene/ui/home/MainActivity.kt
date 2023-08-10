@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.home
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.core.view.WindowCompat
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
@@ -37,7 +35,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    HomepageView()
+                    HomepageView(songsViewModel)
                 }
             }
         }

@@ -1,15 +1,21 @@
 package com.rizwansayyed.zene.presenter
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
+import com.rizwansayyed.zene.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -18,12 +24,16 @@ import org.jsoup.Jsoup
 import javax.inject.Inject
 
 @HiltViewModel
-class SongsViewModel @Inject constructor(private val apiImpl: ApiInterfaceImpl) : ViewModel() {
+class SongsViewModel @Inject constructor(
+    private val apiImpl: ApiInterfaceImpl,
+    private val roomDBImpl: RoomDBImpl
+) : ViewModel() {
 
     fun run() {
         albumsWithHeaders()
-
         topWeekArtists()
+        topGlobalSongsThisWeek()
+        recentPlaySongs()
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
@@ -55,4 +65,23 @@ class SongsViewModel @Inject constructor(private val apiImpl: ApiInterfaceImpl) 
         }
     }
 
+    private fun topGlobalSongsThisWeek() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.topGlobalSongsTimestamp.first().is1DayOlderNeedCache() &&
+            dataStoreManager.topGlobalSongsData.first() != null
+        ) return@launch
+
+        apiImpl.topGlobalSongsThisWeek().catch {}.collectLatest {
+            dataStoreManager.topGlobalSongsTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.topGlobalSongsData = flowOf(it.toTypedArray())
+        }
+    }
+
+    var recentPlayedSongs = mutableStateOf<Flow<List<RecentPlayedEntity>>?>(null)
+        private set
+
+    private fun recentPlaySongs() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.recentPlayed().catch {}.collectLatest {
+            recentPlayedSongs.value = it
+        }
+    }
 }

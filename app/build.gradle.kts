@@ -2,8 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id ("kotlin-kapt")
-    id ("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -85,4 +85,9 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("org.jsoup:jsoup:1.16.1")
+
+    implementation("androidx.room:room-ktx:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }

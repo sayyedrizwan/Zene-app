@@ -36,4 +36,9 @@ class ApiInterfaceImpl @Inject constructor(private val apiInterface: ApiInterfac
         emit(apiInterface.topArtistOfWeek())
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun topGlobalSongsThisWeek() = flow {
+        emit(apiInterface.topGlobalSongsThisWeek())
+    }.flowOn(Dispatchers.IO)
+
 }
