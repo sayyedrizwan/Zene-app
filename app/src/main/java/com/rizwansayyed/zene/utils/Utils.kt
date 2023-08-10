@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 object Utils {
 
     object URL {
-        const val ALBUMS_WITH_HEADERS = "albumsWithHeadersExp"
+        const val ALBUMS_WITH_HEADERS = "albumsWithHeaders"
     }
 
 

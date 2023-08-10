@@ -44,7 +44,7 @@ fun TopHeaderGrid(header: AlbumsHeadersResponse) {
             model = header.header?.get(it)?.thumbnail,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxWidth().height(screenHeight / 2 - 30.dp)
+            modifier = Modifier.fillMaxWidth().height(screenHeight / 2 + 140.dp)
         )
     }
 }
