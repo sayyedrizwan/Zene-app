@@ -16,9 +16,6 @@ object Algorithims {
         const val ALBUMS_WITH_HEADERS = "albumsWithHeaders"
     }
 
-
-    val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-
     fun extractSongTitles(songsName: String): String {
         try {
             if (!songsName.contains("|")) {

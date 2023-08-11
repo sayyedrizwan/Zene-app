@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.roomdb
 
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.roomdb.recentplayed.PlayedArtistsEntity
 import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedEntity
 import kotlinx.coroutines.flow.Flow
@@ -12,4 +13,5 @@ interface RoomDBImplInterface {
 
     suspend fun artists(): Flow<List<PlayedArtistsEntity>>
 
+    suspend fun songsSuggestionsUsingSongsHistory(): Flow<ArrayList<TopArtistsSongs>>
 }

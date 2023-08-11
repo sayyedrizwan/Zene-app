@@ -1,8 +1,10 @@
 package com.rizwansayyed.zene.domain
 
 import com.rizwansayyed.zene.domain.model.UrlResponse
+import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
+import com.rizwansayyed.zene.utils.Utils.URL.IP_JSON
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_COUNTRY_SONGS
@@ -13,28 +15,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface ApiInterface {
+interface IPApiInterface {
 
-    @GET(ALBUMS_WITH_HEADERS)
-    suspend fun albumsWithHeaders(): UrlResponse
-
-
-    @GET(TOP_ARTIST_THIS_WEEK)
-    suspend fun topArtistOfWeek(): TopArtistsResponseApi
-
-
-    @GET(TOP_GLOBAL_SONGS_THIS_WEEK)
-    suspend fun topGlobalSongsThisWeek(): TopArtistsResponseApi
-
-
-    @GET("$TOP_COUNTRY_SONGS/{country}")
-    suspend fun topCountrySongs(@Path(value = "country") country: String): TopArtistsResponseApi
-
-
-    @FormUrlEncoded
-    @POST(SONG_SUGGESTIONS)
-    suspend fun songSuggestions(
-        @Field("ip") ip: String,
-        @Field("id") id: String,
-    ): TopArtistsResponseApi
+    @GET(IP_JSON)
+    suspend fun ip(): IpJSONResponse
 }

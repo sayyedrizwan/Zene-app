@@ -2,9 +2,12 @@ package com.rizwansayyed.zene.ui.home.homeui
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,7 +19,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.ui.ViewAllBtnView
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
+import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -28,6 +33,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.topArtistsOfWeekData.first() })
     val globalSongs by dataStoreManager.topGlobalSongsData
         .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.topGlobalSongsData.first() })
+
+    val topCountrySongs by dataStoreManager.topCountrySongsData.collectAsState(initial = emptyArray())
+
+    val suggestedSongs by dataStoreManager.songsSuggestionsData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
@@ -46,6 +55,12 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
                 LazyRow {
                     items(recentPlayedSongs.value) { recent ->
                         RecentPlayedItemView(recent)
+                    }
+
+                    if (recentPlayedSongs.value.size >= 14) item {
+                        ViewAllBtnView {
+                            "view all history".showToast()
+                        }
                     }
                 }
             }
@@ -76,6 +91,35 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
                 }
             }
         }
+
+        item {
+            TopHeaderOf(stringResource(id = R.string.global_trending_songs))
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+            LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
+                items(topCountrySongs?.size ?: 0) { songs ->
+                    topCountrySongs?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                }
+            }
+        }
+
+
+        item {
+            TopHeaderOf(stringResource(id = R.string.recommended_songs))
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+            LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
+                items(suggestedSongs?.size ?: 0) { songs ->
+                    suggestedSongs?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                }
+            }
+        }
+
+
 
         item {
             Spacer(modifier = Modifier.height(300.dp))

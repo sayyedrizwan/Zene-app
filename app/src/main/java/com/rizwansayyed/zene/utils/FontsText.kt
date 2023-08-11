@@ -43,6 +43,44 @@ fun QuickSandBold(
     )
 }
 
+@Composable
+fun QuickSandRegular(
+    v: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    size: Int = 20
+) {
+    Text(
+        text = v,
+        fontFamily = quicksandFamily,
+        fontWeight = FontWeight.Normal,
+        color = color,
+        fontSize = size.nonScaledSp,
+        modifier = modifier,
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun QuickSandRegular(
+    v: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    size: Int = 20,
+    maxLine: Int = Int.MAX_VALUE
+) {
+    Text(
+        text = v,
+        fontFamily = quicksandFamily,
+        fontWeight = FontWeight.Normal,
+        color = color,
+        fontSize = size.nonScaledSp,
+        modifier = modifier,
+        textAlign = TextAlign.Center,
+        maxLines = maxLine
+    )
+}
+
 
 @Composable
 fun QuickSandSemiBold(
@@ -59,6 +97,26 @@ fun QuickSandSemiBold(
         fontSize = size.nonScaledSp,
         modifier = modifier,
         textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun QuickSandLight(
+    v: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    size: Int = 20,
+    maxLine: Int = Int.MAX_VALUE
+) {
+    Text(
+        text = v,
+        fontFamily = quicksandFamily,
+        fontWeight = FontWeight.Light,
+        color = color,
+        fontSize = size.nonScaledSp,
+        modifier = modifier,
+        textAlign = TextAlign.Center,
+        maxLines = maxLine
     )
 }
 

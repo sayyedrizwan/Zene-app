@@ -12,6 +12,9 @@ interface RecentPlayedDao {
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT 15")
     fun recentPlayedHome(): Flow<List<RecentPlayedEntity>>
 
+    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT 7")
+    suspend fun topListenSongs(): List<RecentPlayedEntity>
+
     @Upsert
     suspend fun insert(recentPlay: RecentPlayedEntity)
 

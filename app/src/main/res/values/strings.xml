@@ -3,5 +3,7 @@
     <string name="play">Play</string>
     <string name="top_artist_of_week">Top Artist of the Week</string>
     <string name="global_trending_songs">Global trending songs</string>
+    <string name="recommended_songs">Recommended Songs</string>
     <string name="recently_played">Recently Played</string>
+    <string name="view_all">View All</string>
 </resources>

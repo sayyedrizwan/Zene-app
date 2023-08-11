@@ -16,13 +16,18 @@ object Utils {
         const val ALBUMS_WITH_HEADERS = "albumsWithHeaders"
         const val TOP_ARTIST_THIS_WEEK = "topArtistThisWeek"
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
+        const val TOP_COUNTRY_SONGS = "topCountrySongs"
+        const val SONG_SUGGESTIONS = "songSuggestions"
+
+
+        const val IP_JSON_BASE_URL = "http://ip-api.com/"
+        const val IP_JSON = "json"
     }
 
-    object DB{
+    object DB {
         const val RECENT_PLAYED_DB = "recent_played_db"
         const val RECENT_PLAYED_ARTISTS_DB = "recent_played_artists_db"
     }
-
 
 
     val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
@@ -30,6 +35,12 @@ object Utils {
     fun String.showToast() = CoroutineScope(Dispatchers.Main).launch {
         Toast.makeText(context, this@showToast, Toast.LENGTH_LONG).show()
         if (isActive) cancel()
+    }
+
+    fun String.shortTextForView(maxLength: Int = 15): String {
+        if (this.length <= maxLength) return this
+
+        return this.substring(0, maxLength - 3) + "..."
     }
 
 }

@@ -36,6 +36,8 @@ class SongsViewModel @Inject constructor(
         topWeekArtists()
         topGlobalSongsThisWeek()
         recentPlaySongs()
+        topCountrySong()
+        songsSuggestions()
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
@@ -86,6 +88,37 @@ class SongsViewModel @Inject constructor(
             recentPlayedSongs = it
         }
     }
+
+    private fun topCountrySong() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.topCountrySongsTimestamp.first().isOlderNeedCache() &&
+            dataStoreManager.topCountrySongsData.first() != null
+        ) return@launch
+
+        val ip = try {
+            apiImpl.ipAddressDetails().first()
+        } catch (e: Exception) {
+            dataStoreManager.ipData.first()
+        } ?: return@launch
+
+        if (ip.country == null) return@launch
+        apiImpl.topCountrySongs(ip.country.lowercase()).catch {}.collectLatest {
+            dataStoreManager.topCountrySongsTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.topCountrySongsData = flowOf(it.toTypedArray())
+        }
+    }
+
+
+    private fun songsSuggestions() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.songsSuggestionsTimestamp.first().isOlderNeedCache() &&
+            dataStoreManager.songsSuggestionsData.first() != null
+        ) return@launch
+
+        roomDBImpl.songsSuggestionsUsingSongsHistory().catch {}.collectLatest {
+            dataStoreManager.songsSuggestionsTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.songsSuggestionsData = flowOf(it.toTypedArray())
+        }
+    }
+
 
     fun insert() = viewModelScope.launch(Dispatchers.IO) {
         val insert = RecentPlayedEntity(
