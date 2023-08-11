@@ -40,6 +40,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
     val topCountrySongs by dataStoreManager.topCountrySongsData.collectAsState(initial = emptyArray())
     val trendingSongsTop50 by dataStoreManager.trendingSongsTop50Data.collectAsState(initial = emptyArray())
     val suggestedSongs by dataStoreManager.songsSuggestionsData.collectAsState(initial = emptyArray())
+    val trendingSongsTopKPop by dataStoreManager.trendingSongsTopKPopData.collectAsState(initial = emptyArray())
+    val trendingSongsTop50KPop by dataStoreManager.trendingSongsTop50KPopData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
@@ -125,7 +127,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         }
 
         item {
-            TopHeaderOf("${stringResource(id = R.string.top_50_songs_in)} ${ip?.country}")
+            TopHeaderOf(stringResource(id = R.string.top_favourite))
             Spacer(modifier = Modifier.height(8.dp))
         }
 
@@ -137,6 +139,31 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
         }
 
+        item {
+            TopHeaderOf(stringResource(id = R.string.trending_k_pop_music))
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+            LazyRow {
+                if (trendingSongsTopKPop != null) items(trendingSongsTopKPop!!) { song ->
+                    TrendingSongsView(song)
+                }
+            }
+        }
+
+        item {
+            TopHeaderOf(stringResource(id = R.string.top_k_pop_music))
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+            LazyRow {
+                if (trendingSongsTop50KPop != null) items(trendingSongsTop50KPop!!) { song ->
+                    TrendingSongsView(song)
+                }
+            }
+        }
 
         item {
             Spacer(modifier = Modifier.height(300.dp))

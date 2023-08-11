@@ -61,6 +61,15 @@ class ApiInterfaceImpl @Inject constructor(
         emit(apiInterface.trendingSongsTop50(ip.country?.lowercase() ?: ""))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun trendingSongsTopKPop() = flow {
+        emit(apiInterface.trendingSongsTopKPop())
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun trendingSongsTop50KPop() = flow {
+        emit(apiInterface.trendingSongsTop50KPop())
+    }.flowOn(Dispatchers.IO)
+
 
     override suspend fun ipAddressDetails() = flow {
         val ip = ipApiInterface.ip()

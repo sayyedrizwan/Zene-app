@@ -39,6 +39,8 @@ class SongsViewModel @Inject constructor(
         topCountrySong()
         songsSuggestions()
         trendingSongsTop50()
+        trendingSongsTopKPop()
+        trendingSongsTop50KPop()
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
@@ -109,6 +111,7 @@ class SongsViewModel @Inject constructor(
 
         apiImpl.trendingSongsTop50().catch {}.collectLatest {
             dataStoreManager.trendingSongsTop50Timestamp = flowOf(System.currentTimeMillis())
+            it.shuffled()
             dataStoreManager.trendingSongsTop50Data = flowOf(it.toTypedArray())
         }
     }
@@ -117,11 +120,46 @@ class SongsViewModel @Inject constructor(
     private fun songsSuggestions() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.songsSuggestionsTimestamp.first().is1DayOlderNeedCache() &&
             dataStoreManager.songsSuggestionsData.first() != null
-        ) return@launch
+        ) {
+            val s = dataStoreManager.songsSuggestionsData.first()
+            s?.shuffle()
+            dataStoreManager.songsSuggestionsData = flowOf(s)
+            return@launch
+        }
 
         roomDBImpl.songsSuggestionsUsingSongsHistory().catch {}.collectLatest {
             dataStoreManager.songsSuggestionsTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.songsSuggestionsData = flowOf(it.toTypedArray())
+        }
+    }
+
+
+    private fun trendingSongsTopKPop() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.trendingSongsTopKPopTimestamp.first().is2DayOlderNeedCache() &&
+            dataStoreManager.trendingSongsTopKPopData.first() != null
+        ) return@launch
+
+        apiImpl.trendingSongsTopKPop().catch {}.collectLatest {
+            dataStoreManager.trendingSongsTopKPopTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.trendingSongsTopKPopData = flowOf(it.toTypedArray())
+        }
+    }
+
+
+    private fun trendingSongsTop50KPop() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.trendingSongsTop50KPopTimestamp.first().is2DayOlderNeedCache() &&
+            dataStoreManager.trendingSongsTop50KPopData.first() != null
+        ) {
+            val s = dataStoreManager.trendingSongsTop50KPopData.first()
+            s?.shuffle()
+            dataStoreManager.trendingSongsTop50KPopData = flowOf(s)
+            return@launch
+        }
+
+
+        apiImpl.trendingSongsTop50KPop().catch {}.collectLatest {
+            dataStoreManager.trendingSongsTop50KPopTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.trendingSongsTop50KPopData = flowOf(it.toTypedArray())
         }
     }
 

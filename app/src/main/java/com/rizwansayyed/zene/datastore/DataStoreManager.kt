@@ -19,6 +19,10 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.top_global_songs_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_global_songs_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_song_s_top_50_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_song_s_top_50_timestamp
+import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_songs_top_50_k_pop_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_songs_top_50_k_pop_timestamp
+import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_songs_top_k_pop_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_songs_top_k_pop_timestamp
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
@@ -139,6 +143,42 @@ class DataStoreManager {
         get() = context.dataStore.data.map { it[songs_suggestions_timestamp] ?: getPastTimestamp() }
         set(value) {
             SetDataStoreValue(songs_suggestions_timestamp, value)
+        }
+
+
+    var trendingSongsTopKPopData: Flow<Array<TopArtistsSongs>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
+                .fromJson(it[trending_songs_top_k_pop_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                trending_songs_top_k_pop_data, Array<TopArtistsSongs>::class.java, value
+            )
+        }
+
+    var trendingSongsTopKPopTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[trending_songs_top_k_pop_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(trending_songs_top_k_pop_timestamp, value)
+        }
+
+
+    var trendingSongsTop50KPopData: Flow<Array<TopArtistsSongs>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
+                .fromJson(it[trending_songs_top_50_k_pop_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                trending_songs_top_50_k_pop_data, Array<TopArtistsSongs>::class.java, value
+            )
+        }
+
+    var trendingSongsTop50KPopTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[trending_songs_top_50_k_pop_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(trending_songs_top_50_k_pop_timestamp, value)
         }
 
 

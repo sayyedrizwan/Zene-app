@@ -13,6 +13,10 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_COUNTRY_
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_COUNTRY_SONGS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_GLOBAL_SONGS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_GLOBAL_SONGS_TIMESTAMP
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONGS_TOP_50_K_POP_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONGS_TOP_50_K_POP_TIMESTAMP
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONGS_TOP_K_POP_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONGS_TOP_K_POP_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONG_S_TOP_50_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONG_S_TOP_50_TIMESTAMP
 
@@ -33,6 +37,10 @@ object DataStoreUtil {
         const val SONGS_SUGGESTIONS_TIMESTAMP = "songs_suggestions_timestamp"
         const val TRENDING_SONG_S_TOP_50_DATA = "trending_song_s_top_50_data"
         const val TRENDING_SONG_S_TOP_50_TIMESTAMP = "trending_song_s_top_50_timestamp"
+        const val TRENDING_SONGS_TOP_K_POP_DATA = "trending_songs_top_k_pop_data"
+        const val TRENDING_SONGS_TOP_K_POP_TIMESTAMP = "trending_songs_top_k_pop_timestamp"
+        const val TRENDING_SONGS_TOP_50_K_POP_DATA = "trending_songs_top_50_k_pop_data"
+        const val TRENDING_SONGS_TOP_50_K_POP_TIMESTAMP = "trending_songs_top_50_k_pop_timestamp"
         const val IP_DATA = "ip_data"
     }
 
@@ -53,6 +61,13 @@ object DataStoreUtil {
 
     val trending_song_s_top_50_data = stringPreferencesKey(TRENDING_SONG_S_TOP_50_DATA)
     val trending_song_s_top_50_timestamp = longPreferencesKey(TRENDING_SONG_S_TOP_50_TIMESTAMP)
+
+    val trending_songs_top_k_pop_data = stringPreferencesKey(TRENDING_SONGS_TOP_K_POP_DATA)
+    val trending_songs_top_k_pop_timestamp = longPreferencesKey(TRENDING_SONGS_TOP_K_POP_TIMESTAMP)
+
+
+    val trending_songs_top_50_k_pop_data = stringPreferencesKey(TRENDING_SONGS_TOP_50_K_POP_DATA)
+    val trending_songs_top_50_k_pop_timestamp = longPreferencesKey(TRENDING_SONGS_TOP_50_K_POP_TIMESTAMP)
 
 
     val songs_suggestions_data = stringPreferencesKey(SONGS_SUGGESTIONS_DATA)
