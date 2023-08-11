@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene
+package com.rizwansayyed.zene.presenter
 
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
@@ -12,5 +12,6 @@ interface ApiInterfaceImplInterface {
     suspend fun albumsWithYTHeaders(url: String): Flow<AlbumsHeadersResponse>
 
     suspend fun topArtistOfWeek(): Flow<TopArtistsResponseApi>
+
     suspend fun topGlobalSongsThisWeek(): Flow<TopArtistsResponseApi>
 }

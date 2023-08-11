@@ -16,4 +16,8 @@ class RoomDBImpl @Inject constructor(private val recentPlayedDao: RecentPlayedDa
     override suspend fun insert(recentPlay: RecentPlayedEntity) = flow {
         emit(recentPlayedDao.insert(recentPlay))
     }
+
+    override suspend fun artists() = flow {
+        emit(recentPlayedDao.artists())
+    }
 }

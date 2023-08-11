@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.presenter
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
@@ -76,12 +78,26 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-    var recentPlayedSongs = mutableStateOf<Flow<List<RecentPlayedEntity>>?>(null)
+    var recentPlayedSongs by mutableStateOf<Flow<List<RecentPlayedEntity>>?>(null)
         private set
 
     private fun recentPlaySongs() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.recentPlayed().catch {}.collectLatest {
-            recentPlayedSongs.value = it
+            recentPlayedSongs = it
         }
+    }
+
+    fun insert() = viewModelScope.launch(Dispatchers.IO) {
+        val insert = RecentPlayedEntity(
+            id = null,
+            name = "Last Night",
+            "Morgan Wallen",
+            1,
+            "sfJDnua1cB4",
+            "https://charts-static.billboard.com/img/2016/08/morgan-wallen-nlu-344x344.jpg",
+            System.currentTimeMillis(),
+            233
+        )
+        roomDBImpl.insert(insert).catch { }.collect()
     }
 }

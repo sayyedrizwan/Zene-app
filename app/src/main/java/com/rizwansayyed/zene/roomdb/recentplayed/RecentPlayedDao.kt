@@ -8,9 +8,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecentPlayedDao {
+
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT 15")
     fun recentPlayedHome(): Flow<List<RecentPlayedEntity>>
 
     @Upsert
     suspend fun insert(recentPlay: RecentPlayedEntity)
+
+
+    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC")
+    suspend fun artists(): List<PlayedArtistsEntity>
+
+    @Upsert
+    suspend fun insert(artists: PlayedArtistsEntity)
 }

@@ -22,6 +22,11 @@ object Algorithims {
     fun extractSongTitles(songsName: String): String {
         try {
             if (!songsName.contains("|")) {
+                if (songsName.contains("-")) {
+                    return songsName.substringAfter("-").replace("(Official Video)", "")
+                        .replace("(official video)", "").replace("(Official Song)", "")
+                        .replace("(official song)", "")
+                }
                 return songsName
             }
             val getName =
@@ -41,6 +46,11 @@ object Algorithims {
     fun extractSongSubTitles(songsName: String): String {
         try {
             if (!songsName.contains("|")) {
+                if (songsName.contains("-")) {
+                    return songsName.substringBefore("-").replace("(Official Video)", "")
+                        .replace("(official video)", "").replace("(Official Song)", "")
+                        .replace("(official song)", "")
+                }
                 return "Official Song"
             }
             val getName = songsName.substringBefore("|").trim()

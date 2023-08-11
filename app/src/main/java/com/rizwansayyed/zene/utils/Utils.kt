@@ -20,6 +20,7 @@ object Utils {
 
     object DB{
         const val RECENT_PLAYED_DB = "recent_played_db"
+        const val RECENT_PLAYED_ARTISTS_DB = "recent_played_artists_db"
     }
 
 
