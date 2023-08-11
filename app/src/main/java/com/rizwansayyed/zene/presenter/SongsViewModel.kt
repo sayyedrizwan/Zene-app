@@ -38,6 +38,7 @@ class SongsViewModel @Inject constructor(
         recentPlaySongs()
         topCountrySong()
         songsSuggestions()
+        trendingSongsTop50()
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
@@ -94,22 +95,27 @@ class SongsViewModel @Inject constructor(
             dataStoreManager.topCountrySongsData.first() != null
         ) return@launch
 
-        val ip = try {
-            apiImpl.ipAddressDetails().first()
-        } catch (e: Exception) {
-            dataStoreManager.ipData.first()
-        } ?: return@launch
-
-        if (ip.country == null) return@launch
-        apiImpl.topCountrySongs(ip.country.lowercase()).catch {}.collectLatest {
+        apiImpl.topCountrySongs().catch {}.collectLatest {
             dataStoreManager.topCountrySongsTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.topCountrySongsData = flowOf(it.toTypedArray())
         }
     }
 
 
+    private fun trendingSongsTop50() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.trendingSongsTop50Timestamp.first().is2DayOlderNeedCache() &&
+            dataStoreManager.trendingSongsTop50Data.first() != null
+        ) return@launch
+
+        apiImpl.trendingSongsTop50().catch {}.collectLatest {
+            dataStoreManager.trendingSongsTop50Timestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.trendingSongsTop50Data = flowOf(it.toTypedArray())
+        }
+    }
+
+
     private fun songsSuggestions() = viewModelScope.launch(Dispatchers.IO) {
-        if (!dataStoreManager.songsSuggestionsTimestamp.first().isOlderNeedCache() &&
+        if (!dataStoreManager.songsSuggestionsTimestamp.first().is1DayOlderNeedCache() &&
             dataStoreManager.songsSuggestionsData.first() != null
         ) return@launch
 

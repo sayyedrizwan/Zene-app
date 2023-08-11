@@ -18,6 +18,7 @@ object Utils {
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
         const val TOP_COUNTRY_SONGS = "topCountrySongs"
         const val SONG_SUGGESTIONS = "songSuggestions"
+        const val TRENDING_SONGS_S_TOP_50 = "trendingSongsSTop50"
 
 
         const val IP_JSON_BASE_URL = "http://ip-api.com/"

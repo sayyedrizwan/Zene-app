@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.roomdb
 
+import com.rizwansayyed.zene.BaseApplication
+import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.IPApiInterface
@@ -7,6 +9,7 @@ import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedEntity
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import java.util.Collections
 import javax.inject.Inject
 
@@ -33,6 +36,7 @@ class RoomDBImpl @Inject constructor(
     override suspend fun songsSuggestionsUsingSongsHistory() = flow {
         val top4Songs = recentPlayedDao.topListenSongs()
         val ip = ipInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
         val list = ArrayList<TopArtistsSongs>(100)
 
         top4Songs.forEach {

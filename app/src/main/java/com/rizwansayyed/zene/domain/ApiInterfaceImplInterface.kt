@@ -16,8 +16,9 @@ interface ApiInterfaceImplInterface {
 
     suspend fun topGlobalSongsThisWeek(): Flow<TopArtistsResponseApi>
 
-    suspend fun topCountrySongs(country: String): Flow<TopArtistsResponseApi>
-
+    suspend fun topCountrySongs(): Flow<TopArtistsResponseApi>
 
     suspend fun ipAddressDetails(): Flow<IpJSONResponse>
+
+    suspend fun trendingSongsTop50(): Flow<TopArtistsResponseApi>
 }

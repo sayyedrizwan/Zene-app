@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_COUNTRY_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_GLOBAL_SONGS_THIS_WEEK
+import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_S_TOP_50
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -29,6 +30,9 @@ interface ApiInterface {
 
     @GET("$TOP_COUNTRY_SONGS/{country}")
     suspend fun topCountrySongs(@Path(value = "country") country: String): TopArtistsResponseApi
+
+    @GET("$TRENDING_SONGS_S_TOP_50/{country}")
+    suspend fun trendingSongsTop50(@Path(value = "country") country: String): TopArtistsResponseApi
 
 
     @FormUrlEncoded

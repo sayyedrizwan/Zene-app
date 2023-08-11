@@ -48,8 +48,17 @@ class ApiInterfaceImpl @Inject constructor(
         emit(apiInterface.topGlobalSongsThisWeek())
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun topCountrySongs(country: String) = flow {
-        emit(apiInterface.topCountrySongs(country))
+    override suspend fun topCountrySongs() = flow {
+        val ip = ipApiInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+        emit(apiInterface.topCountrySongs(ip.country?.lowercase() ?: ""))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun trendingSongsTop50() = flow {
+        val ip = ipApiInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+        emit(apiInterface.trendingSongsTop50(ip.country?.lowercase() ?: ""))
     }.flowOn(Dispatchers.IO)
 
 

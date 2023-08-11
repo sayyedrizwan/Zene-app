@@ -13,6 +13,8 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_COUNTRY_
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_COUNTRY_SONGS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_GLOBAL_SONGS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_GLOBAL_SONGS_TIMESTAMP
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONG_S_TOP_50_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TRENDING_SONG_S_TOP_50_TIMESTAMP
 
 object DataStoreUtil {
 
@@ -29,6 +31,8 @@ object DataStoreUtil {
         const val TOP_COUNTRY_SONGS_TIMESTAMP = "top_country_songs_timestamp"
         const val SONGS_SUGGESTIONS_DATA = "songs_suggestions_data"
         const val SONGS_SUGGESTIONS_TIMESTAMP = "songs_suggestions_timestamp"
+        const val TRENDING_SONG_S_TOP_50_DATA = "trending_song_s_top_50_data"
+        const val TRENDING_SONG_S_TOP_50_TIMESTAMP = "trending_song_s_top_50_timestamp"
         const val IP_DATA = "ip_data"
     }
 
@@ -45,6 +49,10 @@ object DataStoreUtil {
 
     val top_country_songs_data = stringPreferencesKey(TOP_COUNTRY_SONGS_DATA)
     val top_country_songs_timestamp = longPreferencesKey(TOP_COUNTRY_SONGS_TIMESTAMP)
+
+
+    val trending_song_s_top_50_data = stringPreferencesKey(TRENDING_SONG_S_TOP_50_DATA)
+    val trending_song_s_top_50_timestamp = longPreferencesKey(TRENDING_SONG_S_TOP_50_TIMESTAMP)
 
 
     val songs_suggestions_data = stringPreferencesKey(SONGS_SUGGESTIONS_DATA)

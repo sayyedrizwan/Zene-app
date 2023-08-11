@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.ui.ViewAllBtnView
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
@@ -34,8 +35,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
     val globalSongs by dataStoreManager.topGlobalSongsData
         .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.topGlobalSongsData.first() })
 
-    val topCountrySongs by dataStoreManager.topCountrySongsData.collectAsState(initial = emptyArray())
+    val ip by dataStoreManager.ipData.collectAsState(initial = null)
 
+    val topCountrySongs by dataStoreManager.topCountrySongsData.collectAsState(initial = emptyArray())
+    val trendingSongsTop50 by dataStoreManager.trendingSongsTop50Data.collectAsState(initial = emptyArray())
     val suggestedSongs by dataStoreManager.songsSuggestionsData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs =
@@ -93,9 +96,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         }
 
         item {
-            TopHeaderOf(stringResource(id = R.string.global_trending_songs))
+            TopHeaderOf("${stringResource(id = R.string.trending_songs_in)} ${ip?.country}")
             Spacer(modifier = Modifier.height(8.dp))
         }
+
 
         item {
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
@@ -105,20 +109,33 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
         }
 
+        if (suggestedSongs?.isNotEmpty() == true) {
+            item {
+                TopHeaderOf(stringResource(id = R.string.recommended_songs))
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            item {
+                LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
+                    items(suggestedSongs?.size ?: 0) { songs ->
+                        suggestedSongs?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                    }
+                }
+            }
+        }
 
         item {
-            TopHeaderOf(stringResource(id = R.string.recommended_songs))
+            TopHeaderOf("${stringResource(id = R.string.top_50_songs_in)} ${ip?.country}")
             Spacer(modifier = Modifier.height(8.dp))
         }
 
         item {
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
-                items(suggestedSongs?.size ?: 0) { songs ->
-                    suggestedSongs?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                items(trendingSongsTop50?.size ?: 0) { songs ->
+                    trendingSongsTop50?.get(songs)?.let { TrendingSongsViewShortText(it) }
                 }
             }
         }
-
 
 
         item {

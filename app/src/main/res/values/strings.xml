@@ -6,4 +6,6 @@
     <string name="recommended_songs">Recommended Songs</string>
     <string name="recently_played">Recently Played</string>
     <string name="view_all">View All</string>
+    <string name="trending_songs_in">Trending songs in</string>
+    <string name="top_50_songs_in">Top 50 songs in</string>
 </resources>
