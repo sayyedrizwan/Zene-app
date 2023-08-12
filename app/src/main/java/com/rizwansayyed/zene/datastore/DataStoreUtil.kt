@@ -6,6 +6,8 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.IP_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_FOR_YOU_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_FOR_YOU_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_ARTISTS_OF_WEEK_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_ARTISTS_TIMESTAMP
@@ -39,6 +41,8 @@ object DataStoreUtil {
         const val TRENDING_SONG_S_TOP_50_TIMESTAMP = "trending_song_s_top_50_timestamp"
         const val TRENDING_SONGS_TOP_K_POP_DATA = "trending_songs_top_k_pop_data"
         const val TRENDING_SONGS_TOP_K_POP_TIMESTAMP = "trending_songs_top_k_pop_timestamp"
+        const val SONGS_SUGGESTIONS_FOR_YOU_DATA = "songs_suggestions_for_you_data"
+        const val SONGS_SUGGESTIONS_FOR_YOU_TIMESTAMP = "songs_suggestions_for_you_timestamp"
         const val TRENDING_SONGS_TOP_50_K_POP_DATA = "trending_songs_top_50_k_pop_data"
         const val TRENDING_SONGS_TOP_50_K_POP_TIMESTAMP = "trending_songs_top_50_k_pop_timestamp"
         const val IP_DATA = "ip_data"
@@ -64,6 +68,9 @@ object DataStoreUtil {
 
     val trending_songs_top_k_pop_data = stringPreferencesKey(TRENDING_SONGS_TOP_K_POP_DATA)
     val trending_songs_top_k_pop_timestamp = longPreferencesKey(TRENDING_SONGS_TOP_K_POP_TIMESTAMP)
+
+    val songs_suggestions_for_you_data = stringPreferencesKey(SONGS_SUGGESTIONS_FOR_YOU_DATA)
+    val songs_suggestions_for_you_timestamp = longPreferencesKey(SONGS_SUGGESTIONS_FOR_YOU_TIMESTAMP)
 
 
     val trending_songs_top_50_k_pop_data = stringPreferencesKey(TRENDING_SONGS_TOP_50_K_POP_DATA)

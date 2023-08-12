@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -50,6 +51,7 @@ fun ArtistsView(artists: TopArtistsSongs) {
             modifier = Modifier
                 .size(140.dp)
                 .clip(RoundedCornerShape(50)),
+            contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -75,6 +77,7 @@ fun TrendingSongsView(artists: TopArtistsSongs) {
             modifier = Modifier
                 .size(140.dp)
                 .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -103,6 +106,7 @@ fun TrendingSongsViewShortText(artists: TopArtistsSongs) {
             modifier = Modifier
                 .size(160.dp)
                 .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -132,7 +136,8 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
                     Modifier
                         .size(100.dp)
                         .padding(10.dp)
-                        .clip(RoundedCornerShape(13.dp))
+                        .clip(RoundedCornerShape(13.dp)),
+                    contentScale = ContentScale.Crop
                 )
                 Column {
                     QuickSandRegular(recent.name, size = 17, maxLine = 1)

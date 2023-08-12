@@ -6,10 +6,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.DB_STORE
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_FOR_YOU_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.ip_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_for_you_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_for_you_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_of_week_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_timestamp
@@ -143,6 +146,23 @@ class DataStoreManager {
         get() = context.dataStore.data.map { it[songs_suggestions_timestamp] ?: getPastTimestamp() }
         set(value) {
             SetDataStoreValue(songs_suggestions_timestamp, value)
+        }
+
+    var songsSuggestionsForYouData: Flow<Array<TopArtistsSongs>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
+                .fromJson(it[songs_suggestions_for_you_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                songs_suggestions_for_you_data, Array<TopArtistsSongs>::class.java, value
+            )
+        }
+
+    var songsSuggestionsForYouTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[songs_suggestions_for_you_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(songs_suggestions_for_you_timestamp, value)
         }
 
 

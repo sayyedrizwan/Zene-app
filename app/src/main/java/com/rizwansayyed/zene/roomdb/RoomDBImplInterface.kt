@@ -14,4 +14,6 @@ interface RoomDBImplInterface {
     suspend fun artists(): Flow<List<PlayedArtistsEntity>>
 
     suspend fun songsSuggestionsUsingSongsHistory(): Flow<ArrayList<TopArtistsSongs>>
+
+    suspend fun songSuggestionsForYouUsingHistory(): Flow<ArrayList<TopArtistsSongs>>
 }

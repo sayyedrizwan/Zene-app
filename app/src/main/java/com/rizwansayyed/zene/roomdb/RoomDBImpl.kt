@@ -37,10 +37,27 @@ class RoomDBImpl @Inject constructor(
         val top4Songs = recentPlayedDao.topListenSongs()
         val ip = ipInterface.ip()
         dataStoreManager.ipData = flowOf(ip)
-        val list = ArrayList<TopArtistsSongs>(100)
+        val list = ArrayList<TopArtistsSongs>(300)
 
         top4Songs.forEach {
             apiInterface.songSuggestions(ip.query ?: "", it.pid).forEach { songs ->
+                if (!list.any { l -> l.name == songs.name }) {
+                    list.add(songs)
+                }
+            }
+        }
+        list.shuffle()
+        emit(list)
+    }
+
+    override suspend fun songSuggestionsForYouUsingHistory() = flow {
+        val topSongs = recentPlayedDao.topListenSongs()
+        val ip = ipInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+        val list = ArrayList<TopArtistsSongs>(300)
+
+        topSongs.forEach {
+            apiInterface.songSuggestionsForYou(ip.query ?: "", it.pid).forEach { songs ->
                 if (!list.any { l -> l.name == songs.name }) {
                     list.add(songs)
                 }

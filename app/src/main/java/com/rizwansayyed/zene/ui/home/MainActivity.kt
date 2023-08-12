@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     override fun onStart() {
         super.onStart()
         songsViewModel.run()
+        songsViewModel.insert()
     }
 
     override fun internetConnected() {

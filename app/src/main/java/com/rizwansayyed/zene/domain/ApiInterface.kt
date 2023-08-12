@@ -4,6 +4,7 @@ import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
+import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS_FOR_YOU
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_COUNTRY_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_GLOBAL_SONGS_THIS_WEEK
@@ -46,6 +47,13 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(SONG_SUGGESTIONS)
     suspend fun songSuggestions(
+        @Field("ip") ip: String, @Field("id") id: String,
+    ): TopArtistsResponseApi
+
+
+    @FormUrlEncoded
+    @POST(SONG_SUGGESTIONS_FOR_YOU)
+    suspend fun songSuggestionsForYou(
         @Field("ip") ip: String, @Field("id") id: String,
     ): TopArtistsResponseApi
 }

@@ -18,6 +18,7 @@ object Utils {
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
         const val TOP_COUNTRY_SONGS = "topCountrySongs"
         const val SONG_SUGGESTIONS = "songSuggestions"
+        const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
         const val TRENDING_SONGS_S_TOP_50 = "trendingSongsSTop50"
         const val TRENDING_SONGS_APPLE = "trendingSongsApple"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
@@ -43,7 +44,6 @@ object Utils {
 
     fun String.shortTextForView(maxLength: Int = 15): String {
         if (this.length <= maxLength) return this
-
         return this.substring(0, maxLength - 3) + "..."
     }
 

@@ -11,4 +11,6 @@
     <string name="top_favourite">Top favourite</string>
     <string name="trending_k_pop_music">Trending K-POP music</string>
     <string name="top_k_pop_music">Top 50 K-POP music</string>
+    <string name="recommended_songs_for_you">Recommended Songs For You</string>
+    <string name="related_songs">Related Songs</string>
 </resources>

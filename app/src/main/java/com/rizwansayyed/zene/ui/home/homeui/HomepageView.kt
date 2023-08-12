@@ -42,6 +42,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
     val suggestedSongs by dataStoreManager.songsSuggestionsData.collectAsState(initial = emptyArray())
     val trendingSongsTopKPop by dataStoreManager.trendingSongsTopKPopData.collectAsState(initial = emptyArray())
     val trendingSongsTop50KPop by dataStoreManager.trendingSongsTop50KPopData.collectAsState(initial = emptyArray())
+    val songsSuggestionsForYou by dataStoreManager.songsSuggestionsForYouData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
@@ -161,6 +162,21 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             LazyRow {
                 if (trendingSongsTop50KPop != null) items(trendingSongsTop50KPop!!) { song ->
                     TrendingSongsView(song)
+                }
+            }
+        }
+        if (songsSuggestionsForYou?.isNotEmpty() == true) {
+            item {
+                TopHeaderOf(stringResource(id = R.string.related_songs))
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+
+            item {
+                LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
+                    items(songsSuggestionsForYou?.size ?: 0) { songs ->
+                        songsSuggestionsForYou?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                    }
                 }
             }
         }

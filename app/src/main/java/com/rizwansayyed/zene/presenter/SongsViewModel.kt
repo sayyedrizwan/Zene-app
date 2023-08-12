@@ -38,6 +38,7 @@ class SongsViewModel @Inject constructor(
         recentPlaySongs()
         topCountrySong()
         songsSuggestions()
+        songsSuggestionsForYou()
         trendingSongsTop50()
         trendingSongsTopKPop()
         trendingSongsTop50KPop()
@@ -123,6 +124,7 @@ class SongsViewModel @Inject constructor(
         ) {
             val s = dataStoreManager.songsSuggestionsData.first()
             s?.shuffle()
+            s?.shuffle()
             dataStoreManager.songsSuggestionsData = flowOf(s)
             return@launch
         }
@@ -130,6 +132,23 @@ class SongsViewModel @Inject constructor(
         roomDBImpl.songsSuggestionsUsingSongsHistory().catch {}.collectLatest {
             dataStoreManager.songsSuggestionsTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.songsSuggestionsData = flowOf(it.toTypedArray())
+        }
+    }
+
+    private fun songsSuggestionsForYou() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.songsSuggestionsForYouTimestamp.first().is1DayOlderNeedCache() &&
+            dataStoreManager.songsSuggestionsForYouData.first() != null
+        ) {
+            val s = dataStoreManager.songsSuggestionsForYouData.first()
+            s?.shuffle()
+            s?.shuffle()
+            dataStoreManager.songsSuggestionsForYouData = flowOf(s)
+            return@launch
+        }
+
+        roomDBImpl.songSuggestionsForYouUsingHistory().catch {}.collectLatest {
+            dataStoreManager.songsSuggestionsForYouTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.songsSuggestionsForYouData = flowOf(it.toTypedArray())
         }
     }
 
@@ -158,7 +177,6 @@ class SongsViewModel @Inject constructor(
             return@launch
         }
 
-
         apiImpl.trendingSongsTop50KPop().catch {}.collectLatest {
             dataStoreManager.trendingSongsTop50KPopTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.trendingSongsTop50KPopData = flowOf(it.toTypedArray())
@@ -167,16 +185,112 @@ class SongsViewModel @Inject constructor(
 
 
     fun insert() = viewModelScope.launch(Dispatchers.IO) {
-        val insert = RecentPlayedEntity(
-            id = null,
-            name = "Last Night",
-            "Morgan Wallen",
-            1,
-            "sfJDnua1cB4",
-            "https://charts-static.billboard.com/img/2016/08/morgan-wallen-nlu-344x344.jpg",
-            System.currentTimeMillis(),
-            233
-        )
-        roomDBImpl.insert(insert).catch { }.collect()
+//        val insert = RecentPlayedEntity(
+//            id = null,
+//            name = "Last Night",
+//            "The Weeknd",
+//            6,
+//            "J7p4bzqLvCw",
+//            "https://lh3.googleusercontent.com/R_cjQK3wwLPEzri1jerx-79zgzGocoKvwGU3NMONaTsaMM0Idd641pfB8r5jgfpn6I8JAoFtf9RBIcI=w544-h544-l90-rj",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert).catch { }.collect()
+//
+//        val insert1 = RecentPlayedEntity(
+//            id = null,
+//            name = "What Jhumka?",
+//            "Arijit Singh & Jonita Gandhi",
+//            3,
+//            "87JIOAX3njM",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert1).catch { }.collect()
+//
+//        val insert2 = RecentPlayedEntity(
+//            id = null,
+//            name = "Main Nikla Gaddi Leke",
+//            "Udit Narayan & Mithoon",
+//            3,
+//            "2nK6WBcGPOw",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert2).catch { }.collect()
+//
+//        val insert3 = RecentPlayedEntity(
+//            id = null,
+//            name = "Gone Girl",
+//            "Badshah & Payal Dev",
+//            3,
+//            "mvCWGL_r-Zg",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert3).catch { }.collect()
+//
+//        val insert4 = RecentPlayedEntity(
+//            id = null,
+//            name = "Mummy Nu Pasand (From \"Jai Mummy Di\")",
+//            "Sunanda Sharma",
+//            3,
+//            "F-4gKsi5jfw",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert4).catch { }.collect()
+//
+//        val insert5 = RecentPlayedEntity(
+//            id = null,
+//            name = "I'm the One (feat. Justin Bieber, Lil Wayne, Chance The Rapper & Quavo)",
+//            "DJ Khaled",
+//            7,
+//            "weeI1G46q0o",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert5).catch { }.collect()
+//
+//        val insert6 = RecentPlayedEntity(
+//            id = null,
+//            name = "I'm the One (feat. Justin Bieber, Lil Wayne, Chance The Rapper & Quavo)",
+//            "DJ Khaled",
+//            7,
+//            "weeI1G46q0o",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert6).catch { }.collect()
+//
+//    val insert7 = RecentPlayedEntity(
+//            id = null,
+//            name = "Beautiful Mistakes ft. Megan Thee Stallion (Official Music Video",
+//            "Maroon 5",
+//            7,
+//            "BSzSn-PRdtI",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert7).catch { }.collect()
+//
+//    val insert8 = RecentPlayedEntity(
+//            id = null,
+//            name = "22",
+//            "Taylor Swift",
+//            7,
+//            "AgFeZr5ptV8",
+//            "https://i.ytimg.com/vi/irF2QC5xP2g/hq720.jpg?sqp=-oaymwEXCKAGEMIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbXgumdDeyMiDoWm1ZqRls3xPlBA",
+//            System.currentTimeMillis(),
+//            233
+//        )
+//        roomDBImpl.insert(insert8).catch { }.collect()
     }
 }
