@@ -14,6 +14,10 @@ import dagger.hilt.android.HiltAndroidApp
 //dolphin tracker crash fixed
 //started tracking feature. completed button and working on connecting.
 
+
+
+//add info about of tracker and qr code.
+
 @HiltAndroidApp
 class BaseApplication : Application() {
 

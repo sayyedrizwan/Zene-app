@@ -152,6 +152,8 @@ class SongsViewModel @Inject constructor(
         ) {
             val s = dataStoreManager.trendingSongsTop50KPopData.first()
             s?.shuffle()
+            s?.shuffle()
+            s?.shuffle()
             dataStoreManager.trendingSongsTop50KPopData = flowOf(s)
             return@launch
         }
