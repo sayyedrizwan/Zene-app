@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.domain
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
+import com.rizwansayyed.zene.utils.Utils.URL.SIMILAR_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS_FOR_YOU
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
@@ -42,6 +43,9 @@ interface ApiInterface {
 
     @GET(TRENDING_SONGS_TOP_50_K_POP)
     suspend fun trendingSongsTop50KPop(): TopArtistsResponseApi
+
+    @GET("$SIMILAR_ARTISTS/{name}")
+    suspend fun similarArtists(@Path(value = "name") country: String): TopArtistsResponseApi
 
 
     @FormUrlEncoded

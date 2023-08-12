@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
-import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.ui.theme.BlackLight
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
@@ -57,6 +57,33 @@ fun ArtistsView(artists: TopArtistsSongs) {
         Spacer(modifier = Modifier.height(12.dp))
 
         QuickSandLight(artists.name ?: "", size = 17)
+    }
+}
+
+
+@Composable
+fun ArtistsViewSmallView(artists: TopArtistsSongs) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(10.dp)
+            .clickable {
+                "open artists".showToast()
+            }
+    ) {
+        AsyncImage(
+            model = artists.img,
+            contentDescription = artists.name,
+            modifier = Modifier
+                .size(110.dp)
+                .clip(RoundedCornerShape(50)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        QuickSandLight(artists.name?.shortTextForView(17) ?: "", size = 17)
     }
 }
 

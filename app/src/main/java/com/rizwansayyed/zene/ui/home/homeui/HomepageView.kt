@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.domain.roomdb.recentplayed.toTopArtistsSongs
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.ui.ViewAllBtnView
@@ -43,6 +44,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
     val trendingSongsTopKPop by dataStoreManager.trendingSongsTopKPopData.collectAsState(initial = emptyArray())
     val trendingSongsTop50KPop by dataStoreManager.trendingSongsTop50KPopData.collectAsState(initial = emptyArray())
     val songsSuggestionsForYou by dataStoreManager.songsSuggestionsForYouData.collectAsState(initial = emptyArray())
+    val suggestArtists by dataStoreManager.artistsSuggestionsData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
@@ -127,6 +129,22 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
         }
 
+        if (songsViewModel.topArtistsSuggestions != null) {
+            item {
+                TopHeaderOf(stringResource(id = R.string.recommended_artists))
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            item {
+                LazyRow {
+                    items(songsViewModel.topArtistsSuggestions!!) { artists ->
+                        ArtistsView(artists.toTopArtistsSongs())
+                    }
+                }
+
+            }
+        }
+
         item {
             TopHeaderOf(stringResource(id = R.string.top_favourite))
             Spacer(modifier = Modifier.height(8.dp))
@@ -176,6 +194,22 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                     items(songsSuggestionsForYou?.size ?: 0) { songs ->
                         songsSuggestionsForYou?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                    }
+                }
+            }
+        }
+
+        if (suggestArtists?.isNotEmpty() == true) {
+            item {
+                TopHeaderOf(stringResource(id = R.string.suggested_artists))
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+
+            item {
+                LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 600.dp)) {
+                    items(suggestArtists?.size ?: 0) { songs ->
+                        suggestArtists?.get(songs)?.let { ArtistsViewSmallView(it) }
                     }
                 }
             }

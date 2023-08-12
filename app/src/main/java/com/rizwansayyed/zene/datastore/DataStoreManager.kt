@@ -9,6 +9,8 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.DB_STORE
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_FOR_YOU_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_timestamp
+import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.ip_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_for_you_data
@@ -200,6 +202,25 @@ class DataStoreManager {
         set(value) {
             SetDataStoreValue(trending_songs_top_50_k_pop_timestamp, value)
         }
+
+
+    var artistsSuggestionsData: Flow<Array<TopArtistsSongs>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
+                .fromJson(it[artists_suggestions_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                artists_suggestions_data, Array<TopArtistsSongs>::class.java, value
+            )
+        }
+
+    var artistsSuggestionsTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[artists_suggestions_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(artists_suggestions_timestamp, value)
+        }
+
 
 
     var ipData: Flow<IpJSONResponse?>

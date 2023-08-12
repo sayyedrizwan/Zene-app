@@ -4,6 +4,7 @@
     <string name="top_artist_of_week">Top Artist of the Week</string>
     <string name="global_trending_songs">Global trending songs</string>
     <string name="recommended_songs">Recommended Songs</string>
+    <string name="recommended_artists">Recommended Artists</string>
     <string name="recently_played">Recently Played</string>
     <string name="view_all">View All</string>
     <string name="trending_songs_in">Trending songs in</string>
@@ -13,4 +14,5 @@
     <string name="top_k_pop_music">Top 50 K-POP music</string>
     <string name="recommended_songs_for_you">Recommended Songs For You</string>
     <string name="related_songs">Related Songs</string>
+    <string name="suggested_artists">Suggested Artists</string>
 </resources>

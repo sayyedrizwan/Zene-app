@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.roomdb.recentplayed
+package com.rizwansayyed.zene.domain.roomdb.recentplayed
 
 import androidx.room.Dao
 import androidx.room.Query
@@ -15,13 +15,9 @@ interface RecentPlayedDao {
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT 7")
     suspend fun topListenSongs(): List<RecentPlayedEntity>
 
+    @Query("SELECT * FROM $RECENT_PLAYED_DB GROUP BY artists ORDER BY playTimes DESC LIMIT :limit")
+    suspend fun artistsUnique(limit : Int): List<RecentPlayedEntity>
+
     @Upsert
     suspend fun insert(recentPlay: RecentPlayedEntity)
-
-
-    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC")
-    suspend fun artists(): List<PlayedArtistsEntity>
-
-    @Upsert
-    suspend fun insert(artists: PlayedArtistsEntity)
 }

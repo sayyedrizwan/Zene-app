@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
-import com.rizwansayyed.zene.roomdb.RoomDBImpl
-import com.rizwansayyed.zene.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
@@ -36,17 +36,20 @@ class SongsViewModel @Inject constructor(
         topWeekArtists()
         topGlobalSongsThisWeek()
         recentPlaySongs()
+        topArtists()
         topCountrySong()
         songsSuggestions()
         songsSuggestionsForYou()
         trendingSongsTop50()
         trendingSongsTopKPop()
         trendingSongsTop50KPop()
+        similarArtistsSuggestionsForYou()
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
-            dataStoreManager.albumHeaderData.first() != null
+            dataStoreManager.albumHeaderData.first() != null &&
+            dataStoreManager.albumHeaderData.first()?.header?.isNotEmpty() == true
         ) return@launch
 
         val channelUrl = try {
@@ -64,7 +67,8 @@ class SongsViewModel @Inject constructor(
 
     private fun topWeekArtists() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.topArtistsOfWeekTimestamp.first().is2DayOlderNeedCache() &&
-            dataStoreManager.topArtistsOfWeekData.first() != null
+            dataStoreManager.topArtistsOfWeekData.first() != null &&
+            dataStoreManager.topArtistsOfWeekData.first()?.isNotEmpty() == true
         ) return@launch
 
         apiImpl.topArtistOfWeek().catch {}.collectLatest {
@@ -75,7 +79,8 @@ class SongsViewModel @Inject constructor(
 
     private fun topGlobalSongsThisWeek() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.topGlobalSongsTimestamp.first().is1DayOlderNeedCache() &&
-            dataStoreManager.topGlobalSongsData.first() != null
+            dataStoreManager.topGlobalSongsData.first() != null &&
+            dataStoreManager.topGlobalSongsData.first()?.isNotEmpty() == true
         ) return@launch
 
         apiImpl.topGlobalSongsThisWeek().catch {}.collectLatest {
@@ -93,9 +98,19 @@ class SongsViewModel @Inject constructor(
         }
     }
 
+    var topArtistsSuggestions by mutableStateOf<List<RecentPlayedEntity>?>(null)
+        private set
+
+    private fun topArtists() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.topArtistsSuggestions().catch {}.collectLatest {
+            topArtistsSuggestions = it
+        }
+    }
+
     private fun topCountrySong() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.topCountrySongsTimestamp.first().isOlderNeedCache() &&
-            dataStoreManager.topCountrySongsData.first() != null
+            dataStoreManager.topCountrySongsData.first() != null &&
+            dataStoreManager.topCountrySongsData.first()?.isNotEmpty() == true
         ) return@launch
 
         apiImpl.topCountrySongs().catch {}.collectLatest {
@@ -107,7 +122,8 @@ class SongsViewModel @Inject constructor(
 
     private fun trendingSongsTop50() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.trendingSongsTop50Timestamp.first().is2DayOlderNeedCache() &&
-            dataStoreManager.trendingSongsTop50Data.first() != null
+            dataStoreManager.trendingSongsTop50Data.first() != null &&
+            dataStoreManager.trendingSongsTop50Data.first()?.isNotEmpty() == true
         ) return@launch
 
         apiImpl.trendingSongsTop50().catch {}.collectLatest {
@@ -120,7 +136,8 @@ class SongsViewModel @Inject constructor(
 
     private fun songsSuggestions() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.songsSuggestionsTimestamp.first().is1DayOlderNeedCache() &&
-            dataStoreManager.songsSuggestionsData.first() != null
+            dataStoreManager.songsSuggestionsData.first() != null &&
+            dataStoreManager.songsSuggestionsData.first()?.isNotEmpty() == true
         ) {
             val s = dataStoreManager.songsSuggestionsData.first()
             s?.shuffle()
@@ -137,7 +154,8 @@ class SongsViewModel @Inject constructor(
 
     private fun songsSuggestionsForYou() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.songsSuggestionsForYouTimestamp.first().is1DayOlderNeedCache() &&
-            dataStoreManager.songsSuggestionsForYouData.first() != null
+            dataStoreManager.songsSuggestionsForYouData.first() != null &&
+            dataStoreManager.songsSuggestionsForYouData.first()?.isNotEmpty() == true
         ) {
             val s = dataStoreManager.songsSuggestionsForYouData.first()
             s?.shuffle()
@@ -155,7 +173,8 @@ class SongsViewModel @Inject constructor(
 
     private fun trendingSongsTopKPop() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.trendingSongsTopKPopTimestamp.first().is2DayOlderNeedCache() &&
-            dataStoreManager.trendingSongsTopKPopData.first() != null
+            dataStoreManager.trendingSongsTopKPopData.first() != null &&
+            dataStoreManager.trendingSongsTopKPopData.first()?.isNotEmpty() == true
         ) return@launch
 
         apiImpl.trendingSongsTopKPop().catch {}.collectLatest {
@@ -167,7 +186,8 @@ class SongsViewModel @Inject constructor(
 
     private fun trendingSongsTop50KPop() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.trendingSongsTop50KPopTimestamp.first().is2DayOlderNeedCache() &&
-            dataStoreManager.trendingSongsTop50KPopData.first() != null
+            dataStoreManager.trendingSongsTop50KPopData.first() != null &&
+            dataStoreManager.trendingSongsTop50KPopData.first()?.isNotEmpty() == true
         ) {
             val s = dataStoreManager.trendingSongsTop50KPopData.first()
             s?.shuffle()
@@ -180,6 +200,25 @@ class SongsViewModel @Inject constructor(
         apiImpl.trendingSongsTop50KPop().catch {}.collectLatest {
             dataStoreManager.trendingSongsTop50KPopTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.trendingSongsTop50KPopData = flowOf(it.toTypedArray())
+        }
+    }
+
+
+    private fun similarArtistsSuggestionsForYou() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.artistsSuggestionsTimestamp.first().is1DayOlderNeedCache() &&
+            dataStoreManager.artistsSuggestionsData.first() != null &&
+            dataStoreManager.artistsSuggestionsData.first()?.isNotEmpty() == true
+        ) {
+            val s = dataStoreManager.artistsSuggestionsData.first()
+            s?.shuffle()
+            s?.shuffle()
+            dataStoreManager.artistsSuggestionsData = flowOf(s)
+            return@launch
+        }
+
+        roomDBImpl.artistsSuggestionsForYouUsingHistory().catch {}.collectLatest {
+            dataStoreManager.artistsSuggestionsTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.artistsSuggestionsData = flowOf(it.toTypedArray())
         }
     }
 

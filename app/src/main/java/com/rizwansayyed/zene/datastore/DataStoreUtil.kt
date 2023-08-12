@@ -4,6 +4,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_TIMESTAMP
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.IP_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_FOR_YOU_DATA
@@ -45,6 +47,8 @@ object DataStoreUtil {
         const val SONGS_SUGGESTIONS_FOR_YOU_TIMESTAMP = "songs_suggestions_for_you_timestamp"
         const val TRENDING_SONGS_TOP_50_K_POP_DATA = "trending_songs_top_50_k_pop_data"
         const val TRENDING_SONGS_TOP_50_K_POP_TIMESTAMP = "trending_songs_top_50_k_pop_timestamp"
+        const val ARTISTS_SUGGESTIONS_DATA = "artists_suggestions_data"
+        const val ARTISTS_SUGGESTIONS_TIMESTAMP = "artists_suggestions_timestamp"
         const val IP_DATA = "ip_data"
     }
 
@@ -75,6 +79,10 @@ object DataStoreUtil {
 
     val trending_songs_top_50_k_pop_data = stringPreferencesKey(TRENDING_SONGS_TOP_50_K_POP_DATA)
     val trending_songs_top_50_k_pop_timestamp = longPreferencesKey(TRENDING_SONGS_TOP_50_K_POP_TIMESTAMP)
+
+
+    val artists_suggestions_data = stringPreferencesKey(ARTISTS_SUGGESTIONS_DATA)
+    val artists_suggestions_timestamp = longPreferencesKey(ARTISTS_SUGGESTIONS_TIMESTAMP)
 
 
     val songs_suggestions_data = stringPreferencesKey(SONGS_SUGGESTIONS_DATA)
