@@ -19,6 +19,7 @@ object Utils {
         const val TOP_COUNTRY_SONGS = "topCountrySongs"
         const val SONG_SUGGESTIONS = "songSuggestions"
         const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
+        const val SEARCH_SONGS = "searchSongs"
         const val TRENDING_SONGS_S_TOP_50 = "trendingSongsSTop50"
         const val TRENDING_SONGS_APPLE = "trendingSongsApple"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
@@ -47,5 +48,4 @@ object Utils {
         if (this.length <= maxLength) return this
         return this.substring(0, maxLength - 3) + "..."
     }
-
 }

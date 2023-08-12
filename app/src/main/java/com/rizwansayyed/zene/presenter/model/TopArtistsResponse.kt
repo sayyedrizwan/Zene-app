@@ -8,3 +8,9 @@ data class TopArtistsSongs(
     val img: String?,
     val artist: String?,
 )
+
+
+data class TopArtistsSongsWithData(
+    val title: String?,
+    val details: List<TopArtistsSongs>?,
+)

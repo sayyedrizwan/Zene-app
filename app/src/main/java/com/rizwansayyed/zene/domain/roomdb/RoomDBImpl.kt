@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.domain.IPApiInterface
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongsWithData
 import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -93,7 +94,7 @@ class RoomDBImpl @Inject constructor(
 
         topSongs.forEach {
             val artists =
-                it.artists.trim().substringBefore("&").substringBefore(",").replace(" ", "+")
+                it.artists.trim().substringBefore("&").substringBefore(",").replace(" ", "+").trim()
             apiInterface.similarArtists(artists).forEach { songs ->
                 if (!list.any { l -> l.name == songs.name }) {
                     list.add(songs)
@@ -103,4 +104,37 @@ class RoomDBImpl @Inject constructor(
         list.shuffle()
         emit(list)
     }
+
+
+    override suspend fun topArtistsSongs() = flow {
+        var topArtists = recentPlayedDao.artistsUnique(7)
+        if (topArtists.size < 7) {
+            topArtists = recentPlayedDao.artistsUnique(13)
+        }
+
+        val ip = ipInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+
+        val list = ArrayList<TopArtistsSongsWithData>(20)
+        if (topArtists.isEmpty()) {
+            emit(list)
+            return@flow
+        }
+
+        topArtists.forEach {
+            val listsChild = ArrayList<TopArtistsSongs>(200)
+            val artists =
+                it.artists.trim().substringBefore("&").substringBefore(",").lowercase().trim()
+
+            apiInterface.searchSongs(ip.query ?: "", artists).apply { shuffled() }
+                .forEach { songs ->
+                    listsChild.add(TopArtistsSongs(songs.name, songs.img, songs.artist))
+                }
+
+            val a = it.artists.trim().substringBefore("&").substringBefore(",")
+            list.add(TopArtistsSongsWithData(a, listsChild))
+        }
+        emit(list)
+    }
+
 }

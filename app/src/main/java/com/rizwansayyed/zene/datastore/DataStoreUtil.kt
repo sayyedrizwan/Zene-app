@@ -12,6 +12,8 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGES
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_FOR_YOU_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_ARTISTS_OF_WEEK_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_ARTISTS_SONGS_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_ARTISTS_SONGS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_ARTISTS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_COUNTRY_SONGS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.TOP_COUNTRY_SONGS_TIMESTAMP
@@ -49,6 +51,8 @@ object DataStoreUtil {
         const val TRENDING_SONGS_TOP_50_K_POP_TIMESTAMP = "trending_songs_top_50_k_pop_timestamp"
         const val ARTISTS_SUGGESTIONS_DATA = "artists_suggestions_data"
         const val ARTISTS_SUGGESTIONS_TIMESTAMP = "artists_suggestions_timestamp"
+        const val TOP_ARTISTS_SONGS_DATA = "top_artists_songs_data"
+        const val TOP_ARTISTS_SONGS_TIMESTAMP = "top_artists_songs_timestamp"
         const val IP_DATA = "ip_data"
     }
 
@@ -83,6 +87,10 @@ object DataStoreUtil {
 
     val artists_suggestions_data = stringPreferencesKey(ARTISTS_SUGGESTIONS_DATA)
     val artists_suggestions_timestamp = longPreferencesKey(ARTISTS_SUGGESTIONS_TIMESTAMP)
+
+
+    val top_artists_songs_data = stringPreferencesKey(TOP_ARTISTS_SONGS_DATA)
+    val top_artists_songs_timestamp = longPreferencesKey(TOP_ARTISTS_SONGS_TIMESTAMP)
 
 
     val songs_suggestions_data = stringPreferencesKey(SONGS_SUGGESTIONS_DATA)

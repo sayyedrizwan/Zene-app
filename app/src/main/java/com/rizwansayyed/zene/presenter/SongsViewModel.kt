@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class SongsViewModel @Inject constructor(
@@ -32,18 +34,30 @@ class SongsViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun run() {
-        albumsWithHeaders()
-        topWeekArtists()
-        topGlobalSongsThisWeek()
         recentPlaySongs()
-        topArtists()
-        topCountrySong()
-        songsSuggestions()
-        songsSuggestionsForYou()
-        trendingSongsTop50()
-        trendingSongsTopKPop()
-        trendingSongsTop50KPop()
-        similarArtistsSuggestionsForYou()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            albumsWithHeaders()
+            topWeekArtists()
+            topGlobalSongsThisWeek()
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(2.seconds)
+            topArtists()
+            topCountrySong()
+            songsSuggestions()
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(4.seconds)
+            songsSuggestionsForYou()
+            trendingSongsTop50()
+            trendingSongsTopKPop()
+            trendingSongsTop50KPop()
+            similarArtistsSuggestionsForYou()
+            topArtistsSongs()
+        }
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
@@ -205,7 +219,7 @@ class SongsViewModel @Inject constructor(
 
 
     private fun similarArtistsSuggestionsForYou() = viewModelScope.launch(Dispatchers.IO) {
-        if (!dataStoreManager.artistsSuggestionsTimestamp.first().is1DayOlderNeedCache() &&
+        if (!dataStoreManager.artistsSuggestionsTimestamp.first().is2DayOlderNeedCache() &&
             dataStoreManager.artistsSuggestionsData.first() != null &&
             dataStoreManager.artistsSuggestionsData.first()?.isNotEmpty() == true
         ) {
@@ -219,6 +233,19 @@ class SongsViewModel @Inject constructor(
         roomDBImpl.artistsSuggestionsForYouUsingHistory().catch {}.collectLatest {
             dataStoreManager.artistsSuggestionsTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.artistsSuggestionsData = flowOf(it.toTypedArray())
+        }
+    }
+
+
+    private fun topArtistsSongs() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.topArtistsSongsDataTimestamp.first().is2DayOlderNeedCache() &&
+            dataStoreManager.topArtistsSongsData.first() != null &&
+            dataStoreManager.topArtistsSongsData.first()?.isNotEmpty() == true
+        ) return@launch
+
+        roomDBImpl.topArtistsSongs().catch {}.collectLatest {
+            dataStoreManager.topArtistsSongsDataTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.topArtistsSongsData = flowOf(it.toTypedArray())
         }
     }
 

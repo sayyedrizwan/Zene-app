@@ -23,10 +23,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.presenter.model.MusicAlbumsItem
 import com.rizwansayyed.zene.ui.theme.BlackLight
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
@@ -167,9 +169,9 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
                     contentScale = ContentScale.Crop
                 )
                 Column {
-                    QuickSandRegular(recent.name, size = 17, maxLine = 1)
+                    QuickSandRegular(recent.name.trim(), size = 17, maxLine = 1, align = TextAlign.Start)
                     Spacer(modifier = Modifier.height(5.dp))
-                    QuickSandLight(recent.artists, size = 11, maxLine = 1)
+                    QuickSandLight(recent.artists.trim(), size = 11, maxLine = 1, align = TextAlign.Start)
                 }
             }
 
@@ -183,5 +185,12 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
                 progress = 0.7f
             )
         }
+    }
+}
+
+@Composable
+fun AlbumView(footer: MusicAlbumsItem) {
+    Row {
+
     }
 }

@@ -17,6 +17,8 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_for_you_d
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_for_you_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_of_week_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_songs_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_songs_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_artists_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_country_songs_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.top_country_songs_timestamp
@@ -31,6 +33,7 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_songs_top_k_pop_ti
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongsWithData
 import com.rizwansayyed.zene.utils.DateTime.getPastTimestamp
 import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.flow.Flow
@@ -219,6 +222,24 @@ class DataStoreManager {
         get() = context.dataStore.data.map { it[artists_suggestions_timestamp] ?: getPastTimestamp() }
         set(value) {
             SetDataStoreValue(artists_suggestions_timestamp, value)
+        }
+
+
+    var topArtistsSongsData: Flow<Array<TopArtistsSongsWithData>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongsWithData>::class.java)
+                .fromJson(it[top_artists_songs_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                top_artists_songs_data, Array<TopArtistsSongsWithData>::class.java, value
+            )
+        }
+
+    var topArtistsSongsDataTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[top_artists_songs_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(top_artists_songs_timestamp, value)
         }
 
 

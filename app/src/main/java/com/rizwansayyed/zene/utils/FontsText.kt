@@ -67,7 +67,8 @@ fun QuickSandRegular(
     modifier: Modifier = Modifier,
     color: Color = Color.White,
     size: Int = 20,
-    maxLine: Int = Int.MAX_VALUE
+    maxLine: Int = Int.MAX_VALUE,
+    align: TextAlign = TextAlign.Center
 ) {
     Text(
         text = v,
@@ -76,7 +77,7 @@ fun QuickSandRegular(
         color = color,
         fontSize = size.nonScaledSp,
         modifier = modifier,
-        textAlign = TextAlign.Center,
+        textAlign = align,
         maxLines = maxLine
     )
 }
@@ -106,7 +107,8 @@ fun QuickSandLight(
     modifier: Modifier = Modifier,
     color: Color = Color.White,
     size: Int = 20,
-    maxLine: Int = Int.MAX_VALUE
+    maxLine: Int = Int.MAX_VALUE,
+    align: TextAlign = TextAlign.Center
 ) {
     Text(
         text = v,
@@ -115,7 +117,7 @@ fun QuickSandLight(
         color = color,
         fontSize = size.nonScaledSp,
         modifier = modifier,
-        textAlign = TextAlign.Center,
+        textAlign = align,
         maxLines = maxLine
     )
 }
