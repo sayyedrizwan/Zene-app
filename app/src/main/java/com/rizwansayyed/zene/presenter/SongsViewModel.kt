@@ -33,7 +33,10 @@ class SongsViewModel @Inject constructor(
     private val roomDBImpl: RoomDBImpl
 ) : ViewModel() {
 
+    private var footerDataTried = 0
+
     fun run() {
+        footerDataTried = 0
         recentPlaySongs()
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -63,7 +66,8 @@ class SongsViewModel @Inject constructor(
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
             dataStoreManager.albumHeaderData.first() != null &&
-            dataStoreManager.albumHeaderData.first()?.header?.isNotEmpty() == true
+            dataStoreManager.albumHeaderData.first()?.isNotEmpty() == true &&
+            dataStoreManager.footerAlbumsData.first()?.isNotEmpty() == true
         ) return@launch
 
         val channelUrl = try {
@@ -74,9 +78,19 @@ class SongsViewModel @Inject constructor(
         if (channelUrl.isEmpty()) return@launch
 
         apiImpl.albumsWithYTHeaders(channelUrl).catch {}.collectLatest {
+            it.albums?.size.toString().showToast()
             dataStoreManager.albumHeaderTimestamp = flowOf(System.currentTimeMillis())
-            dataStoreManager.albumHeaderData = flowOf(it)
+            dataStoreManager.albumHeaderData = flowOf(it.header?.toTypedArray())
+            dataStoreManager.footerAlbumsData = flowOf(it.albums?.toTypedArray())
+            if (it.albums?.isEmpty() == true && footerDataTried > 3) {
+                footerDataTried += 1
+                reRunFooter()
+            }
         }
+    }
+
+    private fun reRunFooter() {
+        albumsWithHeaders()
     }
 
     private fun topWeekArtists() = viewModelScope.launch(Dispatchers.IO) {

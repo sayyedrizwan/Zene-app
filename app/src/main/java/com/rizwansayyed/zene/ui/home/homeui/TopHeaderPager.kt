@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
+import com.rizwansayyed.zene.presenter.model.MusicsHeader
 import com.rizwansayyed.zene.ui.BlackShade
 import com.rizwansayyed.zene.ui.RoundOutlineButtons
 import com.rizwansayyed.zene.utils.Algorithims
@@ -36,20 +36,24 @@ import com.rizwansayyed.zene.utils.Utils.showToast
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopHeaderPager(header: AlbumsHeadersResponse) {
+fun TopHeaderPager(header: Array<MusicsHeader?>) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     var songName by remember { mutableStateOf("") }
     val pagerState = rememberPagerState()
 
     LaunchedEffect(pagerState.currentPage) {
-        songName = header.header?.get(pagerState.currentPage)?.name ?: ""
+        try {
+            songName = header[pagerState.currentPage]?.name ?: ""
+        }catch (e: Exception) {
+            e.message
+        }
     }
 
     Column {
-        HorizontalPager(pageCount = header.header?.size ?: 0, state = pagerState) {
+        HorizontalPager(pageCount = header.size, state = pagerState) {
             AsyncImage(
-                model = header.header?.get(it)?.thumbnail,
+                model = header[it]?.thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,14 +24,12 @@ import com.rizwansayyed.zene.ui.ViewAllBtnView
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
-    val headerFooter by dataStoreManager
+    val headerPagerData by dataStoreManager
         .albumHeaderData.collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.albumHeaderData.first() })
     val topArtists by dataStoreManager.topArtistsOfWeekData
         .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.topArtistsOfWeekData.first() })
@@ -49,17 +46,15 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
     val songsSuggestionsForYou by dataStoreManager.songsSuggestionsForYouData.collectAsState(initial = emptyArray())
     val suggestArtists by dataStoreManager.artistsSuggestionsData.collectAsState(initial = emptyArray())
     val topArtistsSongs by dataStoreManager.topArtistsSongsData.collectAsState(initial = emptyArray())
+    val footerAlbums by dataStoreManager.footerAlbumsData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
 
-    LaunchedEffect(Unit) {
-        delay(2.seconds)
-    }
 
     LazyColumn {
         item {
-            headerFooter?.let { TopHeaderPager(it) }
+            headerPagerData?.let { TopHeaderPager(it) }
         }
 
         if (recentPlayedSongs?.value?.isNotEmpty() == true) {
@@ -137,7 +132,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
         }
 
-        if (songsViewModel.topArtistsSuggestions != null) {
+        if (songsViewModel.topArtistsSuggestions?.isNotEmpty() == true) {
             item {
                 TopHeaderOf(stringResource(id = R.string.recommended_artists))
                 Spacer(modifier = Modifier.height(8.dp))
@@ -244,11 +239,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
         }
 
-        headerFooter?.albums?.forEach {
-            items(it?.item!!) { footer ->
-                footer?.let { f -> AlbumView(f) }
+        if (footerAlbums?.isNotEmpty() == true)
+            items(footerAlbums!!) {
+                TopHeaderOf(it?.headline!!)
             }
-        }
 
         item {
             Spacer(modifier = Modifier.height(350.dp))

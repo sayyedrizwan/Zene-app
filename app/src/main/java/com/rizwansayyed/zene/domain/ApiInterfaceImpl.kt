@@ -1,18 +1,18 @@
 package com.rizwansayyed.zene.domain
 
+import android.content.Context
+import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.presenter.converter.SongsAlbumsHeaderConverter
-import com.rizwansayyed.zene.presenter.model.IpJSONResponse
-import com.rizwansayyed.zene.utils.Utils.URL.IP_JSON
-import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.jsoup.Jsoup
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileWriter
+import java.io.IOException
 import javax.inject.Inject
 
 

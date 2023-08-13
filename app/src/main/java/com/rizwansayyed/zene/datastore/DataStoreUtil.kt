@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_TIMESTAMP
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.FOOTER_ALBUMS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.IP_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_FOR_YOU_DATA
@@ -32,6 +33,7 @@ object DataStoreUtil {
         const val DB_STORE = "datastore_zene"
 
         const val ALBUM_HEADER_DATA = "album_header_data"
+        const val FOOTER_ALBUMS_DATA = "footer_albums_data"
         const val ALBUM_HEADER_TIMESTAMP = "album_header_timestamp"
         const val TOP_ARTISTS_OF_WEEK_DATA = "top_artists_of_week"
         const val TOP_ARTISTS_TIMESTAMP = "top_artists_timestamp"
@@ -57,6 +59,7 @@ object DataStoreUtil {
     }
 
     val album_header_data = stringPreferencesKey(ALBUM_HEADER_DATA)
+    val footer_albums_data = stringPreferencesKey(FOOTER_ALBUMS_DATA)
     val album_header_timestamp = longPreferencesKey(ALBUM_HEADER_TIMESTAMP)
 
     val top_artists_of_week_data = stringPreferencesKey(TOP_ARTISTS_OF_WEEK_DATA)

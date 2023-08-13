@@ -169,9 +169,19 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
                     contentScale = ContentScale.Crop
                 )
                 Column {
-                    QuickSandRegular(recent.name.trim(), size = 17, maxLine = 1, align = TextAlign.Start)
+                    QuickSandRegular(
+                        recent.name.trim(),
+                        size = 17,
+                        maxLine = 1,
+                        align = TextAlign.Start
+                    )
                     Spacer(modifier = Modifier.height(5.dp))
-                    QuickSandLight(recent.artists.trim(), size = 11, maxLine = 1, align = TextAlign.Start)
+                    QuickSandLight(
+                        recent.artists.trim(),
+                        size = 11,
+                        maxLine = 1,
+                        align = TextAlign.Start
+                    )
                 }
             }
 
@@ -190,7 +200,13 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
 
 @Composable
 fun AlbumView(footer: MusicAlbumsItem) {
-    Row {
-
-    }
+    AsyncImage(
+        model = footer.thumbnail,
+        contentDescription = "",
+        modifier = Modifier.fillMaxWidth().height(170.dp),
+        contentScale = ContentScale.Crop
+    )
+//    Row {
+//
+//    }
 }
