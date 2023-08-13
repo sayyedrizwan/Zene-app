@@ -49,6 +49,8 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                         .background(Color.Black)
                 ) {
                     HomepageView(songsViewModel)
+
+
                 }
             }
         }

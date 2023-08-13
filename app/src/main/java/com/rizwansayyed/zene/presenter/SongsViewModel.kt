@@ -64,11 +64,10 @@ class SongsViewModel @Inject constructor(
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
-//        if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
-//            dataStoreManager.albumHeaderData.first() != null &&
-//            dataStoreManager.albumHeaderData.first()?.isNotEmpty() == true &&
-//            dataStoreManager.footerAlbumsData.first()?.isNotEmpty() == true
-//        ) return@launch
+        if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
+            dataStoreManager.albumHeaderData.first() != null &&
+            dataStoreManager.albumHeaderData.first()?.isNotEmpty() == true
+        ) return@launch
 
         val channelUrl = try {
             apiImpl.albumsWithHeaders().first().url
