@@ -36,7 +36,7 @@ import com.rizwansayyed.zene.utils.Utils.showToast
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopHeaderPager(header: Array<MusicsHeader?>) {
+fun TopHeaderPager(header: Array<MusicsHeader>) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     var songName by remember { mutableStateOf("") }
@@ -44,7 +44,7 @@ fun TopHeaderPager(header: Array<MusicsHeader?>) {
 
     LaunchedEffect(pagerState.currentPage) {
         try {
-            songName = header[pagerState.currentPage]?.name ?: ""
+            songName = header[pagerState.currentPage].name ?: ""
         }catch (e: Exception) {
             e.message
         }
@@ -53,7 +53,7 @@ fun TopHeaderPager(header: Array<MusicsHeader?>) {
     Column {
         HorizontalPager(pageCount = header.size, state = pagerState) {
             AsyncImage(
-                model = header[it]?.thumbnail,
+                model = header[it].thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

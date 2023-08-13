@@ -48,20 +48,20 @@ class DataStoreManager {
     }
 
 
-    var albumHeaderData: Flow<Array<MusicsHeader?>?>
+    var albumHeaderData: Flow<Array<MusicsHeader>?>
         get() = context.dataStore.data.map {
-            moshi.adapter(Array<MusicsHeader?>::class.java).fromJson(it[album_header_data] ?: "[]")
+            moshi.adapter(Array<MusicsHeader>::class.java).fromJson(it[album_header_data] ?: "[]")
         }
         set(value) {
-            SetDataStoreValueClass(album_header_data, Array<MusicsHeader?>::class.java, value)
+            SetDataStoreValueClass(album_header_data, Array<MusicsHeader>::class.java, value)
         }
 
-    var footerAlbumsData: Flow<Array<MusicsAlbum?>?>
+    var footerAlbumsData: Flow<Array<MusicsAlbum>?>
         get() = context.dataStore.data.map {
-            moshi.adapter(Array<MusicsAlbum?>::class.java).fromJson(it[footer_albums_data] ?: "[]")
+            moshi.adapter(Array<MusicsAlbum>::class.java).fromJson(it[footer_albums_data] ?: "[]")
         }
         set(value) {
-            SetDataStoreValueClass(footer_albums_data, Array<MusicsAlbum?>::class.java, value)
+            SetDataStoreValueClass(footer_albums_data, Array<MusicsAlbum>::class.java, value)
         }
 
     var albumHeaderTimestamp: Flow<Long>
@@ -263,7 +263,7 @@ class DataStoreManager {
 
     var ipData: Flow<IpJSONResponse?>
         get() = context.dataStore.data.map {
-            moshi.adapter(IpJSONResponse::class.java).fromJson(it[ip_data] ?: "[]")
+            moshi.adapter(IpJSONResponse::class.java).fromJson(it[ip_data] ?: "{}")
         }
         set(value) {
             SetDataStoreValueClass(ip_data, IpJSONResponse::class.java, value)

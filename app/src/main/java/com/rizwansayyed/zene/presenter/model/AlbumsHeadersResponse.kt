@@ -1,8 +1,8 @@
 package com.rizwansayyed.zene.presenter.model
 
 data class AlbumsHeadersResponse(
-    val albums: List<MusicsAlbum?>?,
-    val header: List<MusicsHeader?>?
+    val albums: List<MusicsAlbum>?,
+    val header: List<MusicsHeader>?
 )
 
 

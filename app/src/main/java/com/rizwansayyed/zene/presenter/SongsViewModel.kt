@@ -64,11 +64,11 @@ class SongsViewModel @Inject constructor(
     }
 
     private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
-        if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
-            dataStoreManager.albumHeaderData.first() != null &&
-            dataStoreManager.albumHeaderData.first()?.isNotEmpty() == true &&
-            dataStoreManager.footerAlbumsData.first()?.isNotEmpty() == true
-        ) return@launch
+//        if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
+//            dataStoreManager.albumHeaderData.first() != null &&
+//            dataStoreManager.albumHeaderData.first()?.isNotEmpty() == true &&
+//            dataStoreManager.footerAlbumsData.first()?.isNotEmpty() == true
+//        ) return@launch
 
         val channelUrl = try {
             apiImpl.albumsWithHeaders().first().url
@@ -78,10 +78,14 @@ class SongsViewModel @Inject constructor(
         if (channelUrl.isEmpty()) return@launch
 
         apiImpl.albumsWithYTHeaders(channelUrl).catch {}.collectLatest {
-            it.albums?.size.toString().showToast()
             dataStoreManager.albumHeaderTimestamp = flowOf(System.currentTimeMillis())
-            dataStoreManager.albumHeaderData = flowOf(it.header?.toTypedArray())
-            dataStoreManager.footerAlbumsData = flowOf(it.albums?.toTypedArray())
+            it.header?.let { h ->
+                dataStoreManager.albumHeaderData = flowOf(h.toTypedArray())
+            }
+            it.albums?.let { a ->
+                dataStoreManager.footerAlbumsData = flowOf(a.toTypedArray())
+            }
+
             if (it.albums?.isEmpty() == true && footerDataTried > 3) {
                 footerDataTried += 1
                 reRunFooter()

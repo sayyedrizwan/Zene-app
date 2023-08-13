@@ -241,7 +241,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
 
         if (footerAlbums?.isNotEmpty() == true)
             items(footerAlbums!!) {
-                TopHeaderOf(it?.headline!!)
+                TopHeaderOf(it.headline!!)
             }
 
         item {
