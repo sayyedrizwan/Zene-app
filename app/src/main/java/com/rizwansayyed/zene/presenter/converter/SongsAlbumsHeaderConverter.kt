@@ -18,12 +18,12 @@ class SongsAlbumsHeaderConverter(jsonData: String) {
     fun get(): AlbumsHeadersResponse {
         val headers = makeHeaderData()
         val albums = makeAlbumsData()
+        albums.size.toString().showToast()
         return AlbumsHeadersResponse(albums, headers)
     }
 
     private fun makeAlbumsData(): ArrayList<MusicsAlbum> {
         val albumsLists = ArrayList<MusicsAlbum>(30)
-
         json?.contents?.twoColumnBrowseResultsRenderer?.tabs?.get(0)?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { album ->
             album.itemSectionRenderer?.contents?.forEach { albumItems ->
                 val itemsLists = ArrayList<MusicAlbumsItem>(30)

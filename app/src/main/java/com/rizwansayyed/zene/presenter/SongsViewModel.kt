@@ -86,8 +86,9 @@ class SongsViewModel @Inject constructor(
                 dataStoreManager.footerAlbumsData = flowOf(a.toTypedArray())
             }
 
-            if (it.albums?.isEmpty() == true && footerDataTried > 3) {
+            if (it.albums?.isEmpty() == true && footerDataTried < 3) {
                 footerDataTried += 1
+                delay(3.seconds)
                 reRunFooter()
             }
         }
