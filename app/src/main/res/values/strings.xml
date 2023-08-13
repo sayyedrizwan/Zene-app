@@ -17,4 +17,5 @@
     <string name="suggested_artists">Suggested Artists</string>
     <string name="zene_suggested_songs_for_you">Zene Suggested Songs For You</string>
     <string name="for__fan">For ---- fan</string>
+    <string name="no_songs_suggestion_notice">No songs suggestion right now, Please listen to around 3 to 5 songs to start songs suggestions. Note: We don\'t save any of your data on our server. SO!! ENJOY!!!</string>
 </resources>

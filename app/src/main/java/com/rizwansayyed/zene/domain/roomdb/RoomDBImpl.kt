@@ -185,14 +185,7 @@ class RoomDBImpl @Inject constructor(
                     list.add(songs)
                 }
             }
-
-            apiInterface.songSuggestionsForYou(ip.query ?: "", it.pid).forEach { songs ->
-                if (!list.any { l -> l.name == songs.name }) {
-                    list.add(songs)
-                }
-            }
         }
-
         emit(list)
     }
 

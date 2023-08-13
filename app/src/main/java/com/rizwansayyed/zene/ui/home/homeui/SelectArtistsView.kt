@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomCenter
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -28,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
-import com.rizwansayyed.zene.presenter.model.MusicAlbumsItem
 import com.rizwansayyed.zene.ui.theme.BlackLight
+import com.rizwansayyed.zene.ui.theme.BlackTransparentLight
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
@@ -199,14 +202,34 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
 }
 
 @Composable
-fun AlbumView(footer: MusicAlbumsItem) {
-    AsyncImage(
-        model = footer.thumbnail,
-        contentDescription = "",
-        modifier = Modifier.fillMaxWidth().height(170.dp),
-        contentScale = ContentScale.Crop
-    )
-//    Row {
-//
-//    }
+fun FullCardSongView(song: TopArtistsSongs) {
+    Box(Modifier.fillMaxWidth()) {
+        AsyncImage(
+            model = song.img,
+            contentDescription = "",
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp))
+                .height(LocalConfiguration.current.screenHeightDp.dp / 2 + 130.dp)
+                .align(Center),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            Modifier
+                .padding(17.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .align(BottomCenter)
+                .background(BlackTransparentLight)
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.height(13.dp))
+            QuickSandSemiBold(song.name ?: "", size = 17, modifier = Modifier.padding(horizontal = 5.dp).fillMaxWidth())
+            Spacer(modifier = Modifier.height(3.dp))
+            QuickSandLight(song.artist ?: "", size = 12, modifier = Modifier.padding(horizontal = 5.dp).fillMaxWidth())
+            Spacer(modifier = Modifier.height(13.dp))
+        }
+
+    }
 }

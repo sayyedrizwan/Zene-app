@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toTopArtistsSongs
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.ViewAllBtnView
+import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
@@ -239,13 +241,26 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
         }
 
+        item {
+            TopHeaderOf(stringResource(id = R.string.zene_suggested_songs_for_you))
+        }
+
         if (allSongsForYouLists?.isNotEmpty() == true) {
-            item {
-                TopHeaderOf(stringResource(id = R.string.zene_suggested_songs_for_you))
-            }
 
             items(allSongsForYouLists!!) {
-                TrendingSongsViewShortText(it)
+                FullCardSongView(it)
+            }
+        } else {
+            item {
+                Spacer(modifier = Modifier.height(18.dp))
+
+                QuickSandLight(
+                    stringResource(id = R.string.no_songs_suggestion_notice),
+                    size = 14,
+                    modifier = Modifier
+                        .padding(horizontal = 5.dp)
+                        .fillMaxWidth()
+                )
             }
         }
 
