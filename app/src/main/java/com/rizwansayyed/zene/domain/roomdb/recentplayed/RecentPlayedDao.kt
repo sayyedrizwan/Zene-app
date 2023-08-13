@@ -15,6 +15,9 @@ interface RecentPlayedDao {
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT 7")
     suspend fun topListenSongs(): List<RecentPlayedEntity>
 
+    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT 20")
+    suspend fun top20ListenSongs(): List<RecentPlayedEntity>
+
     @Query("SELECT * FROM $RECENT_PLAYED_DB GROUP BY artists ORDER BY playTimes DESC LIMIT :limit")
     suspend fun artistsUnique(limit : Int): List<RecentPlayedEntity>
 

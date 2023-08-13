@@ -46,7 +46,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
     val songsSuggestionsForYou by dataStoreManager.songsSuggestionsForYouData.collectAsState(initial = emptyArray())
     val suggestArtists by dataStoreManager.artistsSuggestionsData.collectAsState(initial = emptyArray())
     val topArtistsSongs by dataStoreManager.topArtistsSongsData.collectAsState(initial = emptyArray())
-    val footerAlbums by dataStoreManager.footerAlbumsData.collectAsState(initial = emptyArray())
+    val allSongsForYouLists by dataStoreManager.songsAllForYouAllData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
@@ -239,10 +239,21 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
         }
 
-        if (footerAlbums?.isNotEmpty() == true)
-            items(footerAlbums!!) {
-                TopHeaderOf(it.headline!!)
+        if (allSongsForYouLists?.isNotEmpty() == true) {
+            item {
+                TopHeaderOf(stringResource(id = R.string.zene_suggested_songs_for_you))
             }
+
+            items(allSongsForYouLists!!) {
+                TrendingSongsViewShortText(it)
+            }
+        }
+
+
+//        if (footerAlbums?.isNotEmpty() == true)
+//            items(footerAlbums!!) {
+//                TopHeaderOf(it.headline!!)
+//            }
 
         item {
             Spacer(modifier = Modifier.height(200.dp))

@@ -19,4 +19,5 @@ interface RoomDBImplInterface {
     suspend fun topArtistsSuggestions(): Flow<List<RecentPlayedEntity>>
 
     suspend fun topArtistsSongs(): Flow<ArrayList<TopArtistsSongsWithData>>
+    suspend fun allSongsForYouSongs(): Flow<ArrayList<TopArtistsSongs>>
 }

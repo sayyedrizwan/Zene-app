@@ -12,6 +12,8 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.footer_albums_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.ip_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_all_for_you_all_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_all_for_you_all_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_for_you_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_for_you_timestamp
@@ -240,6 +242,26 @@ class DataStoreManager {
         }
         set(value) {
             SetDataStoreValue(artists_suggestions_timestamp, value)
+        }
+
+
+    var songsAllForYouAllData: Flow<Array<TopArtistsSongs>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
+                .fromJson(it[songs_all_for_you_all_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                songs_all_for_you_all_data, Array<TopArtistsSongs>::class.java, value
+            )
+        }
+
+    var songsAllForYouAllTimestamp: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[songs_all_for_you_all_timestamp] ?: getPastTimestamp()
+        }
+        set(value) {
+            SetDataStoreValue(songs_all_for_you_all_timestamp, value)
         }
 
 

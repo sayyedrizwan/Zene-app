@@ -137,4 +137,39 @@ class RoomDBImpl @Inject constructor(
         emit(list)
     }
 
+
+    override suspend fun allSongsForYouSongs() = flow {
+        val topArtists = recentPlayedDao.artistsUnique(20)
+        val topSongs = recentPlayedDao.top20ListenSongs()
+        val list = ArrayList<TopArtistsSongs>(3000)
+
+        val ip = ipInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+
+        topArtists.forEach {
+            val artists =
+                it.artists.trim().substringBefore("&").substringBefore(",").lowercase().trim()
+
+            apiInterface.searchSongs(ip.country ?: "", artists).forEach { songs ->
+                list.add(songs)
+            }
+        }
+
+        topSongs.forEach {
+            apiInterface.songSuggestions(ip.query ?: "", it.pid).forEach { songs ->
+                if (!list.any { l -> l.name == songs.name }) {
+                    list.add(songs)
+                }
+            }
+
+            apiInterface.songSuggestionsForYou(ip.query ?: "", it.pid).forEach { songs ->
+                if (!list.any { l -> l.name == songs.name }) {
+                    list.add(songs)
+                }
+            }
+        }
+
+        emit(list)
+    }
+
 }

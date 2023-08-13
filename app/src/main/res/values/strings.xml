@@ -15,5 +15,6 @@
     <string name="recommended_songs_for_you">Recommended Songs For You</string>
     <string name="related_songs">Related Songs</string>
     <string name="suggested_artists">Suggested Artists</string>
+    <string name="zene_suggested_songs_for_you">Zene Suggested Songs For You</string>
     <string name="for__fan">For ---- fan</string>
 </resources>

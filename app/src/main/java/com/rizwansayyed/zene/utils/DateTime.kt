@@ -22,6 +22,12 @@ object DateTime {
         return hours > 48
     }
 
+    fun Long.is5DayOlderNeedCache(): Boolean {
+        val timeDifferenceMillis = System.currentTimeMillis() - this
+        val hours = timeDifferenceMillis / (1000 * 60 * 60)
+        return hours > 120
+    }
+
     fun Long.is1DayOlderNeedCache(): Boolean {
         val timeDifferenceMillis = System.currentTimeMillis() - this
         val hours = timeDifferenceMillis / (1000 * 60 * 60)

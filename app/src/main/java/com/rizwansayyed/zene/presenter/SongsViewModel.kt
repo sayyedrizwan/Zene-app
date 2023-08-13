@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
+import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,6 +61,7 @@ class SongsViewModel @Inject constructor(
             trendingSongsTop50KPop()
             similarArtistsSuggestionsForYou()
             topArtistsSongs()
+            songsForYouAll()
         }
     }
 
@@ -264,6 +266,18 @@ class SongsViewModel @Inject constructor(
         roomDBImpl.topArtistsSongs().catch {}.collectLatest {
             dataStoreManager.topArtistsSongsDataTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.topArtistsSongsData = flowOf(it.toTypedArray())
+        }
+    }
+
+    private fun songsForYouAll() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.songsAllForYouAllTimestamp.first().is5DayOlderNeedCache() &&
+            dataStoreManager.songsAllForYouAllData.first() != null &&
+            dataStoreManager.songsAllForYouAllData.first()?.isNotEmpty() == true
+        ) return@launch
+
+        roomDBImpl.allSongsForYouSongs().catch {}.collectLatest {
+            dataStoreManager.songsAllForYouAllTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.songsAllForYouAllData = flowOf(it.toTypedArray())
         }
     }
 
