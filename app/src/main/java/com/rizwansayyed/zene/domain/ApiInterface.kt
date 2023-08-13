@@ -1,10 +1,12 @@
 package com.rizwansayyed.zene.domain
 
+import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.SIMILAR_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.URL.SONG_PLAY_DETAILS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS_FOR_YOU
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
@@ -68,4 +70,9 @@ interface ApiInterface {
     suspend fun searchSongs(
         @Field("ip") ip: String, @Field("q") id: String,
     ): TopArtistsResponseApi
+
+
+    @FormUrlEncoded
+    @POST(SONG_PLAY_DETAILS)
+    suspend fun songPlayDetails(@Field("q") q: String): SongDetailsResponse
 }

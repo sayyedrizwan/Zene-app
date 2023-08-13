@@ -53,7 +53,6 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
 
-
     LazyColumn {
         item {
             headerPagerData?.let { TopHeaderPager(it) }
@@ -100,7 +99,9 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         item {
             LazyRow {
                 if (globalSongs != null) items(globalSongs!!) { song ->
-                    TrendingSongsView(song)
+                    TrendingSongsView(song) { name, artists ->
+                        songsViewModel.songsPlayingDetails(name, artists)
+                    }
                 }
             }
         }
@@ -114,7 +115,12 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         item {
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                 items(topCountrySongs?.size ?: 0) { songs ->
-                    topCountrySongs?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                    topCountrySongs?.get(songs)?.let {
+                        TrendingSongsViewShortText(it) { name, artists ->
+                            songsViewModel.songsPlayingDetails(name, artists)
+
+                        }
+                    }
                 }
             }
         }
@@ -128,7 +134,12 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             item {
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                     items(suggestedSongs?.size ?: 0) { songs ->
-                        suggestedSongs?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                        suggestedSongs?.get(songs)?.let {
+                            TrendingSongsViewShortText(it) { name, artists ->
+                                songsViewModel.songsPlayingDetails(name, artists)
+
+                            }
+                        }
                     }
                 }
             }
@@ -158,7 +169,12 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         item {
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                 items(trendingSongsTop50?.size ?: 0) { songs ->
-                    trendingSongsTop50?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                    trendingSongsTop50?.get(songs)?.let {
+                        TrendingSongsViewShortText(it) { name, artists ->
+                            songsViewModel.songsPlayingDetails(name, artists)
+
+                        }
+                    }
                 }
             }
         }
@@ -171,7 +187,9 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         item {
             LazyRow {
                 if (trendingSongsTopKPop != null) items(trendingSongsTopKPop!!) { song ->
-                    TrendingSongsView(song)
+                    TrendingSongsView(song) { name, artists ->
+                        songsViewModel.songsPlayingDetails(name, artists)
+                    }
                 }
             }
         }
@@ -184,7 +202,9 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         item {
             LazyRow {
                 if (trendingSongsTop50KPop != null) items(trendingSongsTop50KPop!!) { song ->
-                    TrendingSongsView(song)
+                    TrendingSongsView(song) { name, artists ->
+                        songsViewModel.songsPlayingDetails(name, artists)
+                    }
                 }
             }
         }
@@ -198,7 +218,12 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             item {
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                     items(songsSuggestionsForYou?.size ?: 0) { songs ->
-                        songsSuggestionsForYou?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                        songsSuggestionsForYou?.get(songs)?.let {
+                            TrendingSongsViewShortText(it) { name, artists ->
+                                songsViewModel.songsPlayingDetails(name, artists)
+
+                            }
+                        }
                     }
                 }
             }
@@ -234,7 +259,12 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
                         GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)
                     ) {
                         items(it.details?.size ?: 0) { songs ->
-                            it.details?.get(songs)?.let { TrendingSongsViewShortText(it) }
+                            it.details?.get(songs)?.let {
+                                TrendingSongsViewShortText(it) { name, artists ->
+                                    songsViewModel.songsPlayingDetails(name, artists)
+
+                                }
+                            }
                         }
                     }
                 }

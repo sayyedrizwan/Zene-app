@@ -93,19 +93,20 @@ fun ArtistsViewSmallView(artists: TopArtistsSongs) {
 }
 
 @Composable
-fun TrendingSongsView(artists: TopArtistsSongs) {
+fun TrendingSongsView(songs: TopArtistsSongs, search: (String, String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(10.dp)
             .clickable {
+                search(songs.name ?: "", songs.artist ?: "")
                 "open song".showToast()
             }
     ) {
         AsyncImage(
-            model = artists.img,
-            contentDescription = artists.name,
+            model = songs.img,
+            contentDescription = songs.name,
             modifier = Modifier
                 .size(140.dp)
                 .clip(RoundedCornerShape(12.dp)),
@@ -114,15 +115,15 @@ fun TrendingSongsView(artists: TopArtistsSongs) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        QuickSandSemiBold(artists.name ?: "", size = 17)
+        QuickSandSemiBold(songs.name ?: "", size = 17)
 
-        QuickSandLight(artists.artist ?: "", size = 12)
+        QuickSandLight(songs.artist ?: "", size = 12)
     }
 }
 
 
 @Composable
-fun TrendingSongsViewShortText(artists: TopArtistsSongs) {
+fun TrendingSongsViewShortText(songs: TopArtistsSongs, search: (String, String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -133,8 +134,8 @@ fun TrendingSongsViewShortText(artists: TopArtistsSongs) {
             }
     ) {
         AsyncImage(
-            model = artists.img,
-            contentDescription = artists.name,
+            model = songs.img,
+            contentDescription = songs.name,
             modifier = Modifier
                 .size(160.dp)
                 .clip(RoundedCornerShape(12.dp)),
@@ -143,9 +144,9 @@ fun TrendingSongsViewShortText(artists: TopArtistsSongs) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        QuickSandSemiBold(artists.name?.shortTextForView(17) ?: "", size = 17)
+        QuickSandSemiBold(songs.name?.shortTextForView(17) ?: "", size = 17)
 
-        QuickSandLight(artists.artist?.shortTextForView(24) ?: "", size = 12)
+        QuickSandLight(songs.artist?.shortTextForView(24) ?: "", size = 12)
     }
 }
 
@@ -225,9 +226,21 @@ fun FullCardSongView(song: TopArtistsSongs) {
                 .fillMaxWidth()
         ) {
             Spacer(modifier = Modifier.height(13.dp))
-            QuickSandSemiBold(song.name ?: "", size = 17, modifier = Modifier.padding(horizontal = 5.dp).fillMaxWidth())
+            QuickSandSemiBold(
+                song.name ?: "",
+                size = 17,
+                modifier = Modifier
+                    .padding(horizontal = 5.dp)
+                    .fillMaxWidth()
+            )
             Spacer(modifier = Modifier.height(3.dp))
-            QuickSandLight(song.artist ?: "", size = 12, modifier = Modifier.padding(horizontal = 5.dp).fillMaxWidth())
+            QuickSandLight(
+                song.artist ?: "",
+                size = 12,
+                modifier = Modifier
+                    .padding(horizontal = 5.dp)
+                    .fillMaxWidth()
+            )
             Spacer(modifier = Modifier.height(13.dp))
         }
 

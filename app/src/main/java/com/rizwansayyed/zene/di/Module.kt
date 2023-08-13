@@ -9,8 +9,11 @@ import com.rizwansayyed.zene.domain.IPApiInterface
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDB
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
+import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDB
+import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
+import com.rizwansayyed.zene.utils.Utils.DB.SONG_DETAILS_DB
 import com.rizwansayyed.zene.utils.Utils.URL.IP_JSON_BASE_URL
 import com.rizwansayyed.zene.utils.Utils.moshi
 import dagger.Module
@@ -57,6 +60,12 @@ object Module {
 
     @Provides
     @Singleton
-    fun roomDBImpl(dao: RecentPlayedDao, api: ApiInterface, ip: IPApiInterface): RoomDBImpl =
-        RoomDBImpl(dao, api, ip)
+    fun songDetailsDB(@ApplicationContext context: Context): SongDetailsDao =
+        Room.databaseBuilder(context, SongDetailsDB::class.java, SONG_DETAILS_DB).build()
+            .songDetails()
+
+    @Provides
+    @Singleton
+    fun roomDBImpl(dao: RecentPlayedDao, api: ApiInterface, ip: IPApiInterface, song: SongDetailsDao): RoomDBImpl =
+        RoomDBImpl(dao, api, ip, song)
 }

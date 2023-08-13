@@ -77,4 +77,8 @@ class ApiInterfaceImpl @Inject constructor(
         emit(ip)
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun songPlayDetails(name: String) = flow {
+        emit(apiInterface.songPlayDetails(name))
+    }
 }

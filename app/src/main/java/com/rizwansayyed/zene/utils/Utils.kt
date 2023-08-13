@@ -20,6 +20,7 @@ object Utils {
         const val SONG_SUGGESTIONS = "songSuggestions"
         const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
         const val SEARCH_SONGS = "searchSongs"
+        const val SONG_PLAY_DETAILS = "songPlayDetails"
         const val TRENDING_SONGS_S_TOP_50 = "trendingSongsSTop50"
         const val TRENDING_SONGS_APPLE = "trendingSongsApple"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
@@ -33,6 +34,7 @@ object Utils {
 
     object DB {
         const val RECENT_PLAYED_DB = "recent_played_db"
+        const val SONG_DETAILS_DB = "song_details_db"
         const val RECENT_PLAYED_ARTISTS_DB = "recent_played_artists_db"
     }
 

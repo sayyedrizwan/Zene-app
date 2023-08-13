@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.domain
 
+import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
@@ -23,4 +24,6 @@ interface ApiInterfaceImplInterface {
     suspend fun trendingSongsTop50(): Flow<TopArtistsResponseApi>
     suspend fun trendingSongsTopKPop(): Flow<TopArtistsResponseApi>
     suspend fun trendingSongsTop50KPop(): Flow<TopArtistsResponseApi>
+
+    suspend fun songPlayDetails(name: String): Flow<SongDetailsResponse>
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
+import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
@@ -287,6 +288,26 @@ class SongsViewModel @Inject constructor(
             it.shuffle()
             it.shuffle()
             dataStoreManager.songsAllForYouAllData = flowOf(it.toTypedArray())
+        }
+    }
+
+    fun songsPlayingDetails(name: String, artists: String) = viewModelScope.launch(Dispatchers.IO) {
+        val songs = roomDBImpl.recentPlayedHome(name, artists).first()
+        if (songs.isNotEmpty()) {
+            if (!songs.first().timestamp.is2DayOlderNeedCache()) {
+
+                "done gett".showToast()
+
+                return@launch
+            }
+            return@launch
+        }
+
+        val searchName = "$name - $artists".lowercase()
+        apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
+
+            "fetching".showToast()
+            it.toLocal()?.let { d -> roomDBImpl.insert(d).collect() }
         }
     }
 

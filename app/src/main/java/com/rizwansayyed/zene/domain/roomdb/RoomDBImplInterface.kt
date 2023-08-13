@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.domain.roomdb
 
+import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongsWithData
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +22,6 @@ interface RoomDBImplInterface {
 
     suspend fun topArtistsSongs(): Flow<ArrayList<TopArtistsSongsWithData>>
     suspend fun allSongsForYouSongs(): Flow<ArrayList<TopArtistsSongs>>
+    suspend fun insert(songDetails: SongDetailsEntity): Flow<Unit>
+    suspend fun recentPlayedHome(name: String, artists: String): Flow<List<SongDetailsEntity>>
 }

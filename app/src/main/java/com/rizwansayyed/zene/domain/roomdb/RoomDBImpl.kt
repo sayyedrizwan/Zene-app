@@ -7,6 +7,8 @@ import com.rizwansayyed.zene.domain.IPApiInterface
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
+import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongsWithData
 import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.flow.flow
@@ -16,7 +18,8 @@ import javax.inject.Inject
 class RoomDBImpl @Inject constructor(
     private val recentPlayedDao: RecentPlayedDao,
     private val apiInterface: ApiInterface,
-    private val ipInterface: IPApiInterface
+    private val ipInterface: IPApiInterface,
+    private val songDetailsDao: SongDetailsDao
 ) : RoomDBImplInterface {
 
     override suspend fun recentPlayed() = flow {
@@ -26,6 +29,14 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun insert(recentPlay: RecentPlayedEntity) = flow {
         emit(recentPlayedDao.insert(recentPlay))
+    }
+
+    override suspend fun recentPlayedHome(name: String, artists: String) = flow {
+        emit(songDetailsDao.recentPlayedHome(name, artists))
+    }
+
+    override suspend fun insert(songDetails: SongDetailsEntity) = flow {
+        emit(songDetailsDao.insert(songDetails))
     }
 
     override suspend fun songsSuggestionsUsingSongsHistory() = flow {
