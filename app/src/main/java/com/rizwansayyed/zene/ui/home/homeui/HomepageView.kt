@@ -245,7 +245,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
             }
 
         item {
-            Spacer(modifier = Modifier.height(350.dp))
+            Spacer(modifier = Modifier.height(200.dp))
         }
     }
 
