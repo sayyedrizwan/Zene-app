@@ -29,7 +29,10 @@ class RoomDBImpl @Inject constructor(
     }
 
     override suspend fun songsSuggestionsUsingSongsHistory() = flow {
-        val topSongs = recentPlayedDao.topListenSongs()
+        var topSongs = recentPlayedDao.topListenSongs()
+        if (topSongs.size < 5) {
+            topSongs = recentPlayedDao.topListenSongsAll()
+        }
         val list = ArrayList<TopArtistsSongs>(300)
 
         if (topSongs.isEmpty()) {
@@ -51,7 +54,11 @@ class RoomDBImpl @Inject constructor(
     }
 
     override suspend fun songSuggestionsForYouUsingHistory() = flow {
-        val topSongs = recentPlayedDao.topListenSongs()
+        var topSongs = recentPlayedDao.topListenSongs()
+        if (topSongs.size < 5) {
+            topSongs = recentPlayedDao.topListenSongsAll()
+        }
+
         val list = ArrayList<TopArtistsSongs>(300)
 
         if (topSongs.isEmpty()) {
@@ -78,6 +85,9 @@ class RoomDBImpl @Inject constructor(
         if (topArtists.size < 7) {
             topArtists = recentPlayedDao.artistsUnique(13)
         }
+        if (topArtists.size < 7) {
+            topArtists = recentPlayedDao.artistsUniqueAll(13)
+        }
         emit(topArtists)
     }
 
@@ -85,6 +95,9 @@ class RoomDBImpl @Inject constructor(
         var topSongs = recentPlayedDao.artistsUnique(7)
         if (topSongs.size < 7) {
             topSongs = recentPlayedDao.artistsUnique(13)
+        }
+        if (topSongs.size < 7) {
+            topSongs = recentPlayedDao.artistsUniqueAll(13)
         }
         val list = ArrayList<TopArtistsSongs>(100)
         if (topSongs.isEmpty()) {
@@ -110,6 +123,10 @@ class RoomDBImpl @Inject constructor(
         var topArtists = recentPlayedDao.artistsUnique(7)
         if (topArtists.size < 7) {
             topArtists = recentPlayedDao.artistsUnique(13)
+        }
+
+        if (topArtists.size < 7) {
+            topArtists = recentPlayedDao.artistsUniqueAll(13)
         }
 
         val ip = ipInterface.ip()
@@ -139,8 +156,15 @@ class RoomDBImpl @Inject constructor(
 
 
     override suspend fun allSongsForYouSongs() = flow {
-        val topArtists = recentPlayedDao.artistsUnique(20)
-        val topSongs = recentPlayedDao.top20ListenSongs()
+        var topArtists = recentPlayedDao.artistsUnique(20)
+        if (topArtists.size < 10) {
+            topArtists = recentPlayedDao.artistsUniqueAll(20)
+        }
+
+        var topSongs = recentPlayedDao.top20ListenSongs()
+        if (topSongs.size < 10) {
+            topSongs = recentPlayedDao.top20ListenSongsAll()
+        }
         val list = ArrayList<TopArtistsSongs>(3000)
 
         val ip = ipInterface.ip()

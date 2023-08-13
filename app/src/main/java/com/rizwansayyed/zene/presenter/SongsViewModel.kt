@@ -273,10 +273,19 @@ class SongsViewModel @Inject constructor(
         if (!dataStoreManager.songsAllForYouAllTimestamp.first().is5DayOlderNeedCache() &&
             dataStoreManager.songsAllForYouAllData.first() != null &&
             dataStoreManager.songsAllForYouAllData.first()?.isNotEmpty() == true
-        ) return@launch
+        ) {
+            val s = dataStoreManager.songsAllForYouAllData.first()
+            s?.shuffle()
+            s?.shuffle()
+            dataStoreManager.songsAllForYouAllData = flowOf(s)
+            return@launch
+        }
 
         roomDBImpl.allSongsForYouSongs().catch {}.collectLatest {
             dataStoreManager.songsAllForYouAllTimestamp = flowOf(System.currentTimeMillis())
+            it.shuffle()
+            it.shuffle()
+            it.shuffle()
             dataStoreManager.songsAllForYouAllData = flowOf(it.toTypedArray())
         }
     }
