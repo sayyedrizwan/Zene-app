@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
@@ -17,7 +18,11 @@ import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
+import com.rizwansayyed.zene.utils.DownloadURLPath
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 
 @AndroidEntryPoint
@@ -59,6 +64,11 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         super.onStart()
         songsViewModel.run()
         songsViewModel.insert()
+
+        lifecycleScope.launch {
+            delay(3.seconds)
+            DownloadURLPath(this@MainActivity, "8xg3vE8Ie_E").path()
+        }
     }
 
     override fun internetConnected() {

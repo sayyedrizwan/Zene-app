@@ -94,4 +94,6 @@ dependencies {
     kapt("androidx.room:room-compiler:2.5.2")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("org.jsoup:jsoup:1.7.2")
+
 }
