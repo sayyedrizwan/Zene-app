@@ -38,6 +38,9 @@ object Utils {
         const val RECENT_PLAYED_ARTISTS_DB = "recent_played_artists_db"
     }
 
+    object EXTRA {
+        const val PLAY_URL_PATH = "play_url_path"
+    }
 
     val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 

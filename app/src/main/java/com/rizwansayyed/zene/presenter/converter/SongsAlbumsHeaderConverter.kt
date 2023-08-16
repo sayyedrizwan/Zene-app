@@ -18,7 +18,7 @@ class SongsAlbumsHeaderConverter(jsonData: String) {
     fun get(): AlbumsHeadersResponse {
         val headers = makeHeaderData()
         val albums = makeAlbumsData()
-        albums.size.toString().showToast()
+
         return AlbumsHeadersResponse(albums, headers)
     }
 

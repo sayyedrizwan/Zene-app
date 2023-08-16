@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.ui.home
 
+import android.content.Intent
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,15 +16,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
-import com.rizwansayyed.zene.utils.DownloadURLPath
+import com.rizwansayyed.zene.utils.Utils.EXTRA.PLAY_URL_PATH
+import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.utils.downloader.opensource.State
+import com.rizwansayyed.zene.utils.downloader.opensource.YTExtractor
+import com.rizwansayyed.zene.utils.downloader.opensource.bestQuality
+import com.rizwansayyed.zene.utils.downloader.opensource.getAudioOnly
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -63,11 +73,23 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     override fun onStart() {
         super.onStart()
         songsViewModel.run()
-        songsViewModel.insert()
 
         lifecycleScope.launch {
             delay(3.seconds)
-            DownloadURLPath(this@MainActivity, "8xg3vE8Ie_E").path()
+            val yt = YTExtractor(
+                con = this@MainActivity, CACHING = false, LOGGING = true, retryCount = 1
+            ).apply {
+                extract("sfJDnua1cB4")
+            }
+            if (yt.state == State.SUCCESS) {
+                val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
+//                files?.url?.showToast()
+
+                Intent(this@MainActivity, MediaPlayerService::class.java).apply {
+                    putExtra(PLAY_URL_PATH, files?.url)
+                    startService(this)
+                }
+            }
         }
     }
 
