@@ -98,6 +98,8 @@ dependencies {
 
     implementation("com.github.evgenyneu:js-evaluator-for-android:v6.0.0")
 
+    implementation("io.coil-kt:coil:2.4.0")
+
 
     val media3_version = "1.1.0"
 
