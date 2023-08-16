@@ -31,6 +31,16 @@
         </activity>
 
         <service
+            android:name=".service.musicplayer.MediaPlayerServiceTestT"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
+            android:permission="android.permission.FOREGROUND_SERVICE">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+
+        <service
             android:name=".service.musicplayer.MediaPlayerService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
@@ -40,12 +50,12 @@
             </intent-filter>
         </service>
 
-<!--        <receiver android:name="androidx.media3.session.MediaButtonReceiver"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MEDIA_BUTTON" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
+        <receiver android:name="androidx.media3.session.MediaButtonReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
 
         <receiver android:name=".service.receiver.SongNotifyReceiver" />
 

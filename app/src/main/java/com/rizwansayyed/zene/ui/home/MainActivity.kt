@@ -1,8 +1,6 @@
 package com.rizwansayyed.zene.ui.home
 
 import android.content.Intent
-import android.media.AudioManager
-import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,14 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
-import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerServiceTestT
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import com.rizwansayyed.zene.utils.Utils.EXTRA.PLAY_URL_PATH
-import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.downloader.opensource.State
 import com.rizwansayyed.zene.utils.downloader.opensource.YTExtractor
 import com.rizwansayyed.zene.utils.downloader.opensource.bestQuality
@@ -31,7 +28,6 @@ import com.rizwansayyed.zene.utils.downloader.opensource.getAudioOnly
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.IOException
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -45,10 +41,12 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     private val homeNavViewModel: HomeNavViewModel by viewModels()
     private val songsViewModel: SongsViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         networkCallbackStatus = this
+
 
         setContent {
             window.setFlags(windowManagerNoLimit, windowManagerNoLimit)
@@ -83,9 +81,8 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
             }
             if (yt.state == State.SUCCESS) {
                 val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
-//                files?.url?.showToast()
 
-                Intent(this@MainActivity, MediaPlayerService::class.java).apply {
+                Intent(this@MainActivity, MediaPlayerServiceTestT::class.java).apply {
                     putExtra(PLAY_URL_PATH, files?.url)
                     startService(this)
                 }
