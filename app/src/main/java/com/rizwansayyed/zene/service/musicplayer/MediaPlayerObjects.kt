@@ -2,8 +2,7 @@ package com.rizwansayyed.zene.service.musicplayer
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import androidx.annotation.MainThread
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -15,9 +14,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.utils.Algorithims.randomIds
-import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.downloader.opensource.State
 import com.rizwansayyed.zene.utils.downloader.opensource.YTExtractor
 import com.rizwansayyed.zene.utils.downloader.opensource.bestQuality
@@ -25,12 +22,9 @@ import com.rizwansayyed.zene.utils.downloader.opensource.getAudioOnly
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 class MediaPlayerObjects @Inject constructor(@ApplicationContext private val context: Context) :
     Player.Listener {
@@ -116,6 +110,16 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         return null
     }
 
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+        if (playbackState == ExoPlayer.STATE_READY) {
+            val realDurationMillis: Long = player.duration
+            Log.d("TAG", "onPlaybackStateChanged: fsfs $realDurationMillis")
+        }
+
+    }
+
     override fun onEvents(player: Player, events: Player.Events) {
         if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
             player.currentMediaItem?.let { mediaItem ->
@@ -130,12 +134,17 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
 //                player.isPlaying
 //            }
         }
+//        Log.d("TAG", "onEvents: data ${events.}")
 
         if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION) ||
             events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) ||
             events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
         ) {
             if (player.duration > 0) {
+
+                Log.d("TAG", "onEvents: data ${player.duration}")
+                Log.d("TAG", "onEvents: data ${player.contentPosition}")
+                Log.d("TAG", "onEvents: data ${player.currentPosition}")
 //                duration.update {
 //                    player.duration
 //                }
