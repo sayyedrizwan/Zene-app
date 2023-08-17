@@ -40,7 +40,7 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
             .setWakeMode(C.WAKE_MODE_LOCAL).build()
     }
 
-    val sessionToken by lazy {
+    private val sessionToken by lazy {
         SessionToken(context, ComponentName(context, MediaPlayerService::class.java))
     }
 
@@ -74,13 +74,25 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         player.prepare()
     }
 
+    private fun mediaController() {
+
+    }
+
 
     suspend fun mediaAudioPaths(id: String): String? {
-        val yt = YTExtractor(con = context, CACHING = true, LOGGING = true, retryCount = 3).apply {
-            extract(id)  //"sfJDnua1cB4"
+        val yt = YTExtractor(con = context, CACHING = false, LOGGING = true, retryCount = 1).apply {
+            extract(id)
         }
 
         if (yt.state == State.SUCCESS) {
+            val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
+            return files?.url
+        }
+        val ytRetry = YTExtractor(con = context, CACHING = false, LOGGING = true, retryCount = 1).apply {
+            extract(id)
+        }
+
+        if (ytRetry.state == State.SUCCESS) {
             val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
             return files?.url
         }

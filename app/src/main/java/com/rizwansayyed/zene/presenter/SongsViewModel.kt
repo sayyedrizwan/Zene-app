@@ -312,6 +312,7 @@ class SongsViewModel @Inject constructor(
                 return@launch
             }
         }
+
         val searchName = "$name - $artists".lowercase()
         apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
             roomDBImpl.removeSongDetails(it.songID ?: "").collect()

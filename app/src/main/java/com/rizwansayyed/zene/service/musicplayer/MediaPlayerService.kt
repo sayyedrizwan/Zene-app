@@ -4,10 +4,13 @@ package com.rizwansayyed.zene.service.musicplayer
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.media3.common.Player
+import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaController
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import androidx.media3.session.SessionCommand
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import com.rizwansayyed.zene.BaseApplication.Companion.context
@@ -17,7 +20,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MediaPlayerService : MediaSessionService(), Player.Listener {
+class MediaPlayerService : MediaSessionService(), MediaSession.Callback, Player.Listener {
 
     companion object {
         fun isMusicPlayerServiceIsRunning(): Boolean {
@@ -42,7 +45,6 @@ class MediaPlayerService : MediaSessionService(), Player.Listener {
 
     private var mediaSession: MediaSession? = null
 
-    private lateinit var controllerFuture: ListenableFuture<MediaController>
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startPlayingSong()
@@ -53,8 +55,8 @@ class MediaPlayerService : MediaSessionService(), Player.Listener {
         mediaSession
 
     private fun startPlayingSong() {
-        mediaSession = MediaSession.Builder(this, mediaPlayerObjects.player).setId(randomIds()).build()
-
+        mediaSession =
+            MediaSession.Builder(this, mediaPlayerObjects.player).setId(randomIds()).build()
         mediaPlayerObjects.player.addListener(this)
     }
 }

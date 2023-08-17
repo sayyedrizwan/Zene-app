@@ -21,6 +21,7 @@ object Utils {
         const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
         const val SEARCH_SONGS = "searchSongs"
         const val SONG_PLAY_DETAILS = "songPlayDetails"
+        const val VIDEO_PLAY_DETAILS = "videoPlayDetails"
         const val TRENDING_SONGS_S_TOP_50 = "trendingSongsSTop50"
         const val TRENDING_SONGS_APPLE = "trendingSongsApple"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"

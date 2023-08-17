@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.utils.Utils.URL.TOP_GLOBAL_SONGS_THIS_WEEK
 import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_APPLE
 import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_TOP_50_K_POP
 import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_TOP_K_POP
+import com.rizwansayyed.zene.utils.Utils.URL.VIDEO_PLAY_DETAILS
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -75,4 +76,8 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(SONG_PLAY_DETAILS)
     suspend fun songPlayDetails(@Field("q") q: String): SongDetailsResponse
+
+    @FormUrlEncoded
+    @POST(VIDEO_PLAY_DETAILS)
+    suspend fun videoPlayDetails(@Field("q") q: String): SongDetailsResponse
 }
