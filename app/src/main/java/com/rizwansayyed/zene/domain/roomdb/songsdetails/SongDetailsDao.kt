@@ -15,6 +15,10 @@ interface SongDetailsDao {
     @Query("SELECT * FROM $SONG_DETAILS_DB WHERE name = :name AND artists = :artists LIMIT 6")
     suspend fun recentPlayedHome(name: String, artists: String): List<SongDetailsEntity>
 
+    @Query("DELETE FROM $SONG_DETAILS_DB WHERE songID = :id")
+    suspend fun removeSongDetails(id: String)
+
+
     @Upsert
     suspend fun insert(data: SongDetailsEntity)
 }

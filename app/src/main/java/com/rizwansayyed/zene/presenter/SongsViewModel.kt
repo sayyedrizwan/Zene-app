@@ -10,6 +10,9 @@ import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.startMedaPlayerService
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
@@ -32,7 +35,8 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class SongsViewModel @Inject constructor(
     private val apiImpl: ApiInterfaceImpl,
-    private val roomDBImpl: RoomDBImpl
+    private val roomDBImpl: RoomDBImpl,
+    private val mediaPlayerObjects: MediaPlayerObjects
 ) : ViewModel() {
 
     private var footerDataTried = 0
@@ -292,22 +296,34 @@ class SongsViewModel @Inject constructor(
     }
 
     fun songsPlayingDetails(name: String, artists: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!isMusicPlayerServiceIsRunning()) {
+            startMedaPlayerService()
+        }
+
         val songs = roomDBImpl.recentPlayedHome(name, artists).first()
         if (songs.isNotEmpty()) {
             if (!songs.first().timestamp.is2DayOlderNeedCache()) {
-
-                "done gett".showToast()
-
+                val song = songs.first()
+                val url = mediaPlayerObjects.mediaAudioPaths(song.songID)
+                val mediaDetails = mediaPlayerObjects.mediaItems(
+                    song.songID, url, song.name, song.artists, song.thumbnail
+                )
+                mediaPlayerObjects.playSong(mediaDetails)
                 return@launch
             }
-            return@launch
         }
-
         val searchName = "$name - $artists".lowercase()
         apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
-
-            "fetching".showToast()
+            roomDBImpl.removeSongDetails(it.songID ?: "").collect()
             it.toLocal()?.let { d -> roomDBImpl.insert(d).collect() }
+
+            val url = mediaPlayerObjects.mediaAudioPaths(it.songID ?: "")
+
+            val mediaDetails = mediaPlayerObjects.mediaItems(
+                it.songID, url, it.songName, it.artistName, it.thumbnail
+            )
+            mediaPlayerObjects.playSong(mediaDetails)
+
         }
     }
 }

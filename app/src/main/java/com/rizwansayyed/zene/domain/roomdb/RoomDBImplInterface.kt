@@ -24,4 +24,5 @@ interface RoomDBImplInterface {
     suspend fun allSongsForYouSongs(): Flow<ArrayList<TopArtistsSongs>>
     suspend fun insert(songDetails: SongDetailsEntity): Flow<Unit>
     suspend fun recentPlayedHome(name: String, artists: String): Flow<List<SongDetailsEntity>>
+    suspend fun removeSongDetails(songID: String): Flow<Unit>
 }

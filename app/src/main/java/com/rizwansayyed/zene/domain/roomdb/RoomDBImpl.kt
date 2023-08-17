@@ -35,6 +35,10 @@ class RoomDBImpl @Inject constructor(
         emit(songDetailsDao.recentPlayedHome(name, artists))
     }
 
+    override suspend fun removeSongDetails(songID: String) = flow {
+        emit(songDetailsDao.removeSongDetails(songID))
+    }
+
     override suspend fun insert(songDetails: SongDetailsEntity) = flow {
         emit(songDetailsDao.insert(songDetails))
     }

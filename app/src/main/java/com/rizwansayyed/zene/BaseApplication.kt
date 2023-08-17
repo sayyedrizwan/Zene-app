@@ -55,12 +55,12 @@ class BaseApplication : Application() {
         connectivityManager.requestNetwork(networkRequest, networkCallback)
 
 
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(2.seconds)
-            Intent(context, MediaPlayerService::class.java).also {
-                context.startService(it)
-            }
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            delay(2.seconds)
+//            Intent(context, MediaPlayerService::class.java).also {
+//                context.startService(it)
+//            }
+//        }
     }
 
 

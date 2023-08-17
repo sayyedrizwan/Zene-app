@@ -72,22 +72,22 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         super.onStart()
         songsViewModel.run()
 
-        lifecycleScope.launch {
-            delay(3.seconds)
-            val yt = YTExtractor(
-                con = this@MainActivity, CACHING = false, LOGGING = true, retryCount = 1
-            ).apply {
-                extract("sfJDnua1cB4")
-            }
-            if (yt.state == State.SUCCESS) {
-                val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
-
-                Intent(this@MainActivity, MediaPlayerServiceTestT::class.java).apply {
-                    putExtra(PLAY_URL_PATH, files?.url)
-                    startService(this)
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            delay(3.seconds)
+//            val yt = YTExtractor(
+//                con = this@MainActivity, CACHING = true, LOGGING = true, retryCount = 3
+//            ).apply {
+//                extract("sfJDnua1cB4")
+//            }
+//            if (yt.state == State.SUCCESS) {
+//                val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
+//
+//                Intent(this@MainActivity, MediaPlayerServiceTestT::class.java).apply {
+//                    putExtra(PLAY_URL_PATH, files?.url)
+//                    startService(this)
+//                }
+//            }
+//        }
     }
 
     override fun internetConnected() {

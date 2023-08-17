@@ -62,4 +62,8 @@ object Algorithims {
         }
     }
 
+    fun randomIds(): String {
+        return (111..9999999999).random().toString()
+    }
+
 }

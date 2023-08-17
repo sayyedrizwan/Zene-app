@@ -130,6 +130,7 @@ fun TrendingSongsViewShortText(songs: TopArtistsSongs, search: (String, String) 
         modifier = Modifier
             .padding(10.dp)
             .clickable {
+                search(songs.name ?: "", songs.artist ?: "")
                 "open song".showToast()
             }
     ) {
