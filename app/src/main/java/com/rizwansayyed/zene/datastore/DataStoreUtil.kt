@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGG
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.FOOTER_ALBUMS_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.IP_DATA
+import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.MUSIC_PLAYER_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_ALL_FOR_YOU_ALL_DATA
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_ALL_FOR_YOU_ALL_TIMESTAMP
 import com.rizwansayyed.zene.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_DATA
@@ -60,6 +61,7 @@ object DataStoreUtil {
         const val TOP_ARTISTS_SONGS_DATA = "top_artists_songs_data"
         const val TOP_ARTISTS_SONGS_TIMESTAMP = "top_artists_songs_timestamp"
         const val IP_DATA = "ip_data"
+        const val MUSIC_PLAYER_DATA = "music_player_data"
     }
 
     val album_header_data = stringPreferencesKey(ALBUM_HEADER_DATA)
@@ -108,4 +110,5 @@ object DataStoreUtil {
 
 
     val ip_data = stringPreferencesKey(IP_DATA)
+    val music_player_data = stringPreferencesKey(MUSIC_PLAYER_DATA)
 }

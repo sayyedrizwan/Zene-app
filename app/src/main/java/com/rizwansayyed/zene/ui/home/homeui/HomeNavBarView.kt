@@ -1,10 +1,18 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,15 +37,19 @@ import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.theme.Purple
 import com.rizwansayyed.zene.utils.Utils.showToast
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeNavBar(modifier: Modifier, homeNavViewModel: HomeNavViewModel = hiltViewModel()) {
+    val density = LocalDensity.current
+
     Row(
         modifier
             .padding(10.dp)
             .padding(bottom = 36.dp)
             .clip(shape = RoundedCornerShape(13.dp))
             .background(Purple),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -54,28 +68,67 @@ fun HomeNavBar(modifier: Modifier, homeNavViewModel: HomeNavViewModel = hiltView
                     },
                 colorFilter = ColorFilter.tint(Color.White)
             )
+            Box {
+                SpacerDots(Color.Transparent)
 
-            AnimatedVisibility(visible = homeNavViewModel.homeNavigationView.value == HomeNavigationStatus.MAIN) {
-                Spacer(
+                this@Column.AnimatedVisibility(visible = homeNavViewModel.homeNavigationView.value == HomeNavigationStatus.MAIN) {
+                    SpacerDots()
+                }
+            }
+        }
+
+        Box {
+            this@Row.AnimatedVisibility(
+                !homeNavViewModel.showMusicPlayerView.value,
+                enter = slideInVertically { with(density) { -40.dp.roundToPx() } } + expandVertically(
+                    expandFrom = Alignment.Top
+                ) + fadeIn(initialAlpha = 0.3f),
+                exit = slideOutVertically() + shrinkVertically() + fadeOut(),
+            ) {
+                AsyncImage(
+                    "https://i.scdn.co/image/ab67616d00001e02f5dc36d5000145375a41c3b8",
+                    contentDescription = "",
                     modifier = Modifier
-                        .padding(bottom = 10.dp)
+                        .padding(horizontal = 30.dp, vertical = 10.dp)
+                        .size(58.dp)
+                        .padding(7.dp)
                         .clip(RoundedCornerShape(100))
-                        .background(Color.White)
-                        .size(5.dp)
+                        .clickable {
+                            if (homeNavViewModel.showMusicPlayerView.value)
+                                homeNavViewModel.hideMusicPlayer()
+                            else
+                                homeNavViewModel.showMusicPlayer()
+                        },
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            this@Row.AnimatedVisibility(
+                homeNavViewModel.showMusicPlayerView.value,
+                enter = slideInVertically { with(density) { -40.dp.roundToPx() } } + expandVertically(
+                    expandFrom = Alignment.Bottom
+                ) + fadeIn(initialAlpha = 0.3f),
+                exit = slideOutVertically() + shrinkVertically() + fadeOut(),
+            ) {
+                Image(
+                    painterResource(id = R.drawable.ic_arrow_down),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(horizontal = 30.dp, vertical = 10.dp)
+                        .size(58.dp)
+                        .padding(7.dp)
+                        .clip(RoundedCornerShape(100))
+                        .clickable {
+                            if (homeNavViewModel.showMusicPlayerView.value)
+                                homeNavViewModel.hideMusicPlayer()
+                            else
+                                homeNavViewModel.showMusicPlayer()
+                        },
+                    colorFilter = ColorFilter.tint(Color.White)
                 )
             }
         }
 
-
-        AsyncImage(
-            "https://i.scdn.co/image/ab67616d00001e02f5dc36d5000145375a41c3b8",
-            contentDescription = "",
-            modifier = Modifier
-                .padding(horizontal = 30.dp, vertical = 10.dp)
-                .size(50.dp)
-                .padding(7.dp)
-                .clip(RoundedCornerShape(100))
-        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,16 +147,26 @@ fun HomeNavBar(modifier: Modifier, homeNavViewModel: HomeNavViewModel = hiltView
                     },
                 colorFilter = ColorFilter.tint(Color.White)
             )
-            AnimatedVisibility(visible = homeNavViewModel.homeNavigationView.value == HomeNavigationStatus.SETTINGS) {
-                Spacer(
-                    modifier = Modifier
-                        .padding(bottom = 10.dp)
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.White)
-                        .size(5.dp)
-                )
+            Box {
+                SpacerDots(Color.Transparent)
+
+                this@Column.AnimatedVisibility(visible = homeNavViewModel.homeNavigationView.value == HomeNavigationStatus.SETTINGS) {
+                    SpacerDots()
+                }
             }
         }
     }
+}
+
+
+@Composable
+fun SpacerDots(color: Color = Color.White) {
+    Spacer(
+        modifier = Modifier
+            .padding(bottom = 10.dp)
+            .clip(RoundedCornerShape(100))
+            .background(color)
+            .size(5.dp)
+    )
 }
 

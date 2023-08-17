@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.settings
+package com.rizwansayyed.zene.ui.home.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

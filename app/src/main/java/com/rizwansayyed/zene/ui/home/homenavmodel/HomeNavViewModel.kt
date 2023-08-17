@@ -11,4 +11,16 @@ class HomeNavViewModel : ViewModel() {
     fun homeNavigationView(nav: HomeNavigationStatus) {
         homeNavigationView.value = nav
     }
+
+
+    var showMusicPlayerView = mutableStateOf(false)
+        private set
+
+    fun hideMusicPlayer() {
+        showMusicPlayerView.value = false
+    }
+
+    fun showMusicPlayer() {
+        showMusicPlayerView.value = true
+    }
 }

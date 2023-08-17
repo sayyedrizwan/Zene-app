@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.footer_albums_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.ip_data
+import com.rizwansayyed.zene.datastore.DataStoreUtil.music_player_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_all_for_you_all_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_all_for_you_all_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.songs_suggestions_data
@@ -34,6 +35,7 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_songs_top_k_pop_da
 import com.rizwansayyed.zene.datastore.DataStoreUtil.trending_songs_top_k_pop_timestamp
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
+import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicsAlbum
 import com.rizwansayyed.zene.presenter.model.MusicsHeader
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
@@ -48,7 +50,6 @@ class DataStoreManager {
     companion object {
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DB_STORE)
     }
-
 
     var albumHeaderData: Flow<Array<MusicsHeader>?>
         get() = context.dataStore.data.map {
@@ -289,5 +290,13 @@ class DataStoreManager {
         }
         set(value) {
             SetDataStoreValueClass(ip_data, IpJSONResponse::class.java, value)
+        }
+
+    var musicPlayerData: Flow<MusicPlayerDetails?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(MusicPlayerDetails::class.java).fromJson(it[music_player_data] ?: "{}")
+        }
+        set(value) {
+            SetDataStoreValueClass(music_player_data, MusicPlayerDetails::class.java, value)
         }
 }
