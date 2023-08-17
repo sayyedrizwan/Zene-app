@@ -55,7 +55,11 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
 
     LazyColumn {
         item {
-            headerPagerData?.let { TopHeaderPager(it) }
+            headerPagerData?.let {
+                TopHeaderPager(it) { name, artists ->
+                    songsViewModel.songsPlayingDetails(name, artists)
+                }
+            }
         }
 
         if (recentPlayedSongs?.value?.isNotEmpty() == true) {

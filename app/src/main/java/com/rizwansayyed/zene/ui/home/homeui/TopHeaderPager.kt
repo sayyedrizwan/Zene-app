@@ -36,7 +36,7 @@ import com.rizwansayyed.zene.utils.Utils.showToast
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopHeaderPager(header: Array<MusicsHeader>) {
+fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String) -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     var songName by remember { mutableStateOf("") }
@@ -86,7 +86,7 @@ fun TopHeaderPager(header: Array<MusicsHeader>) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 RoundOutlineButtons(Icons.Default.PlayArrow, stringResource(id = R.string.play)) {
-                    "played".showToast()
+                    search(Algorithims.extractSongTitles(songName), Algorithims.extractSongSubTitles(songName))
                 }
             }
         }
