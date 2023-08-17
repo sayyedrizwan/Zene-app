@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -37,10 +38,8 @@ import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.theme.Purple
 import com.rizwansayyed.zene.utils.Utils.showToast
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeNavBar(modifier: Modifier, homeNavViewModel: HomeNavViewModel = hiltViewModel()) {
-    val density = LocalDensity.current
 
     Row(
         modifier
@@ -78,13 +77,7 @@ fun HomeNavBar(modifier: Modifier, homeNavViewModel: HomeNavViewModel = hiltView
         }
 
         Box {
-            this@Row.AnimatedVisibility(
-                !homeNavViewModel.showMusicPlayerView.value,
-                enter = slideInVertically { with(density) { -40.dp.roundToPx() } } + expandVertically(
-                    expandFrom = Alignment.Top
-                ) + fadeIn(initialAlpha = 0.3f),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut(),
-            ) {
+            AnimationSliderVertical(!homeNavViewModel.showMusicPlayerView.value, Alignment.Top) {
                 AsyncImage(
                     "https://i.scdn.co/image/ab67616d00001e02f5dc36d5000145375a41c3b8",
                     contentDescription = "",
@@ -103,13 +96,7 @@ fun HomeNavBar(modifier: Modifier, homeNavViewModel: HomeNavViewModel = hiltView
                 )
             }
 
-            this@Row.AnimatedVisibility(
-                homeNavViewModel.showMusicPlayerView.value,
-                enter = slideInVertically { with(density) { -40.dp.roundToPx() } } + expandVertically(
-                    expandFrom = Alignment.Bottom
-                ) + fadeIn(initialAlpha = 0.3f),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut(),
-            ) {
+            AnimationSliderVertical(homeNavViewModel.showMusicPlayerView.value, Alignment.Bottom) {
                 Image(
                     painterResource(id = R.drawable.ic_arrow_down),
                     contentDescription = "",
@@ -158,6 +145,24 @@ fun HomeNavBar(modifier: Modifier, homeNavViewModel: HomeNavViewModel = hiltView
     }
 }
 
+
+@Composable
+fun AnimationSliderVertical(
+    b: Boolean,
+    state: Alignment.Vertical,
+    content: @Composable() AnimatedVisibilityScope.() -> Unit
+) {
+    val density = LocalDensity.current
+    AnimatedVisibility(
+        b,
+        enter = slideInVertically { with(density) { -40.dp.roundToPx() } } + expandVertically(
+            expandFrom = state
+        ) + fadeIn(initialAlpha = 0.3f),
+        exit = slideOutVertically() + shrinkVertically() + fadeOut(),
+    ) {
+        content()
+    }
+}
 
 @Composable
 fun SpacerDots(color: Color = Color.White) {
