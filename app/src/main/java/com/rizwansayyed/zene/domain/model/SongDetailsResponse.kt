@@ -15,12 +15,12 @@ fun SongDetailsResponse.toLocal(): SongDetailsEntity? {
     if (this.songName == null) return null
     if (this.artistName == null) return null
     if (this.songID == null) return null
-    if (this.videoID == null) return null
+
     return SongDetailsEntity(
         this.songName,
         this.artistName,
         this.songID,
-        this.videoID,
+        this.videoID ?: "",
         this.thumbnail,
         System.currentTimeMillis(),
         null

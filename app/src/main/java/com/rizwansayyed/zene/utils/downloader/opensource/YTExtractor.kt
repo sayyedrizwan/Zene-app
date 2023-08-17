@@ -237,9 +237,12 @@ class YTExtractor(
             reader?.close()
             urlConnection?.disconnect()
         }
+
+
         var mat = patPlayerResponse.matcher(pageHtml)
         if (mat.find()) {
             val ytPlayerResponse = mat.group(1)?.let { JSONObject(it) }
+            if (ytPlayerResponse?.has("streamingData") == false) return null
             val streamingData = ytPlayerResponse?.getJSONObject("streamingData")
             val formats = streamingData?.getJSONArray("formats")
 

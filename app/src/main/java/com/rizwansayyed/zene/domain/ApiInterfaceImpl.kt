@@ -79,6 +79,8 @@ class ApiInterfaceImpl @Inject constructor(
 
 
     override suspend fun songPlayDetails(name: String) = flow {
-        emit(apiInterface.songPlayDetails(name))
+        val ip = ipApiInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+        emit(apiInterface.songPlayDetails(ip.query ?: "", name))
     }
 }

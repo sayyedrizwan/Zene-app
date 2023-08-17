@@ -14,22 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
-import com.rizwansayyed.zene.service.musicplayer.MediaPlayerServiceTestT
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
-import com.rizwansayyed.zene.utils.Utils.EXTRA.PLAY_URL_PATH
-import com.rizwansayyed.zene.utils.downloader.opensource.State
-import com.rizwansayyed.zene.utils.downloader.opensource.YTExtractor
-import com.rizwansayyed.zene.utils.downloader.opensource.bestQuality
-import com.rizwansayyed.zene.utils.downloader.opensource.getAudioOnly
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), NetworkCallbackStatus {

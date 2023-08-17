@@ -303,12 +303,14 @@ class SongsViewModel @Inject constructor(
         val songs = roomDBImpl.recentPlayedHome(name, artists).first()
         if (songs.isNotEmpty()) {
             if (!songs.first().timestamp.is2DayOlderNeedCache()) {
+
                 val song = songs.first()
                 val url = mediaPlayerObjects.mediaAudioPaths(song.songID)
+
                 val mediaDetails = mediaPlayerObjects.mediaItems(
                     song.songID, url, song.name, song.artists, song.thumbnail
                 )
-                mediaPlayerObjects.playSong(mediaDetails)
+                mediaPlayerObjects.playSong(mediaDetails, true)
                 return@launch
             }
         }
@@ -323,8 +325,7 @@ class SongsViewModel @Inject constructor(
             val mediaDetails = mediaPlayerObjects.mediaItems(
                 it.songID, url, it.songName, it.artistName, it.thumbnail
             )
-            mediaPlayerObjects.playSong(mediaDetails)
-
+            mediaPlayerObjects.playSong(mediaDetails, true)
         }
     }
 }

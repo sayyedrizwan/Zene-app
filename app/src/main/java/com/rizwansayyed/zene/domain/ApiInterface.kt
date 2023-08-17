@@ -75,9 +75,12 @@ interface ApiInterface {
 
     @FormUrlEncoded
     @POST(SONG_PLAY_DETAILS)
-    suspend fun songPlayDetails(@Field("q") q: String): SongDetailsResponse
+    suspend fun songPlayDetails(@Field("ip") ip: String, @Field("q") q: String): SongDetailsResponse
 
     @FormUrlEncoded
     @POST(VIDEO_PLAY_DETAILS)
-    suspend fun videoPlayDetails(@Field("q") q: String): SongDetailsResponse
+    suspend fun videoPlayDetails(
+        @Field("ip") ip: String,
+        @Field("q") q: String
+    ): SongDetailsResponse
 }

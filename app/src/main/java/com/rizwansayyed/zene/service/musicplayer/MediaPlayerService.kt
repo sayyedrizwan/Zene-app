@@ -5,7 +5,10 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.media.session.PlaybackStateCompat
+import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.Player
+import androidx.media3.common.Player.COMMAND_SEEK_TO_PREVIOUS
 import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaController
 import androidx.media3.session.MediaSession
@@ -20,7 +23,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MediaPlayerService : MediaSessionService(), MediaSession.Callback, Player.Listener {
+class MediaPlayerService : MediaSessionService(), MediaSession.Callback {
 
     companion object {
         fun isMusicPlayerServiceIsRunning(): Boolean {
@@ -54,9 +57,11 @@ class MediaPlayerService : MediaSessionService(), MediaSession.Callback, Player.
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? =
         mediaSession
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun startPlayingSong() {
         mediaSession =
             MediaSession.Builder(this, mediaPlayerObjects.player).setId(randomIds()).build()
-        mediaPlayerObjects.player.addListener(this)
     }
+
+
 }
