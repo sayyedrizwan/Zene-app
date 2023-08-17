@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.musicplayer
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -60,28 +61,28 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    fun playSong(media: MediaItem, newPlay: Boolean) = CoroutineScope(Dispatchers.Main).launch {
+    fun playSong(media: MediaItem, newPlay: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         if (controllerFuture == null) {
             controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
             controllerFuture?.addListener({
                 val controller = controllerFuture!!.get()
                 controller.addListener(this@MediaPlayerObjects)
-            }, MoreExecutors.directExecutor())
+            }, ContextCompat.getMainExecutor(context))
+        }
+
+        if (!newPlay) {
+            if (player.isPlaying) {
+                player.addMediaItem(media)
+                return@launch
+            }
+            if (player.mediaItemCount > 0) {
+                player.addMediaItem(media)
+                player.playWhenReady = true
+                player.prepare()
+                return@launch
+            }
         }
         withContext(Dispatchers.Main) {
-            if (!newPlay) {
-                if (player.isPlaying) {
-                    player.addMediaItem(media)
-                    return@withContext
-                }
-                if (player.mediaItemCount > 0) {
-                    player.addMediaItem(media)
-                    player.playWhenReady = true
-                    player.prepare()
-                    return@withContext
-                }
-            }
-
             player.setMediaItem(media)
             player.playWhenReady = true
             player.prepare()

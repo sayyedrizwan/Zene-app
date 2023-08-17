@@ -1,5 +1,5 @@
 package com.rizwansayyed.zene.ui.home.homenavmodel
 
 enum class HomeNavigationStatus {
-    MAIN, SELECT_ARTISTS,
+    MAIN, SELECT_ARTISTS, SETTINGS
 }

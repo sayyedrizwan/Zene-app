@@ -1,22 +1,24 @@
 package com.rizwansayyed.zene.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
+import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     private val songsViewModel: SongsViewModel by viewModels()
 
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,10 +51,15 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    HomepageView(songsViewModel)
+                    AnimatedContent(targetState = currentScreen, label = "") {
+                        when (it) {
+                            MAIN -> HomepageView(songsViewModel)
+                            SELECT_ARTISTS -> HomepageView(songsViewModel)
+                            SETTINGS -> SettingsView(songsViewModel)
+                        }
+                    }
 
-
-                    HomeNavBar(Modifier.align(Alignment.BottomCenter))
+                    HomeNavBar(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
                 }
             }
         }
@@ -61,23 +69,6 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     override fun onStart() {
         super.onStart()
         songsViewModel.run()
-
-//        lifecycleScope.launch {
-//            delay(3.seconds)
-//            val yt = YTExtractor(
-//                con = this@MainActivity, CACHING = true, LOGGING = true, retryCount = 3
-//            ).apply {
-//                extract("sfJDnua1cB4")
-//            }
-//            if (yt.state == State.SUCCESS) {
-//                val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
-//
-//                Intent(this@MainActivity, MediaPlayerServiceTestT::class.java).apply {
-//                    putExtra(PLAY_URL_PATH, files?.url)
-//                    startService(this)
-//                }
-//            }
-//        }
     }
 
     override fun internetConnected() {
