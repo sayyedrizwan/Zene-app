@@ -18,6 +18,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,8 +30,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.rizwansayyed.zene.BaseApplication
+import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
+import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.theme.Purple
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
@@ -63,6 +71,8 @@ fun MusicPlayerView(modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltV
 fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+
+    val musicPlayer by dataStoreManager.musicPlayerData.collectAsState(initial = null)
 
     Box(Modifier.fillMaxWidth()) {
         AsyncImage(
