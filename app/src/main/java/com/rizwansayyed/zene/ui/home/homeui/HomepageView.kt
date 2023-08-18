@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toTopArtistsSongs
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.ViewAllBtnView
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
@@ -30,7 +31,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
+fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavViewModel) {
     val headerPagerData by dataStoreManager
         .albumHeaderData.collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.albumHeaderData.first() })
     val topArtists by dataStoreManager.topArtistsOfWeekData
@@ -57,6 +58,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel()) {
         item {
             headerPagerData?.let {
                 TopHeaderPager(it) { name, artists ->
+                    nav.showMusicPlayer()
                     songsViewModel.songsPlayingDetails(name, artists)
                 }
             }

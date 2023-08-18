@@ -7,12 +7,15 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import com.rizwansayyed.zene.datastore.DataStoreManager
+import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService
 import com.rizwansayyed.zene.ui.home.MainActivity
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -55,12 +58,12 @@ class BaseApplication : Application() {
         connectivityManager.requestNetwork(networkRequest, networkCallback)
 
 
-//        CoroutineScope(Dispatchers.IO).launch {
-//            delay(2.seconds)
-//            Intent(context, MediaPlayerService::class.java).also {
-//                context.startService(it)
-//            }
-//        }
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(1.seconds)
+            val music = dataStoreManager.musicPlayerData.first()
+            music?.state = MusicPlayerState.PAUSE
+            dataStoreManager.musicPlayerData = flowOf(music)
+        }
     }
 
 

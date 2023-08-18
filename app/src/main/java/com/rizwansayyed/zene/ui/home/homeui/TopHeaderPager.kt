@@ -24,14 +24,22 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.rizwansayyed.zene.BaseApplication
+import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
+import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.presenter.model.MusicsHeader
 import com.rizwansayyed.zene.ui.BlackShade
 import com.rizwansayyed.zene.ui.RoundOutlineButtons
 import com.rizwansayyed.zene.utils.Algorithims
+import com.rizwansayyed.zene.utils.Algorithims.extractSongSubTitles
+import com.rizwansayyed.zene.utils.Algorithims.extractSongTitles
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.utils.Utils.updateStatus
+import kotlinx.coroutines.flow.flowOf
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -45,7 +53,7 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String) -> Unit
     LaunchedEffect(pagerState.currentPage) {
         try {
             songName = header[pagerState.currentPage].name ?: ""
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             e.message
         }
     }
@@ -72,7 +80,7 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String) -> Unit
                 Spacer(modifier = Modifier.height(25.dp))
 
                 QuickSandBold(
-                    Algorithims.extractSongTitles(songName),
+                    extractSongTitles(songName),
                     modifier = Modifier
                         .animateContentSize()
                         .fillMaxWidth(),
@@ -81,12 +89,20 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String) -> Unit
 
                 Spacer(modifier = Modifier.height(3.dp))
 
-                QuickSandLight(Algorithims.extractSongSubTitles(songName))
+                QuickSandLight(extractSongSubTitles(songName))
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 RoundOutlineButtons(Icons.Default.PlayArrow, stringResource(id = R.string.play)) {
-                    search(Algorithims.extractSongTitles(songName), Algorithims.extractSongSubTitles(songName))
+                    updateStatus(
+                        header[pagerState.currentPage].thumbnail,
+                        extractSongTitles(songName),
+                        extractSongSubTitles(songName),
+                        "", MusicPlayerState.LOADING
+                    )
+                    search(
+                        extractSongTitles(songName), extractSongSubTitles(songName)
+                    )
                 }
             }
         }

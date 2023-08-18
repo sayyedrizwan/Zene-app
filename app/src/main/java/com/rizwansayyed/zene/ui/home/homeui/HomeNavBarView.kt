@@ -78,11 +78,7 @@ fun HomeNavBar(modifier: Modifier, nav: HomeNavViewModel = hiltViewModel()) {
         Box {
             if (musicPlayer?.pId != null) {
                 AnimationSliderVertical(!nav.showMusicPlayerView.value, Alignment.Top) {
-                    ImageViewOnBottomNav(
-                        "https://i.scdn.co/image/ab67616d00001e02f5dc36d5000145375a41c3b8",
-                        nav,
-                        null
-                    )
+                    ImageViewOnBottomNav(musicPlayer?.thumbnail, nav, null)
                 }
 
                 AnimationSliderVertical(nav.showMusicPlayerView.value, Alignment.Bottom) {

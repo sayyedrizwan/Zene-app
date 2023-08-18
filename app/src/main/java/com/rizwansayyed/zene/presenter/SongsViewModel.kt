@@ -10,6 +10,8 @@ import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
+import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.startMedaPlayerService
@@ -18,6 +20,7 @@ import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.utils.Utils.updateStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -300,25 +303,36 @@ class SongsViewModel @Inject constructor(
             startMedaPlayerService()
         }
 
+
         val songs = roomDBImpl.recentPlayedHome(name, artists).first()
         if (songs.isNotEmpty()) {
             if (!songs.first().timestamp.is2DayOlderNeedCache()) {
 
-                val song = songs.first()
-                val url = mediaPlayerObjects.mediaAudioPaths(song.songID)
+                val s = songs.first()
 
-                val mediaDetails = mediaPlayerObjects.mediaItems(
-                    song.songID, url, song.name, song.artists, song.thumbnail
-                )
+                updateStatus(s.thumbnail, s.name, s.artists, s.songID, MusicPlayerState.LOADING)
+
+                val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
+
+                val mediaDetails =
+                    mediaPlayerObjects.mediaItems(s.songID, url, s.name, s.artists, s.thumbnail)
                 mediaPlayerObjects.playSong(mediaDetails, true)
                 return@launch
             }
         }
 
-        val searchName = "$name - $artists".lowercase()
+        val searchName = "${name.lowercase().replace("official video", "")} - $artists".lowercase()
         apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
             roomDBImpl.removeSongDetails(it.songID ?: "").collect()
             it.toLocal()?.let { d -> roomDBImpl.insert(d).collect() }
+
+            updateStatus(
+                it.thumbnail,
+                it.songName ?: "",
+                it.artistName ?: "",
+                it.songID ?: "",
+                MusicPlayerState.LOADING
+            )
 
             val url = mediaPlayerObjects.mediaAudioPaths(it.songID ?: "")
 

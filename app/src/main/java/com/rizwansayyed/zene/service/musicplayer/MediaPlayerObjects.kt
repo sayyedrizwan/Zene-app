@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.musicplayer
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
@@ -15,7 +16,13 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import com.rizwansayyed.zene.BaseApplication
+import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
+import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.utils.Algorithims.randomIds
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.utils.Utils.updateStatus
 import com.rizwansayyed.zene.utils.downloader.opensource.State
 import com.rizwansayyed.zene.utils.downloader.opensource.YTExtractor
 import com.rizwansayyed.zene.utils.downloader.opensource.bestQuality
@@ -23,6 +30,11 @@ import com.rizwansayyed.zene.utils.downloader.opensource.getAudioOnly
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -89,6 +101,14 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         }
     }
 
+    fun setPlayerDuration(duration: Long) {
+        player.seekTo(duration)
+    }
+
+    fun getPlayerDuration(): Long {
+        return player.currentPosition
+    }
+
     suspend fun mediaAudioPaths(id: String): String? {
         val yt = YTExtractor(con = context, CACHING = false, LOGGING = true, retryCount = 1).apply {
             extract(id)
@@ -111,45 +131,18 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         return null
     }
 
-
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        if (playbackState == ExoPlayer.STATE_READY) {
-            val realDurationMillis: Long = player.duration
-            Log.d("TAG", "onPlaybackStateChanged: fsfs $realDurationMillis")
-        }
-
-    }
-
     override fun onEvents(player: Player, events: Player.Events) {
-        if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
-            player.currentMediaItem?.let { mediaItem ->
-//                nowPlaying.update {
-//                    mediaItem
-//                }
-            }
-        }
+        val state = if (player.isPlaying) MusicPlayerState.PLAYING else MusicPlayerState.PLAYING
+        val duration = player.duration
+        val currentPosition = player.currentPosition
+        CoroutineScope(Dispatchers.IO).launch {
+            val musicData = dataStoreManager.musicPlayerData.first()
+            musicData?.state = state
+            musicData?.duration = duration
+            musicData?.currentDuration = currentPosition
 
-        if (events.contains(Player.EVENT_IS_PLAYING_CHANGED)) {
-//            isPlaying.update {
-//                player.isPlaying
-//            }
-        }
-//        Log.d("TAG", "onEvents: data ${events.}")
-
-        if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION) ||
-            events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) ||
-            events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
-        ) {
-            if (player.duration > 0) {
-
-                Log.d("TAG", "onEvents: data ${player.duration}")
-                Log.d("TAG", "onEvents: data ${player.contentPosition}")
-                Log.d("TAG", "onEvents: data ${player.currentPosition}")
-//                duration.update {
-//                    player.duration
-//                }
-            }
+            dataStoreManager.musicPlayerData = flowOf(musicData)
+            if (isActive) cancel()
         }
     }
 }

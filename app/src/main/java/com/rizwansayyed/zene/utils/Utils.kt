@@ -1,12 +1,19 @@
 package com.rizwansayyed.zene.utils
 
+import android.provider.MediaStore.Audio.Artists
 import android.widget.Toast
+import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.BaseApplication.Companion.context
+import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
+import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
+import com.rizwansayyed.zene.presenter.model.MusicPlayerState
+import com.rizwansayyed.zene.presenter.model.Thumbnail
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -54,4 +61,24 @@ object Utils {
         if (this.length <= maxLength) return this
         return this.substring(0, maxLength - 3) + "..."
     }
+
+    fun updateStatus(
+        thumbnail: String?, songs: String, artists: String, pId: String, music: MusicPlayerState
+    ) {
+        val musicPlayerDetails =
+            MusicPlayerDetails(
+                thumbnail, songs, artists, pId, 0, 0,  music, System.currentTimeMillis()
+            )
+        dataStoreManager.musicPlayerData = flowOf(musicPlayerDetails)
+    }
+
+
+    fun msToSongDuration(milliseconds: Long): String {
+        val seconds = (milliseconds / 1000).toInt()
+        val minutes = (seconds / 60)
+        val remainingSeconds = seconds % 60
+
+        return String.format("%d:%02d", minutes, remainingSeconds)
+    }
+
 }

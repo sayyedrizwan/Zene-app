@@ -52,8 +52,6 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
             window.setFlags(windowManagerNoLimit, windowManagerNoLimit)
             val currentScreen = homeNavViewModel.homeNavigationView.value
 
-            var show by remember { mutableStateOf(false) }
-
             ZeneTheme {
                 Box(
                     Modifier
@@ -62,8 +60,8 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                 ) {
                     AnimatedContent(targetState = currentScreen, label = "") {
                         when (it) {
-                            MAIN -> HomepageView(songsViewModel)
-                            SELECT_ARTISTS -> HomepageView(songsViewModel)
+                            MAIN -> HomepageView(songsViewModel, homeNavViewModel)
+                            SELECT_ARTISTS -> HomepageView(songsViewModel, homeNavViewModel)
                             SETTINGS -> SettingsView(songsViewModel)
                         }
                     }
@@ -71,11 +69,6 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     MusicPlayerView(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
 
                     HomeNavBar(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
-                }
-
-                LaunchedEffect(Unit) {
-                    delay(3.seconds)
-                    show = true
                 }
             }
         }
