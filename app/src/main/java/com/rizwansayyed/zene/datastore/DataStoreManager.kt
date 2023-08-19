@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.album_header_timestamp
 import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.artists_suggestions_timestamp
+import com.rizwansayyed.zene.datastore.DataStoreUtil.do_music_player_loop
 import com.rizwansayyed.zene.datastore.DataStoreUtil.footer_albums_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.ip_data
 import com.rizwansayyed.zene.datastore.DataStoreUtil.music_player_data
@@ -298,5 +299,14 @@ class DataStoreManager {
         }
         set(value) {
             SetDataStoreValueClass(music_player_data, MusicPlayerDetails::class.java, value)
+        }
+
+
+    var doMusicPlayerLoop: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[do_music_player_loop] ?: false
+        }
+        set(value) {
+            SetDataStoreValue(do_music_player_loop, value)
         }
 }

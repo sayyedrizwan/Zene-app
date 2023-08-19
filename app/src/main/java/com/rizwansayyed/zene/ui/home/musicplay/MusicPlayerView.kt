@@ -7,7 +7,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,13 +39,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.theme.Purple
@@ -54,6 +60,8 @@ import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.time.Duration.Companion.seconds
 
@@ -73,7 +81,7 @@ fun MusicPlayerView(modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltV
     ) {
         Column(
             Modifier
-                .height(((80 / 100.0) * screenHeight.value.toInt()).toInt().dp)
+                .height(((88 / 100.0) * screenHeight.value.toInt()).toInt().dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                 .background(Purple)
@@ -91,12 +99,18 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val musicPlayer by dataStoreManager.musicPlayerData
         .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.musicPlayerData.first() })
+    val doMusicLoop by dataStoreManager.doMusicPlayerLoop
+        .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.doMusicPlayerLoop.first() })
+
     val coroutine = rememberCoroutineScope()
 
     var songPlayingDuration by remember { mutableStateOf<Long>(0) }
 
     var sliderValue by remember { mutableStateOf(0f) }
     var changedStarted by remember { mutableStateOf(false) }
+
+    val loopEnabled = stringResource(id = R.string.song_will_play_on_loop)
+    val loopOff = stringResource(id = R.string.loop_is_off)
 
     Box(Modifier.fillMaxWidth()) {
         AsyncImage(
@@ -174,7 +188,30 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
                     .offset(x = 0.dp, y = (-10).dp)
                     .padding(end = 10.dp)
             )
+        }
 
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+            PlayerImgIcon(R.drawable.ic_stop) {
+                nav.restartMusic()
+            }
+
+
+            PlayerImgIcon(if (musicPlayer?.state == MusicPlayerState.PLAYING) R.drawable.ic_pause else R.drawable.ic_play) {
+                nav.doPlayer()
+            }
+
+            PlayerImgIcon(if (doMusicLoop) R.drawable.ic_repeat_on else R.drawable.ic_repeat) {
+                dataStoreManager.doMusicPlayerLoop = flowOf(!doMusicLoop)
+                if (doMusicLoop)
+                    loopOff.showToast()
+                else
+                    loopEnabled.showToast()
+
+                coroutine.launch {
+                    delay(2.seconds)
+                    nav.repeatMode()
+                }
+            }
         }
     }
 
@@ -185,26 +222,35 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
         songPlayingDuration = nav.getPlayerDuration()
 
         if (songPlayingDuration != "0".toLong() && musicPlayer?.duration != null) {
-            sliderValue =
-                ((songPlayingDuration - "000000".toLong()) * 100f) / (musicPlayer?.duration!! - "000000".toLong())
+            sliderValue = sliderDurationValue(songPlayingDuration, musicPlayer?.duration!!)
+        }
+
+        while (true) {
+            delay(1.seconds)
+            if (musicPlayer?.state == MusicPlayerState.PLAYING && !changedStarted) {
+                songPlayingDuration = nav.getPlayerDuration()
+
+                sliderValue = sliderDurationValue(songPlayingDuration, musicPlayer?.duration!!)
+            }
         }
     }
+}
 
-//    DisposableEffect(musicPlayer) {
-//        coroutine.launch {
-//            while (true) {
-//                delay(1.seconds)
-//                if (musicPlayer?.state == MusicPlayerState.PLAYING && !changedStarted) {
-//                    songPlayingDuration = nav.getPlayerDuration()
-//
-//                    sliderValue =
-//                        (songPlayingDuration - musicPlayer?.duration!!).toFloat() / (songPlayingDuration - musicPlayer?.duration!!)
-//
-//                }
-//            }
-//        }
-//        onDispose {
-//            coroutine.cancel()
-//        }
-//    }
+@Composable
+fun PlayerImgIcon(ic: Int, color: Color = Color.White, click: () -> Unit) {
+    Image(
+        painterResource(id = ic),
+        "",
+        Modifier
+            .padding(15.dp)
+            .size(35.dp)
+            .clickable {
+                click()
+            },
+        colorFilter = ColorFilter.tint(color = color)
+    )
+}
+
+fun sliderDurationValue(songPlayingDuration: Long, duration: Long): Float {
+    return ((songPlayingDuration - "000000".toLong()) * 100f) / (duration - "000000".toLong())
 }

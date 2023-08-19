@@ -96,6 +96,11 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         }
         withContext(Dispatchers.Main) {
             player.setMediaItem(media)
+            if (dataStoreManager.doMusicPlayerLoop.first())
+                player.repeatMode = Player.REPEAT_MODE_ALL
+            else
+                player.repeatMode = Player.REPEAT_MODE_OFF
+
             player.playWhenReady = true
             player.prepare()
         }
@@ -103,6 +108,28 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
 
     fun setPlayerDuration(duration: Long) {
         player.seekTo(duration)
+    }
+
+    fun doPlayer() {
+        if (player.isPlaying)
+            player.pause()
+        else
+            player.play()
+    }
+
+    fun restart() {
+        player.seekTo(0)
+        player.playWhenReady = true
+        player.prepare()
+    }
+
+    fun repeatMode() = CoroutineScope(Dispatchers.Main).launch {
+        if (dataStoreManager.doMusicPlayerLoop.first())
+            player.repeatMode = Player.REPEAT_MODE_ALL
+        else
+            player.repeatMode = Player.REPEAT_MODE_OFF
+
+        if (isActive) cancel()
     }
 
     fun getPlayerDuration(): Long {
@@ -132,7 +159,7 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
     }
 
     override fun onEvents(player: Player, events: Player.Events) {
-        val state = if (player.isPlaying) MusicPlayerState.PLAYING else MusicPlayerState.PLAYING
+        val state = if (player.isPlaying) MusicPlayerState.PLAYING else MusicPlayerState.PAUSE
         val duration = player.duration
         val currentPosition = player.currentPosition
         CoroutineScope(Dispatchers.IO).launch {
