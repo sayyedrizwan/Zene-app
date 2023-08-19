@@ -12,7 +12,6 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDB
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
-import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 import com.rizwansayyed.zene.utils.Utils.DB.SONG_DETAILS_DB
 import com.rizwansayyed.zene.utils.Utils.URL.IP_JSON_BASE_URL
@@ -22,8 +21,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -33,11 +35,20 @@ object Module {
 
     @Provides
     @Singleton
-    fun retrofitAPIService(): ApiInterface = Retrofit.Builder()
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .baseUrl(BuildConfig.DOMAIN_KEY)
-        .build()
-        .create(ApiInterface::class.java)
+    fun retrofitAPIService(): ApiInterface {
+
+        val httpClient = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(2, TimeUnit.MINUTES)
+
+        return Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(BuildConfig.DOMAIN_KEY)
+            .client(httpClient.build())
+            .build()
+            .create(ApiInterface::class.java)
+    }
 
     @Provides
     @Singleton

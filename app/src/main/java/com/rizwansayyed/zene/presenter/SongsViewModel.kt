@@ -10,16 +10,16 @@ import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
-import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.startMedaPlayerService
+import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerResponse
+import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerStatus
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
-import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,8 +30,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import org.jsoup.Jsoup
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -298,48 +298,75 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-    fun songsPlayingDetails(name: String, artists: String) = viewModelScope.launch(Dispatchers.IO) {
-        if (!isMusicPlayerServiceIsRunning()) {
-            startMedaPlayerService()
-        }
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun songsPlayingDetails(thumbnail: String, name: String, artists: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!isMusicPlayerServiceIsRunning()) {
+                startMedaPlayerService()
+            }
 
+            val songs = roomDBImpl.recentPlayedHome(name, artists).first()
+            if (songs.isNotEmpty()) {
+                if (!songs.first().timestamp.is2DayOlderNeedCache()) {
+                    val s = songs.first()
 
-        val songs = roomDBImpl.recentPlayedHome(name, artists).first()
-        if (songs.isNotEmpty()) {
-            if (!songs.first().timestamp.is2DayOlderNeedCache()) {
+                    updateStatus(s.thumbnail, s.name, s.artists, s.songID, MusicPlayerState.LOADING)
 
-                val s = songs.first()
+                    val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
 
-                updateStatus(s.thumbnail, s.name, s.artists, s.songID, MusicPlayerState.LOADING)
+                    val mediaDetails =
+                        mediaPlayerObjects.mediaItems(s.songID, url, s.name, s.artists, s.thumbnail)
+                    mediaPlayerObjects.playSong(mediaDetails, true)
+                    return@launch
+                }
+            }
 
-                val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
+            val searchName = "${name.lowercase().replace("official video", "")} - ${
+                artists.substringBefore(",").substringBefore("&")
+            }".lowercase()
+            apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
+                if (thumbnail.isNotEmpty()) {
+                    it.thumbnail = thumbnail
+                }
 
-                val mediaDetails =
-                    mediaPlayerObjects.mediaItems(s.songID, url, s.name, s.artists, s.thumbnail)
+                roomDBImpl.removeSongDetails(it.songID ?: "").collect()
+                it.toLocal()?.let { d -> roomDBImpl.insert(d).collect() }
+
+                updateStatus(
+                    it.thumbnail,
+                    it.songName ?: "",
+                    it.artistName ?: "",
+                    it.songID ?: "",
+                    MusicPlayerState.LOADING
+                )
+
+                val url = mediaPlayerObjects.mediaAudioPaths(it.songID ?: "")
+
+                val mediaDetails = mediaPlayerObjects.mediaItems(
+                    it.songID, url, it.songName, it.artistName, it.thumbnail
+                )
                 mediaPlayerObjects.playSong(mediaDetails, true)
-                return@launch
             }
         }
 
-        val searchName = "${name.lowercase().replace("official video", "")} - $artists".lowercase()
-        apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
-            roomDBImpl.removeSongDetails(it.songID ?: "").collect()
-            it.toLocal()?.let { d -> roomDBImpl.insert(d).collect() }
 
-            updateStatus(
-                it.thumbnail,
-                it.songName ?: "",
-                it.artistName ?: "",
-                it.songID ?: "",
-                MusicPlayerState.LOADING
-            )
+    var videoPlayingDetails by mutableStateOf(VideoPlayerResponse())
+        private set
 
-            val url = mediaPlayerObjects.mediaAudioPaths(it.songID ?: "")
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun videoPlayingDetails(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        apiImpl.videoPlayDetails(q).onStart {
+            videoPlayingDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
+        }.catch {
+            videoPlayingDetails =
+                VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+        }.collectLatest {
+            val url = mediaPlayerObjects.mediaVideoPaths(it.videoID ?: "")
 
-            val mediaDetails = mediaPlayerObjects.mediaItems(
-                it.songID, url, it.songName, it.artistName, it.thumbnail
-            )
-            mediaPlayerObjects.playSong(mediaDetails, true)
+            videoPlayingDetails = if (url != null)
+                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, url)
+            else
+                VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
         }
     }
 }

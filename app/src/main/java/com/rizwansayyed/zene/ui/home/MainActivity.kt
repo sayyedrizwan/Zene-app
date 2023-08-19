@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.home
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
@@ -9,11 +10,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,13 +19,12 @@ import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
+import com.rizwansayyed.zene.ui.home.musicplay.video.FullScreenMusicVideo
 import com.rizwansayyed.zene.ui.home.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.home.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), NetworkCallbackStatus {
@@ -69,6 +64,23 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     MusicPlayerView(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
 
                     HomeNavBar(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
+
+                    FullScreenMusicVideo(homeNavViewModel, songsViewModel)
+
+                }
+
+                BackHandler {
+                    if (homeNavViewModel.playMusicVideo.value.isNotEmpty()) {
+                        homeNavViewModel.playingVideo("")
+                        return@BackHandler
+                    }
+
+                    if (homeNavViewModel.showMusicPlayerView.value) {
+                        homeNavViewModel.hideMusicPlayer()
+                        return@BackHandler
+                    }
+
+                    finish()
                 }
             }
         }

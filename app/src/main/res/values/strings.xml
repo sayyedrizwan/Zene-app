@@ -20,4 +20,5 @@
     <string name="no_songs_suggestion_notice">No songs suggestion right now, Please listen to around 3 to 5 songs to start songs suggestions. Note: We don\'t save any of your data on our server. SO!! ENJOY!!!</string>
     <string name="song_will_play_on_loop">Song will play on loop</string>
     <string name="loop_is_off">Loop is off</string>
+    <string name="error_loading_the_video_try_again">Error loading the video. Please try again later.</string>
 </resources>

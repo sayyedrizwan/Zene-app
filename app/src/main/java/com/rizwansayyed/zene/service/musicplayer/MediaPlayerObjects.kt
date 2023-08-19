@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.service.musicplayer
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
@@ -11,22 +10,20 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
-import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
+import com.rizwansayyed.zene.presenter.model.VideoDataDownloader
 import com.rizwansayyed.zene.utils.Algorithims.randomIds
-import com.rizwansayyed.zene.utils.Utils
-import com.rizwansayyed.zene.utils.Utils.showToast
-import com.rizwansayyed.zene.utils.Utils.updateStatus
 import com.rizwansayyed.zene.utils.downloader.opensource.State
 import com.rizwansayyed.zene.utils.downloader.opensource.YTExtractor
 import com.rizwansayyed.zene.utils.downloader.opensource.bestQuality
 import com.rizwansayyed.zene.utils.downloader.opensource.getAudioOnly
+import com.rizwansayyed.zene.utils.downloader.opensource.getVideoOnly
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@UnstableApi
 class MediaPlayerObjects @Inject constructor(@ApplicationContext private val context: Context) :
     Player.Listener {
 
@@ -72,7 +70,6 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
             .setMediaMetadata(mediaMetaData).build()
     }
 
-    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun playSong(media: MediaItem, newPlay: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         if (controllerFuture == null) {
             controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
@@ -110,7 +107,11 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         player.seekTo(duration)
     }
 
-    fun doPlayer() {
+    fun doPlayer(forceStop: Boolean = false) {
+        if (forceStop) {
+            player.pause()
+            return
+        }
         if (player.isPlaying)
             player.pause()
         else
@@ -155,6 +156,30 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
             return files?.url
         }
 
+        return null
+    }
+
+    suspend fun mediaVideoPaths(id: String): VideoDataDownloader? {
+        val yt = YTExtractor(con = context, CACHING = false, LOGGING = true, retryCount = 1).apply {
+            extract(id)
+        }
+
+        if (yt.state == State.SUCCESS) {
+            val data = VideoDataDownloader("", "", "", "")
+            yt.getYTFiles()?.getVideoOnly()?.forEach {
+                if (it.meta?.height == 720 && it.meta.ext == "webm") {
+                    data.hdd = it.url ?: ""
+                }
+                if (it.meta?.height == 480 && it.meta.ext == "webm") {
+                    data.hd = it.url ?: ""
+                }
+                if (it.meta?.height == 360 && it.meta.ext == "webm") {
+                    data.sd = it.url ?: ""
+                }
+            }
+            data.audio = yt.getYTFiles()?.getVideoOnly()?.bestQuality()?.url ?: ""
+            return data
+        }
         return null
     }
 

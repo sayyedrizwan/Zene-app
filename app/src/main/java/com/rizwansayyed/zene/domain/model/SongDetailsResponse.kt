@@ -3,11 +3,11 @@ package com.rizwansayyed.zene.domain.model
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
 
 data class SongDetailsResponse(
-    val thumbnail: String?,
-    val songName: String?,
-    val artistName: String?,
-    val songID: String?,
-    val videoID: String?,
+    var thumbnail: String?,
+    var songName: String?,
+    var artistName: String?,
+    var songID: String?,
+    var videoID: String?,
 )
 
 fun SongDetailsResponse.toLocal(): SongDetailsEntity? {
@@ -17,11 +17,11 @@ fun SongDetailsResponse.toLocal(): SongDetailsEntity? {
     if (this.songID == null) return null
 
     return SongDetailsEntity(
-        this.songName,
-        this.artistName,
-        this.songID,
+        this.songName!!,
+        this.artistName!!,
+        this.songID!!,
         this.videoID ?: "",
-        this.thumbnail,
+        this.thumbnail!!,
         System.currentTimeMillis(),
         null
     )

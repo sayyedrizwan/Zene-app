@@ -4,7 +4,7 @@ data class MusicPlayerDetails(
     val thumbnail: String?,
     val songName: String?,
     val artists: String?,
-    val pId: String?,
+    var pId: String?,
     var currentDuration: Long?,
     var duration: Long?,
     var state: MusicPlayerState?,

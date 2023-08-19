@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String) -> Unit) {
+fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String) -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     var songName by remember { mutableStateOf("") }
@@ -95,14 +95,10 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String) -> Unit
 
                 RoundOutlineButtons(Icons.Default.PlayArrow, stringResource(id = R.string.play)) {
                     updateStatus(
-                        header[pagerState.currentPage].thumbnail,
-                        extractSongTitles(songName),
-                        extractSongSubTitles(songName),
-                        "", MusicPlayerState.LOADING
+                        header[pagerState.currentPage].thumbnail, extractSongTitles(songName),
+                        extractSongSubTitles(songName), "", MusicPlayerState.LOADING
                     )
-                    search(
-                        extractSongTitles(songName), extractSongSubTitles(songName)
-                    )
+                    search("", songName, extractSongSubTitles(songName))
                 }
             }
         }

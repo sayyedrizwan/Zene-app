@@ -1,13 +1,16 @@
 package com.rizwansayyed.zene.utils
 
-import android.provider.MediaStore.Audio.Artists
+import android.net.Uri
 import android.widget.Toast
-import com.rizwansayyed.zene.BaseApplication
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.DefaultLoadControl
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.upstream.DefaultAllocator
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
-import com.rizwansayyed.zene.presenter.model.Thumbnail
+import com.rizwansayyed.zene.presenter.model.VideoDataDownloader
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -65,10 +68,9 @@ object Utils {
     fun updateStatus(
         thumbnail: String?, songs: String, artists: String, pId: String, music: MusicPlayerState
     ) {
-        val musicPlayerDetails =
-            MusicPlayerDetails(
-                thumbnail, songs, artists, pId, 0, 0,  music, System.currentTimeMillis()
-            )
+        val musicPlayerDetails = MusicPlayerDetails(
+            thumbnail, songs, artists, pId, 0, 0, music, System.currentTimeMillis()
+        )
         dataStoreManager.musicPlayerData = flowOf(musicPlayerDetails)
     }
 
@@ -79,6 +81,23 @@ object Utils {
         val remainingSeconds = seconds % 60
 
         return String.format("%d:%02d", minutes, remainingSeconds)
+    }
+
+    private const val preloadingDurationSeconds = 10
+    private const val preloadingDurationMs = preloadingDurationSeconds * 1000L
+
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun enableCache(): DefaultLoadControl {
+
+        val bufferForPlaybackMs = preloadingDurationMs
+        val bufferForPlaybackBufferMs = preloadingDurationMs / 2
+        val minBufferMs = 1000
+        val maxBufferMs = preloadingDurationMs.toInt() * 2
+
+
+        return DefaultLoadControl.Builder().setBufferDurationsMs(
+            minBufferMs, maxBufferMs, bufferForPlaybackMs.toInt(), bufferForPlaybackBufferMs.toInt()
+        ).build()
     }
 
 }

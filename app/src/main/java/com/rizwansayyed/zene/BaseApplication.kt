@@ -25,6 +25,8 @@ import kotlin.time.Duration.Companion.seconds
 //started tracking feature. completed button and working on connecting.
 
 
+// working on connecting users and background location
+
 //add info about of tracker and qr code.
 
 @HiltAndroidApp

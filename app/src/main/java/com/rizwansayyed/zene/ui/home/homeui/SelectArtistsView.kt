@@ -93,15 +93,14 @@ fun ArtistsViewSmallView(artists: TopArtistsSongs) {
 }
 
 @Composable
-fun TrendingSongsView(songs: TopArtistsSongs, search: (String, String) -> Unit) {
+fun TrendingSongsView(songs: TopArtistsSongs, search: (String, String, String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(10.dp)
             .clickable {
-                search(songs.name ?: "", songs.artist ?: "")
-                "open song".showToast()
+                search(songs.img ?: "", songs.name ?: "", songs.artist ?: "")
             }
     ) {
         AsyncImage(
@@ -123,14 +122,14 @@ fun TrendingSongsView(songs: TopArtistsSongs, search: (String, String) -> Unit) 
 
 
 @Composable
-fun TrendingSongsViewShortText(songs: TopArtistsSongs, search: (String, String) -> Unit) {
+fun TrendingSongsViewShortText(songs: TopArtistsSongs, search: (String, String, String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(10.dp)
             .clickable {
-                search(songs.name ?: "", songs.artist ?: "")
+                search(songs.img ?: "", songs.name ?: "", songs.artist ?: "")
                 "open song".showToast()
             }
     ) {

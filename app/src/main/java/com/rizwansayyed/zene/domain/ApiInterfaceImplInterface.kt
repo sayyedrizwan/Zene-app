@@ -26,4 +26,5 @@ interface ApiInterfaceImplInterface {
     suspend fun trendingSongsTop50KPop(): Flow<TopArtistsResponseApi>
 
     suspend fun songPlayDetails(name: String): Flow<SongDetailsResponse>
+    suspend fun videoPlayDetails(name: String): Flow<SongDetailsResponse>
 }

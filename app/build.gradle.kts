@@ -100,6 +100,11 @@ dependencies {
 
     implementation("io.coil-kt:coil:2.4.0")
 
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
+
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
 
     val media3_version = "1.1.0"
 

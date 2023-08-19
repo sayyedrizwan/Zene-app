@@ -57,9 +57,9 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
     LazyColumn {
         item {
             headerPagerData?.let {
-                TopHeaderPager(it) { name, artists ->
+                TopHeaderPager(it) { thumbnail, name, artists ->
                     nav.showMusicPlayer()
-                    songsViewModel.songsPlayingDetails(name, artists)
+                    songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                 }
             }
         }
@@ -105,8 +105,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
         item {
             LazyRow {
                 if (globalSongs != null) items(globalSongs!!) { song ->
-                    TrendingSongsView(song) { name, artists ->
-                        songsViewModel.songsPlayingDetails(name, artists)
+                    TrendingSongsView(song) { thumbnail, name, artists ->
+                        songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                     }
                 }
             }
@@ -122,8 +122,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                 items(topCountrySongs?.size ?: 0) { songs ->
                     topCountrySongs?.get(songs)?.let {
-                        TrendingSongsViewShortText(it) { name, artists ->
-                            songsViewModel.songsPlayingDetails(name, artists)
+                        TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                            songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                         }
                     }
@@ -141,8 +141,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                     items(suggestedSongs?.size ?: 0) { songs ->
                         suggestedSongs?.get(songs)?.let {
-                            TrendingSongsViewShortText(it) { name, artists ->
-                                songsViewModel.songsPlayingDetails(name, artists)
+                            TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                                songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                             }
                         }
@@ -176,8 +176,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                 items(trendingSongsTop50?.size ?: 0) { songs ->
                     trendingSongsTop50?.get(songs)?.let {
-                        TrendingSongsViewShortText(it) { name, artists ->
-                            songsViewModel.songsPlayingDetails(name, artists)
+                        TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                            songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                         }
                     }
@@ -193,8 +193,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
         item {
             LazyRow {
                 if (trendingSongsTopKPop != null) items(trendingSongsTopKPop!!) { song ->
-                    TrendingSongsView(song) { name, artists ->
-                        songsViewModel.songsPlayingDetails(name, artists)
+                    TrendingSongsView(song) { thumbnail, name, artists ->
+                        songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                     }
                 }
             }
@@ -208,8 +208,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
         item {
             LazyRow {
                 if (trendingSongsTop50KPop != null) items(trendingSongsTop50KPop!!) { song ->
-                    TrendingSongsView(song) { name, artists ->
-                        songsViewModel.songsPlayingDetails(name, artists)
+                    TrendingSongsView(song) { thumbnail, name, artists ->
+                        songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                     }
                 }
             }
@@ -225,8 +225,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                     items(songsSuggestionsForYou?.size ?: 0) { songs ->
                         songsSuggestionsForYou?.get(songs)?.let {
-                            TrendingSongsViewShortText(it) { name, artists ->
-                                songsViewModel.songsPlayingDetails(name, artists)
+                            TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                                songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                             }
                         }
@@ -266,9 +266,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                     ) {
                         items(it.details?.size ?: 0) { songs ->
                             it.details?.get(songs)?.let {
-                                TrendingSongsViewShortText(it) { name, artists ->
-                                    songsViewModel.songsPlayingDetails(name, artists)
-
+                                TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                                    songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                                 }
                             }
                         }
@@ -299,12 +298,6 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                 )
             }
         }
-
-
-//        if (footerAlbums?.isNotEmpty() == true)
-//            items(footerAlbums!!) {
-//                TopHeaderOf(it.headline!!)
-//            }
 
         item {
             Spacer(modifier = Modifier.height(200.dp))
