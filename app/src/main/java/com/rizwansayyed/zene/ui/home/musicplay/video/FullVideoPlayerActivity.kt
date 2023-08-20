@@ -76,8 +76,8 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
                     )
                 }
 
-                BackHandler {
-                    if (exoPlayerGlobal?.isPlaying == true) {
+//                BackHandler {
+//                    if (exoPlayerGlobal?.isPlaying == true) {
 //                        if (!isInPictureInPictureMode) {
 //                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //                                enterPictureInPictureMode(
@@ -88,8 +88,8 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
 //                            } else
 //                                enterPictureInPictureMode()
 //                        }
-                    }
-                }
+//                    }
+//            }
             }
         }
 

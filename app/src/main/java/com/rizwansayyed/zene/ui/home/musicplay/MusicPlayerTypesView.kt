@@ -80,7 +80,6 @@ fun MusicPlayerLyrics(nav: HomeNavViewModel, song: SongsViewModel = hiltViewMode
     }
 
     LaunchedEffect(Unit) {
-        delay(700)
         val songs = "${musicPlayer?.songName} - ${musicPlayer?.artists}"
         song.readLyrics(songs)
     }
