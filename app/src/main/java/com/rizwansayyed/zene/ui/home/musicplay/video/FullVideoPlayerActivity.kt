@@ -4,19 +4,15 @@ import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -27,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -43,6 +40,7 @@ import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
+import com.rizwansayyed.zene.utils.Utils.openOnYoutubeVideo
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.downloader.WebViewShareFrom
 import dagger.hilt.android.AndroidEntryPoint
@@ -85,13 +83,16 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
 
             ZeneTheme {
 
-                Column(
+                Box(
                     Modifier
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
 
-                    FullScreenVideoPlayer()
+                    FullScreenVideoPlayer(
+                        Modifier.align(Alignment.Center),
+                        Modifier.align(Alignment.TopEnd)
+                    )
                 }
             }
         }
@@ -107,20 +108,12 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
     }
 
     @Composable
-    fun FullScreenVideoPlayer() {
+    fun FullScreenVideoPlayer(center: Modifier, topEnd: Modifier) {
         val errorLoadingVideo =
             stringResource(id = R.string.error_loading_the_video_try_again)
 
         when (songsViewModel.videoPlayingDetails.status) {
-            VideoPlayerStatus.LOADING -> Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CircularProgressIndicator(Modifier.size(30.dp), Color.White)
-            }
-
+            VideoPlayerStatus.LOADING -> CircularProgressIndicator(center.size(30.dp), Color.White)
             VideoPlayerStatus.ERROR -> {
                 finish()
                 errorLoadingVideo.showToast()
@@ -138,15 +131,8 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
                 }
 
                 if (playUrl.isEmpty())
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        CircularProgressIndicator(Modifier.size(30.dp), Color.White)
-                    }
-                else
+                    CircularProgressIndicator(center.size(30.dp), Color.White)
+                else {
                     AndroidView(factory = { ctx ->
                         PlayerView(ctx).apply {
                             resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
@@ -172,7 +158,22 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
                         exoPlayerGlobal?.playWhenReady = true
                         exoPlayerGlobal?.prepare()
                         exoPlayerGlobal?.play()
-                    })
+                    }, modifier = center.fillMaxSize())
+
+
+                    Image(
+                        painter = painterResource(id = R.drawable.youtube_color_logo),
+                        contentDescription = "",
+                        modifier = topEnd
+                            .padding(15.dp)
+                            .size(37.dp)
+                            .clickable {
+                                openOnYoutubeVideo()
+                            },
+                        alpha = 0.4f
+                    )
+
+                }
             }
         }
     }

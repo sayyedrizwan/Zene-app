@@ -57,6 +57,7 @@ object Utils {
         fun videoPaths(id: String): String {
             return "$SAVE_FROM_NET/#url=https://youtube.com/watch?v=$id"
         }
+
         fun videoPaths10(id: String): String {
             return "$TEN_DOWNLOADER/download?v=https://www.youtube.com/watch?v=$id&type=video"
         }
@@ -159,6 +160,10 @@ object Utils {
         if (client != null) {
             this.webViewClient = client
         }
+    }
+
+    fun openOnYoutubeVideo() {
+
     }
 
 }
