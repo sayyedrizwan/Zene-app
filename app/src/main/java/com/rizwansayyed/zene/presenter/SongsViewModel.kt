@@ -392,8 +392,8 @@ class SongsViewModel @Inject constructor(
                 videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
                 return@collectLatest
             }
-            saveCaptionsFileTXT(q, it.lyrics ?: "")
             videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.lyrics)
+            saveCaptionsFileTXT(q, it.lyrics ?: "")
         }
     }
 
