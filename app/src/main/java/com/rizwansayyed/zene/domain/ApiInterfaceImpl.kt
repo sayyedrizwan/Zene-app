@@ -89,4 +89,9 @@ class ApiInterfaceImpl @Inject constructor(
         dataStoreManager.ipData = flowOf(ip)
         emit(apiInterface.videoPlayDetails(ip.query ?: "", name))
     }
+
+
+    override suspend fun songLyrics(name: String) = flow {
+        emit(apiInterface.songLyrics(name))
+    }
 }

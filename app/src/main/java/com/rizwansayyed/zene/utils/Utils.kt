@@ -1,10 +1,9 @@
 package com.rizwansayyed.zene.utils
 
 import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Environment
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
@@ -12,12 +11,12 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.media3.exoplayer.DefaultLoadControl
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
+import com.rizwansayyed.zene.utils.Utils.PATH.cacheLyricsFiles
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +25,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileInputStream
 
 
 object Utils {
@@ -36,6 +37,7 @@ object Utils {
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
         const val TOP_COUNTRY_SONGS = "topCountrySongs"
         const val SONG_SUGGESTIONS = "songSuggestions"
+        const val SONG_LYRICS = "songLyrics"
         const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
         const val SEARCH_SONGS = "searchSongs"
         const val SONG_PLAY_DETAILS = "songPlayDetails"
@@ -68,6 +70,14 @@ object Utils {
         const val SONG_DETAILS_DB = "song_details_db"
         const val RECENT_PLAYED_ARTISTS_DB = "recent_played_artists_db"
     }
+
+    object PATH {
+        val cacheLyricsFiles = File(context.cacheDir, "lyrics").apply {
+            mkdir()
+            mkdirs()
+        }
+    }
+
 
     object EXTRA {
         const val PLAY_URL_PATH = "play_url_path"
@@ -162,8 +172,44 @@ object Utils {
         }
     }
 
-    fun openOnYoutubeVideo() {
+    fun openOnYoutubeVideo(id: String) {
+        val youtubePackageName = "com.google.android.youtube"
 
+        val intent = context.packageManager.getLaunchIntentForPackage(youtubePackageName)?.apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            data = Uri.parse("https://www.youtube.com/watch?v=$id")
+        }
+        if (intent == null) {
+            Intent(Intent.ACTION_VIEW).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                data = Uri.parse("https://www.youtube.com/watch?v=$id")
+                context.startActivity(this)
+            }
+        } else {
+            context.startActivity(intent)
+        }
+    }
+
+
+    fun saveCaptionsFileTXT(name: String, txt: String) {
+        cacheLyricsFiles.mkdirs()
+        val file = File(cacheLyricsFiles, "$name.txt")
+
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+        file.writeText(txt)
+    }
+
+    fun ifLyricsFileExistReturn(name: String): String {
+        cacheLyricsFiles.mkdirs()
+        val file = File(cacheLyricsFiles, "$name.txt")
+
+        if (!file.exists()) {
+            return ""
+        }
+
+        return FileInputStream(file).bufferedReader().use { it.readText() }
     }
 
 }

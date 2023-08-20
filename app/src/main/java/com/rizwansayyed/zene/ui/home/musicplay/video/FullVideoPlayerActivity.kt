@@ -1,38 +1,21 @@
 package com.rizwansayyed.zene.ui.home.musicplay.video
 
+import android.app.PictureInPictureParams
 import android.content.pm.ActivityInfo
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Rational
 import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.DefaultLoadControl
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.PlayerView
 import com.rizwansayyed.zene.BaseApplication.Companion.exoPlayerGlobal
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.R
@@ -40,9 +23,6 @@ import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
-import com.rizwansayyed.zene.utils.Utils.openOnYoutubeVideo
-import com.rizwansayyed.zene.utils.Utils.showToast
-import com.rizwansayyed.zene.utils.downloader.WebViewShareFrom
 import dagger.hilt.android.AndroidEntryPoint
 
 @androidx.media3.common.util.UnstableApi
@@ -91,8 +71,24 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
 
                     FullScreenVideoPlayer(
                         Modifier.align(Alignment.Center),
-                        Modifier.align(Alignment.TopEnd)
+                        Modifier.align(Alignment.TopEnd),
+                        songsViewModel
                     )
+                }
+
+                BackHandler {
+                    if (exoPlayerGlobal?.isPlaying == true) {
+//                        if (!isInPictureInPictureMode) {
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                                enterPictureInPictureMode(
+//                                    PictureInPictureParams.Builder()
+//                                        .setAspectRatio(Rational(16, 9))
+//                                        .build()
+//                                )
+//                            } else
+//                                enterPictureInPictureMode()
+//                        }
+                    }
                 }
             }
         }
@@ -107,76 +103,6 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
         songsViewModel.videoPlayingDetails(songPlayTitle)
     }
 
-    @Composable
-    fun FullScreenVideoPlayer(center: Modifier, topEnd: Modifier) {
-        val errorLoadingVideo =
-            stringResource(id = R.string.error_loading_the_video_try_again)
-
-        when (songsViewModel.videoPlayingDetails.status) {
-            VideoPlayerStatus.LOADING -> CircularProgressIndicator(center.size(30.dp), Color.White)
-            VideoPlayerStatus.ERROR -> {
-                finish()
-                errorLoadingVideo.showToast()
-            }
-
-            VideoPlayerStatus.SUCCESS -> {
-                var playUrl by remember { mutableStateOf("") }
-
-                WebViewShareFrom(this, songsViewModel.videoPlayingDetails.data ?: "") {
-                    if (it == "non") {
-                        finish()
-                        errorLoadingVideo.showToast()
-                    } else
-                        playUrl = it
-                }
-
-                if (playUrl.isEmpty())
-                    CircularProgressIndicator(center.size(30.dp), Color.White)
-                else {
-                    AndroidView(factory = { ctx ->
-                        PlayerView(ctx).apply {
-                            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
-                        }
-                    }, update = {
-                        val mediaItem = MediaItem.fromUri(Uri.parse(playUrl))
-                        val loadControl = DefaultLoadControl.Builder()
-                            .setBufferDurationsMs(
-                                8 * 1024, 16 * 1024, 2 * 1024, 2 * 1024
-                            )
-                            .setPrioritizeTimeOverSizeThresholds(true)
-
-                        exoPlayerGlobal =
-                            ExoPlayer.Builder(this@FullVideoPlayerActivity)
-                                .setLoadControl(loadControl.build()).build()
-                        it.player = exoPlayerGlobal
-                        val mediaSourceFactory =
-                            DefaultMediaSourceFactory(this@FullVideoPlayerActivity)
-                        val mediaSource =
-                            mediaSourceFactory.createMediaSource(mediaItem)
-
-                        exoPlayerGlobal?.setMediaSource(mediaSource)
-                        exoPlayerGlobal?.playWhenReady = true
-                        exoPlayerGlobal?.prepare()
-                        exoPlayerGlobal?.play()
-                    }, modifier = center.fillMaxSize())
-
-
-                    Image(
-                        painter = painterResource(id = R.drawable.youtube_color_logo),
-                        contentDescription = "",
-                        modifier = topEnd
-                            .padding(15.dp)
-                            .size(37.dp)
-                            .clickable {
-                                openOnYoutubeVideo()
-                            },
-                        alpha = 0.4f
-                    )
-
-                }
-            }
-        }
-    }
 
     override fun internetConnected() {
         if (exoPlayerGlobal?.isLoading == false) {

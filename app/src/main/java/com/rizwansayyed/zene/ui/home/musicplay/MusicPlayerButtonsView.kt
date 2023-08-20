@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.musicplay.video.FullVideoPlayerActivity
+import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerViewStatus
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
 
@@ -50,7 +51,7 @@ fun MusicPlayerButtonsView(music: MusicPlayerDetails, nav: HomeNavViewModel) {
         }
 
         IconsForMusicShortcut(R.drawable.ic_closed_caption) {
-
+            nav.musicViewType(VideoPlayerViewStatus.LYRICS)
         }
 
         IconsForMusicShortcut(R.drawable.ic_download_icon) {

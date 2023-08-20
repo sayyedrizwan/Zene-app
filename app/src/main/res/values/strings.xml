@@ -21,4 +21,6 @@
     <string name="song_will_play_on_loop">Song will play on loop</string>
     <string name="loop_is_off">Loop is off</string>
     <string name="error_loading_the_video_try_again">Error loading the video. Please try again later.</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="no_lyrics_found">No Lyrics found</string>
 </resources>

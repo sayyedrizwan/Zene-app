@@ -2,10 +2,12 @@ package com.rizwansayyed.zene.domain
 
 import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.model.UrlResponse
+import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.SIMILAR_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.URL.SONG_LYRICS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_PLAY_DETAILS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS_FOR_YOU
@@ -57,6 +59,10 @@ interface ApiInterface {
     suspend fun songSuggestions(
         @Field("ip") ip: String, @Field("id") id: String,
     ): TopArtistsResponseApi
+
+    @FormUrlEncoded
+    @POST(SONG_LYRICS)
+    suspend fun songLyrics(@Field("q") id: String): SongLyricsResponse
 
 
     @FormUrlEncoded

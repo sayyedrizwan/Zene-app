@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.home.homenavmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
+import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerViewStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -16,6 +17,13 @@ class HomeNavViewModel @Inject constructor(private val mediaPlayer: MediaPlayerO
 
     fun homeNavigationView(nav: HomeNavigationStatus) {
         homeNavigationView.value = nav
+    }
+
+    var musicViewType = mutableStateOf(VideoPlayerViewStatus.MUSIC)
+        private set
+
+    fun musicViewType(view: VideoPlayerViewStatus) {
+        musicViewType.value = view
     }
 
     var playMusicVideo = mutableStateOf("")

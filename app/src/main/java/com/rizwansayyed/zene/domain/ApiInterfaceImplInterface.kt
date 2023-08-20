@@ -4,6 +4,7 @@ import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
+import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import kotlinx.coroutines.flow.Flow
 
@@ -27,4 +28,5 @@ interface ApiInterfaceImplInterface {
 
     suspend fun songPlayDetails(name: String): Flow<SongDetailsResponse>
     suspend fun videoPlayDetails(name: String): Flow<SongDetailsResponse>
+    suspend fun songLyrics(name: String): Flow<SongLyricsResponse>
 }

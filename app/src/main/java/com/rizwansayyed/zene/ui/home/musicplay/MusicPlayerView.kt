@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,8 +30,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerViewStatus.*
 import com.rizwansayyed.zene.ui.theme.Purple
 
 
@@ -55,7 +56,16 @@ fun MusicPlayerView(modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltV
                 .background(Purple)
                 .verticalScroll(rememberScrollState())
         ) {
-            MusicPlayerCardView(nav)
+            when(nav.musicViewType.value){
+                MUSIC ->  MusicPlayerCardView(nav)
+                LYRICS -> MusicPlayerLyrics(nav)
+                INSTAGRAM -> MusicPlayerLyrics(nav)
+            }
+
+        }
+
+        LaunchedEffect(Unit) {
+            nav.musicViewType(MUSIC)
         }
     }
 }

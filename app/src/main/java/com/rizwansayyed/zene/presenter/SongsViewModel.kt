@@ -20,6 +20,8 @@ import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
+import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
+import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import com.rizwansayyed.zene.utils.downloader.WebViewShareFrom
@@ -360,11 +362,40 @@ class SongsViewModel @Inject constructor(
         apiImpl.videoPlayDetails(q).onStart {
             videoPlayingDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
         }.catch {
-            videoPlayingDetails =
-                VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+            videoPlayingDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
         }.collectLatest {
             if (it.videoID == null) return@collectLatest
             videoPlayingDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.videoID)
         }
     }
+
+
+    var videoLyricsDetails by mutableStateOf(VideoPlayerResponse())
+        private set
+
+
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun readLyrics(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
+        if (ifLyricsFileExistReturn(q).length > 10) {
+            videoLyricsDetails =
+                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn(q))
+            return@launch
+        }
+
+        apiImpl.songLyrics(q).onStart {
+            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
+        }.catch {
+            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+        }.collectLatest {
+            if (it.lyrics?.trim()?.isEmpty() == true) {
+                videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+                return@collectLatest
+            }
+            saveCaptionsFileTXT(q, it.lyrics ?: "")
+            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.lyrics)
+        }
+    }
+
+
 }
