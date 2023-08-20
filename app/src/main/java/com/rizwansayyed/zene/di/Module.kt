@@ -22,7 +22,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
@@ -36,14 +35,10 @@ object Module {
     @Provides
     @Singleton
     fun retrofitAPIService(): ApiInterface {
-        val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-
         val httpClient = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .readTimeout(2, TimeUnit.MINUTES)
-        httpClient.addInterceptor(logging)
 
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
