@@ -20,7 +20,9 @@ import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
+import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
+import com.rizwansayyed.zene.utils.downloader.WebViewShareFrom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -361,12 +363,8 @@ class SongsViewModel @Inject constructor(
             videoPlayingDetails =
                 VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
         }.collectLatest {
-            val url = mediaPlayerObjects.mediaVideoPaths(it.videoID ?: "")
-
-            videoPlayingDetails = if (url != null)
-                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, url)
-            else
-                VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+            if (it.videoID == null) return@collectLatest
+            videoPlayingDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.videoID)
         }
     }
 }

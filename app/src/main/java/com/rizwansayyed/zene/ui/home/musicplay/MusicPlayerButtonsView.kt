@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.ui.home.musicplay
 
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -13,26 +15,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.musicplay.video.FullVideoPlayerActivity
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 fun MusicPlayerButtonsView(music: MusicPlayerDetails, nav: HomeNavViewModel) {
+    val context = LocalContext.current.applicationContext
     Spacer(modifier = Modifier.height(40.dp))
 
     Row(Modifier.horizontalScroll(rememberScrollState())) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-
         IconsForMusicShortcut(R.drawable.ic_video_replay) {
+            nav.doPlayer(true)
             val searchName = "${music.songName?.lowercase()?.replace("official video", "")} - ${
                 music.artists?.substringBefore(",")?.substringBefore("&")
             }".lowercase()
-            nav.playingVideo(searchName)
+            Intent(context, FullVideoPlayerActivity::class.java).apply {
+                putExtra(SONG_NAME_EXTRA, searchName)
+                flags = FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            }
         }
 
         IconsForMusicShortcut(R.drawable.ic_closed_caption) {

@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @HiltViewModel
 class HomeNavViewModel @Inject constructor(private val mediaPlayer: MediaPlayerObjects) :
     ViewModel() {

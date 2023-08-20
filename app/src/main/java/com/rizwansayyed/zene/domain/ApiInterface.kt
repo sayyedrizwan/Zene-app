@@ -80,7 +80,6 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(VIDEO_PLAY_DETAILS)
     suspend fun videoPlayDetails(
-        @Field("ip") ip: String,
-        @Field("q") q: String
+        @Field("ip") ip: String, @Field("q") q: String
     ): SongDetailsResponse
 }

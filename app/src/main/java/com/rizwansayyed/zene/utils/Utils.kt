@@ -1,16 +1,23 @@
 package com.rizwansayyed.zene.utils
 
+import android.annotation.SuppressLint
+import android.app.DownloadManager
+import android.content.Context
 import android.net.Uri
+import android.os.Environment
+import android.view.View
+import android.webkit.CookieManager
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.media3.common.MediaItem
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.media3.exoplayer.DefaultLoadControl
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.upstream.DefaultAllocator
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
-import com.rizwansayyed.zene.presenter.model.VideoDataDownloader
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +26,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+
 
 object Utils {
 
@@ -41,6 +49,17 @@ object Utils {
 
         const val IP_JSON_BASE_URL = "http://ip-api.com/"
         const val IP_JSON = "json"
+
+
+        const val SAVE_FROM_NET = "https://en.savefrom.net"
+        const val TEN_DOWNLOADER = "https://10downloader.com"
+
+        fun videoPaths(id: String): String {
+            return "$SAVE_FROM_NET/#url=https://youtube.com/watch?v=$id"
+        }
+        fun videoPaths10(id: String): String {
+            return "$TEN_DOWNLOADER/download?v=https://www.youtube.com/watch?v=$id&type=video"
+        }
     }
 
     object DB {
@@ -51,6 +70,7 @@ object Utils {
 
     object EXTRA {
         const val PLAY_URL_PATH = "play_url_path"
+        const val SONG_NAME_EXTRA = "song_name_extra"
     }
 
     val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
@@ -98,6 +118,47 @@ object Utils {
         return DefaultLoadControl.Builder().setBufferDurationsMs(
             minBufferMs, maxBufferMs, bufferForPlaybackMs.toInt(), bufferForPlaybackBufferMs.toInt()
         ).build()
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    fun WebView.enableAll(client: WebViewClient? = null, chrome: WebChromeClient? = null) {
+        CookieManager.getInstance().also {
+            it.setAcceptCookie(true)
+            it.setAcceptThirdPartyCookies(this, true)
+        }
+        val systemUserAgent = System.getProperty("http.agent")
+
+        settings.apply {
+            userAgentString = systemUserAgent?.replace("Mobile", "Android Mobile")
+                ?: "Mozilla/5.0 (Linux; Android 11; Google Pixel) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
+            javaScriptEnabled = true
+            setRenderPriority(WebSettings.RenderPriority.HIGH)
+            cacheMode = WebSettings.LOAD_DEFAULT
+            domStorageEnabled = true
+            layoutAlgorithm = WebSettings.LayoutAlgorithm.NARROW_COLUMNS
+            useWideViewPort = true
+            saveFormData = true
+            setEnableSmoothTransition(true)
+            setSupportMultipleWindows(true)
+
+            settings.javaScriptCanOpenWindowsAutomatically = true
+            settings.mediaPlaybackRequiresUserGesture = false
+            settings.domStorageEnabled = true
+            settings.allowFileAccess = true
+            settings.allowContentAccess = true
+            settings.databaseEnabled = true
+            javaScriptCanOpenWindowsAutomatically = true
+            settings.loadWithOverviewMode = true
+            settings.useWideViewPort = true
+
+            setSupportMultipleWindows(true)
+        }
+        this.setInitialScale(1)
+        this.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+        this.webChromeClient = chrome ?: WebChromeClient()
+        if (client != null) {
+            this.webViewClient = client
+        }
     }
 
 }

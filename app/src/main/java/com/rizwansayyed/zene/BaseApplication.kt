@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.datastore.DataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService
@@ -38,6 +39,8 @@ class BaseApplication : Application() {
 
         @Volatile
         lateinit var dataStoreManager: DataStoreManager
+
+        var exoPlayerGlobal: ExoPlayer? = null
     }
 
     private val networkRequest: NetworkRequest = NetworkRequest.Builder()

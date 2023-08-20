@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.utils.QuickSandBold
@@ -139,7 +140,7 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
             Spacer(modifier = Modifier.weight(1f))
 
             QuickSandLight(
-                Utils.msToSongDuration(musicPlayer?.duration ?: 0),
+                msToSongDuration(musicPlayer?.duration ?: 0),
                 size = 16,
                 modifier = Modifier
                     .offset(x = 0.dp, y = (-10).dp)

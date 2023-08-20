@@ -30,6 +30,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.home.musicplay.video.FullVideoPlayerActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Zene" />
+
         <service
             android:name=".service.musicplayer.MediaPlayerServiceTestT"
             android:exported="true"
@@ -50,7 +56,8 @@
             </intent-filter>
         </service>
 
-        <receiver android:name="androidx.media3.session.MediaButtonReceiver"
+        <receiver
+            android:name="androidx.media3.session.MediaButtonReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

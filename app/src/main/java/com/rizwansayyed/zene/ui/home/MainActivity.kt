@@ -19,7 +19,6 @@ import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
-import com.rizwansayyed.zene.ui.home.musicplay.video.FullScreenMusicVideo
 import com.rizwansayyed.zene.ui.home.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.home.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
@@ -64,9 +63,6 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     MusicPlayerView(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
 
                     HomeNavBar(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
-
-                    FullScreenMusicVideo(homeNavViewModel, songsViewModel)
-
                 }
 
                 BackHandler {
@@ -84,7 +80,6 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                 }
             }
         }
-
     }
 
     override fun onStart() {

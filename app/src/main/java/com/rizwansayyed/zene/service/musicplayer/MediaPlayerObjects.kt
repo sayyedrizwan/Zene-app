@@ -16,9 +16,10 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
+import com.rizwansayyed.zene.BaseApplication.Companion.exoPlayerGlobal
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
-import com.rizwansayyed.zene.presenter.model.VideoDataDownloader
 import com.rizwansayyed.zene.utils.Algorithims.randomIds
+import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.downloader.opensource.State
 import com.rizwansayyed.zene.utils.downloader.opensource.YTExtractor
 import com.rizwansayyed.zene.utils.downloader.opensource.bestQuality
@@ -28,7 +29,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
@@ -159,34 +159,13 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         return null
     }
 
-    suspend fun mediaVideoPaths(id: String): VideoDataDownloader? {
-        val yt = YTExtractor(con = context, CACHING = false, LOGGING = true, retryCount = 1).apply {
-            extract(id)
-        }
-
-        if (yt.state == State.SUCCESS) {
-            val data = VideoDataDownloader("", "", "", "")
-            yt.getYTFiles()?.getVideoOnly()?.forEach {
-                if (it.meta?.height == 720 && it.meta.ext == "webm") {
-                    data.hdd = it.url ?: ""
-                }
-                if (it.meta?.height == 480 && it.meta.ext == "webm") {
-                    data.hd = it.url ?: ""
-                }
-                if (it.meta?.height == 360 && it.meta.ext == "webm") {
-                    data.sd = it.url ?: ""
-                }
-            }
-            data.audio = yt.getYTFiles()?.getVideoOnly()?.bestQuality()?.url ?: ""
-            return data
-        }
-        return null
-    }
-
     override fun onEvents(player: Player, events: Player.Events) {
         val state = if (player.isPlaying) MusicPlayerState.PLAYING else MusicPlayerState.PAUSE
         val duration = player.duration
         val currentPosition = player.currentPosition
+        if (exoPlayerGlobal != null) {
+            exoPlayerGlobal?.pause()
+        }
         CoroutineScope(Dispatchers.IO).launch {
             val musicData = dataStoreManager.musicPlayerData.first()
             musicData?.state = state

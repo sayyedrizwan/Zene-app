@@ -36,11 +36,14 @@ object Module {
     @Provides
     @Singleton
     fun retrofitAPIService(): ApiInterface {
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         val httpClient = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .readTimeout(2, TimeUnit.MINUTES)
+        httpClient.addInterceptor(logging)
 
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
