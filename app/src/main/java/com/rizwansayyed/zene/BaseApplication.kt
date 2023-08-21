@@ -6,7 +6,9 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.work.Configuration
 import com.rizwansayyed.zene.domain.datastore.DataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService
@@ -18,6 +20,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 //reset password lock completed yesterday received API
@@ -31,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 //add info about of tracker and qr code.
 
 @HiltAndroidApp
-class BaseApplication : Application() {
+class BaseApplication : Application(), Configuration.Provider {
 
     companion object {
         @Volatile
@@ -42,6 +45,11 @@ class BaseApplication : Application() {
 
         var exoPlayerGlobal: ExoPlayer? = null
     }
+
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
 
     private val networkRequest: NetworkRequest = NetworkRequest.Builder()
         .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -58,7 +66,6 @@ class BaseApplication : Application() {
             getSystemService(ConnectivityManager::class.java) as ConnectivityManager
 
         dataStoreManager = DataStoreManager()
-
 
         connectivityManager.requestNetwork(networkRequest, networkCallback)
 
@@ -82,4 +89,7 @@ class BaseApplication : Application() {
             }
         }
     }
+
+    override fun getWorkManagerConfiguration() = Configuration.Builder()
+        .setWorkerFactory(workerFactory).build()
 }

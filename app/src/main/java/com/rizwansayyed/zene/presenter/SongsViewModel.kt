@@ -9,11 +9,15 @@ import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.startMedaPlayerService
+import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerResponse
 import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerStatus
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
@@ -22,9 +26,7 @@ import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
-import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
-import com.rizwansayyed.zene.utils.downloader.WebViewShareFrom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -395,6 +397,27 @@ class SongsViewModel @Inject constructor(
             videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.lyrics)
             saveCaptionsFileTXT(q, it.lyrics ?: "")
         }
+    }
+
+
+    fun insertOfflineSongs(music: MusicPlayerDetails) = viewModelScope.launch(Dispatchers.IO) {
+        val offlineSongsEntity = OfflineSongsEntity(
+            null,
+            music.songName!!,
+            music.artists!!,
+            music.pId!!,
+            music.thumbnail!!,
+            "",
+            System.currentTimeMillis(),
+            OfflineStatusTypes.DOWNLOADING,
+            music.duration!!
+        )
+
+        roomDBImpl.insert(offlineSongsEntity).collect()
+
+        delay(1.seconds)
+
+        startDownloadSongsWorkManager()
     }
 
 

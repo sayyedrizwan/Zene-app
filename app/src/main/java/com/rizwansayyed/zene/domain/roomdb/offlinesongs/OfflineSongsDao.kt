@@ -13,6 +13,9 @@ interface OfflineSongsDao {
     @Query("SELECT * FROM $OFFLINE_SONGS_DB ORDER BY timestamp DESC")
     fun allOfflineSongs(): Flow<List<OfflineSongsEntity>>
 
+    @Query("SELECT * FROM $OFFLINE_SONGS_DB ORDER BY timestamp DESC")
+    suspend fun offlineSongs(): List<OfflineSongsEntity>
+
     @Upsert
     suspend fun insert(recentPlay: OfflineSongsEntity)
 }

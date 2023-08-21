@@ -138,18 +138,13 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
     }
 
     suspend fun mediaAudioPaths(id: String): String? {
-        val yt = YTExtractor(con = context, CACHING = false, LOGGING = true, retryCount = 1).apply {
-            extract(id)
-        }
+        val yt = YTExtractor(con = context).apply { extract(id) }
 
         if (yt.state == State.SUCCESS) {
             val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()
             return files?.url
         }
-        val ytRetry =
-            YTExtractor(con = context, CACHING = false, LOGGING = true, retryCount = 1).apply {
-                extract(id)
-            }
+        val ytRetry = YTExtractor(con = context).apply { extract(id) }
 
         if (ytRetry.state == State.SUCCESS) {
             val files = yt.getYTFiles()?.getAudioOnly()?.bestQuality()

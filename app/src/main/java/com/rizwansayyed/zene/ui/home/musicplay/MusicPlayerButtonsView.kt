@@ -25,12 +25,13 @@ import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.musicplay.video.FullVideoPlayerActivity
 import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerViewStatus
-import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
-fun MusicPlayerButtonsView(music: MusicPlayerDetails, nav: HomeNavViewModel) {
+fun MusicPlayerButtonsView(
+    music: MusicPlayerDetails, nav: HomeNavViewModel, songs: SongsViewModel = hiltViewModel()
+) {
     val context = LocalContext.current.applicationContext
     Spacer(modifier = Modifier.height(40.dp))
 
@@ -55,7 +56,7 @@ fun MusicPlayerButtonsView(music: MusicPlayerDetails, nav: HomeNavViewModel) {
         }
 
         IconsForMusicShortcut(R.drawable.ic_download_icon) {
-
+            songs.insertOfflineSongs(music)
         }
 
         IconsForMusicShortcut(R.drawable.ic_instagram_simple) {

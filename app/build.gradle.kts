@@ -76,6 +76,7 @@ dependencies {
     val roomVersion = "2.5.2"
     val jsEvaluatorVersion = "v6.0.0"
     val media3Version = "1.1.0"
+    val workManagerVersion = "2.8.1"
 
     implementation("androidx.core:core-ktx:$ktxCore")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -121,4 +122,8 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:$firebaseBom"))
     implementation("com.google.firebase:firebase-analytics-ktx")
+
+    implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
+    implementation("androidx.hilt:hilt-work:$productionVersion")
+    kapt("androidx.hilt:hilt-compiler:$productionVersion")
 }

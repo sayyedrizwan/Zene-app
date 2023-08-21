@@ -4,6 +4,8 @@ import android.util.Log
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.IPApiInterface
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDao
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
@@ -19,7 +21,8 @@ class RoomDBImpl @Inject constructor(
     private val recentPlayedDao: RecentPlayedDao,
     private val apiInterface: ApiInterface,
     private val ipInterface: IPApiInterface,
-    private val songDetailsDao: SongDetailsDao
+    private val songDetailsDao: SongDetailsDao,
+    private val offlineSongsDao: OfflineSongsDao
 ) : RoomDBImplInterface {
 
     override suspend fun recentPlayed() = flow {
@@ -203,5 +206,16 @@ class RoomDBImpl @Inject constructor(
         }
         emit(list)
     }
+
+
+    override suspend fun insert(song: OfflineSongsEntity) = flow {
+        emit(offlineSongsDao.insert(song))
+    }
+
+
+    override suspend fun offlineSongs() = flow {
+        emit(offlineSongsDao.offlineSongs())
+    }
+
 
 }

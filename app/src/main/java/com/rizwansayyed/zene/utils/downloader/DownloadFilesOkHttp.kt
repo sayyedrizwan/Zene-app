@@ -1,34 +1,50 @@
 package com.rizwansayyed.zene.utils.downloader
 
-import android.content.Context
-import android.util.Log
-import com.rizwansayyed.zene.BaseApplication.Companion.context
+import android.graphics.Bitmap
 import com.rizwansayyed.zene.utils.Utils.PATH.filesSongDownloader
-import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 
 
-class DownloadFilesOkHttp {
+object DownloadFilesOkHttp {
+
+    suspend fun downloadMP3File(songName: String, url: String): String? {
+        val path = File(filesSongDownloader, "${songName.replace(" ", "-")}.mp3")
+
+        return downloadFile(path, url)
+    }
+
+    suspend fun downloadImageFile(songName: String, bitmap: Bitmap) {
+        val path = File(filesSongDownloader, "${songName.replace(" ", "-")}.png")
+        withContext(Dispatchers.IO) {
+            val os: OutputStream = BufferedOutputStream(FileOutputStream(path))
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
+            withContext(Dispatchers.IO) {
+                os.close()
+            }
+        }
+    }
+
+    suspend fun downloadImageFile(songName: String, url: String): String? {
+        val path = File(filesSongDownloader, "${songName.replace(" ", "-")}.png")
+        return downloadFile(path, url)
+    }
 
 
-
-    suspend fun downloadMP3File(songName: String, path: String): String? {
-        val request = Request.Builder().url(path).build()
+    private suspend fun downloadFile(path: File, url: String): String? {
+        val request = Request.Builder().url(url).build()
         val response = OkHttpClient.Builder().build().newCall(request).execute()
         if (response.isSuccessful) {
             try {
                 val data = response.body?.byteStream() ?: return null
-
-                val path = File(filesSongDownloader, "${songName.replace(" ", "-")}.mp3")
 
                 return withContext(Dispatchers.IO) {
                     FileOutputStream(path).use { outputStream ->

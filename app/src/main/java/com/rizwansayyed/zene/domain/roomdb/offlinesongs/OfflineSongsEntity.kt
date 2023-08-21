@@ -12,7 +12,14 @@ data class OfflineSongsEntity(
     val songName: String,
     val songArtists: String,
     val pid: String,
-    val img: String,
+    var img: String,
+    var songPath: String,
     val timestamp: Long,
+    val status: OfflineStatusTypes,
     val playerDuration: Long
 )
+
+
+enum class OfflineStatusTypes(val v: Int) {
+    DOWNLOADING(0), SUCCESS(1), FAILED(1),
+}

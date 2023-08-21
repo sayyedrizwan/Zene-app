@@ -63,6 +63,12 @@
 
         <receiver android:name=".service.receiver.SongNotifyReceiver" />
 
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove">
+        </provider>
+
         <meta-data
             android:name="DOMAIN_KEY"
             android:value="${DOMAIN_KEY}" />

@@ -86,10 +86,15 @@ object Module {
     @Provides
     @Singleton
     fun roomDBImpl(
-        dao: RecentPlayedDao, api: ApiInterface, ip: IPApiInterface, song: SongDetailsDao
-    ): RoomDBImpl = RoomDBImpl(dao, api, ip, song)
+        dao: RecentPlayedDao,
+        api: ApiInterface,
+        ip: IPApiInterface,
+        song: SongDetailsDao,
+        offline: OfflineSongsDao
+    ): RoomDBImpl = RoomDBImpl(dao, api, ip, song, offline)
 
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     @Provides
     @Singleton
     fun mediaPlayerObjects(@ApplicationContext context: Context) = MediaPlayerObjects(context)
