@@ -7,7 +7,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.media3.exoplayer.ExoPlayer
-import com.rizwansayyed.zene.datastore.DataStoreManager
+import com.rizwansayyed.zene.domain.datastore.DataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService
 import com.rizwansayyed.zene.ui.home.MainActivity

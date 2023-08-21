@@ -1,10 +1,10 @@
-package com.rizwansayyed.zene.datastore
+package com.rizwansayyed.zene.domain.datastore
 
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.BaseApplication.Companion.context
-import com.rizwansayyed.zene.datastore.DataStoreManager.Companion.dataStore
+import com.rizwansayyed.zene.domain.datastore.DataStoreManager.Companion.dataStore
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.CoroutineScope

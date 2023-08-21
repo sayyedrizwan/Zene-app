@@ -67,12 +67,18 @@ object Utils {
 
     object DB {
         const val RECENT_PLAYED_DB = "recent_played_db"
+        const val OFFLINE_SONGS_DB = "offline_songs_db"
         const val SONG_DETAILS_DB = "song_details_db"
         const val RECENT_PLAYED_ARTISTS_DB = "recent_played_artists_db"
     }
 
     object PATH {
         val cacheLyricsFiles = File(context.cacheDir, "lyrics").apply {
+            mkdir()
+            mkdirs()
+        }
+
+        val filesSongDownloader = File(context.filesDir, "offline_songs").apply {
             mkdir()
             mkdirs()
         }

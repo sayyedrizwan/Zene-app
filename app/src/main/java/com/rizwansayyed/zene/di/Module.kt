@@ -7,11 +7,14 @@ import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.IPApiInterface
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDB
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDao
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDB
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDB
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
+import com.rizwansayyed.zene.utils.Utils.DB.OFFLINE_SONGS_DB
 import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 import com.rizwansayyed.zene.utils.Utils.DB.SONG_DETAILS_DB
 import com.rizwansayyed.zene.utils.Utils.URL.IP_JSON_BASE_URL
@@ -73,6 +76,12 @@ object Module {
     fun songDetailsDB(@ApplicationContext context: Context): SongDetailsDao =
         Room.databaseBuilder(context, SongDetailsDB::class.java, SONG_DETAILS_DB).build()
             .songDetails()
+
+    @Provides
+    @Singleton
+    fun offlineSongsDB(@ApplicationContext context: Context): OfflineSongsDao =
+        Room.databaseBuilder(context, OfflineSongsDB::class.java, OFFLINE_SONGS_DB).build()
+            .offlineSongs()
 
     @Provides
     @Singleton

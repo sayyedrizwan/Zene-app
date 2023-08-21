@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.ui.home.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.home.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
+import com.rizwansayyed.zene.utils.downloader.DownloadFilesOkHttp.downloadFile
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -80,6 +81,8 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                 }
             }
         }
+
+        downloadFile("the song name iss thee")
     }
 
     override fun onStart() {
