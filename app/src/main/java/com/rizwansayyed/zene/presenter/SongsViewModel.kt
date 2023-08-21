@@ -12,7 +12,7 @@ import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
-import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
+import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
@@ -27,7 +27,6 @@ import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
-import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -350,9 +349,7 @@ class SongsViewModel @Inject constructor(
 
                     val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
 
-//                   val recentPlayed = RecentPlayedEntity()
-//
-//                    roomDBImpl.insert(recentPlayed).collect()
+                    roomDBImpl.insert(toRecentPlay(s)).collect()
 
                     val mediaDetails =
                         mediaPlayerObjects.mediaItems(s.songID, url, s.name, s.artists, s.thumbnail)
@@ -367,6 +364,8 @@ class SongsViewModel @Inject constructor(
                 }
                 roomDBImpl.removeSongDetails(it.songID ?: "").collect()
                 it.toLocal(searchName)?.let { d -> roomDBImpl.insert(d).collect() }
+
+                roomDBImpl.insert(toRecentPlay(it)).collect()
 
                 updateStatus(
                     it.thumbnail,

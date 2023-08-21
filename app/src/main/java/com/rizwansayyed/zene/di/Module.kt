@@ -97,5 +97,6 @@ object Module {
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     @Provides
     @Singleton
-    fun mediaPlayerObjects(@ApplicationContext context: Context) = MediaPlayerObjects(context)
+    fun mediaPlayerObjects(@ApplicationContext context: Context, roomDBImpl: RoomDBImpl) =
+        MediaPlayerObjects(context, roomDBImpl)
 }

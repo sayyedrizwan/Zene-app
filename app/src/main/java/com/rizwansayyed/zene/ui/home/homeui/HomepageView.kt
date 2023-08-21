@@ -51,8 +51,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
     val topArtistsSongs by dataStoreManager.topArtistsSongsData.collectAsState(initial = emptyArray())
     val allSongsForYouLists by dataStoreManager.songsAllForYouAllData.collectAsState(initial = emptyArray())
 
-    val recentPlayedSongs =
-        songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
+    val recentPlayedSongs = songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
 
     val offlineSongs = songsViewModel.allOfflineSongs.value?.collectAsState(initial = emptyList())
 
@@ -77,7 +76,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                         RecentPlayedItemView(recent)
                     }
 
-                    if (recentPlayedSongs.value.size >= 14) item {
+                    if (recentPlayedSongs.value.size >= 29) item {
                         ViewAllBtnView {
                             "view all history".showToast()
                         }

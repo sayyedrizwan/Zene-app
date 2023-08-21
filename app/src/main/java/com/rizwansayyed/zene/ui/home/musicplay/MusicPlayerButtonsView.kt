@@ -67,7 +67,19 @@ fun MusicPlayerButtonsView(
             nav.musicViewType(VideoPlayerViewStatus.LYRICS)
         }
 
-        if (offlineStatus?.isEmpty() == true)
+        try {
+
+        }catch (e: Exception){
+            IconsForMusicShortcut(R.drawable.ic_download_icon) {
+                songs.insertOfflineSongs(music)
+            }
+        }
+
+        if (offlineStatus == null)
+            IconsForMusicShortcut(R.drawable.ic_download_icon) {
+                songs.insertOfflineSongs(music)
+            }
+        else if (offlineStatus?.isEmpty() == true)
             IconsForMusicShortcut(R.drawable.ic_download_icon) {
                 songs.insertOfflineSongs(music)
             }

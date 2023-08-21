@@ -32,7 +32,21 @@ class RoomDBImpl @Inject constructor(
 
 
     override suspend fun insert(recentPlay: RecentPlayedEntity) = flow {
+        val response = recentPlayedDao.getRecentData(recentPlay.pid)
+        if (response != null) {
+            response.playTimes += 1
+            response.timestamp = System.currentTimeMillis()
+            emit(recentPlayedDao.insert(response))
+        } else
+            emit(recentPlayedDao.insert(recentPlay))
+    }
+
+    override suspend fun insertWhole(recentPlay: RecentPlayedEntity) = flow {
         emit(recentPlayedDao.insert(recentPlay))
+    }
+
+    override suspend fun getRecentData(pid: String) = flow {
+        emit(recentPlayedDao.getRecentData(pid))
     }
 
     override suspend fun recentPlayedHome(name: String) = flow {

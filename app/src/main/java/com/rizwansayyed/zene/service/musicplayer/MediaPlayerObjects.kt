@@ -17,6 +17,7 @@ import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.BaseApplication.Companion.exoPlayerGlobal
+import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.utils.Algorithims.randomIds
 import com.rizwansayyed.zene.utils.Utils.showToast
@@ -29,6 +30,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
@@ -37,7 +39,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @UnstableApi
-class MediaPlayerObjects @Inject constructor(@ApplicationContext private val context: Context) :
+class MediaPlayerObjects @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val roomDBImpl: RoomDBImpl
+) :
     Player.Listener {
 
     private val audioAttributes by lazy {
@@ -59,11 +64,14 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
 
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
+    private val currentPlayingID = ""
+
     fun mediaItems(
         id: String?, url: String?, title: String?, artists: String?, thumbnail: String?
     ): MediaItem {
         val mediaMetaData = MediaMetadata.Builder()
-            .setTitle(title).setArtist(artists).setArtworkUri(thumbnail?.toUri()).build()
+            .setTitle(title).setArtist(artists).setComposer(id).setArtworkUri(thumbnail?.toUri())
+            .build()
 
         return MediaItem.Builder()
             .setUri(url).setMediaId(id ?: randomIds())
@@ -158,9 +166,11 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
         val state = if (player.isPlaying) MusicPlayerState.PLAYING else MusicPlayerState.PAUSE
         val duration = player.duration
         val currentPosition = player.currentPosition
+        val composer = player.mediaMetadata.composer.toString()
         if (exoPlayerGlobal != null) {
             exoPlayerGlobal?.pause()
         }
+
         CoroutineScope(Dispatchers.IO).launch {
             val musicData = dataStoreManager.musicPlayerData.first()
             musicData?.state = state
@@ -168,6 +178,18 @@ class MediaPlayerObjects @Inject constructor(@ApplicationContext private val con
             musicData?.currentDuration = currentPosition
 
             dataStoreManager.musicPlayerData = flowOf(musicData)
+            if (isActive) cancel()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val data = roomDBImpl.getRecentData(composer).first()
+
+            data?.playerDuration = duration
+            data?.lastListenDuration = currentPosition
+            if (data != null) {
+                roomDBImpl.insertWhole(data).collect()
+            }
+
             if (isActive) cancel()
         }
     }
