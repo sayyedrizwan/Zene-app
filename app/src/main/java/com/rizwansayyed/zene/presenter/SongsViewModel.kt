@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
+import com.rizwansayyed.zene.presenter.model.toMusicPlayerData
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.startMedaPlayerService
@@ -233,14 +234,13 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-
-    var allOfflineSongs = mutableStateOf<Flow<List<OfflineSongsEntity>>?>(flowOf(emptyList()))
+    var allOfflineSongs by mutableStateOf<Flow<List<OfflineSongsEntity>>?>(null)
         private set
 
 
     private fun allOfflineSongs() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.allOfflineSongs().catch {}.collectLatest {
-            musicOfflineSongs.value = it
+            allOfflineSongs = it
         }
     }
 
@@ -336,6 +336,9 @@ class SongsViewModel @Inject constructor(
             if (!isMusicPlayerServiceIsRunning()) {
                 startMedaPlayerService()
             }
+
+            dataStoreManager.musicPlayerData = flowOf(toMusicPlayerData(thumbnail, name, artists))
+
             val searchName = "${name.lowercase().replace("official video", "")} - ${
                 artists.substringBefore(",").substringBefore("&")
             }".lowercase()

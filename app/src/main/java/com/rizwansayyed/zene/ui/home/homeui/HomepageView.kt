@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,8 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.toTopArtistsSongs
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.ViewAllBtnView
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.utils.Algorithims
+import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
@@ -52,8 +55,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
     val allSongsForYouLists by dataStoreManager.songsAllForYouAllData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs = songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
-
-    val offlineSongs = songsViewModel.allOfflineSongs.value?.collectAsState(initial = emptyList())
+    val offlineSongs = songsViewModel.allOfflineSongs?.collectAsState(initial = emptyList())
 
     LazyColumn {
         item {
@@ -93,6 +95,13 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             item {
                 LazyRow {
                     items(offlineSongs.value) { songs ->
+                        QuickSandBold(
+                            songs.songName,
+                            modifier = Modifier
+                                .animateContentSize()
+                                .fillMaxWidth(),
+                            size = 35
+                        )
 //                        RecentPlayedItemView(recent)
                     }
                 }
@@ -121,6 +130,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             LazyRow {
                 if (globalSongs != null) items(globalSongs!!) { song ->
                     TrendingSongsView(song) { thumbnail, name, artists ->
+                        nav.showMusicPlayer()
                         songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                     }
                 }
@@ -138,6 +148,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                 items(topCountrySongs?.size ?: 0) { songs ->
                     topCountrySongs?.get(songs)?.let {
                         TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                            nav.showMusicPlayer()
                             songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                         }
@@ -157,6 +168,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                     items(suggestedSongs?.size ?: 0) { songs ->
                         suggestedSongs?.get(songs)?.let {
                             TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                                nav.showMusicPlayer()
                                 songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                             }
@@ -192,6 +204,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                 items(trendingSongsTop50?.size ?: 0) { songs ->
                     trendingSongsTop50?.get(songs)?.let {
                         TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                            nav.showMusicPlayer()
                             songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                         }
@@ -209,6 +222,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             LazyRow {
                 if (trendingSongsTopKPop != null) items(trendingSongsTopKPop!!) { song ->
                     TrendingSongsView(song) { thumbnail, name, artists ->
+                        nav.showMusicPlayer()
                         songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                     }
                 }
@@ -224,6 +238,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             LazyRow {
                 if (trendingSongsTop50KPop != null) items(trendingSongsTop50KPop!!) { song ->
                     TrendingSongsView(song) { thumbnail, name, artists ->
+                        nav.showMusicPlayer()
                         songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                     }
                 }
@@ -241,6 +256,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                     items(songsSuggestionsForYou?.size ?: 0) { songs ->
                         songsSuggestionsForYou?.get(songs)?.let {
                             TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                                nav.showMusicPlayer()
                                 songsViewModel.songsPlayingDetails(thumbnail, name, artists)
 
                             }
@@ -282,6 +298,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                         items(it.details?.size ?: 0) { songs ->
                             it.details?.get(songs)?.let {
                                 TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                                    nav.showMusicPlayer()
                                     songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                                 }
                             }
