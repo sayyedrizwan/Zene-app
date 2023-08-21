@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.domain.roomdb
 
 import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
@@ -24,8 +25,13 @@ interface RoomDBImplInterface {
     suspend fun topArtistsSongs(): Flow<ArrayList<TopArtistsSongsWithData>>
     suspend fun allSongsForYouSongs(): Flow<ArrayList<TopArtistsSongs>>
     suspend fun insert(songDetails: SongDetailsEntity): Flow<Unit>
-    suspend fun recentPlayedHome(name: String, artists: String): Flow<List<SongDetailsEntity>>
+    suspend fun recentPlayedHome(name: String): Flow<List<SongDetailsEntity>>
     suspend fun removeSongDetails(songID: String): Flow<Unit>
     suspend fun insert(song: OfflineSongsEntity): Flow<Unit>
     suspend fun offlineSongs(): Flow<List<OfflineSongsEntity>>
+
+    suspend fun allOfflineSongs(): Flow<Flow<List<OfflineSongsEntity>>>
+    suspend fun musicOfflineSongs(pid: String): Flow<Flow<List<OfflineSongsEntity>>>
+    suspend fun updateStatus(status: OfflineStatusTypes, pid: String): Flow<Int>
+    suspend fun countOfflineSongs(pid: String): Flow<Int>
 }

@@ -13,8 +13,17 @@ interface OfflineSongsDao {
     @Query("SELECT * FROM $OFFLINE_SONGS_DB ORDER BY timestamp DESC")
     fun allOfflineSongs(): Flow<List<OfflineSongsEntity>>
 
+    @Query("SELECT * FROM $OFFLINE_SONGS_DB WHERE pid = :pid ORDER BY timestamp DESC")
+    fun musicOfflineSongs(pid:String): Flow<List<OfflineSongsEntity>>
+
     @Query("SELECT * FROM $OFFLINE_SONGS_DB ORDER BY timestamp DESC")
     suspend fun offlineSongs(): List<OfflineSongsEntity>
+
+    @Query("SELECT COUNT(*) FROM $OFFLINE_SONGS_DB WHERE pid = :pid ORDER BY timestamp DESC")
+    suspend fun countOfflineSongs(pid: String): Int
+
+    @Query("UPDATE $OFFLINE_SONGS_DB SET status = :status WHERE pid = :pid")
+    suspend fun updateStatus(status: OfflineStatusTypes, pid: String): Int
 
     @Upsert
     suspend fun insert(recentPlay: OfflineSongsEntity)

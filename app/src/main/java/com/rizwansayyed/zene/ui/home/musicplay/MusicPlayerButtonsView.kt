@@ -11,21 +11,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.musicplay.video.FullVideoPlayerActivity
 import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerViewStatus
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
+import com.rizwansayyed.zene.utils.Utils.showToast
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
@@ -33,6 +40,11 @@ fun MusicPlayerButtonsView(
     music: MusicPlayerDetails, nav: HomeNavViewModel, songs: SongsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current.applicationContext
+
+    val offlineSongAvailable = stringResource(id = R.string.song_is_offline_available)
+
+    val offlineStatus by songs.musicOfflineSongs.value!!.collectAsState(initial = null)
+
     Spacer(modifier = Modifier.height(40.dp))
 
     Row(Modifier.horizontalScroll(rememberScrollState())) {
@@ -55,9 +67,25 @@ fun MusicPlayerButtonsView(
             nav.musicViewType(VideoPlayerViewStatus.LYRICS)
         }
 
-        IconsForMusicShortcut(R.drawable.ic_download_icon) {
-            songs.insertOfflineSongs(music)
-        }
+        if (offlineStatus?.isEmpty() == true)
+            IconsForMusicShortcut(R.drawable.ic_download_icon) {
+                songs.insertOfflineSongs(music)
+            }
+        else if (offlineStatus?.first()?.status == OfflineStatusTypes.DOWNLOADING)
+            CircularProgressIndicator(
+                Modifier
+                    .padding(18.dp)
+                    .size(24.dp), Color.White
+            )
+        else if (offlineStatus?.first()?.status == OfflineStatusTypes.SUCCESS)
+            IconsForMusicShortcut(R.drawable.ic_download_success) {
+                offlineSongAvailable.showToast()
+            }
+        else
+            IconsForMusicShortcut(R.drawable.ic_download_icon) {
+                songs.insertOfflineSongs(music)
+            }
+
 
         IconsForMusicShortcut(R.drawable.ic_instagram_simple) {
 
@@ -72,6 +100,11 @@ fun MusicPlayerButtonsView(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    LaunchedEffect(nav.showMusicPlayerView.value) {
+        if (nav.showMusicPlayerView.value)
+            songs.offlineSongsData(music.pId ?: "")
 
     }
 }

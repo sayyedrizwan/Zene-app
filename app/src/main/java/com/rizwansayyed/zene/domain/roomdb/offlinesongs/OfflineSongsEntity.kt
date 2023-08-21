@@ -15,7 +15,7 @@ data class OfflineSongsEntity(
     var img: String,
     var songPath: String,
     val timestamp: Long,
-    val status: OfflineStatusTypes,
+    var status: OfflineStatusTypes,
     val playerDuration: Long
 )
 

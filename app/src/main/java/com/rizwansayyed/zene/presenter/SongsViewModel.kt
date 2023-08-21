@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
+import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
@@ -26,6 +27,7 @@ import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
+import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +55,7 @@ class SongsViewModel @Inject constructor(
     fun run() {
         footerDataTried = 0
         recentPlaySongs()
+        allOfflineSongs()
 
         viewModelScope.launch(Dispatchers.IO) {
             albumsWithHeaders()
@@ -219,6 +222,30 @@ class SongsViewModel @Inject constructor(
     }
 
 
+    var musicOfflineSongs = mutableStateOf<Flow<List<OfflineSongsEntity>>?>(flowOf(emptyList()))
+        private set
+
+
+    fun offlineSongsData(pId: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (roomDBImpl.countOfflineSongs(pId).first() > 0) return@launch
+
+        roomDBImpl.musicOfflineSongs(pId).catch {}.collectLatest {
+            musicOfflineSongs.value = it
+        }
+    }
+
+
+    var allOfflineSongs = mutableStateOf<Flow<List<OfflineSongsEntity>>?>(flowOf(emptyList()))
+        private set
+
+
+    private fun allOfflineSongs() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.allOfflineSongs().catch {}.collectLatest {
+            musicOfflineSongs.value = it
+        }
+    }
+
+
     private fun trendingSongsTopKPop() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.trendingSongsTopKPopTimestamp.first().is2DayOlderNeedCache() &&
             dataStoreManager.trendingSongsTopKPopData.first() != null &&
@@ -310,8 +337,11 @@ class SongsViewModel @Inject constructor(
             if (!isMusicPlayerServiceIsRunning()) {
                 startMedaPlayerService()
             }
+            val searchName = "${name.lowercase().replace("official video", "")} - ${
+                artists.substringBefore(",").substringBefore("&")
+            }".lowercase()
 
-            val songs = roomDBImpl.recentPlayedHome(name, artists).first()
+            val songs = roomDBImpl.recentPlayedHome(searchName).first()
             if (songs.isNotEmpty()) {
                 if (!songs.first().timestamp.is2DayOlderNeedCache()) {
                     val s = songs.first()
@@ -320,6 +350,10 @@ class SongsViewModel @Inject constructor(
 
                     val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
 
+//                   val recentPlayed = RecentPlayedEntity()
+//
+//                    roomDBImpl.insert(recentPlayed).collect()
+
                     val mediaDetails =
                         mediaPlayerObjects.mediaItems(s.songID, url, s.name, s.artists, s.thumbnail)
                     mediaPlayerObjects.playSong(mediaDetails, true)
@@ -327,16 +361,12 @@ class SongsViewModel @Inject constructor(
                 }
             }
 
-            val searchName = "${name.lowercase().replace("official video", "")} - ${
-                artists.substringBefore(",").substringBefore("&")
-            }".lowercase()
             apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
                 if (thumbnail.isNotEmpty()) {
                     it.thumbnail = thumbnail
                 }
-
                 roomDBImpl.removeSongDetails(it.songID ?: "").collect()
-                it.toLocal()?.let { d -> roomDBImpl.insert(d).collect() }
+                it.toLocal(searchName)?.let { d -> roomDBImpl.insert(d).collect() }
 
                 updateStatus(
                     it.thumbnail,
@@ -354,7 +384,6 @@ class SongsViewModel @Inject constructor(
                 mediaPlayerObjects.playSong(mediaDetails, true)
             }
         }
-
 
     var videoPlayingDetails by mutableStateOf(VideoPlayerResponse())
         private set

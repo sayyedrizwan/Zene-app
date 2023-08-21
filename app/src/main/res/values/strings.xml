@@ -6,6 +6,7 @@
     <string name="recommended_songs">Recommended Songs</string>
     <string name="recommended_artists">Recommended Artists</string>
     <string name="recently_played">Recently Played</string>
+    <string name="offline_songs">Offline Songs</string>
     <string name="view_all">View All</string>
     <string name="trending_songs_in">Trending songs in</string>
     <string name="top_50_songs_in">Top 50 songs in</string>
@@ -23,4 +24,5 @@
     <string name="error_loading_the_video_try_again">Error loading the video. Please try again later.</string>
     <string name="lyrics">Lyrics</string>
     <string name="no_lyrics_found">No Lyrics found</string>
+    <string name="song_is_offline_available">Song is offline available</string>
 </resources>

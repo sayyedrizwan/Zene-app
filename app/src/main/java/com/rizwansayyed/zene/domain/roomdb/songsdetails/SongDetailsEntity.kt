@@ -14,6 +14,7 @@ data class SongDetailsEntity(
     val songID: String,
     val videoID: String,
     val thumbnail: String,
+    val searchName: String,
     val timestamp: Long,
     @PrimaryKey(autoGenerate = true) val id: Int?
 )

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
@@ -86,10 +87,12 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
 
     override fun onStart() {
         super.onStart()
+        startDownloadSongsWorkManager()
         songsViewModel.run()
     }
 
     override fun internetConnected() {
+        startDownloadSongsWorkManager()
         songsViewModel.run()
     }
 }

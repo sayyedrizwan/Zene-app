@@ -10,7 +10,7 @@ data class SongDetailsResponse(
     var videoID: String?,
 )
 
-fun SongDetailsResponse.toLocal(): SongDetailsEntity? {
+fun SongDetailsResponse.toLocal(search: String): SongDetailsEntity? {
     if (this.thumbnail == null) return null
     if (this.songName == null) return null
     if (this.artistName == null) return null
@@ -22,6 +22,7 @@ fun SongDetailsResponse.toLocal(): SongDetailsEntity? {
         this.songID!!,
         this.videoID ?: "",
         this.thumbnail!!,
+        search,
         System.currentTimeMillis(),
         null
     )

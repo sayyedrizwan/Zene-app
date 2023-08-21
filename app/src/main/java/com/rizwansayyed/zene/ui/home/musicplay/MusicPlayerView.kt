@@ -63,10 +63,10 @@ fun MusicPlayerView(modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltV
             }
 
         }
+    }
 
-        LaunchedEffect(Unit) {
-            nav.musicViewType(MUSIC)
-        }
+    LaunchedEffect(nav.showMusicPlayerView.value) {
+        nav.musicViewType(MUSIC)
     }
 }
 

@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.IPApiInterface
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDao
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
@@ -34,8 +35,8 @@ class RoomDBImpl @Inject constructor(
         emit(recentPlayedDao.insert(recentPlay))
     }
 
-    override suspend fun recentPlayedHome(name: String, artists: String) = flow {
-        emit(songDetailsDao.recentPlayedHome(name, artists))
+    override suspend fun recentPlayedHome(name: String) = flow {
+        emit(songDetailsDao.recentPlayedHome(name))
     }
 
     override suspend fun removeSongDetails(songID: String) = flow {
@@ -215,6 +216,24 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun offlineSongs() = flow {
         emit(offlineSongsDao.offlineSongs())
+    }
+
+    override suspend fun countOfflineSongs(pid: String) = flow {
+        emit(offlineSongsDao.countOfflineSongs(pid))
+    }
+
+
+    override suspend fun musicOfflineSongs(pid: String) = flow {
+        emit(offlineSongsDao.musicOfflineSongs(pid))
+    }
+
+
+    override suspend fun allOfflineSongs() = flow {
+        emit(offlineSongsDao.allOfflineSongs())
+    }
+
+    override suspend fun updateStatus(status: OfflineStatusTypes, pid: String) = flow {
+        emit(offlineSongsDao.updateStatus(status, pid))
     }
 
 

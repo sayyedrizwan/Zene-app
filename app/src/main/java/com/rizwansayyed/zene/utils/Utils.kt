@@ -69,7 +69,6 @@ object Utils {
         const val RECENT_PLAYED_DB = "recent_played_db"
         const val OFFLINE_SONGS_DB = "offline_songs_db"
         const val SONG_DETAILS_DB = "song_details_db"
-        const val RECENT_PLAYED_ARTISTS_DB = "recent_played_artists_db"
     }
 
     object PATH {

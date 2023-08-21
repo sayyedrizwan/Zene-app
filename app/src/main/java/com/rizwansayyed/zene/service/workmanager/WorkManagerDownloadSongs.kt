@@ -13,6 +13,7 @@ import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.utils.downloader.DownloadFilesOkHttp.downloadImageFile
 import com.rizwansayyed.zene.utils.downloader.DownloadFilesOkHttp.downloadMP3File
 import com.rizwansayyed.zene.utils.downloader.opensource.State
@@ -43,11 +44,12 @@ class WorkManagerDownloadSongs @AssistedInject constructor(
 
                 if (downloadFile != null) {
                     it.img = downloadFile
-                    roomDBImpl.insert(it).collect()
                 }
             }
 
             if (!File(it.songPath).exists()) {
+                roomDBImpl.updateStatus(OfflineStatusTypes.DOWNLOADING, it.pid).collect()
+
                 val yt = YTExtractor(con = context).apply { extract(it.pid) }
 
                 if (yt.state == State.SUCCESS) {
@@ -60,6 +62,9 @@ class WorkManagerDownloadSongs @AssistedInject constructor(
                     isAnyFailed = true
                 }
             }
+
+            it.status = OfflineStatusTypes.SUCCESS
+            roomDBImpl.insert(it).collect()
         }
 
         if (isAnyFailed) return Result.failure()

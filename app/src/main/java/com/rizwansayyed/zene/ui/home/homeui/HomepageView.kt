@@ -54,6 +54,8 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
     val recentPlayedSongs =
         songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
 
+    val offlineSongs = songsViewModel.allOfflineSongs.value?.collectAsState(initial = emptyList())
+
     LazyColumn {
         item {
             headerPagerData?.let {
@@ -79,6 +81,20 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                         ViewAllBtnView {
                             "view all history".showToast()
                         }
+                    }
+                }
+            }
+        }
+
+        if (offlineSongs?.value?.isNotEmpty() == true) {
+            item {
+                TopHeaderOf(stringResource(id = R.string.offline_songs))
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            item {
+                LazyRow {
+                    items(offlineSongs.value) { songs ->
+//                        RecentPlayedItemView(recent)
                     }
                 }
             }
