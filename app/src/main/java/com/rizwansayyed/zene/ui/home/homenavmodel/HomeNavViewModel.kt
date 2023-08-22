@@ -16,6 +16,7 @@ class HomeNavViewModel @Inject constructor(private val mediaPlayer: MediaPlayerO
         private set
 
     fun homeNavigationView(nav: HomeNavigationStatus) {
+        hideMusicPlayer()
         homeNavigationView.value = nav
     }
 

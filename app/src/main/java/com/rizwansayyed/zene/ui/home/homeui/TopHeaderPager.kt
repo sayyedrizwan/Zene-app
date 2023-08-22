@@ -51,6 +51,7 @@ import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -62,10 +63,10 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String) -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    var autoScrollJob by remember { mutableStateOf<Job?>(null) }
     val coroutine = rememberCoroutineScope()
-    val coroutineNew = rememberCoroutineScope()
 
-    var sliderRunner by remember { mutableStateOf(false) }
+
     var songName by remember { mutableStateOf("") }
     val pagerState = rememberPagerState()
 
@@ -113,7 +114,7 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
                 }
             }
         }
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(12.dp))
 
         Row(Modifier.fillMaxWidth(), Arrangement.Center) {
             repeat(header.size) {
@@ -125,38 +126,30 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
         }
     }
 
-
-    fun runSlider() {
-        sliderRunner = true
-        coroutine.launch {
-            while (sliderRunner) {
-                delay(2.seconds)
-                Log.d("TAG", "runSlider: run errr ")
-            }
+    DisposableEffect(Unit) {
+        onDispose {
+            autoScrollJob?.cancel()
         }
     }
 
-//    DisposableEffect(Unit) {
-//        runSlider()
-//        onDispose {
-//            sliderRunner = false
-//        }
-//    }
-
     LaunchedEffect(pagerState.currentPage) {
-//        coroutineNew.cancel()
+        autoScrollJob?.cancel()
 
         try {
             songName = header[pagerState.currentPage].name ?: ""
         } catch (e: Exception) {
             e.message
         }
-//        sliderRunner = false
-//        coroutineNew.launch {
-//            delay(1.seconds)
-//            sliderRunner = true
-//        }
 
+        autoScrollJob = coroutine.launch {
+            while (true) {
+                delay(3.seconds)
+                if (pagerState.canScrollForward)
+                    pagerState.scrollToPage(pagerState.currentPage + 1)
+                else
+                    pagerState.scrollToPage(0)
+            }
+        }
     }
 }
 
@@ -164,6 +157,7 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
 fun DotsSliderView(color: Color = Color.White) {
     Spacer(
         Modifier
+            .animateContentSize()
             .padding(1.dp)
             .clip(RoundedCornerShape(100))
             .width(10.dp)
