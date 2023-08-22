@@ -9,6 +9,8 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+//Zene : A Free Music-Songs App
+
 android {
     namespace = "com.rizwansayyed.zene"
     compileSdk = 34
@@ -17,8 +19,8 @@ android {
         applicationId = "com.rizwansayyed.zene"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0.000123"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
