@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,8 +23,6 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.toTopArtistsSongs
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.ViewAllBtnView
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.utils.Algorithims
-import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
@@ -95,14 +92,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             item {
                 LazyRow {
                     items(offlineSongs.value) { songs ->
-                        QuickSandBold(
-                            songs.songName,
-                            modifier = Modifier
-                                .animateContentSize()
-                                .fillMaxWidth(),
-                            size = 35
-                        )
-//                        RecentPlayedItemView(recent)
+                        OfflineSongsCard(songs, songsViewModel)
                     }
                 }
             }

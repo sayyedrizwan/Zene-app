@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Rational
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -16,10 +17,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.rizwansayyed.zene.BaseApplication.Companion.exoPlayerGlobal
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.exoPlayerGlobal
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.isExoPlayerGlobalInitialized
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
@@ -53,9 +56,9 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
         setContent {
             window.setFlags(windowManagerNoLimit, windowManagerNoLimit)
 
-//            window.setFlags(
-//                WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE
-//            )
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE
+            )
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
             window.decorView.systemUiVisibility =
@@ -93,40 +96,39 @@ class FullVideoPlayerActivity : ComponentActivity(), NetworkCallbackStatus {
             }
         }
 
-        if (exoPlayerGlobal != null) {
-            exoPlayerGlobal!!.playWhenReady = false
-            exoPlayerGlobal!!.stop()
-            exoPlayerGlobal!!.seekTo(0)
-            exoPlayerGlobal!!.release()
+        if (isExoPlayerGlobalInitialized()) {
+            exoPlayerGlobal.playWhenReady = false
+            exoPlayerGlobal.stop()
+            exoPlayerGlobal.seekTo(0)
+            exoPlayerGlobal.release()
         }
-
         songsViewModel.videoPlayingDetails(songPlayTitle)
     }
 
 
     override fun internetConnected() {
-        if (exoPlayerGlobal?.isLoading == false) {
+        if (isExoPlayerGlobalInitialized() && !exoPlayerGlobal.isLoading) {
             songsViewModel.videoPlayingDetails(songPlayTitle)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (exoPlayerGlobal != null) {
-            exoPlayerGlobal!!.playWhenReady = false
-            exoPlayerGlobal!!.stop()
+        if (isExoPlayerGlobalInitialized()) {
+            exoPlayerGlobal.playWhenReady = false
+            exoPlayerGlobal.stop()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (exoPlayerGlobal != null) {
-            exoPlayerGlobal!!.playWhenReady = false
-            exoPlayerGlobal!!.stop()
-            exoPlayerGlobal!!.seekTo(0)
-            exoPlayerGlobal!!.release()
+        if (isExoPlayerGlobalInitialized()) {
+            exoPlayerGlobal.playWhenReady = false
+            exoPlayerGlobal.stop()
+            exoPlayerGlobal.seekTo(0)
+            exoPlayerGlobal.release()
         }
-//        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 }

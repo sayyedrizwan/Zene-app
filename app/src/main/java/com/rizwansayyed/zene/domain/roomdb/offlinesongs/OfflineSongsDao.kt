@@ -25,6 +25,9 @@ interface OfflineSongsDao {
     @Query("UPDATE $OFFLINE_SONGS_DB SET status = :status WHERE pid = :pid")
     suspend fun updateStatus(status: OfflineStatusTypes, pid: String): Int
 
+    @Query("DELETE FROM $OFFLINE_SONGS_DB WHERE pid = :pid")
+    suspend fun delete( pid: String): Int
+
     @Upsert
     suspend fun insert(recentPlay: OfflineSongsEntity)
 }

@@ -36,4 +36,5 @@ interface RoomDBImplInterface {
     suspend fun countOfflineSongs(pid: String): Flow<Int>
     suspend fun getRecentData(pid: String): Flow<RecentPlayedEntity?>
     suspend fun insertWhole(recentPlay: RecentPlayedEntity): Flow<Unit>
+    suspend fun deleteOfflineSong(pId: String): Flow<Int>
 }

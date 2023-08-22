@@ -30,7 +30,6 @@ class RoomDBImpl @Inject constructor(
         emit(recentPlayedDao.recentPlayedHome())
     }
 
-
     override suspend fun insert(recentPlay: RecentPlayedEntity) = flow {
         val response = recentPlayedDao.getRecentData(recentPlay.pid)
         if (response != null) {
@@ -248,6 +247,10 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun updateStatus(status: OfflineStatusTypes, pid: String) = flow {
         emit(offlineSongsDao.updateStatus(status, pid))
+    }
+
+    override suspend fun deleteOfflineSong(pId:String) = flow {
+        emit(offlineSongsDao.delete(pId))
     }
 
 

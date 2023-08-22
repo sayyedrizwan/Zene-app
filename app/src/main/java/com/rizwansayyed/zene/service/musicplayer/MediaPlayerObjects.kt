@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service.musicplayer
 
 import android.content.ComponentName
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -11,14 +12,19 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
-import com.rizwansayyed.zene.BaseApplication.Companion.exoPlayerGlobal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.BUFF_PLAYBACK
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.MAX_BUFF
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.MIN_BUFF
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.exoPlayerGlobal
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.isExoPlayerGlobalInitialized
 import com.rizwansayyed.zene.utils.Algorithims.randomIds
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.downloader.opensource.State
@@ -36,26 +42,31 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 @UnstableApi
 class MediaPlayerObjects @Inject constructor(
     @ApplicationContext private val context: Context,
     private val roomDBImpl: RoomDBImpl
-) :
-    Player.Listener {
+) : Player.Listener {
+
+
+    private val loadControl = DefaultLoadControl.Builder()
+        .setBufferDurationsMs(MIN_BUFF, MAX_BUFF, BUFF_PLAYBACK, BUFF_PLAYBACK)
+        .setPrioritizeTimeOverSizeThresholds(true)
+
 
     private val audioAttributes by lazy {
-        AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-            .setUsage(C.USAGE_MEDIA)
+        AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA)
             .build()
     }
 
+
     val player by lazy {
         ExoPlayer.Builder(context)
-            .setAudioAttributes(audioAttributes, true).setHandleAudioBecomingNoisy(true)
-            .setWakeMode(C.WAKE_MODE_LOCAL).build()
-
+            .setAudioAttributes(audioAttributes, true).setLoadControl(loadControl.build())
+            .setHandleAudioBecomingNoisy(true).setWakeMode(C.WAKE_MODE_LOCAL).build()
     }
 
     private val sessionToken by lazy {
@@ -63,8 +74,6 @@ class MediaPlayerObjects @Inject constructor(
     }
 
     private var controllerFuture: ListenableFuture<MediaController>? = null
-
-    private val currentPlayingID = ""
 
     fun mediaItems(
         id: String?, url: String?, title: String?, artists: String?, thumbnail: String?
@@ -75,6 +84,18 @@ class MediaPlayerObjects @Inject constructor(
 
         return MediaItem.Builder()
             .setUri(url).setMediaId(id ?: randomIds())
+            .setMediaMetadata(mediaMetaData).build()
+    }
+
+    fun mediaItems(
+        id: String?, url: File?, title: String?, artists: String?, thumbnail: File?
+    ): MediaItem {
+        val mediaMetaData = MediaMetadata.Builder()
+            .setTitle(title).setArtist(artists).setComposer(id).setArtworkUri(thumbnail?.toUri())
+            .build()
+
+        return MediaItem.Builder()
+            .setUri(url?.toUri()).setMediaId(id ?: randomIds())
             .setMediaMetadata(mediaMetaData).build()
     }
 
@@ -167,8 +188,8 @@ class MediaPlayerObjects @Inject constructor(
         val duration = player.duration
         val currentPosition = player.currentPosition
         val composer = player.mediaMetadata.composer.toString()
-        if (exoPlayerGlobal != null) {
-            exoPlayerGlobal?.pause()
+        if (isExoPlayerGlobalInitialized()){
+            exoPlayerGlobal.pause()
         }
 
         CoroutineScope(Dispatchers.IO).launch {

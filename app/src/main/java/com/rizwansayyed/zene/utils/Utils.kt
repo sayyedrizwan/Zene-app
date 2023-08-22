@@ -27,6 +27,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
+import java.lang.Float.NaN
 
 
 object Utils {
@@ -215,6 +216,14 @@ object Utils {
         }
 
         return FileInputStream(file).bufferedReader().use { it.readText() }
+    }
+
+    fun progressBarStatus(playerDuration: Long, lastListenDuration: Long): Float? {
+        return try {
+            lastListenDuration.toFloat() / playerDuration
+        } catch (e: Exception) {
+            null
+        }
     }
 
 }

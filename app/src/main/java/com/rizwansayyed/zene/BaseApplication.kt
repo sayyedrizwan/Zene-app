@@ -42,8 +42,6 @@ class BaseApplication : Application(), Configuration.Provider {
 
         @Volatile
         lateinit var dataStoreManager: DataStoreManager
-
-        var exoPlayerGlobal: ExoPlayer? = null
     }
 
 

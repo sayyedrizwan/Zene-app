@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.media3.exoplayer.ExoPlayer
+import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.exoPlayerGlobal
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
@@ -39,6 +43,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     private val songsViewModel: SongsViewModel by viewModels()
 
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -29,7 +29,14 @@ import androidx.media3.ui.PlayerView
 import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.BUFF_PLAYBACK
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.MAX_BUFF
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.MIN_BUFF
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.exoPlayerGlobal
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.generateMediaSource
 import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.openOnYoutubeVideo
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.downloader.WebViewShareFrom
 
@@ -58,7 +65,7 @@ fun FullScreenVideoPlayer(center: Modifier, topEnd: Modifier, songsViewModel: So
                     activity.finish()
                     errorLoadingVideo.showToast()
                 } else
-                    playUrl = it
+                    if (playUrl.isEmpty()) playUrl = it
             }
 
             if (playUrl.isEmpty())
@@ -69,23 +76,20 @@ fun FullScreenVideoPlayer(center: Modifier, topEnd: Modifier, songsViewModel: So
                         resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
                     }
                 }, update = {
-                    val mediaItem = MediaItem.fromUri(Uri.parse(playUrl))
+
                     val loadControl = DefaultLoadControl.Builder()
-                        .setBufferDurationsMs(
-                            8 * 1024, 16 * 1024, 2 * 1024, 2 * 1024
-                        )
+                        .setBufferDurationsMs(MIN_BUFF, MAX_BUFF, BUFF_PLAYBACK, BUFF_PLAYBACK)
                         .setPrioritizeTimeOverSizeThresholds(true)
 
-                    BaseApplication.exoPlayerGlobal =
+                    exoPlayerGlobal =
                         ExoPlayer.Builder(activity).setLoadControl(loadControl.build()).build()
-                    it.player = BaseApplication.exoPlayerGlobal
-                    val mediaSourceFactory = DefaultMediaSourceFactory(activity)
-                    val mediaSource = mediaSourceFactory.createMediaSource(mediaItem)
+                    it.player = exoPlayerGlobal
+                    val mediaSource = generateMediaSource(activity, playUrl)
 
-                    BaseApplication.exoPlayerGlobal?.setMediaSource(mediaSource)
-                    BaseApplication.exoPlayerGlobal?.playWhenReady = true
-                    BaseApplication.exoPlayerGlobal?.prepare()
-                    BaseApplication.exoPlayerGlobal?.play()
+                    exoPlayerGlobal.setMediaSource(mediaSource)
+                    exoPlayerGlobal.playWhenReady = true
+                    exoPlayerGlobal.prepare()
+                    exoPlayerGlobal.play()
                 }, modifier = center.fillMaxSize())
 
 
@@ -96,7 +100,7 @@ fun FullScreenVideoPlayer(center: Modifier, topEnd: Modifier, songsViewModel: So
                         .padding(15.dp)
                         .size(37.dp)
                         .clickable {
-                            Utils.openOnYoutubeVideo(songsViewModel.videoPlayingDetails.data ?: "")
+                            openOnYoutubeVideo(songsViewModel.videoPlayingDetails.data ?: "")
                         },
                     alpha = 0.4f
                 )

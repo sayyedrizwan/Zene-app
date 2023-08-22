@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
+import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -331,6 +333,31 @@ class SongsViewModel @Inject constructor(
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun songsPlayingOffline(songs: OfflineSongsEntity) = viewModelScope.launch(Dispatchers.IO) {
+        if (!isMusicPlayerServiceIsRunning()) {
+            startMedaPlayerService()
+        }
+
+        dataStoreManager.musicPlayerData =
+            flowOf(toMusicPlayerData(songs.img, songs.songName, songs.songArtists))
+
+
+        roomDBImpl.insert(toRecentPlay(songs)).collect()
+
+        val mediaDetails = mediaPlayerObjects.mediaItems(
+            songs.pid, File(songs.songPath), songs.songName, songs.songArtists, File(songs.img)
+        )
+        mediaPlayerObjects.playSong(mediaDetails, true)
+    }
+
+    fun songsDeleteOffline(songs: OfflineSongsEntity) = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.deleteOfflineSong(songs.pid).collectLatest {
+            if (File(songs.img).exists()) File(songs.img).deleteRecursively()
+            if (File(songs.songPath).exists()) File(songs.songPath).deleteRecursively()
+        }
+    }
+
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun songsPlayingDetails(thumbnail: String, name: String, artists: String) =
         viewModelScope.launch(Dispatchers.IO) {
             if (!isMusicPlayerServiceIsRunning()) {
@@ -338,6 +365,7 @@ class SongsViewModel @Inject constructor(
             }
 
             dataStoreManager.musicPlayerData = flowOf(toMusicPlayerData(thumbnail, name, artists))
+
 
             val searchName = "${name.lowercase().replace("official video", "")} - ${
                 artists.substringBefore(",").substringBefore("&")
@@ -360,6 +388,7 @@ class SongsViewModel @Inject constructor(
                     return@launch
                 }
             }
+
 
             apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
                 if (thumbnail.isNotEmpty()) {

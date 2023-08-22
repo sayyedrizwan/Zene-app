@@ -36,8 +36,10 @@ import com.rizwansayyed.zene.ui.theme.BlackTransparentLight
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
+import com.rizwansayyed.zene.utils.Utils.progressBarStatus
 import com.rizwansayyed.zene.utils.Utils.shortTextForView
 import com.rizwansayyed.zene.utils.Utils.showToast
+import java.lang.Float
 
 @Composable
 fun ArtistsView(artists: TopArtistsSongs) {
@@ -174,30 +176,28 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
                 )
                 Column {
                     QuickSandRegular(
-                        recent.name.trim(),
-                        size = 17,
-                        maxLine = 1,
-                        align = TextAlign.Start
+                        recent.name.trim(), size = 17, maxLine = 1, align = TextAlign.Start
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     QuickSandLight(
-                        recent.artists.trim(),
-                        size = 11,
-                        maxLine = 1,
-                        align = TextAlign.Start
+                        recent.artists.trim(), size = 11, maxLine = 1, align = TextAlign.Start
                     )
                 }
             }
 
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .align(alignment = Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .height(2.dp),
-                trackColor = Color.Transparent,
-                color = Color.Red,
-                progress = 0.7f
-            )
+            val progress = progressBarStatus(recent.playerDuration, recent.lastListenDuration)
+
+            if (progress?.isNaN() == false)
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .align(alignment = BottomCenter)
+                        .fillMaxWidth()
+                        .height(2.dp),
+                    trackColor = Color.Transparent,
+                    color = Color.Red,
+                    progress = progress
+                )
         }
     }
 }

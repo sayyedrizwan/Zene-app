@@ -39,7 +39,7 @@ class WorkManagerDownloadSongs @AssistedInject constructor(
         var isAnyFailed = false
 
         offlineSongsLists.forEach {
-            if (it.img.contains("https://")) {
+            if (it.img.contains("https://") || !File(it.img).exists()) {
                 val downloadFile = downloadImageFile(it.songName, it.img)
 
                 if (downloadFile != null) {
