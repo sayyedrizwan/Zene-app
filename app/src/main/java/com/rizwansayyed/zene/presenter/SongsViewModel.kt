@@ -20,8 +20,8 @@ import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.startMedaPlayerService
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
-import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerResponse
-import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerStatus
+import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerResponse
+import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerStatus
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache

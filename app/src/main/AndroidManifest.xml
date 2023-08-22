@@ -36,7 +36,7 @@
         </activity>
 
         <activity
-            android:name=".ui.home.musicplay.video.FullVideoPlayerActivity"
+            android:name=".ui.musicplay.video.FullVideoPlayerActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="true"
             android:launchMode="singleTop"

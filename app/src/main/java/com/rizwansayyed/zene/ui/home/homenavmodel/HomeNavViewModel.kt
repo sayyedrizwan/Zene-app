@@ -3,7 +3,7 @@ package com.rizwansayyed.zene.ui.home.homenavmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
-import com.rizwansayyed.zene.ui.home.musicplay.video.VideoPlayerViewStatus
+import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

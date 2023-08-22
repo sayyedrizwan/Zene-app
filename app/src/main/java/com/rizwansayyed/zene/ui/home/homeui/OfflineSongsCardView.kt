@@ -35,7 +35,7 @@ import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.home.homeui.OfflineSongsStatus.*
-import com.rizwansayyed.zene.ui.home.musicplay.IconsForMusicShortcut
+import com.rizwansayyed.zene.ui.musicplay.IconsForMusicShortcut
 import com.rizwansayyed.zene.ui.theme.PurpleGrey40
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular

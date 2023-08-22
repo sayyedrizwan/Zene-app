@@ -24,8 +24,8 @@ import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
-import com.rizwansayyed.zene.ui.home.musicplay.MusicPlayerView
-import com.rizwansayyed.zene.ui.home.settings.SettingsView
+import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
+import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import com.rizwansayyed.zene.utils.Utils.showToast
