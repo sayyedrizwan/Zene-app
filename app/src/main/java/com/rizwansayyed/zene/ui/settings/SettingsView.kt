@@ -20,7 +20,6 @@ fun SettingsView(songsViewModel: SongsViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.height(40.dp))
         TopHeaderOf(stringResource(id = R.string.settings))
 
-
         QuickSandLight(stringResource(id = R.string.settings_coming_soon))
     }
 }

@@ -23,6 +23,8 @@ object Algorithims {
                     return songsName.substringAfter("-").replace("(Official Video)", "")
                         .replace("(official video)", "").replace("(Official Song)", "")
                         .replace("(official song)", "")
+                } else if (songsName.lowercase().contains("official")) {
+                    songsName.substringBefore("Official").trim()
                 }
                 return songsName
             }
