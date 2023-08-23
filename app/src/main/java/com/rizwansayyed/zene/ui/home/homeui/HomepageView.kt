@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.toTopArtistsSongs
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.ViewAllBtnView
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
@@ -72,7 +73,11 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             item {
                 LazyRow {
                     items(recentPlayedSongs.value) { recent ->
-                        RecentPlayedItemView(recent)
+                        RecentPlayedItemView(recent) { thumbnail, name, artists ->
+                            nav.showMusicPlayer()
+                            songsViewModel.songsPlayingDetails(thumbnail, name, artists)
+
+                        }
                     }
 
                     if (recentPlayedSongs.value.size >= 29) item {
@@ -106,7 +111,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
         item {
             LazyRow {
                 if (topArtists != null) items(topArtists!!) { artists ->
-                    ArtistsView(artists)
+                    ArtistsView(artists) {
+                        nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
+                        songsViewModel.searchArtists(it.trim().lowercase())
+                    }
                 }
             }
         }
@@ -140,7 +148,6 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                         TrendingSongsViewShortText(it) { thumbnail, name, artists ->
                             nav.showMusicPlayer()
                             songsViewModel.songsPlayingDetails(thumbnail, name, artists)
-
                         }
                     }
                 }
@@ -176,7 +183,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             item {
                 LazyRow {
                     items(songsViewModel.topArtistsSuggestions!!) { artists ->
-                        ArtistsView(artists.toTopArtistsSongs())
+                        ArtistsView(artists.toTopArtistsSongs()) {
+                            nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
+                            songsViewModel.searchArtists(it.trim().lowercase())
+                        }
                     }
                 }
 
@@ -264,7 +274,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             item {
                 LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 600.dp)) {
                     items(suggestArtists?.size ?: 0) { songs ->
-                        suggestArtists?.get(songs)?.let { ArtistsViewSmallView(it) }
+                        suggestArtists?.get(songs)?.let { ArtistsViewSmallView(it){
+                            nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
+                            songsViewModel.searchArtists(it.trim().lowercase())
+                        } }
                     }
                 }
             }

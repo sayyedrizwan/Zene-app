@@ -42,14 +42,14 @@ import com.rizwansayyed.zene.utils.Utils.showToast
 import java.lang.Float
 
 @Composable
-fun ArtistsView(artists: TopArtistsSongs) {
+fun ArtistsView(artists: TopArtistsSongs, search: (String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(10.dp)
             .clickable {
-                "open artists".showToast()
+                search(artists.artist ?: "")
             }
     ) {
         AsyncImage(
@@ -69,14 +69,14 @@ fun ArtistsView(artists: TopArtistsSongs) {
 
 
 @Composable
-fun ArtistsViewSmallView(artists: TopArtistsSongs) {
+fun ArtistsViewSmallView(artists: TopArtistsSongs, search: (String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(10.dp)
             .clickable {
-                "open artists".showToast()
+                search(artists.name ?: "")
             }
     ) {
         AsyncImage(
@@ -132,7 +132,6 @@ fun TrendingSongsViewShortText(songs: TopArtistsSongs, search: (String, String, 
             .padding(10.dp)
             .clickable {
                 search(songs.img ?: "", songs.name ?: "", songs.artist ?: "")
-                "open song".showToast()
             }
     ) {
         AsyncImage(
@@ -153,13 +152,13 @@ fun TrendingSongsViewShortText(songs: TopArtistsSongs, search: (String, String, 
 }
 
 @Composable
-fun RecentPlayedItemView(recent: RecentPlayedEntity) {
+fun RecentPlayedItemView(recent: RecentPlayedEntity, search: (String, String, String) -> Unit) {
     Card(
         Modifier
             .padding(6.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - 140.dp)
             .clickable {
-                "runnn".showToast()
+                search(recent.img, recent.name, recent.artists)
             },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = BlackLight),

@@ -27,14 +27,6 @@ class HomeNavViewModel @Inject constructor(private val mediaPlayer: MediaPlayerO
         musicViewType.value = view
     }
 
-    var playMusicVideo = mutableStateOf("")
-        private set
-
-    fun playingVideo(song: String) {
-        playMusicVideo.value = song.trim()
-    }
-
-
     var showMusicPlayerView = mutableStateOf(false)
         private set
 

@@ -13,14 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.media3.exoplayer.ExoPlayer
-import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
-import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer
-import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.exoPlayerGlobal
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
+import com.rizwansayyed.zene.ui.artists.ArtistsInfo
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
@@ -28,9 +26,7 @@ import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
-import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), NetworkCallbackStatus {
@@ -63,7 +59,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     AnimatedContent(targetState = currentScreen, label = "") {
                         when (it) {
                             MAIN -> HomepageView(songsViewModel, homeNavViewModel)
-                            SELECT_ARTISTS -> HomepageView(songsViewModel, homeNavViewModel)
+                            SELECT_ARTISTS -> ArtistsInfo(songsViewModel, homeNavViewModel)
                             SETTINGS -> SettingsView(songsViewModel)
                         }
                     }
@@ -74,15 +70,16 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                 }
 
                 BackHandler {
-                    if (homeNavViewModel.playMusicVideo.value.isNotEmpty()) {
-                        homeNavViewModel.playingVideo("")
-                        return@BackHandler
-                    }
-
                     if (homeNavViewModel.showMusicPlayerView.value) {
                         homeNavViewModel.hideMusicPlayer()
                         return@BackHandler
                     }
+
+                    if (currentScreen == SELECT_ARTISTS){
+                        homeNavViewModel.homeNavigationView(MAIN)
+                        return@BackHandler
+                    }
+
 
                     finish()
                 }

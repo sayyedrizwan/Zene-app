@@ -481,4 +481,7 @@ class SongsViewModel @Inject constructor(
     }
 
 
+    fun searchArtists(artists: String) = viewModelScope.launch(Dispatchers.IO) {
+
+    }
 }
