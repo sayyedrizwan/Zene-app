@@ -49,7 +49,7 @@ fun ArtistsView(artists: TopArtistsSongs, search: (String) -> Unit) {
         modifier = Modifier
             .padding(10.dp)
             .clickable {
-                search(artists.artist ?: "")
+                search(artists.name ?: "")
             }
     ) {
         AsyncImage(

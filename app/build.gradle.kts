@@ -88,7 +88,7 @@ dependencies {
     val coilVersion = "2.4.0"
     val roomVersion = "2.5.2"
     val jsEvaluatorVersion = "v6.0.0"
-    val media3Version = "1.1.0"
+    val media3Version = "1.1.1"
     val workManagerVersion = "2.8.1"
 
     implementation("androidx.core:core-ktx:$ktxCore")
@@ -123,6 +123,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:$coilVersion")
     implementation("io.coil-kt:coil:$coilVersion")
 
+    implementation("org.jsoup:jsoup:1.16.1")
 
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")

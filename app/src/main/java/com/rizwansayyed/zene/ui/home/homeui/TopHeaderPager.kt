@@ -96,7 +96,8 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
                     modifier = Modifier
                         .animateContentSize()
                         .fillMaxWidth(),
-                    size = 35
+                    size = 35,
+                    maxLine = 1
                 )
 
                 Spacer(modifier = Modifier.height(3.dp))

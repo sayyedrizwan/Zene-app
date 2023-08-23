@@ -24,17 +24,25 @@ object Algorithims {
                         .replace("(official video)", "").replace("(Official Song)", "")
                         .replace("(official song)", "")
                 } else if (songsName.lowercase().contains("official")) {
-                    songsName.substringBefore("Official").trim()
+                    songsName.substringBefore("Official").trim().replace("(Official Video)", "")
+                        .replace("(official video)", "").replace("(Official Song)", "")
+                        .replace("(official song)", "")
                 }
                 return songsName
             }
             val getName =
                 songsName.substringBefore("|").replace("song", "").replace("lyrical", "")
-                    .replace("Song", "").replace("Lyrical", "").trim()
+                    .replace("Song", "").replace("Lyrical", "").replace("(Official Video)", "")
+                    .replace("(official video)", "").replace("(Official Song)", "")
+                    .replace("(official song)", "").trim()
             return if (getName.contains("-")) {
-                getName.substringBefore("-")
+                getName.substringBefore("-").replace("(Official Video)", "")
+                    .replace("(official video)", "").replace("(Official Song)", "")
+                    .replace("(official song)", "")
             } else {
-                getName
+                getName.replace("(Official Video)", "")
+                    .replace("(official video)", "").replace("(Official Song)", "")
+                    .replace("(official song)", "")
             }
 
         } catch (e: Exception) {

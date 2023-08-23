@@ -35,8 +35,8 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun HomepageView(
     songsViewModel: SongsViewModel = hiltViewModel(),
-    nav: HomeNavViewModel,
-    artistsViewModel: ArtistsViewModel
+    nav: HomeNavViewModel = hiltViewModel(),
+    artistsViewModel: ArtistsViewModel = hiltViewModel()
 ) {
     val headerPagerData by dataStoreManager
         .albumHeaderData.collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.albumHeaderData.first() })

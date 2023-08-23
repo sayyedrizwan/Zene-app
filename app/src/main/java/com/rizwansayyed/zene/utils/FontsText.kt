@@ -30,7 +30,8 @@ fun QuickSandBold(
     v: String,
     modifier: Modifier = Modifier,
     color: Color = Color.White,
-    size: Int = 20
+    size: Int = 20,
+    maxLine: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = v,
@@ -39,7 +40,8 @@ fun QuickSandBold(
         color = color,
         fontSize = size.nonScaledSp,
         modifier = modifier,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        maxLines = maxLine
     )
 }
 
