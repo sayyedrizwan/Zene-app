@@ -94,4 +94,9 @@ class ApiInterfaceImpl @Inject constructor(
     override suspend fun songLyrics(name: String) = flow {
         emit(apiInterface.songLyrics(name))
     }
+
+
+    override suspend fun artistsData(name: String) = flow {
+        emit(apiInterface.artistsData(name.replace(" ", "+")))
+    }
 }

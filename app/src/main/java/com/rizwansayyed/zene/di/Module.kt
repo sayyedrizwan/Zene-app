@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDao
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDB
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsDataJsoup
 import com.rizwansayyed.zene.utils.Utils.DB.OFFLINE_SONGS_DB
 import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 import com.rizwansayyed.zene.utils.Utils.DB.SONG_DETAILS_DB
@@ -99,4 +100,9 @@ object Module {
     @Singleton
     fun mediaPlayerObjects(@ApplicationContext context: Context, roomDBImpl: RoomDBImpl) =
         MediaPlayerObjects(context, roomDBImpl)
+
+
+    @Provides
+    @Singleton
+    fun artistsDataJsoup(@ApplicationContext context: Context) = ArtistsDataJsoup(context)
 }

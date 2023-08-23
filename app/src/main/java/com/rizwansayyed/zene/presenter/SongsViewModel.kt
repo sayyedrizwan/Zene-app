@@ -94,7 +94,8 @@ class SongsViewModel @Inject constructor(
             apiImpl.albumsWithHeaders().first().url
         } catch (e: Exception) {
             ""
-        }
+        } ?: return@launch
+
         if (channelUrl.isEmpty()) return@launch
 
         apiImpl.albumsWithYTHeaders(channelUrl).catch {}.collectLatest {
@@ -478,10 +479,5 @@ class SongsViewModel @Inject constructor(
         delay(1.seconds)
 
         startDownloadSongsWorkManager()
-    }
-
-
-    fun searchArtists(artists: String) = viewModelScope.launch(Dispatchers.IO) {
-
     }
 }

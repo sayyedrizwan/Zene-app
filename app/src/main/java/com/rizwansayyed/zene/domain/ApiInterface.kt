@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
+import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_DATA
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.SIMILAR_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_LYRICS
@@ -37,6 +38,8 @@ interface ApiInterface {
     @GET(TOP_GLOBAL_SONGS_THIS_WEEK)
     suspend fun topGlobalSongsThisWeek(): TopArtistsResponseApi
 
+    @GET("$ARTISTS_DATA/{name}")
+    suspend fun artistsData(@Path(value = "name") name: String): UrlResponse
 
     @GET("$TOP_COUNTRY_SONGS/{country}")
     suspend fun topCountrySongs(@Path(value = "country") country: String): TopArtistsResponseApi

@@ -17,8 +17,8 @@ import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
 
     private val homeNavViewModel: HomeNavViewModel by viewModels()
     private val songsViewModel: SongsViewModel by viewModels()
+    private val artistsViewModel: ArtistsViewModel by viewModels()
 
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -58,8 +59,8 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                 ) {
                     AnimatedContent(targetState = currentScreen, label = "") {
                         when (it) {
-                            MAIN -> HomepageView(songsViewModel, homeNavViewModel)
-                            SELECT_ARTISTS -> ArtistsInfo(songsViewModel, homeNavViewModel)
+                            MAIN -> HomepageView(songsViewModel, homeNavViewModel, artistsViewModel)
+                            SELECT_ARTISTS -> ArtistsInfo(artistsViewModel, homeNavViewModel)
                             SETTINGS -> SettingsView(songsViewModel)
                         }
                     }
@@ -69,18 +70,17 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     HomeNavBar(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
                 }
 
+
                 BackHandler {
                     if (homeNavViewModel.showMusicPlayerView.value) {
                         homeNavViewModel.hideMusicPlayer()
                         return@BackHandler
                     }
 
-                    if (currentScreen == SELECT_ARTISTS){
+                    if (currentScreen == SELECT_ARTISTS) {
                         homeNavViewModel.homeNavigationView(MAIN)
                         return@BackHandler
                     }
-
-
                     finish()
                 }
             }

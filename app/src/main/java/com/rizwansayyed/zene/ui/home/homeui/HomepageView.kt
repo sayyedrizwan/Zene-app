@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toTopArtistsSongs
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.ViewAllBtnView
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.utils.QuickSandLight
@@ -32,7 +33,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavViewModel) {
+fun HomepageView(
+    songsViewModel: SongsViewModel = hiltViewModel(),
+    nav: HomeNavViewModel,
+    artistsViewModel: ArtistsViewModel
+) {
     val headerPagerData by dataStoreManager
         .albumHeaderData.collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.albumHeaderData.first() })
     val topArtists by dataStoreManager.topArtistsOfWeekData
@@ -113,7 +118,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                 if (topArtists != null) items(topArtists!!) { artists ->
                     ArtistsView(artists) {
                         nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
-                        songsViewModel.searchArtists(it.trim().lowercase())
+                        artistsViewModel.searchArtists(it.trim().lowercase())
                     }
                 }
             }
@@ -185,7 +190,7 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                     items(songsViewModel.topArtistsSuggestions!!) { artists ->
                         ArtistsView(artists.toTopArtistsSongs()) {
                             nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
-                            songsViewModel.searchArtists(it.trim().lowercase())
+                            artistsViewModel.searchArtists(it.trim().lowercase())
                         }
                     }
                 }
@@ -274,10 +279,12 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
             item {
                 LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 600.dp)) {
                     items(suggestArtists?.size ?: 0) { songs ->
-                        suggestArtists?.get(songs)?.let { ArtistsViewSmallView(it){
-                            nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
-                            songsViewModel.searchArtists(it.trim().lowercase())
-                        } }
+                        suggestArtists?.get(songs)?.let {
+                            ArtistsViewSmallView(it) {
+                                nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
+                                artistsViewModel.searchArtists(it.trim().lowercase())
+                            }
+                        }
                     }
                 }
             }
