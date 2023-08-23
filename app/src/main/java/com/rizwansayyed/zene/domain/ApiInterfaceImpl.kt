@@ -90,6 +90,16 @@ class ApiInterfaceImpl @Inject constructor(
         emit(apiInterface.videoPlayDetails(ip.query ?: "", name))
     }
 
+    override suspend fun searchSongs(q: String) = flow {
+        val ip = ipApiInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+        emit(apiInterface.searchSongs(ip.query ?: "", q))
+    }
+
+    override suspend fun similarArtists(name: String) = flow {
+        emit(apiInterface.similarArtists(name))
+    }
+
 
     override suspend fun songLyrics(name: String) = flow {
         emit(apiInterface.songLyrics(name))

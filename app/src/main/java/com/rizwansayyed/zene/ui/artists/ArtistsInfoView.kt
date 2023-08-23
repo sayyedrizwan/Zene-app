@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -48,14 +49,101 @@ fun ArtistsInfo(artistsViewModel: ArtistsViewModel, homeNavViewModel: HomeNavVie
         Row(
             Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())) {
+                .horizontalScroll(rememberScrollState())
+        ) {
 
             artistsViewModel.artistsImages.value.forEach {
                 AsyncImage(
-                    model = it.replace("avatar170s", "770x0"),
+                    model = it,
                     contentDescription = "",
                     Modifier.size(380.dp)
                 )
+            }
+        }
+
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+
+            artistsViewModel.artistsTopSongs.value.forEach {
+                Column {
+                    AsyncImage(
+                        model = it.image.replace("avatar170s", "770x0"),
+                        contentDescription = "",
+                        Modifier.size(380.dp)
+                    )
+
+                    QuickSandSemiBold(it.name, size = 19, modifier = Modifier.padding(5.dp))
+                    QuickSandSemiBold(it.listeners, size = 19, modifier = Modifier.padding(5.dp))
+                }
+            }
+        }
+
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+
+            artistsViewModel.artistsAllTimeSongs.value.forEach {
+                Column {
+                    AsyncImage(
+                        model = it.img,
+                        contentDescription = "",
+                        Modifier.size(380.dp)
+                    )
+
+                    QuickSandSemiBold(it.name ?: "", size = 19, modifier = Modifier.padding(5.dp))
+                    QuickSandSemiBold(it.artist ?: "", size = 19, modifier = Modifier.padding(5.dp))
+                }
+            }
+        }
+
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+
+            artistsViewModel.artistsTopAlbums.value.forEach {
+                Column {
+                    AsyncImage(
+                        model = it.image,
+                        contentDescription = "",
+                        Modifier.size(380.dp)
+                    )
+
+                    QuickSandSemiBold(it.name, size = 19, modifier = Modifier.padding(5.dp))
+                    QuickSandSemiBold(it.listeners, size = 19, modifier = Modifier.padding(5.dp))
+                    QuickSandSemiBold(it.songsSize, size = 19, modifier = Modifier.padding(5.dp))
+                    QuickSandSemiBold(it.date, size = 19, modifier = Modifier.padding(5.dp))
+                }
+            }
+        }
+
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+
+            artistsViewModel.artistsSimilar.value.forEach {
+                Column {
+                    AsyncImage(
+                        model = it.img,
+                        contentDescription = "",
+                        Modifier.size(380.dp)
+                    )
+
+                    QuickSandSemiBold(it.name ?: "", size = 19, modifier = Modifier.padding(5.dp))
+                    QuickSandSemiBold(it.artist ?: "", size = 19, modifier = Modifier.padding(5.dp))
+                }
             }
         }
 

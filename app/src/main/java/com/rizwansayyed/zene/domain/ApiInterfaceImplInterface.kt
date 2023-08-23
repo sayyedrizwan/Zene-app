@@ -30,4 +30,6 @@ interface ApiInterfaceImplInterface {
     suspend fun videoPlayDetails(name: String): Flow<SongDetailsResponse>
     suspend fun songLyrics(name: String): Flow<SongLyricsResponse>
     suspend fun artistsData(name: String): Flow<UrlResponse>
+    suspend fun searchSongs(q: String): Flow<TopArtistsResponseApi>
+    suspend fun similarArtists(name: String): Flow<TopArtistsResponseApi>
 }

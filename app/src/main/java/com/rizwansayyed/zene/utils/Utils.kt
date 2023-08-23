@@ -227,4 +227,13 @@ object Utils {
         }
     }
 
+    fun clearUrlForArtistsInfo(url: String): String {
+        return url.substringBefore("?")
+            .replace("/+wiki", "").replace("/+wiki/", "")
+            .replace("/+images", "").replace("/+images/", "")
+            .replace("/+tracks", "").replace("/+tracks/", "")
+            .replace("/+tracks", "").replace("/+tracks/", "")
+            .replace("/+albums", "").replace("/+albums/", "")
+    }
+
 }
