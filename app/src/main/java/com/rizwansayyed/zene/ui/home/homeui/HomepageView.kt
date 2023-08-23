@@ -160,7 +160,6 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
                             TrendingSongsViewShortText(it) { thumbnail, name, artists ->
                                 nav.showMusicPlayer()
                                 songsViewModel.songsPlayingDetails(thumbnail, name, artists)
-
                             }
                         }
                     }
@@ -305,7 +304,10 @@ fun HomepageView(songsViewModel: SongsViewModel = hiltViewModel(), nav: HomeNavV
         if (allSongsForYouLists?.isNotEmpty() == true) {
 
             items(allSongsForYouLists!!) {
-                FullCardSongView(it)
+                FullCardSongView(it) { thumbnail, name, artists ->
+                    nav.showMusicPlayer()
+                    songsViewModel.songsPlayingDetails(thumbnail, name, artists)
+                }
             }
         } else {
             item {

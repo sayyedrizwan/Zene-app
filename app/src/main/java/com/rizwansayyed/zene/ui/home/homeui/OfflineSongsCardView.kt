@@ -3,8 +3,10 @@ package com.rizwansayyed.zene.ui.home.homeui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
@@ -41,6 +44,7 @@ import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
 import com.rizwansayyed.zene.utils.Utils.showToast
 import java.io.File
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +62,7 @@ fun OfflineSongsCard(songs: OfflineSongsEntity, songsViewModel: SongsViewModel) 
                 return@Card
             }
 
-            if (!File(songs.songPath).exists()){
+            if (!File(songs.songPath).exists()) {
                 startDownloadSongsWorkManager()
                 songErrorDownloading.showToast()
                 return@Card
@@ -109,7 +113,7 @@ fun OfflineSongsCard(songs: OfflineSongsEntity, songsViewModel: SongsViewModel) 
         }
     }
 
-    if (showCustomDialog) OfflineOptionsDialog {
+    if (showCustomDialog) OfflineOptionsDialog(songs.img) {
         when (it) {
             DISMISS -> showCustomDialog = false
             PLAY -> songsViewModel.songsPlayingOffline(songs)
@@ -120,17 +124,36 @@ fun OfflineSongsCard(songs: OfflineSongsEntity, songsViewModel: SongsViewModel) 
 }
 
 @Composable
-fun OfflineOptionsDialog(callback: (OfflineSongsStatus) -> Unit) {
+fun OfflineOptionsDialog(img: String, callback: (OfflineSongsStatus) -> Unit) {
     AlertDialog(
         onDismissRequest = { callback(DISMISS) },
         text = {
-            Column {
-                Button(onClick = { callback(PLAY) }) {
-                    Text(text = "play")
-                }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AsyncImage(
+                    File(img), "",
+                    Modifier
+                        .padding(30.dp)
+                        .width(160.dp)
+                        .height(135.dp)
+                )
 
-                Button(onClick = { callback(DELETE) }) {
-                    Text(text = "delete")
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(onClick = { callback(PLAY) }) {
+                        Text(text = stringResource(id = R.string.play))
+                    }
+
+                    Spacer(modifier = Modifier.width(20.dp))
+
+                    Button(onClick = { callback(DELETE) }) {
+                        Text(text = stringResource(id = R.string.delete))
+                    }
                 }
             }
         },

@@ -203,8 +203,13 @@ fun RecentPlayedItemView(recent: RecentPlayedEntity) {
 }
 
 @Composable
-fun FullCardSongView(song: TopArtistsSongs) {
-    Box(Modifier.fillMaxWidth()) {
+fun FullCardSongView(song: TopArtistsSongs, search: (String, String, String) -> Unit) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .clickable {
+                search(song.img ?: "", song.name ?: "", song.artist ?: "")
+            }) {
         AsyncImage(
             model = song.img,
             contentDescription = "",
