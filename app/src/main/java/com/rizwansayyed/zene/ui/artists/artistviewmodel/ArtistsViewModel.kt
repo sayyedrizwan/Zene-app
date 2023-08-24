@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
+import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
+import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
@@ -44,6 +46,14 @@ class ArtistsViewModel @Inject constructor(
         private set
 
 
+    var artistsInstagramPosts = mutableStateOf<ArtistsInstagramPostResponse?>(null)
+        private set
+
+
+    var artistsTwitterInfo = mutableStateOf<ArtistsTwitterInfoResponse?>(null)
+        private set
+
+
     fun toDefault() {
         topInfo.value = null
         artistsImages.value = emptyList()
@@ -51,16 +61,26 @@ class ArtistsViewModel @Inject constructor(
         artistsAllTimeSongs.value = emptyList()
         artistsTopAlbums.value = emptyList()
         artistsSimilar.value = emptyList()
+        artistsInstagramPosts.value = null
+        artistsTwitterInfo.value = null
     }
 
     fun searchArtists(artists: String) = viewModelScope.launch(Dispatchers.IO) {
-
         apiImpl.searchSongs("${artists}+latest+songs").catch { }.collectLatest {
             artistsAllTimeSongs.value = it
         }
 
         apiImpl.similarArtists(artists).catch { }.collectLatest {
             artistsSimilar.value = it
+        }
+
+
+        apiImpl.artistsInstagramPosts(artists).catch { }.collectLatest {
+            artistsInstagramPosts.value = it
+        }
+
+        apiImpl.artistsTwitterTweets(artists).catch { }.collectLatest {
+            artistsTwitterInfo.value = it
         }
 
         apiImpl.artistsData(artists).catch {}.collectLatest {

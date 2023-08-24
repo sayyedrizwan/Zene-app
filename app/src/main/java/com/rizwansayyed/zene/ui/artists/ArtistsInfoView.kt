@@ -112,11 +112,7 @@ fun ArtistsInfo(artistsViewModel: ArtistsViewModel, homeNavViewModel: HomeNavVie
 
             artistsViewModel.artistsTopAlbums.value.forEach {
                 Column {
-                    AsyncImage(
-                        model = it.image,
-                        contentDescription = "",
-                        Modifier.size(380.dp)
-                    )
+                    AsyncImage(it.image, "", Modifier.size(380.dp))
 
                     QuickSandSemiBold(it.name, size = 19, modifier = Modifier.padding(5.dp))
                     QuickSandSemiBold(it.listeners, size = 19, modifier = Modifier.padding(5.dp))
@@ -125,6 +121,82 @@ fun ArtistsInfo(artistsViewModel: ArtistsViewModel, homeNavViewModel: HomeNavVie
                 }
             }
         }
+
+        QuickSandSemiBold(
+            artistsViewModel.artistsInstagramPosts.value?.bio ?: "",
+            size = 19,
+            modifier = Modifier.padding(5.dp)
+        )
+
+        QuickSandSemiBold(
+            artistsViewModel.artistsInstagramPosts.value?.followers.toString(),
+            size = 19,
+            modifier = Modifier.padding(5.dp)
+        )
+
+        AsyncImage(
+            model = artistsViewModel.artistsInstagramPosts.value?.profilePic,
+            contentDescription = "",
+            Modifier.size(120.dp)
+        )
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+            artistsViewModel.artistsInstagramPosts.value?.posts?.forEach {
+                Column {
+                    AsyncImage(
+                        model = it.postImage,
+                        contentDescription = "",
+                        Modifier.size(380.dp)
+                    )
+
+                    QuickSandSemiBold(
+                        it.isVideo.toString(),
+                        size = 19,
+                        modifier = Modifier.padding(5.dp)
+                    )
+                    QuickSandSemiBold(
+                        it.postId.toString(),
+                        size = 19,
+                        modifier = Modifier.padding(5.dp)
+                    )
+                    QuickSandSemiBold(
+                        it.timestamp.toString(),
+                        size = 19,
+                        modifier = Modifier.padding(5.dp)
+                    )
+                    QuickSandSemiBold(
+                        it.likeCount.toString(),
+                        size = 19,
+                        modifier = Modifier.padding(5.dp)
+                    )
+                    QuickSandSemiBold(
+                        it.commentCount.toString(),
+                        size = 19,
+                        modifier = Modifier.padding(5.dp)
+                    )
+                    QuickSandSemiBold(
+                        it.totalImages.toString(),
+                        size = 19,
+                        modifier = Modifier.padding(5.dp)
+                    )
+                }
+            }
+        }
+        QuickSandSemiBold(
+            artistsViewModel.artistsTwitterInfo.value?.name ?: "",
+            size = 19,
+            modifier = Modifier.padding(5.dp)
+        )
+
+        QuickSandSemiBold(
+            artistsViewModel.artistsTwitterInfo.value?.description ?: "",
+            size = 19,
+            modifier = Modifier.padding(5.dp)
+        )
 
 
         Row(

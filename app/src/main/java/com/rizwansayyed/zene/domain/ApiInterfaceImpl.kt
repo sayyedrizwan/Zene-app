@@ -93,11 +93,19 @@ class ApiInterfaceImpl @Inject constructor(
     override suspend fun searchSongs(q: String) = flow {
         val ip = ipApiInterface.ip()
         dataStoreManager.ipData = flowOf(ip)
-        emit(apiInterface.searchSongs(ip.query ?: "", q))
+        emit(apiInterface.searchSongs(ip.query ?: "", q.replace(" ", "+")))
     }
 
     override suspend fun similarArtists(name: String) = flow {
-        emit(apiInterface.similarArtists(name))
+        emit(apiInterface.similarArtists(name.replace(" ", "+")))
+    }
+
+    override suspend fun artistsInstagramPosts(name: String) = flow {
+        emit(apiInterface.artistsInstagramPosts(name.replace(" ", "+")))
+    }
+
+    override suspend fun artistsTwitterTweets(name: String) = flow {
+        emit(apiInterface.artistsTwitterTweets(name.replace(" ", "+")))
     }
 
 

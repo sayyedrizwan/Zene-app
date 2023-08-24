@@ -2,10 +2,14 @@ package com.rizwansayyed.zene.domain
 
 import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.model.UrlResponse
+import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
+import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_DATA
+import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_INSTAGRAM_POSTS
+import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_TWITTER_TWEETS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.SIMILAR_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_LYRICS
@@ -54,7 +58,14 @@ interface ApiInterface {
     suspend fun trendingSongsTop50KPop(): TopArtistsResponseApi
 
     @GET("$SIMILAR_ARTISTS/{name}")
-    suspend fun similarArtists(@Path(value = "name") country: String): TopArtistsResponseApi
+    suspend fun similarArtists(@Path(value = "name") name: String): TopArtistsResponseApi
+
+    @GET("$ARTISTS_INSTAGRAM_POSTS/{name}")
+    suspend fun artistsInstagramPosts(@Path(value = "name") name: String): ArtistsInstagramPostResponse
+
+
+    @GET("$ARTISTS_TWITTER_TWEETS/{name}")
+    suspend fun artistsTwitterTweets(@Path(value = "name") name: String): ArtistsTwitterInfoResponse
 
 
     @FormUrlEncoded

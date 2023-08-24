@@ -3,6 +3,8 @@ package com.rizwansayyed.zene.domain
 import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
+import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
+import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
@@ -32,4 +34,6 @@ interface ApiInterfaceImplInterface {
     suspend fun artistsData(name: String): Flow<UrlResponse>
     suspend fun searchSongs(q: String): Flow<TopArtistsResponseApi>
     suspend fun similarArtists(name: String): Flow<TopArtistsResponseApi>
+    suspend fun artistsInstagramPosts(name: String): Flow<ArtistsInstagramPostResponse>
+    suspend fun artistsTwitterTweets(name: String): Flow<ArtistsTwitterInfoResponse>
 }

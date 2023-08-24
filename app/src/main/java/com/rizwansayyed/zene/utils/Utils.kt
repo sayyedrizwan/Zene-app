@@ -49,6 +49,8 @@ object Utils {
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
         const val TRENDING_SONGS_TOP_50_K_POP = "trendingSongsTop50KPop"
         const val SIMILAR_ARTISTS = "similarArtists"
+        const val ARTISTS_INSTAGRAM_POSTS = "artistsInstaPosts"
+        const val ARTISTS_TWITTER_TWEETS = "artistsTwitterTweets"
 
 
         const val IP_JSON_BASE_URL = "http://ip-api.com/"

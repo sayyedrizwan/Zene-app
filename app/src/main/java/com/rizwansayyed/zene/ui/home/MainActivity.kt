@@ -28,6 +28,9 @@ import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
 import dagger.hilt.android.AndroidEntryPoint
 
+
+// wider team
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), NetworkCallbackStatus {
 
