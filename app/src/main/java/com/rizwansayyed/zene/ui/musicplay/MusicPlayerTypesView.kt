@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerResponse
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerStatus
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerStatus.*
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus
@@ -37,6 +38,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MusicPlayerLyrics(nav: HomeNavViewModel, song: SongsViewModel = hiltViewModel()) {
@@ -62,8 +64,8 @@ fun MusicPlayerLyrics(nav: HomeNavViewModel, song: SongsViewModel = hiltViewMode
             }
 
         ERROR -> {
-            noLyricsFound.showToast()
-            nav.musicViewType(VideoPlayerViewStatus.MUSIC)
+            Spacer(modifier = Modifier.height(50.dp))
+            QuickSandRegular(noLyricsFound, Modifier.fillMaxWidth())
         }
 
         SUCCESS -> {
@@ -81,6 +83,8 @@ fun MusicPlayerLyrics(nav: HomeNavViewModel, song: SongsViewModel = hiltViewMode
 
     LaunchedEffect(Unit) {
         val songs = "${musicPlayer?.songName} - ${musicPlayer?.artists}"
+        song.readLyrics(songs)
+        delay(1.seconds)
         song.readLyrics(songs)
     }
 }

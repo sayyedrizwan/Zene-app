@@ -439,7 +439,7 @@ class SongsViewModel @Inject constructor(
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun readLyrics(q: String) = viewModelScope.launch(Dispatchers.IO) {
-        videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
+        videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING, null)
         if (ifLyricsFileExistReturn(q).length > 10) {
             videoLyricsDetails =
                 VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn(q))

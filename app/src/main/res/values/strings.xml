@@ -8,6 +8,8 @@
     <string name="recommended_artists">Recommended Artists</string>
     <string name="recently_played">Recently Played</string>
     <string name="settings">Settings</string>
+    <string name="posts">Posts</string>
+    <string name="followers">Followers</string>
     <string name="settings_coming_soon">Settings coming soon</string>
     <string name="offline_songs">Offline Downloaded Songs</string>
     <string name="view_all">View All</string>

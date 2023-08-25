@@ -63,8 +63,8 @@ object Module {
 
     @Provides
     @Singleton
-    fun apiInterfaceImpl(api: ApiInterface, ip: IPApiInterface): ApiInterfaceImpl =
-        ApiInterfaceImpl(api, ip)
+    fun apiInterfaceImpl(api: ApiInterface, ip: IPApiInterface, jsoup: ArtistsDataJsoup): ApiInterfaceImpl =
+        ApiInterfaceImpl(api, ip, jsoup)
 
     @Provides
     @Singleton

@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.ui.artists.artistviewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
@@ -27,7 +29,14 @@ class ArtistsViewModel @Inject constructor(
     private val artistsDataJsoup: ArtistsDataJsoup
 ) : ViewModel() {
 
+
+    var artistName by mutableStateOf("")
+        private set
+
     var topInfo = mutableStateOf<String?>(null)
+        private set
+
+    var listeners by mutableStateOf<String?>(null)
         private set
 
     var artistsImages = mutableStateOf<List<String>>(emptyList())
@@ -46,55 +55,80 @@ class ArtistsViewModel @Inject constructor(
         private set
 
 
-    var artistsInstagramPosts = mutableStateOf<ArtistsInstagramPostResponse?>(null)
+    var artistsInstagramPosts by mutableStateOf<ArtistsInstagramPostResponse?>(null)
         private set
 
 
-    var artistsTwitterInfo = mutableStateOf<ArtistsTwitterInfoResponse?>(null)
+    var artistsTwitterInfo by mutableStateOf<ArtistsTwitterInfoResponse?>(null)
         private set
 
 
     fun toDefault() {
         topInfo.value = null
+        listeners = null
         artistsImages.value = emptyList()
         artistsTopSongs.value = emptyList()
         artistsAllTimeSongs.value = emptyList()
         artistsTopAlbums.value = emptyList()
         artistsSimilar.value = emptyList()
-        artistsInstagramPosts.value = null
-        artistsTwitterInfo.value = null
+        artistsInstagramPosts = null
+        artistsTwitterInfo = null
     }
 
     fun searchArtists(artists: String) = viewModelScope.launch(Dispatchers.IO) {
-        apiImpl.searchSongs("${artists}+latest+songs").catch { }.collectLatest {
-            artistsAllTimeSongs.value = it
+
+        artistName = artists
+        viewModelScope.launch(Dispatchers.IO) {
+            apiImpl.searchSongs("${artists}+latest+songs").catch { }.collectLatest {
+                artistsAllTimeSongs.value = it
+            }
+
+            apiImpl.similarArtists(artists).catch { }.collectLatest {
+                artistsSimilar.value = it
+            }
+
+            apiImpl.artistsInstagramPosts(artists).catch {}.collectLatest {
+                artistsInstagramPosts = it
+            }
+
+            apiImpl.artistsTwitterTweets(artists).catch { }.collectLatest {
+                artistsTwitterInfo = it
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            apiImpl.artistsData(artists).catch {}.collectLatest {
+                if (it.url?.isNotEmpty() == true) {
+                    val url = clearUrlForArtistsInfo(it.url)
+                    viewModelScope.launch(Dispatchers.IO) {
+                        artistsListeners(url)
+                    }
+                    viewModelScope.launch(Dispatchers.IO) {
+                        artistsBio(url)
+                    }
+                    viewModelScope.launch(Dispatchers.IO) {
+                        artistsImage(url)
+                    }
+                    viewModelScope.launch(Dispatchers.IO) {
+                        artistsTopSongs(url)
+                    }
+                    viewModelScope.launch(Dispatchers.IO) {
+                        artistsTopAlbums(url)
+                    }
+                } else
+                    Log.d("TAG", "searchArtists: Error")
+
+            }
+        }
+    }
+
+    private fun artistsListeners(url: String) = viewModelScope.launch(Dispatchers.IO) {
+        val data = try {
+            artistsDataJsoup.artistsListeners(url).first()
+        } catch (e: Exception) {
+            null
         }
 
-        apiImpl.similarArtists(artists).catch { }.collectLatest {
-            artistsSimilar.value = it
-        }
-
-
-        apiImpl.artistsInstagramPosts(artists).catch { }.collectLatest {
-            artistsInstagramPosts.value = it
-        }
-
-        apiImpl.artistsTwitterTweets(artists).catch { }.collectLatest {
-            artistsTwitterInfo.value = it
-        }
-
-        apiImpl.artistsData(artists).catch {}.collectLatest {
-            if (it.url?.isNotEmpty() == true) {
-                val url = clearUrlForArtistsInfo(it.url)
-
-                artistsBio(url)
-                artistsImage(url)
-                artistsTopSongs(url)
-                artistsTopAlbums(url)
-            } else
-                Log.d("TAG", "searchArtists: Error")
-
-        }
+        listeners = data
     }
 
     private fun artistsBio(url: String) = viewModelScope.launch(Dispatchers.IO) {

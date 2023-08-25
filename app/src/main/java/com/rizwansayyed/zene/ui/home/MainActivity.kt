@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.ui.home
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.coroutineScope
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
@@ -26,7 +29,11 @@ import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
+import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.jsoup.Jsoup
 
 
 // wider team
@@ -94,6 +101,12 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         super.onStart()
         startDownloadSongsWorkManager()
         songsViewModel.run()
+//
+//        lifecycle.coroutineScope.launch {
+//            delay(2.seconds)
+//            homeNavViewModel.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
+//            artistsViewModel.searchArtists("Taylor Swift")
+//        }
     }
 
     override fun internetConnected() {

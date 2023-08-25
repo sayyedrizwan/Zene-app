@@ -6,7 +6,6 @@ import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
-import com.rizwansayyed.zene.utils.Utils.URL.ALBUMS_WITH_HEADERS
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_DATA
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_INSTAGRAM_POSTS
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_TWITTER_TWEETS
@@ -31,10 +30,6 @@ import retrofit2.http.Path
 
 interface ApiInterface {
 
-    @GET(ALBUMS_WITH_HEADERS)
-    suspend fun albumsWithHeaders(): UrlResponse
-
-
     @GET(TOP_ARTIST_THIS_WEEK)
     suspend fun topArtistOfWeek(): TopArtistsResponseApi
 
@@ -42,30 +37,34 @@ interface ApiInterface {
     @GET(TOP_GLOBAL_SONGS_THIS_WEEK)
     suspend fun topGlobalSongsThisWeek(): TopArtistsResponseApi
 
-    @GET("$ARTISTS_DATA/{name}")
-    suspend fun artistsData(@Path(value = "name") name: String): UrlResponse
+    @FormUrlEncoded
+    @POST(TOP_COUNTRY_SONGS)
+    suspend fun topCountrySongs(@Field("q") q: String): TopArtistsResponseApi
 
-    @GET("$TOP_COUNTRY_SONGS/{country}")
-    suspend fun topCountrySongs(@Path(value = "country") country: String): TopArtistsResponseApi
+    @FormUrlEncoded
+    @POST(TRENDING_SONGS_APPLE)
+    suspend fun trendingSongsTop50(@Field("q") q: String): TopArtistsResponseApi
 
-    @GET("$TRENDING_SONGS_APPLE/{country}")
-    suspend fun trendingSongsTop50(@Path(value = "country") country: String): TopArtistsResponseApi
+    @FormUrlEncoded
+    @POST(TRENDING_SONGS_TOP_K_POP)
+    suspend fun trendingSongsTopKPop(@Field("q") q: String): TopArtistsResponseApi
 
-    @GET(TRENDING_SONGS_TOP_K_POP)
-    suspend fun trendingSongsTopKPop(): TopArtistsResponseApi
+    @FormUrlEncoded
+    @POST(TRENDING_SONGS_TOP_50_K_POP)
+    suspend fun trendingSongsTop50KPop(@Field("q") q: String): TopArtistsResponseApi
 
-    @GET(TRENDING_SONGS_TOP_50_K_POP)
-    suspend fun trendingSongsTop50KPop(): TopArtistsResponseApi
+    @FormUrlEncoded
+    @POST(SIMILAR_ARTISTS)
+    suspend fun similarArtists(@Field("q") q: String): TopArtistsResponseApi
 
-    @GET("$SIMILAR_ARTISTS/{name}")
-    suspend fun similarArtists(@Path(value = "name") name: String): TopArtistsResponseApi
-
-    @GET("$ARTISTS_INSTAGRAM_POSTS/{name}")
-    suspend fun artistsInstagramPosts(@Path(value = "name") name: String): ArtistsInstagramPostResponse
+    @FormUrlEncoded
+    @POST(ARTISTS_INSTAGRAM_POSTS)
+    suspend fun artistsInstagramPosts(@Field("q") q: String): ArtistsInstagramPostResponse
 
 
-    @GET("$ARTISTS_TWITTER_TWEETS/{name}")
-    suspend fun artistsTwitterTweets(@Path(value = "name") name: String): ArtistsTwitterInfoResponse
+    @FormUrlEncoded
+    @POST(ARTISTS_TWITTER_TWEETS)
+    suspend fun artistsTwitterTweets(@Field("q") q: String): ArtistsTwitterInfoResponse
 
 
     @FormUrlEncoded

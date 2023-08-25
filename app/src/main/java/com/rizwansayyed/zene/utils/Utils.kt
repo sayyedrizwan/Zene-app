@@ -28,12 +28,13 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
 import java.lang.Float.NaN
+import java.text.NumberFormat
+import java.util.Locale
 
 
 object Utils {
 
     object URL {
-        const val ALBUMS_WITH_HEADERS = "albumsWithHeaders"
         const val ARTISTS_DATA = "artistsData"
         const val TOP_ARTIST_THIS_WEEK = "topArtistThisWeek"
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
@@ -44,7 +45,6 @@ object Utils {
         const val SEARCH_SONGS = "searchSongs"
         const val SONG_PLAY_DETAILS = "songPlayDetails"
         const val VIDEO_PLAY_DETAILS = "videoPlayDetails"
-        const val TRENDING_SONGS_S_TOP_50 = "trendingSongsSTop50"
         const val TRENDING_SONGS_APPLE = "trendingSongsApple"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
         const val TRENDING_SONGS_TOP_50_K_POP = "trendingSongsTop50KPop"
@@ -200,6 +200,25 @@ object Utils {
     }
 
 
+    fun openOnInstagramVideo(username: String) {
+        val packageName = "com.instagram.android"
+
+        val intent = context.packageManager.getLaunchIntentForPackage(packageName)?.apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            data = Uri.parse("https://www.instagram.com/$username")
+        }
+        if (intent == null) {
+            Intent(Intent.ACTION_VIEW).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                data = Uri.parse("https://www.instagram.com/$username")
+                context.startActivity(this)
+            }
+        } else {
+            context.startActivity(intent)
+        }
+    }
+
+
     fun saveCaptionsFileTXT(name: String, txt: String) {
         cacheLyricsFiles.mkdirs()
         val file = File(cacheLyricsFiles, "$name.txt")
@@ -229,6 +248,8 @@ object Utils {
         }
     }
 
+    fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
+
     fun clearUrlForArtistsInfo(url: String): String {
         return url.substringBefore("?")
             .replace("/+wiki", "").replace("/+wiki/", "")
@@ -236,6 +257,23 @@ object Utils {
             .replace("/+tracks", "").replace("/+tracks/", "")
             .replace("/+tracks", "").replace("/+tracks/", "")
             .replace("/+albums", "").replace("/+albums/", "")
+    }
+
+
+    fun Int.convertToNumber(): String {
+        return NumberFormat.getNumberInstance(Locale.US).format(this)
+    }
+
+    fun convertToAbbreviation(number: Int): String {
+        return when {
+            number >= 1_000_000 -> "${number / 1_000_000}M"
+            number >= 1_000 -> "${number / 1_000}K"
+            else -> number.toString()
+        }
+    }
+
+    fun getUrlPathForUrl(url: String) {
+
     }
 
 }
