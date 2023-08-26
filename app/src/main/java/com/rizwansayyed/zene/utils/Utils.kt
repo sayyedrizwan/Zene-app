@@ -71,13 +71,18 @@ object Utils {
             return "https://www.last.fm/search/artists?q=$name"
         }
 
+        fun readNewsUrl(name: String): String {
+            return "https://news.google.com/rss/search?q=${name.replace(" ", "+")}"
+        }
+
         fun searchViaBing(q: String): String {
             return "https://www.bing.com/search?q=${q.lowercase().trim().replace(" ", "+")}" +
                     "+twitter+and+instagram"
         }
     }
 
-    const val USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
+    const val USER_AGENT =
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
 
     object DB {
         const val RECENT_PLAYED_DB = "recent_played_db"
@@ -210,17 +215,17 @@ object Utils {
     }
 
 
-    fun openOnInstagramVideo(username: String) {
+    fun openOnInstagramPost(pId: String) {
         val packageName = "com.instagram.android"
 
         val intent = context.packageManager.getLaunchIntentForPackage(packageName)?.apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            data = Uri.parse("https://www.instagram.com/$username")
+            data = Uri.parse("https://www.instagram.com/p/$pId")
         }
         if (intent == null) {
             Intent(Intent.ACTION_VIEW).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                data = Uri.parse("https://www.instagram.com/$username")
+                data = Uri.parse("https://www.instagram.com/p/$pId")
                 context.startActivity(this)
             }
         } else {

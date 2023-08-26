@@ -35,15 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
-import com.rizwansayyed.zene.ui.theme.LightGreenBlue
-import com.rizwansayyed.zene.ui.theme.TwitterColor
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.capitalizeWords
-import com.rizwansayyed.zene.utils.Utils.convertToAbbreviation
-import com.rizwansayyed.zene.utils.Utils.convertToNumber
-import com.rizwansayyed.zene.utils.Utils.openOnInstagramVideo
-import com.rizwansayyed.zene.utils.Utils.showToast
 
 @Composable
 fun TopArtistsInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {

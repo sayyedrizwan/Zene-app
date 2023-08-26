@@ -228,14 +228,13 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
 
         document.select("ol#b_results").select("li.b_algo").forEach {
             val url = it.selectFirst("a.tilk")?.attr("href")
-            if (url?.contains("https://www.instagram.com/") == true && instagram.isNotEmpty()) {
+            if (url?.contains("https://www.instagram.com/") == true && instagram.isEmpty()) {
                 instagram = url
             }
-            if (url?.contains("https://www.twitter.com/") == true && twitter.isNotEmpty()) {
+            if (url?.contains("https://www.twitter.com/") == true && twitter.isEmpty()) {
                 twitter = url
             }
         }
-
         emit(Pair(instagram, twitter))
     }
 

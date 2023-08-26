@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -19,16 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.artists.view.ArtistsAlbum
 import com.rizwansayyed.zene.ui.artists.view.ArtistsAllSongsView
+import com.rizwansayyed.zene.ui.artists.view.InstagramPostsPosts
 import com.rizwansayyed.zene.ui.artists.view.TopArtistsInfo
 import com.rizwansayyed.zene.ui.artists.view.TopArtistsSongs
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
-import com.rizwansayyed.zene.ui.home.homeui.TopHeaderOf
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 
 @Composable
@@ -86,17 +88,17 @@ fun ArtistsInfo(
         }
 
         item(span = { GridItemSpan(2) }) {
-            if (artistsViewModel.artistsAllTimeSongs.isNotEmpty()) {
+            if (artistsViewModel.artistsAllTimeSongs.isNotEmpty())
                 LazyRow {
                     items(artistsViewModel.artistsAllTimeSongs) { artists ->
-                        ArtistsAllSongsView(artists) {
-                            homeNavViewModel.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
-                            artistsViewModel.searchArtists(it.trim().lowercase())
+                        ArtistsAllSongsView(artists) { name, thumbnail ->
+                            homeNavViewModel.showMusicPlayer()
+                            songsViewModel
+                                .songsPlayingDetails(thumbnail, name, artistsViewModel.artistName)
                         }
                         Spacer(modifier = Modifier.width(20.dp))
                     }
                 }
-            }
         }
 
         item(span = { GridItemSpan(2) }) {
@@ -116,197 +118,57 @@ fun ArtistsInfo(
         }
 
         item(span = { GridItemSpan(2) }) {
+            Spacer(Modifier.height(54.dp))
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.artistsInstagramPosts?.instagram?.posts?.isNotEmpty() == true)
+                QuickSandSemiBold(
+                    stringResource(id = R.string.artist_insta_posts),
+                    Modifier.padding(5.dp),
+                    size = 19,
+                )
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.artistsInstagramPosts?.instagram?.posts != null)
+                LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 970.dp)) {
+                    items(artistsViewModel.artistsInstagramPosts?.instagram?.posts!!) {
+                        InstagramPostsPosts(it)
+                    }
+                }
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            Spacer(Modifier.height(54.dp))
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.artistsImages.isNotEmpty())
+                QuickSandSemiBold(
+                    stringResource(id = R.string.top_images), Modifier.padding(5.dp), size = 19,
+                )
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.artistsImages.isNotEmpty())
+                LazyRow {
+                    items(artistsViewModel.artistsImages) { images ->
+                        AsyncImage(images, "", Modifier.padding(4.dp).size(270.dp))
+                    }
+                }
+        }
+
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.readNewsList.isNotEmpty())
+                QuickSandSemiBold(
+                    stringResource(id = R.string.trending_news), Modifier.padding(5.dp), size = 19,
+                )
+        }
+
+        item(span = { GridItemSpan(2) }) {
             Spacer(Modifier.height(254.dp))
         }
     }
-//    Column(
-//        Modifier
-//            .fillMaxSize()
-//            .background(Color.Black)
-//            .verticalScroll(rememberScrollState())
-//    ) {
-//
-//        Spacer(modifier = Modifier.height(90.dp))
-//
-//        QuickSandSemiBold(
-//            artistsViewModel.topInfo.value ?: "",
-//            size = 17,
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//
-//
-//        Row(
-//            Modifier
-//                .fillMaxWidth()
-//                .horizontalScroll(rememberScrollState())
-//        ) {
-//
-//            artistsViewModel.artistsImages.value.forEach {
-//                AsyncImage(
-//                    model = it,
-//                    contentDescription = "",
-//                    Modifier.size(380.dp)
-//                )
-//            }
-//        }
-//
-//
-//        Row(
-//            Modifier
-//                .fillMaxWidth()
-//                .horizontalScroll(rememberScrollState())
-//        ) {
-//
-//            artistsViewModel.artistsTopSongs.value.forEach {
-//                Column {
-//                    AsyncImage(
-//                        model = it.image.replace("avatar170s", "770x0"),
-//                        contentDescription = "",
-//                        Modifier.size(380.dp)
-//                    )
-//
-//                    QuickSandSemiBold(it.name, size = 19, modifier = Modifier.padding(5.dp))
-//                    QuickSandSemiBold(it.listeners, size = 19, modifier = Modifier.padding(5.dp))
-//                }
-//            }
-//        }
-//
-//
-//        Row(
-//            Modifier
-//                .fillMaxWidth()
-//                .horizontalScroll(rememberScrollState())
-//        ) {
-//
-//            artistsViewModel.artistsAllTimeSongs.value.forEach {
-//                Column {
-//                    AsyncImage(
-//                        model = it.img,
-//                        contentDescription = "",
-//                        Modifier.size(380.dp)
-//                    )
-//
-//                    QuickSandSemiBold(it.name ?: "", size = 19, modifier = Modifier.padding(5.dp))
-//                    QuickSandSemiBold(it.artist ?: "", size = 19, modifier = Modifier.padding(5.dp))
-//                }
-//            }
-//        }
-//
-//
-//        Row(
-//            Modifier
-//                .fillMaxWidth()
-//                .horizontalScroll(rememberScrollState())
-//        ) {
-//
-//            artistsViewModel.artistsTopAlbums.value.forEach {
-//                Column {
-//                    AsyncImage(it.image, "", Modifier.size(380.dp))
-//
-//                    QuickSandSemiBold(it.name, size = 19, modifier = Modifier.padding(5.dp))
-//                    QuickSandSemiBold(it.listeners, size = 19, modifier = Modifier.padding(5.dp))
-//                    QuickSandSemiBold(it.songsSize, size = 19, modifier = Modifier.padding(5.dp))
-//                    QuickSandSemiBold(it.date, size = 19, modifier = Modifier.padding(5.dp))
-//                }
-//            }
-//        }
-//
-//        QuickSandSemiBold(
-//            artistsViewModel.artistsInstagramPosts.value?.bio ?: "",
-//            size = 19,
-//            modifier = Modifier.padding(5.dp)
-//        )
-//
-//        QuickSandSemiBold(
-//            artistsViewModel.artistsInstagramPosts.value?.followers.toString(),
-//            size = 19,
-//            modifier = Modifier.padding(5.dp)
-//        )
-//
-//        AsyncImage(
-//            model = artistsViewModel.artistsInstagramPosts.value?.profilePic,
-//            contentDescription = "",
-//            Modifier.size(120.dp)
-//        )
-//
-//        Row(
-//            Modifier
-//                .fillMaxWidth()
-//                .horizontalScroll(rememberScrollState())
-//        ) {
-//            artistsViewModel.artistsInstagramPosts.value?.posts?.forEach {
-//                Column {
-//                    AsyncImage(
-//                        model = it.postImage,
-//                        contentDescription = "",
-//                        Modifier.size(380.dp)
-//                    )
-//
-//                    QuickSandSemiBold(
-//                        it.isVideo.toString(),
-//                        size = 19,
-//                        modifier = Modifier.padding(5.dp)
-//                    )
-//                    QuickSandSemiBold(
-//                        it.postId.toString(),
-//                        size = 19,
-//                        modifier = Modifier.padding(5.dp)
-//                    )
-//                    QuickSandSemiBold(
-//                        it.timestamp.toString(),
-//                        size = 19,
-//                        modifier = Modifier.padding(5.dp)
-//                    )
-//                    QuickSandSemiBold(
-//                        it.likeCount.toString(),
-//                        size = 19,
-//                        modifier = Modifier.padding(5.dp)
-//                    )
-//                    QuickSandSemiBold(
-//                        it.commentCount.toString(),
-//                        size = 19,
-//                        modifier = Modifier.padding(5.dp)
-//                    )
-//                    QuickSandSemiBold(
-//                        it.totalImages.toString(),
-//                        size = 19,
-//                        modifier = Modifier.padding(5.dp)
-//                    )
-//                }
-//            }
-//        }
-//        QuickSandSemiBold(
-//            artistsViewModel.artistsTwitterInfo.value?.name ?: "",
-//            size = 19,
-//            modifier = Modifier.padding(5.dp)
-//        )
-//
-//        QuickSandSemiBold(
-//            artistsViewModel.artistsTwitterInfo.value?.description ?: "",
-//            size = 19,
-//            modifier = Modifier.padding(5.dp)
-//        )
-//
-//        Row(
-//            Modifier
-//                .fillMaxWidth()
-//                .horizontalScroll(rememberScrollState())
-//        ) {
-//
-//            artistsViewModel.artistsSimilar.value.forEach {
-//                Column {
-//                    AsyncImage(
-//                        model = it.img,
-//                        contentDescription = "",
-//                        Modifier.size(380.dp)
-//                    )
-//
-//                    QuickSandSemiBold(it.name ?: "", size = 19, modifier = Modifier.padding(5.dp))
-//                    QuickSandSemiBold(it.artist ?: "", size = 19, modifier = Modifier.padding(5.dp))
-//                }
-//            }
-//        }
-//
-//        Spacer(modifier = Modifier.height(190.dp))
-//    }
 }

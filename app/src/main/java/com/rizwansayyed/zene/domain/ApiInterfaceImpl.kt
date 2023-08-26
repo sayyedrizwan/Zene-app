@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.domain
 
 import android.content.Context
 import android.util.Log
+import com.prof18.rssparser.RssParser
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.model.UrlResponse
@@ -11,6 +12,8 @@ import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsDataJsoup
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
+import com.rizwansayyed.zene.utils.Utils.URL.readNewsUrl
 import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -135,11 +138,22 @@ class ApiInterfaceImpl @Inject constructor(
     override suspend fun artistsInstagramPosts(name: String) = flow {
         val (instagramURL, twitterURL) = jsoup.instagramTwitterAccounts(name).first()
 
-        val instagram =  apiInterface.artistsInstagramPosts(instagramURL)
-        val twitter =  apiInterface.artistsTwitterTweets(twitterURL)
+        val instagram = apiInterface.artistsInstagramPosts(instagramURL)
+        val twitter = apiInterface.artistsTwitterTweets(twitterURL)
 
         val response = SocialMediaCombine(instagram, twitter)
         emit(response)
+    }
+
+   override suspend fun readNewsList(name: String) = flow {
+        val lists = ArrayList<NewsResponse>(100)
+        val rssParser = RssParser()
+        val rssChannel = rssParser.getRssChannel(readNewsUrl(name))
+        rssChannel.items.forEach {
+            if (it.title != null)
+                lists.add(NewsResponse(it.title ?: "", it.link ?: "", it.pubDate ?: ""))
+        }
+        emit(lists)
     }
 
 

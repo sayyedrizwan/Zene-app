@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.ListenersNumberValue
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
 import com.rizwansayyed.zene.utils.Utils.clearUrlForArtistsInfo
@@ -67,6 +68,10 @@ class ArtistsViewModel @Inject constructor(
         private set
 
 
+    var readNewsList by mutableStateOf<List<NewsResponse>>(emptyList())
+        private set
+
+
     var artistsTwitterInfo by mutableStateOf<ArtistsTwitterInfoResponse?>(null)
         private set
 
@@ -91,6 +96,10 @@ class ArtistsViewModel @Inject constructor(
 
         apiImpl.artistsInstagramPosts(artists).catch {}.collectLatest {
             artistsInstagramPosts = it
+        }
+
+        apiImpl.readNewsList(artists).catch {}.collectLatest {
+            readNewsList = it
         }
 
 

@@ -128,6 +128,8 @@ dependencies {
     implementation("io.coil-kt:coil:$coilVersion")
 
     implementation("org.jsoup:jsoup:1.16.1")
+    implementation("com.prof18.rssparser:rssparser:6.0.0")
+
 
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")

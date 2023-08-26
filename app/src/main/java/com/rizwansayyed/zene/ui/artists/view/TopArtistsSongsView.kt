@@ -25,11 +25,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.presenter.model.Post
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
+import com.rizwansayyed.zene.utils.Utils.openOnInstagramPost
 import com.rizwansayyed.zene.utils.Utils.shortTextForView
 
 @Composable
@@ -79,12 +81,12 @@ fun TopArtistsSongs(songs: TopArtistsSongs, search: (String, String) -> Unit) {
 
 
 @Composable
-fun ArtistsAllSongsView(artists: TopArtistsSongs, search: (String) -> Unit) {
+fun ArtistsAllSongsView(artists: TopArtistsSongs, search: (String, String) -> Unit) {
     Column(
         Modifier
             .padding(10.dp)
             .clickable {
-                search(artists.name ?: "")
+                search(artists.name ?: "", artists.img ?: "")
             },
         Arrangement.Center, Alignment.CenterHorizontally
     ) {
@@ -126,10 +128,27 @@ fun ArtistsAlbum(album: ArtistsAlbumsData) {
         QuickSandBold(album.name, size = 16, maxLine = 1, modifier = Modifier.padding(top = 10.dp))
 
         QuickSandLight(
-            album.songsSize.substringAfter("listeners"), size = 15, modifier = Modifier.padding(top = 1.dp, bottom = 10.dp)
+            album.songsSize.substringAfter("listeners"),
+            size = 15,
+            modifier = Modifier.padding(top = 1.dp, bottom = 10.dp)
         )
     }
 }
 
+@Composable
+fun InstagramPostsPosts(post: Post) {
+    AsyncImage(
+        model = post.postImage,
+        contentDescription = "instagram",
+        modifier = Modifier
+            .padding(5.dp)
+            .width(270.dp)
+            .height(190.dp)
+            .clickable {
+                openOnInstagramPost(post.postId ?: "/")
+            },
+        contentScale = ContentScale.Crop
+    )
+}
 
 
