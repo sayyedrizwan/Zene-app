@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.converter.SongsAlbumsHeaderConverter
 import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
+import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsDataJsoup
@@ -132,21 +133,13 @@ class ApiInterfaceImpl @Inject constructor(
     }
 
     override suspend fun artistsInstagramPosts(name: String) = flow {
-        val url = jsoup.instagramAccounts(name).first()
-        if (url == null) {
-            emit(null)
-            return@flow
-        }
-        emit(apiInterface.artistsInstagramPosts(url))
-    }
+        val (instagramURL, twitterURL) = jsoup.instagramTwitterAccounts(name).first()
 
-    override suspend fun artistsTwitterTweets(name: String) = flow {
-        val url = jsoup.twitterAccounts(name).first()
-        if (url == null) {
-            emit(null)
-            return@flow
-        }
-        emit(apiInterface.artistsTwitterTweets(url))
+        val instagram =  apiInterface.artistsInstagramPosts(instagramURL)
+        val twitter =  apiInterface.artistsTwitterTweets(twitterURL)
+
+        val response = SocialMediaCombine(instagram, twitter)
+        emit(response)
     }
 
 

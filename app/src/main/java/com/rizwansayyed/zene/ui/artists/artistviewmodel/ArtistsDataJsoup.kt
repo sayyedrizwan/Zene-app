@@ -8,7 +8,9 @@ import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.ListenersNumberVal
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
 import com.rizwansayyed.zene.utils.OkhttpCookies
+import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.URL.searchArtistsURL
+import com.rizwansayyed.zene.utils.Utils.URL.searchViaBing
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -210,14 +212,6 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
     }
 
 
-    suspend fun similarArtists(name: String) = flow {
-        val search = "https://www.google.com/search?q=" +
-                "${name.lowercase().replace(" ", "+")}+similar+artists+site%3Alast.fm"
-
-        emit(firstUrls(search))
-    }
-
-
     suspend fun artistData(name: String) = flow {
         val search = "https://www.google.com/search?q=" +
                 "${name.lowercase().replace(" ", "+")}+artist+site%3Alast.fm/music&start=10"
@@ -225,27 +219,27 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
         emit(firstUrls(search))
     }
 
-    suspend fun instagramAccounts(name: String) = flow {
-        val search =
-            "https://www.google.com/search?q=${name.lowercase().replace(" ", "+")}" +
-                    "+official+account+on+instagram+site%3Ainstagram.com"
+    suspend fun instagramTwitterAccounts(name: String) = flow {
+        val response = downloadHTMLOkhttp(searchViaBing(name))
+        val document = Jsoup.parse(response!!)
 
-        emit(firstUrls(search))
+        var instagram = ""
+        var twitter = ""
+
+        document.select("ol#b_results").select("li.b_algo").forEach {
+            val url = it.selectFirst("a.tilk")?.attr("href")
+            if (url?.contains("https://www.instagram.com/") == true && instagram.isNotEmpty()) {
+                instagram = url
+            }
+            if (url?.contains("https://www.twitter.com/") == true && twitter.isNotEmpty()) {
+                twitter = url
+            }
+        }
+
+        emit(Pair(instagram, twitter))
     }
-
-    suspend fun twitterAccounts(name: String) = flow {
-        val search =
-            "https://www.google.com/search?q=${name.lowercase().replace(" ", "+")}" +
-                    "+official+account+on+twitter+site%3Atwitter.com"
-
-        emit(firstUrls(search))
-    }
-
 
     private fun firstUrls(url: String): String? {
-//        val response = downloadHTMLOkhttp(url)
-//        saveCaptionsFileTXT("saaa", response ?: " nooooooo")
-        Thread.sleep(2000)
         val document = Jsoup.connect(url).timeout(20000)
             .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36")
             .get()
@@ -261,7 +255,8 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
 
     private fun downloadHTMLOkhttp(url: String): String? {
         val client = OkHttpClient().newBuilder().cookieJar(cookies).build()
-        val request = Request.Builder().url(url.replace(" ", "+")).method("GET", null).build()
+        val request = Request.Builder().url(url)
+            .addHeader("User-Agent", Utils.USER_AGENT).method("GET", null).build()
         val response = client.newCall(request).execute()
 
         if (response.isSuccessful) {

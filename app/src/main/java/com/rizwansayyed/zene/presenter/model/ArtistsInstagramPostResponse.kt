@@ -1,5 +1,10 @@
 package com.rizwansayyed.zene.presenter.model
 
+data class SocialMediaCombine(
+    val instagram: ArtistsInstagramPostResponse,
+    val twitter: ArtistsTwitterInfoResponse
+)
+
 data class ArtistsInstagramPostResponse(
     val bio: String?,
     val name: String?,

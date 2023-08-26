@@ -70,7 +70,14 @@ object Utils {
         fun searchArtistsURL(name: String): String {
             return "https://www.last.fm/search/artists?q=$name"
         }
+
+        fun searchViaBing(q: String): String {
+            return "https://www.bing.com/search?q=${q.lowercase().trim().replace(" ", "+")}" +
+                    "+twitter+and+instagram"
+        }
     }
+
+    const val USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
 
     object DB {
         const val RECENT_PLAYED_DB = "recent_played_db"

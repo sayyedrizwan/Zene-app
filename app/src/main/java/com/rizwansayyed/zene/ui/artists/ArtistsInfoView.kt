@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,15 +22,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
+import com.rizwansayyed.zene.ui.artists.view.ArtistsAlbum
 import com.rizwansayyed.zene.ui.artists.view.ArtistsAllSongsView
-import com.rizwansayyed.zene.ui.artists.view.ShowInstagramInfo
-import com.rizwansayyed.zene.ui.artists.view.ShowTwitterInfo
 import com.rizwansayyed.zene.ui.artists.view.TopArtistsInfo
 import com.rizwansayyed.zene.ui.artists.view.TopArtistsSongs
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
-import com.rizwansayyed.zene.ui.home.homeui.ArtistsView
 import com.rizwansayyed.zene.ui.home.homeui.TopHeaderOf
+import com.rizwansayyed.zene.utils.QuickSandSemiBold
 
 @Composable
 fun ArtistsInfo(
@@ -40,41 +42,50 @@ fun ArtistsInfo(
         artistsViewModel.toDefault()
     }
 
-    LazyColumn(Modifier.fillMaxSize()) {
-        item {
+    LazyVerticalGrid(columns = GridCells.Fixed(2), Modifier.fillMaxSize()) {
+        item(span = { GridItemSpan(2) }) {
             TopArtistsInfo(artistsViewModel)
         }
-        item {
-            ShowInstagramInfo(artistsViewModel)
-        }
-        item {
-            ShowTwitterInfo(artistsViewModel)
+
+        item(span = { GridItemSpan(2) }) {
+            Spacer(Modifier.height(54.dp))
         }
 
-        item {
-            if (artistsViewModel.artistsTopSongs.isNotEmpty())
-                TopHeaderOf(stringResource(id = R.string.top_songs))
-        }
-
-        item {
+        item(span = { GridItemSpan(2) }) {
             if (artistsViewModel.artistsTopSongs.isNotEmpty()) {
-                LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 300.dp)) {
-                    items(artistsViewModel.artistsTopSongs.size) {
-                        TopArtistsSongs(artistsViewModel.artistsTopSongs[it]) { thumbnail, name ->
+                QuickSandSemiBold(
+                    stringResource(id = R.string.top_songs), Modifier.padding(5.dp), size = 19,
+                )
+            }
+        }
+
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.artistsTopSongs.isNotEmpty()) {
+                LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 270.dp)) {
+                    items(artistsViewModel.artistsTopSongs) {
+                        TopArtistsSongs(it) { thumbnail, name ->
                             homeNavViewModel.showMusicPlayer()
-                            songsViewModel.songsPlayingDetails(thumbnail, name, artistsViewModel.artistName)
+                            songsViewModel
+                                .songsPlayingDetails(thumbnail, name, artistsViewModel.artistName)
                         }
                     }
                 }
             }
         }
 
-        item {
-            if (artistsViewModel.artistsAllTimeSongs.isNotEmpty())
-                TopHeaderOf(stringResource(id = R.string.recent_songs))
+        item(span = { GridItemSpan(2) }) {
+            Spacer(Modifier.height(54.dp))
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.artistsAllTimeSongs.isNotEmpty())
+                QuickSandSemiBold(
+                    stringResource(id = R.string.recent_songs), Modifier.padding(5.dp), size = 19,
+                )
+        }
+
+        item(span = { GridItemSpan(2) }) {
             if (artistsViewModel.artistsAllTimeSongs.isNotEmpty()) {
                 LazyRow {
                     items(artistsViewModel.artistsAllTimeSongs) { artists ->
@@ -88,8 +99,24 @@ fun ArtistsInfo(
             }
         }
 
-        item {
-            Spacer(Modifier.height(154.dp))
+        item(span = { GridItemSpan(2) }) {
+            Spacer(Modifier.height(54.dp))
+        }
+
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.artistsTopAlbums.isNotEmpty())
+                QuickSandSemiBold(
+                    stringResource(id = R.string.top_albums), Modifier.padding(5.dp), size = 19,
+                )
+        }
+
+        items(artistsViewModel.artistsTopAlbums) {
+            ArtistsAlbum(it)
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            Spacer(Modifier.height(254.dp))
         }
     }
 //    Column(

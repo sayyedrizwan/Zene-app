@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
+import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.ListenersNumberValue
@@ -55,14 +56,14 @@ class ArtistsViewModel @Inject constructor(
     var artistsAllTimeSongs by mutableStateOf<TopArtistsResponseApi>(emptyList())
         private set
 
-    var artistsTopAlbums = mutableStateOf<List<ArtistsAlbumsData>>(emptyList())
+    var artistsTopAlbums by mutableStateOf<List<ArtistsAlbumsData>>(emptyList())
         private set
 
     var artistsSimilar = mutableStateOf<TopArtistsResponseApi>(emptyList())
         private set
 
 
-    var artistsInstagramPosts by mutableStateOf<ArtistsInstagramPostResponse?>(null)
+    var artistsInstagramPosts by mutableStateOf<SocialMediaCombine?>(null)
         private set
 
 
@@ -76,28 +77,22 @@ class ArtistsViewModel @Inject constructor(
         artistsImages = emptyList()
         artistsTopSongs = emptyList()
         artistsAllTimeSongs = emptyList()
-        artistsTopAlbums.value = emptyList()
+        artistsTopAlbums = emptyList()
         artistsSimilar.value = emptyList()
         artistsInstagramPosts = null
         artistsTwitterInfo = null
     }
 
     fun searchArtists(artists: String) = viewModelScope.launch(Dispatchers.IO) {
-
         artistName = artists
-        viewModelScope.launch(Dispatchers.IO) {
-            apiImpl.searchSongs("${artists}+latest+songs").catch {}.collectLatest {
-                artistsAllTimeSongs = it
-            }
-
-            apiImpl.artistsInstagramPosts(artists).catch {}.collectLatest {
-                artistsInstagramPosts = it
-            }
-
-            apiImpl.artistsTwitterTweets(artists).catch { }.collectLatest {
-                artistsTwitterInfo = it
-            }
+        apiImpl.searchSongs("${artists}+latest+songs").catch {}.collectLatest {
+            artistsAllTimeSongs = it
         }
+
+        apiImpl.artistsInstagramPosts(artists).catch {}.collectLatest {
+            artistsInstagramPosts = it
+        }
+
 
         artistsDataJsoup.searchArtists(artists).catch {}.collectLatest {
             if (it?.isNotEmpty() == true) {
@@ -131,7 +126,7 @@ class ArtistsViewModel @Inject constructor(
         } catch (e: Exception) {
             null
         }
-    //
+        //
 //        data?.listenerAtt?.showToast()
 //
 //        listeners = data
@@ -181,7 +176,7 @@ class ArtistsViewModel @Inject constructor(
         }
 
         if (data != null) {
-            artistsTopAlbums.value = data
+            artistsTopAlbums = data
         }
     }
 }

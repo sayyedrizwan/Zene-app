@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
+import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
+import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.shortTextForView
@@ -79,13 +81,12 @@ fun TopArtistsSongs(songs: TopArtistsSongs, search: (String, String) -> Unit) {
 @Composable
 fun ArtistsAllSongsView(artists: TopArtistsSongs, search: (String) -> Unit) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
+        Modifier
             .padding(10.dp)
             .clickable {
                 search(artists.name ?: "")
-            }
+            },
+        Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
             model = artists.img,
@@ -101,5 +102,34 @@ fun ArtistsAllSongsView(artists: TopArtistsSongs, search: (String) -> Unit) {
         QuickSandLight(artists.name?.shortTextForView(22) ?: "", size = 17)
     }
 }
+
+
+@Composable
+fun ArtistsAlbum(album: ArtistsAlbumsData) {
+    Column(
+        Modifier
+            .padding(10.dp)
+            .width(LocalConfiguration.current.screenWidthDp.dp),
+        Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            model = album.image,
+            contentDescription = album.name,
+            modifier = Modifier
+                .width(LocalConfiguration.current.screenWidthDp.dp - 10.dp)
+                .height(LocalConfiguration.current.screenWidthDp.dp / 2)
+                .clip(RoundedCornerShape(14.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        QuickSandBold(album.name, size = 16, maxLine = 1, modifier = Modifier.padding(top = 10.dp))
+
+        QuickSandLight(
+            album.songsSize.substringAfter("listeners"), size = 15, modifier = Modifier.padding(top = 1.dp, bottom = 10.dp)
+        )
+    }
+}
+
 
 
