@@ -91,8 +91,9 @@ object Module {
         api: ApiInterface,
         ip: IPApiInterface,
         song: SongDetailsDao,
-        offline: OfflineSongsDao
-    ): RoomDBImpl = RoomDBImpl(dao, api, ip, song, offline)
+        offline: OfflineSongsDao,
+        jsoup: ArtistsDataJsoup
+    ): RoomDBImpl = RoomDBImpl(dao, api, ip, song, offline, jsoup)
 
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)

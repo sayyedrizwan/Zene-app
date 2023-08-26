@@ -2,12 +2,19 @@ package com.rizwansayyed.zene.ui.artists.artistviewmodel
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.ListenersNumberValue
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
+import com.rizwansayyed.zene.utils.OkhttpCookies
+import com.rizwansayyed.zene.utils.Utils.URL.searchArtistsURL
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jsoup.Jsoup
 import java.net.URL
 import javax.inject.Inject
@@ -15,23 +22,67 @@ import javax.inject.Inject
 
 class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val context: Context) {
 
-    suspend fun artistsListeners(url: String) = flow {
-        val document =
-            Jsoup.parse(withContext(Dispatchers.IO) { URL(url).openStream() }, "ISO-8859-1", url)
-        val play = document.selectFirst("abbr.intabbr.js-abbreviated-counter")?.text()
+    private val cookies = OkhttpCookies()
 
-        if (play == null) emit("")
-        else emit(play)
+    suspend fun searchArtists(name: String) = flow {
+        val response = downloadHTMLOkhttp(searchArtistsURL(name))
+        val document = Jsoup.parse(response!!)
+
+        val url =
+            document.selectFirst("h4.artist-result-heading")?.select("a")?.attr("href")?.trim()
+
+        if (url == null) emit(null)
+        else emit("https://www.last.fm$url")
+    }
+
+    suspend fun artistsListeners(url: String) = flow {
+        val response = downloadHTMLOkhttp(url)
+        val document = Jsoup.parse(response!!)
+
+        val play = document.selectFirst("abbr.intabbr.js-abbreviated-counter")?.text()
+        val number = document.selectFirst("abbr.intabbr.js-abbreviated-counter")?.attr("title")
+
+        if (play == null) emit(null)
+        else emit(ListenersNumberValue(play, number))
+    }
+
+    suspend fun artistsSimilar(url: String) = flow {
+        val urlArtists = "$url/+similar"
+        val lists = ArrayList<TopArtistsSongs>()
+
+        fun addArtist(response: String?) {
+            val document = Jsoup.parse(response!!)
+
+            document.selectFirst("ol.similar-artists.similar-artists--with-10")
+                ?.select("li")?.forEach {
+                    val name = it.selectFirst("h3.similar-artists-item-name")?.text()?.trim()
+                    val img =
+                        it.selectFirst("span.avatar.similar-artists-item-image")?.selectFirst("img")
+                            ?.attr("src")?.trim()
+
+                    if (name != null && img != null)
+                        if (!lists.any { l -> l.name == name }) {
+                            lists.add(TopArtistsSongs(name, img, null))
+                        }
+                }
+        }
+
+        val response = downloadHTMLOkhttp(urlArtists)
+        addArtist(response)
+
+        val responsePage2 = downloadHTMLOkhttp("$urlArtists?page=2")
+        addArtist(responsePage2)
+
+        lists.shuffle()
+        emit(lists)
     }
 
     suspend fun artistsBio(url: String) = flow {
         val urlBio = "$url/+wiki"
         val document =
-            Jsoup.parse(
-                withContext(Dispatchers.IO) { URL(urlBio).openStream() },
-                "ISO-8859-1",
-                urlBio
-            )
+            Jsoup.parse(withContext(Dispatchers.IO) {
+                URL(urlBio).openStream()
+            }, "ISO-8859-1", urlBio)
         val desc = document.selectFirst("div.wiki-content")?.selectFirst("p")?.text()
 
         if (desc == null) emit("")
@@ -59,7 +110,7 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
 
     suspend fun artistsTopSongs(url: String) = flow {
         val urlBio = "$url/+tracks"
-        val list = ArrayList<ArtistsSongsData>(80)
+        val list = ArrayList<TopArtistsSongs>(80)
         val document =
             Jsoup.parse(
                 withContext(Dispatchers.IO) { URL(urlBio).openStream() },
@@ -73,7 +124,7 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
             val numbers =
                 it.select("td.chartlist-bar").select("span.chartlist-count-bar-value").text().trim()
             if (img.isNotEmpty() && name.isNotEmpty())
-                list.add(ArtistsSongsData(name, img, numbers))
+                list.add(TopArtistsSongs(name, img, numbers))
         }
 
         emit(list)
@@ -169,7 +220,7 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
 
     suspend fun artistData(name: String) = flow {
         val search = "https://www.google.com/search?q=" +
-                "${name.lowercase().replace(" ", "+")}+artist+site%3Alast.fm/music"
+                "${name.lowercase().replace(" ", "+")}+artist+site%3Alast.fm/music&start=10"
 
         emit(firstUrls(search))
     }
@@ -192,13 +243,30 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
 
 
     private fun firstUrls(url: String): String? {
+//        val response = downloadHTMLOkhttp(url)
+//        saveCaptionsFileTXT("saaa", response ?: " nooooooo")
+        Thread.sleep(2000)
         val document = Jsoup.connect(url).timeout(20000)
-            .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-            .referrer("http://www.google.com").get()
+            .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36")
+            .get()
 
-        val gUrl = document.select("div.ezO2md").first()?.selectFirst("a")?.attr("href")
+        var gUrl = document.select("div.ezO2md").first()?.selectFirst("a")?.attr("href")
+        var returnUrl = Uri.parse("https://google.com$gUrl").getQueryParameter("q")
+        if (returnUrl?.contains("https://www.") == true) return returnUrl
 
-        return Uri.parse("https://google.com$gUrl").getQueryParameter("q")
+        gUrl = document.select("a.fuLhoc.ZWRArf").first()?.attr("href")
+        returnUrl = Uri.parse("https://google.com$gUrl").getQueryParameter("q")
+        return returnUrl
     }
 
+    private fun downloadHTMLOkhttp(url: String): String? {
+        val client = OkHttpClient().newBuilder().cookieJar(cookies).build()
+        val request = Request.Builder().url(url.replace(" ", "+")).method("GET", null).build()
+        val response = client.newCall(request).execute()
+
+        if (response.isSuccessful) {
+            return response.body?.string()
+        }
+        return null
+    }
 }

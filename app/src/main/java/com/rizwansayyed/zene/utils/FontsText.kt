@@ -90,7 +90,8 @@ fun QuickSandSemiBold(
     v: String,
     modifier: Modifier = Modifier,
     color: Color = Color.White,
-    size: Int = 20
+    size: Int = 20,
+    maxLine: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = v,
@@ -99,7 +100,7 @@ fun QuickSandSemiBold(
         color = color,
         fontSize = size.nonScaledSp,
         modifier = modifier,
-        textAlign = TextAlign.Center
+        maxLines = maxLine
     )
 }
 

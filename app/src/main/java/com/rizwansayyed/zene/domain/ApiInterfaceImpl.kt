@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.domain
 
 import android.content.Context
+import android.util.Log
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.model.UrlResponse
@@ -130,15 +131,6 @@ class ApiInterfaceImpl @Inject constructor(
         emit(apiInterface.searchSongs(ip.query ?: "", q.replace(" ", "+")))
     }
 
-    override suspend fun similarArtists(name: String) = flow {
-        val url = jsoup.similarArtists(name).first()
-        if (url == null) {
-            emit(emptyList())
-            return@flow
-        }
-        emit(apiInterface.similarArtists(name))
-    }
-
     override suspend fun artistsInstagramPosts(name: String) = flow {
         val url = jsoup.instagramAccounts(name).first()
         if (url == null) {
@@ -170,6 +162,7 @@ class ApiInterfaceImpl @Inject constructor(
 
     override suspend fun artistsData(name: String) = flow {
         val url = jsoup.artistData(name).first()
+
         emit(UrlResponse(url ?: ""))
     }
 }

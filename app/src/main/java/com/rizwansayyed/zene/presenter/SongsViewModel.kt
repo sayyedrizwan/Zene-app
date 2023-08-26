@@ -392,6 +392,8 @@ class SongsViewModel @Inject constructor(
 
 
             apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
+
+                it.songID?.showToast()
                 if (thumbnail.isNotEmpty()) {
                     it.thumbnail = thumbnail
                 }

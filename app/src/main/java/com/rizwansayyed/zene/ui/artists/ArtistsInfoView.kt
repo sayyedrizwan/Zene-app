@@ -1,25 +1,39 @@
 package com.rizwansayyed.zene.ui.artists
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
+import com.rizwansayyed.zene.ui.artists.view.ArtistsAllSongsView
 import com.rizwansayyed.zene.ui.artists.view.ShowInstagramInfo
 import com.rizwansayyed.zene.ui.artists.view.ShowTwitterInfo
 import com.rizwansayyed.zene.ui.artists.view.TopArtistsInfo
+import com.rizwansayyed.zene.ui.artists.view.TopArtistsSongs
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
+import com.rizwansayyed.zene.ui.home.homeui.ArtistsView
+import com.rizwansayyed.zene.ui.home.homeui.TopHeaderOf
 
 @Composable
 fun ArtistsInfo(
     artistsViewModel: ArtistsViewModel = hiltViewModel(),
-    homeNavViewModel: HomeNavViewModel = hiltViewModel()
+    homeNavViewModel: HomeNavViewModel = hiltViewModel(),
+    songsViewModel: SongsViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(Unit) {
@@ -36,6 +50,44 @@ fun ArtistsInfo(
         item {
             ShowTwitterInfo(artistsViewModel)
         }
+
+        item {
+            if (artistsViewModel.artistsTopSongs.isNotEmpty())
+                TopHeaderOf(stringResource(id = R.string.top_songs))
+        }
+
+        item {
+            if (artistsViewModel.artistsTopSongs.isNotEmpty()) {
+                LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 300.dp)) {
+                    items(artistsViewModel.artistsTopSongs.size) {
+                        TopArtistsSongs(artistsViewModel.artistsTopSongs[it]) { thumbnail, name ->
+                            homeNavViewModel.showMusicPlayer()
+                            songsViewModel.songsPlayingDetails(thumbnail, name, artistsViewModel.artistName)
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            if (artistsViewModel.artistsAllTimeSongs.isNotEmpty())
+                TopHeaderOf(stringResource(id = R.string.recent_songs))
+        }
+
+        item {
+            if (artistsViewModel.artistsAllTimeSongs.isNotEmpty()) {
+                LazyRow {
+                    items(artistsViewModel.artistsAllTimeSongs) { artists ->
+                        ArtistsAllSongsView(artists) {
+                            homeNavViewModel.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
+                            artistsViewModel.searchArtists(it.trim().lowercase())
+                        }
+                        Spacer(modifier = Modifier.width(20.dp))
+                    }
+                }
+            }
+        }
+
         item {
             Spacer(Modifier.height(154.dp))
         }

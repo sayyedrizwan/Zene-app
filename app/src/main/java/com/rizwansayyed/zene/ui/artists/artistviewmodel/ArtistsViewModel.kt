@@ -10,17 +10,21 @@ import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.ListenersNumberValue
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
 import com.rizwansayyed.zene.utils.Utils.clearUrlForArtistsInfo
 import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 @HiltViewModel
@@ -33,19 +37,22 @@ class ArtistsViewModel @Inject constructor(
     var artistName by mutableStateOf("")
         private set
 
-    var topInfo = mutableStateOf<String?>(null)
+    var bio by mutableStateOf<String?>(null)
         private set
 
-    var listeners by mutableStateOf<String?>(null)
+    var listeners by mutableStateOf<ListenersNumberValue?>(null)
         private set
 
-    var artistsImages = mutableStateOf<List<String>>(emptyList())
+    var artistsImages by mutableStateOf<List<String>>(emptyList())
         private set
 
-    var artistsTopSongs = mutableStateOf<List<ArtistsSongsData>>(emptyList())
+    var artistsMainImages by mutableStateOf("")
         private set
 
-    var artistsAllTimeSongs = mutableStateOf<TopArtistsResponseApi>(emptyList())
+    var artistsTopSongs by mutableStateOf<List<TopArtistsSongs>>(emptyList())
+        private set
+
+    var artistsAllTimeSongs by mutableStateOf<TopArtistsResponseApi>(emptyList())
         private set
 
     var artistsTopAlbums = mutableStateOf<List<ArtistsAlbumsData>>(emptyList())
@@ -64,11 +71,11 @@ class ArtistsViewModel @Inject constructor(
 
 
     fun toDefault() {
-        topInfo.value = null
+        bio = null
         listeners = null
-        artistsImages.value = emptyList()
-        artistsTopSongs.value = emptyList()
-        artistsAllTimeSongs.value = emptyList()
+        artistsImages = emptyList()
+        artistsTopSongs = emptyList()
+        artistsAllTimeSongs = emptyList()
         artistsTopAlbums.value = emptyList()
         artistsSimilar.value = emptyList()
         artistsInstagramPosts = null
@@ -79,12 +86,8 @@ class ArtistsViewModel @Inject constructor(
 
         artistName = artists
         viewModelScope.launch(Dispatchers.IO) {
-            apiImpl.searchSongs("${artists}+latest+songs").catch { }.collectLatest {
-                artistsAllTimeSongs.value = it
-            }
-
-            apiImpl.similarArtists(artists).catch { }.collectLatest {
-                artistsSimilar.value = it
+            apiImpl.searchSongs("${artists}+latest+songs").catch {}.collectLatest {
+                artistsAllTimeSongs = it
             }
 
             apiImpl.artistsInstagramPosts(artists).catch {}.collectLatest {
@@ -95,29 +98,20 @@ class ArtistsViewModel @Inject constructor(
                 artistsTwitterInfo = it
             }
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            apiImpl.artistsData(artists).catch {}.collectLatest {
-                if (it.url?.isNotEmpty() == true) {
-                    val url = clearUrlForArtistsInfo(it.url)
-                    viewModelScope.launch(Dispatchers.IO) {
-                        artistsListeners(url)
-                    }
-                    viewModelScope.launch(Dispatchers.IO) {
-                        artistsBio(url)
-                    }
-                    viewModelScope.launch(Dispatchers.IO) {
-                        artistsImage(url)
-                    }
-                    viewModelScope.launch(Dispatchers.IO) {
-                        artistsTopSongs(url)
-                    }
-                    viewModelScope.launch(Dispatchers.IO) {
-                        artistsTopAlbums(url)
-                    }
-                } else
-                    Log.d("TAG", "searchArtists: Error")
 
-            }
+        artistsDataJsoup.searchArtists(artists).catch {}.collectLatest {
+            if (it?.isNotEmpty() == true) {
+                val url = clearUrlForArtistsInfo(it)
+                artistsListeners(url)
+                similarArtists(url)
+                artistsBio(url)
+                artistsImage(url)
+                artistsTopSongs(url)
+                artistsTopAlbums(url)
+
+            } else
+                Log.d("TAG", "searchArtists: Error")
+
         }
     }
 
@@ -131,14 +125,25 @@ class ArtistsViewModel @Inject constructor(
         listeners = data
     }
 
+    private fun similarArtists(url: String) = viewModelScope.launch(Dispatchers.IO) {
+        val data = try {
+            artistsDataJsoup.artistsSimilar(url).first()
+        } catch (e: Exception) {
+            null
+        }
+    //
+//        data?.listenerAtt?.showToast()
+//
+//        listeners = data
+    }
+
     private fun artistsBio(url: String) = viewModelScope.launch(Dispatchers.IO) {
         val data = try {
             artistsDataJsoup.artistsBio(url).first()
         } catch (e: Exception) {
             null
         }
-
-        topInfo.value = data
+        bio = data
     }
 
 
@@ -150,7 +155,8 @@ class ArtistsViewModel @Inject constructor(
         }
 
         if (data != null) {
-            artistsImages.value = data
+            artistsImages = data
+            artistsMainImages = data.random()
         }
     }
 
@@ -163,7 +169,7 @@ class ArtistsViewModel @Inject constructor(
         }
 
         if (data != null) {
-            artistsTopSongs.value = data
+            artistsTopSongs = data
         }
     }
 

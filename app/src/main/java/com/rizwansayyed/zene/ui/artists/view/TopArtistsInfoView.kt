@@ -48,14 +48,18 @@ import com.rizwansayyed.zene.utils.Utils.showToast
 @Composable
 fun TopArtistsInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {
 
+    var showFullFollowerNumber by remember { mutableStateOf(false) }
+
+    val monthlyTxt = stringResource(id = R.string.monthly_listeners)
+
     Column(
         Modifier.fillMaxWidth(),
         Arrangement.Center, Alignment.CenterHorizontally
     ) {
-        if (artistsViewModel.artistsInstagramPosts?.profilePic != null) {
+        if (artistsViewModel.artistsMainImages.isNotEmpty()) {
             AsyncImage(
-                artistsViewModel.artistsInstagramPosts?.profilePic,
-                artistsViewModel.artistsInstagramPosts?.name,
+                artistsViewModel.artistsMainImages,
+                artistsViewModel.artistName,
                 Modifier
                     .padding(top = 120.dp)
                     .size(160.dp)
@@ -78,6 +82,7 @@ fun TopArtistsInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {
 
         if (artistsViewModel.listeners != null) {
             Row(
+                Modifier.clickable { showFullFollowerNumber = !showFullFollowerNumber },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -92,8 +97,21 @@ fun TopArtistsInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {
 
                 Spacer(Modifier.height(2.dp))
 
-                QuickSandSemiBold(artistsViewModel.listeners!!, size = 17)
+                if (showFullFollowerNumber)
+                    QuickSandSemiBold("${artistsViewModel.listeners?.listenerNumber!!} $monthlyTxt", size = 17)
+                else
+                    QuickSandSemiBold(artistsViewModel.listeners?.listenerAtt!!, size = 17)
             }
+        }
+
+        if (artistsViewModel.bio != null) {
+            Spacer(Modifier.height(7.dp))
+
+            QuickSandLight(
+                artistsViewModel.bio!!,
+                size = 15,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
         }
     }
 }
@@ -102,7 +120,7 @@ fun TopArtistsInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {
 @Composable
 fun ShowInstagramInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {
 
-    var showFullFollowerNumber by remember { mutableStateOf(true) }
+    var showFullFollowerNumber by remember { mutableStateOf(false) }
 
     Spacer(Modifier.height(54.dp))
 
@@ -299,11 +317,11 @@ fun ShowTwitterInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {
                     ) {
                         QuickSandLight(
                             if (showFullFollowerNumber)
-                                artistsViewModel.artistsInstagramPosts?.followers?.toInt()
-                                    ?.convertToNumber().toString()
+                                artistsViewModel.artistsTwitterInfo?.followers?.convertToNumber()
+                                    .toString()
                             else
                                 convertToAbbreviation(
-                                    artistsViewModel.artistsInstagramPosts?.followers?.toInt() ?: 0
+                                    artistsViewModel.artistsTwitterInfo?.followers ?: 0
                                 ),
                             size = 17
                         )

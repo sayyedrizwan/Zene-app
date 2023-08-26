@@ -48,7 +48,6 @@ object Utils {
         const val TRENDING_SONGS_APPLE = "trendingSongsApple"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
         const val TRENDING_SONGS_TOP_50_K_POP = "trendingSongsTop50KPop"
-        const val SIMILAR_ARTISTS = "similarArtists"
         const val ARTISTS_INSTAGRAM_POSTS = "artistsInstaPosts"
         const val ARTISTS_TWITTER_TWEETS = "artistsTwitterTweets"
 
@@ -66,6 +65,10 @@ object Utils {
 
         fun videoPaths10(id: String): String {
             return "$TEN_DOWNLOADER/download?v=https://www.youtube.com/watch?v=$id&type=video"
+        }
+
+        fun searchArtistsURL(name: String): String {
+            return "https://www.last.fm/search/artists?q=$name"
         }
     }
 
@@ -271,9 +274,4 @@ object Utils {
             else -> number.toString()
         }
     }
-
-    fun getUrlPathForUrl(url: String) {
-
-    }
-
 }

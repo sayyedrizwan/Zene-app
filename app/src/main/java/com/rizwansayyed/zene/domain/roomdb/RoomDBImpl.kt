@@ -13,7 +13,9 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongsWithData
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsDataJsoup
 import com.rizwansayyed.zene.utils.Utils.showToast
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
@@ -23,7 +25,8 @@ class RoomDBImpl @Inject constructor(
     private val apiInterface: ApiInterface,
     private val ipInterface: IPApiInterface,
     private val songDetailsDao: SongDetailsDao,
-    private val offlineSongsDao: OfflineSongsDao
+    private val offlineSongsDao: OfflineSongsDao,
+    private val artistsDataJsoup: ArtistsDataJsoup
 ) : RoomDBImplInterface {
 
     override suspend fun recentPlayed() = flow {
@@ -131,7 +134,7 @@ class RoomDBImpl @Inject constructor(
         if (topSongs.size < 7) {
             topSongs = recentPlayedDao.artistsUniqueAll(13)
         }
-        val list = ArrayList<TopArtistsSongs>(100)
+        val list = ArrayList<TopArtistsSongs>(150)
         if (topSongs.isEmpty()) {
             emit(list)
             return@flow
@@ -140,9 +143,24 @@ class RoomDBImpl @Inject constructor(
         topSongs.forEach {
             val artists =
                 it.artists.trim().substringBefore("&").substringBefore(",").replace(" ", "+").trim()
-            apiInterface.similarArtists(artists).forEach { songs ->
-                if (!list.any { l -> l.name == songs.name }) {
-                    list.add(songs)
+
+            val artistURL = try {
+                artistsDataJsoup.searchArtists(artists).first()
+            } catch (e: Exception) {
+                null
+            }
+
+            if (artistURL != null) {
+                val data = try {
+                    artistsDataJsoup.artistsSimilar(artistURL).first()
+                } catch (e: Exception) {
+                    null
+                }
+
+                data?.forEach { a ->
+                    if (!list.any { l -> l.name == a.name }) {
+                        list.add(a)
+                    }
                 }
             }
         }
@@ -249,7 +267,7 @@ class RoomDBImpl @Inject constructor(
         emit(offlineSongsDao.updateStatus(status, pid))
     }
 
-    override suspend fun deleteOfflineSong(pId:String) = flow {
+    override suspend fun deleteOfflineSong(pId: String) = flow {
         emit(offlineSongsDao.delete(pId))
     }
 

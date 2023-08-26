@@ -10,7 +10,6 @@ import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_DATA
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_INSTAGRAM_POSTS
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_TWITTER_TWEETS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
-import com.rizwansayyed.zene.utils.Utils.URL.SIMILAR_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_LYRICS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_PLAY_DETAILS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
@@ -52,10 +51,6 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(TRENDING_SONGS_TOP_50_K_POP)
     suspend fun trendingSongsTop50KPop(@Field("q") q: String): TopArtistsResponseApi
-
-    @FormUrlEncoded
-    @POST(SIMILAR_ARTISTS)
-    suspend fun similarArtists(@Field("q") q: String): TopArtistsResponseApi
 
     @FormUrlEncoded
     @POST(ARTISTS_INSTAGRAM_POSTS)

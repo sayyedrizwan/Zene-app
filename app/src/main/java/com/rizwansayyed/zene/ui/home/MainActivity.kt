@@ -1,8 +1,6 @@
 package com.rizwansayyed.zene.ui.home
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -22,6 +20,7 @@ import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
@@ -29,11 +28,10 @@ import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
-import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jsoup.Jsoup
+import kotlin.time.Duration.Companion.seconds
 
 
 // wider team
@@ -70,7 +68,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     AnimatedContent(targetState = currentScreen, label = "") {
                         when (it) {
                             MAIN -> HomepageView(songsViewModel, homeNavViewModel, artistsViewModel)
-                            SELECT_ARTISTS -> ArtistsInfo(artistsViewModel, homeNavViewModel)
+                            SELECT_ARTISTS -> ArtistsInfo(artistsViewModel, homeNavViewModel, songsViewModel)
                             SETTINGS -> SettingsView(songsViewModel)
                         }
                     }
@@ -101,12 +99,12 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         super.onStart()
         startDownloadSongsWorkManager()
         songsViewModel.run()
-//
-//        lifecycle.coroutineScope.launch {
-//            delay(2.seconds)
-//            homeNavViewModel.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
-//            artistsViewModel.searchArtists("Taylor Swift")
-//        }
+
+        lifecycle.coroutineScope.launch {
+            delay(2.seconds)
+            homeNavViewModel.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
+            artistsViewModel.searchArtists("Taylor Swift")
+        }
     }
 
     override fun internetConnected() {
