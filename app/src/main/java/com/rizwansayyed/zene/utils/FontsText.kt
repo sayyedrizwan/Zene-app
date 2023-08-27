@@ -50,7 +50,8 @@ fun QuickSandRegular(
     v: String,
     modifier: Modifier = Modifier,
     color: Color = Color.White,
-    size: Int = 20
+    size: Int = 20,
+    align: TextAlign = TextAlign.Center
 ) {
     Text(
         text = v,
@@ -59,7 +60,7 @@ fun QuickSandRegular(
         color = color,
         fontSize = size.nonScaledSp,
         modifier = modifier,
-        textAlign = TextAlign.Center
+        textAlign = align
     )
 }
 
@@ -92,6 +93,7 @@ fun QuickSandSemiBold(
     color: Color = Color.White,
     size: Int = 20,
     maxLine: Int = Int.MAX_VALUE,
+    align: TextAlign? = null
 ) {
     Text(
         text = v,
@@ -100,7 +102,8 @@ fun QuickSandSemiBold(
         color = color,
         fontSize = size.nonScaledSp,
         modifier = modifier,
-        maxLines = maxLine
+        maxLines = maxLine,
+        textAlign = align
     )
 }
 

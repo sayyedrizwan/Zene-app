@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +19,13 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.BaseApplication
@@ -49,6 +55,7 @@ import com.rizwansayyed.zene.utils.Algorithims.extractSongSubTitles
 import com.rizwansayyed.zene.utils.Algorithims.extractSongTitles
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
+import com.rizwansayyed.zene.utils.QuickSandRegular
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import kotlinx.coroutines.Job
@@ -56,6 +63,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -152,6 +160,40 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
             }
         }
     }
+}
+
+@Composable
+fun BetaTestDialog() {
+
+    val alert by dataStoreManager.betaDialog.collectAsState(initial = false)
+
+    if (alert) AlertDialog(
+        onDismissRequest = { dataStoreManager.betaDialog = flowOf(false) },
+        text = {
+            Column(Modifier.fillMaxWidth(), Arrangement.Center) {
+                QuickSandBold(
+                    stringResource(id = R.string.zene_is_beta),
+                    size = 15,
+                    modifier = Modifier.padding(top = 10.dp),
+                    color = Color.Black
+                )
+
+                QuickSandRegular(
+                    stringResource(id = R.string.zene_is_beta_desc),
+                    size = 16,
+                    modifier = Modifier.padding(top = 10.dp),
+                    color = Color.Black,
+                    align = TextAlign.Start
+                )
+            }
+        },
+        dismissButton = { Text(text = "") },
+        confirmButton = {
+            Text(text = stringResource(id = R.string.close), modifier = Modifier.clickable {
+                dataStoreManager.betaDialog = flowOf(false)
+            })
+        }
+    )
 }
 
 @Composable

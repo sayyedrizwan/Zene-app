@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.album_header_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.album_header_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.artists_suggestions_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.artists_suggestions_timestamp
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.beta_dialog
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.do_music_player_loop
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.footer_albums_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.ip_data
@@ -308,5 +309,14 @@ class DataStoreManager {
         }
         set(value) {
             SetDataStoreValue(do_music_player_loop, value)
+        }
+
+
+    var betaDialog: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[beta_dialog] ?: true
+        }
+        set(value) {
+            SetDataStoreValue(beta_dialog, value)
         }
 }

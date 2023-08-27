@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -278,8 +279,8 @@ fun HomepageView(
 
             item {
                 LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 600.dp)) {
-                    items(suggestArtists?.size ?: 0) { songs ->
-                        suggestArtists?.get(songs)?.let {
+                    suggestArtists?.let {
+                        items(suggestArtists!!) {
                             ArtistsViewSmallView(it) {
                                 nav.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
                                 artistsViewModel.searchArtists(it.trim().lowercase())

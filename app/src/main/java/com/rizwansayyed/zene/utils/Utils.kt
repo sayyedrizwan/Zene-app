@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
@@ -29,6 +30,9 @@ import java.io.File
 import java.io.FileInputStream
 import java.lang.Float.NaN
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 
@@ -284,6 +288,43 @@ object Utils {
             number >= 1_000_000 -> "${number / 1_000_000}M"
             number >= 1_000 -> "${number / 1_000}K"
             else -> number.toString()
+        }
+    }
+
+    fun convertRelativeTime(relativeTime: String): Date {
+        val calendar = Calendar.getInstance()
+        val currentDate = calendar.time
+
+        return when {
+            relativeTime.contains("minute") -> {
+                val value = relativeTime.split(" ")[0].toInt()
+                calendar.apply { add(Calendar.MINUTE, -value) }.time
+            }
+            relativeTime.contains("hour") -> {
+                val value = relativeTime.split(" ")[0].toInt()
+                calendar.apply { add(Calendar.HOUR_OF_DAY, -value) }.time
+            }
+            relativeTime.contains("yesterday") -> {
+                calendar.apply { add(Calendar.DAY_OF_MONTH, -1) }.time
+            }
+            relativeTime.contains("day") -> {
+                val value = relativeTime.split(" ")[0].toInt()
+                calendar.apply { add(Calendar.DAY_OF_MONTH, -value) }.time
+            }
+            else -> {
+                val format = when {
+                    relativeTime.contains("2021") -> "dd MMM yyyy"
+                    relativeTime.contains(":") -> "dd MMM HH:mm"
+                    else -> "dd MMM"
+                }
+                try {
+                    val parsedDate = SimpleDateFormat(format, Locale.getDefault()).parse(relativeTime)
+                    parsedDate ?: currentDate
+                }catch (e: Exception){
+                    calendar.apply { add(Calendar.DAY_OF_MONTH, -10) }.time
+                }
+
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
@@ -154,6 +155,40 @@ fun InstagramPostsPosts(post: Post) {
 
 
 @Composable
-fun ArtistsNews(newsResponse: NewsResponse) {
-    
+fun ArtistsNews(news: NewsResponse) {
+    Row(
+        Modifier
+            .padding(bottom = 20.dp, top = 10.dp)
+            .width(LocalConfiguration.current.screenWidthDp.dp - 50.dp)
+            .padding(10.dp)
+            .clickable {
+//                    openOnInstagramPost(post.postId ?: "/")
+            }
+    ) {
+        Column(Modifier.weight(1f)) {
+            Spacer(modifier = Modifier.height(10.dp))
+            QuickSandSemiBold(
+                news.title, size = 13, modifier = Modifier.padding(2.dp), align = TextAlign.Start
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            QuickSandLight(
+                "${news.publishedName}   •  ${news.date} ",
+                size = 13,
+                modifier = Modifier.padding(2.dp),
+                align = TextAlign.Start
+            )
+        }
+
+        AsyncImage(
+            model = news.img,
+            contentDescription = "",
+            modifier = Modifier
+                .padding(5.dp)
+                .size(LocalConfiguration.current.screenWidthDp.dp / 2 / 2)
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
+    }
 }

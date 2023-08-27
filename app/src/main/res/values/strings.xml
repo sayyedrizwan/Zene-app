@@ -12,6 +12,7 @@
     <string name="recent_songs">Recent Songs</string>
     <string name="artist_insta_posts">Artist Instagram Post</string>
     <string name="top_images">Top Images</string>
+    <string name="similar_artists">Similar Artists</string>
     <string name="trending_news">Trending News</string>
     <string name="settings">Settings</string>
     <string name="posts">Posts</string>
@@ -35,8 +36,11 @@
     <string name="monthly_listeners">Monthly Listeners</string>
     <string name="error_loading_the_video_try_again">Error loading the video. Please try again later.</string>
     <string name="lyrics">Lyrics</string>
+    <string name="zene_is_beta">Zene is in beta</string>
+    <string name="zene_is_beta_desc">The app is in beta and we are trying to make the app perfect. So everybody can enjoy music and music videos for free without any subscriptions and ads. ENJOY the Zene app and support us!!!</string>
     <string name="no_lyrics_found">No Lyrics found</string>
     <string name="song_is_offline_available">Song is offline available</string>
     <string name="downloading_the_song_info">Downloading the song and info. Please wait.</string>
     <string name="error_downloading_the_song_info">Song download was not successful. Please wait trying again.</string>
+    <string name="close">Close</string>
 </resources>

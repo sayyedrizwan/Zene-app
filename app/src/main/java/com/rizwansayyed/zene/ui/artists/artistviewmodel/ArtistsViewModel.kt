@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
 import com.rizwansayyed.zene.utils.Utils.clearUrlForArtistsInfo
+import com.rizwansayyed.zene.utils.Utils.convertRelativeTime
 import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -72,15 +73,12 @@ class ArtistsViewModel @Inject constructor(
         private set
 
 
-    var readNewsList by mutableStateOf<List<NewsResponse>>(emptyList())
-        private set
-
-
     var artistsTwitterInfo by mutableStateOf<ArtistsTwitterInfoResponse?>(null)
         private set
 
 
     fun toDefault() {
+        artistsMainImages = ""
         bio = null
         listeners = null
         artistsImages = emptyList()
@@ -103,7 +101,15 @@ class ArtistsViewModel @Inject constructor(
         }
 
         artistsDataJsoup.artistsNews(artistName).catch {}.collectLatest {
-            artistsNews = it
+            var list = it.sortedBy { d -> convertRelativeTime(d.date.lowercase()) }.reversed()
+            if (list.size > 30)
+                list = list.dropLast(20)
+            else if (list.size > 20)
+                list = list.dropLast(15)
+            else if (list.size > 10)
+                list = list.dropLast(5)
+
+            artistsNews = list
         }
 
 

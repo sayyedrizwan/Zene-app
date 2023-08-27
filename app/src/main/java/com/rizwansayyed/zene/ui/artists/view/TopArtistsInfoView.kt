@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -57,7 +58,8 @@ fun TopArtistsInfo(artistsViewModel: ArtistsViewModel = hiltViewModel()) {
                 Modifier
                     .padding(top = 120.dp)
                     .size(160.dp)
-                    .clip(RoundedCornerShape(10))
+                    .clip(RoundedCornerShape(10)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(Modifier.height(14.dp))

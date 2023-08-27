@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
+import com.rizwansayyed.zene.ui.home.homeui.BetaTestDialog
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
@@ -74,8 +75,9 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     }
 
                     MusicPlayerView(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
-
                     HomeNavBar(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
+
+                    BetaTestDialog()
                 }
 
 
@@ -99,12 +101,6 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         super.onStart()
         startDownloadSongsWorkManager()
         songsViewModel.run()
-
-        lifecycle.coroutineScope.launch {
-            delay(2.seconds)
-            homeNavViewModel.homeNavigationView(HomeNavigationStatus.SELECT_ARTISTS)
-            artistsViewModel.searchArtists("Taylor Swift")
-        }
     }
 
     override fun internetConnected() {

@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_TIMESTAMP
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_TIMESTAMP
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.BETA_DIALOG
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.DO_MUSIC_PLAYER_LOOP
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.FOOTER_ALBUMS_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.IP_DATA
@@ -65,6 +66,7 @@ object DataStoreUtil {
         const val IP_DATA = "ip_data"
         const val MUSIC_PLAYER_DATA = "music_player_data"
         const val DO_MUSIC_PLAYER_LOOP = "do_music_player_loop"
+        const val BETA_DIALOG = "beta_dialog"
     }
 
     val album_header_data = stringPreferencesKey(ALBUM_HEADER_DATA)
@@ -115,4 +117,5 @@ object DataStoreUtil {
     val ip_data = stringPreferencesKey(IP_DATA)
     val music_player_data = stringPreferencesKey(MUSIC_PLAYER_DATA)
     val do_music_player_loop = booleanPreferencesKey(DO_MUSIC_PLAYER_LOOP)
+    val beta_dialog = booleanPreferencesKey(BETA_DIALOG)
 }
