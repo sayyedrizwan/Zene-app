@@ -22,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -60,11 +61,14 @@ class ArtistsViewModel @Inject constructor(
     var artistsTopAlbums by mutableStateOf<List<ArtistsAlbumsData>>(emptyList())
         private set
 
-    var artistsSimilar = mutableStateOf<TopArtistsResponseApi>(emptyList())
+    var artistsSimilar by mutableStateOf<List<TopArtistsSongs>>(emptyList())
         private set
 
 
     var artistsInstagramPosts by mutableStateOf<SocialMediaCombine?>(null)
+        private set
+
+    var artistsNews by mutableStateOf<List<NewsResponse>>(emptyList())
         private set
 
 
@@ -83,7 +87,7 @@ class ArtistsViewModel @Inject constructor(
         artistsTopSongs = emptyList()
         artistsAllTimeSongs = emptyList()
         artistsTopAlbums = emptyList()
-        artistsSimilar.value = emptyList()
+        artistsSimilar = emptyList()
         artistsInstagramPosts = null
         artistsTwitterInfo = null
     }
@@ -98,8 +102,8 @@ class ArtistsViewModel @Inject constructor(
             artistsInstagramPosts = it
         }
 
-        apiImpl.readNewsList(artists).catch {}.collectLatest {
-            readNewsList = it
+        artistsDataJsoup.artistsNews(artistName).catch {}.collectLatest {
+            artistsNews = it
         }
 
 
@@ -135,10 +139,8 @@ class ArtistsViewModel @Inject constructor(
         } catch (e: Exception) {
             null
         }
-        //
-//        data?.listenerAtt?.showToast()
-//
-//        listeners = data
+
+        data?.toList()?.let { artistsSimilar = it }
     }
 
     private fun artistsBio(url: String) = viewModelScope.launch(Dispatchers.IO) {

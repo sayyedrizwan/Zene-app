@@ -1,30 +1,20 @@
 package com.rizwansayyed.zene.domain
 
-import android.content.Context
-import android.util.Log
-import com.prof18.rssparser.RssParser
-import com.rizwansayyed.zene.BaseApplication.Companion.context
+
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.model.UrlResponse
 import com.rizwansayyed.zene.presenter.converter.SongsAlbumsHeaderConverter
-import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
-import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsDataJsoup
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
-import com.rizwansayyed.zene.utils.Utils.URL.readNewsUrl
-import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileWriter
-import java.io.IOException
 import javax.inject.Inject
 
 
@@ -144,18 +134,6 @@ class ApiInterfaceImpl @Inject constructor(
         val response = SocialMediaCombine(instagram, twitter)
         emit(response)
     }
-
-   override suspend fun readNewsList(name: String) = flow {
-        val lists = ArrayList<NewsResponse>(100)
-        val rssParser = RssParser()
-        val rssChannel = rssParser.getRssChannel(readNewsUrl(name))
-        rssChannel.items.forEach {
-            if (it.title != null)
-                lists.add(NewsResponse(it.title ?: "", it.link ?: "", it.pubDate ?: ""))
-        }
-        emit(lists)
-    }
-
 
     override suspend fun songLyrics(name: String) = flow {
         val url = jsoup.songLyrics(name).first()

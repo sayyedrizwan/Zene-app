@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.model.Post
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
@@ -152,3 +153,7 @@ fun InstagramPostsPosts(post: Post) {
 }
 
 
+@Composable
+fun ArtistsNews(newsResponse: NewsResponse) {
+    
+}

@@ -5,12 +5,15 @@ import android.net.Uri
 import android.util.Log
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.ListenersNumberValue
+import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
 import com.rizwansayyed.zene.utils.OkhttpCookies
 import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.URL.readNewsUrl
 import com.rizwansayyed.zene.utils.Utils.URL.searchArtistsURL
 import com.rizwansayyed.zene.utils.Utils.URL.searchViaBing
+import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -193,14 +196,12 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
 
     suspend fun trendingSongsTopKPop() = flow {
         val search = "https://www.google.com/search?q=top+trending+k-pop+site:open.spotify.com"
-
         emit(firstUrls(search))
     }
 
 
     suspend fun trendingSongsTop50KPop() = flow {
         val search = "https://www.google.com/search?q=top+50+popular+k-pop+site:open.spotify.com"
-
         emit(firstUrls(search))
     }
 
@@ -217,6 +218,37 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
                 "${name.lowercase().replace(" ", "+")}+artist+site%3Alast.fm/music&start=10"
 
         emit(firstUrls(search))
+    }
+
+
+    suspend fun artistsNews(name: String) = flow {
+        val lists = ArrayList<NewsResponse>(100)
+
+        val response = downloadHTMLOkhttp(readNewsUrl(name))
+
+        val document = Jsoup.parse(response!!)
+        document.select("div.NiLAwe.y6IFtc.R7GTQ.keNKEd.j7vNaf.nID9nc").forEach {
+            var img = it.selectFirst("img.tvs3Id.QwxBBf")?.attr("srcset") ?: ""
+            val time = it.selectFirst("time.WW6dff.uQIVzc.Sksgp.slhocf")?.text()?.trim() ?: ""
+            val title = it.selectFirst("a.DY5T1d.RZIKme")?.text()?.trim() ?: ""
+            val pImage =
+                it.selectFirst("img.tvs3Id.tvs3Id.lqNvvd.ICvKtf.WfKKme.IGhidc")?.attr("src") ?: ""
+            val pName =
+                it.selectFirst("div.N0NI1d.AVN2gc.WfKKme")?.select("a.wEwyrc")?.text()?.trim() ?: ""
+            val link = it.selectFirst("a.VDXfz")?.attr("href")
+
+            img.split(",").forEach { i ->
+                if (i.contains("2x")) {
+                    img = i.replace("2x", "").replace("w200-h200-", "-w512-h512-").trim()
+                }
+            }
+
+            val doc =
+                NewsResponse(title, "https://news.google.com/$link", time, img, pImage, pName)
+            lists.add(doc)
+        }
+
+        emit(lists)
     }
 
     suspend fun instagramTwitterAccounts(name: String) = flow {

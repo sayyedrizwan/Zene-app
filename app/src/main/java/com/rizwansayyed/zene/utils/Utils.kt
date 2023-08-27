@@ -72,7 +72,7 @@ object Utils {
         }
 
         fun readNewsUrl(name: String): String {
-            return "https://news.google.com/rss/search?q=${name.replace(" ", "+")}"
+            return "https://news.google.com/search?q=${name.replace(" ", "+")}"
         }
 
         fun searchViaBing(q: String): String {

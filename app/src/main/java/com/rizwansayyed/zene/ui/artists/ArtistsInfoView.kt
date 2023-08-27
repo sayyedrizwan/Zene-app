@@ -26,11 +26,11 @@ import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.artists.view.ArtistsAlbum
 import com.rizwansayyed.zene.ui.artists.view.ArtistsAllSongsView
+import com.rizwansayyed.zene.ui.artists.view.ArtistsNews
 import com.rizwansayyed.zene.ui.artists.view.InstagramPostsPosts
 import com.rizwansayyed.zene.ui.artists.view.TopArtistsInfo
 import com.rizwansayyed.zene.ui.artists.view.TopArtistsSongs
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 
 @Composable
@@ -165,6 +165,16 @@ fun ArtistsInfo(
                 QuickSandSemiBold(
                     stringResource(id = R.string.trending_news), Modifier.padding(5.dp), size = 19,
                 )
+        }
+
+
+        item(span = { GridItemSpan(2) }) {
+            if (artistsViewModel.readNewsList.isNotEmpty())
+                LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 970.dp)) {
+                    items(artistsViewModel.readNewsList) {
+                        ArtistsNews(it)
+                    }
+                }
         }
 
         item(span = { GridItemSpan(2) }) {
