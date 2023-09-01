@@ -79,9 +79,7 @@ class SongsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             delay(4.seconds)
             songsSuggestionsForYou()
-            trendingSongsTop50()
             trendingSongsTopKPop()
-            trendingSongsTop50KPop()
             similarArtistsSuggestionsForYou()
             topArtistsSongs()
             songsForYouAll()
@@ -214,21 +212,6 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-
-    private fun trendingSongsTop50() = viewModelScope.launch(Dispatchers.IO) {
-        if (!dataStoreManager.trendingSongsTop50Timestamp.first().is2DayOlderNeedCache() &&
-            dataStoreManager.trendingSongsTop50Data.first() != null &&
-            dataStoreManager.trendingSongsTop50Data.first()?.isNotEmpty() == true
-        ) return@launch
-
-        apiImpl.trendingSongsTop50().catch {}.collectLatest {
-            dataStoreManager.trendingSongsTop50Timestamp = flowOf(System.currentTimeMillis())
-            it.shuffled()
-            dataStoreManager.trendingSongsTop50Data = flowOf(it.toTypedArray())
-        }
-    }
-
-
     private fun songsSuggestions() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.songsSuggestionsTimestamp.first().is1DayOlderNeedCache() &&
             dataStoreManager.songsSuggestionsData.first() != null &&
@@ -293,31 +276,17 @@ class SongsViewModel @Inject constructor(
         if (!dataStoreManager.trendingSongsTopKPopTimestamp.first().is2DayOlderNeedCache() &&
             dataStoreManager.trendingSongsTopKPopData.first() != null &&
             dataStoreManager.trendingSongsTopKPopData.first()?.isNotEmpty() == true
-        ) return@launch
-
-        apiImpl.trendingSongsTopKPop().catch {}.collectLatest {
-            dataStoreManager.trendingSongsTopKPopTimestamp = flowOf(System.currentTimeMillis())
-            dataStoreManager.trendingSongsTopKPopData = flowOf(it.toTypedArray())
-        }
-    }
-
-
-    private fun trendingSongsTop50KPop() = viewModelScope.launch(Dispatchers.IO) {
-        if (!dataStoreManager.trendingSongsTop50KPopTimestamp.first().is2DayOlderNeedCache() &&
-            dataStoreManager.trendingSongsTop50KPopData.first() != null &&
-            dataStoreManager.trendingSongsTop50KPopData.first()?.isNotEmpty() == true
         ) {
-            val s = dataStoreManager.trendingSongsTop50KPopData.first()
+            val s = dataStoreManager.trendingSongsTopKPopData.first()
             s?.shuffle()
-            s?.shuffle()
-            s?.shuffle()
-            dataStoreManager.trendingSongsTop50KPopData = flowOf(s)
+            dataStoreManager.trendingSongsTopKPopData = flowOf(s)
             return@launch
         }
 
-        apiImpl.trendingSongsTop50KPop().catch {}.collectLatest {
-            dataStoreManager.trendingSongsTop50KPopTimestamp = flowOf(System.currentTimeMillis())
-            dataStoreManager.trendingSongsTop50KPopData = flowOf(it.toTypedArray())
+
+        songsDataJsoup.appleMusicKoreanSongs().catch { }.collectLatest {
+            dataStoreManager.trendingSongsTopKPopTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.trendingSongsTopKPopData = flowOf(it.toTypedArray())
         }
     }
 

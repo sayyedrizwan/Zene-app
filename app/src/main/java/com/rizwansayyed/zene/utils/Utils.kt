@@ -39,7 +39,6 @@ import java.util.Locale
 object Utils {
 
     object URL {
-        const val ARTISTS_DATA = "artistsData"
         const val TOP_ARTIST_THIS_WEEK = "topArtistThisWeek"
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
         const val SONG_SUGGESTIONS = "songSuggestions"
@@ -48,7 +47,6 @@ object Utils {
         const val SEARCH_SONGS = "searchSongs"
         const val SONG_PLAY_DETAILS = "songPlayDetails"
         const val VIDEO_PLAY_DETAILS = "videoPlayDetails"
-        const val TRENDING_SONGS_APPLE = "trendingSongsApple"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
         const val TRENDING_SONGS_TOP_50_K_POP = "trendingSongsTop50KPop"
         const val ARTISTS_INSTAGRAM_POSTS = "artistsInstaPosts"
@@ -78,7 +76,7 @@ object Utils {
         }
 
         fun searchSongsApple(name: String): String {
-            return "https://music.apple.com/us/search?term=top%20$name"
+            return "https://music.apple.com/us/search?term=top%20${name.replace(" ", "%20")}"
         }
 
         fun readNewsUrl(name: String): String {

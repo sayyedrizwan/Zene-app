@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -8,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,6 +44,9 @@ fun HomepageView(
     nav: HomeNavViewModel = hiltViewModel(),
     artistsViewModel: ArtistsViewModel = hiltViewModel()
 ) {
+
+    val listState = rememberLazyGridState()
+
     val headerPagerData by dataStoreManager
         .albumHeaderData.collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.albumHeaderData.first() })
     val topArtists by dataStoreManager.topArtistsOfWeekData
@@ -50,10 +58,8 @@ fun HomepageView(
 
     val topCountrySongs by dataStoreManager.topCountrySongsData.collectAsState(initial = emptyArray())
     val topSongsThisWeek by dataStoreManager.topCountrySongsYTData.collectAsState(initial = emptyArray())
-    val trendingSongsTop50 by dataStoreManager.trendingSongsTop50Data.collectAsState(initial = emptyArray())
     val suggestedSongs by dataStoreManager.songsSuggestionsData.collectAsState(initial = emptyArray())
     val trendingSongsTopKPop by dataStoreManager.trendingSongsTopKPopData.collectAsState(initial = emptyArray())
-    val trendingSongsTop50KPop by dataStoreManager.trendingSongsTop50KPopData.collectAsState(initial = emptyArray())
     val songsSuggestionsForYou by dataStoreManager.songsSuggestionsForYouData.collectAsState(initial = emptyArray())
     val suggestArtists by dataStoreManager.artistsSuggestionsData.collectAsState(initial = emptyArray())
     val topArtistsSongs by dataStoreManager.topArtistsSongsData.collectAsState(initial = emptyArray())
@@ -62,8 +68,9 @@ fun HomepageView(
     val recentPlayedSongs = songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
     val offlineSongs = songsViewModel.allOfflineSongs?.collectAsState(initial = emptyList())
 
-    LazyColumn {
-        item {
+    LazyVerticalGrid(columns = GridCells.Fixed(2), Modifier.fillMaxSize(), state = listState) {
+
+        item(span = { GridItemSpan(2) }) {
             headerPagerData?.let {
                 TopHeaderPager(it) { thumbnail, name, artists ->
                     nav.showMusicPlayer()
@@ -73,11 +80,13 @@ fun HomepageView(
         }
 
         if (recentPlayedSongs?.value?.isNotEmpty() == true) {
-            item {
-                TopHeaderOf(stringResource(id = R.string.recently_played))
-                Spacer(modifier = Modifier.height(8.dp))
+            item(span = { GridItemSpan(2) }) {
+                Column {
+                    TopHeaderOf(stringResource(id = R.string.recently_played))
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
-            item {
+            item(span = { GridItemSpan(2) }) {
                 LazyRow {
                     items(recentPlayedSongs.value) { recent ->
                         RecentPlayedItemView(recent) { thumbnail, name, artists ->
@@ -97,11 +106,13 @@ fun HomepageView(
         }
 
         if (offlineSongs?.value?.isNotEmpty() == true) {
-            item {
-                TopHeaderOf(stringResource(id = R.string.offline_songs))
-                Spacer(modifier = Modifier.height(8.dp))
+            item(span = { GridItemSpan(2) }) {
+                Column {
+                    TopHeaderOf(stringResource(id = R.string.offline_songs))
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
-            item {
+            item(span = { GridItemSpan(2) }) {
                 LazyRow {
                     items(offlineSongs.value) { songs ->
                         OfflineSongsCard(songs, songsViewModel)
@@ -110,12 +121,14 @@ fun HomepageView(
             }
         }
 
-        item {
-            TopHeaderOf(stringResource(id = R.string.top_artist_of_week))
-            Spacer(modifier = Modifier.height(8.dp))
+        item(span = { GridItemSpan(2) }) {
+            Column {
+                TopHeaderOf(stringResource(id = R.string.top_artist_of_week))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             LazyRow {
                 if (topArtists != null) items(topArtists!!) { artists ->
                     ArtistsView(artists) {
@@ -126,12 +139,14 @@ fun HomepageView(
             }
         }
 
-        item {
-            TopHeaderOf(stringResource(id = R.string.global_trending_songs))
-            Spacer(modifier = Modifier.height(8.dp))
+        item(span = { GridItemSpan(2) }) {
+            Column {
+                TopHeaderOf(stringResource(id = R.string.global_trending_songs))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             LazyRow {
                 if (globalSongs != null) items(globalSongs!!) { song ->
                     TrendingSongsView(song) { thumbnail, name, artists ->
@@ -142,13 +157,13 @@ fun HomepageView(
             }
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             TopHeaderOf("${stringResource(id = R.string.trending_songs_in)} ${ip?.country}")
             Spacer(modifier = Modifier.height(8.dp))
         }
 
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                 items(topCountrySongs?.size ?: 0) { songs ->
                     topCountrySongs?.get(songs)?.let {
@@ -161,13 +176,13 @@ fun HomepageView(
             }
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             TopHeaderOf("${stringResource(id = R.string.trending_this_week_in)} ${ip?.country}")
             Spacer(modifier = Modifier.height(8.dp))
         }
 
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                 items(topSongsThisWeek?.size ?: 0) { songs ->
                     topSongsThisWeek?.get(songs)?.let {
@@ -181,12 +196,12 @@ fun HomepageView(
         }
 
         if (suggestedSongs?.isNotEmpty() == true) {
-            item {
+            item(span = { GridItemSpan(2) }) {
                 TopHeaderOf(stringResource(id = R.string.recommended_songs))
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            item {
+            item(span = { GridItemSpan(2) }) {
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                     items(suggestedSongs?.size ?: 0) { songs ->
                         suggestedSongs?.get(songs)?.let {
@@ -201,12 +216,12 @@ fun HomepageView(
         }
 
         if (songsViewModel.topArtistsSuggestions?.isNotEmpty() == true) {
-            item {
+            item(span = { GridItemSpan(2) }) {
                 TopHeaderOf(stringResource(id = R.string.recommended_artists))
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            item {
+            item(span = { GridItemSpan(2) }) {
                 LazyRow {
                     items(songsViewModel.topArtistsSuggestions!!) { artists ->
                         ArtistsView(artists.toTopArtistsSongs()) {
@@ -219,31 +234,12 @@ fun HomepageView(
             }
         }
 
-        item {
-            TopHeaderOf(stringResource(id = R.string.top_favourite))
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        item {
-            LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
-                items(trendingSongsTop50?.size ?: 0) { songs ->
-                    trendingSongsTop50?.get(songs)?.let {
-                        TrendingSongsViewShortText(it) { thumbnail, name, artists ->
-                            nav.showMusicPlayer()
-                            songsViewModel.songsPlayingDetails(thumbnail, name, artists)
-
-                        }
-                    }
-                }
-            }
-        }
-
-        item {
+        item(span = { GridItemSpan(2) }) {
             TopHeaderOf(stringResource(id = R.string.trending_k_pop_music))
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             LazyRow {
                 if (trendingSongsTopKPop != null) items(trendingSongsTopKPop!!) { song ->
                     TrendingSongsView(song) { thumbnail, name, artists ->
@@ -254,29 +250,14 @@ fun HomepageView(
             }
         }
 
-        item {
-            TopHeaderOf(stringResource(id = R.string.top_k_pop_music))
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        item {
-            LazyRow {
-                if (trendingSongsTop50KPop != null) items(trendingSongsTop50KPop!!) { song ->
-                    TrendingSongsView(song) { thumbnail, name, artists ->
-                        nav.showMusicPlayer()
-                        songsViewModel.songsPlayingDetails(thumbnail, name, artists)
-                    }
-                }
-            }
-        }
         if (songsSuggestionsForYou?.isNotEmpty() == true) {
-            item {
+            item(span = { GridItemSpan(2) }) {
                 TopHeaderOf(stringResource(id = R.string.related_songs))
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
 
-            item {
+            item(span = { GridItemSpan(2) }) {
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                     items(songsSuggestionsForYou?.size ?: 0) { songs ->
                         songsSuggestionsForYou?.get(songs)?.let {
@@ -292,12 +273,12 @@ fun HomepageView(
         }
 
         if (suggestArtists?.isNotEmpty() == true) {
-            item {
+            item(span = { GridItemSpan(2) }) {
                 TopHeaderOf(stringResource(id = R.string.suggested_artists))
             }
 
 
-            item {
+            item(span = { GridItemSpan(2) }) {
                 LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 600.dp)) {
                     suggestArtists?.let {
                         items(suggestArtists!!) {
@@ -313,7 +294,7 @@ fun HomepageView(
 
         if (topArtistsSongs?.isNotEmpty() == true) {
             topArtistsSongs?.forEach {
-                item {
+                item(span = { GridItemSpan(2) }) {
                     it.title?.let { title ->
                         TopHeaderOf(
                             stringResource(id = R.string.for__fan).replace("----", title)
@@ -321,7 +302,7 @@ fun HomepageView(
                     }
                 }
 
-                item {
+                item(span = { GridItemSpan(2) }) {
                     LazyHorizontalGrid(
                         GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)
                     ) {
@@ -338,14 +319,13 @@ fun HomepageView(
             }
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             TopHeaderOf(stringResource(id = R.string.zene_suggested_songs_for_you))
         }
 
         if (allSongsForYouLists?.isNotEmpty() == true) {
-
             items(allSongsForYouLists!!) {
-                FullCardSongView(it) { thumbnail, name, artists ->
+                TrendingSongsViewShortText(it) { thumbnail, name, artists ->
                     nav.showMusicPlayer()
                     songsViewModel.songsPlayingDetails(thumbnail, name, artists)
                 }

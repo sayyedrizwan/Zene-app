@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
 import com.rizwansayyed.zene.presenter.jsoup.model.YTTrendingResponse
+import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.utils.Utils.URL.ytBrowse
 import com.rizwansayyed.zene.utils.Utils.USER_AGENT
@@ -16,6 +17,7 @@ import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.postOkHttps
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -119,18 +121,6 @@ class ApiInterfaceImpl @Inject constructor(
         emit(apiInterface.topGlobalSongsThisWeek())
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun trendingSongsTop50() = flow {
-        val ip = ipApiInterface.ip()
-        dataStoreManager.ipData = flowOf(ip)
-        val url = jsoup.trendingSongsApple(ip.country ?: "america").first()
-        if (url == null) {
-            emit(emptyList())
-            return@flow
-        }
-
-        emit(apiInterface.trendingSongsTop50(url))
-    }.flowOn(Dispatchers.IO)
-
     override suspend fun trendingSongsTopKPop() = flow {
         val url = jsoup.trendingSongsTopKPop().first()
         if (url == null) {
@@ -158,6 +148,10 @@ class ApiInterfaceImpl @Inject constructor(
         dataStoreManager.ipData = flowOf(ip)
         emit(ip)
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun trendingSongsTop50(): Flow<TopArtistsResponseApi> {
+        TODO("Not yet implemented")
+    }
 
 
     override suspend fun songPlayDetails(name: String) = flow {

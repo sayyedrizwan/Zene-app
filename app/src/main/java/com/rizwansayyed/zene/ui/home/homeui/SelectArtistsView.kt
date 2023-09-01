@@ -116,9 +116,9 @@ fun TrendingSongsView(songs: TopArtistsSongs, search: (String, String, String) -
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        QuickSandSemiBold(songs.name ?: "", size = 17)
+        QuickSandSemiBold(songs.name?.shortTextForView(17) ?: "", size = 17)
 
-        QuickSandLight(songs.artist ?: "", size = 12)
+        QuickSandLight(songs.artist?.shortTextForView(17) ?: "", size = 12)
     }
 }
 
@@ -235,7 +235,8 @@ fun FullCardSongView(song: TopArtistsSongs, search: (String, String, String) -> 
                 size = 17,
                 modifier = Modifier
                     .padding(horizontal = 5.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                align = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(3.dp))
             QuickSandLight(

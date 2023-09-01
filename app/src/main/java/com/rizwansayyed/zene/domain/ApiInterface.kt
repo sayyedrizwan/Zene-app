@@ -6,7 +6,6 @@ import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
-import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_DATA
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_INSTAGRAM_POSTS
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_TWITTER_TWEETS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
@@ -16,7 +15,6 @@ import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS_FOR_YOU
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_GLOBAL_SONGS_THIS_WEEK
-import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_APPLE
 import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_TOP_50_K_POP
 import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_TOP_K_POP
 import com.rizwansayyed.zene.utils.Utils.URL.VIDEO_PLAY_DETAILS
@@ -34,10 +32,6 @@ interface ApiInterface {
 
     @GET(TOP_GLOBAL_SONGS_THIS_WEEK)
     suspend fun topGlobalSongsThisWeek(): TopArtistsResponseApi
-
-    @FormUrlEncoded
-    @POST(TRENDING_SONGS_APPLE)
-    suspend fun trendingSongsTop50(@Field("q") q: String): TopArtistsResponseApi
 
     @FormUrlEncoded
     @POST(TRENDING_SONGS_TOP_K_POP)
