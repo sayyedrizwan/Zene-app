@@ -158,8 +158,10 @@ fun HomepageView(
         }
 
         item(span = { GridItemSpan(2) }) {
-            TopHeaderOf("${stringResource(id = R.string.trending_songs_in)} ${ip?.country}")
-            Spacer(modifier = Modifier.height(8.dp))
+            Column {
+                TopHeaderOf("${stringResource(id = R.string.trending_songs_in)} ${ip?.country}")
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
 
@@ -176,11 +178,13 @@ fun HomepageView(
             }
         }
 
-        item(span = { GridItemSpan(2) }) {
-            TopHeaderOf("${stringResource(id = R.string.trending_this_week_in)} ${ip?.country}")
-            Spacer(modifier = Modifier.height(8.dp))
-        }
 
+        item(span = { GridItemSpan(2) }) {
+            Column {
+                TopHeaderOf("${stringResource(id = R.string.trending_this_week_in)} ${ip?.country}")
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
 
         item(span = { GridItemSpan(2) }) {
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
@@ -197,8 +201,10 @@ fun HomepageView(
 
         if (suggestedSongs?.isNotEmpty() == true) {
             item(span = { GridItemSpan(2) }) {
-                TopHeaderOf(stringResource(id = R.string.recommended_songs))
-                Spacer(modifier = Modifier.height(8.dp))
+                Column {
+                    TopHeaderOf(stringResource(id = R.string.recommended_songs))
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
 
             item(span = { GridItemSpan(2) }) {
@@ -217,8 +223,10 @@ fun HomepageView(
 
         if (songsViewModel.topArtistsSuggestions?.isNotEmpty() == true) {
             item(span = { GridItemSpan(2) }) {
-                TopHeaderOf(stringResource(id = R.string.recommended_artists))
-                Spacer(modifier = Modifier.height(8.dp))
+                Column {
+                    TopHeaderOf(stringResource(id = R.string.recommended_artists))
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
 
             item(span = { GridItemSpan(2) }) {
@@ -235,8 +243,10 @@ fun HomepageView(
         }
 
         item(span = { GridItemSpan(2) }) {
-            TopHeaderOf(stringResource(id = R.string.trending_k_pop_music))
-            Spacer(modifier = Modifier.height(8.dp))
+            Column {
+                TopHeaderOf(stringResource(id = R.string.trending_k_pop_music))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
         item(span = { GridItemSpan(2) }) {
@@ -251,11 +261,13 @@ fun HomepageView(
         }
 
         if (songsSuggestionsForYou?.isNotEmpty() == true) {
-            item(span = { GridItemSpan(2) }) {
-                TopHeaderOf(stringResource(id = R.string.related_songs))
-                Spacer(modifier = Modifier.height(8.dp))
-            }
 
+            item(span = { GridItemSpan(2) }) {
+                Column {
+                    TopHeaderOf(stringResource(id = R.string.related_songs))
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+            }
 
             item(span = { GridItemSpan(2) }) {
                 LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
@@ -274,9 +286,11 @@ fun HomepageView(
 
         if (suggestArtists?.isNotEmpty() == true) {
             item(span = { GridItemSpan(2) }) {
-                TopHeaderOf(stringResource(id = R.string.suggested_artists))
+                Column {
+                    TopHeaderOf(stringResource(id = R.string.suggested_artists))
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
-
 
             item(span = { GridItemSpan(2) }) {
                 LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 600.dp)) {
@@ -294,13 +308,18 @@ fun HomepageView(
 
         if (topArtistsSongs?.isNotEmpty() == true) {
             topArtistsSongs?.forEach {
+
                 item(span = { GridItemSpan(2) }) {
                     it.title?.let { title ->
-                        TopHeaderOf(
-                            stringResource(id = R.string.for__fan).replace("----", title)
-                        )
+                        Column {
+                            TopHeaderOf(
+                                stringResource(id = R.string.for__fan).replace("----", title.trim())
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
                     }
                 }
+
 
                 item(span = { GridItemSpan(2) }) {
                     LazyHorizontalGrid(
@@ -320,8 +339,12 @@ fun HomepageView(
         }
 
         item(span = { GridItemSpan(2) }) {
-            TopHeaderOf(stringResource(id = R.string.zene_suggested_songs_for_you))
+            Column {
+                TopHeaderOf(stringResource(id = R.string.zene_suggested_songs_for_you))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
+
 
         if (allSongsForYouLists?.isNotEmpty() == true) {
             items(allSongsForYouLists!!) {

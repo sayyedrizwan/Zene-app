@@ -14,8 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.coroutineScope
+import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.service.ads.OpenAdManager
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
@@ -48,12 +50,17 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     private val songsViewModel: SongsViewModel by viewModels()
     private val artistsViewModel: ArtistsViewModel by viewModels()
 
+    private val openAdManager by lazy {
+        OpenAdManager(this)
+    }
+
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        MobileAds.initialize(this) {}
         networkCallbackStatus = this
 
         setContent {
@@ -101,6 +108,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         super.onStart()
         startDownloadSongsWorkManager()
         songsViewModel.run()
+        openAdManager.loadAd()
     }
 
     override fun internetConnected() {

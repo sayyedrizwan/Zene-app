@@ -121,16 +121,6 @@ class ApiInterfaceImpl @Inject constructor(
         emit(apiInterface.topGlobalSongsThisWeek())
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun trendingSongsTopKPop() = flow {
-        val url = jsoup.trendingSongsTopKPop().first()
-        if (url == null) {
-            emit(emptyList())
-            return@flow
-        }
-
-        emit(apiInterface.trendingSongsTopKPop(url))
-    }.flowOn(Dispatchers.IO)
-
 
     override suspend fun trendingSongsTop50KPop() = flow {
         val url = jsoup.trendingSongsTop50KPop().first()
@@ -148,10 +138,6 @@ class ApiInterfaceImpl @Inject constructor(
         dataStoreManager.ipData = flowOf(ip)
         emit(ip)
     }.flowOn(Dispatchers.IO)
-
-    override suspend fun trendingSongsTop50(): Flow<TopArtistsResponseApi> {
-        TODO("Not yet implemented")
-    }
 
 
     override suspend fun songPlayDetails(name: String) = flow {

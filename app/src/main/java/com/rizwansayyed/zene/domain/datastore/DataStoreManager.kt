@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.beta_dialog
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.do_music_player_loop
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.footer_albums_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.ip_data
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.last_open_ad_loaded
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.music_player_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.songs_all_for_you_all_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.songs_all_for_you_all_timestamp
@@ -50,6 +51,13 @@ class DataStoreManager {
     companion object {
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DB_STORE)
     }
+
+
+    var lastOpenAdLoaded: Flow<Long>
+        get() = context.dataStore.data.map { it[last_open_ad_loaded] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(last_open_ad_loaded, value)
+        }
 
     var albumHeaderData: Flow<Array<MusicsHeader>?>
         get() = context.dataStore.data.map {

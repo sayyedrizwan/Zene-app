@@ -71,11 +71,15 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove"></provider>
+            tools:node="remove" />
 
         <meta-data
             android:name="DOMAIN_KEY"
             android:value="${DOMAIN_KEY}" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2941808068005217~5659881245"/>
     </application>
 
 </manifest>

@@ -10,6 +10,12 @@ object DateTime {
         }.timeInMillis
     }
 
+    fun Long.isMoreThan25Minute(): Boolean {
+        val timeDifferenceMillis = System.currentTimeMillis() - this
+        val minutes = timeDifferenceMillis / (1000 * 60)
+        return minutes > 25
+    }
+
     fun Long.isOlderNeedCache(): Boolean {
         val timeDifferenceMillis = System.currentTimeMillis() - this
         val hours = timeDifferenceMillis / (1000 * 60 * 60)

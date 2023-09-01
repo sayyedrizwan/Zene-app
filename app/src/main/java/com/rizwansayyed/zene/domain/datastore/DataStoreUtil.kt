@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.BETA_
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.DO_MUSIC_PLAYER_LOOP
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.FOOTER_ALBUMS_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.IP_DATA
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.LAST_OPEN_AD_LOADED
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.MUSIC_PLAYER_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_ALL_FOR_YOU_ALL_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_ALL_FOR_YOU_ALL_TIMESTAMP
@@ -36,6 +37,7 @@ object DataStoreUtil {
     object DATA_STORE_KEY {
         const val DB_STORE = "datastore_zene"
 
+        const val LAST_OPEN_AD_LOADED = "last_open_ad_loaded"
         const val ALBUM_HEADER_DATA = "album_header_data"
         const val FOOTER_ALBUMS_DATA = "footer_albums_data"
         const val ALBUM_HEADER_TIMESTAMP = "album_header_timestamp"
@@ -64,6 +66,9 @@ object DataStoreUtil {
         const val DO_MUSIC_PLAYER_LOOP = "do_music_player_loop"
         const val BETA_DIALOG = "beta_dialog"
     }
+
+    val last_open_ad_loaded = longPreferencesKey(LAST_OPEN_AD_LOADED)
+
 
     val album_header_data = stringPreferencesKey(ALBUM_HEADER_DATA)
     val footer_albums_data = stringPreferencesKey(FOOTER_ALBUMS_DATA)
@@ -101,7 +106,6 @@ object DataStoreUtil {
 
     val top_artists_songs_data = stringPreferencesKey(TOP_ARTISTS_SONGS_DATA)
     val top_artists_songs_timestamp = longPreferencesKey(TOP_ARTISTS_SONGS_TIMESTAMP)
-
 
     val songs_suggestions_data = stringPreferencesKey(SONGS_SUGGESTIONS_DATA)
     val songs_suggestions_timestamp = longPreferencesKey(SONGS_SUGGESTIONS_TIMESTAMP)

@@ -24,8 +24,7 @@ interface ApiInterfaceImplInterface {
 
     suspend fun ipAddressDetails(): Flow<IpJSONResponse>
 
-    suspend fun trendingSongsTop50(): Flow<TopArtistsResponseApi>
-    suspend fun trendingSongsTopKPop(): Flow<TopArtistsResponseApi>
+
     suspend fun trendingSongsTop50KPop(): Flow<TopArtistsResponseApi>
 
     suspend fun songPlayDetails(name: String): Flow<SongDetailsResponse>

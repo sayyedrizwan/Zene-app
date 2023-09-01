@@ -17,8 +17,8 @@ android {
         applicationId = "com.rizwansayyed.zene"
         minSdk = 24
         targetSdk = 34
-        versionCode = 4
-        versionName = "1.0.000325"
+        versionCode = 6
+        versionName = "1.0.000332"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -90,6 +90,7 @@ dependencies {
     val jsEvaluatorVersion = "v6.0.0"
     val media3Version = "1.1.1"
     val workManagerVersion = "2.8.1"
+    val adMobVersion = "22.3.0"
 
     implementation("androidx.core:core-ktx:$ktxCore")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -132,6 +133,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
 
+    implementation("com.google.android.gms:play-services-ads:$adMobVersion")
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")

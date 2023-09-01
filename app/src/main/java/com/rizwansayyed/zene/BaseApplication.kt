@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
@@ -9,6 +10,10 @@ import android.net.NetworkRequest
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.work.Configuration
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.rizwansayyed.zene.domain.datastore.DataStoreManager
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService
@@ -66,7 +71,6 @@ class BaseApplication : Application(), Configuration.Provider {
         dataStoreManager = DataStoreManager()
 
         connectivityManager.requestNetwork(networkRequest, networkCallback)
-
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(1.seconds)
