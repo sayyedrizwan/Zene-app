@@ -49,6 +49,7 @@ fun HomepageView(
     val ip by dataStoreManager.ipData.collectAsState(initial = null)
 
     val topCountrySongs by dataStoreManager.topCountrySongsData.collectAsState(initial = emptyArray())
+    val topSongsThisWeek by dataStoreManager.topCountrySongsYTData.collectAsState(initial = emptyArray())
     val trendingSongsTop50 by dataStoreManager.trendingSongsTop50Data.collectAsState(initial = emptyArray())
     val suggestedSongs by dataStoreManager.songsSuggestionsData.collectAsState(initial = emptyArray())
     val trendingSongsTopKPop by dataStoreManager.trendingSongsTopKPopData.collectAsState(initial = emptyArray())
@@ -151,6 +152,25 @@ fun HomepageView(
             LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
                 items(topCountrySongs?.size ?: 0) { songs ->
                     topCountrySongs?.get(songs)?.let {
+                        TrendingSongsViewShortText(it) { thumbnail, name, artists ->
+                            nav.showMusicPlayer()
+                            songsViewModel.songsPlayingDetails(thumbnail, name, artists)
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            TopHeaderOf("${stringResource(id = R.string.trending_this_week_in)} ${ip?.country}")
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+
+        item {
+            LazyHorizontalGrid(GridCells.Fixed(2), modifier = Modifier.heightIn(max = 500.dp)) {
+                items(topSongsThisWeek?.size ?: 0) { songs ->
+                    topSongsThisWeek?.get(songs)?.let {
                         TrendingSongsViewShortText(it) { thumbnail, name, artists ->
                             nav.showMusicPlayer()
                             songsViewModel.songsPlayingDetails(thumbnail, name, artists)

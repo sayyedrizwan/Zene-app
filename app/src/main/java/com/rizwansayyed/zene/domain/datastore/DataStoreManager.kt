@@ -27,6 +27,8 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_artists_songs_ti
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_artists_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_country_songs_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_country_songs_timestamp
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_country_songs_yt_data
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_country_songs_yt_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_global_songs_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_global_songs_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.trending_song_s_top_50_data
@@ -127,6 +129,25 @@ class DataStoreManager {
         get() = context.dataStore.data.map { it[top_country_songs_timestamp] ?: getPastTimestamp() }
         set(value) {
             SetDataStoreValue(top_country_songs_timestamp, value)
+        }
+
+
+    var topCountrySongsYTData: Flow<Array<TopArtistsSongs>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<TopArtistsSongs>::class.java)
+                .fromJson(it[top_country_songs_yt_data] ?: "[]")
+        }
+        set(value) {
+            SetDataStoreValueClass(
+                top_country_songs_yt_data, Array<TopArtistsSongs>::class.java, value
+            )
+        }
+
+
+    var topCountrySongsYTTimestamp: Flow<Long>
+        get() = context.dataStore.data.map { it[top_country_songs_yt_timestamp] ?: getPastTimestamp() }
+        set(value) {
+            SetDataStoreValue(top_country_songs_yt_timestamp, value)
         }
 
 

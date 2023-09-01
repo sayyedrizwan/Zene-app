@@ -7,28 +7,23 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
-import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
+import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
-import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.ListenersNumberValue
-import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
+import com.rizwansayyed.zene.presenter.jsoup.model.ListenersNumberValue
+import com.rizwansayyed.zene.presenter.jsoup.model.NewsResponse
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
-import com.rizwansayyed.zene.ui.artists.model.ArtistsSongsData
 import com.rizwansayyed.zene.utils.Utils.clearUrlForArtistsInfo
 import com.rizwansayyed.zene.utils.Utils.convertRelativeTime
-import com.rizwansayyed.zene.utils.Utils.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 
 @HiltViewModel

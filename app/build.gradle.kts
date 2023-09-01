@@ -17,8 +17,8 @@ android {
         applicationId = "com.rizwansayyed.zene"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.0.000125"
+        versionCode = 4
+        versionName = "1.0.000325"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -140,6 +140,7 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:$firebaseBom"))
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-config-ktx")
 
     implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
     implementation("androidx.hilt:hilt-work:$productionVersion")

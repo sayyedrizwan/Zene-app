@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.domain.roomdb
 
-import android.util.Log
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.IPApiInterface
@@ -13,8 +12,7 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongsWithData
-import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsDataJsoup
-import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf

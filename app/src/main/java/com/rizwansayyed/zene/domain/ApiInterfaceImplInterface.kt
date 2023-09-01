@@ -9,7 +9,7 @@ import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
-import com.rizwansayyed.zene.ui.artists.artistviewmodel.model.NewsResponse
+import com.rizwansayyed.zene.presenter.jsoup.model.NewsResponse
 import kotlinx.coroutines.flow.Flow
 
 interface ApiInterfaceImplInterface {
@@ -21,8 +21,6 @@ interface ApiInterfaceImplInterface {
     suspend fun topArtistOfWeek(): Flow<TopArtistsResponseApi>
 
     suspend fun topGlobalSongsThisWeek(): Flow<TopArtistsResponseApi>
-
-    suspend fun topCountrySongs(): Flow<TopArtistsResponseApi>
 
     suspend fun ipAddressDetails(): Flow<IpJSONResponse>
 

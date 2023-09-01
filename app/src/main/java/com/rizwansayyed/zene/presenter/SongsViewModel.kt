@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
+import com.rizwansayyed.zene.presenter.jsoup.SongsDataJsoup
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.presenter.model.toMusicPlayerData
@@ -26,6 +27,7 @@ import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
+import com.rizwansayyed.zene.utils.RemoteConfigReader
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
 import com.rizwansayyed.zene.utils.Utils.showToast
@@ -49,7 +51,8 @@ import kotlin.time.Duration.Companion.seconds
 class SongsViewModel @Inject constructor(
     private val apiImpl: ApiInterfaceImpl,
     private val roomDBImpl: RoomDBImpl,
-    private val mediaPlayerObjects: MediaPlayerObjects
+    private val mediaPlayerObjects: MediaPlayerObjects,
+    private val songsDataJsoup: SongsDataJsoup
 ) : ViewModel() {
 
     private var footerDataTried = 0
@@ -68,6 +71,7 @@ class SongsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             delay(2.seconds)
             topArtists()
+            topCountrySongYT()
             topCountrySong()
             songsSuggestions()
         }
@@ -165,11 +169,48 @@ class SongsViewModel @Inject constructor(
         if (!dataStoreManager.topCountrySongsTimestamp.first().isOlderNeedCache() &&
             dataStoreManager.topCountrySongsData.first() != null &&
             dataStoreManager.topCountrySongsData.first()?.isNotEmpty() == true
-        ) return@launch
+        ) {
+            val s = dataStoreManager.topCountrySongsData.first()
+            s?.shuffle()
+            s?.shuffle()
+            dataStoreManager.topCountrySongsData = flowOf(s)
+            return@launch
+        }
 
-        apiImpl.topCountrySongs().catch {}.collectLatest {
+        val countryName = try {
+            apiImpl.ipAddressDetails().first().country?.lowercase() ?: "US"
+        } catch (e: Exception) {
+            "US"
+        }
+
+        songsDataJsoup.appleMusicCountryTrends(countryName.lowercase()).catch { }.collectLatest {
             dataStoreManager.topCountrySongsTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.topCountrySongsData = flowOf(it.toTypedArray())
+        }
+    }
+
+
+    private fun topCountrySongYT() = viewModelScope.launch(Dispatchers.IO) {
+        if (!dataStoreManager.topCountrySongsYTTimestamp.first().isOlderNeedCache() &&
+            dataStoreManager.topCountrySongsYTData.first() != null &&
+            dataStoreManager.topCountrySongsYTData.first()?.isNotEmpty() == true
+        ) {
+            val s = dataStoreManager.topCountrySongsYTData.first()
+            s?.shuffle()
+            s?.shuffle()
+            dataStoreManager.topCountrySongsYTData = flowOf(s)
+            return@launch
+        }
+
+        val ip = try {
+            apiImpl.ipAddressDetails().first().query ?: ""
+        } catch (e: Exception) {
+            ""
+        }
+
+        apiImpl.topTrendingSongsYT(RemoteConfigReader().getYTKey(), ip).catch {}.collectLatest {
+            dataStoreManager.topCountrySongsYTTimestamp = flowOf(System.currentTimeMillis())
+            dataStoreManager.topCountrySongsYTData = flowOf(it.toTypedArray())
         }
     }
 

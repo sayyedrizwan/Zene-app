@@ -42,7 +42,6 @@ object Utils {
         const val ARTISTS_DATA = "artistsData"
         const val TOP_ARTIST_THIS_WEEK = "topArtistThisWeek"
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
-        const val TOP_COUNTRY_SONGS = "topCountrySongs"
         const val SONG_SUGGESTIONS = "songSuggestions"
         const val SONG_LYRICS = "songLyrics"
         const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
@@ -63,6 +62,9 @@ object Utils {
         const val SAVE_FROM_NET = "https://en.savefrom.net"
         const val TEN_DOWNLOADER = "https://10downloader.com"
 
+        fun ytBrowse(key:String): String {
+            return "https://music.youtube.com/youtubei/v1/browse?key=$key&prettyPrint=false"
+        }
         fun videoPaths(id: String): String {
             return "$SAVE_FROM_NET/#url=https://youtube.com/watch?v=$id"
         }
@@ -73,6 +75,10 @@ object Utils {
 
         fun searchArtistsURL(name: String): String {
             return "https://www.last.fm/search/artists?q=$name"
+        }
+
+        fun searchSongsApple(name: String): String {
+            return "https://music.apple.com/us/search?term=top%20$name"
         }
 
         fun readNewsUrl(name: String): String {

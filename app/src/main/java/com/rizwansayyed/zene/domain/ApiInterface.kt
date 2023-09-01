@@ -15,7 +15,6 @@ import com.rizwansayyed.zene.utils.Utils.URL.SONG_PLAY_DETAILS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS_FOR_YOU
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
-import com.rizwansayyed.zene.utils.Utils.URL.TOP_COUNTRY_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_GLOBAL_SONGS_THIS_WEEK
 import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_APPLE
 import com.rizwansayyed.zene.utils.Utils.URL.TRENDING_SONGS_TOP_50_K_POP
@@ -35,10 +34,6 @@ interface ApiInterface {
 
     @GET(TOP_GLOBAL_SONGS_THIS_WEEK)
     suspend fun topGlobalSongsThisWeek(): TopArtistsResponseApi
-
-    @FormUrlEncoded
-    @POST(TOP_COUNTRY_SONGS)
-    suspend fun topCountrySongs(@Field("q") q: String): TopArtistsResponseApi
 
     @FormUrlEncoded
     @POST(TRENDING_SONGS_APPLE)
