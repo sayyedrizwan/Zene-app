@@ -4,7 +4,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_DATA
-import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_TIMESTAMP
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ARTISTS_SUGGESTIONS_TIMESTAMP
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.BETA_DIALOG
@@ -40,7 +39,6 @@ object DataStoreUtil {
         const val LAST_OPEN_AD_LOADED = "last_open_ad_loaded"
         const val ALBUM_HEADER_DATA = "album_header_data"
         const val FOOTER_ALBUMS_DATA = "footer_albums_data"
-        const val ALBUM_HEADER_TIMESTAMP = "album_header_timestamp"
         const val TOP_ARTISTS_OF_WEEK_DATA = "top_artists_of_week"
         const val TOP_ARTISTS_TIMESTAMP = "top_artists_timestamp"
         const val TOP_GLOBAL_SONGS_DATA = "top_global_songs_data"
@@ -72,7 +70,6 @@ object DataStoreUtil {
 
     val album_header_data = stringPreferencesKey(ALBUM_HEADER_DATA)
     val footer_albums_data = stringPreferencesKey(FOOTER_ALBUMS_DATA)
-    val album_header_timestamp = longPreferencesKey(ALBUM_HEADER_TIMESTAMP)
 
     val top_artists_of_week_data = stringPreferencesKey(TOP_ARTISTS_OF_WEEK_DATA)
     val top_artists_timestamp = longPreferencesKey(TOP_ARTISTS_TIMESTAMP)

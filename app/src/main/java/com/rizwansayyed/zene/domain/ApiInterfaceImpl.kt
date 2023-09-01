@@ -1,13 +1,14 @@
 package com.rizwansayyed.zene.domain
 
 
+import android.util.Log
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.model.UrlResponse
-import com.rizwansayyed.zene.presenter.converter.SongsAlbumsHeaderConverter
 import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
 import com.rizwansayyed.zene.presenter.jsoup.model.YTTrendingResponse
+import com.rizwansayyed.zene.presenter.model.MusicsHeader
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.utils.Utils.URL.ytBrowse
@@ -92,26 +93,6 @@ class ApiInterfaceImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun albumsWithHeaders() = flow {
-        val url = jsoup.albumsWithHeaders().first()
-
-        emit(UrlResponse(url ?: ""))
-    }.flowOn(Dispatchers.IO)
-
-
-    override suspend fun albumsWithYTHeaders(url: String) = flow {
-        val document = Jsoup.connect(url).get()
-        var scripts = ""
-        document.getElementsByTag("script").forEach { s ->
-            if (s.html().contains("var ytInitialData = ")) {
-                scripts = s.html().replace("var ytInitialData = ", "")
-                    .replace("\\s", "").replace(";", "").trim()
-            }
-        }
-        emit(SongsAlbumsHeaderConverter(scripts).get())
-    }.flowOn(Dispatchers.IO)
-
-
     override suspend fun topArtistOfWeek() = flow {
         emit(apiInterface.topArtistOfWeek())
     }.flowOn(Dispatchers.IO)
@@ -144,6 +125,19 @@ class ApiInterfaceImpl @Inject constructor(
         val ip = ipApiInterface.ip()
         dataStoreManager.ipData = flowOf(ip)
         emit(apiInterface.songPlayDetails(ip.query ?: "", name))
+    }
+
+    override suspend fun songPlayDetails(list: List<TopArtistsSongs>) = flow {
+        val lists = ArrayList<MusicsHeader>(15)
+
+        val ip = ipApiInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+
+        for (s in list) {
+            val response = apiInterface.songPlayDetails(ip.query ?: "", "${s.name} - ${s.artist}")
+            lists.add(MusicsHeader(response.songName, response.thumbnail, response.artistName))
+        }
+        emit(lists)
     }
 
     override suspend fun videoPlayDetails(name: String) = flow {

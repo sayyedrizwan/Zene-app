@@ -16,6 +16,8 @@ import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
 import com.rizwansayyed.zene.presenter.jsoup.SongsDataJsoup
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
+import com.rizwansayyed.zene.presenter.model.MusicsHeader
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.presenter.model.toMusicPlayerData
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
@@ -45,6 +47,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
@@ -61,9 +64,9 @@ class SongsViewModel @Inject constructor(
         footerDataTried = 0
         recentPlaySongs()
         allOfflineSongs()
+        topCountrySongYT()
 
         viewModelScope.launch(Dispatchers.IO) {
-            albumsWithHeaders()
             topWeekArtists()
             topGlobalSongsThisWeek()
         }
@@ -71,7 +74,6 @@ class SongsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             delay(2.seconds)
             topArtists()
-            topCountrySongYT()
             topCountrySong()
             songsSuggestions()
         }
@@ -86,40 +88,13 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-    private fun albumsWithHeaders() = viewModelScope.launch(Dispatchers.IO) {
-        if (!dataStoreManager.albumHeaderTimestamp.first().isOlderNeedCache() &&
-            dataStoreManager.albumHeaderData.first() != null &&
-            dataStoreManager.albumHeaderData.first()?.isNotEmpty() == true
-        ) return@launch
-
-        val channelUrl = try {
-            apiImpl.albumsWithHeaders().first().url
-        } catch (e: Exception) {
-            ""
-        } ?: return@launch
-
-        if (channelUrl.isEmpty()) return@launch
-
-        apiImpl.albumsWithYTHeaders(channelUrl).catch {}.collectLatest {
-            dataStoreManager.albumHeaderTimestamp = flowOf(System.currentTimeMillis())
-            it.header?.let { h ->
-                dataStoreManager.albumHeaderData = flowOf(h.toTypedArray())
-            }
-            it.albums?.let { a ->
-                dataStoreManager.footerAlbumsData = flowOf(a.toTypedArray())
-            }
-
-            if (it.albums?.isEmpty() == true && footerDataTried < 3) {
-                footerDataTried += 1
-                delay(3.seconds)
-                reRunFooter()
+    private fun albumsWithHeaders(songs: ArrayList<TopArtistsSongs>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val newList = songs.take(4)
+            apiImpl.songPlayDetails(newList).catch {}.collectLatest {
+                dataStoreManager.albumHeaderData = flowOf(it.toTypedArray())
             }
         }
-    }
-
-    private fun reRunFooter() {
-        albumsWithHeaders()
-    }
 
     private fun topWeekArtists() = viewModelScope.launch(Dispatchers.IO) {
         if (!dataStoreManager.topArtistsOfWeekTimestamp.first().is2DayOlderNeedCache() &&
@@ -176,9 +151,9 @@ class SongsViewModel @Inject constructor(
         }
 
         val countryName = try {
-            apiImpl.ipAddressDetails().first().country?.lowercase() ?: "US"
+            apiImpl.ipAddressDetails().first().country?.lowercase() ?: "united states"
         } catch (e: Exception) {
-            "US"
+            "united states"
         }
 
         songsDataJsoup.appleMusicCountryTrends(countryName.lowercase()).catch { }.collectLatest {
@@ -189,16 +164,16 @@ class SongsViewModel @Inject constructor(
 
 
     private fun topCountrySongYT() = viewModelScope.launch(Dispatchers.IO) {
-        if (!dataStoreManager.topCountrySongsYTTimestamp.first().isOlderNeedCache() &&
-            dataStoreManager.topCountrySongsYTData.first() != null &&
-            dataStoreManager.topCountrySongsYTData.first()?.isNotEmpty() == true
-        ) {
-            val s = dataStoreManager.topCountrySongsYTData.first()
-            s?.shuffle()
-            s?.shuffle()
-            dataStoreManager.topCountrySongsYTData = flowOf(s)
-            return@launch
-        }
+//        if (!dataStoreManager.topCountrySongsYTTimestamp.first().isOlderNeedCache() &&
+//            dataStoreManager.topCountrySongsYTData.first() != null &&
+//            dataStoreManager.topCountrySongsYTData.first()?.isNotEmpty() == true
+//        ) {
+//            val s = dataStoreManager.topCountrySongsYTData.first()
+//            s?.shuffle()
+//            s?.shuffle()
+//            dataStoreManager.topCountrySongsYTData = flowOf(s)
+//            return@launch
+//        }
 
         val ip = try {
             apiImpl.ipAddressDetails().first().query ?: ""
@@ -209,6 +184,7 @@ class SongsViewModel @Inject constructor(
         apiImpl.topTrendingSongsYT(RemoteConfigReader().getYTKey(), ip).catch {}.collectLatest {
             dataStoreManager.topCountrySongsYTTimestamp = flowOf(System.currentTimeMillis())
             dataStoreManager.topCountrySongsYTData = flowOf(it.toTypedArray())
+            albumsWithHeaders(it)
         }
     }
 

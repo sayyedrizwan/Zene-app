@@ -16,62 +16,6 @@ object Algorithims {
         const val ALBUMS_WITH_HEADERS = "albumsWithHeaders"
     }
 
-    fun extractSongTitles(songsName: String): String {
-        try {
-            if (!songsName.contains("|")) {
-                if (songsName.contains("-")) {
-                    return songsName.substringAfter("-").replace("(Official Video)", "")
-                        .replace("(official video)", "").replace("(Official Song)", "")
-                        .replace("(official song)", "")
-                } else if (songsName.lowercase().contains("official")) {
-                    songsName.substringBefore("Official").trim().replace("(Official Video)", "")
-                        .replace("(official video)", "").replace("(Official Song)", "")
-                        .replace("(official song)", "")
-                }
-                return songsName
-            }
-            val getName =
-                songsName.substringBefore("|").replace("song", "").replace("lyrical", "")
-                    .replace("Song", "").replace("Lyrical", "").replace("(Official Video)", "")
-                    .replace("(official video)", "").replace("(Official Song)", "")
-                    .replace("(official song)", "").trim()
-            return if (getName.contains("-")) {
-                getName.substringBefore("-").replace("(Official Video)", "")
-                    .replace("(official video)", "").replace("(Official Song)", "")
-                    .replace("(official song)", "")
-            } else {
-                getName.replace("(Official Video)", "")
-                    .replace("(official video)", "").replace("(Official Song)", "")
-                    .replace("(official song)", "")
-            }
-
-        } catch (e: Exception) {
-            return songsName
-        }
-    }
-
-    fun extractSongSubTitles(songsName: String): String {
-        try {
-            if (!songsName.contains("|")) {
-                if (songsName.contains("-")) {
-                    return songsName.substringBefore("-").replace("(Official Video)", "")
-                        .replace("(official video)", "").replace("(Official Song)", "")
-                        .replace("(official song)", "")
-                }
-                return "Official Song"
-            }
-            val getName = songsName.substringBefore("|").trim()
-            return if (getName.contains("-")) {
-                getName.substringAfter("-")
-            } else {
-                return songsName.substringAfter("|").substringBefore("|").trim()
-            }
-
-        } catch (e: Exception) {
-            return songsName
-        }
-    }
-
     fun randomIds(): String {
         return (111..9999999999).random().toString()
     }

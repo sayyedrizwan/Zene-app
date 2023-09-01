@@ -7,7 +7,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.DB_STORE
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.album_header_data
-import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.album_header_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.artists_suggestions_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.artists_suggestions_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.beta_dialog
@@ -74,13 +73,6 @@ class DataStoreManager {
         set(value) {
             SetDataStoreValueClass(footer_albums_data, Array<MusicsAlbum>::class.java, value)
         }
-
-    var albumHeaderTimestamp: Flow<Long>
-        get() = context.dataStore.data.map { it[album_header_timestamp] ?: getPastTimestamp() }
-        set(value) {
-            SetDataStoreValue(album_header_timestamp, value)
-        }
-
 
     var topArtistsOfWeekData: Flow<Array<TopArtistsSongs>?>
         get() = context.dataStore.data.map {

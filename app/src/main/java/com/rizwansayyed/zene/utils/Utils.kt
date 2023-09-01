@@ -57,12 +57,16 @@ object Utils {
         const val IP_JSON = "json"
 
 
+        const val CLIENT_TOKEN_SPOTIFY = "https://clienttoken.spotify.com/v1/clienttoken"
+
+
         const val SAVE_FROM_NET = "https://en.savefrom.net"
         const val TEN_DOWNLOADER = "https://10downloader.com"
 
-        fun ytBrowse(key:String): String {
+        fun ytBrowse(key: String): String {
             return "https://music.youtube.com/youtubei/v1/browse?key=$key&prettyPrint=false"
         }
+
         fun videoPaths(id: String): String {
             return "$SAVE_FROM_NET/#url=https://youtube.com/watch?v=$id"
         }
@@ -86,6 +90,11 @@ object Utils {
         fun searchViaBing(q: String): String {
             return "https://www.bing.com/search?q=${q.lowercase().trim().replace(" ", "+")}" +
                     "+twitter+and+instagram"
+        }
+
+        fun searchViaBingHeader(q: String): String {
+            return "https://www.bing.com/search?q=top+50+songs+" +
+                    q.lowercase().trim().replace(" ", "+") + "+spotify.com"
         }
     }
 
@@ -304,17 +313,21 @@ object Utils {
                 val value = relativeTime.split(" ")[0].toInt()
                 calendar.apply { add(Calendar.MINUTE, -value) }.time
             }
+
             relativeTime.contains("hour") -> {
                 val value = relativeTime.split(" ")[0].toInt()
                 calendar.apply { add(Calendar.HOUR_OF_DAY, -value) }.time
             }
+
             relativeTime.contains("yesterday") -> {
                 calendar.apply { add(Calendar.DAY_OF_MONTH, -1) }.time
             }
+
             relativeTime.contains("day") -> {
                 val value = relativeTime.split(" ")[0].toInt()
                 calendar.apply { add(Calendar.DAY_OF_MONTH, -value) }.time
             }
+
             else -> {
                 val format = when {
                     relativeTime.contains("2021") -> "dd MMM yyyy"
@@ -322,9 +335,10 @@ object Utils {
                     else -> "dd MMM"
                 }
                 try {
-                    val parsedDate = SimpleDateFormat(format, Locale.getDefault()).parse(relativeTime)
+                    val parsedDate =
+                        SimpleDateFormat(format, Locale.getDefault()).parse(relativeTime)
                     parsedDate ?: currentDate
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     calendar.apply { add(Calendar.DAY_OF_MONTH, -10) }.time
                 }
 

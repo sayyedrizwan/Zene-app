@@ -13,7 +13,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 
 fun postOkHttps(url: String, json: String): String? {
-    val client = OkHttpClient().newBuilder().build()
+    val cookies = OkhttpCookies()
+    val client = OkHttpClient().newBuilder().cookieJar(cookies).build()
     val mediaType: MediaType? = "text/plain".toMediaTypeOrNull()
     val body: RequestBody = json.toRequestBody(mediaType)
     val request: Request = Request.Builder()

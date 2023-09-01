@@ -9,7 +9,7 @@ data class AlbumsHeadersResponse(
 data class MusicsHeader(
     val name: String?,
     val thumbnail: String?,
-    val views: String?
+    val artists: String?
 )
 
 

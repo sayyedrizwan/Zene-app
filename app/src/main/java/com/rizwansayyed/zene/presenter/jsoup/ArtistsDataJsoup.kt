@@ -197,13 +197,6 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
         emit(firstUrls(search))
     }
 
-    suspend fun albumsWithHeaders() = flow {
-        val search =
-            "https://www.google.com/search?q=YouTube+Music+Channel+to+find+today's+top+talent,+featured+artists,+and+playlists.+site:youtube.com"
-
-        emit(firstUrls(search))
-    }
-
 
     suspend fun artistData(name: String) = flow {
         val search = "https://www.google.com/search?q=" +

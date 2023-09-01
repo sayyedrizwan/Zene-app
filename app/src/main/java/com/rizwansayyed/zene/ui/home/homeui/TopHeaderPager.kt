@@ -50,9 +50,6 @@ import com.rizwansayyed.zene.presenter.model.MusicsHeader
 import com.rizwansayyed.zene.ui.BlackShade
 import com.rizwansayyed.zene.ui.RoundOutlineButtons
 import com.rizwansayyed.zene.ui.theme.Purple
-import com.rizwansayyed.zene.utils.Algorithims
-import com.rizwansayyed.zene.utils.Algorithims.extractSongSubTitles
-import com.rizwansayyed.zene.utils.Algorithims.extractSongTitles
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
@@ -76,6 +73,7 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
 
 
     var songName by remember { mutableStateOf("") }
+    var artistName by remember { mutableStateOf("") }
     val pagerState = rememberPagerState()
 
     Column {
@@ -100,26 +98,26 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
                 Spacer(modifier = Modifier.height(25.dp))
 
                 QuickSandBold(
-                    extractSongTitles(songName),
+                    songName,
                     modifier = Modifier
                         .animateContentSize()
                         .fillMaxWidth(),
                     size = 35,
-                    maxLine = 1
+                    maxLine = 2
                 )
 
                 Spacer(modifier = Modifier.height(3.dp))
 
-                QuickSandLight(extractSongSubTitles(songName))
+                QuickSandLight(artistName)
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 RoundOutlineButtons(Icons.Default.PlayArrow, stringResource(id = R.string.play)) {
                     updateStatus(
-                        header[pagerState.currentPage].thumbnail, extractSongTitles(songName),
-                        extractSongSubTitles(songName), "", MusicPlayerState.LOADING
+                        header[pagerState.currentPage].thumbnail, songName,
+                        songName, "", MusicPlayerState.LOADING
                     )
-                    search("", songName, extractSongSubTitles(songName))
+                    search("", songName, songName)
                 }
             }
         }
@@ -146,6 +144,7 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
 
         try {
             songName = header[pagerState.currentPage].name ?: ""
+            artistName = header[pagerState.currentPage].artists ?: ""
         } catch (e: Exception) {
             e.message
         }
