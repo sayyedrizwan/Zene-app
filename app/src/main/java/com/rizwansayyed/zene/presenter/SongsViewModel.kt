@@ -164,16 +164,16 @@ class SongsViewModel @Inject constructor(
 
 
     private fun topCountrySongYT() = viewModelScope.launch(Dispatchers.IO) {
-//        if (!dataStoreManager.topCountrySongsYTTimestamp.first().isOlderNeedCache() &&
-//            dataStoreManager.topCountrySongsYTData.first() != null &&
-//            dataStoreManager.topCountrySongsYTData.first()?.isNotEmpty() == true
-//        ) {
-//            val s = dataStoreManager.topCountrySongsYTData.first()
-//            s?.shuffle()
-//            s?.shuffle()
-//            dataStoreManager.topCountrySongsYTData = flowOf(s)
-//            return@launch
-//        }
+        if (!dataStoreManager.topCountrySongsYTTimestamp.first().isOlderNeedCache() &&
+            dataStoreManager.topCountrySongsYTData.first() != null &&
+            dataStoreManager.topCountrySongsYTData.first()?.isNotEmpty() == true
+        ) {
+            val s = dataStoreManager.topCountrySongsYTData.first()
+            s?.shuffle()
+            s?.shuffle()
+            dataStoreManager.topCountrySongsYTData = flowOf(s)
+            return@launch
+        }
 
         val ip = try {
             apiImpl.ipAddressDetails().first().query ?: ""

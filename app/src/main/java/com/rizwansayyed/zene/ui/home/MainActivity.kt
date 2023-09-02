@@ -10,9 +10,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.coroutineScope
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
@@ -31,6 +33,7 @@ import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
+import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -56,7 +59,6 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
 
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
