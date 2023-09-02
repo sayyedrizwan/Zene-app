@@ -383,9 +383,8 @@ class SongsViewModel @Inject constructor(
             dataStoreManager.musicPlayerData = flowOf(toMusicPlayerData(thumbnail, name, artists))
 
 
-            val searchName = "${name.lowercase().replace("official video", "")} - ${
-                artists.substringBefore(",").substringBefore("&")
-            }".lowercase()
+            val searchName = ("${name.lowercase().replace("official video", "")} - " +
+                    artists).lowercase()
 
             val songs = roomDBImpl.recentPlayedHome(searchName).first()
             if (songs.isNotEmpty()) {
@@ -407,7 +406,6 @@ class SongsViewModel @Inject constructor(
 
 
             apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
-
                 if (thumbnail.isNotEmpty()) {
                     it.thumbnail = thumbnail
                 }
@@ -455,25 +453,52 @@ class SongsViewModel @Inject constructor(
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun readLyrics(q: String) = viewModelScope.launch(Dispatchers.IO) {
+
         videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING, null)
-        if (ifLyricsFileExistReturn(q).length > 10) {
-            videoLyricsDetails =
-                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn(q))
+
+        val lyricsS = try {
+            songsDataJsoup.searchLyrics(q).first()
+        } catch (e: Exception) {
+            ""
+        }
+
+        if (lyricsS.isNotEmpty()) {
+            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, lyricsS)
             return@launch
         }
 
-        apiImpl.songLyrics(q).onStart {
-            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
-        }.catch {
-            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
-        }.collectLatest {
-            if (it.lyrics?.trim()?.isEmpty() == true) {
-                videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
-                return@collectLatest
-            }
-            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.lyrics)
-            saveCaptionsFileTXT(q, it.lyrics ?: "")
+
+        val lyricsAZ = try {
+            songsDataJsoup.searchLyricsAZ(q).first()
+        } catch (e: Exception) {
+            ""
         }
+
+        videoLyricsDetails = if (lyricsAZ.isEmpty())
+            VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+        else
+            VideoPlayerResponse(VideoPlayerStatus.SUCCESS, lyricsAZ)
+
+
+//        videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING, null)
+//        if (ifLyricsFileExistReturn(q).length > 10) {
+//            videoLyricsDetails =
+//                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn(q))
+//            return@launch
+//        }
+//
+//        apiImpl.songLyrics(q).onStart {
+//            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
+//        }.catch {
+//            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+//        }.collectLatest {
+//            if (it.lyrics?.trim()?.isEmpty() == true) {
+//                videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
+//                return@collectLatest
+//            }
+//            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.lyrics)
+//            saveCaptionsFileTXT(q, it.lyrics ?: "")
+//        }
     }
 
 

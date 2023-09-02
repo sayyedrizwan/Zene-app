@@ -4,20 +4,19 @@ import android.content.Context
 import android.util.Log
 import com.rizwansayyed.zene.presenter.jsoup.model.AppleMusicPlaylistResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
-import com.rizwansayyed.zene.utils.OkhttpCookies
+import com.rizwansayyed.zene.utils.Utils.URL.searchAZLyrics
+import com.rizwansayyed.zene.utils.Utils.URL.searchLyricsURL
+import com.rizwansayyed.zene.utils.Utils.URL.searchLyricsURLFull
 import com.rizwansayyed.zene.utils.Utils.URL.searchSongsApple
-import com.rizwansayyed.zene.utils.Utils.URL.searchViaBingHeader
+import com.rizwansayyed.zene.utils.Utils.capitalizeWords
 import com.rizwansayyed.zene.utils.Utils.moshi
+import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.downloadHTMLOkhttp
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import javax.inject.Inject
@@ -101,86 +100,54 @@ class SongsDataJsoup @Inject constructor(@ApplicationContext private val context
         emit(lists)
     }
 
-    suspend fun top5SongsSpotify(country: String) = flow {
-        val lists = ArrayList<TopArtistsSongs>(10)
+    suspend fun searchLyrics(q: String) = flow {
+        var lyrics = ""
+        val responseLyricsHub = downloadHTMLOkhttp(searchLyricsURL(q))
 
-        val response = downloadHTMLOkhttp(searchViaBingHeader(country))
-        val document = Jsoup.parse(response!!)
-
-        val url = document.selectFirst("ol#b_results")?.selectFirst("li.b_algo")
-            ?.selectFirst("a.tilk")?.attr("href")
-
-        if (url?.contains("spotify.com") == false) {
-            emit(lists)
-            return@flow
-        }
-
-        val responseToken = downloadHTMLOkhttp(url ?: "")
-
-        val jsonToken = Jsoup.parse(responseToken!!).selectFirst("script#session")?.html()
-        val accessToken = JSONObject(jsonToken ?: "").getString("accessToken")
-        val clientId = JSONObject(jsonToken ?: "").getString("clientId")
-
-        val dataClientToken = JSONObject().apply {
-            val clientData = JSONObject().apply {
-                put("client_id", clientId)
-                put("js_sdk_data", "{}")
+        val json =
+            JSONObject(responseLyricsHub?.replace("\n", "")!!).getJSONArray("results")
+        for (i in 0 until json.length()) {
+            if (i == 0) {
+                val id = json.getJSONObject(i).getString("id")
+                val responseLyrics = downloadHTMLOkhttp(searchLyricsURLFull(id))
+                val l = JSONObject(responseLyrics?.replace("\n", "")!!).getString("lyrics")
+                lyrics = l.replace("<br>", "\n\n").capitalizeWords()
             }
+        }
+        emit(lyrics)
+    }
 
-            put("client_data", clientData)
+
+    suspend fun searchLyricsAZ(q: String) = flow {
+        var lyrics = ""
+        val responseAZLyrics = downloadHTMLOkhttp(searchAZLyrics(q))
+        val documentAz = Jsoup.parse(responseAZLyrics!!)
+
+        fun readLyricsAz(url: String) {
+            val lyricsResponse = downloadHTMLOkhttp(url)
+            val documentAzHTML = Jsoup.parse(lyricsResponse!!)
+
+            documentAzHTML.select("div.col-xs-12.col-lg-8.text-center").select("div").forEach {
+                if (it.html().lowercase()
+                        .contains("usage of azlyrics.com content by any third-party")
+                ) {
+                    lyrics = it.html().substringAfter("-->").replace("<br>", "\n")
+                }
+            }
         }
 
-        val cookies = OkhttpCookies()
-
-        val client = OkHttpClient()
-
-// Define the URL and request body
-        val urlss = "https://clienttoken.spotify.com/v1/clienttoken"
-        val requestBodyJson = JSONObject()
-        val clientData = JSONObject()
-        clientData.put("client_id", "d8a5ed958d274c2e8ee717e6a4b0971d")
-        clientData.put("js_sdk_data", JSONObject())
-        requestBodyJson.put("client_data", clientData)
-
-// Create a request
-        val requestBody = requestBodyJson.toString().toRequestBody("application/json".toMediaType())
-        val request = Request.Builder()
-            .url(urlss)
-            .addHeader("authority", "clienttoken.spotify.com")
-            .addHeader("accept", "application/json")
-            .addHeader("accept-language", "en-GB,en;q=0.9")
-            .addHeader("cache-control", "no-cache")
-            .addHeader("content-type", "application/json")
-            .post(requestBody)
-            .build()
-
-// Execute the request
-        val tokenResponse = client.newCall(request).execute()
-
-// Handle the response as needed
-        if (tokenResponse.isSuccessful) {
-            val responseBody = tokenResponse.body?.string()
-
-            Log.d("TAG", "top5SongsSpotify: get the ${responseBody} ")
-            // Process responseBody as JSON or as needed
+        val isAzLyrics = documentAz.selectFirst("div.alert.alert-warning")?.html()
+        if (isAzLyrics?.lowercase()?.contains("your search returned") == true) {
+            lyrics = ""
         } else {
-
-            Log.d("TAG", "top5SongsSpotify: get the error ${tokenResponse.body?.string()}")
-            // Handle the error case
+            documentAz.select("td.text-left.visitedlyr").forEachIndexed { index, element ->
+                if (index == 0) {
+                    readLyricsAz(element.select("a").attr("href").trim())
+                }
+            }
         }
 
-// Don't forget to close the response body and the client when done
-        tokenResponse.close()
-
-
-
-//            if (url?.contains("https://www.instagram.com/") == true && instagram.isEmpty()) {
-//                instagram = url
-//            }
-
-
-        emit(lists)
-
+        emit(lyrics)
     }
 
 }

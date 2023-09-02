@@ -5,8 +5,10 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,9 +47,9 @@ fun MusicPlayerButtonsView(
 
     val offlineStatus by songs.musicOfflineSongs.value!!.collectAsState(initial = null)
 
-    Spacer(modifier = Modifier.height(40.dp))
+    Spacer(modifier = Modifier.height(60.dp))
 
-    Row(Modifier.horizontalScroll(rememberScrollState())) {
+    Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -65,14 +67,6 @@ fun MusicPlayerButtonsView(
 
         IconsForMusicShortcut(R.drawable.ic_closed_caption) {
             nav.musicViewType(VideoPlayerViewStatus.LYRICS)
-        }
-
-        try {
-
-        }catch (e: Exception){
-            IconsForMusicShortcut(R.drawable.ic_download_icon) {
-                songs.insertOfflineSongs(music)
-            }
         }
 
         if (offlineStatus == null)
@@ -128,7 +122,7 @@ fun IconsForMusicShortcut(ic: Int, click: () -> Unit) {
         painter = painterResource(id = ic),
         contentDescription = "",
         modifier = Modifier
-            .padding(18.dp)
+//            .padding(18.dp)
             .size(24.dp)
             .clickable {
                 click()

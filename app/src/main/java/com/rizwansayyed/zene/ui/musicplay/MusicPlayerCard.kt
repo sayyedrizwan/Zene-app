@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,9 +64,9 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
 
     val coroutine = rememberCoroutineScope()
 
-    var songPlayingDuration by remember { mutableStateOf<Long>(0) }
+    var songPlayingDuration by remember { mutableLongStateOf(0) }
 
-    var sliderValue by remember { mutableStateOf(0f) }
+    var sliderValue by remember { mutableFloatStateOf(0f) }
     var changedStarted by remember { mutableStateOf(false) }
 
     val loopEnabled = stringResource(id = R.string.song_will_play_on_loop)

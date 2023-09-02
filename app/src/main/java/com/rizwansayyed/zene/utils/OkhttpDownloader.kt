@@ -34,7 +34,7 @@ fun downloadHTMLOkhttp(url: String): String? {
     val cookies = OkhttpCookies()
     val client = OkHttpClient().newBuilder().cookieJar(cookies).build()
     val request = Request.Builder().url(url)
-        .addHeader("User-Agent", Utils.USER_AGENT).method("GET", null).build()
+        .addHeader("User-Agent", USER_AGENT).method("GET", null).build()
     val response = client.newCall(request).execute()
 
     if (response.isSuccessful) {

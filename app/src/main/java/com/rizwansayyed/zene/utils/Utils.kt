@@ -84,6 +84,16 @@ object Utils {
             return "https://music.apple.com/us/search?term=top%20${name.replace(" ", "%20")}"
         }
 
+        fun searchLyricsURL(name: String): String {
+            return "https://www.jiosaavn.com/api.php?q=${name.replace(" ", "+").lowercase()}&_format=json&__call=search.getResults"
+        }
+        fun searchLyricsURLFull(id: String): String {
+            return "https://www.jiosaavn.com/api.php?__call=lyrics.getLyrics&lyrics_id=$id&ctx=web6dot0"
+        }
+        fun searchAZLyrics(name: String): String {
+            return "https://search.azlyrics.com/search.php?q=${name.replace(" ", "+").lowercase()}&x=b6b8e5e93ba780b10c54105773370515f74ae4f12be9c4dbda5f3d3edca3e28d"
+        }
+
         fun readNewsUrl(name: String): String {
             return "https://news.google.com/search?q=${name.replace(" ", "+")}"
         }

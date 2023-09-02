@@ -70,12 +70,13 @@ fun MusicPlayerLyrics(nav: HomeNavViewModel, song: SongsViewModel = hiltViewMode
 
         SUCCESS -> {
             if (song.videoLyricsDetails.data?.trim()?.isEmpty() == true) {
-                noLyricsFound.showToast()
-                nav.musicViewType(VideoPlayerViewStatus.MUSIC)
+                Spacer(modifier = Modifier.height(50.dp))
+                QuickSandRegular(noLyricsFound, Modifier.fillMaxWidth())
             } else {
+                Spacer(modifier = Modifier.height(50.dp))
                 QuickSandRegular(song.videoLyricsDetails.data ?: "", Modifier.fillMaxWidth())
 
-                Spacer(modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp / 2))
+                Spacer(modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp / 3))
             }
 
         }
@@ -83,8 +84,6 @@ fun MusicPlayerLyrics(nav: HomeNavViewModel, song: SongsViewModel = hiltViewMode
 
     LaunchedEffect(Unit) {
         val songs = "${musicPlayer?.songName} - ${musicPlayer?.artists}"
-        song.readLyrics(songs)
-        delay(1.seconds)
         song.readLyrics(songs)
     }
 }
