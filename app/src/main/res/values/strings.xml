@@ -10,6 +10,8 @@
     <string name="top_songs">Top Songs</string>
     <string name="top_albums">Top Albums</string>
     <string name="recent_songs">Recent Songs</string>
+    <string name="songs">Songs</string>
+    <string name="artists">Artists</string>
     <string name="artist_insta_posts">Artist Instagram Post</string>
     <string name="top_images">Top Images</string>
     <string name="similar_artists">Similar Artists</string>
@@ -44,4 +46,6 @@
     <string name="downloading_the_song_info">Downloading the song and info. Please wait.</string>
     <string name="error_downloading_the_song_info">Song download was not successful. Please wait trying again.</string>
     <string name="close">Close</string>
+    <string name="search">Search</string>
+    <string name="error_loading_songs">Error loading songs</string>
 </resources>

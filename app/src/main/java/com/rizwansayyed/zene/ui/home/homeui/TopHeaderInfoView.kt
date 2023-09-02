@@ -1,14 +1,11 @@
 package com.rizwansayyed.zene.ui.home.homeui
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,10 +18,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.utils.QuickSandBold
 
 @Composable
-fun TopHeaderInfo() {
+fun TopHeaderInfo(nav: HomeNavViewModel) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -49,7 +48,11 @@ fun TopHeaderInfo() {
 
         Image(
             painterResource(R.drawable.ic_search), "",
-            Modifier.size(20.dp),
+            Modifier
+                .size(20.dp)
+                .clickable {
+                    nav.homeNavigationView(HomeNavigationStatus.SEARCH)
+                },
             colorFilter = ColorFilter.tint(Color.White)
         )
 

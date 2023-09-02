@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_INSTAGRAM_POSTS
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_TWITTER_TWEETS
+import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_LYRICS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_PLAY_DETAILS
@@ -72,6 +73,14 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(SEARCH_SONGS)
     suspend fun searchSongs(
+        @Field("ip") ip: String, @Field("q") id: String,
+    ): TopArtistsResponseApi
+
+
+
+    @FormUrlEncoded
+    @POST(SEARCH_ARTISTS)
+    suspend fun searchArtists(
         @Field("ip") ip: String, @Field("q") id: String,
     ): TopArtistsResponseApi
 

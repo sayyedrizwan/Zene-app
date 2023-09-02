@@ -6,16 +6,12 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.coroutineScope
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
@@ -24,20 +20,16 @@ import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.BetaTestDialog
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
 import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
+import com.rizwansayyed.zene.ui.search.SearchMusicArtistView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
-import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 
 // wider team
@@ -80,6 +72,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                             MAIN -> HomepageView(songsViewModel, homeNavViewModel, artistsViewModel)
                             SELECT_ARTISTS -> ArtistsInfo(artistsViewModel, homeNavViewModel, songsViewModel)
                             SETTINGS -> SettingsView(songsViewModel)
+                            SEARCH -> SearchMusicArtistView(songsViewModel, homeNavViewModel, artistsViewModel)
                         }
                     }
 
@@ -96,7 +89,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                         return@BackHandler
                     }
 
-                    if (currentScreen == SELECT_ARTISTS) {
+                    if (currentScreen == SELECT_ARTISTS || currentScreen == SEARCH) {
                         homeNavViewModel.homeNavigationView(MAIN)
                         return@BackHandler
                     }

@@ -14,10 +14,13 @@ import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
 import com.rizwansayyed.zene.presenter.jsoup.SongsDataJsoup
+import com.rizwansayyed.zene.presenter.model.ApiResponse
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.presenter.model.MusicsHeader
+import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
+import com.rizwansayyed.zene.presenter.model.TopArtistsSongsResponse
 import com.rizwansayyed.zene.presenter.model.toMusicPlayerData
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.isMusicPlayerServiceIsRunning
@@ -135,6 +138,32 @@ class SongsViewModel @Inject constructor(
     private fun topArtists() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.topArtistsSuggestions().catch {}.collectLatest {
             topArtistsSuggestions = it
+        }
+    }
+
+    var searchSongs by mutableStateOf<TopArtistsSongsResponse?>(null)
+        private set
+
+    fun searchSongs(search: String) = viewModelScope.launch(Dispatchers.IO) {
+        apiImpl.searchSongs(search).onStart {
+            searchSongs = TopArtistsSongsResponse(emptyList(), ApiResponse.LOADING)
+        }.catch {
+            searchSongs = TopArtistsSongsResponse(emptyList(), ApiResponse.ERROR)
+        }.collectLatest {
+            searchSongs = TopArtistsSongsResponse(it, ApiResponse.SUCCESS)
+        }
+    }
+
+    var searchArtists by mutableStateOf<TopArtistsSongsResponse?>(null)
+        private set
+
+    fun searchArtists(search: String) = viewModelScope.launch(Dispatchers.IO) {
+        apiImpl.searchArtists(search).onStart {
+            searchArtists = TopArtistsSongsResponse(emptyList(), ApiResponse.LOADING)
+        }.catch {
+            searchArtists = TopArtistsSongsResponse(emptyList(), ApiResponse.ERROR)
+        }.collectLatest {
+            searchArtists = TopArtistsSongsResponse(it, ApiResponse.SUCCESS)
         }
     }
 

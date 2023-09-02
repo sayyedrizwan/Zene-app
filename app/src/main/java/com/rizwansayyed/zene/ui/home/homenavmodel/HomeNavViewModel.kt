@@ -34,6 +34,13 @@ class HomeNavViewModel @Inject constructor(private val mediaPlayer: MediaPlayerO
         homeScrollOffSet = offset
     }
 
+    var searchText by mutableStateOf("")
+        private set
+
+    fun searchText(t: String) {
+        searchText = t
+    }
+
     var musicViewType = mutableStateOf(VideoPlayerViewStatus.MUSIC)
         private set
 

@@ -152,6 +152,12 @@ class ApiInterfaceImpl @Inject constructor(
         emit(apiInterface.searchSongs(ip.query ?: "", q.replace(" ", "+")))
     }
 
+    override suspend fun searchArtists(q: String) = flow {
+        val ip = ipApiInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+        emit(apiInterface.searchArtists(ip.query ?: "", q.replace(" ", "+")))
+    }
+
     override suspend fun artistsInstagramPosts(name: String) = flow {
         val (instagramURL, twitterURL) = jsoup.instagramTwitterAccounts(name).first()
 

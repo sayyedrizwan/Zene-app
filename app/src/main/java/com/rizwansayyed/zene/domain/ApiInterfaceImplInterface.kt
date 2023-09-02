@@ -33,4 +33,5 @@ interface ApiInterfaceImplInterface {
 
     suspend fun artistsInstagramPosts(name: String): Flow<SocialMediaCombine?>
     suspend fun songPlayDetails(list: List<TopArtistsSongs>): Flow<ArrayList<MusicsHeader>>
+    suspend fun searchArtists(q: String): Flow<TopArtistsResponseApi>
 }
