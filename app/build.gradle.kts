@@ -107,6 +107,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.ui:ui-util:1.5.0")
 
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
@@ -119,6 +120,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltCompilerVersion")
     implementation("androidx.hilt:hilt-navigation-compose:$productionVersion")
+
 
     implementation("androidx.datastore:datastore-preferences:$productionVersion")
     implementation("org.jsoup:jsoup:$jsoupVersion")

@@ -71,6 +71,10 @@ fun HomepageView(
     LazyVerticalGrid(columns = GridCells.Fixed(2), Modifier.fillMaxSize(), state = listState) {
 
         item(span = { GridItemSpan(2) }) {
+            TopHeaderInfo()
+        }
+
+        item(span = { GridItemSpan(2) }) {
             if (headerPagerData?.isNotEmpty() == true) headerPagerData?.let {
                 TopHeaderPager(it) { thumbnail, name, artists ->
                     nav.showMusicPlayer()
