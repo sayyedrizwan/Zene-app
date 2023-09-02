@@ -453,8 +453,13 @@ class SongsViewModel @Inject constructor(
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun readLyrics(q: String) = viewModelScope.launch(Dispatchers.IO) {
-
         videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING, null)
+
+        if (ifLyricsFileExistReturn(q).length > 10) {
+            videoLyricsDetails =
+                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn(q))
+            return@launch
+        }
 
         val lyricsS = try {
             songsDataJsoup.searchLyrics(q).first()
@@ -463,6 +468,7 @@ class SongsViewModel @Inject constructor(
         }
 
         if (lyricsS.isNotEmpty()) {
+            saveCaptionsFileTXT(q, lyricsS)
             videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, lyricsS)
             return@launch
         }
@@ -476,29 +482,10 @@ class SongsViewModel @Inject constructor(
 
         videoLyricsDetails = if (lyricsAZ.isEmpty())
             VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
-        else
+        else {
+            saveCaptionsFileTXT(q, lyricsAZ)
             VideoPlayerResponse(VideoPlayerStatus.SUCCESS, lyricsAZ)
-
-
-//        videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING, null)
-//        if (ifLyricsFileExistReturn(q).length > 10) {
-//            videoLyricsDetails =
-//                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn(q))
-//            return@launch
-//        }
-//
-//        apiImpl.songLyrics(q).onStart {
-//            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING)
-//        }.catch {
-//            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
-//        }.collectLatest {
-//            if (it.lyrics?.trim()?.isEmpty() == true) {
-//                videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
-//                return@collectLatest
-//            }
-//            videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, it.lyrics)
-//            saveCaptionsFileTXT(q, it.lyrics ?: "")
-//        }
+        }
     }
 
 

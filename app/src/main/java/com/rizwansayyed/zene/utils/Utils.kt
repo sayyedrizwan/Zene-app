@@ -42,7 +42,6 @@ object Utils {
         const val TOP_ARTIST_THIS_WEEK = "topArtistThisWeek"
         const val TOP_GLOBAL_SONGS_THIS_WEEK = "topGlobalSongsThisWeek"
         const val SONG_SUGGESTIONS = "songSuggestions"
-        const val SONG_LYRICS = "songLyrics"
         const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
         const val SEARCH_SONGS = "searchSongs"
         const val SEARCH_ARTISTS = "searchArtists"
@@ -56,9 +55,6 @@ object Utils {
 
         const val IP_JSON_BASE_URL = "http://ip-api.com/"
         const val IP_JSON = "json"
-
-
-        const val CLIENT_TOKEN_SPOTIFY = "https://clienttoken.spotify.com/v1/clienttoken"
 
 
         const val SAVE_FROM_NET = "https://en.savefrom.net"

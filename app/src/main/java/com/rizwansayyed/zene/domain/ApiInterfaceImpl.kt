@@ -168,15 +168,6 @@ class ApiInterfaceImpl @Inject constructor(
         emit(response)
     }
 
-    override suspend fun songLyrics(name: String) = flow {
-        val url = jsoup.songLyrics(name).first()
-        if (url == null) {
-            emit(SongLyricsResponse(""))
-            return@flow
-        }
-        emit(apiInterface.songLyrics(url))
-    }
-
 
     override suspend fun artistsData(name: String) = flow {
         val url = jsoup.artistData(name).first()
