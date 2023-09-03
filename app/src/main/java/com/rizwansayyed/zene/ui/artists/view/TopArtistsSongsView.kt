@@ -26,9 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.presenter.model.Post
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.presenter.jsoup.model.NewsResponse
+import com.rizwansayyed.zene.presenter.model.InstagramPost
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
@@ -138,7 +138,7 @@ fun ArtistsAlbum(album: ArtistsAlbumsData) {
 }
 
 @Composable
-fun InstagramPostsPosts(post: Post) {
+fun InstagramPostsPosts(post: InstagramPost) {
     AsyncImage(
         model = post.postImage,
         contentDescription = "instagram",
@@ -146,6 +146,23 @@ fun InstagramPostsPosts(post: Post) {
             .padding(5.dp)
             .width(270.dp)
             .height(190.dp)
+            .clickable {
+                openOnInstagramPost(post.postId ?: "/")
+            },
+        contentScale = ContentScale.Crop
+    )
+}
+
+
+@Composable
+fun InstagramPostsPostsBig(post: InstagramPost) {
+    AsyncImage(
+        model = post.postImage,
+        contentDescription = "instagram",
+        modifier = Modifier
+            .padding(5.dp)
+            .width(LocalConfiguration.current.screenWidthDp.dp / 2 + 50.dp)
+            .height(LocalConfiguration.current.screenWidthDp.dp - 100.dp)
             .clickable {
                 openOnInstagramPost(post.postId ?: "/")
             },

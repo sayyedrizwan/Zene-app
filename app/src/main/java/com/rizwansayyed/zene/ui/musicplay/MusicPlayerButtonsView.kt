@@ -94,7 +94,7 @@ fun MusicPlayerButtonsView(
 
 
         IconsForMusicShortcut(R.drawable.ic_instagram_simple) {
-
+            nav.musicViewType(VideoPlayerViewStatus.INSTAGRAM)
         }
 
         IconsForMusicShortcut(R.drawable.ic_bookmark) {
@@ -122,7 +122,6 @@ fun IconsForMusicShortcut(ic: Int, click: () -> Unit) {
         painter = painterResource(id = ic),
         contentDescription = "",
         modifier = Modifier
-//            .padding(18.dp)
             .size(24.dp)
             .clickable {
                 click()

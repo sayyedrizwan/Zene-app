@@ -4,18 +4,17 @@ package com.rizwansayyed.zene.domain
 import android.util.Log
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.model.UrlResponse
-import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
-import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
+import com.rizwansayyed.zene.presenter.jsoup.model.InstagramPostsResponse
 import com.rizwansayyed.zene.presenter.jsoup.model.YTTrendingResponse
 import com.rizwansayyed.zene.presenter.model.MusicsHeader
-import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
+import com.rizwansayyed.zene.utils.Utils.URL.searchInstagramAPI
 import com.rizwansayyed.zene.utils.Utils.URL.ytBrowse
 import com.rizwansayyed.zene.utils.Utils.USER_AGENT
 import com.rizwansayyed.zene.utils.Utils.moshi
-import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
 import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.utils.downloadHeaderOkhttp
 import com.rizwansayyed.zene.utils.postOkHttps
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +23,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
-import org.jsoup.Jsoup
 import javax.inject.Inject
 
 
@@ -157,17 +155,6 @@ class ApiInterfaceImpl @Inject constructor(
         dataStoreManager.ipData = flowOf(ip)
         emit(apiInterface.searchArtists(ip.query ?: "", q.replace(" ", "+")))
     }
-
-    override suspend fun artistsInstagramPosts(name: String) = flow {
-        val (instagramURL, twitterURL) = jsoup.instagramTwitterAccounts(name).first()
-
-        val instagram = apiInterface.artistsInstagramPosts(instagramURL)
-        val twitter = apiInterface.artistsTwitterTweets(twitterURL)
-
-        val response = SocialMediaCombine(instagram, twitter)
-        emit(response)
-    }
-
 
     override suspend fun artistsData(name: String) = flow {
         val url = jsoup.artistData(name).first()

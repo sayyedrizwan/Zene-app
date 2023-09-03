@@ -12,7 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,15 +31,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus.*
 import com.rizwansayyed.zene.ui.theme.Purple
 
 
 @Composable
 fun MusicPlayerView(
-    modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltViewModel(), searchArtists: (String) -> Unit
+    modifier: Modifier = Modifier,
+    nav: HomeNavViewModel = hiltViewModel(),
+    songs: SongsViewModel = hiltViewModel(),
+    searchArtists: (String) -> Unit
 ) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -63,8 +65,8 @@ fun MusicPlayerView(
         ) {
             when (nav.musicViewType.value) {
                 MUSIC -> MusicPlayerCardView(nav, searchArtists)
-                LYRICS -> MusicPlayerLyrics(nav)
-                INSTAGRAM -> MusicPlayerLyrics(nav)
+                LYRICS -> MusicPlayerLyrics(songs)
+                INSTAGRAM -> MusicPlayerInstagram(songs)
             }
 
             Spacer(modifier = Modifier.height(190.dp))

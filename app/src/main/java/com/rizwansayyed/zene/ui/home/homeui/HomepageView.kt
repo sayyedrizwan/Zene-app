@@ -358,7 +358,7 @@ fun HomepageView(
                 }
             }
         } else {
-            item {
+            item(span = { GridItemSpan(2) }) {
                 Spacer(modifier = Modifier.height(18.dp))
 
                 QuickSandLight(
@@ -371,7 +371,7 @@ fun HomepageView(
             }
         }
 
-        item {
+        item(span = { GridItemSpan(2) }) {
             Spacer(modifier = Modifier.height(200.dp))
         }
     }

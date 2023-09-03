@@ -43,6 +43,21 @@ fun downloadHTMLOkhttp(url: String): String? {
     return null
 }
 
+fun downloadHeaderOkhttp(url: String, pair: Pair<String, String>): String? {
+    val cookies = OkhttpCookies()
+    val client = OkHttpClient().newBuilder().cookieJar(cookies).build()
+    val request = Request.Builder().url(url)
+        .addHeader("User-Agent", USER_AGENT)
+        .addHeader(pair.first, pair.second)
+        .method("GET", null).build()
+    val response = client.newCall(request).execute()
+
+    if (response.isSuccessful) {
+        return response.body?.string()
+    }
+    return null
+}
+
 class OkhttpCookies : CookieJar {
     private val cookieStore = mutableMapOf<String, List<Cookie>>()
 

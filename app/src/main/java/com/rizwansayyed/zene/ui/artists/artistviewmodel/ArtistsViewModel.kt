@@ -8,12 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
+import com.rizwansayyed.zene.presenter.jsoup.InstagramFilterManager
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
-import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.presenter.jsoup.model.ListenersNumberValue
 import com.rizwansayyed.zene.presenter.jsoup.model.NewsResponse
+import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.utils.Utils.clearUrlForArtistsInfo
 import com.rizwansayyed.zene.utils.Utils.convertRelativeTime
@@ -61,7 +62,7 @@ class ArtistsViewModel @Inject constructor(
         private set
 
 
-    var artistsInstagramPosts by mutableStateOf<SocialMediaCombine?>(null)
+    var artistsInstagramPosts by mutableStateOf<ArtistsInstagramPostResponse?>(null)
         private set
 
     var artistsNews by mutableStateOf<List<NewsResponse>>(emptyList())
@@ -91,9 +92,7 @@ class ArtistsViewModel @Inject constructor(
             artistsAllTimeSongs = it
         }
 
-        apiImpl.artistsInstagramPosts(artists).catch {}.collectLatest {
-            artistsInstagramPosts = it
-        }
+        artistsInstagramPosts = InstagramFilterManager(artists).getData()
 
         artistsDataJsoup.artistsNews(artistName).catch {}.collectLatest {
             var list = it.sortedBy { d -> convertRelativeTime(d.date.lowercase()) }.reversed()

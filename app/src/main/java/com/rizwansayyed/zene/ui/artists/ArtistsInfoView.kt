@@ -136,7 +136,7 @@ fun ArtistsInfo(
         }
 
         item(span = { GridItemSpan(2) }) {
-            if (artistsViewModel.artistsInstagramPosts?.instagram?.posts?.isNotEmpty() == true)
+            if (artistsViewModel.artistsInstagramPosts?.posts?.isNotEmpty() == true)
                 QuickSandSemiBold(
                     stringResource(id = R.string.artist_insta_posts),
                     Modifier.padding(5.dp),
@@ -145,9 +145,9 @@ fun ArtistsInfo(
         }
 
         item(span = { GridItemSpan(2) }) {
-            if (artistsViewModel.artistsInstagramPosts?.instagram?.posts != null)
+            if (artistsViewModel.artistsInstagramPosts?.posts != null)
                 LazyHorizontalGrid(GridCells.Fixed(3), modifier = Modifier.heightIn(max = 970.dp)) {
-                    items(artistsViewModel.artistsInstagramPosts?.instagram?.posts!!) {
+                    items(artistsViewModel.artistsInstagramPosts?.posts!!) {
                         InstagramPostsPosts(it)
                     }
                 }

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,12 +14,14 @@ import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
+import com.rizwansayyed.zene.presenter.jsoup.InstagramFilterManager
 import com.rizwansayyed.zene.presenter.jsoup.SongsDataJsoup
+import com.rizwansayyed.zene.presenter.jsoup.model.InstagramPostsResponse
 import com.rizwansayyed.zene.presenter.model.ApiResponse
+import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
+import com.rizwansayyed.zene.presenter.model.InstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
-import com.rizwansayyed.zene.presenter.model.MusicsHeader
-import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongsResponse
 import com.rizwansayyed.zene.presenter.model.toMusicPlayerData
@@ -50,7 +53,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
-import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
@@ -506,5 +508,31 @@ class SongsViewModel @Inject constructor(
         delay(1.seconds)
 
         startDownloadSongsWorkManager()
+    }
+
+
+    var artistsInstagram by mutableStateOf(InstagramPostResponse(null, ApiResponse.LOADING))
+        private set
+
+
+    fun artistsInstagram(artist: String?) = viewModelScope.launch(Dispatchers.IO) {
+        artistsInstagram = InstagramPostResponse(null, ApiResponse.LOADING)
+
+        val artists = artist?.replace(", &", "&")?.split(",", "&", ignoreCase = true)
+
+        val lists = ArrayList<ArtistsInstagramPostResponse>(4)
+
+        if (artists != null) {
+            for (a in artists) {
+                try {
+                    val data = InstagramFilterManager(a).getData()
+                    data?.let { lists.add(it) }
+                } catch (e: Exception) {
+                    e.message?.showToast()
+                }
+            }
+        }
+
+        artistsInstagram = InstagramPostResponse(lists, ApiResponse.SUCCESS)
     }
 }

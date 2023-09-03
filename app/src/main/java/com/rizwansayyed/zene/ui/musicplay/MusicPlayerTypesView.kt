@@ -41,7 +41,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun MusicPlayerLyrics(nav: HomeNavViewModel, song: SongsViewModel = hiltViewModel()) {
+fun MusicPlayerLyrics(song: SongsViewModel = hiltViewModel()) {
 
     val musicPlayer by BaseApplication.dataStoreManager.musicPlayerData
         .collectAsState(initial = runBlocking(Dispatchers.IO) { BaseApplication.dataStoreManager.musicPlayerData.first() })

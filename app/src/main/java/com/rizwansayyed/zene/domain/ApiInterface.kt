@@ -1,12 +1,8 @@
 package com.rizwansayyed.zene.domain
 
 import com.rizwansayyed.zene.domain.model.SongDetailsResponse
-import com.rizwansayyed.zene.domain.model.UrlResponse
-import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
-import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
-import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_INSTAGRAM_POSTS
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_TWITTER_TWEETS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
@@ -40,11 +36,6 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(TRENDING_SONGS_TOP_50_K_POP)
     suspend fun trendingSongsTop50KPop(@Field("q") q: String): TopArtistsResponseApi
-
-    @FormUrlEncoded
-    @POST(ARTISTS_INSTAGRAM_POSTS)
-    suspend fun artistsInstagramPosts(@Field("q") q: String): ArtistsInstagramPostResponse
-
 
     @FormUrlEncoded
     @POST(ARTISTS_TWITTER_TWEETS)

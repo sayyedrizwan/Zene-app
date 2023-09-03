@@ -49,7 +49,6 @@ object Utils {
         const val VIDEO_PLAY_DETAILS = "videoPlayDetails"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
         const val TRENDING_SONGS_TOP_50_K_POP = "trendingSongsTop50KPop"
-        const val ARTISTS_INSTAGRAM_POSTS = "artistsInstaPosts"
         const val ARTISTS_TWITTER_TWEETS = "artistsTwitterTweets"
 
 
@@ -76,6 +75,10 @@ object Utils {
             return "https://www.last.fm/search/artists?q=$name"
         }
 
+        fun searchInstagramAPI(username: String): String {
+            return "https://www.instagram.com/api/v1/users/web_profile_info/?username=$username"
+        }
+
         fun searchSongsApple(name: String): String {
             return "https://music.apple.com/us/search?term=top%20${name.replace(" ", "%20")}"
         }
@@ -96,7 +99,12 @@ object Utils {
 
         fun searchViaBing(q: String): String {
             return "https://www.bing.com/search?q=${q.lowercase().trim().replace(" ", "+")}" +
-                    "+twitter+and+instagram"
+                    "+twitter"
+        }
+
+        fun searchViaBingInstagram(q: String): String {
+            return "https://www.bing.com/search?q=${q.lowercase().trim().replace(" ", "+")}" +
+                    "+instagram"
         }
 
         fun searchViaBingHeader(q: String): String {

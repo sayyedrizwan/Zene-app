@@ -8,6 +8,9 @@ import kotlinx.coroutines.tasks.await
 
 class RemoteConfigReader {
 
+    private val ytKey = "yt_api_key"
+    private val instagramKey = "instagramAppID"
+
     private val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
     private val configSettings = remoteConfigSettings {
         minimumFetchIntervalInSeconds = 3600
@@ -15,6 +18,12 @@ class RemoteConfigReader {
     suspend fun getYTKey(): String {
         remoteConfig.setConfigSettingsAsync(configSettings)
         remoteConfig.fetchAndActivate().await()
-        return remoteConfig.getString("yt_api_key")
+        return remoteConfig.getString(ytKey)
+    }
+
+    suspend fun getInstagramKey(): String {
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.fetchAndActivate().await()
+        return remoteConfig.getString(instagramKey)
     }
 }

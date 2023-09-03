@@ -1,29 +1,30 @@
 package com.rizwansayyed.zene.presenter.model
 
-data class SocialMediaCombine(
-    val instagram: ArtistsInstagramPostResponse,
-    val twitter: ArtistsTwitterInfoResponse
+data class InstagramPostResponse(
+    val instagram: ArrayList<ArtistsInstagramPostResponse>?,
+    val response: ApiResponse
 )
 
 data class ArtistsInstagramPostResponse(
     val bio: String?,
+    val profile: String?,
     val name: String?,
     val url: String?,
-    val postCount: Int?,
+    val postCount: Long?,
     val username: String?,
     val followers: Long?,
     val profilePic: String?,
-    val posts: List<Post>?,
+    val posts: List<InstagramPost>?,
 )
 
-data class Post(
+data class InstagramPost(
     val postImage: String?,
     val isVideo: Boolean?,
     val postId: String?,
     val timestamp: Long?,
     val likeCount: Long?,
     val commentCount: Long?,
-    val totalImages: Long?,
+    val totalImages: Int?,
 )
 
 data class ArtistsTwitterInfoResponse(

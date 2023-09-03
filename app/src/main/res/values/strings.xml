@@ -48,4 +48,6 @@
     <string name="close">Close</string>
     <string name="search">Search</string>
     <string name="error_loading_songs">Error loading songs</string>
+    <string name="error_loading_instagram">Error loading instagram posts</string>
+    <string name="no_instagram_account_found">No instagram accounts found</string>
 </resources>

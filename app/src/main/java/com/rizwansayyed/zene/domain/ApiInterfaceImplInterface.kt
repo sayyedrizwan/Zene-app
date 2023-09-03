@@ -6,10 +6,7 @@ import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
-import com.rizwansayyed.zene.presenter.model.SocialMediaCombine
-import com.rizwansayyed.zene.presenter.model.SongLyricsResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
-import com.rizwansayyed.zene.presenter.jsoup.model.NewsResponse
 import com.rizwansayyed.zene.presenter.model.MusicsHeader
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +28,7 @@ interface ApiInterfaceImplInterface {
     suspend fun artistsData(name: String): Flow<UrlResponse>
     suspend fun searchSongs(q: String): Flow<TopArtistsResponseApi>
 
-    suspend fun artistsInstagramPosts(name: String): Flow<SocialMediaCombine?>
     suspend fun songPlayDetails(list: List<TopArtistsSongs>): Flow<ArrayList<MusicsHeader>>
     suspend fun searchArtists(q: String): Flow<TopArtistsResponseApi>
+
 }
