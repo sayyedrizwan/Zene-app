@@ -4,6 +4,7 @@ import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.IPApiInterface
 import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistDao
+import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDao
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
@@ -274,6 +275,16 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun allPlaylist() = flow {
         emit(playlist.playlists())
+    }
+
+
+    override suspend fun playlists(name: String) = flow {
+        emit(playlist.playlists(name))
+    }
+
+
+    override suspend fun playlists(p: PlaylistEntity) = flow {
+        emit(playlist.insert(p))
     }
 
 

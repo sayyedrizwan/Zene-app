@@ -14,6 +14,9 @@ interface PlaylistDao {
     @Query("SELECT * FROM $PLAYLIST_DB ORDER BY timestamp DESC")
     fun playlists(): Flow<List<PlaylistEntity>>
 
+    @Query("SELECT * FROM $PLAYLIST_DB WHERE name = :name ORDER BY timestamp DESC")
+    suspend fun playlists(name: String): List<PlaylistEntity>
+
     @Upsert
     suspend fun insert(playlist: PlaylistEntity)
 }

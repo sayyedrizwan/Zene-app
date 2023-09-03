@@ -512,7 +512,29 @@ class SongsViewModel @Inject constructor(
 
 
     private fun collectionsLists() = viewModelScope.launch(Dispatchers.IO) {
-        roomDBImpl.allPlaylist().catch {  }.collectLatest {
+        roomDBImpl.allPlaylist().catch { }.collectLatest {
+            playlists = it
+        }
+    }
+
+    fun insertPlaylist(name: String, isAdd: (Boolean) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+
+        val count = try {
+            roomDBImpl.playlists(name).first().size
+        }catch (e: Exception){
+            0
+        }
+
+        if (count > 0){
+            isAdd(false)
+            return@launch
+        }
+
+        val p = PlaylistEntity()
+
+        roomDBImpl.playlists().catch { }.collectLatest {
+
+            isAdd(false)
             playlists = it
         }
     }

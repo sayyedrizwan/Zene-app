@@ -3,10 +3,10 @@ package com.rizwansayyed.zene.ui.musicplay
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,15 +31,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
@@ -46,10 +51,10 @@ import com.rizwansayyed.zene.ui.dashedBorder
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.musicplay.video.FullVideoPlayerActivity
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus
+import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
-import com.rizwansayyed.zene.utils.Utils.shortTextForView
 import com.rizwansayyed.zene.utils.Utils.showToast
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -136,10 +141,13 @@ fun AddSongsToPlayList(
     music: MusicPlayerDetails, songs: SongsViewModel = hiltViewModel(), close: () -> Unit
 ) {
 
+    val playlists by songs.playlists.collectAsState(initial = emptyList())
+
     var addPlaylistView by remember { mutableStateOf(false) }
 
+    val playlistAvailable = stringResource(id = R.string.playlists_same_name)
 
-    Dialog(close, DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
+    Dialog(close) {
         Card(
             Modifier
                 .fillMaxWidth()
@@ -159,15 +167,66 @@ fun AddSongsToPlayList(
 
                 item {
                     if (addPlaylistView) {
-
+                        AddPlaylistView {
+                            songs.insertPlaylist(it) { status ->
+                                if (status) playlistAvailable.showToast()
+                            }
+                        }
                     } else
                         AddPlaylistBtn {
                             addPlaylistView = true
                         }
                 }
+
+                item {
+                    if (playlists.isEmpty())
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            Arrangement.Center,
+                            Alignment.CenterVertically
+                        ) {
+                            QuickSandLight(
+                                stringResource(id = R.string.no_playlist_found),
+                                size = 13, modifier = Modifier.padding(18.dp)
+                            )
+                        }
+                }
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddPlaylistView(addPlaylist: (String) -> Unit) {
+    var text by remember { mutableStateOf("") }
+
+    val iconView = @Composable {
+        IconButton(
+            onClick = {
+                addPlaylist(text)
+            },
+        ) {
+            Icon(
+                painterResource(id = R.drawable.plus_sign_square),
+                contentDescription = "",
+                tint = Color.Black
+            )
+        }
+    }
+
+    OutlinedTextField(
+        text, {
+            if (text.length > 29) return@OutlinedTextField
+            text = it
+        }, Modifier
+            .padding(10.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .fillMaxWidth()
+            .background(Color.LightGray),
+        textStyle = TextStyle(Color.Black, 13.sp), singleLine = true,
+        trailingIcon = iconView
+    )
 }
 
 @Composable

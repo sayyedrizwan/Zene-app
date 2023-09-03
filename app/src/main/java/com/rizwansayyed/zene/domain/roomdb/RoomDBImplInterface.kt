@@ -39,4 +39,6 @@ interface RoomDBImplInterface {
     suspend fun insertWhole(recentPlay: RecentPlayedEntity): Flow<Unit>
     suspend fun deleteOfflineSong(pId: String): Flow<Int>
     suspend fun allPlaylist(): Flow<Flow<List<PlaylistEntity>>>
+    suspend fun playlists(name: String): Flow<List<PlaylistEntity>>
+    suspend fun playlists(p: PlaylistEntity): Flow<Unit>
 }

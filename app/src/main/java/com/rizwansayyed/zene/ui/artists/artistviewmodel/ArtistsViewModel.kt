@@ -84,6 +84,7 @@ class ArtistsViewModel @Inject constructor(
         artistsSimilar = emptyList()
         artistsInstagramPosts = null
         artistsTwitterInfo = null
+        artistsNews = emptyList()
     }
 
     fun searchArtists(artists: String) = viewModelScope.launch(Dispatchers.IO) {
