@@ -7,6 +7,9 @@ import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.IPApiInterface
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.domain.roomdb.collections.PlaylistDB
+import com.rizwansayyed.zene.domain.roomdb.collections.items.PlaylistSongsDao
+import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistDao
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDB
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDao
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedDB
@@ -16,7 +19,9 @@ import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
 import com.rizwansayyed.zene.presenter.jsoup.SongsDataJsoup
+import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.DB.OFFLINE_SONGS_DB
+import com.rizwansayyed.zene.utils.Utils.DB.PLAYLIST_DB
 import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 import com.rizwansayyed.zene.utils.Utils.DB.SONG_DETAILS_DB
 import com.rizwansayyed.zene.utils.Utils.URL.IP_JSON_BASE_URL
@@ -87,14 +92,28 @@ object Module {
 
     @Provides
     @Singleton
+    fun playlistDB(@ApplicationContext context: Context): PlaylistDB =
+        Room.databaseBuilder(context, PlaylistDB::class.java, PLAYLIST_DB).build()
+
+    @Provides
+    @Singleton
+    fun playlistDaoDB(playlistDB : PlaylistDB): PlaylistDao = playlistDB.playlist()
+
+    @Provides
+    @Singleton
+    fun playlistSongsDaoDB(playlistDB : PlaylistDB): PlaylistSongsDao = playlistDB.playlistSongs()
+
+    @Provides
+    @Singleton
     fun roomDBImpl(
         dao: RecentPlayedDao,
+        p: PlaylistDao,
         api: ApiInterface,
         ip: IPApiInterface,
         song: SongDetailsDao,
         offline: OfflineSongsDao,
         jsoup: ArtistsDataJsoup
-    ): RoomDBImpl = RoomDBImpl(dao, api, ip, song, offline, jsoup)
+    ): RoomDBImpl = RoomDBImpl(dao, p, api, ip, song, offline, jsoup)
 
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)

@@ -119,6 +119,8 @@ object Utils {
     object DB {
         const val RECENT_PLAYED_DB = "recent_played_db"
         const val OFFLINE_SONGS_DB = "offline_songs_db"
+        const val PLAYLIST_DB = "playlist_db"
+        const val PLAYLIST_SONGS_DB = "playlist_songs_db"
         const val SONG_DETAILS_DB = "song_details_db"
     }
 

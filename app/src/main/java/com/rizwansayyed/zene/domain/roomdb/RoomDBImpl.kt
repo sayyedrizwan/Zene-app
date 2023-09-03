@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.domain.roomdb
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.IPApiInterface
+import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistDao
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDao
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
@@ -20,6 +21,7 @@ import javax.inject.Inject
 
 class RoomDBImpl @Inject constructor(
     private val recentPlayedDao: RecentPlayedDao,
+    private val playlist: PlaylistDao,
     private val apiInterface: ApiInterface,
     private val ipInterface: IPApiInterface,
     private val songDetailsDao: SongDetailsDao,
@@ -267,6 +269,11 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun deleteOfflineSong(pId: String) = flow {
         emit(offlineSongsDao.delete(pId))
+    }
+
+
+    override suspend fun allPlaylist() = flow {
+        emit(playlist.playlists())
     }
 
 

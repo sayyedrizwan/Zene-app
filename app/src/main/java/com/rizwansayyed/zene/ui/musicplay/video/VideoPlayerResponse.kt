@@ -10,5 +10,5 @@ enum class VideoPlayerStatus(val i: Int) {
 }
 
 enum class VideoPlayerViewStatus(val i: Int) {
-    MUSIC(0), LYRICS(1), INSTAGRAM(1),
+    MUSIC(0), LYRICS(1), INFO(2),
 }

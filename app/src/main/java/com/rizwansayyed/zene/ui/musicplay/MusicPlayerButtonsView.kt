@@ -4,36 +4,52 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
+import com.rizwansayyed.zene.ui.dashedBorder
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.musicplay.video.FullVideoPlayerActivity
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus
+import com.rizwansayyed.zene.utils.QuickSandRegular
+import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.EXTRA.SONG_NAME_EXTRA
+import com.rizwansayyed.zene.utils.Utils.shortTextForView
 import com.rizwansayyed.zene.utils.Utils.showToast
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -42,6 +58,8 @@ fun MusicPlayerButtonsView(
     music: MusicPlayerDetails, nav: HomeNavViewModel, songs: SongsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current.applicationContext
+
+    var showBookmarkDialog by remember { mutableStateOf(false) }
 
     val offlineSongAvailable = stringResource(id = R.string.song_is_offline_available)
 
@@ -92,13 +110,8 @@ fun MusicPlayerButtonsView(
                 songs.insertOfflineSongs(music)
             }
 
-
-        IconsForMusicShortcut(R.drawable.ic_instagram_simple) {
-            nav.musicViewType(VideoPlayerViewStatus.INSTAGRAM)
-        }
-
         IconsForMusicShortcut(R.drawable.ic_bookmark) {
-
+            showBookmarkDialog = true
         }
 
         IconsForMusicShortcut(R.drawable.ic_information_circle) {
@@ -111,7 +124,69 @@ fun MusicPlayerButtonsView(
     LaunchedEffect(nav.showMusicPlayerView.value) {
         if (nav.showMusicPlayerView.value)
             songs.offlineSongsData(music.pId ?: "")
+    }
 
+    if (showBookmarkDialog) AddSongsToPlayList(music, songs) {
+        showBookmarkDialog = false
+    }
+}
+
+@Composable
+fun AddSongsToPlayList(
+    music: MusicPlayerDetails, songs: SongsViewModel = hiltViewModel(), close: () -> Unit
+) {
+
+    var addPlaylistView by remember { mutableStateOf(false) }
+
+
+    Dialog(close, DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
+        Card(
+            Modifier
+                .fillMaxWidth()
+                .height(LocalConfiguration.current.screenWidthDp.dp)
+                .padding(8.dp),
+            RoundedCornerShape(10.dp),
+            CardDefaults.cardColors(Color.Black),
+            CardDefaults.cardElevation(8.dp)
+        ) {
+            LazyColumn(Modifier.fillMaxWidth()) {
+                item {
+                    QuickSandSemiBold(
+                        stringResource(id = R.string.playlists),
+                        size = 17, modifier = Modifier.padding(15.dp)
+                    )
+                }
+
+                item {
+                    if (addPlaylistView) {
+
+                    } else
+                        AddPlaylistBtn {
+                            addPlaylistView = true
+                        }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AddPlaylistBtn(click: () -> Unit) {
+    Box(
+        Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+            .dashedBorder(1.dp, Color.Gray, 8.dp)
+            .clickable {
+                click()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        QuickSandRegular(
+            stringResource(id = R.string.new_playlists).lowercase(),
+            size = 14,
+            modifier = Modifier.padding(14.dp)
+        )
     }
 }
 

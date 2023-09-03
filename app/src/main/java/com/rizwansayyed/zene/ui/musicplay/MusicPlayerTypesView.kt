@@ -1,16 +1,12 @@
 package com.rizwansayyed.zene.ui.musicplay
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,19 +22,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
-import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerResponse
-import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerStatus
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerStatus.*
-import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandRegular
-import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MusicPlayerLyrics(song: SongsViewModel = hiltViewModel()) {
@@ -84,6 +73,6 @@ fun MusicPlayerLyrics(song: SongsViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         val songs = "${musicPlayer?.songName} - ${musicPlayer?.artists}"
-        song.readLyrics(songs)
+        song.readLyrics(songs, musicPlayer?.pId ?: "")
     }
 }

@@ -66,7 +66,7 @@ fun MusicPlayerView(
             when (nav.musicViewType.value) {
                 MUSIC -> MusicPlayerCardView(nav, searchArtists)
                 LYRICS -> MusicPlayerLyrics(songs)
-                INSTAGRAM -> MusicPlayerInstagram(songs)
+                INFO -> {}
             }
 
             Spacer(modifier = Modifier.height(190.dp))

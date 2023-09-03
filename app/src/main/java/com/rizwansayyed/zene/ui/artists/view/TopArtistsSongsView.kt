@@ -153,24 +153,6 @@ fun InstagramPostsPosts(post: InstagramPost) {
     )
 }
 
-
-@Composable
-fun InstagramPostsPostsBig(post: InstagramPost) {
-    AsyncImage(
-        model = post.postImage,
-        contentDescription = "instagram",
-        modifier = Modifier
-            .padding(5.dp)
-            .width(LocalConfiguration.current.screenWidthDp.dp / 2 + 50.dp)
-            .height(LocalConfiguration.current.screenWidthDp.dp - 100.dp)
-            .clickable {
-                openOnInstagramPost(post.postId ?: "/")
-            },
-        contentScale = ContentScale.Crop
-    )
-}
-
-
 @Composable
 fun ArtistsNews(news: NewsResponse) {
     Row(

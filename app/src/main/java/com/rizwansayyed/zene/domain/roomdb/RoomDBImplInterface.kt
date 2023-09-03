@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.domain.roomdb
 
 import com.rizwansayyed.zene.domain.model.SongDetailsResponse
+import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
@@ -37,4 +38,5 @@ interface RoomDBImplInterface {
     suspend fun getRecentData(pid: String): Flow<RecentPlayedEntity?>
     suspend fun insertWhole(recentPlay: RecentPlayedEntity): Flow<Unit>
     suspend fun deleteOfflineSong(pId: String): Flow<Int>
+    suspend fun allPlaylist(): Flow<Flow<List<PlaylistEntity>>>
 }

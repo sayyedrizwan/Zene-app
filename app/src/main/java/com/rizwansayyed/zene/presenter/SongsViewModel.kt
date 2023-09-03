@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.presenter
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,16 +9,13 @@ import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
-import com.rizwansayyed.zene.presenter.jsoup.InstagramFilterManager
 import com.rizwansayyed.zene.presenter.jsoup.SongsDataJsoup
-import com.rizwansayyed.zene.presenter.jsoup.model.InstagramPostsResponse
 import com.rizwansayyed.zene.presenter.model.ApiResponse
-import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
-import com.rizwansayyed.zene.presenter.model.InstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
@@ -38,7 +34,6 @@ import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.RemoteConfigReader
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
-import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +63,7 @@ class SongsViewModel @Inject constructor(
     fun run() {
         footerDataTried = 0
         recentPlaySongs()
+        collectionsLists()
         allOfflineSongs()
         topCountrySongYT()
 
@@ -453,12 +449,12 @@ class SongsViewModel @Inject constructor(
 
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    fun readLyrics(q: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun readLyrics(q: String, pID: String) = viewModelScope.launch(Dispatchers.IO) {
         videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.LOADING, null)
 
-        if (ifLyricsFileExistReturn(q).length > 10) {
+        if (ifLyricsFileExistReturn("${q}_$pID").length > 10) {
             videoLyricsDetails =
-                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn(q))
+                VideoPlayerResponse(VideoPlayerStatus.SUCCESS, ifLyricsFileExistReturn("${q}_$pID"))
             return@launch
         }
 
@@ -469,7 +465,7 @@ class SongsViewModel @Inject constructor(
         }
 
         if (lyricsS.isNotEmpty()) {
-            saveCaptionsFileTXT(q, lyricsS)
+            saveCaptionsFileTXT("${q}_$pID", lyricsS)
             videoLyricsDetails = VideoPlayerResponse(VideoPlayerStatus.SUCCESS, lyricsS)
             return@launch
         }
@@ -484,7 +480,7 @@ class SongsViewModel @Inject constructor(
         videoLyricsDetails = if (lyricsAZ.isEmpty())
             VideoPlayerResponse(VideoPlayerStatus.ERROR, null)
         else {
-            saveCaptionsFileTXT(q, lyricsAZ)
+            saveCaptionsFileTXT("${q}_$pID", lyricsAZ)
             VideoPlayerResponse(VideoPlayerStatus.SUCCESS, lyricsAZ)
         }
     }
@@ -511,28 +507,13 @@ class SongsViewModel @Inject constructor(
     }
 
 
-    var artistsInstagram by mutableStateOf(InstagramPostResponse(null, ApiResponse.LOADING))
+    var playlists by mutableStateOf<Flow<List<PlaylistEntity>>>(flowOf(emptyList()))
         private set
 
 
-    fun artistsInstagram(artist: String?) = viewModelScope.launch(Dispatchers.IO) {
-        artistsInstagram = InstagramPostResponse(null, ApiResponse.LOADING)
-
-        val artists = artist?.replace(", &", "&")?.split(",", "&", ignoreCase = true)
-
-        val lists = ArrayList<ArtistsInstagramPostResponse>(4)
-
-        if (artists != null) {
-            for (a in artists) {
-                try {
-                    val data = InstagramFilterManager(a).getData()
-                    data?.let { lists.add(it) }
-                } catch (e: Exception) {
-                    e.message?.showToast()
-                }
-            }
+    private fun collectionsLists() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.allPlaylist().catch {  }.collectLatest {
+            playlists = it
         }
-
-        artistsInstagram = InstagramPostResponse(lists, ApiResponse.SUCCESS)
     }
 }

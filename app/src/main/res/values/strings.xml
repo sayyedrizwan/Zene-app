@@ -10,6 +10,8 @@
     <string name="top_songs">Top Songs</string>
     <string name="top_albums">Top Albums</string>
     <string name="recent_songs">Recent Songs</string>
+    <string name="playlists">Playlists</string>
+    <string name="new_playlists">New Playlist</string>
     <string name="songs">Songs</string>
     <string name="artists">Artists</string>
     <string name="artist_insta_posts">Artist Instagram Post</string>
