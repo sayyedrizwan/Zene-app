@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.BetaTestDialog
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
@@ -76,7 +77,10 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                         }
                     }
 
-                    MusicPlayerView(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
+                    MusicPlayerView(Modifier.align(Alignment.BottomCenter), homeNavViewModel) {
+                        homeNavViewModel.homeNavigationView(SELECT_ARTISTS)
+                        artistsViewModel.searchArtists(it.trim().lowercase())
+                    }
                     HomeNavBar(Modifier.align(Alignment.BottomCenter), homeNavViewModel)
 
                     BetaTestDialog()

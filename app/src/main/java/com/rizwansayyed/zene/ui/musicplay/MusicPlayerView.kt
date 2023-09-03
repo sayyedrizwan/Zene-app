@@ -33,12 +33,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus.*
 import com.rizwansayyed.zene.ui.theme.Purple
 
 
 @Composable
-fun MusicPlayerView(modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltViewModel()) {
+fun MusicPlayerView(
+    modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltViewModel(), searchArtists: (String) -> Unit
+) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val density = LocalDensity.current
@@ -58,8 +61,8 @@ fun MusicPlayerView(modifier: Modifier = Modifier, nav: HomeNavViewModel = hiltV
                 .background(Purple)
                 .verticalScroll(rememberScrollState())
         ) {
-            when(nav.musicViewType.value){
-                MUSIC ->  MusicPlayerCardView(nav)
+            when (nav.musicViewType.value) {
+                MUSIC -> MusicPlayerCardView(nav, searchArtists)
                 LYRICS -> MusicPlayerLyrics(nav)
                 INSTAGRAM -> MusicPlayerLyrics(nav)
             }

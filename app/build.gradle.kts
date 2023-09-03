@@ -17,8 +17,8 @@ android {
         applicationId = "com.rizwansayyed.zene"
         minSdk = 24
         targetSdk = 34
-        versionCode = 10
-        versionName = "1.0.000336"
+        versionCode = 11
+        versionName = "1.0.000340"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -112,10 +112,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
     implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion")
-
-//    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
-//    implementation("com.squareup.okhttp3:okhttp")
-//    implementation("com.squareup.okhttp3:logging-interceptor")
 
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltCompilerVersion")

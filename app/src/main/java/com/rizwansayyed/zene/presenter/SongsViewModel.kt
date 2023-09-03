@@ -357,7 +357,6 @@ class SongsViewModel @Inject constructor(
         dataStoreManager.musicPlayerData =
             flowOf(toMusicPlayerData(songs.img, songs.songName, songs.songArtists))
 
-
         roomDBImpl.insert(toRecentPlay(songs)).collect()
 
         val mediaDetails = mediaPlayerObjects.mediaItems(
@@ -417,7 +416,7 @@ class SongsViewModel @Inject constructor(
                 updateStatus(
                     it.thumbnail,
                     it.songName ?: "",
-                    it.artistName ?: "",
+                    artists,
                     it.songID ?: "",
                     MusicPlayerState.LOADING
                 )
@@ -425,7 +424,7 @@ class SongsViewModel @Inject constructor(
                 val url = mediaPlayerObjects.mediaAudioPaths(it.songID ?: "")
 
                 val mediaDetails = mediaPlayerObjects.mediaItems(
-                    it.songID, url, it.songName, it.artistName, it.thumbnail
+                    it.songID, url, it.songName, artists, it.thumbnail
                 )
                 mediaPlayerObjects.playSong(mediaDetails, true)
             }

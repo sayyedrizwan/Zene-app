@@ -1,7 +1,10 @@
 package com.rizwansayyed.zene.ui.musicplay
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +42,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.Utils
@@ -53,14 +57,17 @@ import kotlinx.coroutines.runBlocking
 import kotlin.time.Duration.Companion.seconds
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
+fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel(), searchArtists: (String) -> Unit) {
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val musicPlayer by BaseApplication.dataStoreManager.musicPlayerData
         .collectAsState(initial = runBlocking(Dispatchers.IO) { BaseApplication.dataStoreManager.musicPlayerData.first() })
     val doMusicLoop by BaseApplication.dataStoreManager.doMusicPlayerLoop
         .collectAsState(initial = runBlocking(Dispatchers.IO) { BaseApplication.dataStoreManager.doMusicPlayerLoop.first() })
+
+    var artistsArray by remember { mutableStateOf<List<String>>(emptyList()) }
 
     val coroutine = rememberCoroutineScope()
 
@@ -92,8 +99,20 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
             .padding(10.dp)
             .fillMaxWidth(), size = 25
     )
-
-    QuickSandLight(musicPlayer?.artists ?: "", Modifier.fillMaxWidth(), size = 17, maxLine = 2)
+    FlowRow(
+        Modifier
+            .padding(6.dp)
+            .fillMaxWidth(), Arrangement.Center, Arrangement.Center
+    ) {
+        artistsArray.forEach {
+            if (it.trim() == "&" || it.trim() == ",")
+                QuickSandLight(it, Modifier, size = 17)
+            else
+                QuickSandLight(it, Modifier.clickable {
+                    searchArtists(it)
+                }, size = 17)
+        }
+    }
 
     if (musicPlayer?.state == MusicPlayerState.LOADING) {
         Row(
@@ -175,6 +194,22 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel()) {
         }
 
         musicPlayer?.let { MusicPlayerButtonsView(it, nav) }
+    }
+
+    LaunchedEffect(musicPlayer?.artists) {
+        artistsArray = emptyList()
+        val list = ArrayList<String>(9)
+        val l = musicPlayer?.artists?.replace(", &", "&")
+            ?.split(",", "&", ignoreCase = true)
+        l?.forEachIndexed { index, s ->
+            list.add(s.trim())
+            when (index) {
+                l.size - 2 -> list.add(" & ")
+                l.size - 1 -> list.add("")
+                else -> list.add(", ")
+            }
+        }
+        artistsArray = list
     }
 
     LaunchedEffect(Unit) {
