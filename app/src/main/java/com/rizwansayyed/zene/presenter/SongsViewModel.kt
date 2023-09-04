@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -508,6 +509,24 @@ class SongsViewModel @Inject constructor(
     }
 
 
+    var isSongInPlaylist by mutableIntStateOf(0)
+        private set
+
+
+    fun isSongInPlaylist(pID: String) = viewModelScope.launch(Dispatchers.IO) {
+        isSongInPlaylist = 0
+        roomDBImpl.isSongsAlreadyAvailable(pID).catch { }.collectLatest {
+            isSongInPlaylist = it
+        }
+    }
+
+    fun removeSongPlaylist(pID: String) = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.deleteSongs(pID).catch { }.collectLatest {
+            isSongInPlaylist(pID)
+        }
+    }
+
+
     var playlists by mutableStateOf<Flow<List<PlaylistEntity>>>(flowOf(emptyList()))
         private set
 
@@ -570,6 +589,7 @@ class SongsViewModel @Inject constructor(
                     }
                 }
 
+                isSongInPlaylist(music.pId!!)
             }
         }
 }

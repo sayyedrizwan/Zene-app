@@ -308,6 +308,10 @@ class RoomDBImpl @Inject constructor(
         emit(playlistItem.isSongsAlreadyAvailable(pid))
     }
 
+    override suspend fun deleteSongs(pid: String) = flow {
+        emit(playlistItem.deleteSongs(pid))
+    }
+
     override suspend fun playlistSongs(pID:Int) = flow {
         emit(playlistItem.songs(pID))
     }

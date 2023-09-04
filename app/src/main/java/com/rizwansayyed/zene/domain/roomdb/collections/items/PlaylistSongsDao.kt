@@ -22,6 +22,9 @@ interface PlaylistSongsDao {
     @Query("SELECT COUNT(*) FROM $PLAYLIST_SONGS_DB WHERE pID = :pID")
    suspend fun isSongsAlreadyAvailable(pID: String): Int
 
+    @Query("DELETE FROM $PLAYLIST_SONGS_DB WHERE pID = :pID")
+   suspend fun deleteSongs(pID: String)
+
     @Upsert
     suspend fun insert(playlist: PlaylistSongsEntity)
 }

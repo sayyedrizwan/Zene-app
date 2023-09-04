@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,6 +56,7 @@ import com.rizwansayyed.zene.ui.dashedBorder
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.musicplay.video.FullVideoPlayerActivity
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerViewStatus
+import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
@@ -68,6 +71,7 @@ fun MusicPlayerButtonsView(
     val context = LocalContext.current.applicationContext
 
     var showBookmarkDialog by remember { mutableStateOf(false) }
+    var showRmBookmarkDialog by remember { mutableStateOf(false) }
 
     val offlineSongAvailable = stringResource(id = R.string.song_is_offline_available)
 
@@ -118,15 +122,24 @@ fun MusicPlayerButtonsView(
                 songs.insertOfflineSongs(music)
             }
 
-        IconsForMusicShortcut(R.drawable.ic_bookmark) {
-            showBookmarkDialog = true
-        }
+        if (songs.isSongInPlaylist == 0)
+            IconsForMusicShortcut(R.drawable.ic_bookmark) {
+                showBookmarkDialog = true
+            }
+        else
+            IconsForMusicShortcut(R.drawable.ic_bookmark_check) {
+                showRmBookmarkDialog = true
+            }
 
         IconsForMusicShortcut(R.drawable.ic_information_circle) {
 
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    LaunchedEffect(Unit) {
+        songs.isSongInPlaylist(music.pId ?: "")
     }
 
     LaunchedEffect(nav.showMusicPlayerView.value) {
@@ -137,11 +150,52 @@ fun MusicPlayerButtonsView(
     if (showBookmarkDialog) AddSongsToPlayList(music, songs) {
         showBookmarkDialog = false
     }
+
+    if (showRmBookmarkDialog) RemoveFromPlaylist {
+        showRmBookmarkDialog = false
+        if (it){
+            songs.removeSongPlaylist(music.pId ?: "")
+        }
+    }
+}
+
+@Composable
+fun RemoveFromPlaylist(close: (Boolean) -> Unit) {
+    AlertDialog(
+        onDismissRequest = { close(false) },
+        text = {
+            QuickSandSemiBold(
+                stringResource(id = R.string.remove_song_playlist),
+                Modifier.padding(5.dp),
+                size = 15,
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { close(true) }) {
+                QuickSandBold(
+                    stringResource(id = R.string.remove).uppercase(),
+                    Modifier.padding(5.dp),
+                    size = 16,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { close(false) }) {
+                QuickSandBold(
+                    stringResource(id = R.string.cancel).uppercase(),
+                    Modifier.padding(5.dp),
+                    size = 16,
+                )
+            }
+        },
+    )
 }
 
 @Composable
 fun AddSongsToPlayList(
-    music: MusicPlayerDetails, songs: SongsViewModel = hiltViewModel(), close: () -> Unit
+    music: MusicPlayerDetails,
+    songs: SongsViewModel = hiltViewModel(),
+    close: () -> Unit
 ) {
 
     val playlists by songs.playlists.collectAsState(initial = emptyList())
