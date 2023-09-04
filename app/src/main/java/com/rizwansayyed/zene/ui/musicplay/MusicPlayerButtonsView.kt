@@ -132,7 +132,7 @@ fun MusicPlayerButtonsView(
             }
 
         IconsForMusicShortcut(R.drawable.ic_information_circle) {
-
+            nav.musicViewType(VideoPlayerViewStatus.INFO)
         }
 
         Spacer(modifier = Modifier.height(8.dp))

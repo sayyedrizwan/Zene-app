@@ -73,7 +73,7 @@ class InstagramFilterManager(private val name: String) {
         )
     }
 
-    fun downloadData() {
+    private fun downloadData() {
         val instagramURL = userUrl.substringAfter("instagram.com").replace("/", "")
         val instagramPost =
             downloadHeaderOkhttp(searchInstagramAPI(instagramURL), Pair("x-ig-app-id", appID))

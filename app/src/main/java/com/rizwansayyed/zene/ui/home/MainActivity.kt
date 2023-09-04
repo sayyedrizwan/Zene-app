@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.presenter.jsoup.WikipediaInfoManager
 import com.rizwansayyed.zene.service.ads.OpenAdManager
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
@@ -70,13 +71,26 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     AnimatedContent(targetState = currentScreen, label = "") {
                         when (it) {
                             MAIN -> HomepageView(songsViewModel, homeNavViewModel, artistsViewModel)
-                            SELECT_ARTISTS -> ArtistsInfo(artistsViewModel, homeNavViewModel, songsViewModel)
+                            SELECT_ARTISTS -> ArtistsInfo(
+                                artistsViewModel,
+                                homeNavViewModel,
+                                songsViewModel
+                            )
+
                             SETTINGS -> SettingsView(songsViewModel)
-                            SEARCH -> SearchMusicArtistView(songsViewModel, homeNavViewModel, artistsViewModel)
+                            SEARCH -> SearchMusicArtistView(
+                                songsViewModel,
+                                homeNavViewModel,
+                                artistsViewModel
+                            )
                         }
                     }
 
-                    MusicPlayerView(Modifier.align(Alignment.BottomCenter), homeNavViewModel, songsViewModel) {
+                    MusicPlayerView(
+                        Modifier.align(Alignment.BottomCenter),
+                        homeNavViewModel,
+                        songsViewModel
+                    ) {
                         homeNavViewModel.homeNavigationView(SELECT_ARTISTS)
                         artistsViewModel.searchArtists(it.trim().lowercase())
                     }
