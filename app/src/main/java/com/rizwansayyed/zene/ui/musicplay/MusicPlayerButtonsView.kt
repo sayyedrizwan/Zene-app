@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,7 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
@@ -146,6 +149,7 @@ fun AddSongsToPlayList(
     var addPlaylistView by remember { mutableStateOf(false) }
 
     val playlistAvailable = stringResource(id = R.string.playlists_same_name)
+    val playlistValidName = stringResource(id = R.string.enter_a_valid_playlist_name)
 
     Dialog(close) {
         Card(
@@ -168,8 +172,12 @@ fun AddSongsToPlayList(
                 item {
                     if (addPlaylistView) {
                         AddPlaylistView {
-                            songs.insertPlaylist(it) { status ->
-                                if (status) playlistAvailable.showToast()
+                            if (it.trim().length < 4) {
+                                playlistValidName.showToast()
+                                return@AddPlaylistView
+                            }
+                            songs.insertPlaylist(it.trim()) { status ->
+                                if (!status) playlistAvailable.showToast()
                             }
                         }
                     } else
@@ -191,8 +199,47 @@ fun AddSongsToPlayList(
                             )
                         }
                 }
+
+                items(playlists) {
+                    PlaylistItemView(it) {
+                        close()
+                        songs.insertSongToPlaylist(music, it)
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+fun PlaylistItemView(playlist: PlaylistEntity, add: () -> Unit) {
+    Row(
+        Modifier
+            .padding(horizontal = 9.dp, vertical = 12.dp)
+            .fillMaxWidth()
+            .clickable { add() },
+        Arrangement.Start,
+        Alignment.CenterVertically
+    ) {
+        if (playlist.image1.isNotEmpty())
+            AsyncImage(
+                playlist.image1,
+                "",
+                Modifier
+                    .size(30.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+            )
+        else
+            Image(
+                painterResource(id = R.drawable.ic_playlist),
+                "",
+                Modifier.size(30.dp),
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+
+        QuickSandLight(
+            playlist.name, size = 16, modifier = Modifier.padding(start = 8.dp), maxLine = 1
+        )
     }
 }
 
@@ -205,6 +252,7 @@ fun AddPlaylistView(addPlaylist: (String) -> Unit) {
         IconButton(
             onClick = {
                 addPlaylist(text)
+                text = ""
             },
         ) {
             Icon(

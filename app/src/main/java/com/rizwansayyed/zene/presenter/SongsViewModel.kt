@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
 import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
+import com.rizwansayyed.zene.domain.roomdb.collections.items.PlaylistSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
@@ -517,25 +518,58 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-    fun insertPlaylist(name: String, isAdd: (Boolean) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+    fun insertPlaylist(name: String, isAdd: (Boolean) -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val count = try {
+                roomDBImpl.playlists(name.lowercase()).first().size
+            } catch (e: Exception) {
+                0
+            }
 
-        val count = try {
-            roomDBImpl.playlists(name).first().size
-        }catch (e: Exception){
-            0
+            if (count > 0) {
+                isAdd(false)
+                return@launch
+            }
+
+            val p = PlaylistEntity(null, name)
+
+            roomDBImpl.playlists(p).catch { }.collectLatest {
+                isAdd(true)
+            }
         }
 
-        if (count > 0){
-            isAdd(false)
-            return@launch
+    fun insertSongToPlaylist(music: MusicPlayerDetails, playlist: PlaylistEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+
+            if (roomDBImpl.isSongsAlreadyAvailable(music.pId ?: "").first() > 0) return@launch
+
+            val p = PlaylistSongsEntity(
+                null,
+                playlist.id!!,
+                music.songName!!,
+                System.currentTimeMillis(),
+                music.thumbnail!!,
+                music.artists!!,
+                music.pId!!
+            )
+
+            roomDBImpl.playlistItem(p).catch { }.collectLatest {
+                val playlists = roomDBImpl.latest4playlistsItem(playlist.id).first()
+                if (playlists.size > 4) {
+                    roomDBImpl.playlistsWithId(playlist.id).first().forEach {
+                        it.image1 = music.thumbnail
+                        it.image2 = playlists[1].thumbnail
+                        it.image3 = playlists[2].thumbnail
+                        it.image4 = playlists[3].thumbnail
+                        roomDBImpl.playlists(it).collect()
+                    }
+                } else if (playlists.isNotEmpty()) {
+                    roomDBImpl.playlistsWithId(playlist.id).first().forEach {
+                        it.image1 = music.thumbnail
+                        roomDBImpl.playlists(it).collect()
+                    }
+                }
+
+            }
         }
-
-        val p = PlaylistEntity()
-
-        roomDBImpl.playlists().catch { }.collectLatest {
-
-            isAdd(false)
-            playlists = it
-        }
-    }
 }

@@ -108,12 +108,13 @@ object Module {
     fun roomDBImpl(
         dao: RecentPlayedDao,
         p: PlaylistDao,
+        ps: PlaylistSongsDao,
         api: ApiInterface,
         ip: IPApiInterface,
         song: SongDetailsDao,
         offline: OfflineSongsDao,
         jsoup: ArtistsDataJsoup
-    ): RoomDBImpl = RoomDBImpl(dao, p, api, ip, song, offline, jsoup)
+    ): RoomDBImpl = RoomDBImpl(dao, p, ps, api, ip, song, offline, jsoup)
 
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)

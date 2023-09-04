@@ -174,14 +174,14 @@ fun BetaTestDialog() {
                     stringResource(id = R.string.zene_is_beta),
                     size = 15,
                     modifier = Modifier.padding(top = 10.dp),
-                    color = Color.Black
+                    color = Color.White
                 )
 
                 QuickSandRegular(
                     stringResource(id = R.string.zene_is_beta_desc),
                     size = 16,
                     modifier = Modifier.padding(top = 10.dp),
-                    color = Color.Black,
+                    color = Color.White,
                     align = TextAlign.Start
                 )
             }

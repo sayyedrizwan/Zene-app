@@ -12,10 +12,10 @@ import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     val name: String,
-    val timestamp: Long,
-    val image1: String,
-    val image2: String,
-    val image3: String,
-    val image4: String,
-    val items: Int,
+    val timestamp: Long = System.currentTimeMillis(),
+    var image1: String = "",
+    var image2: String = "",
+    var image3: String = "",
+    var image4: String = "",
+    val items: Int = 0,
 )

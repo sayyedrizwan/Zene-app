@@ -13,9 +13,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlaylistSongsDao {
 
-    @Query("SELECT * FROM $PLAYLIST_SONGS_DB ORDER BY timestamp DESC")
-    fun playlists(): Flow<List<PlaylistSongsEntity>>
+    @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE playlistId = :playlistID ORDER BY timestamp DESC")
+    fun songs(playlistID: Int): Flow<List<PlaylistSongsEntity>>
+
+    @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE playlistId = :playlistID ORDER BY timestamp DESC LIMIT 4")
+   suspend fun latest4playlists(playlistID: Int): List<PlaylistSongsEntity>
+
+    @Query("SELECT COUNT(*) FROM $PLAYLIST_SONGS_DB WHERE pID = :pID")
+   suspend fun isSongsAlreadyAvailable(pID: String): Int
 
     @Upsert
-    suspend fun insert(playlist: PlaylistEntity)
+    suspend fun insert(playlist: PlaylistSongsEntity)
 }

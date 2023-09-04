@@ -1,6 +1,6 @@
 package com.rizwansayyed.zene.domain.roomdb
 
-import com.rizwansayyed.zene.domain.model.SongDetailsResponse
+import com.rizwansayyed.zene.domain.roomdb.collections.items.PlaylistSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
@@ -41,4 +41,9 @@ interface RoomDBImplInterface {
     suspend fun allPlaylist(): Flow<Flow<List<PlaylistEntity>>>
     suspend fun playlists(name: String): Flow<List<PlaylistEntity>>
     suspend fun playlists(p: PlaylistEntity): Flow<Unit>
+    suspend fun playlistItem(p: PlaylistSongsEntity): Flow<Unit>
+    suspend fun latest4playlistsItem(id: Int): Flow<List<PlaylistSongsEntity>>
+    suspend fun playlistSongs(pID: Int): Flow<Flow<List<PlaylistSongsEntity>>>
+    suspend fun playlistsWithId(id: Int): Flow<List<PlaylistEntity>>
+    suspend fun isSongsAlreadyAvailable(pid: String): Flow<Int>
 }

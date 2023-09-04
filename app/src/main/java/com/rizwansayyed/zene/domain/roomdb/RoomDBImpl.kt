@@ -3,6 +3,8 @@ package com.rizwansayyed.zene.domain.roomdb
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterface
 import com.rizwansayyed.zene.domain.IPApiInterface
+import com.rizwansayyed.zene.domain.roomdb.collections.items.PlaylistSongsDao
+import com.rizwansayyed.zene.domain.roomdb.collections.items.PlaylistSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistDao
 import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsDao
@@ -23,6 +25,7 @@ import javax.inject.Inject
 class RoomDBImpl @Inject constructor(
     private val recentPlayedDao: RecentPlayedDao,
     private val playlist: PlaylistDao,
+    private val playlistItem: PlaylistSongsDao,
     private val apiInterface: ApiInterface,
     private val ipInterface: IPApiInterface,
     private val songDetailsDao: SongDetailsDao,
@@ -283,8 +286,30 @@ class RoomDBImpl @Inject constructor(
     }
 
 
+    override suspend fun playlistsWithId(id: Int) = flow {
+        emit(playlist.playlistsWithId(id))
+    }
+
+
     override suspend fun playlists(p: PlaylistEntity) = flow {
         emit(playlist.insert(p))
+    }
+
+    override suspend fun playlistItem(p: PlaylistSongsEntity) = flow {
+        emit(playlistItem.insert(p))
+    }
+
+
+    override suspend fun latest4playlistsItem(id: Int) = flow {
+        emit(playlistItem.latest4playlists(id))
+    }
+
+    override suspend fun isSongsAlreadyAvailable(pid: String) = flow {
+        emit(playlistItem.isSongsAlreadyAvailable(pid))
+    }
+
+    override suspend fun playlistSongs(pID:Int) = flow {
+        emit(playlistItem.songs(pID))
     }
 
 

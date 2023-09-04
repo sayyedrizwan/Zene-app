@@ -12,9 +12,10 @@ import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 @Entity(tableName = PLAYLIST_SONGS_DB)
 data class PlaylistSongsEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
+    val playlistId: Int,
     val name: String,
     val timestamp: Long,
-    val thumbnail: Long,
-    val artists: Long,
-    val pID: Long,
+    val thumbnail: String,
+    val artists: String,
+    val pID: String,
 )
