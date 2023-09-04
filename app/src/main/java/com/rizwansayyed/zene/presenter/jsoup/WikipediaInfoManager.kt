@@ -9,7 +9,9 @@ import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 
 class WikipediaInfoManager(
-    private val name: String, private val artists: String, private val data: (String) -> Unit
+    private val name: String,
+    private val artists: String,
+    private val data: (data: String, url: String) -> Unit
 ) {
 
     private var wikiPath = ""
@@ -32,32 +34,35 @@ class WikipediaInfoManager(
         val document = Jsoup.parse(response!!)
 
         val firstPath = document.selectFirst("div.mw-search-result-heading")?.selectFirst("a")
-        if (firstPath?.attr("title")?.lowercase() == name.lowercase()) {
-            wikiPath = firstPath.attr("href") ?: ""
-            wikiPath.showToast()
-        }
+//        if (firstPath?.attr("title")?.lowercase() == name.lowercase()) {
+            wikiPath = firstPath?.attr("href") ?: ""
 
-        wikiInfo()
+            wikiInfo()
+//            return@launch
+//        }
+
+//        data("", "")
     }
 
     private fun wikiInfo() = CoroutineScope(Dispatchers.IO).launch {
         if (wikiPath.isEmpty()) {
+            data("", "")
             return@launch
         }
 
         val response = downloadHTMLOkhttp(infoWikipedia())
         val document = Jsoup.parse(response!!)
 
-        val stringBuilder = StringBuilder()
+        var stringBuilder = ""
 
-        document.selectFirst("div.mw-parser-output")?.select("p")?.forEachIndexed { index, element ->
-            if (index < 6) {
-                stringBuilder.append(element.html())
-                stringBuilder.append("\n\n")
-            }
+        document.selectFirst("div.mw-parser-output")?.select("p")?.forEach { element ->
+            stringBuilder += "${element.html()}\n\n"
         }
 
-        data(stringBuilder.toString())
+        for (i in 0 until 280) {
+            stringBuilder = stringBuilder.replace("[$i]", "")
+        }
+        data(stringBuilder, infoWikipedia())
 
     }
 }

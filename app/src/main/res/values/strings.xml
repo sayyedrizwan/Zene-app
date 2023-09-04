@@ -6,6 +6,9 @@
     <string name="global_trending_songs">Global trending songs</string>
     <string name="recommended_songs">Recommended Songs</string>
     <string name="recommended_artists">Recommended Artists</string>
+    <string name="no_info_found_for_song">No info available for this song right now!!!!</string>
+    <string name="full_article_on_wikipedia">Full Article on Wikipedia</string>
+    <string name="donate_on_wikipedia">Donate on Wikipedia</string>
     <string name="recently_played">Recently Played</string>
     <string name="top_songs">Top Songs</string>
     <string name="remove_song_playlist">Are you sure want to remove the songs for the playlist?</string>
@@ -17,6 +20,7 @@
     <string name="new_playlists">New Playlist</string>
     <string name="playlists_same_name">Playlist with same name already exists. Please try again</string>
     <string name="enter_a_valid_playlist_name">Enter a valid playlist name</string>
+    <string name="no_info_">Enter a valid playlist name</string>
     <string name="songs">Songs</string>
     <string name="artists">Artists</string>
     <string name="artist_insta_posts">Artist Instagram Post</string>

@@ -5,11 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.R
 
@@ -144,5 +146,24 @@ fun QuickSandLight(
         fontSize = size.nonScaledSp,
         modifier = modifier,
         textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun QuickSandLightUnderline(
+    v: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    size: Int = 20
+) {
+    Text(
+        text = v,
+        fontFamily = quicksandFamily,
+        fontWeight = FontWeight.Light,
+        color = color,
+        fontSize = size.nonScaledSp,
+        modifier = modifier,
+        textAlign = TextAlign.Center,
+        style = TextStyle(textDecoration = TextDecoration.Underline)
     )
 }

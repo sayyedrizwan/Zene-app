@@ -56,6 +56,9 @@ object Utils {
         const val IP_JSON = "json"
 
 
+        const val WIKIPEDIA_DONATE = "https://en.wikipedia.org/w/index.php?title=Donate&redirect=no"
+
+
         const val SAVE_FROM_NET = "https://en.savefrom.net"
         const val TEN_DOWNLOADER = "https://10downloader.com"
 
@@ -89,8 +92,10 @@ object Utils {
         fun searchLyricsURLFull(id: String): String {
             return "https://www.jiosaavn.com/api.php?__call=lyrics.getLyrics&lyrics_id=$id&ctx=web6dot0"
         }
+
+
         fun searchAZLyrics(name: String): String {
-            return "https://search.azlyrics.com/search.php?q=${name.replace(" ", "+").lowercase()}&x=b6b8e5e93ba780b10c54105773370515f74ae4f12be9c4dbda5f3d3edca3e28d"
+            return "https://search.azlyrics.com/search.php?q=${name.replace(" ", "+").lowercase()}&x=e08edb1b6419ee19ad804467df24cb1ce3745d47d93d0b5007960ced893c7971"
         }
 
         fun readNewsUrl(name: String): String {
