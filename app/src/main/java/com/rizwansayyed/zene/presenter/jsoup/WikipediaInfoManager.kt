@@ -30,18 +30,17 @@ class WikipediaInfoManager(
     }
 
     private fun searchApi() = CoroutineScope(Dispatchers.IO).launch {
-        val response = downloadHTMLOkhttp(searchWikipedia())
-        val document = Jsoup.parse(response!!)
+        try {
+            val response = downloadHTMLOkhttp(searchWikipedia())
+            val document = Jsoup.parse(response!!)
 
-        val firstPath = document.selectFirst("div.mw-search-result-heading")?.selectFirst("a")
-//        if (firstPath?.attr("title")?.lowercase() == name.lowercase()) {
+            val firstPath = document.selectFirst("div.mw-search-result-heading")?.selectFirst("a")
             wikiPath = firstPath?.attr("href") ?: ""
 
             wikiInfo()
-//            return@launch
-//        }
-
-//        data("", "")
+        } catch (e: Exception) {
+            data("", "")
+        }
     }
 
     private fun wikiInfo() = CoroutineScope(Dispatchers.IO).launch {
@@ -50,19 +49,24 @@ class WikipediaInfoManager(
             return@launch
         }
 
-        val response = downloadHTMLOkhttp(infoWikipedia())
-        val document = Jsoup.parse(response!!)
+        try {
 
-        var stringBuilder = ""
+            val response = downloadHTMLOkhttp(infoWikipedia())
+            val document = Jsoup.parse(response!!)
 
-        document.selectFirst("div.mw-parser-output")?.select("p")?.forEach { element ->
-            stringBuilder += "${element.html()}\n\n"
+            var stringBuilder = ""
+
+            document.selectFirst("div.mw-parser-output")?.select("p")?.forEach { element ->
+                stringBuilder += "${element.html()}\n\n"
+            }
+
+            for (i in 0 until 280) {
+                stringBuilder = stringBuilder.replace("[$i]", "")
+            }
+            data(stringBuilder, infoWikipedia())
+        } catch (e: Exception) {
+            data("", "")
         }
-
-        for (i in 0 until 280) {
-            stringBuilder = stringBuilder.replace("[$i]", "")
-        }
-        data(stringBuilder, infoWikipedia())
 
     }
 }

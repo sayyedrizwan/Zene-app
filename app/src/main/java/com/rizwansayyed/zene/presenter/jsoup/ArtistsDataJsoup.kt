@@ -8,8 +8,6 @@ import com.rizwansayyed.zene.presenter.jsoup.model.NewsResponse
 import com.rizwansayyed.zene.ui.artists.model.ArtistsAlbumsData
 import com.rizwansayyed.zene.utils.Utils.URL.readNewsUrl
 import com.rizwansayyed.zene.utils.Utils.URL.searchArtistsURL
-import com.rizwansayyed.zene.utils.Utils.URL.searchViaBing
-import com.rizwansayyed.zene.utils.Utils.URL.searchViaBingInstagram
 import com.rizwansayyed.zene.utils.downloadHTMLOkhttp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -235,42 +233,6 @@ class ArtistsDataJsoup @Inject constructor(@ApplicationContext private val conte
         }
 
         emit(lists)
-    }
-
-    suspend fun instagramAccounts(name: String) = flow {
-        val response = downloadHTMLOkhttp(searchViaBingInstagram(name))
-        val document = Jsoup.parse(response!!)
-
-        var instagram = ""
-
-        document.select("ol#b_results").select("li.b_algo").forEach {
-            val url = it.selectFirst("a.tilk")?.attr("href")
-            if (url?.contains("https://www.instagram.com/") == true && instagram.isEmpty()) {
-                instagram = url
-            }
-        }
-
-
-        emit(instagram)
-    }
-
-    suspend fun instagramTwitterAccounts(name: String) = flow {
-        val response = downloadHTMLOkhttp(searchViaBing(name))
-        val document = Jsoup.parse(response!!)
-
-        var instagram = ""
-        var twitter = ""
-
-        document.select("ol#b_results").select("li.b_algo").forEach {
-            val url = it.selectFirst("a.tilk")?.attr("href")
-            if (url?.contains("https://www.instagram.com/") == true && instagram.isEmpty()) {
-                instagram = url
-            }
-            if (url?.contains("https://www.twitter.com/") == true && twitter.isEmpty()) {
-                twitter = url
-            }
-        }
-        emit(Pair(instagram, twitter))
     }
 
     private fun firstUrls(url: String): String? {

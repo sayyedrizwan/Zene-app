@@ -87,34 +87,29 @@ object Utils {
         }
 
         fun searchLyricsURL(name: String): String {
-            return "https://www.jiosaavn.com/api.php?q=${name.replace(" ", "+").lowercase()}&_format=json&__call=search.getResults"
+            return "https://www.jiosaavn.com/api.php?q=${
+                name.replace(" ", "+").lowercase()
+            }&_format=json&__call=search.getResults"
         }
+
         fun searchLyricsURLFull(id: String): String {
             return "https://www.jiosaavn.com/api.php?__call=lyrics.getLyrics&lyrics_id=$id&ctx=web6dot0"
         }
 
 
         fun searchAZLyrics(name: String): String {
-            return "https://search.azlyrics.com/search.php?q=${name.replace(" ", "+").lowercase()}&x=e08edb1b6419ee19ad804467df24cb1ce3745d47d93d0b5007960ced893c7971"
+            return "https://search.azlyrics.com/search.php?q=${
+                name.replace(" ", "+").lowercase()
+            }&x=e08edb1b6419ee19ad804467df24cb1ce3745d47d93d0b5007960ced893c7971"
         }
 
         fun readNewsUrl(name: String): String {
             return "https://news.google.com/search?q=${name.replace(" ", "+")}"
         }
 
-        fun searchViaBing(q: String): String {
-            return "https://www.bing.com/search?q=${q.lowercase().trim().replace(" ", "+")}" +
-                    "+twitter"
-        }
-
         fun searchViaBingInstagram(q: String): String {
             return "https://www.bing.com/search?q=${q.lowercase().trim().replace(" ", "+")}" +
                     "+instagram"
-        }
-
-        fun searchViaBingHeader(q: String): String {
-            return "https://www.bing.com/search?q=top+50+songs+" +
-                    q.lowercase().trim().replace(" ", "+") + "+spotify.com"
         }
     }
 

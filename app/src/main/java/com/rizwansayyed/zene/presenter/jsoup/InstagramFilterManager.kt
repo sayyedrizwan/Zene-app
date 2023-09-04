@@ -74,26 +74,34 @@ class InstagramFilterManager(private val name: String) {
     }
 
     private fun downloadData() {
-        val instagramURL = userUrl.substringAfter("instagram.com").replace("/", "")
-        val instagramPost =
-            downloadHeaderOkhttp(searchInstagramAPI(instagramURL), Pair("x-ig-app-id", appID))
-        postData = try {
-            moshi.adapter(InstagramPostsResponse::class.java).fromJson(instagramPost!!)
-        } catch (e: Exception) {
-            null
-        }
+        try {
+            val instagramURL = userUrl.substringAfter("instagram.com").replace("/", "")
+            val instagramPost =
+                downloadHeaderOkhttp(searchInstagramAPI(instagramURL), Pair("x-ig-app-id", appID))
+            postData = try {
+                moshi.adapter(InstagramPostsResponse::class.java).fromJson(instagramPost!!)
+            } catch (e: Exception) {
+                null
+            }
 
+        } catch (e: Exception) {
+            e.message
+        }
     }
 
     private fun getUsername() {
-        val response = downloadHTMLOkhttp(searchViaBingInstagram(name))
-        val document = Jsoup.parse(response!!)
+        try {
+            val response = downloadHTMLOkhttp(searchViaBingInstagram(name))
+            val document = Jsoup.parse(response!!)
 
-        document.select("ol#b_results").select("li.b_algo").forEach {
-            val url = it.selectFirst("a.tilk")?.attr("href")
-            if (url?.contains("https://www.instagram.com/") == true && userUrl.isEmpty()) {
-                userUrl = url
+            document.select("ol#b_results").select("li.b_algo").forEach {
+                val url = it.selectFirst("a.tilk")?.attr("href")
+                if (url?.contains("https://www.instagram.com/") == true && userUrl.isEmpty()) {
+                    userUrl = url
+                }
             }
+        } catch (e: Exception) {
+            e.message
         }
 
     }
