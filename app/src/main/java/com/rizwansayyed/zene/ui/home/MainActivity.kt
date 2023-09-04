@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
-import com.rizwansayyed.zene.presenter.jsoup.WikipediaInfoManager
 import com.rizwansayyed.zene.service.ads.OpenAdManager
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
@@ -25,6 +24,7 @@ import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus.*
 import com.rizwansayyed.zene.ui.home.homeui.BetaTestDialog
 import com.rizwansayyed.zene.ui.home.homeui.HomeNavBar
 import com.rizwansayyed.zene.ui.home.homeui.HomepageView
+import com.rizwansayyed.zene.ui.home.homeui.PlaylistDetailsView
 import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.search.SearchMusicArtistView
 import com.rizwansayyed.zene.ui.settings.SettingsView
@@ -71,25 +71,20 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                     AnimatedContent(targetState = currentScreen, label = "") {
                         when (it) {
                             MAIN -> HomepageView(songsViewModel, homeNavViewModel, artistsViewModel)
-                            SELECT_ARTISTS -> ArtistsInfo(
-                                artistsViewModel,
-                                homeNavViewModel,
-                                songsViewModel
-                            )
+                            SELECT_ARTISTS ->
+                                ArtistsInfo(artistsViewModel, homeNavViewModel, songsViewModel)
 
                             SETTINGS -> SettingsView(songsViewModel)
                             SEARCH -> SearchMusicArtistView(
-                                songsViewModel,
-                                homeNavViewModel,
-                                artistsViewModel
+                                songsViewModel, homeNavViewModel, artistsViewModel
                             )
+
+                            PLAYLIST -> PlaylistDetailsView(songsViewModel)
                         }
                     }
 
                     MusicPlayerView(
-                        Modifier.align(Alignment.BottomCenter),
-                        homeNavViewModel,
-                        songsViewModel
+                        Modifier.align(Alignment.BottomCenter), homeNavViewModel, songsViewModel
                     ) {
                         homeNavViewModel.homeNavigationView(SELECT_ARTISTS)
                         artistsViewModel.searchArtists(it.trim().lowercase())

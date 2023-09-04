@@ -266,7 +266,7 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-    var allOfflineSongs by mutableStateOf<Flow<List<OfflineSongsEntity>>?>(null)
+    var allOfflineSongs by mutableStateOf<Flow<List<OfflineSongsEntity>>>(flowOf(emptyList()))
         private set
 
 
@@ -534,6 +534,20 @@ class SongsViewModel @Inject constructor(
     private fun collectionsLists() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.allPlaylist().catch { }.collectLatest {
             playlists = it
+        }
+    }
+
+    var playlistsSongs by mutableStateOf<List<PlaylistSongsEntity>>(emptyList())
+        private set
+
+    var playlistsData by mutableStateOf<PlaylistEntity?>(null)
+        private set
+
+
+    fun playlistSongs(playlist: PlaylistEntity) = viewModelScope.launch(Dispatchers.IO) {
+        playlistsData = playlist
+        roomDBImpl.playlistSongs(playlist.id ?: 0).catch { }.collectLatest {
+            playlistsSongs = it
         }
     }
 

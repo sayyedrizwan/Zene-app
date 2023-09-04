@@ -66,7 +66,8 @@ fun HomepageView(
     val allSongsForYouLists by dataStoreManager.songsAllForYouAllData.collectAsState(initial = emptyArray())
 
     val recentPlayedSongs = songsViewModel.recentPlayedSongs?.collectAsState(initial = emptyList())
-    val offlineSongs = songsViewModel.allOfflineSongs?.collectAsState(initial = emptyList())
+    val offlineSongs = songsViewModel.allOfflineSongs.collectAsState(initial = emptyList())
+    val playlists = songsViewModel.playlists.collectAsState(initial = emptyList())
 
     LazyVerticalGrid(columns = GridCells.Fixed(2), Modifier.fillMaxSize(), state = listState) {
 
@@ -87,7 +88,7 @@ fun HomepageView(
             item(span = { GridItemSpan(2) }) {
                 Column {
                     TopHeaderOf(stringResource(id = R.string.recently_played))
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
             item(span = { GridItemSpan(2) }) {
@@ -96,7 +97,6 @@ fun HomepageView(
                         RecentPlayedItemView(recent) { thumbnail, name, artists ->
                             nav.showMusicPlayer()
                             songsViewModel.songsPlayingDetails(thumbnail, name, artists)
-
                         }
                     }
 
@@ -109,11 +109,11 @@ fun HomepageView(
             }
         }
 
-        if (offlineSongs?.value?.isNotEmpty() == true) {
+        if (offlineSongs.value.isNotEmpty()) {
             item(span = { GridItemSpan(2) }) {
                 Column {
                     TopHeaderOf(stringResource(id = R.string.offline_songs))
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
             item(span = { GridItemSpan(2) }) {
@@ -125,10 +125,29 @@ fun HomepageView(
             }
         }
 
+        if (playlists.value.isNotEmpty()) {
+            item(span = { GridItemSpan(2) }) {
+                Column {
+                    TopHeaderOf(stringResource(id = R.string.playlists))
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
+            item(span = { GridItemSpan(2) }) {
+                LazyRow {
+                    items(playlists.value) { playlist ->
+                        PlaylistView(playlist) {
+                            nav.homeNavigationView(HomeNavigationStatus.PLAYLIST)
+                            songsViewModel.playlistSongs(it)
+                        }
+                    }
+                }
+            }
+        }
+
         item(span = { GridItemSpan(2) }) {
             Column {
                 TopHeaderOf(stringResource(id = R.string.top_artist_of_week))
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 
@@ -146,7 +165,7 @@ fun HomepageView(
         item(span = { GridItemSpan(2) }) {
             Column {
                 TopHeaderOf(stringResource(id = R.string.global_trending_songs))
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 
@@ -164,7 +183,7 @@ fun HomepageView(
         item(span = { GridItemSpan(2) }) {
             Column {
                 TopHeaderOf("${stringResource(id = R.string.trending_songs_in)} ${ip?.country}")
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 
@@ -186,7 +205,7 @@ fun HomepageView(
         item(span = { GridItemSpan(2) }) {
             Column {
                 TopHeaderOf("${stringResource(id = R.string.trending_this_week_in)} ${ip?.country}")
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 
@@ -207,7 +226,7 @@ fun HomepageView(
             item(span = { GridItemSpan(2) }) {
                 Column {
                     TopHeaderOf(stringResource(id = R.string.recommended_songs))
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
 
@@ -229,7 +248,7 @@ fun HomepageView(
             item(span = { GridItemSpan(2) }) {
                 Column {
                     TopHeaderOf(stringResource(id = R.string.recommended_artists))
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
 
@@ -249,7 +268,7 @@ fun HomepageView(
         item(span = { GridItemSpan(2) }) {
             Column {
                 TopHeaderOf(stringResource(id = R.string.trending_k_pop_music))
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 
@@ -269,7 +288,7 @@ fun HomepageView(
             item(span = { GridItemSpan(2) }) {
                 Column {
                     TopHeaderOf(stringResource(id = R.string.related_songs))
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
 
@@ -292,7 +311,7 @@ fun HomepageView(
             item(span = { GridItemSpan(2) }) {
                 Column {
                     TopHeaderOf(stringResource(id = R.string.suggested_artists))
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
 
@@ -319,7 +338,7 @@ fun HomepageView(
                             TopHeaderOf(
                                 stringResource(id = R.string.for__fan).replace("----", title.trim())
                             )
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
@@ -345,7 +364,7 @@ fun HomepageView(
         item(span = { GridItemSpan(2) }) {
             Column {
                 TopHeaderOf(stringResource(id = R.string.zene_suggested_songs_for_you))
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 

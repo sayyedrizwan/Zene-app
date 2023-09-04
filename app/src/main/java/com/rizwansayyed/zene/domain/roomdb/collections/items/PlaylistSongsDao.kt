@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface PlaylistSongsDao {
 
     @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE playlistId = :playlistID ORDER BY timestamp DESC")
-    fun songs(playlistID: Int): Flow<List<PlaylistSongsEntity>>
+    suspend fun songs(playlistID: Int): List<PlaylistSongsEntity>
 
     @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE playlistId = :playlistID ORDER BY timestamp DESC LIMIT 4")
    suspend fun latest4playlists(playlistID: Int): List<PlaylistSongsEntity>
