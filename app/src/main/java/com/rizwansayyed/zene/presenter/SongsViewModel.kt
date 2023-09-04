@@ -509,17 +509,6 @@ class SongsViewModel @Inject constructor(
     }
 
 
-    var isSongInPlaylist by mutableIntStateOf(0)
-        private set
-
-
-    fun isSongInPlaylist(pID: String) = viewModelScope.launch(Dispatchers.IO) {
-        isSongInPlaylist = 0
-        roomDBImpl.isSongsAlreadyAvailable(pID).catch { }.collectLatest {
-            isSongInPlaylist = it
-        }
-    }
-
     fun removeSongPlaylist(pID: String) = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.deleteSongs(pID).catch { }.collectLatest {
             isSongInPlaylist(pID)
@@ -536,6 +525,19 @@ class SongsViewModel @Inject constructor(
             playlists = it
         }
     }
+
+
+    var isSongInPlaylist by mutableIntStateOf(0)
+        private set
+
+
+    fun isSongInPlaylist(pID: String) = viewModelScope.launch(Dispatchers.IO) {
+        isSongInPlaylist = 0
+        roomDBImpl.isSongsAlreadyAvailable(pID).catch { }.collectLatest {
+            isSongInPlaylist = it
+        }
+    }
+
 
     var playlistsSongs by mutableStateOf<List<PlaylistSongsEntity>>(emptyList())
         private set
@@ -594,11 +596,13 @@ class SongsViewModel @Inject constructor(
                         it.image2 = playlists[1].thumbnail
                         it.image3 = playlists[2].thumbnail
                         it.image4 = playlists[3].thumbnail
+                        it.items = it.items + 1
                         roomDBImpl.playlists(it).collect()
                     }
                 } else if (playlists.isNotEmpty()) {
                     roomDBImpl.playlistsWithId(playlist.id).first().forEach {
                         it.image1 = music.thumbnail
+                        it.items = it.items + 1
                         roomDBImpl.playlists(it).collect()
                     }
                 }

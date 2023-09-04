@@ -309,10 +309,38 @@ class RoomDBImpl @Inject constructor(
     }
 
     override suspend fun deleteSongs(pid: String) = flow {
-        emit(playlistItem.deleteSongs(pid))
+        playlistItem.deleteSongs(pid)
+        kotlinx.coroutines.delay(800L)
+        val playlistSong = playlistItem.songData(pid)
+        if (playlistSong.isEmpty()) {
+            val pList = playlist.playlistsWithId(playlistSong.first().playlistId)
+            if (pList.isNotEmpty()) {
+                val p = pList.first()
+                val songItems = playlistItem.songs(p.id ?: 0)
+                if (songItems.isEmpty()) {
+                    p.image1 = ""
+                    p.image2 = ""
+                    p.image3 = ""
+                    p.image4 = ""
+                } else if (songItems.size > 4){
+                    p.image1 = songItems.first().thumbnail
+                    p.image2 = songItems[1].thumbnail
+                    p.image3 = songItems[2].thumbnail
+                    p.image4 = songItems[3].thumbnail
+                } else {
+                    p.items = songItems.size
+                    p.image1 = songItems.first().thumbnail
+                }
+                p.items = songItems.size
+
+                playlist.insert(p)
+            }
+        }
+
+        emit(Unit)
     }
 
-    override suspend fun playlistSongs(pID:Int) = flow {
+    override suspend fun playlistSongs(pID: Int) = flow {
         emit(playlistItem.songs(pID))
     }
 

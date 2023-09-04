@@ -17,5 +17,5 @@ data class PlaylistEntity(
     var image2: String = "",
     var image3: String = "",
     var image4: String = "",
-    val items: Int = 0,
+    var items: Int = 0,
 )
