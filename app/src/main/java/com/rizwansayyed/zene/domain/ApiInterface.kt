@@ -1,12 +1,11 @@
 package com.rizwansayyed.zene.domain
 
-import com.rizwansayyed.zene.domain.model.SongDetailsResponse
+import com.rizwansayyed.zene.domain.model.VideoDetailsResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
 import com.rizwansayyed.zene.presenter.model.TopArtistsResponseApi
 import com.rizwansayyed.zene.utils.Utils.URL.ARTISTS_TWITTER_TWEETS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URL.SEARCH_SONGS
-import com.rizwansayyed.zene.utils.Utils.URL.SONG_PLAY_DETAILS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS
 import com.rizwansayyed.zene.utils.Utils.URL.SONG_SUGGESTIONS_FOR_YOU
 import com.rizwansayyed.zene.utils.Utils.URL.TOP_ARTIST_THIS_WEEK
@@ -70,14 +69,10 @@ interface ApiInterface {
         @Field("ip") ip: String, @Field("q") id: String,
     ): TopArtistsResponseApi
 
-
-    @FormUrlEncoded
-    @POST(SONG_PLAY_DETAILS)
-    suspend fun songPlayDetails(@Field("ip") ip: String, @Field("q") q: String): SongDetailsResponse
-
     @FormUrlEncoded
     @POST(VIDEO_PLAY_DETAILS)
     suspend fun videoPlayDetails(
         @Field("ip") ip: String, @Field("q") q: String
-    ): SongDetailsResponse
+    ): VideoDetailsResponse
+
 }

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.domain.ApiInterfaceImpl
-import com.rizwansayyed.zene.domain.model.toLocal
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.domain.roomdb.collections.items.PlaylistSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.collections.playlist.PlaylistEntity
@@ -17,6 +16,7 @@ import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineStatusTypes
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.roomdb.recentplayed.toRecentPlay
 import com.rizwansayyed.zene.presenter.jsoup.SongsDataJsoup
+import com.rizwansayyed.zene.presenter.jsoup.model.toLocal
 import com.rizwansayyed.zene.presenter.model.ApiResponse
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
@@ -43,6 +43,7 @@ import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileJson
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
+import com.rizwansayyed.zene.utils.getYoutubePlayUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -396,8 +397,9 @@ class SongsViewModel @Inject constructor(
                     val s = songs.first()
 
                     updateStatus(s.thumbnail, s.name, s.artists, s.songID, MusicPlayerState.LOADING)
-
-                    val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
+                    s.songID.showToast()
+//                    val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
+                    val url = getYoutubePlayUrl(s.songID)
 
                     roomDBImpl.insert(toRecentPlay(s)).collect()
 
@@ -411,22 +413,19 @@ class SongsViewModel @Inject constructor(
 
             apiImpl.songPlayDetails(searchName).catch {}.collectLatest {
                 if (thumbnail.isNotEmpty()) {
-                    it.thumbnail = thumbnail
+                    it?.thumbnail = thumbnail
                 }
-                roomDBImpl.removeSongDetails(it.songID ?: "").collect()
+                if (it?.songID == null) return@collectLatest
+                roomDBImpl.removeSongDetails(it.songID).collect()
                 it.toLocal(searchName)?.let { d -> roomDBImpl.insert(d).collect() }
 
                 roomDBImpl.insert(toRecentPlay(it)).collect()
 
                 updateStatus(
-                    it.thumbnail,
-                    it.songName ?: "",
-                    artists,
-                    it.songID ?: "",
-                    MusicPlayerState.LOADING
+                    it.thumbnail, it.songName, artists, it.songID, MusicPlayerState.LOADING
                 )
 
-                val url = mediaPlayerObjects.mediaAudioPaths(it.songID ?: "")
+                val url = getYoutubePlayUrl(it.songID)
 
                 val mediaDetails = mediaPlayerObjects.mediaItems(
                     it.songID, url, it.songName, artists, it.thumbnail
@@ -595,9 +594,9 @@ class SongsViewModel @Inject constructor(
 
             roomDBImpl.playlistItem(p).catch { }.collectLatest {
                 val playlists = roomDBImpl.latest4playlistsItem(playlist.id).first()
-                val p = roomDBImpl.playlistsWithId(playlist.id).first()
+                val pl = roomDBImpl.playlistsWithId(playlist.id).first()
                 if (playlists.size > 4) {
-                    p.forEach {
+                    pl.forEach {
                         it.image1 = music.thumbnail
                         it.image2 = playlists[1].thumbnail
                         it.image3 = playlists[2].thumbnail
@@ -606,7 +605,7 @@ class SongsViewModel @Inject constructor(
                         roomDBImpl.playlists(it).collect()
                     }
                 } else if (playlists.isNotEmpty()) {
-                    p.forEach {
+                    pl.forEach {
                         it.image1 = music.thumbnail
                         it.items = it.items + 1
                         roomDBImpl.playlists(it).collect()
@@ -615,7 +614,7 @@ class SongsViewModel @Inject constructor(
 
                 isSongInPlaylist(music.pId!!)
 
-                p.forEach {
+                pl.forEach {
                     File(cacheLyricsFiles, "playlist_${it.id}.json").deleteRecursively()
                     suggestSongsOnPlaylists(it.id!!)
                 }

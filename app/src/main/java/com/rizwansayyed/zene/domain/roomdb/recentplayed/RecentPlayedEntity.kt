@@ -2,9 +2,9 @@ package com.rizwansayyed.zene.domain.roomdb.recentplayed
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.rizwansayyed.zene.domain.model.SongDetailsResponse
 import com.rizwansayyed.zene.domain.roomdb.offlinesongs.OfflineSongsEntity
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
+import com.rizwansayyed.zene.presenter.jsoup.model.YTSearchData
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 
@@ -32,22 +32,14 @@ fun toRecentPlay(s: OfflineSongsEntity): RecentPlayedEntity {
     )
 }
 
-fun toRecentPlay(s: SongDetailsEntity): RecentPlayedEntity {
+fun toRecentPlay(s: YTSearchData): RecentPlayedEntity {
     return RecentPlayedEntity(
-        null, s.name, s.artists, 1, s.songID, s.thumbnail, System.currentTimeMillis(), 0, 0
+        null, s.songName, s.artistName, 1, s.songID, s.thumbnail, System.currentTimeMillis(), 0, 0
     )
 }
 
-fun toRecentPlay(s: SongDetailsResponse): RecentPlayedEntity {
+fun toRecentPlay(s: SongDetailsEntity): RecentPlayedEntity {
     return RecentPlayedEntity(
-        null,
-        s.songName ?: "",
-        s.artistName ?: "",
-        1,
-        s.songID ?: "",
-        s.thumbnail ?: "",
-        System.currentTimeMillis(),
-        0,
-        0
+        null, s.name, s.artists, 1, s.songID, s.thumbnail, System.currentTimeMillis(), 0, 0
     )
 }

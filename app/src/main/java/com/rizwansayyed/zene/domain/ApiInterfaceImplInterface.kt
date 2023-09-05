@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.domain
 
-import com.rizwansayyed.zene.domain.model.SongDetailsResponse
+
 import com.rizwansayyed.zene.domain.model.UrlResponse
+import com.rizwansayyed.zene.domain.model.VideoDetailsResponse
+import com.rizwansayyed.zene.presenter.jsoup.model.YTSearchData
 import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsInstagramPostResponse
 import com.rizwansayyed.zene.presenter.model.ArtistsTwitterInfoResponse
@@ -22,13 +24,13 @@ interface ApiInterfaceImplInterface {
 
     suspend fun trendingSongsTop50KPop(): Flow<TopArtistsResponseApi>
 
-    suspend fun songPlayDetails(name: String): Flow<SongDetailsResponse>
-    suspend fun videoPlayDetails(name: String): Flow<SongDetailsResponse>
-
     suspend fun artistsData(name: String): Flow<UrlResponse>
+
     suspend fun searchSongs(q: String): Flow<TopArtistsResponseApi>
 
     suspend fun songPlayDetails(list: List<TopArtistsSongs>): Flow<ArrayList<MusicsHeader>>
     suspend fun searchArtists(q: String): Flow<TopArtistsResponseApi>
 
+    suspend fun songPlayDetails(name: String): Flow<YTSearchData?>
+    suspend fun videoPlayDetails(name: String): Flow<VideoDetailsResponse>
 }

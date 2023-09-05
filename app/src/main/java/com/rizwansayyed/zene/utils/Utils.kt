@@ -45,7 +45,6 @@ object Utils {
         const val SONG_SUGGESTIONS_FOR_YOU = "songSuggestionsForYou"
         const val SEARCH_SONGS = "searchSongs"
         const val SEARCH_ARTISTS = "searchArtists"
-        const val SONG_PLAY_DETAILS = "songPlayDetails"
         const val VIDEO_PLAY_DETAILS = "videoPlayDetails"
         const val TRENDING_SONGS_TOP_K_POP = "trendingSongsTopKPop"
         const val TRENDING_SONGS_TOP_50_K_POP = "trendingSongsTop50KPop"
@@ -65,6 +64,8 @@ object Utils {
         fun ytBrowse(key: String): String {
             return "https://music.youtube.com/youtubei/v1/browse?key=$key&prettyPrint=false"
         }
+
+        const val ytSearch = "https://music.youtube.com/youtubei/v1/search?key=AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30&prettyPrint=false"
 
         fun videoPaths(id: String): String {
             return "$SAVE_FROM_NET/#url=https://youtube.com/watch?v=$id"

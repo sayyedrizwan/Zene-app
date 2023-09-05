@@ -92,9 +92,9 @@ fun TopHeaderPager(header: Array<MusicsHeader>, search: (String, String, String)
 
             Card(onClick = {
                 updateStatus(
-                    header[page].thumbnail, songName, songName, "", MusicPlayerState.LOADING
+                    header[page].thumbnail, songName, header[page].artists ?: "", "", MusicPlayerState.LOADING
                 )
-                search(header[page].thumbnail ?: "", songName, songName)
+                search(header[page].thumbnail ?: "", songName, header[page].artists ?: "")
             },
                 Modifier
                     .padding(15.dp)

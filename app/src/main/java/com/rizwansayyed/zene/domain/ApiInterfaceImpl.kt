@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.utils.Utils.USER_AGENT
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.downloadHeaderOkhttp
+import com.rizwansayyed.zene.utils.getYtSearch
 import com.rizwansayyed.zene.utils.postOkHttps
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -122,7 +123,7 @@ class ApiInterfaceImpl @Inject constructor(
     override suspend fun songPlayDetails(name: String) = flow {
         val ip = ipApiInterface.ip()
         dataStoreManager.ipData = flowOf(ip)
-        emit(apiInterface.songPlayDetails(ip.query ?: "", name))
+        emit(getYtSearch(ip.query ?: "", name))
     }
 
     override suspend fun songPlayDetails(list: List<TopArtistsSongs>) = flow {
@@ -132,8 +133,8 @@ class ApiInterfaceImpl @Inject constructor(
         dataStoreManager.ipData = flowOf(ip)
 
         for (s in list) {
-            val response = apiInterface.songPlayDetails(ip.query ?: "", "${s.name} - ${s.artist}")
-            lists.add(MusicsHeader(response.songName, response.thumbnail, response.artistName))
+            val response = getYtSearch(ip.query ?: "", "${s.name} - ${s.artist}")
+            lists.add(MusicsHeader(response?.songName, response?.thumbnail, response?.artistName))
         }
         emit(lists)
     }

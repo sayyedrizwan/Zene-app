@@ -96,12 +96,12 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel(), searchArtists: 
     QuickSandBold(
         musicPlayer?.songName ?: "",
         Modifier
-            .padding(10.dp)
+            .padding(top = 15.dp)
             .fillMaxWidth(), size = 25
     )
     FlowRow(
         Modifier
-            .padding(6.dp)
+            .padding(vertical = 2.dp, horizontal = 6.dp)
             .fillMaxWidth(), Arrangement.Center, Arrangement.Center
     ) {
         artistsArray.forEach {

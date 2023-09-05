@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.service.ads.OpenAdManager
+import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.artists.ArtistsInfo
 import com.rizwansayyed.zene.ui.artists.artistviewmodel.ArtistsViewModel
@@ -30,7 +32,16 @@ import com.rizwansayyed.zene.ui.search.SearchMusicArtistView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
+import com.rizwansayyed.zene.utils.Utils.showToast
+import com.rizwansayyed.zene.utils.getYoutubePlayUrl
+import com.rizwansayyed.zene.utils.getYtSearch
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 // wider team
@@ -46,10 +57,10 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     private val songsViewModel: SongsViewModel by viewModels()
     private val artistsViewModel: ArtistsViewModel by viewModels()
 
-    private val openAdManager by lazy {
-        OpenAdManager(this)
-    }
+    private val openAdManager by lazy { OpenAdManager(this) }
 
+    @Inject
+    lateinit var  mediaPlayerObjects: MediaPlayerObjects
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +122,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         }
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun onStart() {
         super.onStart()
         startDownloadSongsWorkManager()
@@ -121,5 +133,12 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     override fun internetConnected() {
         startDownloadSongsWorkManager()
         songsViewModel.run()
+    }
+
+    private fun measureExecutionTime(function: () -> Unit): Long {
+        val startTime = System.currentTimeMillis()
+        function()
+        val endTime = System.currentTimeMillis()
+        return endTime - startTime
     }
 }
