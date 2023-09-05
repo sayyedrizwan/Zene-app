@@ -16,6 +16,9 @@ interface PlaylistSongsDao {
     @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE playlistId = :playlistID ORDER BY timestamp DESC")
     suspend fun songs(playlistID: Int): List<PlaylistSongsEntity>
 
+    @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE playlistId = :playlistID ORDER BY timestamp DESC LIMIT 10")
+    suspend fun songsLatest10Songs(playlistID: Int): List<PlaylistSongsEntity>
+
     @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE playlistId = :playlistID ORDER BY timestamp DESC LIMIT 4")
    suspend fun latest4playlists(playlistID: Int): List<PlaylistSongsEntity>
 

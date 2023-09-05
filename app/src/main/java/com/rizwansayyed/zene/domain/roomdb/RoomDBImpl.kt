@@ -17,9 +17,12 @@ import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsDao
 import com.rizwansayyed.zene.domain.roomdb.songsdetails.SongDetailsEntity
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongsWithData
 import com.rizwansayyed.zene.presenter.jsoup.ArtistsDataJsoup
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.PATH.cacheLyricsFiles
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import java.io.File
 import javax.inject.Inject
 
 class RoomDBImpl @Inject constructor(
@@ -316,13 +319,14 @@ class RoomDBImpl @Inject constructor(
             val pList = playlist.playlistsWithId(playlistSong.first().playlistId)
             if (pList.isNotEmpty()) {
                 val p = pList.first()
+                File(cacheLyricsFiles, "playlist_${p.id}.json").deleteRecursively()
                 val songItems = playlistItem.songs(p.id ?: 0)
                 if (songItems.isEmpty()) {
                     p.image1 = ""
                     p.image2 = ""
                     p.image3 = ""
                     p.image4 = ""
-                } else if (songItems.size > 4){
+                } else if (songItems.size > 4) {
                     p.image1 = songItems.first().thumbnail
                     p.image2 = songItems[1].thumbnail
                     p.image3 = songItems[2].thumbnail
@@ -342,6 +346,30 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun playlistSongs(pID: Int) = flow {
         emit(playlistItem.songs(pID))
+    }
+
+    override suspend fun playlistSongsLatest10Songs(pID: Int) = flow {
+        val topSongs = playlistItem.songsLatest10Songs(pID)
+
+        val list = ArrayList<TopArtistsSongs>(400)
+
+        if (topSongs.isEmpty()) {
+            emit(list)
+            return@flow
+        }
+        val ip = ipInterface.ip()
+        dataStoreManager.ipData = flowOf(ip)
+
+        topSongs.forEach {
+            apiInterface.songSuggestionsForYou(ip.query ?: "", it.pID).forEach { songs ->
+                if (!list.any { l -> l.name == songs.name }) {
+                    list.add(songs)
+                }
+            }
+        }
+        list.shuffle()
+        list.shuffle()
+        emit(list)
     }
 
 

@@ -278,6 +278,27 @@ object Utils {
         file.writeText(txt)
     }
 
+    fun saveCaptionsFileJson(name: String, txt: String) {
+        cacheLyricsFiles.mkdirs()
+        val file = File(cacheLyricsFiles, "$name.json")
+
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+        file.writeText(txt)
+    }
+
+    fun ifLyricsFileExistReturnJson(name: String): String {
+        cacheLyricsFiles.mkdirs()
+        val file = File(cacheLyricsFiles, "$name.json")
+
+        if (!file.exists()) {
+            return ""
+        }
+
+        return FileInputStream(file).bufferedReader().use { it.readText() }
+    }
+
     fun ifLyricsFileExistReturn(name: String): String {
         cacheLyricsFiles.mkdirs()
         val file = File(cacheLyricsFiles, "$name.txt")

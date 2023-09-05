@@ -34,8 +34,14 @@ import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.RemoteConfigReader
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.PATH.cacheLyricsFiles
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
+import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturnJson
+import com.rizwansayyed.zene.utils.Utils.moshi
+import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileJson
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
+import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -381,7 +387,6 @@ class SongsViewModel @Inject constructor(
 
             dataStoreManager.musicPlayerData = flowOf(toMusicPlayerData(thumbnail, name, artists))
 
-
             val searchName = ("${name.lowercase().replace("official video", "")} - " +
                     artists).lowercase()
 
@@ -590,8 +595,9 @@ class SongsViewModel @Inject constructor(
 
             roomDBImpl.playlistItem(p).catch { }.collectLatest {
                 val playlists = roomDBImpl.latest4playlistsItem(playlist.id).first()
+                val p = roomDBImpl.playlistsWithId(playlist.id).first()
                 if (playlists.size > 4) {
-                    roomDBImpl.playlistsWithId(playlist.id).first().forEach {
+                    p.forEach {
                         it.image1 = music.thumbnail
                         it.image2 = playlists[1].thumbnail
                         it.image3 = playlists[2].thumbnail
@@ -600,7 +606,7 @@ class SongsViewModel @Inject constructor(
                         roomDBImpl.playlists(it).collect()
                     }
                 } else if (playlists.isNotEmpty()) {
-                    roomDBImpl.playlistsWithId(playlist.id).first().forEach {
+                    p.forEach {
                         it.image1 = music.thumbnail
                         it.items = it.items + 1
                         roomDBImpl.playlists(it).collect()
@@ -608,6 +614,35 @@ class SongsViewModel @Inject constructor(
                 }
 
                 isSongInPlaylist(music.pId!!)
+
+                p.forEach {
+                    File(cacheLyricsFiles, "playlist_${it.id}.json").deleteRecursively()
+                    suggestSongsOnPlaylists(it.id!!)
+                }
             }
         }
+
+    var playlistsSuggestedSongs by mutableStateOf<List<TopArtistsSongs>>(emptyList())
+        private set
+
+
+    fun suggestSongsOnPlaylists(playlistsId: Int) = viewModelScope.launch(Dispatchers.IO) {
+        playlistsSuggestedSongs = emptyList()
+        if (ifLyricsFileExistReturnJson("playlist_$playlistsId").length > 12) {
+            try {
+                val json = moshi.adapter(Array<TopArtistsSongs>::class.java)
+                    .fromJson(ifLyricsFileExistReturnJson("playlist_$playlistsId"))
+                playlistsSuggestedSongs = json?.toList() ?: emptyList()
+                return@launch
+            } catch (e: Exception) {
+                e.message
+            }
+        }
+
+        roomDBImpl.playlistSongsLatest10Songs(playlistsId).catch { }.collectLatest {
+            val jsonS = moshi.adapter(Array<TopArtistsSongs>::class.java).toJson(it.toTypedArray())
+            saveCaptionsFileJson("playlist_$playlistsId", jsonS)
+            playlistsSuggestedSongs = it
+        }
+    }
 }

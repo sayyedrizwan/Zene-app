@@ -7,6 +7,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -17,8 +18,8 @@ android {
         applicationId = "com.rizwansayyed.zene"
         minSdk = 24
         targetSdk = 34
-        versionCode = 11
-        versionName = "1.0.000340"
+        versionCode = 12
+        versionName = "1.0.000342"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -131,6 +132,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
 
+
     implementation("com.google.android.gms:play-services-ads:$adMobVersion")
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
@@ -141,6 +143,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:$firebaseBom"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-config-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
     implementation("androidx.hilt:hilt-work:$productionVersion")

@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                                 songsViewModel, homeNavViewModel, artistsViewModel
                             )
 
-                            PLAYLIST -> PlaylistDetailsView(songsViewModel)
+                            PLAYLIST -> PlaylistDetailsView(songsViewModel, homeNavViewModel)
                         }
                     }
 
@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                         return@BackHandler
                     }
 
-                    if (currentScreen == SELECT_ARTISTS || currentScreen == SEARCH) {
+                    if (currentScreen == SELECT_ARTISTS || currentScreen == SEARCH || currentScreen == PLAYLIST) {
                         homeNavViewModel.homeNavigationView(MAIN)
                         return@BackHandler
                     }
