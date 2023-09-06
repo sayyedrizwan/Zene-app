@@ -77,7 +77,8 @@ fun getYtSearch(ip: String, q: String): YTSearchData? {
                     thumbnail =
                         it!!.musicResponsiveListItemRenderer!!.thumbnail?.musicThumbnailRenderer
                             ?.thumbnail?.thumbnails?.get(0)?.url?.replace("w120", "h544")
-                            ?.replace("w60", "h544") ?: ""
+                            ?.replace("w60", "h544")?.replace("h120", "h544")
+                            ?.replace("h60", "h544") ?: ""
 
                     it.musicResponsiveListItemRenderer!!.flexColumns!!.forEach { name ->
                         name?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { artists ->
