@@ -86,4 +86,6 @@
     <string name="spotify">Spotify</string>
     <string name="apple_music">Apple Music</string>
     <string name="youtube_music">Youtube Music</string>
+    <string name="version">Version</string>
+    <string name="privacy_policy">Privacy Policy</string>
 </resources>

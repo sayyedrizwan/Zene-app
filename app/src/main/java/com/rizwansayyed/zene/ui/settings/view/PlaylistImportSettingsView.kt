@@ -11,12 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.settings.ViewLocalSongs
 import com.rizwansayyed.zene.ui.settings.ViewLocalSongsImport
 import com.rizwansayyed.zene.ui.theme.BlackLight
+import com.rizwansayyed.zene.utils.QuickSandRegular
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
 import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.flow.flowOf
@@ -48,5 +50,4 @@ fun PlaylistImportSettings() {
         }
 
     }
-
 }

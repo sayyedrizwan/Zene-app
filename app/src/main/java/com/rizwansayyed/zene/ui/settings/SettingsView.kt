@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.ui.settings.view.MusicLockScreen
 import com.rizwansayyed.zene.ui.settings.view.OfflineOptionSettings
 import com.rizwansayyed.zene.ui.settings.view.PlaylistImportSettings
 import com.rizwansayyed.zene.ui.settings.view.SeekSettings
+import com.rizwansayyed.zene.ui.settings.view.SettingsExtraInfo
 import com.rizwansayyed.zene.ui.settings.view.SettingsPlayingSpeed
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
@@ -69,7 +70,11 @@ fun SettingsView(songsViewModel: SongsViewModel = hiltViewModel()) {
 
         PlaylistImportSettings()
 
-        Spacer(Modifier.height(150.dp))
+        Spacer(Modifier.height(20.dp))
+
+        SettingsExtraInfo()
+
+        Spacer(Modifier.height(180.dp))
     }
 }
 
