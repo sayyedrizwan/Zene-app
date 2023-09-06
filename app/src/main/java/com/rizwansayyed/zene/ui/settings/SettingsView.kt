@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.ui.home.homeui.TopHeaderOf
 import com.rizwansayyed.zene.ui.settings.view.MusicLockScreen
 import com.rizwansayyed.zene.ui.settings.view.OfflineOptionSettings
+import com.rizwansayyed.zene.ui.settings.view.PlaylistImportSettings
 import com.rizwansayyed.zene.ui.settings.view.SeekSettings
 import com.rizwansayyed.zene.ui.settings.view.SettingsPlayingSpeed
 import com.rizwansayyed.zene.utils.QuickSandBold
@@ -64,10 +65,13 @@ fun SettingsView(songsViewModel: SongsViewModel = hiltViewModel()) {
 
         MusicLockScreen()
 
+        Spacer(Modifier.height(20.dp))
+
+        PlaylistImportSettings()
+
         Spacer(Modifier.height(150.dp))
     }
 }
-
 
 
 @Composable
@@ -93,6 +97,37 @@ fun ViewLocalSongs(txt: String, doTick: Boolean, click: () -> Unit) {
             "",
             Modifier
                 .size(30.dp)
+                .animateContentSize(),
+            colorFilter = ColorFilter.tint(Color.White)
+        )
+    }
+}
+
+
+@Composable
+fun ViewLocalSongsImport(txt: String, click: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxSize()
+            .clickable {
+                click()
+            }, Arrangement.Start, Alignment.CenterVertically
+    ) {
+        QuickSandRegular(
+            txt,
+            size = 14,
+            modifier = Modifier
+                .padding(15.dp)
+                .weight(1f),
+            align = TextAlign.Start
+        )
+
+        Image(
+            painterResource(id = R.drawable.ic_arrow_right_round),
+            "",
+            Modifier
+                .size(30.dp)
+                .padding(4.dp)
                 .animateContentSize(),
             colorFilter = ColorFilter.tint(Color.White)
         )
