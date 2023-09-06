@@ -14,7 +14,11 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.do_music_player_loop
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.footer_albums_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.ip_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.last_open_ad_loaded
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.music_on_lock_screen
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.music_play_speed
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.music_player_data
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.offline_musics
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.seek_button
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.songs_all_for_you_all_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.songs_all_for_you_all_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.songs_suggestions_data
@@ -33,7 +37,6 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_global_songs_dat
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.top_global_songs_timestamp
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.trending_songs_top_k_pop_data
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.trending_songs_top_k_pop_timestamp
-import com.rizwansayyed.zene.presenter.model.AlbumsHeadersResponse
 import com.rizwansayyed.zene.presenter.model.IpJSONResponse
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicsAlbum
@@ -283,6 +286,42 @@ class DataStoreManager {
         }
         set(value) {
             SetDataStoreValue(do_music_player_loop, value)
+        }
+
+
+    var offlineMusics: Flow<Int>
+        get() = context.dataStore.data.map {
+            it[offline_musics] ?: DataStoreMusicEnum.ON_OFFLINE.v
+        }
+        set(value) {
+            SetDataStoreValue(offline_musics, value)
+        }
+
+
+    var seekButton: Flow<Int>
+        get() = context.dataStore.data.map {
+            it[seek_button] ?: SeekMusicButtonEnum.OFF.v
+        }
+        set(value) {
+            SetDataStoreValue(seek_button, value)
+        }
+
+
+    var musicPlaySpeed: Flow<Int>
+        get() = context.dataStore.data.map {
+            it[music_play_speed] ?: MusicSpeedEnum.ONE.v
+        }
+        set(value) {
+            SetDataStoreValue(music_play_speed, value)
+        }
+
+
+    var musicOnLockscreen: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[music_on_lock_screen] ?: false
+        }
+        set(value) {
+            SetDataStoreValue(music_on_lock_screen, value)
         }
 
 

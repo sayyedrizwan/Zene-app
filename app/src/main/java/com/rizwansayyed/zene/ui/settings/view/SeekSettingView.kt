@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.datastore.DataStoreMusicEnum
+import com.rizwansayyed.zene.domain.datastore.SeekMusicButtonEnum
 import com.rizwansayyed.zene.ui.settings.ViewLocalSongs
 import com.rizwansayyed.zene.ui.theme.BlackLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
@@ -22,12 +23,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun OfflineOptionSettings() {
-
-    val offlineMusics by dataStoreManager.offlineMusics.collectAsState(runBlocking { dataStoreManager.offlineMusics.first() })
+fun SeekSettings() {
+    val seekButton by dataStoreManager.seekButton.collectAsState(runBlocking { dataStoreManager.seekButton.first() })
 
     QuickSandSemiBold(
-        stringResource(id = R.string.local_songs),
+        stringResource(id = R.string.seek_btn),
         size = 16,
         modifier = Modifier.padding(top = 35.dp, start = 15.dp)
     )
@@ -40,26 +40,33 @@ fun OfflineOptionSettings() {
             .padding(5.dp)
     ) {
         ViewLocalSongs(
-            stringResource(id = R.string.show_local_song_when_offline),
-            offlineMusics == DataStoreMusicEnum.ON_OFFLINE.v
+            stringResource(id = R.string.hide_seek_button),
+            seekButton == SeekMusicButtonEnum.OFF.v
         ) {
-            dataStoreManager.offlineMusics = flowOf(DataStoreMusicEnum.ON_OFFLINE.v)
+            dataStoreManager.seekButton = flowOf(SeekMusicButtonEnum.OFF.v)
         }
 
 
         ViewLocalSongs(
-            stringResource(id = R.string.hide_local_songs),
-            offlineMusics == DataStoreMusicEnum.HIDE.v
+            stringResource(id = R.string.five_s_seek_button),
+            seekButton == SeekMusicButtonEnum.FIVE.v
         ) {
-            dataStoreManager.offlineMusics = flowOf(DataStoreMusicEnum.HIDE.v)
+            dataStoreManager.seekButton = flowOf(SeekMusicButtonEnum.FIVE.v)
         }
 
 
         ViewLocalSongs(
-            stringResource(id = R.string.show_local_songs),
-            offlineMusics == DataStoreMusicEnum.SHOW.v
-        ){
-            dataStoreManager.offlineMusics = flowOf(DataStoreMusicEnum.SHOW.v)
+            stringResource(id = R.string.ten_s_seek_button),
+            seekButton == SeekMusicButtonEnum.TEN.v
+        ) {
+            dataStoreManager.seekButton = flowOf(SeekMusicButtonEnum.TEN.v)
+        }
+
+        ViewLocalSongs(
+            stringResource(id = R.string.fifteen_s_seek_button),
+            seekButton == SeekMusicButtonEnum.FIFTEEN.v
+        ) {
+            dataStoreManager.seekButton = flowOf(SeekMusicButtonEnum.FIFTEEN.v)
         }
     }
 }

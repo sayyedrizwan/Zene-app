@@ -29,6 +29,8 @@
     <string name="trending_news">Trending News</string>
     <string name="settings">Settings</string>
     <string name="local_songs">Local Songs</string>
+    <string name="seek_btn">Seek Button</string>
+    <string name="song_play_speed">Song Play Speed</string>
     <string name="posts">Posts</string>
     <string name="followers">Followers</string>
     <string name="settings_coming_soon">Settings coming soon</string>
@@ -67,4 +69,17 @@
     <string name="show_local_song_when_offline">Show local songs when offline</string>
     <string name="hide_local_songs">Hide local songs</string>
     <string name="show_local_songs">Show local songs</string>
+    <string name="hide_seek_button">Hide seek button</string>
+    <string name="five_s_seek_button">5s seek button</string>
+    <string name="ten_s_seek_button">10s seek button</string>
+    <string name="fifteen_s_seek_button">15s seek button</string>
+    <string name="zero_five_x">0.5x</string>
+    <string name="one_x">1.0x</string>
+    <string name="one_five_x">1.5x</string>
+    <string name="two_x">2.0x</string>
+    <string name="two_five_x">2.5x</string>
+    <string name="three_x">3.0x</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="show_playing_on_lock_screen">Show playing on lock screen</string>
 </resources>

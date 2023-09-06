@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.domain.datastore
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.ALBUM_HEADER_DATA
@@ -11,7 +12,11 @@ import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.DO_MU
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.FOOTER_ALBUMS_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.IP_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.LAST_OPEN_AD_LOADED
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.MUSIC_ON_LOCK_SCREEN
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.MUSIC_PLAYER_DATA
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.MUSIC_PLAY_SPEED
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.OFFLINE_MUSICS
+import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.SEEK_BUTTON
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_ALL_FOR_YOU_ALL_DATA
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_ALL_FOR_YOU_ALL_TIMESTAMP
 import com.rizwansayyed.zene.domain.datastore.DataStoreUtil.DATA_STORE_KEY.SONGS_SUGGESTIONS_DATA
@@ -62,6 +67,10 @@ object DataStoreUtil {
         const val IP_DATA = "ip_data"
         const val MUSIC_PLAYER_DATA = "music_player_data"
         const val DO_MUSIC_PLAYER_LOOP = "do_music_player_loop"
+        const val OFFLINE_MUSICS = "offline_musics"
+        const val SEEK_BUTTON = "seek_button"
+        const val MUSIC_PLAY_SPEED = "music_play_speed"
+        const val MUSIC_ON_LOCK_SCREEN = "music_on_lock_screen"
         const val BETA_DIALOG = "beta_dialog"
     }
 
@@ -111,5 +120,9 @@ object DataStoreUtil {
     val ip_data = stringPreferencesKey(IP_DATA)
     val music_player_data = stringPreferencesKey(MUSIC_PLAYER_DATA)
     val do_music_player_loop = booleanPreferencesKey(DO_MUSIC_PLAYER_LOOP)
+    val offline_musics = intPreferencesKey(OFFLINE_MUSICS)
+    val seek_button = intPreferencesKey(SEEK_BUTTON)
+    val music_play_speed = intPreferencesKey(MUSIC_PLAY_SPEED)
+    val music_on_lock_screen = booleanPreferencesKey(MUSIC_ON_LOCK_SCREEN)
     val beta_dialog = booleanPreferencesKey(BETA_DIALOG)
 }

@@ -11,9 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.domain.datastore.DataStoreMusicEnum
+import com.rizwansayyed.zene.domain.datastore.MusicSpeedEnum
 import com.rizwansayyed.zene.ui.settings.ViewLocalSongs
 import com.rizwansayyed.zene.ui.theme.BlackLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
@@ -22,12 +23,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun OfflineOptionSettings() {
-
-    val offlineMusics by dataStoreManager.offlineMusics.collectAsState(runBlocking { dataStoreManager.offlineMusics.first() })
+fun MusicLockScreen() {
+    val musicOnLockscreen by dataStoreManager.musicOnLockscreen.collectAsState(runBlocking { dataStoreManager.musicOnLockscreen.first() })
 
     QuickSandSemiBold(
-        stringResource(id = R.string.local_songs),
+        stringResource(id = R.string.show_playing_on_lock_screen),
         size = 16,
         modifier = Modifier.padding(top = 35.dp, start = 15.dp)
     )
@@ -39,27 +39,13 @@ fun OfflineOptionSettings() {
             .background(BlackLight)
             .padding(5.dp)
     ) {
-        ViewLocalSongs(
-            stringResource(id = R.string.show_local_song_when_offline),
-            offlineMusics == DataStoreMusicEnum.ON_OFFLINE.v
-        ) {
-            dataStoreManager.offlineMusics = flowOf(DataStoreMusicEnum.ON_OFFLINE.v)
+        ViewLocalSongs(stringResource(id = R.string.enable), musicOnLockscreen) {
+            dataStoreManager.musicOnLockscreen = flowOf(true)
         }
 
-
-        ViewLocalSongs(
-            stringResource(id = R.string.hide_local_songs),
-            offlineMusics == DataStoreMusicEnum.HIDE.v
-        ) {
-            dataStoreManager.offlineMusics = flowOf(DataStoreMusicEnum.HIDE.v)
+        ViewLocalSongs(stringResource(id = R.string.disable), !musicOnLockscreen) {
+            dataStoreManager.musicOnLockscreen = flowOf(false)
         }
 
-
-        ViewLocalSongs(
-            stringResource(id = R.string.show_local_songs),
-            offlineMusics == DataStoreMusicEnum.SHOW.v
-        ){
-            dataStoreManager.offlineMusics = flowOf(DataStoreMusicEnum.SHOW.v)
-        }
     }
 }
