@@ -7,25 +7,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.rizwansayyed.zene.BaseApplication
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.datastore.MusicSpeedEnum
-import com.rizwansayyed.zene.domain.datastore.SeekMusicButtonEnum
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.settings.ViewLocalSongs
 import com.rizwansayyed.zene.ui.theme.BlackLight
 import com.rizwansayyed.zene.utils.QuickSandSemiBold
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun SettingsPlayingSpeed() {
+fun SettingsPlayingSpeed(nav: HomeNavViewModel) {
     val seekButton by dataStoreManager.musicPlaySpeed.collectAsState(runBlocking { dataStoreManager.musicPlaySpeed.first() })
+
+    val coroutine = rememberCoroutineScope()
 
     QuickSandSemiBold(
         stringResource(id = R.string.song_play_speed),
@@ -45,6 +50,10 @@ fun SettingsPlayingSpeed() {
             seekButton ==  MusicSpeedEnum.ZERO_FIVE.v
         ) {
             dataStoreManager.musicPlaySpeed = flowOf(MusicSpeedEnum.ZERO_FIVE.v)
+            coroutine.launch {
+                delay(1.seconds)
+                nav.updatePlaySpeed()
+            }
         }
 
 
@@ -53,6 +62,10 @@ fun SettingsPlayingSpeed() {
             seekButton == MusicSpeedEnum.ONE.v
         ) {
             dataStoreManager.musicPlaySpeed = flowOf(MusicSpeedEnum.ONE.v)
+            coroutine.launch {
+                delay(1.seconds)
+                nav.updatePlaySpeed()
+            }
         }
 
 
@@ -61,6 +74,10 @@ fun SettingsPlayingSpeed() {
             seekButton == MusicSpeedEnum.ONE_FIVE.v
         ) {
             dataStoreManager.musicPlaySpeed = flowOf(MusicSpeedEnum.ONE_FIVE.v)
+            coroutine.launch {
+                delay(1.seconds)
+                nav.updatePlaySpeed()
+            }
         }
 
         ViewLocalSongs(
@@ -68,6 +85,10 @@ fun SettingsPlayingSpeed() {
             seekButton == MusicSpeedEnum.TWO.v
         ) {
             dataStoreManager.musicPlaySpeed = flowOf(MusicSpeedEnum.TWO.v)
+            coroutine.launch {
+                delay(1.seconds)
+                nav.updatePlaySpeed()
+            }
         }
 
         ViewLocalSongs(
@@ -75,6 +96,10 @@ fun SettingsPlayingSpeed() {
             seekButton == MusicSpeedEnum.TWO_FIVE.v
         ) {
             dataStoreManager.musicPlaySpeed = flowOf(MusicSpeedEnum.TWO_FIVE.v)
+            coroutine.launch {
+                delay(1.seconds)
+                nav.updatePlaySpeed()
+            }
         }
 
         ViewLocalSongs(
@@ -82,6 +107,10 @@ fun SettingsPlayingSpeed() {
             seekButton == MusicSpeedEnum.THREE.v
         ) {
             dataStoreManager.musicPlaySpeed = flowOf(MusicSpeedEnum.THREE.v)
+            coroutine.launch {
+                delay(1.seconds)
+                nav.updatePlaySpeed()
+            }
         }
     }
 }

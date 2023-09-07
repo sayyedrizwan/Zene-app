@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -63,6 +64,9 @@ fun MusicLockScreen() {
         ViewLocalSongs(stringResource(id = R.string.disable), !musicOnLockscreen) {
             dataStoreManager.musicOnLockscreen = flowOf(false)
         }
+    }
 
+    LaunchedEffect(Unit) {
+        if (!Settings.canDrawOverlays(context)) dataStoreManager.musicOnLockscreen = flowOf(false)
     }
 }

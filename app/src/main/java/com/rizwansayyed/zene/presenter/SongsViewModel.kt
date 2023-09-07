@@ -100,9 +100,10 @@ class SongsViewModel @Inject constructor(
 
     private fun albumsWithHeaders(songs: ArrayList<TopArtistsSongs>) =
         viewModelScope.launch(Dispatchers.IO) {
-            val newList = songs.take(4)
+            val newList = songs.take(5)
             apiImpl.songPlayDetails(newList).catch {}.collectLatest {
-                dataStoreManager.albumHeaderData = flowOf(it.toTypedArray())
+                dataStoreManager.albumHeaderData =
+                    flowOf(it.filter { s -> s.name?.trim()?.isNotEmpty() == true }.toTypedArray())
             }
         }
 
@@ -397,11 +398,11 @@ class SongsViewModel @Inject constructor(
                     val s = songs.first()
 
                     updateStatus(s.thumbnail, s.name, s.artists, s.songID, MusicPlayerState.LOADING)
-                    s.songID.showToast()
-//                    val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
-                    val url = getYoutubePlayUrl(s.songID)
+                    val url = mediaPlayerObjects.mediaAudioPaths(s.songID)
+//                    val url = getYoutubePlayUrl(s.songID)
 
                     roomDBImpl.insert(toRecentPlay(s)).collect()
+
 
                     val mediaDetails =
                         mediaPlayerObjects.mediaItems(s.songID, url, s.name, s.artists, s.thumbnail)
@@ -425,7 +426,8 @@ class SongsViewModel @Inject constructor(
                     it.thumbnail, it.songName, artists, it.songID, MusicPlayerState.LOADING
                 )
 
-                val url = getYoutubePlayUrl(it.songID)
+//                val url = getYoutubePlayUrl(it.songID)
+                val url = mediaPlayerObjects.mediaAudioPaths(it.songID)
 
                 val mediaDetails = mediaPlayerObjects.mediaItems(
                     it.songID, url, it.songName, artists, it.thumbnail

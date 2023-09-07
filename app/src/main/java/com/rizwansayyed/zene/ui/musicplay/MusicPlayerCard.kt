@@ -38,14 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.BaseApplication
+import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.domain.datastore.SeekMusicButtonEnum.*
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
-import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavigationStatus
 import com.rizwansayyed.zene.utils.QuickSandBold
 import com.rizwansayyed.zene.utils.QuickSandLight
-import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.msToSongDuration
 import com.rizwansayyed.zene.utils.Utils.showToast
 import kotlinx.coroutines.Dispatchers
@@ -62,10 +61,12 @@ import kotlin.time.Duration.Companion.seconds
 fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel(), searchArtists: (String) -> Unit) {
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val musicPlayer by BaseApplication.dataStoreManager.musicPlayerData
-        .collectAsState(initial = runBlocking(Dispatchers.IO) { BaseApplication.dataStoreManager.musicPlayerData.first() })
-    val doMusicLoop by BaseApplication.dataStoreManager.doMusicPlayerLoop
-        .collectAsState(initial = runBlocking(Dispatchers.IO) { BaseApplication.dataStoreManager.doMusicPlayerLoop.first() })
+    val musicPlayer by dataStoreManager.musicPlayerData
+        .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.musicPlayerData.first() })
+    val doMusicLoop by dataStoreManager.doMusicPlayerLoop
+        .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.doMusicPlayerLoop.first() })
+    val seekButton by dataStoreManager.seekButton
+        .collectAsState(initial = runBlocking(Dispatchers.IO) { dataStoreManager.seekButton.first() })
 
     var artistsArray by remember { mutableStateOf<List<String>>(emptyList()) }
 
@@ -174,9 +175,39 @@ fun MusicPlayerCardView(nav: HomeNavViewModel = hiltViewModel(), searchArtists: 
                 nav.restartMusic()
             }
 
+            when (seekButton) {
+                OFF.v -> {}
+                FIVE.v -> PlayerImgIcon(R.drawable.ic_go_backward_5sec) {
+                    nav.seekDuration(seekButton, false)
+                }
+
+                TEN.v -> PlayerImgIcon(R.drawable.ic_go_backward_10sec) {
+                    nav.seekDuration(seekButton, false)
+                }
+
+                FIFTEEN.v -> PlayerImgIcon(R.drawable.ic_go_backward_15sec) {
+                    nav.seekDuration(seekButton, false)
+                }
+            }
+
 
             PlayerImgIcon(if (musicPlayer?.state == MusicPlayerState.PLAYING) R.drawable.ic_pause else R.drawable.ic_play) {
                 nav.doPlayer()
+            }
+
+            when (seekButton) {
+                OFF.v -> {}
+                FIVE.v -> PlayerImgIcon(R.drawable.ic_go_forward_5sec) {
+                    nav.seekDuration(seekButton, true)
+                }
+
+                TEN.v -> PlayerImgIcon(R.drawable.ic_go_forward_10sec) {
+                    nav.seekDuration(seekButton, true)
+                }
+
+                FIFTEEN.v -> PlayerImgIcon(R.drawable.ic_go_forward_15sec) {
+                    nav.seekDuration(seekButton, true)
+                }
             }
 
             PlayerImgIcon(if (doMusicLoop) R.drawable.ic_repeat_on else R.drawable.ic_repeat) {

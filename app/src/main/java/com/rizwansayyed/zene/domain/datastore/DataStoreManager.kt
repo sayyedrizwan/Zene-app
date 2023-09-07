@@ -291,7 +291,7 @@ class DataStoreManager {
 
     var offlineMusics: Flow<Int>
         get() = context.dataStore.data.map {
-            it[offline_musics] ?: DataStoreMusicEnum.ON_OFFLINE.v
+            it[offline_musics] ?: DataStoreMusicEnum.HIDE.v
         }
         set(value) {
             SetDataStoreValue(offline_musics, value)

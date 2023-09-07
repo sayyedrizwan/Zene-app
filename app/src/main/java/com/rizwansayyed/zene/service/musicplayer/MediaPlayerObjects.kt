@@ -18,6 +18,8 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
+import com.rizwansayyed.zene.domain.datastore.MusicSpeedEnum
+import com.rizwansayyed.zene.domain.datastore.MusicSpeedEnum.*
 import com.rizwansayyed.zene.domain.roomdb.RoomDBImpl
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerBuffer.BUFF_PLAYBACK
@@ -44,6 +46,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @UnstableApi
 class MediaPlayerObjects @Inject constructor(
@@ -129,6 +132,8 @@ class MediaPlayerObjects @Inject constructor(
 
             player.playWhenReady = true
             player.prepare()
+
+            playbackSpeed()
         }
     }
 
@@ -147,10 +152,37 @@ class MediaPlayerObjects @Inject constructor(
             player.play()
     }
 
+    fun playbackSpeed() = CoroutineScope(Dispatchers.IO).launch {
+        val speed = dataStoreManager.musicPlaySpeed.first()
+
+        withContext(Dispatchers.Main) {
+
+            when (speed) {
+                ZERO_FIVE.v -> player.setPlaybackSpeed(0.5f)
+                ONE.v -> player.setPlaybackSpeed(1.0f)
+                ONE_FIVE.v -> player.setPlaybackSpeed(1.5f)
+                TWO.v -> player.setPlaybackSpeed(2.0f)
+                TWO_FIVE.v -> player.setPlaybackSpeed(2.5f)
+                THREE.v -> player.setPlaybackSpeed(3.0f)
+            }
+
+            if (isActive) cancel()
+        }
+        if (isActive) cancel()
+    }
+
     fun restart() {
         player.seekTo(0)
         player.playWhenReady = true
         player.prepare()
+    }
+
+    fun forwardSec(s: Int) {
+        player.seekTo(player.currentPosition + s.seconds.inWholeMilliseconds)
+    }
+
+    fun backwardSec(s: Int) {
+        player.seekTo(player.currentPosition - s.seconds.inWholeMilliseconds)
     }
 
     fun repeatMode() = CoroutineScope(Dispatchers.Main).launch {
@@ -188,7 +220,7 @@ class MediaPlayerObjects @Inject constructor(
         val duration = player.duration
         val currentPosition = player.currentPosition
         val composer = player.mediaMetadata.composer.toString()
-        if (isExoPlayerGlobalInitialized()){
+        if (isExoPlayerGlobalInitialized()) {
             exoPlayerGlobal.pause()
         }
 

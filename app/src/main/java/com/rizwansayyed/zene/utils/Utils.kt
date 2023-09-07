@@ -1,10 +1,10 @@
 package com.rizwansayyed.zene.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
@@ -12,6 +12,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.media3.exoplayer.DefaultLoadControl
 import com.rizwansayyed.zene.BaseApplication.Companion.context
 import com.rizwansayyed.zene.BaseApplication.Companion.dataStoreManager
@@ -28,7 +29,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
-import java.lang.Float.NaN
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -65,7 +65,8 @@ object Utils {
             return "https://music.youtube.com/youtubei/v1/browse?key=$key&prettyPrint=false"
         }
 
-        const val ytSearch = "https://music.youtube.com/youtubei/v1/search?key=AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30&prettyPrint=false"
+        const val ytSearch =
+            "https://music.youtube.com/youtubei/v1/search?key=AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30&prettyPrint=false"
 
         fun videoPaths(id: String): String {
             return "$SAVE_FROM_NET/#url=https://youtube.com/watch?v=$id"
@@ -383,5 +384,9 @@ object Utils {
 
             }
         }
+    }
+
+    fun isPermissionGranted(p: String): Boolean {
+        return ContextCompat.checkSelfPermission(context, p) == PackageManager.PERMISSION_GRANTED
     }
 }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -25,8 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.presenter.SongsViewModel
-import com.rizwansayyed.zene.ui.home.homeui.TopHeaderOf
+import com.rizwansayyed.zene.ui.home.homenavmodel.HomeNavViewModel
 import com.rizwansayyed.zene.ui.settings.view.MusicLockScreen
 import com.rizwansayyed.zene.ui.settings.view.OfflineOptionSettings
 import com.rizwansayyed.zene.ui.settings.view.PlaylistImportSettings
@@ -34,12 +32,10 @@ import com.rizwansayyed.zene.ui.settings.view.SeekSettings
 import com.rizwansayyed.zene.ui.settings.view.SettingsExtraInfo
 import com.rizwansayyed.zene.ui.settings.view.SettingsPlayingSpeed
 import com.rizwansayyed.zene.utils.QuickSandBold
-import com.rizwansayyed.zene.utils.QuickSandLight
 import com.rizwansayyed.zene.utils.QuickSandRegular
-import com.rizwansayyed.zene.utils.QuickSandSemiBold
 
 @Composable
-fun SettingsView(songsViewModel: SongsViewModel = hiltViewModel()) {
+fun SettingsView(homeNavViewModel: HomeNavViewModel = hiltViewModel()) {
     Column(
         Modifier
             .fillMaxSize()
@@ -60,7 +56,7 @@ fun SettingsView(songsViewModel: SongsViewModel = hiltViewModel()) {
 
         Spacer(Modifier.height(20.dp))
 
-        SettingsPlayingSpeed()
+        SettingsPlayingSpeed(homeNavViewModel)
 
         Spacer(Modifier.height(20.dp))
 

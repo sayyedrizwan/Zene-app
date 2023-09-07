@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
 import com.rizwansayyed.zene.presenter.SongsViewModel
+import com.rizwansayyed.zene.presenter.music.ReadAllMusics
 import com.rizwansayyed.zene.service.ads.OpenAdManager
 import com.rizwansayyed.zene.service.musicplayer.MediaPlayerObjects
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
@@ -32,14 +33,10 @@ import com.rizwansayyed.zene.ui.search.SearchMusicArtistView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
-import com.rizwansayyed.zene.utils.Utils.showToast
-import com.rizwansayyed.zene.utils.getYoutubePlayUrl
-import com.rizwansayyed.zene.utils.getYtSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -85,7 +82,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
                             SELECT_ARTISTS ->
                                 ArtistsInfo(artistsViewModel, homeNavViewModel, songsViewModel)
 
-                            SETTINGS -> SettingsView(songsViewModel)
+                            SETTINGS -> SettingsView(homeNavViewModel)
                             SEARCH -> SearchMusicArtistView(
                                 songsViewModel, homeNavViewModel, artistsViewModel
                             )
@@ -128,6 +125,12 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         startDownloadSongsWorkManager()
         songsViewModel.run()
         openAdManager.loadAd()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(2.seconds)
+
+            ReadAllMusics().allMusic()
+        }
     }
 
     override fun internetConnected() {

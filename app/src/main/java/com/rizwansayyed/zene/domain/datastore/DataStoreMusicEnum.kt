@@ -6,7 +6,7 @@ enum class DataStoreMusicEnum(val v: Int) {
 
 
 enum class SeekMusicButtonEnum(val v: Int) {
-    OFF(0), FIVE(1), TEN(2), FIFTEEN(3)
+    OFF(0), FIVE(5), TEN(10), FIFTEEN(15)
 }
 
 

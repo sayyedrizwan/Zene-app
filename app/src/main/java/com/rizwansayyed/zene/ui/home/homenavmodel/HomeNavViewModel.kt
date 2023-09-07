@@ -63,6 +63,10 @@ class HomeNavViewModel @Inject constructor(private val mediaPlayer: MediaPlayerO
         mediaPlayer.setPlayerDuration(duration)
     }
 
+    fun updatePlaySpeed() {
+        mediaPlayer.playbackSpeed()
+    }
+
     fun getPlayerDuration(): Long {
         return mediaPlayer.getPlayerDuration()
     }
@@ -74,6 +78,11 @@ class HomeNavViewModel @Inject constructor(private val mediaPlayer: MediaPlayerO
 
     fun restartMusic() {
         mediaPlayer.restart()
+    }
+
+    fun seekDuration(s: Int, forward: Boolean) {
+        if (forward) mediaPlayer.forwardSec(s)
+        else mediaPlayer.backwardSec(s)
     }
 
     fun repeatMode() {
