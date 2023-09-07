@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.ui.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -15,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.NetworkCallbackStatus
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.SongsViewModel
 import com.rizwansayyed.zene.presenter.music.ReadAllMusics
 import com.rizwansayyed.zene.service.ads.OpenAdManager
@@ -31,17 +34,20 @@ import com.rizwansayyed.zene.ui.home.homeui.PlaylistDetailsView
 import com.rizwansayyed.zene.ui.musicplay.MusicPlayerView
 import com.rizwansayyed.zene.ui.search.SearchMusicArtistView
 import com.rizwansayyed.zene.ui.settings.SettingsView
+import com.rizwansayyed.zene.ui.settings.view.requestCodeSpotify
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.windowManagerNoLimit
+import com.rizwansayyed.zene.utils.Utils.showToast
+import com.spotify.sdk.android.auth.AuthorizationClient
+import com.spotify.sdk.android.auth.AuthorizationRequest
+import com.spotify.sdk.android.auth.AuthorizationResponse
+import com.spotify.sdk.android.auth.AuthorizationResponse.Type.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
-
-
-// wider team
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), NetworkCallbackStatus {
@@ -57,7 +63,7 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
     private val openAdManager by lazy { OpenAdManager(this) }
 
     @Inject
-    lateinit var  mediaPlayerObjects: MediaPlayerObjects
+    lateinit var mediaPlayerObjects: MediaPlayerObjects
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,6 +125,10 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         }
     }
 
+    private val clientId = "07cca9af3ee4411baaf2355a8ea61d3f"
+    private val redirectUri = "http://localhost/"
+    val REQUEST_CODE = 1337
+
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     override fun onStart() {
         super.onStart()
@@ -129,7 +139,28 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         lifecycleScope.launch(Dispatchers.IO) {
             delay(2.seconds)
 
-            ReadAllMusics().allMusic()
+//            ReadAllMusics().allMusic()
+        }
+    }
+
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == requestCodeSpotify) {
+            val response = AuthorizationClient.getResponse(resultCode, data);
+            when (response.type!!) {
+                TOKEN -> {
+                    resources.getString(R.string.sync_is_started)
+                    songsViewModel.spotifyLists(response.accessToken) {
+                        if (!it)
+                            resources.getString(R.string.error_spotify_playlist_sync)
+                    }
+                }
+                ERROR -> resources.getString(R.string.error_spotify)
+                else -> {}
+            }
         }
     }
 
@@ -138,10 +169,4 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
         songsViewModel.run()
     }
 
-    private fun measureExecutionTime(function: () -> Unit): Long {
-        val startTime = System.currentTimeMillis()
-        function()
-        val endTime = System.currentTimeMillis()
-        return endTime - startTime
-    }
 }

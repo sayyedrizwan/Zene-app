@@ -83,6 +83,10 @@
             android:value="${DOMAIN_KEY}" />
 
         <meta-data
+            android:name="S_KEY"
+            android:value="${S_KEY}" />
+
+        <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2941808068005217~5659881245"/>
     </application>

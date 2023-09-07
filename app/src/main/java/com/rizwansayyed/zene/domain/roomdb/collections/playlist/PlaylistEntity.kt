@@ -11,7 +11,7 @@ import com.rizwansayyed.zene.utils.Utils.DB.RECENT_PLAYED_DB
 @Entity(tableName = PLAYLIST_DB)
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
-    val name: String,
+    var name: String,
     val timestamp: Long = System.currentTimeMillis(),
     var image1: String = "",
     var image2: String = "",

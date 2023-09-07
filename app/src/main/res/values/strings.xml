@@ -14,6 +14,7 @@
     <string name="remove_song_playlist">Are you sure want to remove the songs for the playlist?</string>
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>
+    <string name="sync_is_started">Sync is started. This may take a while.</string>
     <string name="top_albums">Top Albums</string>
     <string name="recent_songs">Recent Songs</string>
     <string name="playlists">Playlists</string>
@@ -64,6 +65,8 @@
     <string name="search">Search</string>
     <string name="error_loading_songs">Error loading songs</string>
     <string name="error_loading_instagram">Error loading instagram posts</string>
+    <string name="error_spotify">Error connecting to spotify, Try again later</string>
+    <string name="error_spotify_playlist_sync">Error syncing playlist items, Try again later</string>
     <string name="no_instagram_account_found">No instagram accounts found</string>
     <string name="no_playlist_found">No playlist found. Please created a new playlist so you can add your songs</string>
     <string name="show_local_song_when_offline">Show local songs when offline</string>

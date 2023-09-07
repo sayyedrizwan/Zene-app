@@ -1,14 +1,12 @@
 package com.rizwansayyed.zene.utils
 
-import com.rizwansayyed.zene.domain.model.YTMusicResponse
+import android.util.Log
 import com.rizwansayyed.zene.presenter.jsoup.model.YTSearchData
 import com.rizwansayyed.zene.presenter.jsoup.model.YTSearchResponse
 import com.rizwansayyed.zene.utils.Utils.URL.ytSearch
 import com.rizwansayyed.zene.utils.Utils.USER_AGENT
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileJson
-import com.rizwansayyed.zene.utils.Utils.showToast
-import com.squareup.moshi.adapter
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -127,26 +125,36 @@ fun getYtSearch(ip: String, q: String): YTSearchData? {
     return null
 }
 
-fun getYoutubePlayUrl(id: String): String? {
-    val client = OkHttpClient().newBuilder().build()
+fun downloadSpotifyPlaylistItem(token: String, id: String?): String? {
+    val client = OkHttpClient().newBuilder()
+        .build()
 
     val request = Request.Builder()
-        .url("https://yt-cw.fabdl.com/youtube/get?url=https://www.youtube.com/watch?v=$id&mp3_task=2")
+        .url("https://api.spotify.com/v1/playlists/$id/tracks")
         .method("GET", null)
-        .addHeader("authority", "yt-cw.fabdl.com")
-        .addHeader("origin", "https://listentoyoutube.ch")
-        .addHeader("referer", "https://listentoyoutube.ch/")
-        .addHeader("user-agent", USER_AGENT)
+        .addHeader("Authorization", "Bearer $token")
         .build()
     val response = client.newCall(request).execute()
 
+
     if (response.isSuccessful) {
-        return try {
-            moshi.adapter(YTMusicResponse::class.java)
-                .fromJson(response.body?.string()!!)?.result?.audios?.get(0)?.url
-        } catch (e: Exception) {
-            null
-        }
+        return response.body?.string()
+    }
+
+    return null
+}
+
+fun spotifyUsersPlaylists(token: String): String? {
+    val client = OkHttpClient().newBuilder().build()
+
+    val request = Request.Builder()
+        .url("https://api.spotify.com/v1/me/playlists")
+        .method("GET", null)
+        .addHeader("Authorization", "Bearer $token")
+        .build()
+    val response = client.newCall(request).execute()
+    if (response.isSuccessful) {
+        return response.body?.string()
     }
 
     return null

@@ -18,13 +18,14 @@ android {
         applicationId = "com.rizwansayyed.zene"
         minSdk = 24
         targetSdk = 34
-        versionCode = 14
-        versionName = "1.0.000344"
+        versionCode = 18
+        versionName = "1.0.000348"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+        manifestPlaceholders["appAuthRedirectScheme"] =  "com.rizwansayyed.zene"
     }
 
     signingConfigs {
@@ -148,4 +149,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
     implementation("androidx.hilt:hilt-work:$productionVersion")
     kapt("androidx.hilt:hilt-compiler:$productionVersion")
+
+    //noinspection GradleDependency
+    implementation("com.spotify.android:auth:1.2.5")
+    implementation(files("libs/spotify-app-remote-release-0.8.0.aar"))
 }

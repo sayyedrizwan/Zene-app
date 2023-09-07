@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +21,8 @@ import com.rizwansayyed.zene.presenter.jsoup.model.toLocal
 import com.rizwansayyed.zene.presenter.model.ApiResponse
 import com.rizwansayyed.zene.presenter.model.MusicPlayerDetails
 import com.rizwansayyed.zene.presenter.model.MusicPlayerState
+import com.rizwansayyed.zene.presenter.model.SpotifyPlayListData
+import com.rizwansayyed.zene.presenter.model.SpotifyPlaylistItemData
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongs
 import com.rizwansayyed.zene.presenter.model.TopArtistsSongsResponse
 import com.rizwansayyed.zene.presenter.model.toMusicPlayerData
@@ -29,12 +32,12 @@ import com.rizwansayyed.zene.service.musicplayer.MediaPlayerService.Companion.st
 import com.rizwansayyed.zene.service.workmanager.startDownloadSongsWorkManager
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerResponse
 import com.rizwansayyed.zene.ui.musicplay.video.VideoPlayerStatus
+import com.rizwansayyed.zene.utils.Algorithims
 import com.rizwansayyed.zene.utils.DateTime.is1DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is2DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.is5DayOlderNeedCache
 import com.rizwansayyed.zene.utils.DateTime.isOlderNeedCache
 import com.rizwansayyed.zene.utils.RemoteConfigReader
-import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.PATH.cacheLyricsFiles
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturn
 import com.rizwansayyed.zene.utils.Utils.ifLyricsFileExistReturnJson
@@ -43,7 +46,8 @@ import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileJson
 import com.rizwansayyed.zene.utils.Utils.saveCaptionsFileTXT
 import com.rizwansayyed.zene.utils.Utils.showToast
 import com.rizwansayyed.zene.utils.Utils.updateStatus
-import com.rizwansayyed.zene.utils.getYoutubePlayUrl
+import com.rizwansayyed.zene.utils.downloadSpotifyPlaylistItem
+import com.rizwansayyed.zene.utils.spotifyUsersPlaylists
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -646,4 +650,70 @@ class SongsViewModel @Inject constructor(
             playlistsSuggestedSongs = it
         }
     }
+
+    fun spotifyLists(token: String, done: (Boolean) -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = spotifyUsersPlaylists(token)
+            
+            try {
+                val pJson = moshi.adapter(SpotifyPlayListData::class.java).fromJson(response!!)
+
+                
+                pJson?.items?.forEach { plist ->
+                    var pName = plist?.name ?: "Playlist"
+                    val playlistData = PlaylistEntity(null, name = pName)
+
+                    if (roomDBImpl.playlists(pName).first().isEmpty())
+                        roomDBImpl.playlists(playlistData).collect()
+                    else {
+                        pName = "playlist_${Algorithims.randomIds()}"
+                        playlistData.name = pName
+                        roomDBImpl.playlists(playlistData).collect()
+                    }
+
+
+                    val itemResponse = downloadSpotifyPlaylistItem(token, plist?.id)
+
+                    val iJson =
+                        moshi.adapter(SpotifyPlaylistItemData::class.java).fromJson(itemResponse!!)
+
+                    roomDBImpl.playlists(plist?.name ?: "").collectLatest {
+                        iJson?.items?.forEach { pitem ->
+                            val artists = ArrayList<String>(5)
+
+                            pitem?.track?.album?.artists?.forEach {
+                                artists.add(it?.name ?: "")
+                            }
+
+                            try {
+                                val songDetails = apiImpl.songPlayDetails(
+                                    "${pitem?.track?.name} - ${
+                                        artists.joinToString(", ")
+                                    }"
+                                ).first()
+                                val music = MusicPlayerDetails(
+                                    songDetails?.thumbnail,
+                                    songDetails?.songName,
+                                    songDetails?.artistName,
+                                    songDetails?.songID,
+                                    0, 0, MusicPlayerState.PAUSE, System.currentTimeMillis()
+                                )
+                                insertSongToPlaylist(music, it.first())
+                            } catch (e: Exception) {
+                                e.message?.showToast()
+                            }
+
+
+                        }
+                    }
+
+                }
+
+                done(true)
+            } catch (e: Exception) {
+                e.message?.showToast()
+                done(false)
+            }
+        }
+
 }
