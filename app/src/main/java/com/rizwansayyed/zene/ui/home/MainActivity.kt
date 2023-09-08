@@ -152,13 +152,13 @@ class MainActivity : ComponentActivity(), NetworkCallbackStatus {
             val response = AuthorizationClient.getResponse(resultCode, data);
             when (response.type!!) {
                 TOKEN -> {
-                    resources.getString(R.string.sync_is_started)
+                    resources.getString(R.string.sync_is_started).showToast()
                     songsViewModel.spotifyLists(response.accessToken) {
                         if (!it)
-                            resources.getString(R.string.error_spotify_playlist_sync)
+                            resources.getString(R.string.error_spotify_playlist_sync).showToast()
                     }
                 }
-                ERROR -> resources.getString(R.string.error_spotify)
+                ERROR -> resources.getString(R.string.error_spotify).showToast()
                 else -> {}
             }
         }

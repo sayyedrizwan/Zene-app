@@ -100,11 +100,11 @@ fun HomepageView(
                         }
                     }
 
-                    if (recentPlayedSongs.value.size >= 29) item {
-                        ViewAllBtnView {
-                            "view all history".showToast()
-                        }
-                    }
+//                    if (recentPlayedSongs.value.size >= 29) item {
+//                        ViewAllBtnView {
+//                            "view all history".showToast()
+//                        }
+//                    }
                 }
             }
         }

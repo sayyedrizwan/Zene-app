@@ -21,5 +21,5 @@ interface PlaylistDao {
     suspend fun playlists(name: String): List<PlaylistEntity>
 
     @Upsert
-    suspend fun insert(playlist: PlaylistEntity)
+    suspend fun insert(playlist: PlaylistEntity): Long
 }

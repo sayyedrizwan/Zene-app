@@ -50,11 +50,13 @@ import com.rizwansayyed.zene.utils.downloadSpotifyPlaylistItem
 import com.rizwansayyed.zene.utils.spotifyUsersPlaylists
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
@@ -583,14 +585,15 @@ class SongsViewModel @Inject constructor(
             }
         }
 
-    fun insertSongToPlaylist(music: MusicPlayerDetails, playlist: PlaylistEntity) =
+    @OptIn(FlowPreview::class)
+    fun insertSongToPlaylist(music: MusicPlayerDetails, playlistID: Int, doSuggest:Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
 
             if (roomDBImpl.isSongsAlreadyAvailable(music.pId ?: "").first() > 0) return@launch
 
             val p = PlaylistSongsEntity(
                 null,
-                playlist.id!!,
+                playlistID,
                 music.songName!!,
                 System.currentTimeMillis(),
                 music.thumbnail!!,
@@ -599,8 +602,8 @@ class SongsViewModel @Inject constructor(
             )
 
             roomDBImpl.playlistItem(p).catch { }.collectLatest {
-                val playlists = roomDBImpl.latest4playlistsItem(playlist.id).first()
-                val pl = roomDBImpl.playlistsWithId(playlist.id).first()
+                val playlists = roomDBImpl.latest4playlistsItem(playlistID).first()
+                val pl = roomDBImpl.playlistsWithId(playlistID).first()
                 if (playlists.size > 4) {
                     pl.forEach {
                         it.image1 = music.thumbnail
@@ -619,6 +622,8 @@ class SongsViewModel @Inject constructor(
                 }
 
                 isSongInPlaylist(music.pId!!)
+
+                if (!doSuggest) return@collectLatest
 
                 pl.forEach {
                     File(cacheLyricsFiles, "playlist_${it.id}.json").deleteRecursively()
@@ -644,7 +649,7 @@ class SongsViewModel @Inject constructor(
             }
         }
 
-        roomDBImpl.playlistSongsLatest10Songs(playlistsId).catch { }.collectLatest {
+        roomDBImpl.playlistSongsLatest10Songs(playlistsId).debounce(4.seconds).catch { }.collectLatest {
             val jsonS = moshi.adapter(Array<TopArtistsSongs>::class.java).toJson(it.toTypedArray())
             saveCaptionsFileJson("playlist_$playlistsId", jsonS)
             playlistsSuggestedSongs = it
@@ -654,21 +659,20 @@ class SongsViewModel @Inject constructor(
     fun spotifyLists(token: String, done: (Boolean) -> Unit) =
         viewModelScope.launch(Dispatchers.IO) {
             val response = spotifyUsersPlaylists(token)
-            
+
             try {
                 val pJson = moshi.adapter(SpotifyPlayListData::class.java).fromJson(response!!)
 
-                
                 pJson?.items?.forEach { plist ->
                     var pName = plist?.name ?: "Playlist"
-                    val playlistData = PlaylistEntity(null, name = pName)
+                    val playlistData = PlaylistEntity(null, name = pName.trim())
 
-                    if (roomDBImpl.playlists(pName).first().isEmpty())
-                        roomDBImpl.playlists(playlistData).collect()
+                    val pID = if (roomDBImpl.playlists(pName).first().isEmpty())
+                        roomDBImpl.playlists(playlistData).first()
                     else {
                         pName = "playlist_${Algorithims.randomIds()}"
                         playlistData.name = pName
-                        roomDBImpl.playlists(playlistData).collect()
+                        roomDBImpl.playlists(playlistData).first()
                     }
 
 
@@ -677,36 +681,33 @@ class SongsViewModel @Inject constructor(
                     val iJson =
                         moshi.adapter(SpotifyPlaylistItemData::class.java).fromJson(itemResponse!!)
 
-                    roomDBImpl.playlists(plist?.name ?: "").collectLatest {
-                        iJson?.items?.forEach { pitem ->
-                            val artists = ArrayList<String>(5)
-
-                            pitem?.track?.album?.artists?.forEach {
-                                artists.add(it?.name ?: "")
-                            }
-
-                            try {
-                                val songDetails = apiImpl.songPlayDetails(
-                                    "${pitem?.track?.name} - ${
-                                        artists.joinToString(", ")
-                                    }"
-                                ).first()
-                                val music = MusicPlayerDetails(
-                                    songDetails?.thumbnail,
-                                    songDetails?.songName,
-                                    songDetails?.artistName,
-                                    songDetails?.songID,
-                                    0, 0, MusicPlayerState.PAUSE, System.currentTimeMillis()
-                                )
-                                insertSongToPlaylist(music, it.first())
-                            } catch (e: Exception) {
-                                e.message?.showToast()
-                            }
-
-
+                    iJson?.items?.forEach { pitem ->
+                        val artists = ArrayList<String>(5)
+                        pitem?.track?.album?.artists?.forEach {
+                            artists.add(it?.name ?: "")
                         }
+                        try {
+                            val songDetails = apiImpl.songPlayDetails(
+                                "${pitem?.track?.name} - ${
+                                    artists.joinToString(", ")
+                                }"
+                            ).first()
+                            val music = MusicPlayerDetails(
+                                songDetails?.thumbnail,
+                                songDetails?.songName,
+                                songDetails?.artistName,
+                                songDetails?.songID,
+                                0, 0, MusicPlayerState.PAUSE, System.currentTimeMillis()
+                            )
+                            insertSongToPlaylist(music, pID.toInt(), false)
+                        } catch (e: Exception) {
+                            e.message?.showToast()
+                        }
+                        Log.d(
+                            "TAG",
+                            "spotifyLists: runnedd ${pID} ${pitem?.track?.name}"
+                        )
                     }
-
                 }
 
                 done(true)

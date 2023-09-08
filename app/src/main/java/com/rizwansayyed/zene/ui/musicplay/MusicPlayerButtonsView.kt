@@ -257,7 +257,7 @@ fun AddSongsToPlayList(
                 items(playlists) {
                     PlaylistItemView(it) {
                         close()
-                        songs.insertSongToPlaylist(music, it)
+                        songs.insertSongToPlaylist(music, it.id!!, true)
                     }
                 }
             }
