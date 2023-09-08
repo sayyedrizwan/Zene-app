@@ -18,8 +18,8 @@ android {
         applicationId = "com.rizwansayyed.zene"
         minSdk = 24
         targetSdk = 34
-        versionCode = 18
-        versionName = "1.0.000348"
+        versionCode = 20
+        versionName = "1.0.000350"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
