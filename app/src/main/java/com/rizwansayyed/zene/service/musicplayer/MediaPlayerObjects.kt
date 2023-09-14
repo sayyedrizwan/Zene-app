@@ -124,16 +124,20 @@ class MediaPlayerObjects @Inject constructor(
             }
         }
         withContext(Dispatchers.Main) {
-            player.setMediaItem(media)
-            if (dataStoreManager.doMusicPlayerLoop.first())
-                player.repeatMode = Player.REPEAT_MODE_ALL
-            else
-                player.repeatMode = Player.REPEAT_MODE_OFF
+            try {
+                player.setMediaItem(media)
+                if (dataStoreManager.doMusicPlayerLoop.first())
+                    player.repeatMode = Player.REPEAT_MODE_ALL
+                else
+                    player.repeatMode = Player.REPEAT_MODE_OFF
 
-            player.playWhenReady = true
-            player.prepare()
+                player.playWhenReady = true
+                player.prepare()
+                playbackSpeed()
 
-            playbackSpeed()
+            }catch (e: Exception){
+                e.message
+            }
         }
     }
 

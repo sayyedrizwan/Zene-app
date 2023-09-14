@@ -163,7 +163,7 @@ class ArtistsViewModel @Inject constructor(
 
         if (data != null) {
             artistsImages = data
-            artistsMainImages = data.random()
+            if (data.size > 1) artistsMainImages = data.random()
         }
     }
 
