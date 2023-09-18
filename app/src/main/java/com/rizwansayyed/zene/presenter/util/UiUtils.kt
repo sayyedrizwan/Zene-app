@@ -4,34 +4,26 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
 
 object UiUtils {
 
-    fun Activity.transparentStatusAndNavigation(
-        systemUiScrim: Int = Color.parseColor("#40000000") // 25% black
-    ) {
-        var systemUiVisibility = 0
-        var navigationBarColor = systemUiScrim
-        val winParams = window.attributes
+    private const val FLAG_NO_LIMIT = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 
+    fun Activity.transparentStatusAndNavigation() {
+        window.statusBarColor = resources.getColor(android.R.color.transparent, null)
 
-        systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            navigationBarColor = Color.TRANSPARENT
-        }
-        systemUiVisibility = systemUiVisibility or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        window.decorView.systemUiVisibility = systemUiVisibility
-        winParams.flags = winParams.flags and
-                (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or
-                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION).inv()
-        window.statusBarColor = Color.TRANSPARENT
-        window.navigationBarColor = navigationBarColor
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            window.setDecorFitsSystemWindows(false)
+        else
+            window.setFlags(FLAG_NO_LIMIT, FLAG_NO_LIMIT)
 
-        window.attributes = winParams
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
+import com.rizwansayyed.zene.presenter.ui.MainHomePageView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             transparentStatusAndNavigation()
             ZeneTheme {
-
+                MainHomePageView()
             }
         }
     }
