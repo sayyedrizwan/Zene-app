@@ -1,6 +1,10 @@
 package com.rizwansayyed.zene.presenter
 
+import android.os.Build
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,9 +20,9 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigati
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)
         setContent {
-            transparentStatusAndNavigation()
             ZeneTheme {
                 MainHomePageView()
             }

@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.presenter.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.View
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -40,8 +42,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun ZeneTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -57,8 +58,16 @@ fun ZeneTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = view.context.resources.getColor(android.R.color.transparent, null)
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            val tColor = view.context.resources.getColor(android.R.color.transparent, null)
+            window.statusBarColor = tColor
+            window.navigationBarColor = tColor
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WindowCompat.getInsetsController(window, view).apply {
+                    isAppearanceLightStatusBars = !darkTheme
+                    isAppearanceLightNavigationBars = !darkTheme
+                }
+            }
         }
     }
 

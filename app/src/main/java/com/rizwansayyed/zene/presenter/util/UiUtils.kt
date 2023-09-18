@@ -4,13 +4,12 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.view.View
-import android.view.Window
+import android.view.WindowInsetsController
 import android.view.WindowManager
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import com.rizwansayyed.zene.R
 
 
 object UiUtils {
@@ -18,7 +17,6 @@ object UiUtils {
     private const val FLAG_NO_LIMIT = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 
     fun Activity.transparentStatusAndNavigation() {
-        window.statusBarColor = resources.getColor(android.R.color.transparent, null)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
             window.setDecorFitsSystemWindows(false)
