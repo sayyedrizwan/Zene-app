@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.theme
+package com.rizwansayyed.zene.presenter.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

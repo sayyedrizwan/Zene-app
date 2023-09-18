@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.theme
+package com.rizwansayyed.zene.presenter.theme
 
 import android.app.Activity
 import android.os.Build
