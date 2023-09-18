@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    kotlin("kapt")
 }
 
 android {
@@ -46,6 +48,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -64,6 +69,11 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation("com.google.dagger:hilt-android:${DependenciesVersion.HILT.version}")
+    kapt("com.google.dagger:hilt-android-compiler:${DependenciesVersion.HILT.version}")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
 
 enum class CompileSDK(val version: Int) {
@@ -76,7 +86,8 @@ enum class AndroidVersion(val version: String) {
 }
 
 enum class DependenciesVersion(val version: String) {
-    KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.7.2"), COMPOSE("2023.09.00")
+    KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.7.2"), COMPOSE("2023.09.00"),
+    HILT("2.47")
 }
 
 enum class TestingDependenciesVersion(val version: String) {
