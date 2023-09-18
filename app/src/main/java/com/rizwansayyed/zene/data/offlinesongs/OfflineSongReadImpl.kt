@@ -1,16 +1,20 @@
 package com.rizwansayyed.zene.data.offlinesongs
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.provider.MediaStore
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class OfflineSongReadImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : OfflineSongsReadInterface {
-    override suspend fun readAllSongs(): MutableList<OfflineSongsDetailsResult> {
+
+    override suspend fun readAllSongs() = flow {
         val songs = mutableListOf<OfflineSongsDetailsResult>()
 
         val internalStorageCursor = context.contentResolver
@@ -30,7 +34,7 @@ class OfflineSongReadImpl @Inject constructor(
         }
         externalStorageCursor?.close()
 
-        return songs
+        emit(songs)
     }
 
     override suspend fun songsFromCursor(
@@ -42,6 +46,7 @@ class OfflineSongReadImpl @Inject constructor(
         val albumColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
         val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
         val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+        val albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
 
         while (cursor.moveToNext()) {
             val id = cursor.getLong(idColumn)
@@ -50,8 +55,13 @@ class OfflineSongReadImpl @Inject constructor(
             val album = cursor.getString(albumColumn)
             val duration = cursor.getLong(durationColumn)
             val data = cursor.getString(dataColumn)
+            val albumId = cursor.getLong(albumIdColumn)
 
-            val song = OfflineSongsDetailsResult(id, title, artist, album, duration, data)
+            val art = ContentUris.withAppendedId(
+                    Uri.parse("content://media/external/audio/albumart"), albumId
+                )
+
+            val song = OfflineSongsDetailsResult(id, title, artist, album, duration, data, art)
             songs.add(song)
         }
     }

@@ -72,8 +72,9 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:${DependenciesVersion.HILT.version}")
     kapt("com.google.dagger:hilt-android-compiler:${DependenciesVersion.HILT.version}")
-    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:${DependenciesVersion.V.version}")
+
+    implementation("io.coil-kt:coil-compose:${DependenciesVersion.COIL.version}")
 }
 
 enum class CompileSDK(val version: Int) {
@@ -87,7 +88,7 @@ enum class AndroidVersion(val version: String) {
 
 enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.7.2"), COMPOSE("2023.09.00"),
-    HILT("2.47")
+    HILT("2.48"), V("1.0.0"), COIL("2.4.0")
 }
 
 enum class TestingDependenciesVersion(val version: String) {
