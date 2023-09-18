@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.rizwansayyed.zene"
-    compileSdk = 34
+    namespace = AndroidVersion.PACKAGE_NAME.version
+    compileSdk = CompileSDK.MAX_SDK.version
 
     defaultConfig {
-        applicationId = "com.rizwansayyed.zene"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = AndroidVersion.PACKAGE_NAME.version
+        minSdk = CompileSDK.MIN_SDK.version
+        targetSdk = CompileSDK.MAX_SDK.version
+        versionCode = CompileSDK.VERSION_CODE.version
+        versionName = AndroidVersion.APP_VERSION.version
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -39,7 +39,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = AndroidVersion.KOTLIN_COMPILE.version
     }
     packaging {
         resources {
@@ -49,20 +49,36 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation(platform("androidx.compose:compose-bom:2023.09.00"))
+    implementation("androidx.core:core-ktx:${DependenciesVersion.KOTLIN_VERSION.version}")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${DependenciesVersion.RUNTIME_KTX.version}")
+    implementation("androidx.activity:activity-compose:${DependenciesVersion.ACTIVITY_COMPOSE.version}")
+    implementation(platform("androidx.compose:compose-bom:${DependenciesVersion.COMPOSE.version}"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.09.00"))
+    androidTestImplementation("androidx.test.ext:junit:${TestingDependenciesVersion.JUnit.version}")
+    androidTestImplementation("androidx.test.espresso:espresso-core:${TestingDependenciesVersion.ESPRESSO.version}")
+    androidTestImplementation(platform("androidx.compose:compose-bom:${DependenciesVersion.COMPOSE.version}"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+enum class CompileSDK(val version: Int) {
+    MAX_SDK(34), MIN_SDK(24), VERSION_CODE(23)
+}
+
+enum class AndroidVersion(val version: String) {
+    PACKAGE_NAME("com.rizwansayyed.zene"), APP_VERSION("1.0.000352"), KOTLIN_COMPILE("1.5.3"),
+    ANDROID_VERSION("8.1.1")
+}
+
+enum class DependenciesVersion(val version: String) {
+    KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.7.2"), COMPOSE("2023.09.00")
+}
+
+enum class TestingDependenciesVersion(val version: String) {
+    JUnit("1.1.5"), ESPRESSO("3.5.1")
 }
