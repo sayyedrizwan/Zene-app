@@ -64,8 +64,8 @@ fun ZeneTheme(
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 WindowCompat.getInsetsController(window, view).apply {
-                    isAppearanceLightStatusBars = !darkTheme
-                    isAppearanceLightNavigationBars = !darkTheme
+                    isAppearanceLightStatusBars = false
+                    isAppearanceLightNavigationBars = false
                 }
             }
         }

@@ -40,7 +40,7 @@ fun MainHomePageView() {
 
     val columnModifier = Modifier
         .fillMaxSize()
-        .background(if (isSystemInDarkTheme()) DarkBlack else Color.White)
+        .background(DarkBlack)
 
 
     LazyVerticalGrid(columns = GridCells.Fixed(2), columnModifier) {

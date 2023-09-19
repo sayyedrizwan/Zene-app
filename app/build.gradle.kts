@@ -75,6 +75,8 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:${DependenciesVersion.V.version}")
 
     implementation("io.coil-kt:coil-compose:${DependenciesVersion.COIL.version}")
+
+    implementation("androidx.datastore:datastore-preferences:${DependenciesVersion.V.version}")
 }
 
 enum class CompileSDK(val version: Int) {

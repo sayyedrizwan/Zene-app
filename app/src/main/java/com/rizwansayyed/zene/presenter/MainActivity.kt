@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.MainHomePageView
+import com.rizwansayyed.zene.presenter.ui.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +23,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             ZeneTheme {
                 MainHomePageView()
+
+//                MainSplashView()
             }
         }
 
