@@ -2,6 +2,9 @@ package com.rizwansayyed.zene.presenter.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -11,12 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.urbanistFamily
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 
 @Composable
 fun TextSemiBold(
@@ -30,9 +35,28 @@ fun TextSemiBold(
         modifier = modifier,
         color = color,
         fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Light,
+        fontWeight = FontWeight.SemiBold,
         maxLines = if (singleLine) 1 else 10,
         fontSize = 18.scaledSp()
+    )
+}
+
+
+@Composable
+fun TextSemiBoldBig(
+    v: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    singleLine: Boolean = false
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.SemiBold,
+        maxLines = if (singleLine) 1 else 10,
+        fontSize = 20.scaledSp()
     )
 }
 
@@ -139,6 +163,7 @@ fun TextThin(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Thin,
         maxLines = if (singleLine) 1 else 10,
+        fontSize = 15.scaledSp()
     )
 }
 
@@ -164,4 +189,22 @@ fun SmallIcons(icon: Int, click: () -> Unit) {
             },
         colorFilter = ColorFilter.tint(Color.White)
     )
+}
+
+@Composable
+fun TopInfoWithSeeMore(v: String) {
+    Row(
+        Modifier
+            .padding(horizontal = 4.dp)
+            .fillMaxWidth()
+    ) {
+        TextSemiBold(v)
+
+        Spacer(Modifier.weight(1f))
+
+        TextThin(stringResource(id = R.string.see_all), Modifier.clickable {
+            "recentplay see all".toast()
+        })
+    }
+
 }

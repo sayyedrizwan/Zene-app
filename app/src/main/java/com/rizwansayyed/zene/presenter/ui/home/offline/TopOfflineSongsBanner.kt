@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextBoldBig
+import com.rizwansayyed.zene.presenter.ui.TextLight
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.OfflineSongsViewModel
@@ -55,6 +56,6 @@ fun TopBannerSuggestions() {
 
         Spacer(Modifier.height(1.dp))
 
-        TextSemiBold("Taylor Swift")
+        TextLight("Taylor Swift")
     }
 }
