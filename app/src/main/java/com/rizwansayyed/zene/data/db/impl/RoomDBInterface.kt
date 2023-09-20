@@ -5,5 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RoomDBInterface {
 
-   suspend fun recentSixPlayed(): Flow<List<RecentPlayedEntity>>
+   suspend fun recentSixPlayed(): Flow<Flow<List<RecentPlayedEntity>>>
+
+   suspend fun insert(v: RecentPlayedEntity): Flow<Unit>
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +28,7 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 fun TextSemiBold(
     v: String,
     modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false
 ) {
@@ -37,7 +39,8 @@ fun TextSemiBold(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.SemiBold,
         maxLines = if (singleLine) 1 else 10,
-        fontSize = 18.scaledSp()
+        fontSize = 18.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -46,6 +49,7 @@ fun TextSemiBold(
 fun TextSemiBoldBig(
     v: String,
     modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false
 ) {
@@ -56,7 +60,8 @@ fun TextSemiBoldBig(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.SemiBold,
         maxLines = if (singleLine) 1 else 10,
-        fontSize = 20.scaledSp()
+        fontSize = 20.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -65,6 +70,7 @@ fun TextSemiBoldBig(
 fun TextBoldBig(
     v: String,
     modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false
 ) {
@@ -75,7 +81,8 @@ fun TextBoldBig(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Bold,
         maxLines = if (singleLine) 1 else 10,
-        fontSize = 20.scaledSp()
+        fontSize = 20.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -83,6 +90,7 @@ fun TextBoldBig(
 fun TextBold(
     v: String,
     modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false
 ) {
@@ -93,7 +101,8 @@ fun TextBold(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Bold,
         maxLines = if (singleLine) 1 else 10,
-        fontSize = 18.scaledSp()
+        fontSize = 18.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -102,6 +111,7 @@ fun TextBold(
 fun TextLight(
     v: String,
     modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false
 ) {
@@ -112,6 +122,7 @@ fun TextLight(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Light,
         maxLines = if (singleLine) 1 else 10,
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -119,6 +130,7 @@ fun TextLight(
 fun TextMedium(
     v: String,
     modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false
 ) {
@@ -129,6 +141,7 @@ fun TextMedium(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Medium,
         maxLines = if (singleLine) 1 else 10,
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -137,6 +150,7 @@ fun TextRegular(
     v: String,
     modifier: Modifier = Modifier,
     color: Color = Color.White,
+    doCenter: Boolean = false,
     singleLine: Boolean = false
 ) {
     Text(
@@ -146,6 +160,7 @@ fun TextRegular(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Normal,
         maxLines = if (singleLine) 1 else 10,
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -153,6 +168,7 @@ fun TextRegular(
 fun TextThin(
     v: String,
     modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false
 ) {
@@ -163,7 +179,8 @@ fun TextThin(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Thin,
         maxLines = if (singleLine) 1 else 10,
-        fontSize = 15.scaledSp()
+        fontSize = 15.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
@@ -192,18 +209,18 @@ fun SmallIcons(icon: Int, click: () -> Unit) {
 }
 
 @Composable
-fun TopInfoWithSeeMore(v: String) {
+fun TopInfoWithSeeMore(v: Int, s: Int?, click: () -> Unit) {
     Row(
         Modifier
             .padding(horizontal = 4.dp)
             .fillMaxWidth()
     ) {
-        TextSemiBold(v)
+        TextSemiBold(stringResource(id = v))
 
         Spacer(Modifier.weight(1f))
 
-        TextThin(stringResource(id = R.string.see_all), Modifier.clickable {
-            "recentplay see all".toast()
+        if (s != null) TextThin(stringResource(id = s), Modifier.clickable {
+           click()
         })
     }
 

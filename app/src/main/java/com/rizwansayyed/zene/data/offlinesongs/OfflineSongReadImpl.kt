@@ -14,11 +14,12 @@ class OfflineSongReadImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : OfflineSongsReadInterface {
 
-    override suspend fun readAllSongs() = flow {
+    override suspend fun readAllSongs(limit: Int?) = flow {
         val songs = mutableListOf<OfflineSongsDetailsResult>()
+        val sort = if (limit == null)sortOrder else getWithLimit(limit)
 
         val internalStorageCursor = context.contentResolver
-            .query(internalStorageUri, songProjection, null, null, sortOrder)
+            .query(internalStorageUri, songProjection, null, null, sort)
 
         internalStorageCursor?.use { cursor ->
             songsFromCursor(cursor, songs)
@@ -27,7 +28,7 @@ class OfflineSongReadImpl @Inject constructor(
         internalStorageCursor?.close()
 
         val externalStorageCursor = context.contentResolver
-            .query(externalStorageUri, songProjection, null, null, sortOrder)
+            .query(externalStorageUri, songProjection, null, null, sort)
 
         externalStorageCursor?.use { cursor ->
             songsFromCursor(cursor, songs)

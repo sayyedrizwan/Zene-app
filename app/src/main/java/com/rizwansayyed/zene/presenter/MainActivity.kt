@@ -6,9 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.MainHomePageView
-import com.rizwansayyed.zene.presenter.ui.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -16,13 +16,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val navViewModel: HomeNavViewModel by viewModels()
+    private val roomViewModel: RoomDbViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)
         setContent {
             ZeneTheme {
-                MainHomePageView()
+                MainHomePageView(navViewModel, roomViewModel)
 
 //                MainSplashView()
             }

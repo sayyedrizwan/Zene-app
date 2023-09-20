@@ -1,38 +1,73 @@
 package com.rizwansayyed.zene.presenter.ui.home.view
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
+import com.rizwansayyed.zene.presenter.theme.LightBlack
+import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
-import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 
 @Composable
-fun RecentPlayList(value: MutableState<List<RecentPlayedEntity>?>) {
-    val roomViewModel: RoomDbViewModel = hiltViewModel()
-
-
-    if (roomViewModel.recentSongPlayed != null) Column(verticalArrangement = Arrangement.Center) {
+fun RecentPlayList(list: List<RecentPlayedEntity>?) {
+    if (list != null) Column(verticalArrangement = Arrangement.Center) {
         Spacer(Modifier.height(80.dp))
 
-        if ((roomViewModel.recentSongPlayed?.size ?: 0) > 6)
-            TopInfoWithSeeMore(stringResource(id = R.string.recent_played))
+        if (list.isNotEmpty())
+            TopInfoWithSeeMore(
+                R.string.recent_played, if (list.size >= 6) R.string.see_all else null
+            ) {
+                "recentplay see all".toast()
+            }
     }
+}
 
-    LaunchedEffect(Unit) {
-        roomViewModel.recentSixPlayedSongs()
-    }
+@Composable
+fun RecentPlayItemsShort(song: RecentPlayedEntity) {
+    Column(
+        Modifier
+            .padding(5.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(LightBlack)
+            .fillMaxWidth(),
+        Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(14.dp))
 
-    LaunchedEffect(roomViewModel.recentSongPlayed) {
-        value.value = roomViewModel.recentSongPlayed
+        AsyncImage(
+            song.thumbnail,
+            "",
+            Modifier
+                .size(LocalConfiguration.current.screenWidthDp.dp / 4)
+                .clip(RoundedCornerShape(50))
+        )
+        Spacer(Modifier.height(14.dp))
+
+        TextSemiBold(song.name, doCenter = true, singleLine = true)
+
+        Spacer(Modifier.height(4.dp))
+
+        TextThin(song.artists, doCenter = true, singleLine = true)
+
+        Spacer(Modifier.height(16.dp))
     }
 }

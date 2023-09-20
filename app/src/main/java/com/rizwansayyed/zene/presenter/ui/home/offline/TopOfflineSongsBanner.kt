@@ -29,8 +29,6 @@ val albums =
 
 @Composable
 fun TopBannerSuggestions() {
-    val offlineViewModel: OfflineSongsViewModel = hiltViewModel()
-
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     Column(

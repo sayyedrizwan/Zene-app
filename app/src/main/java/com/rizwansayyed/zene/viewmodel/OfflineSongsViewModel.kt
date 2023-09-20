@@ -2,7 +2,9 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.SongDataResponse
@@ -26,13 +28,16 @@ class OfflineSongsViewModel @Inject constructor(private val offlineSong: Offline
         private set
 
 
-    var songsAddedThisWeek =
-        mutableStateOf<SongDataResponse<List<OfflineSongsDetailsResult>>>(SongDataResponse.Empty)
+    var top20Songs by mutableStateOf<List<OfflineSongsDetailsResult>>(emptyList())
+        private set
+
+
+    var songsAddedThisWeek = mutableStateOf<List<OfflineSongsDetailsResult>>(emptyList())
         private set
 
 
     fun songsList() = viewModelScope.launch(Dispatchers.IO) {
-        offlineSong.readAllSongs().onStart {
+        offlineSong.readAllSongs(null).onStart {
             allSongs.value = SongDataResponse.Loading
         }.catch {
             allSongs.value = SongDataResponse.Error(it)
@@ -43,11 +48,21 @@ class OfflineSongsViewModel @Inject constructor(private val offlineSong: Offline
 
     fun songAddedThisWeek() = viewModelScope.launch(Dispatchers.IO) {
         offlineSong.readThisWeekAddedSongs().onStart {
-            songsAddedThisWeek.value = SongDataResponse.Loading
+            songsAddedThisWeek.value = emptyList()
         }.catch {
-            songsAddedThisWeek.value = SongDataResponse.Error(it)
+            songsAddedThisWeek.value = emptyList()
         }.collectLatest {
-            songsAddedThisWeek.value = SongDataResponse.Success(it)
+            songsAddedThisWeek.value = emptyList()
+        }
+    }
+
+    fun latest20Songs() = viewModelScope.launch(Dispatchers.IO) {
+        offlineSong.readAllSongs(20).onStart {
+            top20Songs = emptyList()
+        }.catch {
+            top20Songs = emptyList()
+        }.collectLatest {
+            top20Songs = it
         }
     }
 }

@@ -10,6 +10,7 @@ interface OfflineSongsReadInterface {
     val internalStorageUri: Uri get() = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
     val externalStorageUri: Uri get() = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
     val sortOrder: String get() = "${MediaStore.Audio.Media.DATE_ADDED} DESC"
+    fun getWithLimit(limit: Int) = "${MediaStore.Audio.Media.DATE_ADDED} DESC LIMIT $limit"
 
     val songProjection: Array<String>
         get() = arrayOf(
@@ -23,6 +24,6 @@ interface OfflineSongsReadInterface {
         )
 
     suspend fun songsFromCursor(cursor: Cursor, songs: MutableList<OfflineSongsDetailsResult>)
-    suspend fun readAllSongs(): Flow<MutableList<OfflineSongsDetailsResult>>
+    suspend fun readAllSongs(limit: Int?): Flow<MutableList<OfflineSongsDetailsResult>>
     suspend fun readThisWeekAddedSongs(): Flow<MutableList<OfflineSongsDetailsResult>>
 }

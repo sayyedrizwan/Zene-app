@@ -11,7 +11,7 @@ data class RecentPlayedEntity(
     val artists: String,
     var playTimes: Int,
     val pid: String,
-    val img: String,
+    val thumbnail: String,
     var timestamp: Long,
     var playerDuration: Long,
     var lastListenDuration: Long

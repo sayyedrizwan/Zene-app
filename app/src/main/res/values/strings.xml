@@ -2,4 +2,6 @@
     <string name="app_name">Zene</string>
     <string name="see_all">see all</string>
     <string name="recent_played">Recent Played</string>
+    <string name="device_songs">Device Songs</string>
+    <string name="switch_to_local_songs">switch to device songs</string>
 </resources>
