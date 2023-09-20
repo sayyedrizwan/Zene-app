@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.SongDataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkBlack
+import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.OfflineSongsView
 import com.rizwansayyed.zene.presenter.ui.home.online.OnlineSongsView
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -44,6 +45,10 @@ fun MainHomePageView() {
 
 
     LazyVerticalGrid(columns = GridCells.Fixed(2), columnModifier) {
+
+        item(span = { GridItemSpan(2) }) {
+            HomepageTopView()
+        }
 //        item(span = { GridItemSpan(2) }) {
 //            if (nav.isOnline.value)
 //                OnlineSongsView()
