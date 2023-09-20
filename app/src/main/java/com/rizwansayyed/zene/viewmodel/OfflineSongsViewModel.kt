@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.SongDataResponse
 import com.rizwansayyed.zene.data.offlinesongs.OfflineSongsReadInterface
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,32 +33,20 @@ class OfflineSongsViewModel @Inject constructor(private val offlineSong: Offline
         private set
 
 
-    var songsAddedThisWeek = mutableStateOf<List<OfflineSongsDetailsResult>>(emptyList())
-        private set
-
-
     fun songsList() = viewModelScope.launch(Dispatchers.IO) {
-        offlineSong.readAllSongs(null).onStart {
+        offlineSong.readAllSongs(0, 100).onStart {
             allSongs.value = SongDataResponse.Loading
         }.catch {
+            it.message?.toast()
             allSongs.value = SongDataResponse.Error(it)
         }.collectLatest {
+            it.size?.toast()
             allSongs.value = SongDataResponse.Success(it)
         }
     }
 
-    fun songAddedThisWeek() = viewModelScope.launch(Dispatchers.IO) {
-        offlineSong.readThisWeekAddedSongs().onStart {
-            songsAddedThisWeek.value = emptyList()
-        }.catch {
-            songsAddedThisWeek.value = emptyList()
-        }.collectLatest {
-            songsAddedThisWeek.value = emptyList()
-        }
-    }
-
     fun latest20Songs() = viewModelScope.launch(Dispatchers.IO) {
-        offlineSong.readAllSongs(20).onStart {
+        offlineSong.readAllSongs(0, 80).onStart {
             top20Songs = emptyList()
         }.catch {
             top20Songs = emptyList()

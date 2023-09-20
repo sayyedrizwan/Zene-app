@@ -13,7 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
+import com.rizwansayyed.zene.presenter.ui.TextLight
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.OfflineSongsViewModel
 
 @Composable
@@ -42,4 +44,5 @@ fun LocalSongsTop() {
 @Composable
 fun LocalSongsItems(songs: OfflineSongsDetailsResult) {
 
+    TextLight(songs.title)
 }

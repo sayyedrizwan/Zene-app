@@ -213,6 +213,7 @@ fun TopInfoWithSeeMore(v: Int, s: Int?, click: () -> Unit) {
     Row(
         Modifier
             .padding(horizontal = 4.dp)
+            .padding(bottom = 11.dp)
             .fillMaxWidth()
     ) {
         TextSemiBold(stringResource(id = v))

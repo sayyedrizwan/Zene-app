@@ -1,20 +1,32 @@
 package com.rizwansayyed.zene.presenter.ui
 
+import android.graphics.ImageDecoder
+import android.os.Build
+import android.provider.MediaStore
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import com.rizwansayyed.zene.data.SongDataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkBlack
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
@@ -22,12 +34,17 @@ import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayItemsShort
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayList
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.OfflineSongsViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 
 @Composable
 fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
     val recentPlayList by room.recentSongPlayed.collectAsState(initial = null)
+    val offlineSongsViewModel: OfflineSongsViewModel = hiltViewModel()
+
+
+    val context = LocalContext.current.applicationContext
 
     val columnModifier = Modifier
         .fillMaxSize()
@@ -62,28 +79,34 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
                 Spacer(Modifier.height(120.dp))
             }
         }
+        when (val v = offlineSongsViewModel.allSongs.value) {
+            SongDataResponse.Empty -> {}
+            is SongDataResponse.Error -> {}
+            SongDataResponse.Loading -> {}
+            is SongDataResponse.Success -> items(v.item) {
+                Column {
 
-//        when (val v = offlineViewModel.allSongs.value) {
-//            SongDataResponse.Empty -> {}
-//            is SongDataResponse.Error -> {}
-//            SongDataResponse.Loading -> {}
-//            is SongDataResponse.Success -> items(v.item) {
-//                Column {
-//                    AsyncImage(
-//                        model = it.art,
+                    AsyncImage(
+                        it.art,
+                        contentDescription = null,
+                        modifier = Modifier.size(70.dp),
+                    )
+
+//                    Image(
+//                        bitmap = bitmap.asImageBitmap(),
 //                        contentDescription = null,
 //                        modifier = Modifier.size(70.dp),
 //                    )
-//                    Text(text = it.title)
-//                    Text(text = it.artist)
-//                    Text(text = it.art.toString())
-//                }
-//            }
-//        }
+                    Text(text = it.title, color = Color.White)
+                    Text(text = it.artist, color = Color.White)
+                    Text(text = it.data.toString(), color = Color.White)
+                }
+            }
+        }
     }
 
 //    LaunchedEffect(Unit) {
-//        offlineViewModel.songsList()
+    offlineSongsViewModel.songsList()
 //        offlineViewModel.songAddedThisWeek()
 //    }
 }

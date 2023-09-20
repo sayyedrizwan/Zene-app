@@ -1,11 +1,13 @@
 package com.rizwansayyed.zene.presenter
 
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.MainHomePageView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
@@ -31,5 +33,6 @@ class MainActivity : ComponentActivity() {
 
 
         navViewModel.checkAndSetOnlineStatus()
+
     }
 }
