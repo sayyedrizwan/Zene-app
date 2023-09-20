@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -77,6 +78,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:${DependenciesVersion.COIL.version}")
 
     implementation("androidx.datastore:datastore-preferences:${DependenciesVersion.V.version}")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${DependenciesVersion.COROUTINES.version}")
+
+    implementation("androidx.room:room-ktx:${DependenciesVersion.ROOM.version}")
+    ksp("androidx.room:room-compiler:${DependenciesVersion.ROOM.version}")
 }
 
 enum class CompileSDK(val version: Int) {
@@ -90,7 +96,7 @@ enum class AndroidVersion(val version: String) {
 
 enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.7.2"), COMPOSE("2023.09.00"),
-    HILT("2.48"), V("1.0.0"), COIL("2.4.0")
+    HILT("2.48"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0-beta01")
 }
 
 enum class TestingDependenciesVersion(val version: String) {

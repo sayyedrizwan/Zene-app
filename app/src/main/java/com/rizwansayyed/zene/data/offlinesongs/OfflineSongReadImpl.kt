@@ -37,6 +37,34 @@ class OfflineSongReadImpl @Inject constructor(
         emit(songs)
     }
 
+    override suspend fun readThisWeekAddedSongs() = flow {
+        val songs = mutableListOf<OfflineSongsDetailsResult>()
+
+        val oneWeekAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)
+
+        val selection = "${MediaStore.Audio.Media.DATE_ADDED} >= ?"
+        val selectionArgs = arrayOf(oneWeekAgo.toString())
+
+        val internalStorageCursor = context.contentResolver
+            .query(internalStorageUri, songProjection, selection, selectionArgs, sortOrder)
+
+        internalStorageCursor?.use { cursor ->
+            songsFromCursor(cursor, songs)
+        }
+
+        internalStorageCursor?.close()
+
+        val externalStorageCursor = context.contentResolver
+            .query(externalStorageUri, songProjection, selection, selectionArgs, sortOrder)
+
+        externalStorageCursor?.use { cursor ->
+            songsFromCursor(cursor, songs)
+        }
+        externalStorageCursor?.close()
+
+        emit(songs)
+    }
+
     override suspend fun songsFromCursor(
         cursor: Cursor, songs: MutableList<OfflineSongsDetailsResult>
     ) {
@@ -58,8 +86,8 @@ class OfflineSongReadImpl @Inject constructor(
             val albumId = cursor.getLong(albumIdColumn)
 
             val art = ContentUris.withAppendedId(
-                    Uri.parse("content://media/external/audio/albumart"), albumId
-                )
+                Uri.parse("content://media/external/audio/albumart"), albumId
+            )
 
             val song = OfflineSongsDetailsResult(id, title, artist, album, duration, data, art)
             songs.add(song)

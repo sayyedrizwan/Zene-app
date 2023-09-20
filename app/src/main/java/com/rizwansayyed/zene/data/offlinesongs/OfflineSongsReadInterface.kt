@@ -24,4 +24,5 @@ interface OfflineSongsReadInterface {
 
     suspend fun songsFromCursor(cursor: Cursor, songs: MutableList<OfflineSongsDetailsResult>)
     suspend fun readAllSongs(): Flow<MutableList<OfflineSongsDetailsResult>>
+    suspend fun readThisWeekAddedSongs(): Flow<MutableList<OfflineSongsDetailsResult>>
 }

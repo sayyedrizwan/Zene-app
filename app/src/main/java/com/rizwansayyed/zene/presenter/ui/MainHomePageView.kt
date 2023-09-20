@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.data.SongDataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkBlack
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.OfflineSongsView
+import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
 import com.rizwansayyed.zene.presenter.ui.home.online.OnlineSongsView
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.OfflineSongsViewModel
@@ -45,38 +46,42 @@ fun MainHomePageView() {
 
 
     LazyVerticalGrid(columns = GridCells.Fixed(2), columnModifier) {
-
         item(span = { GridItemSpan(2) }) {
             HomepageTopView()
         }
-//        item(span = { GridItemSpan(2) }) {
-//            if (nav.isOnline.value)
-//                OnlineSongsView()
-//            else
-//                OfflineSongsView()
-//        }
 
-        when (val v = offlineViewModel.allOfflineSongs.value) {
-            SongDataResponse.Empty -> {}
-            is SongDataResponse.Error -> {}
-            SongDataResponse.Loading -> {}
-            is SongDataResponse.Success -> items(v.item) {
-                Column {
-                    AsyncImage(
-                        model = it.art,
-                        contentDescription = null,
-                        modifier = Modifier.size(70.dp),
-                    )
-                    Text(text = it.title)
-                    Text(text = it.artist)
-                    Text(text = it.art.toString())
-                }
-            }
+        item(span = { GridItemSpan(2) }) {
+//            if (nav.isOnline.value)
+//                Column {}
+//            else
+                TopBannerSuggestions()
         }
+
+        item(span = { GridItemSpan(2) }) {
+
+        }
+
+//        when (val v = offlineViewModel.allSongs.value) {
+//            SongDataResponse.Empty -> {}
+//            is SongDataResponse.Error -> {}
+//            SongDataResponse.Loading -> {}
+//            is SongDataResponse.Success -> items(v.item) {
+//                Column {
+//                    AsyncImage(
+//                        model = it.art,
+//                        contentDescription = null,
+//                        modifier = Modifier.size(70.dp),
+//                    )
+//                    Text(text = it.title)
+//                    Text(text = it.artist)
+//                    Text(text = it.art.toString())
+//                }
+//            }
+//        }
     }
 
     LaunchedEffect(Unit) {
-        delay(2.seconds)
-        offlineViewModel.offlineSongsList()
+        offlineViewModel.songsList()
+        offlineViewModel.songAddedThisWeek()
     }
 }

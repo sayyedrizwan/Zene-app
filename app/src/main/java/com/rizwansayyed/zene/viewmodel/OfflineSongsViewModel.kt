@@ -21,20 +21,33 @@ import javax.inject.Inject
 class OfflineSongsViewModel @Inject constructor(private val offlineSong: OfflineSongsReadInterface) :
     ViewModel() {
 
-    var allOfflineSongs =
+    var allSongs =
         mutableStateOf<SongDataResponse<List<OfflineSongsDetailsResult>>>(SongDataResponse.Empty)
         private set
 
 
-    fun offlineSongsList() = viewModelScope.launch(Dispatchers.IO) {
-        offlineSong.readAllSongs().onStart {
-            allOfflineSongs.value = SongDataResponse.Loading
-        }.catch {
-            Log.d("TAG", "offlineSongsList: data ${it.message}")
+    var songsAddedThisWeek =
+        mutableStateOf<SongDataResponse<List<OfflineSongsDetailsResult>>>(SongDataResponse.Empty)
+        private set
 
-//            allOfflineSongs.value = SongDataResponse.Error(it)
+
+    fun songsList() = viewModelScope.launch(Dispatchers.IO) {
+        offlineSong.readAllSongs().onStart {
+            allSongs.value = SongDataResponse.Loading
+        }.catch {
+            allSongs.value = SongDataResponse.Error(it)
         }.collectLatest {
-            allOfflineSongs.value = SongDataResponse.Success(it)
+            allSongs.value = SongDataResponse.Success(it)
+        }
+    }
+
+    fun songAddedThisWeek() = viewModelScope.launch(Dispatchers.IO) {
+        offlineSong.readThisWeekAddedSongs().onStart {
+            songsAddedThisWeek.value = SongDataResponse.Loading
+        }.catch {
+            songsAddedThisWeek.value = SongDataResponse.Error(it)
+        }.collectLatest {
+            songsAddedThisWeek.value = SongDataResponse.Success(it)
         }
     }
 }
