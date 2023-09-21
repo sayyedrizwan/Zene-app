@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkBlack
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
+import com.rizwansayyed.zene.presenter.ui.home.view.OfflineDownloadHeader
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayItemsShort
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayList
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -41,15 +42,10 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 @Composable
 fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
     val recentPlayList by room.recentSongPlayed.collectAsState(initial = null)
-    val offlineSongsViewModel: OfflineSongsViewModel = hiltViewModel()
-
-
-    val context = LocalContext.current.applicationContext
 
     val columnModifier = Modifier
         .fillMaxSize()
         .background(DarkBlack)
-
 
     LazyVerticalGrid(columns = GridCells.Fixed(2), columnModifier) {
         item(span = { GridItemSpan(2) }) {
@@ -70,8 +66,13 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
         items(recentPlayList ?: emptyList()) {
             RecentPlayItemsShort(it)
         }
+
         item(span = { GridItemSpan(2) }) {
             if (nav.isOnline.value) LocalSongsTop()
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            OfflineDownloadHeader()
         }
 
         item {
