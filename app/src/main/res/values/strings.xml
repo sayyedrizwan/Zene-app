@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Zene</string>
     <string name="see_all">see all</string>
+    <string name="view_all">view all</string>
     <string name="recent_played">Recent Played</string>
     <string name="recent_device_songs">Recent Device Songs</string>
     <string name="switch_">switch</string>
     <string name="offline_downloaded_songs">Offline Downloaded Songs</string>
     <string name="saved_playlists">Saved Playlists</string>
+    <string name="radio_station_in_city">Radio Station in your city</string>
+    <string name="error_loading_radio_station">Error loading radio station near you. Try again after some times.</string>
 </resources>

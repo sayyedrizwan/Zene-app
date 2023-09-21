@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImpl
@@ -29,22 +30,21 @@ class HomeApiViewModel @Inject constructor(private val onlineRadioImpl: OnlineRa
     init {
         viewModelScope.launch(Dispatchers.IO) {
             delay(500)
-            onlineRadios()
+            onlineRadiosInCity()
         }
     }
 
-    var onlineRadio by mutableStateOf<OnlineRadioResponse>(emptyList())
+    var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
         private set
 
-
-    private fun onlineRadios() = viewModelScope.launch(Dispatchers.IO) {
-        onlineRadioImpl.onlineRadioSearch().onStart {
-            onlineRadio = emptyList()
+    private fun onlineRadiosInCity() = viewModelScope.launch(Dispatchers.IO) {
+        onlineRadioImpl.onlineRadioSearch(false).onStart {
+            onlineRadio = DataResponse.Loading
         }.catch {
-            radioList.deleteRecursively()
-            onlineRadio = emptyList()
+            onlineRadio = DataResponse.Error(it)
         }.collectLatest {
-            onlineRadio = it
+            it.size.toast()
+            onlineRadio = DataResponse.Success(it)
         }
     }
 

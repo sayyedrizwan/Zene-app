@@ -1,19 +1,14 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rizwansayyed.zene.data.SongDataResponse
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.offlinesongs.OfflineSongsReadInterface
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
-import com.rizwansayyed.zene.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

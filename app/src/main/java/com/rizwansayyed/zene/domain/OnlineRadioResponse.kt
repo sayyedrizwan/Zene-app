@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.domain
 
+import com.rizwansayyed.zene.data.utils.moshi
+
 typealias OnlineRadioResponse = List<OnlineRadioResponseItem>
 
 data class OnlineRadioCacheResponse(
@@ -7,8 +9,9 @@ data class OnlineRadioCacheResponse(
     val list: List<OnlineRadioResponseItem>
 )
 
-fun OnlineRadioResponse.toCache(): OnlineRadioCacheResponse {
-    return OnlineRadioCacheResponse(System.currentTimeMillis(), this)
+fun OnlineRadioResponse.toTxtCache(): String? {
+    val r = OnlineRadioCacheResponse(System.currentTimeMillis(), this)
+    return moshi.adapter(r.javaClass).toJson(r)
 }
 
 data class OnlineRadioResponseItem(

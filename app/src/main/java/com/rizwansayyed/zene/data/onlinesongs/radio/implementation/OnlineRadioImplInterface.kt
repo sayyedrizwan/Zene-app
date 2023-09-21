@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface OnlineRadioImplInterface {
 
-    suspend fun onlineRadioSearch(): Flow<OnlineRadioResponse>
+    suspend fun onlineRadioSearch(all: Boolean = true): Flow<OnlineRadioResponse>
 
 }

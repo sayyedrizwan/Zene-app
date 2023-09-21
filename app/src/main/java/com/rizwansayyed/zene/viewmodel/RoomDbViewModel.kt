@@ -5,23 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rizwansayyed.zene.data.SongDataResponse
 import com.rizwansayyed.zene.data.db.impl.RoomDBImpl
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
-import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class RoomDbViewModel @Inject constructor(private val roomDBImpl: RoomDBImpl) : ViewModel() {
