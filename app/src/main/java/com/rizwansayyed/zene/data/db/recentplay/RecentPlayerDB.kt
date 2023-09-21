@@ -5,5 +5,5 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [RecentPlayedEntity::class], version = 2)
 abstract class RecentPlayerDB : RoomDatabase() {
-    abstract fun recentPlayedDao(): RecentPlayedDao
+    abstract fun dao(): RecentPlayedDao
 }
