@@ -28,9 +28,9 @@ object RoomModule {
     fun recentPlayedDao(
         @ApplicationContext context: Context
     ): RecentPlayedDao = Room.databaseBuilder(context, RecentPlayerDB::class.java, recent_played_db)
-        .addMigrations(MIGRATION_1_2_RECENT_PLAYED).build().dao()
+        .addMigrations(MIGRATION_2_3_RECENT_PLAYED).build().dao()
 
-    private val MIGRATION_1_2_RECENT_PLAYED = object : Migration(1, 2) {
+    private val MIGRATION_2_3_RECENT_PLAYED = object : Migration(2, 3) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL("ALTER TABLE $recent_played_db RENAME COLUMN img TO thumbnail")
         }
