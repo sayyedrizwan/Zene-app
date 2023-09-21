@@ -79,7 +79,6 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
 
         item(span = { GridItemSpan(2) }) {
             if (nav.isOnline.value) PlaylistList()
-
         }
 
 

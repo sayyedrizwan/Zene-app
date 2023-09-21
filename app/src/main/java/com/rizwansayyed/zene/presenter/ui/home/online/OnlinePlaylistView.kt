@@ -19,15 +19,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextRegularTwoLine
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @Composable
 fun PlaylistList() {
+    val roomDb : RoomDbViewModel = hiltViewModel()
+
     Column(verticalArrangement = Arrangement.Center) {
         Spacer(Modifier.height(80.dp))
 
@@ -48,7 +52,10 @@ const val datee =
 fun PlaylistItems() {
     val width = LocalConfiguration.current.screenWidthDp
 
-    Column(Modifier.padding(end = 36.dp).width((width / 2.3).dp), Arrangement.Center, Alignment.CenterHorizontally) {
+    Column(
+        Modifier
+            .padding(end = 36.dp)
+            .width((width / 2.3).dp), Arrangement.Center, Alignment.CenterHorizontally) {
         Box {
             Image(
                 painterResource(id = R.drawable.ic_cd_blue),
