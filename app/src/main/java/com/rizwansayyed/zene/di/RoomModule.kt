@@ -41,12 +41,20 @@ object RoomModule {
     @Singleton
     fun offlineDownloadedDao(
         @ApplicationContext context: Context
-    ): OfflineDownloadedDao = Room.databaseBuilder(context, OfflineDownloadedDB::class.java, offline_downloaded_songs_db)
-        .addMigrations(MIGRATION_1_2_OFFLINE_DOWNLOADED).build().dao()
+    ): OfflineDownloadedDao =
+        Room.databaseBuilder(context, OfflineDownloadedDB::class.java, offline_downloaded_songs_db)
+            .addMigrations(MIGRATION_1_2_OFFLINE_DOWNLOADED)
+            .addMigrations(MIGRATION_2_3_OFFLINE_DOWNLOADED).build().dao()
 
     private val MIGRATION_1_2_OFFLINE_DOWNLOADED = object : Migration(1, 2) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL("ALTER TABLE $offline_downloaded_songs_db RENAME COLUMN img TO thumbnail")
+        }
+    }
+
+    private val MIGRATION_2_3_OFFLINE_DOWNLOADED = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE $offline_downloaded_songs_db ADD COLUMN viewed INTEGER NOT NULL DEFAULT 0")
         }
     }
 

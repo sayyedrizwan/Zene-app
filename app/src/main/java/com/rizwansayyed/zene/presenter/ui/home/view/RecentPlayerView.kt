@@ -21,6 +21,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.presenter.theme.LightBlack
+import com.rizwansayyed.zene.presenter.ui.SongsTitleAndArtists
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
@@ -60,14 +61,7 @@ fun RecentPlayItemsShort(song: RecentPlayedEntity) {
                 .size(LocalConfiguration.current.screenWidthDp.dp / 4)
                 .clip(RoundedCornerShape(50))
         )
-        Spacer(Modifier.height(14.dp))
 
-        TextSemiBold(song.name, doCenter = true, singleLine = true)
-
-        Spacer(Modifier.height(4.dp))
-
-        TextThin(song.artists, doCenter = true, singleLine = true)
-
-        Spacer(Modifier.height(16.dp))
+        SongsTitleAndArtists(song.name, song.artists, Modifier, true)
     }
 }

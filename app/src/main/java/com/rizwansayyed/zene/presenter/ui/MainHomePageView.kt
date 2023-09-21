@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkBlack
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
+import com.rizwansayyed.zene.presenter.ui.home.online.PlaylistList
 import com.rizwansayyed.zene.presenter.ui.home.view.OfflineDownloadHeader
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayItemsShort
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayList
@@ -53,7 +54,7 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
         }
 
         item(span = { GridItemSpan(2) }) {
-            if (!nav.isOnline.value)
+            if (nav.isOnline.value)
                 Column {}
             else
                 TopBannerSuggestions()
@@ -74,6 +75,13 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
         item(span = { GridItemSpan(2) }) {
             OfflineDownloadHeader()
         }
+
+
+        item(span = { GridItemSpan(2) }) {
+            if (nav.isOnline.value) PlaylistList()
+
+        }
+
 
         item {
             Column {

@@ -15,7 +15,8 @@ data class OfflineDownloadedEntity(
     var songPath: String,
     val timestamp: Long,
     var status: OfflineStatusTypes,
-    val playerDuration: Long
+    val playerDuration: Long,
+    val viewed: Int
 )
 
 enum class OfflineStatusTypes(val v: Int) {

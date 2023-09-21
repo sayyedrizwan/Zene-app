@@ -29,6 +29,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
 import com.rizwansayyed.zene.presenter.theme.LightBlack
+import com.rizwansayyed.zene.presenter.ui.SongsTitleAndArtists
 import com.rizwansayyed.zene.presenter.ui.TextLight
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
@@ -79,14 +80,6 @@ fun LocalSongsItems(song: OfflineSongsDetailsResult) {
                 onError = { failed = true }
             )
 
-        Spacer(Modifier.height(14.dp))
-
-        TextSemiBold(song.title, Modifier.width((width / 1.4).dp), singleLine = true)
-
-        Spacer(Modifier.height(4.dp))
-
-        TextThin(song.artist, Modifier.width((width / 1.4).dp), singleLine = true)
-
-        Spacer(Modifier.height(16.dp))
+        SongsTitleAndArtists(song.title, song.artist,  Modifier.width((width / 1.4).dp),false)
     }
 }

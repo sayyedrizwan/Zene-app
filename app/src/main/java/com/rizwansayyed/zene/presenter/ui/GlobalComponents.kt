@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -160,7 +161,27 @@ fun TextRegular(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Normal,
         maxLines = if (singleLine) 1 else 10,
-        textAlign = if (doCenter) TextAlign.Center else null
+        textAlign = if (doCenter) TextAlign.Center else null,
+        fontSize = 15.scaledSp()
+    )
+}
+
+@Composable
+fun TextRegularTwoLine(
+    v: String,
+    color: Color = Color.White,
+    doCenter: Boolean = false
+) {
+    Text(
+        v,
+        modifier = Modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Normal,
+        maxLines = 2,
+        textAlign = if (doCenter) TextAlign.Center else null,
+        fontSize = 15.scaledSp(),
+        lineHeight = 18.sp
     )
 }
 
@@ -221,8 +242,16 @@ fun TopInfoWithSeeMore(v: Int, s: Int?, click: () -> Unit) {
         Spacer(Modifier.weight(1f))
 
         if (s != null) TextThin(stringResource(id = s), Modifier.clickable {
-           click()
+            click()
         })
     }
+}
 
+@Composable
+fun SongsTitleAndArtists(title: String, artists: String, modifier: Modifier, doCenter: Boolean) {
+    Spacer(Modifier.height(14.dp))
+    TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
+    Spacer(Modifier.height(4.dp))
+    TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
+    Spacer(Modifier.height(16.dp))
 }

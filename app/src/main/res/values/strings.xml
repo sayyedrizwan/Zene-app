@@ -5,4 +5,5 @@
     <string name="recent_device_songs">Recent Device Songs</string>
     <string name="switch_">switch</string>
     <string name="offline_downloaded_songs">Offline Downloaded Songs</string>
+    <string name="saved_playlists">Saved Playlists</string>
 </resources>
