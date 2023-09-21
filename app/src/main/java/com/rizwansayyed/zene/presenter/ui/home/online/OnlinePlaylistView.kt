@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,44 +24,42 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.presenter.ui.TextRegular
+import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.presenter.ui.TextRegularTwoLine
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @Composable
 fun PlaylistList() {
-    val roomDb : RoomDbViewModel = hiltViewModel()
+    val roomDb: RoomDbViewModel = hiltViewModel()
+    val playlists by roomDb.savePlaylists.collectAsState(initial = emptyList())
 
-    Column(verticalArrangement = Arrangement.Center) {
+    if (playlists.isNotEmpty()) Column(verticalArrangement = Arrangement.Center) {
         Spacer(Modifier.height(80.dp))
 
         TopInfoWithSeeMore(R.string.saved_playlists, null) {}
 
         LazyRow {
-            items(9) {
-                PlaylistItems()
+            items(playlists) {
+                PlaylistItems(it)
             }
         }
     }
 }
 
-const val datee =
-    "https://lh3.googleusercontent.com/zMEIYn8d1PaMRfWALe0tFAZsR6HqntGr-bxwaa7l2o-t_lApRz-D4FC2UxN761FtAtVyMcrIinXoPFE=w544-h544-l90-rj"
-
 @Composable
-fun PlaylistItems() {
+fun PlaylistItems(playlist: SavedPlaylistEntity) {
     val width = LocalConfiguration.current.screenWidthDp
 
     Column(
         Modifier
             .padding(end = 36.dp)
-            .width((width / 2.3).dp), Arrangement.Center, Alignment.CenterHorizontally) {
-        Box {
+            .width((width / 2.3).dp), Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+
+        if (playlist.thumbnail.isNotEmpty()) Box {
             Image(
-                painterResource(id = R.drawable.ic_cd_blue),
-                "",
+                painterResource(id = R.drawable.ic_cd_blue), "",
                 Modifier
                     .align(Alignment.Center)
                     .width((width / 2).dp)
@@ -68,15 +68,22 @@ fun PlaylistItems() {
             )
 
             AsyncImage(
-                datee,
-                "",
+                playlist.thumbnail, playlist.name,
                 Modifier
                     .align(Alignment.Center)
                     .width((width / 2.2 - 40).dp)
                     .clip(RoundedCornerShape(15.dp))
             )
         }
+        else
+            Image(
+                painterResource(id = R.drawable.ic_cd_floating), playlist.name,
+                Modifier
+                    .width((width / 2.2 - 40).dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .padding(20.dp)
+            )
 
-        TextRegularTwoLine("Spiderman in Spiderverse is", doCenter = true)
+        TextRegularTwoLine(playlist.name, doCenter = true)
     }
 }

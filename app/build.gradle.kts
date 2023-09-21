@@ -83,6 +83,11 @@ dependencies {
 
     implementation("androidx.room:room-ktx:${DependenciesVersion.ROOM.version}")
     ksp("androidx.room:room-compiler:${DependenciesVersion.ROOM.version}")
+
+    implementation("com.squareup.retrofit2:retrofit:${DependenciesVersion.RETROFIT.version}")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:${DependenciesVersion.MOSHI.version}")
+    implementation("com.squareup.moshi:moshi-kotlin:${DependenciesVersion.MOSHI.version}")
+    implementation("com.squareup.retrofit2:converter-moshi:${DependenciesVersion.RETROFIT.version}")
 }
 
 enum class CompileSDK(val version: Int) {
@@ -96,7 +101,8 @@ enum class AndroidVersion(val version: String) {
 
 enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.7.2"), COMPOSE("2023.09.00"),
-    HILT("2.48"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0-beta01")
+    HILT("2.48"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0-beta01"),
+    RETROFIT("2.9.0"), MOSHI("1.14.0")
 }
 
 enum class TestingDependenciesVersion(val version: String) {

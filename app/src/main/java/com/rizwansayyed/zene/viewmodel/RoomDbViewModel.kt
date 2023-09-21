@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.SongDataResponse
 import com.rizwansayyed.zene.data.db.impl.RoomDBImpl
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,7 @@ class RoomDbViewModel @Inject constructor(private val roomDBImpl: RoomDBImpl) : 
         viewModelScope.launch {
             delay(500)
             recentSixPlayedSongs()
+            savedPlaylist()
 
             delay(1500)
             tempInsert()
@@ -36,6 +38,9 @@ class RoomDbViewModel @Inject constructor(private val roomDBImpl: RoomDBImpl) : 
     }
 
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>?>>(flowOf(null))
+        private set
+
+    var savePlaylists by mutableStateOf<Flow<List<SavedPlaylistEntity>>>(flowOf(emptyList()))
         private set
 
 
@@ -57,5 +62,15 @@ class RoomDbViewModel @Inject constructor(private val roomDBImpl: RoomDBImpl) : 
 //        )
 //
 //        roomDBImpl.insert(insert).collect()
+    }
+
+    private fun savedPlaylist() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.savedPlaylists().onStart {
+            savePlaylists = flowOf(emptyList())
+        }.catch {
+            savePlaylists = flowOf(emptyList())
+        }.collectLatest {
+            savePlaylists = it
+        }
     }
 }

@@ -2,10 +2,9 @@ package com.rizwansayyed.zene.data.db.offlinedownload
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.rizwansayyed.zene.data.db.utils.DbName
-import com.rizwansayyed.zene.data.db.utils.DbName.offline_downloaded_songs_db
+import com.rizwansayyed.zene.data.utils.DBNAME.OFFLINE_DOWNLOADED_SONGS_DB
 
-@Entity(tableName = offline_downloaded_songs_db)
+@Entity(tableName = OFFLINE_DOWNLOADED_SONGS_DB)
 data class OfflineDownloadedEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     val songName: String,

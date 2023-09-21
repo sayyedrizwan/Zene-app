@@ -2,9 +2,10 @@ package com.rizwansayyed.zene.data.db.recentplay
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.rizwansayyed.zene.data.db.utils.DbName.recent_played_db
+import com.rizwansayyed.zene.data.utils.DBNAME.RECENT_PLAYED_DB
 
-@Entity(tableName = recent_played_db)
+
+@Entity(tableName = RECENT_PLAYED_DB)
 data class RecentPlayedEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     val name: String,

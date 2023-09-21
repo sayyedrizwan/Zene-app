@@ -13,7 +13,9 @@ import android.provider.MediaStore
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.io.File
 import javax.inject.Inject
 
@@ -45,7 +47,7 @@ class OfflineSongReadImpl @Inject constructor(
         songs.sortByDescending { it.date }
 
         emit(songs)
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun songsFromCursor(
         cursor: Cursor, songs: MutableList<OfflineSongsDetailsResult>
