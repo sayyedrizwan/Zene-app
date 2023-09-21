@@ -79,34 +79,5 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
                 Spacer(Modifier.height(120.dp))
             }
         }
-        when (val v = offlineSongsViewModel.allSongs.value) {
-            SongDataResponse.Empty -> {}
-            is SongDataResponse.Error -> {}
-            SongDataResponse.Loading -> {}
-            is SongDataResponse.Success -> items(v.item) {
-                Column {
-
-                    AsyncImage(
-                        it.art,
-                        contentDescription = null,
-                        modifier = Modifier.size(70.dp),
-                    )
-
-//                    Image(
-//                        bitmap = bitmap.asImageBitmap(),
-//                        contentDescription = null,
-//                        modifier = Modifier.size(70.dp),
-//                    )
-                    Text(text = it.title, color = Color.White)
-                    Text(text = it.artist, color = Color.White)
-                    Text(text = it.data.toString(), color = Color.White)
-                }
-            }
-        }
     }
-
-//    LaunchedEffect(Unit) {
-    offlineSongsViewModel.songsList()
-//        offlineViewModel.songAddedThisWeek()
-//    }
 }

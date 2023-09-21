@@ -34,24 +34,24 @@ class OfflineSongsViewModel @Inject constructor(private val offlineSong: Offline
 
 
     fun songsList() = viewModelScope.launch(Dispatchers.IO) {
-        offlineSong.readAllSongs(0, 100).onStart {
+        offlineSong.readAllSongs().onStart {
             allSongs.value = SongDataResponse.Loading
         }.catch {
-            it.message?.toast()
             allSongs.value = SongDataResponse.Error(it)
         }.collectLatest {
-            it.size?.toast()
             allSongs.value = SongDataResponse.Success(it)
         }
     }
 
-    fun latest20Songs() = viewModelScope.launch(Dispatchers.IO) {
-        offlineSong.readAllSongs(0, 80).onStart {
+    fun latestSongs() = viewModelScope.launch(Dispatchers.IO) {
+        offlineSong.readAllSongs().onStart {
             top20Songs = emptyList()
         }.catch {
             top20Songs = emptyList()
         }.collectLatest {
-            top20Songs = it
+            if (it.size > 150) {
+                top20Songs = it.subList(0, 150)
+            }
         }
     }
 }

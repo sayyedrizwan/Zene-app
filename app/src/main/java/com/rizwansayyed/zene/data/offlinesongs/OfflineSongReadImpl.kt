@@ -8,48 +8,41 @@ import android.database.MergeCursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import com.rizwansayyed.zene.domain.OfflineSongsDetailsResult
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.flow
+import java.io.File
 import javax.inject.Inject
 
 class OfflineSongReadImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : OfflineSongsReadInterface {
 
-    override suspend fun readAllSongs(offset: Int, limit: Int) = flow {
+    override suspend fun readAllSongs() = flow {
         val songs = mutableListOf<OfflineSongsDetailsResult>()
 
-        val internalStorageCursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            context.contentResolver
-                .query(internalStorageUri, songProjection, sortOrderSDKO(limit, offset), null)
-        else
-            context.contentResolver.query(
-                internalStorageUri, songProjection, null, null, sortOrder(limit, offset)
-            )
-
+        val internalStorageCursor = context.contentResolver.query(
+            internalStorageUri, songProjection, null, null, sortOrder
+        )
         internalStorageCursor?.use { cursor ->
             songsFromCursor(cursor, songs)
         }
 
         internalStorageCursor?.close()
 
-        val externalStorageCursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            context.contentResolver
-                .query(externalStorageUri, songProjection, sortOrderSDKO(limit, offset), null)
-        else
-            context.contentResolver.query(
-                externalStorageUri, songProjection, null, null, sortOrder(limit, offset)
-            )
+        val externalStorageCursor = context.contentResolver.query(
+            externalStorageUri, songProjection, null, null, sortOrder
+        )
         externalStorageCursor?.use { cursor ->
             songsFromCursor(cursor, songs)
         }
 
         externalStorageCursor?.close()
 
-//        songs.sortByDescending { it.date }
+        songs.sortByDescending { it.date }
 
         emit(songs)
     }
@@ -64,6 +57,7 @@ class OfflineSongReadImpl @Inject constructor(
         val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
         val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
         val albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
+        val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
 
         while (cursor.moveToNext()) {
             val id = cursor.getLong(idColumn)
@@ -73,11 +67,13 @@ class OfflineSongReadImpl @Inject constructor(
             val duration = cursor.getLong(durationColumn)
             val data = cursor.getString(dataColumn)
             val albumId = cursor.getLong(albumIdColumn)
-            val art = ContentUris.withAppendedId(
+            val date = cursor.getLong(dateColumn)
+            val art: Uri = ContentUris.withAppendedId(
                 Uri.parse("content://media/external/audio/albumart"), albumId
             )
 
-            val song = OfflineSongsDetailsResult(id, title, artist, album, duration, data, art)
+            val song =
+                OfflineSongsDetailsResult(id, title, artist, album, duration, data, date, art)
             songs.add(song)
         }
     }

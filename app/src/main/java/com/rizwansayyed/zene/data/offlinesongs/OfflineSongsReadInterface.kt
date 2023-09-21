@@ -13,12 +13,12 @@ import kotlinx.coroutines.flow.Flow
 interface OfflineSongsReadInterface {
     val internalStorageUri: Uri get() = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
     val externalStorageUri: Uri get() = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-    fun sortOrder(l: Int, o: Int) = "${MediaStore.Audio.Media.DATE_ADDED} DESC LIMIT $l OFFSET $o"
+    val sortOrder: String get() = "${MediaStore.Audio.Media.DATE_ADDED} DESC"
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun sortOrderSDKO(l: Int, o: Int) = Bundle().apply {
-        putInt(ContentResolver.QUERY_ARG_LIMIT, l)
-        putInt(ContentResolver.QUERY_ARG_OFFSET, o)
+    fun sortOrderSDKO() = Bundle().apply {
+        putInt(ContentResolver.QUERY_ARG_OFFSET, 0)
+        putInt(ContentResolver.QUERY_ARG_LIMIT, 30000)
         putStringArray(
             ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(MediaStore.Files.FileColumns.DATE_ADDED)
         )
@@ -35,9 +35,10 @@ interface OfflineSongsReadInterface {
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.ALBUM_ID
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.DATE_ADDED
         )
 
     suspend fun songsFromCursor(cursor: Cursor, songs: MutableList<OfflineSongsDetailsResult>)
-    suspend fun readAllSongs(offset: Int, limit: Int): Flow<MutableList<OfflineSongsDetailsResult>>
+    suspend fun readAllSongs(): Flow<MutableList<OfflineSongsDetailsResult>>
 }

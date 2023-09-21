@@ -9,5 +9,6 @@ data class OfflineSongsDetailsResult(
     val albums: String,
     val duration: Long,
     val data: String,
-    val art: Uri
+    val date: Long,
+    val art: Uri?
 )
