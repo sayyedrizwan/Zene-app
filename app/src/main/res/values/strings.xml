@@ -8,6 +8,7 @@
     <string name="offline_downloaded_songs">Offline Downloaded Songs</string>
     <string name="saved_playlists">Saved Playlists</string>
     <string name="radio">Radio</string>
+    <string name="global_top_artists">Global top artists</string>
     <string name="radio_station_in_city">Radio Station in your city</string>
     <string name="error_loading_radio_station">Error loading radio station near you. Try again after some times.</string>
 </resources>

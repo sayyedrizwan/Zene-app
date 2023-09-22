@@ -14,7 +14,6 @@ fun readTxtFileFromCache(file: File): String {
     return try {
         file.inputStream().bufferedReader().use { it.readText() }
     } catch (e: Exception) {
-        e.message?.toast()
         ""
     }
 }
@@ -49,6 +48,13 @@ fun <T> responseCache(file: File, adapter: Class<T>): T? {
 fun returnFromCache1Hour(cacheTs: Long): Boolean {
     val min = (System.currentTimeMillis() - cacheTs) / (1000 * 60)
     if (min > 60) return false
+    return true
+}
+
+
+fun returnFromCache2Days(cacheTs: Long): Boolean {
+    val min = (System.currentTimeMillis() - cacheTs) / (1000 * 60)
+    if (min > 48) return false
     return true
 }
 

@@ -7,10 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.JsoupScrapImpl
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImpl
 import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.TopArtistsResult
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,26 +26,26 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeApiViewModel @Inject constructor(private val onlineRadioImpl: OnlineRadioImpl) :
+class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrapImpl) :
     ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             delay(500)
-            onlineRadiosInCity()
+            topArtistsList()
         }
     }
 
-    var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
+    var topArtists by mutableStateOf<DataResponse<List<TopArtistsResult>>>(DataResponse.Empty)
         private set
 
-    private fun onlineRadiosInCity() = viewModelScope.launch(Dispatchers.IO) {
-        onlineRadioImpl.onlineRadioSearch(false).onStart {
-            onlineRadio = DataResponse.Loading
+    private fun topArtistsList() = viewModelScope.launch(Dispatchers.IO) {
+        jsoupScrap.topArtistsOfWeeks().onStart {
+            topArtists = DataResponse.Loading
         }.catch {
-            onlineRadio = DataResponse.Error(it)
+            topArtists = DataResponse.Error(it)
         }.collectLatest {
-            onlineRadio = DataResponse.Success(it)
+            topArtists = DataResponse.Success(it)
         }
     }
 

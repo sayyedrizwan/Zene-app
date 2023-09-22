@@ -6,7 +6,10 @@ import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Hour
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
+import com.rizwansayyed.zene.data.onlinesongs.radio.activeRadioBaseURL
 import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
+import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.RADIO_BASE_URL
+import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioSearchAPI
 import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -25,20 +28,39 @@ class OnlineRadioImpl @Inject constructor(
             if (returnFromCache1Hour(cache.cacheTime) && cache.list.isNotEmpty()) {
                 if (all)
                     emit(cache.list)
-                else
-                    emit(cache.list.filter { it.state == (userIpDetails.city ?: "") })
+                else {
+                    val stateRadio = cache.list.filter { it.state == (userIpDetails.city ?: "") }
+                    if (stateRadio.isEmpty())
+                        if (cache.list.size > 9) {
+                            emit(cache.list.subList(0, 9))
+                        } else
+                            emit(cache.list)
+                    else
+                        emit(stateRadio)
+                }
                 return@flow
             }
         }
 
         val ipDetails = ipJson.ip()
         userIpDetails = ipDetails
-        val response = onlineRadio.radioSearch(ipDetails.countryCode ?: "us")
+
+        val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
+        val response =
+            onlineRadio.radioSearch(radioSearchAPI(baseURL), ipDetails.countryCode ?: "us")
         response.toTxtCache()?.let { writeToCacheFile(radioList, it) }
         if (all)
             emit(response)
-        else
-            emit(response.filter { it.state == (userIpDetails.city ?: "") })
+        else {
+            val stateRadio = response.filter { it.state == (userIpDetails.city ?: "") }
+            if (stateRadio.isEmpty())
+                if (response.size > 9) {
+                    emit(response.subList(0, 9))
+                } else
+                    emit(response)
+            else
+                emit(stateRadio)
+        }
     }
 
 }

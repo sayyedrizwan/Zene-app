@@ -1,10 +1,12 @@
 package com.rizwansayyed.zene.presenter
 
 import android.os.Bundle
-import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.getMainDomain
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.MainHomePageView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -12,6 +14,19 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigati
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.InetAddress
+import java.net.URL
+import kotlin.time.Duration.Companion.seconds
 
 
 @AndroidEntryPoint
@@ -30,9 +45,7 @@ class MainActivity : ComponentActivity() {
 //                MainSplashView()
             }
         }
-
-
         navViewModel.checkAndSetOnlineStatus()
-
     }
+
 }

@@ -27,7 +27,7 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitOnlineRadioService(): OnlineRadioService = Retrofit.Builder()
-        .baseUrl(RADIO_BASE_URL).client(okHttpClient)
+        .baseUrl("https://demo.com").client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
         .create(OnlineRadioService::class.java)
