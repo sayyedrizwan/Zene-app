@@ -107,6 +107,5 @@ fun OnlineRadioItem(radio: OnlineRadioResponseItem) {
         Column(Modifier.size(170.dp, 290.dp), Arrangement.Center, Alignment.CenterHorizontally) {
             TextSemiBold(radio.name ?: generateRadioName(), doCenter = true)
         }
-
     }
 }
