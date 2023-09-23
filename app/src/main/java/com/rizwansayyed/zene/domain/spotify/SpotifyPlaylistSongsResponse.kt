@@ -1,18 +1,16 @@
 package com.rizwansayyed.zene.domain.spotify
 
 import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
-import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 
 
-fun List<SpotifyPlaylistSongsResponse.Tracks.SpotifyItem>.toTxtCache(): String? {
+fun List<SpotifyItem>.toTxtCache(): String? {
     val r = SpotifyTracksCacheResponse(System.currentTimeMillis(), this)
     return moshi.adapter(r.javaClass).toJson(r)
 }
 
 data class SpotifyTracksCacheResponse(
     val cacheTime: Long,
-    val list: List<SpotifyPlaylistSongsResponse.Tracks.SpotifyItem>
+    val list: List<SpotifyItem>
 )
 
 
@@ -69,112 +67,134 @@ data class SpotifyPlaylistSongsResponse(
         val offset: Int?,
         val previous: Any?,
         val total: Int?
+    )
+}
+
+data class SpotifyItem(
+    val added_at: String?,
+    val added_by: AddedBy?,
+    val is_local: Boolean?,
+    val primary_color: Any?,
+    val track: Track?,
+    val video_thumbnail: VideoThumbnail?
+) {
+    data class AddedBy(
+        val external_urls: ExternalUrls?,
+        val href: String?,
+        val id: String?,
+        val type: String?,
+        val uri: String?
     ) {
-        data class SpotifyItem(
-            val added_at: String?,
-            val added_by: AddedBy?,
-            val is_local: Boolean?,
-            val primary_color: Any?,
-            val track: Track?,
-            val video_thumbnail: VideoThumbnail?
-        ) {
-            data class AddedBy(
-                val external_urls: ExternalUrls?,
-                val href: String?,
-                val id: String?,
-                val type: String?,
-                val uri: String?
-            ) {
-                data class ExternalUrls(
-                    val spotify: String?
-                )
-            }
+        data class ExternalUrls(
+            val spotify: String?
+        )
+    }
 
-            data class Track(
-                val album: Album?,
-                val artists: List<Artist?>?,
-                val available_markets: List<String?>?,
-                val disc_number: Int?,
-                val duration_ms: Int?,
-                val episode: Boolean?,
-                val explicit: Boolean?,
-                val external_ids: ExternalIds?,
-                val external_urls: ExternalUrls?,
-                val href: String?,
-                val id: String?,
-                val is_local: Boolean?,
-                val name: String?,
-                val popularity: Int?,
-                val preview_url: String?,
-                val track: Boolean?,
-                val track_number: Int?,
-                val type: String?,
-                val uri: String?
-            ) {
-                data class Album(
-                    val album_type: String?,
-                    val artists: List<Artist?>?,
-                    val available_markets: List<String?>?,
-                    val external_urls: ExternalUrls?,
-                    val href: String?,
-                    val id: String?,
-                    val images: List<Image?>?,
-                    val name: String?,
-                    val release_date: String?,
-                    val release_date_precision: String?,
-                    val total_tracks: Int?,
-                    val type: String?,
-                    val uri: String?
-                ) {
-                    data class Artist(
-                        val external_urls: ExternalUrls?,
-                        val href: String?,
-                        val id: String?,
-                        val name: String?,
-                        val type: String?,
-                        val uri: String?
-                    ) {
-                        data class ExternalUrls(
-                            val spotify: String?
-                        )
+    data class Track(
+        val album: Album?,
+        val artists: List<Artist?>?,
+        val available_markets: List<String?>?,
+        val disc_number: Int?,
+        val duration_ms: Int?,
+        val episode: Boolean?,
+        val explicit: Boolean?,
+        val external_ids: ExternalIds?,
+        val external_urls: ExternalUrls?,
+        val href: String?,
+        val id: String?,
+        val is_local: Boolean?,
+        val name: String?,
+        val popularity: Int?,
+        val preview_url: String?,
+        val track: Boolean?,
+        val track_number: Int?,
+        val type: String?,
+        val uri: String?
+    ) {
+
+        fun wholeArtistsName(): String {
+            val name = buildString {
+                for (i in 0 until (artists?.size ?: 0)) {
+                    if (i > 0) {
+                        if (i == (artists?.size?.minus(1) ?: 0)) {
+                            append(" & ")
+                        } else {
+                            append(", ")
+                        }
                     }
-
-                    data class ExternalUrls(
-                        val spotify: String?
-                    )
-
-                    data class Image(
-                        val height: Int?,
-                        val url: String?,
-                        val width: Int?
-                    )
+                    append(artists?.get(i)?.name)
                 }
+            }
 
-                data class Artist(
-                    val external_urls: ExternalUrls?,
-                    val href: String?,
-                    val id: String?,
-                    val name: String?,
-                    val type: String?,
-                    val uri: String?
-                ) {
-                    data class ExternalUrls(
-                        val spotify: String?
-                    )
-                }
+            return name
+        }
 
-                data class ExternalIds(
-                    val isrc: String?
-                )
+        data class Album(
+            val album_type: String?,
+            val artists: List<Artist?>?,
+            val available_markets: List<String?>?,
+            val external_urls: ExternalUrls?,
+            val href: String?,
+            val id: String?,
+            val images: List<Image?>?,
+            val name: String?,
+            val release_date: String?,
+            val release_date_precision: String?,
+            val total_tracks: Int?,
+            val type: String?,
+            val uri: String?
+        ) {
+            fun imageHd(): Image? {
+                return images?.maxByOrNull { it?.height ?: 0 }
+            }
 
+            data class Artist(
+                val external_urls: ExternalUrls?,
+                val href: String?,
+                val id: String?,
+                val name: String?,
+                val type: String?,
+                val uri: String?
+            ) {
                 data class ExternalUrls(
                     val spotify: String?
                 )
             }
 
-            data class VideoThumbnail(
-                val url: Any?
+            data class ExternalUrls(
+                val spotify: String?
+            )
+
+            data class Image(
+                val height: Int?,
+                val url: String?,
+                val width: Int?
             )
         }
+
+        data class Artist(
+            val external_urls: ExternalUrls?,
+            val href: String?,
+            val id: String?,
+            val name: String?,
+            val type: String?,
+            val uri: String?
+        ) {
+            data class ExternalUrls(
+                val spotify: String?
+            )
+        }
+
+        data class ExternalIds(
+            val isrc: String?
+        )
+
+        data class ExternalUrls(
+            val spotify: String?
+        )
     }
+
+    data class VideoThumbnail(
+        val url: Any?
+    )
 }

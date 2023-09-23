@@ -48,6 +48,7 @@ object SpotifyAPI {
 
 
     const val SPOTIFY_GLOBAL_SEARCH = "top+50+global"
+    const val SPOTIFY_COUNTRY_SEARCH = "top+50+"
 }
 
 object SearchEngine {
@@ -61,6 +62,7 @@ object CacheFiles {
     val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
     val topGlobalSongs by lazy { File(context.cacheDir, "top-global-songs-list.txt").apply { mkdirs() } }
+    val topCountrySongs by lazy { File(context.cacheDir, "top-country-songs-list.txt").apply { mkdirs() } }
 }
 
 object ScrapURL {

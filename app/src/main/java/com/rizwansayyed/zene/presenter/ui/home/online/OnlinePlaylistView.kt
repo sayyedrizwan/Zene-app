@@ -34,9 +34,7 @@ fun PlaylistList() {
     val roomDb: RoomDbViewModel = hiltViewModel()
     val playlists by roomDb.savePlaylists.collectAsState(initial = emptyList())
 
-    if (playlists.isNotEmpty()) Column(verticalArrangement = Arrangement.Center) {
-        Spacer(Modifier.height(80.dp))
-
+    if (playlists.isNotEmpty()) {
         TopInfoWithSeeMore(R.string.saved_playlists, null) {}
 
         LazyRow {

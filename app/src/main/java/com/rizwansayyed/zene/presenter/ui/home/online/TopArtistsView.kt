@@ -39,24 +39,19 @@ fun TopArtistsList() {
     val jsoupViewModel: JsoupScrapViewModel = hiltViewModel()
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
-    Column {
-        if (jsoupViewModel.showGlobalArtistInfo) {
-            Spacer(Modifier.height(80.dp))
+    if (jsoupViewModel.showGlobalArtistInfo)
+        TopInfoWithSeeMore(R.string.global_top_trending_artists, null) {}
 
-            TopInfoWithSeeMore(R.string.global_top_trending_artists, null) {}
-        }
-
-        when (val v = jsoupViewModel.topArtists) {
-            DataResponse.Empty -> {}
-            is DataResponse.Error -> {}
-            DataResponse.Loading -> LoadingStateBar()
-            is DataResponse.Success -> LazyHorizontalGrid(
-                GridCells.Fixed(3), Modifier
-                    .fillMaxWidth()
-                    .height((screenWidth / 1.8 * 3).dp)
-            ) {
-                items(v.item) { TopArtistsItems(it, screenWidth) }
-            }
+    when (val v = jsoupViewModel.topArtists) {
+        DataResponse.Empty -> {}
+        is DataResponse.Error -> {}
+        DataResponse.Loading -> LoadingStateBar()
+        is DataResponse.Success -> LazyHorizontalGrid(
+            GridCells.Fixed(3), Modifier
+                .fillMaxWidth()
+                .height((screenWidth / 1.8 * 3).dp)
+        ) {
+            items(v.item) { TopArtistsItems(it, screenWidth) }
         }
     }
 }
@@ -91,7 +86,12 @@ fun TopArtistsItems(artists: TopArtistsResult, width: Int) {
         )
 
 
-        TextSemiBold(artists.name, Modifier.padding(8.dp).align(Alignment.BottomStart))
+        TextSemiBold(
+            artists.name,
+            Modifier
+                .padding(8.dp)
+                .align(Alignment.BottomStart)
+        )
 
     }
 }

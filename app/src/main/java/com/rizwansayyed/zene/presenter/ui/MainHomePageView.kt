@@ -24,6 +24,8 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
 import com.rizwansayyed.zene.presenter.ui.home.online.PlaylistList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
+import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
+import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.view.OfflineDownloadHeader
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayItemsShort
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayList
@@ -67,19 +69,22 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
             OfflineDownloadHeader()
         }
 
+        item(span = { GridItemSpan(3) }) {
+            if (nav.isOnline.value) Column(Modifier.fillMaxWidth()) {
+                PlaylistList()
+                CityRadioViewList()
+                TopArtistsList()
+                TopGlobalSongsList()
+            }
+        }
 
         item(span = { GridItemSpan(3) }) {
-            if (nav.isOnline.value) PlaylistList()
+            if (nav.isOnline.value) Column(Modifier.fillMaxWidth()) {
+                TrendingSongsCountryList()
+            }
         }
 
 
-        item(span = { GridItemSpan(3) }) {
-            if (nav.isOnline.value) CityRadioViewList()
-        }
-
-        item(span = { GridItemSpan(3) }) {
-            if (nav.isOnline.value) TopArtistsList()
-        }
 
 
         item {

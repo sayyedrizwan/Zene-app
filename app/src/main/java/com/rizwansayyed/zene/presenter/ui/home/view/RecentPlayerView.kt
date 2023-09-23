@@ -30,8 +30,6 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 @Composable
 fun RecentPlayList(list: List<RecentPlayedEntity>?) {
     if (list != null) Column(verticalArrangement = Arrangement.Center) {
-        Spacer(Modifier.height(80.dp))
-
         if (list.isNotEmpty())
             TopInfoWithSeeMore(
                 R.string.recent_played, if (list.size >= 6) R.string.see_all else null

@@ -48,27 +48,22 @@ import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 fun CityRadioViewList() {
     val homeApi: HomeApiViewModel = hiltViewModel()
 
-    Column {
-        Spacer(Modifier.height(80.dp))
+    TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
+        "see all radio".toast()
+    }
+    when (val v = homeApi.onlineRadio) {
+        DataResponse.Empty -> {}
+        is DataResponse.Error ->
+            TextThin(v.throwable.message ?: "", doCenter = true)
 
-        TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
-            "see all radio".toast()
+        DataResponse.Loading -> LoadingStateBar()
+        is DataResponse.Success -> LazyHorizontalGrid(
+            GridCells.Fixed(2), Modifier
+                .fillMaxWidth()
+                .height(430.dp)
+        ) {
+            items(v.item) { OnlineRadioItem(it) }
         }
-        when (val v = homeApi.onlineRadio) {
-            DataResponse.Empty -> {}
-            is DataResponse.Error ->
-                TextThin(stringResource(R.string.error_loading_radio_station), doCenter = true)
-
-            DataResponse.Loading -> LoadingStateBar()
-            is DataResponse.Success -> LazyHorizontalGrid(
-                GridCells.Fixed(2), Modifier
-                    .fillMaxWidth()
-                    .height(430.dp)
-            ) {
-                items(v.item) { OnlineRadioItem(it) }
-            }
-        }
-
     }
 }
 

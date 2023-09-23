@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioIm
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImpl
 import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.spotify.SpotifyItem
 import com.rizwansayyed.zene.domain.spotify.SpotifyPlaylistSongsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,7 @@ class HomeApiViewModel @Inject constructor(
             delay(500)
             onlineRadiosInCity()
             globalTrendingSongs()
+            countryTrendingSongs()
         }
     }
 
@@ -43,10 +45,12 @@ class HomeApiViewModel @Inject constructor(
         private set
 
 
-    var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<SpotifyPlaylistSongsResponse.Tracks.SpotifyItem?>>>(
-        DataResponse.Empty
-    )
+    var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<SpotifyItem?>>>(DataResponse.Empty)
         private set
+
+    var topCountryTrendingSongs by mutableStateOf<DataResponse<List<SpotifyItem?>>>(DataResponse.Empty)
+        private set
+
 
     private fun onlineRadiosInCity() = viewModelScope.launch(Dispatchers.IO) {
         onlineRadioImpl.onlineRadioSearch(false).onStart {
@@ -65,6 +69,16 @@ class HomeApiViewModel @Inject constructor(
             topGlobalTrendingSongs = DataResponse.Error(it)
         }.collectLatest {
             topGlobalTrendingSongs = DataResponse.Success(it ?: emptyList())
+        }
+    }
+
+    private fun countryTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
+        spotifyAPIImpl.topSongsInCountry().onStart {
+            topCountryTrendingSongs = DataResponse.Loading
+        }.catch {
+            topCountryTrendingSongs = DataResponse.Error(it)
+        }.collectLatest {
+            topCountryTrendingSongs = DataResponse.Success(it ?: emptyList())
         }
     }
 

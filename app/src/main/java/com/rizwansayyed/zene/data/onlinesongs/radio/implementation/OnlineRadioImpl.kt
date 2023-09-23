@@ -13,9 +13,15 @@ import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioSearchAPI
 import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import okhttp3.internal.filterList
 import javax.inject.Inject
 
@@ -31,7 +37,8 @@ class OnlineRadioImpl @Inject constructor(
                 if (all)
                     emit(cache.list)
                 else {
-                    val stateRadio = cache.list.filter { it.state == (userIpDetails.city ?: "") }
+                    val stateRadio =
+                        cache.list.filter { it.state == (userIpDetails.first()?.city ?: "") }
                     if (stateRadio.isEmpty())
                         if (cache.list.size > 9) {
                             emit(cache.list.subList(0, 9))
@@ -45,7 +52,10 @@ class OnlineRadioImpl @Inject constructor(
         }
 
         val ipDetails = ipJson.ip()
-        userIpDetails = ipDetails
+        CoroutineScope(Dispatchers.IO).launch {
+            userIpDetails = flowOf(ipDetails)
+            if (isActive) cancel()
+        }
 
         val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
         val response =
@@ -54,7 +64,9 @@ class OnlineRadioImpl @Inject constructor(
         if (all)
             emit(response)
         else {
-            val stateRadio = response.filter { it.state == (userIpDetails.city ?: "") }
+            val stateRadio =
+                response.filter { it.state == (userIpDetails.first()?.city ?: "") }
+
             if (stateRadio.isEmpty())
                 if (response.size > 9) {
                     emit(response.subList(0, 9))

@@ -39,11 +39,8 @@ fun OfflineDownloadHeader() {
     val offlineSongsViewModel: OfflineSongsViewModel = hiltViewModel()
     val list by offlineSongsViewModel.offlineDownloadedSongs.collectAsState(emptyList())
 
-//    if (list.isNotEmpty())
-    Column(verticalArrangement = Arrangement.Center) {
-        Spacer(Modifier.height(80.dp))
-
 //        if (list.isNotEmpty())
+    Column {
         TopInfoWithSeeMore(R.string.offline_downloaded_songs, null) {}
 
         LazyRow(Modifier.fillMaxWidth()) {
@@ -51,7 +48,6 @@ fun OfflineDownloadHeader() {
                 OfflineDownloadedSongsItem()
             }
         }
-
     }
 }
 

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -236,6 +237,8 @@ fun SmallIcons(icon: Int, click: () -> Unit) {
 
 @Composable
 fun TopInfoWithSeeMore(v: Int, s: Int?, click: () -> Unit) {
+    Spacer(Modifier.height(80.dp))
+
     Row(
         Modifier
             .padding(horizontal = 4.dp)
@@ -253,6 +256,73 @@ fun TopInfoWithSeeMore(v: Int, s: Int?, click: () -> Unit) {
 }
 
 @Composable
+fun TopInfoWithSeeMore(v: String, s: Int?, click: () -> Unit) {
+    Spacer(Modifier.height(80.dp))
+
+    Row(
+        Modifier
+            .padding(horizontal = 4.dp)
+            .padding(bottom = 11.dp)
+            .fillMaxWidth()
+    ) {
+        TextSemiBold(v)
+
+        Spacer(Modifier.weight(1f))
+
+        if (s != null) TextThin(stringResource(id = s), Modifier.clickable {
+            click()
+        })
+    }
+}
+
+@Composable
+fun TopInfoWithImage(v: Int, s: Int?, click: () -> Unit) {
+
+    Spacer(Modifier.height(80.dp))
+
+    Row(
+        Modifier
+            .padding(horizontal = 4.dp)
+            .padding(bottom = 11.dp)
+            .fillMaxWidth(),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextSemiBold(stringResource(id = v))
+
+        Spacer(Modifier.weight(1f))
+
+
+        if (s != null) Image(painterResource(s), "", Modifier.size(24.dp).clickable {
+            click()
+        }, colorFilter = ColorFilter.tint(Color.White))
+    }
+}
+
+
+@Composable
+fun TopInfoWithImage(v: String, s: Int?, click: () -> Unit) {
+
+    Spacer(Modifier.height(80.dp))
+
+    Row(
+        Modifier
+            .padding(horizontal = 4.dp)
+            .padding(bottom = 11.dp)
+            .fillMaxWidth(),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextSemiBold(v)
+
+        Spacer(Modifier.weight(1f))
+
+
+        if (s != null) Image(painterResource(s), "", Modifier.size(24.dp).clickable {
+            click()
+        }, colorFilter = ColorFilter.tint(Color.White))
+    }
+}
+
+@Composable
 fun SongsTitleAndArtists(title: String, artists: String, modifier: Modifier, doCenter: Boolean) {
     Spacer(Modifier.height(14.dp))
     TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
@@ -261,10 +331,22 @@ fun SongsTitleAndArtists(title: String, artists: String, modifier: Modifier, doC
     Spacer(Modifier.height(16.dp))
 }
 
+@Composable
+fun SongsTitleAndArtistsSmall(title: String, artists: String, modifier: Modifier, doCenter: Boolean) {
+    Spacer(Modifier.height(6.dp))
+    TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
+    TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
+    Spacer(Modifier.height(6.dp))
+}
+
 
 @Composable
 fun LoadingStateBar() {
-    Row(Modifier.fillMaxWidth().padding(10.dp), Arrangement.Center, Alignment.CenterVertically) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(10.dp), Arrangement.Center, Alignment.CenterVertically
+    ) {
         CircularProgressIndicator(
             modifier = Modifier.width(44.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
