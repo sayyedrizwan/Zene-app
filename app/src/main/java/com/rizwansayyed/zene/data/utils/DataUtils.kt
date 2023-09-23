@@ -36,6 +36,20 @@ object InstagramAPI {
     const val INSTAGRAM_PROFILE_API = "web_profile_info"
 }
 
+object SpotifyAPI {
+    const val ACCOUNT_SPOTIFY_API = "https://accounts.spotify.com/api/token"
+    const val ACCOUNT_SPOTIFY_C_ID = "07cca9af3ee4411baaf2355a8ea61d3f"
+    const val ACCOUNT_SPOTIFY_C_SECRET = "120327dd093345f6aaab5fb943f1ceb1"
+
+
+    const val SPOTIFY_API_BASE_URL = "https://api.spotify.com/v1/"
+    const val SPOTIFY_API_SEARCH = "search"
+    const val SPOTIFY_API_PLAYLIST = "playlists"
+
+
+    const val SPOTIFY_GLOBAL_SEARCH = "top+50+global"
+}
+
 object SearchEngine {
     fun searchEngineDataURL(name: String): String {
         val n = name.lowercase().replace(" ", "+")
@@ -46,6 +60,7 @@ object SearchEngine {
 object CacheFiles {
     val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
+    val topGlobalSongs by lazy { File(context.cacheDir, "top-global-songs-list.txt").apply { mkdirs() } }
 }
 
 object ScrapURL {
@@ -53,7 +68,7 @@ object ScrapURL {
 }
 
 
-fun getInstagramUsername(i:String): String {
+fun getInstagramUsername(i: String): String {
     return i.substringAfter("instagram.com/").replace("/", "")
 }
 

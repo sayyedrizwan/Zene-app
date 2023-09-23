@@ -3,8 +3,10 @@ package com.rizwansayyed.zene.di
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
+import com.rizwansayyed.zene.data.onlinesongs.spotify.SpotifyAPIService
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_BASE_URL
+import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_BASE_URL
 import com.rizwansayyed.zene.data.utils.USER_AGENT
 import com.rizwansayyed.zene.data.utils.moshi
 import dagger.Module
@@ -43,6 +45,15 @@ object RetrofitAPIModule {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
         .create(IpJsonService::class.java)
+
+
+
+    @Provides
+    fun retrofitSpotifyApiService(): SpotifyAPIService = Retrofit.Builder()
+        .baseUrl(SPOTIFY_API_BASE_URL).client(okHttpClient)
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .build()
+        .create(SpotifyAPIService::class.java)
 
 
     @Provides

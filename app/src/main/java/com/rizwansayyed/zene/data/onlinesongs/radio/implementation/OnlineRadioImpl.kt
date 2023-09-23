@@ -13,7 +13,9 @@ import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioSearchAPI
 import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.internal.filterList
 import javax.inject.Inject
 
@@ -61,6 +63,6 @@ class OnlineRadioImpl @Inject constructor(
             else
                 emit(stateRadio)
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
 }

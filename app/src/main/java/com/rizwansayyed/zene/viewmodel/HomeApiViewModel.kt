@@ -9,8 +9,10 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImpl
+import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImpl
 import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.spotify.SpotifyPlaylistSongsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,17 +26,26 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeApiViewModel @Inject constructor(private val onlineRadioImpl: OnlineRadioImpl) :
-    ViewModel() {
+class HomeApiViewModel @Inject constructor(
+    private val onlineRadioImpl: OnlineRadioImpl,
+    private val spotifyAPIImpl: SpotifyAPIImpl
+) : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             delay(500)
             onlineRadiosInCity()
+            globalTrendingSongs()
         }
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
+        private set
+
+
+    var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<SpotifyPlaylistSongsResponse.Tracks.SpotifyItem?>>>(
+        DataResponse.Empty
+    )
         private set
 
     private fun onlineRadiosInCity() = viewModelScope.launch(Dispatchers.IO) {
@@ -44,6 +55,16 @@ class HomeApiViewModel @Inject constructor(private val onlineRadioImpl: OnlineRa
             onlineRadio = DataResponse.Error(it)
         }.collectLatest {
             onlineRadio = DataResponse.Success(it)
+        }
+    }
+
+    private fun globalTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
+        spotifyAPIImpl.globalTrendingSongs().onStart {
+            topGlobalTrendingSongs = DataResponse.Loading
+        }.catch {
+            topGlobalTrendingSongs = DataResponse.Error(it)
+        }.collectLatest {
+            topGlobalTrendingSongs = DataResponse.Success(it ?: emptyList())
         }
     }
 

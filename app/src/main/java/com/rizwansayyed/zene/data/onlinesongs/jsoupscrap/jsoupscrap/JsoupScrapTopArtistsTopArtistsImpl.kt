@@ -15,8 +15,10 @@ import com.rizwansayyed.zene.data.utils.getInstagramUsername
 import com.rizwansayyed.zene.domain.TopArtistsCacheResponse
 import com.rizwansayyed.zene.domain.TopArtistsResult
 import com.rizwansayyed.zene.domain.toTxtCache
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
 import javax.inject.Inject
 
@@ -57,7 +59,7 @@ class JsoupScrapTopArtistsTopArtistsImpl @Inject constructor(
         }
         list.toTxtCache()?.let { writeToCacheFile(topArtistsList, it) }
         emit(list)
-    }
+    }.flowOn(Dispatchers.IO)
 
 
     override suspend fun searchEngineData(name: String) = flow {
@@ -75,6 +77,6 @@ class JsoupScrapTopArtistsTopArtistsImpl @Inject constructor(
         }
 
         emit(Pair(instagram, twitter))
-    }
+    }.flowOn(Dispatchers.IO)
 
 }
