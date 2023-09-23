@@ -6,27 +6,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.JsoupScrapImpl
-import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
-import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImpl
-import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
-import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapTopArtistsTopArtistsImpl
 import com.rizwansayyed.zene.domain.TopArtistsResult
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrapImpl) :
+class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrapTopArtistsTopArtistsImpl) :
     ViewModel() {
 
     init {
@@ -36,6 +29,9 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrap
         }
     }
 
+    var showGlobalArtistInfo by mutableStateOf(true)
+        private set
+
     var topArtists by mutableStateOf<DataResponse<List<TopArtistsResult>>>(DataResponse.Empty)
         private set
 
@@ -43,10 +39,10 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrap
         jsoupScrap.topArtistsOfWeeks().onStart {
             topArtists = DataResponse.Loading
         }.catch {
+            showGlobalArtistInfo = false
             topArtists = DataResponse.Error(it)
         }.collectLatest {
             topArtists = DataResponse.Success(it)
         }
     }
-
 }

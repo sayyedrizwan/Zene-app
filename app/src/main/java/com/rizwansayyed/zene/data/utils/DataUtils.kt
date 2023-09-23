@@ -31,6 +31,11 @@ object IpJsonAPI {
     const val IP_API = "json"
 }
 
+object InstagramAPI {
+    const val INSTAGRAM_BASE_URL = "https://www.instagram.com/api/v1/users/"
+    const val INSTAGRAM_PROFILE_API = "web_profile_info"
+}
+
 object SearchEngine {
     fun searchEngineDataURL(name: String): String {
         val n = name.lowercase().replace(" ", "+")
@@ -45,6 +50,11 @@ object CacheFiles {
 
 object ScrapURL {
     const val TOP_ARTISTS = "https://www.billboard.com/charts/artist-100/"
+}
+
+
+fun getInstagramUsername(i:String): String {
+    return i.substringAfter("instagram.com/").replace("/", "")
 }
 
 

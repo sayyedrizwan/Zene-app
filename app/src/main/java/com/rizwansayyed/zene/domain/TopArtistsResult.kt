@@ -14,7 +14,5 @@ fun MutableList<TopArtistsResult>.toTxtCache(): String? {
 
 data class TopArtistsResult(
     val thumbnail: String,
-    val name: String,
-    val instagram: String,
-    val twitter: String,
+    val name: String
 )

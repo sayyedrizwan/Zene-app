@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.di
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 
 
@@ -14,6 +15,8 @@ class ApplicationModule : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
+
+//        FirebaseApp.initializeApp(this)
     }
 
 }

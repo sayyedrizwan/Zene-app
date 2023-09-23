@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.FirebaseApp
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.getMainDomain
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.MainHomePageView
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
 //                MainSplashView()
             }
         }
+
         navViewModel.checkAndSetOnlineStatus()
     }
 
