@@ -1,9 +1,7 @@
 package com.rizwansayyed.zene.di.onlinemodule
 
-import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImpl
-import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImpl
-import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPiImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,6 +15,6 @@ abstract class SpotifyAPIImplementation {
 
     @Binds
     @Singleton
-    abstract fun spotifyAPIImpl(spotifyAPIImpl: SpotifyAPIImpl): SpotifyAPiImplInterface
+    abstract fun spotifyAPIImpl(spotifyAPIImpl: SpotifyAPIImpl): SpotifyAPIImplInterface
 
 }
