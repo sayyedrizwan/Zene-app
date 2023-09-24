@@ -6,9 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapTopArtistsTopArtistsImpl
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
 import com.rizwansayyed.zene.domain.TopArtistsResult
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -19,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrapTopArtistsTopArtistsImpl) :
+class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrapsInterface) :
     ViewModel() {
 
     init {

@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
         }
 
         navViewModel.checkAndSetOnlineStatus()
+        navViewModel.resetConfig()
     }
 
 }

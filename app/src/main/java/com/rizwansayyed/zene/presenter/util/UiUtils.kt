@@ -15,6 +15,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
@@ -31,6 +33,7 @@ object UiUtils {
 
     fun Any.toast() = CoroutineScope(Dispatchers.Main).launch {
         Toast.makeText(context, this@toast.toString(), Toast.LENGTH_LONG).show()
+        if (isActive) cancel()
     }
 
     fun generateRadioName(): String {

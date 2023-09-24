@@ -9,7 +9,11 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImpl
+import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImpl
+import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
 import com.rizwansayyed.zene.domain.spotify.SpotifyItem
@@ -28,8 +32,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeApiViewModel @Inject constructor(
-    private val onlineRadioImpl: OnlineRadioImpl,
-    private val spotifyAPIImpl: SpotifyAPIImpl
+    private val onlineRadiosAPI: OnlineRadioImplInterface,
+    private val spotifyAPI: SpotifyAPIImplInterface,
+    private val youtubeAPI: YoutubeAPIImplInterface,
 ) : ViewModel() {
 
     init {
@@ -38,6 +43,7 @@ class HomeApiViewModel @Inject constructor(
             onlineRadiosInCity()
             globalTrendingSongs()
             countryTrendingSongs()
+            newReleaseMusic()
         }
     }
 
@@ -53,7 +59,7 @@ class HomeApiViewModel @Inject constructor(
 
 
     private fun onlineRadiosInCity() = viewModelScope.launch(Dispatchers.IO) {
-        onlineRadioImpl.onlineRadioSearch(false).onStart {
+        onlineRadiosAPI.onlineRadioSearch(false).onStart {
             onlineRadio = DataResponse.Loading
         }.catch {
             onlineRadio = DataResponse.Error(it)
@@ -63,7 +69,7 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun globalTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
-        spotifyAPIImpl.globalTrendingSongs().onStart {
+        spotifyAPI.globalTrendingSongs().onStart {
             topGlobalTrendingSongs = DataResponse.Loading
         }.catch {
             topGlobalTrendingSongs = DataResponse.Error(it)
@@ -73,13 +79,21 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun countryTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
-        spotifyAPIImpl.topSongsInCountry().onStart {
+        spotifyAPI.topSongsInCountry().onStart {
             topCountryTrendingSongs = DataResponse.Loading
         }.catch {
             topCountryTrendingSongs = DataResponse.Error(it)
         }.collectLatest {
             topCountryTrendingSongs = DataResponse.Success(it ?: emptyList())
         }
+    }
+
+    private fun newReleaseMusic() = viewModelScope.launch(Dispatchers.IO) {
+       youtubeAPI.newReleaseMusic().catch {
+           it.message?.toast()
+       }.collectLatest {
+           it?.toast()
+       }
     }
 
 }

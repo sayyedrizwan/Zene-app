@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap
 
 
-import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
@@ -11,7 +10,6 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsList
 import com.rizwansayyed.zene.data.utils.ScrapURL.TOP_ARTISTS
 import com.rizwansayyed.zene.data.utils.SearchEngine.searchEngineDataURL
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigManager
 import com.rizwansayyed.zene.data.utils.getInstagramUsername
 import com.rizwansayyed.zene.domain.TopArtistsCacheResponse
 import com.rizwansayyed.zene.domain.TopArtistsResult
@@ -23,10 +21,10 @@ import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
 import javax.inject.Inject
 
-class JsoupScrapTopArtistsTopArtistsImpl @Inject constructor(
+class JsoupScrapsImpl @Inject constructor(
     private val instagramInfo: InstagramInfoService,
     private val remoteConfig: RemoteConfigInterface
-) : JsoupScrapTopArtistsInterface {
+) : JsoupScrapsInterface {
 
     override suspend fun topArtistsOfWeeks() = flow {
         val list = mutableListOf<TopArtistsResult>()
@@ -80,4 +78,15 @@ class JsoupScrapTopArtistsTopArtistsImpl @Inject constructor(
         emit(Pair(instagram, twitter))
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun ytMusicChannelJson(path: String) = flow {
+        var response = jsoupResponseData(path)
+        val jsoup = Jsoup.parse(response!!)
+        jsoup.select("script").forEach {
+            if (it.html().contains("var ytInitialData ="))
+                response = it.html()
+        }
+
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 }

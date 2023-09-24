@@ -1,9 +1,15 @@
 package com.rizwansayyed.zene.data.utils
 
+import androidx.compose.runtime.Composable
 import androidx.core.net.toUri
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -51,6 +57,29 @@ object SpotifyAPI {
     const val SPOTIFY_COUNTRY_SEARCH = "top+50+"
 }
 
+object YoutubeAPI {
+    const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
+    const val YT_MAIN_GUIDE = "guide"
+
+
+    fun ytJsonBody(ip: IpJsonResponse): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB",
+                    "clientVersion": "2.20230921.04.01",
+                    "timeZone": "${ip.timezone}"
+                }
+            }
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+}
+
 object SearchEngine {
     fun searchEngineDataURL(name: String): String {
         val n = name.lowercase().replace(" ", "+")
@@ -61,8 +90,12 @@ object SearchEngine {
 object CacheFiles {
     val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
-    val topGlobalSongs by lazy { File(context.cacheDir, "top-global-songs-list.txt").apply { mkdirs() } }
-    val topCountrySongs by lazy { File(context.cacheDir, "top-country-songs-list.txt").apply { mkdirs() } }
+    val topGlobalSongs by lazy {
+        File(context.cacheDir, "top-global-songs-list.txt").apply { mkdirs() }
+    }
+    val topCountrySongs by lazy {
+        File(context.cacheDir, "top-country-songs-list.txt").apply { mkdirs() }
+    }
 }
 
 object ScrapURL {

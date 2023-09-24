@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.spotify.SpotifyAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.topCountrySongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.topGlobalSongs
+import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_COUNTRY_SEARCH
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_GLOBAL_SEARCH
 import com.rizwansayyed.zene.domain.spotify.SpotifyTracksCacheResponse
 import com.rizwansayyed.zene.domain.spotify.toTxtCache
@@ -67,7 +68,7 @@ class SpotifyAPIImpl @Inject constructor(
         val token = spotifyAPI.spotifyAccessToken()
         val bearer = "${token.token_type} ${token.access_token}"
         val pid = spotifyAPI.spotifyPlaylistSearch(
-            bearer, "$SPOTIFY_GLOBAL_SEARCH${ipDetails.country}"
+            bearer, "$SPOTIFY_COUNTRY_SEARCH${ipDetails.country}"
         ).playlists?.items?.first()?.id ?: return@flow
 
         val songs = spotifyAPI.spotifyPlaylistSongs(bearer, pid)

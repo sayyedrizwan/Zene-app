@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.di.jsoupscrap
 
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapTopArtistsTopArtistsImpl
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapTopArtistsInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsImpl
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,6 +15,6 @@ abstract class JsoupScrapImplementation {
 
     @Binds
     @Singleton
-    abstract fun jsoupScrapImpl(jsoupScrapTopArtistsImpl: JsoupScrapTopArtistsTopArtistsImpl): JsoupScrapTopArtistsInterface
+    abstract fun jsoupScrapImpl(jsoupScrapTopArtistsImpl: JsoupScrapsImpl): JsoupScrapsInterface
 
 }

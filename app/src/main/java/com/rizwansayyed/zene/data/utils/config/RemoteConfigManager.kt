@@ -4,26 +4,39 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.rizwansayyed.zene.data.utils.moshi
+import com.rizwansayyed.zene.domain.remoteconfig.YtApiKeyResponse
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 const val REMOTE_INSTAGRAM_APP_ID = "instagramAppID"
+const val REMOTE_YT_API_KEYS = "ytApiKeys"
 
-class RemoteConfigManager @Inject constructor(): RemoteConfigInterface {
+class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
 
     override suspend fun instagramAppID(): String {
-        val remote = config()
-        remote.fetchAndActivate().await()
-       return remote.getString(REMOTE_INSTAGRAM_APP_ID)
+        return config(false).getString(REMOTE_INSTAGRAM_APP_ID)
+    }
+
+    override suspend fun ytApiKeys(): YtApiKeyResponse? {
+        val data = config(false).getString(REMOTE_YT_API_KEYS)
+        return try {
+            moshi.adapter(YtApiKeyResponse::class.java).fromJson(data)
+        } catch (e: Exception) {
+            null
+        }
+
     }
 
 
-    fun config(): FirebaseRemoteConfig {
+    override suspend fun config(doReset: Boolean): FirebaseRemoteConfig {
         val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600
         }
         remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.fetchAndActivate().await()
+        if (doReset) remoteConfig.reset()
 
         return remoteConfig
     }
