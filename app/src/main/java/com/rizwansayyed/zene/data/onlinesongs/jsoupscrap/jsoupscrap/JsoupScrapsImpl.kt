@@ -7,13 +7,16 @@ import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsList
+import com.rizwansayyed.zene.data.utils.CacheFiles.updateTheDate
 import com.rizwansayyed.zene.data.utils.ScrapURL.TOP_ARTISTS
 import com.rizwansayyed.zene.data.utils.SearchEngine.searchEngineDataURL
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.getInstagramUsername
+import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.TopArtistsCacheResponse
 import com.rizwansayyed.zene.domain.TopArtistsResult
 import com.rizwansayyed.zene.domain.toTxtCache
+import com.rizwansayyed.zene.domain.yt.YoutubeReleaseChannelResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -79,7 +82,7 @@ class JsoupScrapsImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun ytMusicChannelJson(path: String) = flow {
+    override suspend fun ytChannelJson(path: String) = flow {
         var response = jsoupResponseData(path)
         val jsoup = Jsoup.parse(response!!)
         jsoup.select("script").forEach {
@@ -87,6 +90,30 @@ class JsoupScrapsImpl @Inject constructor(
                 response = it.html()
         }
 
-        emit(response)
+        val pattern = Regex("ytInitialData\\s*=\\s*([^;]+)")
+        val ytInitialDataJson = pattern.find(response ?: "")?.groups?.get(1)?.value
+        val getReleasePlaylist = moshi.adapter(YoutubeReleaseChannelResponse::class.java)
+            .fromJson(ytInitialDataJson ?: "")
+
+
+        emit(getReleasePlaylist)
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun ytPlaylistItems(path: String) = flow {
+        var response = jsoupResponseData(path)
+        val jsoup = Jsoup.parse(response!!)
+
+        jsoup.select("script").forEach {
+            if (it.html().contains("var ytInitialData ="))
+                response = it.html()
+        }
+        val pattern = Regex("ytInitialData\\s*=\\s*([^;]+)")
+        val ytInitialDataJson = pattern.find(response ?: "")?.groups?.get(1)?.value
+
+        val getReleasePlaylist = moshi.adapter(YoutubeReleaseChannelResponse::class.java)
+            .fromJson(ytInitialDataJson ?: "")
+
+        emit(getReleasePlaylist)
     }.flowOn(Dispatchers.IO)
 }

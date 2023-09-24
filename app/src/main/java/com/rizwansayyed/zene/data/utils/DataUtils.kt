@@ -88,6 +88,7 @@ object SearchEngine {
 }
 
 object CacheFiles {
+    val updateTheDate by lazy { File(context.cacheDir, "texxxt.json").apply { mkdirs() } }
     val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
     val topGlobalSongs by lazy {
