@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -292,9 +293,14 @@ fun TopInfoWithImage(v: Int, s: Int?, click: () -> Unit) {
         Spacer(Modifier.weight(1f))
 
 
-        if (s != null) Image(painterResource(s), "", Modifier.size(24.dp).clickable {
-            click()
-        }, colorFilter = ColorFilter.tint(Color.White))
+        if (s != null) Image(
+            painterResource(s), "",
+            Modifier
+                .size(24.dp)
+                .clickable {
+                    click()
+                }, colorFilter = ColorFilter.tint(Color.White)
+        )
     }
 }
 
@@ -316,27 +322,38 @@ fun TopInfoWithImage(v: String, s: Int?, click: () -> Unit) {
         Spacer(Modifier.weight(1f))
 
 
-        if (s != null) Image(painterResource(s), "", Modifier.size(24.dp).clickable {
-            click()
-        }, colorFilter = ColorFilter.tint(Color.White))
+        if (s != null) Image(
+            painterResource(s), "",
+            Modifier
+                .size(24.dp)
+                .clickable {
+                    click()
+                }, colorFilter = ColorFilter.tint(Color.White)
+        )
     }
 }
 
 @Composable
 fun SongsTitleAndArtists(title: String, artists: String, modifier: Modifier, doCenter: Boolean) {
-    Spacer(Modifier.height(14.dp))
-    TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
-    Spacer(Modifier.height(4.dp))
-    TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
-    Spacer(Modifier.height(16.dp))
+    Column {
+        Spacer(Modifier.height(14.dp))
+        TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
+        Spacer(Modifier.height(4.dp))
+        TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
+        Spacer(Modifier.height(16.dp))
+    }
 }
 
 @Composable
-fun SongsTitleAndArtistsSmall(title: String, artists: String, modifier: Modifier, doCenter: Boolean) {
-    Spacer(Modifier.height(6.dp))
-    TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
-    TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
-    Spacer(Modifier.height(6.dp))
+fun SongsTitleAndArtistsSmall(
+    title: String, artists: String, modifier: Modifier, doCenter: Boolean
+) {
+    Column {
+        Spacer(Modifier.height(6.dp))
+        TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
+        TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
+        Spacer(Modifier.height(6.dp))
+    }
 }
 
 

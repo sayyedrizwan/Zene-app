@@ -13,4 +13,5 @@
     <string name="radio_station_in_city">Radio Stations in your city</string>
     <string name="error_loading_radio_station">Error loading radio stations near you. Try again after some times.</string>
     <string name="top_songs_in_c">Top songs in %s</string>
+    <string name="fresh_added_songs">Fresh Added Songs</string>
 </resources>

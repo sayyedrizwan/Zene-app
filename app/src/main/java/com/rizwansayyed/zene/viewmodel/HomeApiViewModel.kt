@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPII
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
 import com.rizwansayyed.zene.domain.spotify.SpotifyItem
 import com.rizwansayyed.zene.domain.spotify.SpotifyPlaylistSongsResponse
@@ -58,6 +59,10 @@ class HomeApiViewModel @Inject constructor(
         private set
 
 
+    var freshAddedSongs by mutableStateOf<List<MusicData?>>(emptyList())
+        private set
+
+
     private fun onlineRadiosInCity() = viewModelScope.launch(Dispatchers.IO) {
         onlineRadiosAPI.onlineRadioSearch(false).onStart {
             onlineRadio = DataResponse.Loading
@@ -89,11 +94,9 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun newReleaseMusic() = viewModelScope.launch(Dispatchers.IO) {
-       youtubeAPI.newReleaseMusic().catch {
-           it.message?.toast()
-       }.collectLatest {
-           it?.toast()
-       }
+        youtubeAPI.newReleaseMusic().catch {}.collectLatest {
+            freshAddedSongs = it
+        }
     }
 
 }

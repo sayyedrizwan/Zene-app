@@ -61,6 +61,27 @@ object YoutubeAPI {
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
     const val YT_MAIN_GUIDE = "guide"
 
+    const val YT_MUSIC_BASE_URL = "https://music.youtube.com/youtubei/v1/"
+    const val YT_SEARCH_API = "search"
+
+
+    fun ytMusicJsonBody(ip: IpJsonResponse, q: String): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "timeZone": "${ip.timezone}"
+                }
+            }, "query": "$q"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
 
     fun ytJsonBody(ip: IpJsonResponse): RequestBody {
         val json = """{
@@ -97,6 +118,9 @@ object CacheFiles {
     val topCountrySongs by lazy {
         File(context.cacheDir, "top-country-songs-list.txt").apply { mkdirs() }
     }
+    val freshAddedSongs by lazy {
+        File(context.cacheDir, "fresh-added-list.txt").apply { mkdirs() }
+    }
 }
 
 object ScrapURL {
@@ -108,6 +132,29 @@ fun getInstagramUsername(i: String): String {
     return i.substringAfter("instagram.com/").replace("/", "")
 }
 
+fun sortNameForSearch(q: String): String {
+
+    var name = ""
+
+   val n = q.lowercase().replace("(official video)", "")
+        .replace("(official audio)", "")
+        .replace("full audio", "")
+        .replace("(audio)", "")
+
+    if (n.contains(" | ")) {
+        if (n.split(" | ").size > 2) {
+            n.split(" | ").forEachIndexed { index, s ->
+                if (index == 0) name = s
+                if (index == 1) name += " - $s"
+            }
+        } else {
+            name = n.substringBefore(" | ")
+        }
+        return name
+    }
+
+    return n
+}
 
 const val USER_AGENT =
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"

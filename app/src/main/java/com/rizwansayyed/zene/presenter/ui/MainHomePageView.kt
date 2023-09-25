@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkBlack
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
 import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
+import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
 import com.rizwansayyed.zene.presenter.ui.home.online.PlaylistList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
@@ -81,6 +82,7 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
         item(span = { GridItemSpan(3) }) {
             if (nav.isOnline.value) Column(Modifier.fillMaxWidth()) {
                 TrendingSongsCountryList()
+                FreshAddedSongsList()
             }
         }
 

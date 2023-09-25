@@ -1,17 +1,27 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
-import android.util.Log
+
 import androidx.compose.runtime.mutableStateListOf
+import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
+import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
-import com.rizwansayyed.zene.data.utils.CacheFiles.updateTheDate
-import com.rizwansayyed.zene.data.utils.USER_AGENT
+import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
+import com.rizwansayyed.zene.data.utils.CacheFiles
+import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigManager
-import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.domain.yt.YoutubeReleaseChannelResponse
+import com.rizwansayyed.zene.data.utils.sortNameForSearch
+import com.rizwansayyed.zene.domain.IpJsonResponse
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicDataCache
+import com.rizwansayyed.zene.domain.spotify.SpotifyTracksCacheResponse
+import com.rizwansayyed.zene.domain.spotify.toTxtCache
+import com.rizwansayyed.zene.domain.toTxtCache
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -21,17 +31,27 @@ import javax.inject.Inject
 
 class YoutubeAPIImpl @Inject constructor(
     private val youtubeAPI: YoutubeAPIService,
+    private val youtubeMusicAPI: YoutubeMusicAPIService,
     private val ipJson: IpJsonService,
     private val remoteConfig: RemoteConfigManager,
     private val jsonScrap: JsoupScrapsInterface
 ) : YoutubeAPIImplInterface {
 
     override suspend fun newReleaseMusic() = flow {
+        val cache = responseCache(freshAddedSongs, MusicDataCache::class.java)
+        if (cache != null) {
+            if (returnFromCache2Days(cache.cacheTime) && cache.list.isNotEmpty()) {
+                emit(cache.list)
+                return@flow
+            } else
+                emit(cache.list)
+        }
+
         val ip = ipJson.ip()
-        val key = remoteConfig.ytApiKeys()!!.yt
+        val key = remoteConfig.ytApiKeys()
 
         var channelURL = ""
-        val musicChannelId = youtubeAPI.youtubePageResponse(ytJsonBody(ip), key)
+        val musicChannelId = youtubeAPI.youtubePageResponse(ytJsonBody(ip), key?.yt ?: "")
 
         musicChannelId.items?.forEach { mainItem ->
             mainItem?.guideSectionRenderer?.items?.forEach { item ->
@@ -79,8 +99,55 @@ class YoutubeAPIImpl @Inject constructor(
             }
         }
 
-        // implementation on youtube music search
+        val music = mutableListOf<MusicData>()
+        nameList.forEach {
+            var sortName = sortNameForSearch(it)
+            if (sortName.trim().isEmpty()) sortName = it
 
-        emit(nameList.size.toString())
+            musicInfoSearch(sortName, ip, key?.music ?: "")?.let { m -> music.add(m) }
+        }
+
+        val firstHalfSize = music.size / 2
+        val topFirst = ArrayList(music.subList(0, firstHalfSize))
+        val topSecond = ArrayList(music.subList(firstHalfSize, music.size))
+        topFirst.shuffle()
+        topFirst.shuffle()
+        topSecond.shuffle()
+
+        music.clear()
+        music.addAll(topFirst)
+        music.addAll(topSecond)
+        music.toTxtCache()?.let { writeToCacheFile(freshAddedSongs, it) }
+        emit(music)
     }.flowOn(Dispatchers.IO)
+
+    private suspend fun musicInfoSearch(n: String, ip: IpJsonResponse, key: String): MusicData? {
+        if (n.trim().isEmpty()) return null
+
+        var m: MusicData? = null
+
+        try {
+            val searchResponse =
+                youtubeMusicAPI.youtubeSearchResponse(ytMusicJsonBody(ip, n), key)
+
+            searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
+                if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "songs") {
+                    val thumbnail =
+                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
+                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
+                    val name =
+                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()
+
+                    val artists = s.musicShelfRenderer.getArtists()
+
+                    m = MusicData(thumbnail ?: "", name?.first, artists, name?.second)
+                }
+            }
+        } catch (e: Exception) {
+            m = null
+        }
+
+        return m
+    }
 }

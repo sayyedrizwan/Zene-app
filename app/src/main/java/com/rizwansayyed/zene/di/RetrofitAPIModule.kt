@@ -5,11 +5,14 @@ import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.spotify.SpotifyAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
+import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_BASE_URL
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_BASE_URL
 import com.rizwansayyed.zene.data.utils.USER_AGENT
+import com.rizwansayyed.zene.data.utils.YoutubeAPI
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_BASE_URL
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_MUSIC_BASE_URL
 import com.rizwansayyed.zene.data.utils.moshi
 import dagger.Module
 import dagger.Provides
@@ -93,5 +96,27 @@ object RetrofitAPIModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(YoutubeAPIService::class.java)
+    }
+
+
+
+    @Provides
+    fun retrofitYoutubeMusicApiService(): YoutubeMusicAPIService {
+        val builder = OkHttpClient.Builder()
+        builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val chains = chain.request().newBuilder()
+                .addHeader("authority", "www.music.youtube.com")
+                .addHeader("cookie", "GPS=1;")
+                .addHeader("origin", "https://www.music.youtube.com")
+                .addHeader("x-origin", "https://www.music.youtube.com")
+                .addHeader("user-agent", USER_AGENT)
+            chain.proceed(chains.build())
+        })
+
+        return Retrofit.Builder()
+            .baseUrl(YT_MUSIC_BASE_URL).client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(YoutubeMusicAPIService::class.java)
     }
 }
