@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
+import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigManager
 import com.rizwansayyed.zene.data.utils.sortNameForSearch
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -28,7 +29,7 @@ class YoutubeAPIImpl @Inject constructor(
     private val youtubeAPI: YoutubeAPIService,
     private val youtubeMusicAPI: YoutubeMusicAPIService,
     private val ipJson: IpJsonService,
-    private val remoteConfig: RemoteConfigManager,
+    private val remoteConfig: RemoteConfigInterface,
     private val jsonScrap: JsoupScrapsInterface
 ) : YoutubeAPIImplInterface {
 
@@ -116,7 +117,7 @@ class YoutubeAPIImpl @Inject constructor(
         emit(music)
     }.flowOn(Dispatchers.IO)
 
-    private suspend fun musicInfoSearch(n: String, ip: IpJsonResponse, key: String): MusicData? {
+    override suspend fun musicInfoSearch(n: String, ip: IpJsonResponse, key: String): MusicData? {
         if (n.trim().isEmpty()) return null
 
         var m: MusicData? = null

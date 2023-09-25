@@ -71,7 +71,7 @@ fun OfflineDownloadedSongsItem() {
                     .clip(RoundedCornerShape(50))
             )
 
-            SongsTitleAndArtists("Willow", "Taylor Swift", Modifier, true)
+            SongsTitleAndArtists("Willow", "Taylor Swift", Modifier.fillMaxWidth(), true)
         }
     }
 }

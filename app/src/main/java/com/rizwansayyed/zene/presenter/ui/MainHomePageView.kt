@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
 import com.rizwansayyed.zene.presenter.ui.home.online.PlaylistList
+import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
@@ -83,10 +84,9 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
             if (nav.isOnline.value) Column(Modifier.fillMaxWidth()) {
                 TrendingSongsCountryList()
                 FreshAddedSongsList()
+                TopArtistsCountryList()
             }
         }
-
-
 
 
         item {
