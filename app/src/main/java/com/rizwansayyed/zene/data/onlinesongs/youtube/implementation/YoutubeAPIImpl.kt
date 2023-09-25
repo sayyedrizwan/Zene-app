@@ -9,25 +9,20 @@ import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
-import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigManager
 import com.rizwansayyed.zene.data.utils.sortNameForSearch
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
-import com.rizwansayyed.zene.domain.spotify.SpotifyTracksCacheResponse
-import com.rizwansayyed.zene.domain.spotify.toTxtCache
 import com.rizwansayyed.zene.domain.toTxtCache
-import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
-
 
 class YoutubeAPIImpl @Inject constructor(
     private val youtubeAPI: YoutubeAPIService,
@@ -128,7 +123,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         try {
             val searchResponse =
-                youtubeMusicAPI.youtubeSearchResponse(ytMusicJsonBody(ip, n), key)
+                youtubeMusicAPI.youtubeSearchResponse(ytMusicMainSearchJsonBody(ip, n), key)
 
             searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
                 if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "songs") {

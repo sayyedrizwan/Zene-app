@@ -65,7 +65,7 @@ object YoutubeAPI {
     const val YT_SEARCH_API = "search"
 
 
-    fun ytMusicJsonBody(ip: IpJsonResponse, q: String): RequestBody {
+    fun ytMusicMainSearchJsonBody(ip: IpJsonResponse, q: String): RequestBody {
         val json = """{
             "context": {
                 "client": {
