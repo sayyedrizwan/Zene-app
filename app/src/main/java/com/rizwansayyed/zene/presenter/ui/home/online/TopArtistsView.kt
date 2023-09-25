@@ -68,7 +68,7 @@ fun TopArtistsItems(artists: TopArtistsResult, width: Int) {
             Modifier
                 .align(Alignment.Center)
                 .fillMaxSize()
-                .clip(RoundedCornerShape(6.dp)),
+                .clip(RoundedCornerShape(3.dp)),
             contentScale = ContentScale.Crop
         )
 

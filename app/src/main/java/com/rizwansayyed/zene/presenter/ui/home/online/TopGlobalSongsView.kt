@@ -97,7 +97,7 @@ fun GlobalSongsItemsFull(items: SpotifyItem?) {
     Column(
         Modifier
             .size(180.dp)
-            .padding(4.dp), Arrangement.Center, Alignment.CenterHorizontally
+            .padding(4.dp).padding(horizontal = 4.dp), Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
             items?.track?.album?.imageHd()?.url, "",
