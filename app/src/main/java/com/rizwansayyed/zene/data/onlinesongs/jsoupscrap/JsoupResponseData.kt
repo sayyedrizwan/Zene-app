@@ -29,7 +29,7 @@ suspend fun jsoupResponseData(url: String): String? {
         if (response.isSuccessful) {
             return@withContext response.body?.string()
         } else {
-            throw Exception("Error request")
+           return@withContext null
         }
     }
 }

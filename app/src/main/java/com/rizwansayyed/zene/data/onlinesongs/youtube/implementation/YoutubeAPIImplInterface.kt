@@ -8,4 +8,5 @@ interface YoutubeAPIImplInterface {
 
     suspend fun newReleaseMusic(): Flow<List<MusicData>>
     suspend fun musicInfoSearch(n: String, ip: IpJsonResponse?, key: String): MusicData?
+    suspend fun artistsInfo(artists: List<MusicData>): Flow<List<MusicData>>
 }

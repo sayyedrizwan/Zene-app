@@ -1,18 +1,19 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
-import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
+import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.sortNameForSearch
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.toTxtCache
+import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -169,7 +171,55 @@ class YoutubeAPIImpl @Inject constructor(
         return m
     }
 
-//    suspend fun artistsInfo() = flow {
-//
-//    }
+    override suspend fun artistsInfo(artists: List<MusicData>) = flow {
+        val cache = responseCache(topArtistsCountry, MusicDataCache::class.java)
+        if (cache != null) {
+            if (returnFromCache2Days(cache.cacheTime) && cache.list.isNotEmpty()) {
+                emit(cache.list)
+                return@flow
+            }
+        }
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        val lists = mutableListOf<String>()
+        val artistsLists = mutableListOf<MusicData>()
+
+        artists.forEach { a ->
+            for (artist in a.artists?.split(",", "&")!!) {
+                if (!lists.contains(artist.lowercase().trim())) lists.add(artist.lowercase().trim())
+            }
+        }
+
+        if (lists.size > 54) {
+            val subList = ArrayList(lists.subList(0, 44))
+            lists.clear()
+            lists.addAll(subList)
+        }
+
+        lists.forEach { n ->
+            val searchResponse =
+                youtubeMusicAPI.youtubeSearchResponse(ytMusicAlbumSearchJsonBody(ip, n), key)
+
+            searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
+                if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
+                    val thumbnail =
+                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
+                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
+                    val a = s.musicShelfRenderer.getArtistsNoCheck()
+                    a.let {
+                        if (!artistsLists.any { a ->
+                                a.artists?.trim()?.lowercase() == it?.lowercase()?.trim()
+                            }) artistsLists.add(MusicData(thumbnail ?: "", it, it, THE_ARTISTS))
+                    }
+                }
+            }
+        }
+        artistsLists.distinct()
+        artistsLists.toTxtCache()?.let { writeToCacheFile(topArtistsCountry, it) }
+
+        emit(artistsLists.toList())
+    }.flowOn(Dispatchers.IO)
 }

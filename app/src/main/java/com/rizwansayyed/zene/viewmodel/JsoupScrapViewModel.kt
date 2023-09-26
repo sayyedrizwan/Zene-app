@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
-import com.rizwansayyed.zene.domain.TopArtistsResult
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -31,7 +32,7 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrap
     var showGlobalArtistInfo by mutableStateOf(true)
         private set
 
-    var topArtists by mutableStateOf<DataResponse<List<TopArtistsResult>>>(DataResponse.Empty)
+    var topArtists by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
     private fun topArtistsList() = viewModelScope.launch(Dispatchers.IO) {

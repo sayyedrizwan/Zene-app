@@ -1,26 +1,21 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
-import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
-import com.rizwansayyed.zene.domain.spotify.SpotifyItem
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -29,7 +24,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.system.measureTimeMillis
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
@@ -70,7 +64,7 @@ class HomeApiViewModel @Inject constructor(
     var freshAddedSongs by mutableStateOf<List<MusicData?>>(emptyList())
         private set
 
-    var topCountryArtists by mutableStateOf<List<String>>(emptyList())
+    var topCountryArtists by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
         private set
 
 
@@ -105,22 +99,15 @@ class HomeApiViewModel @Inject constructor(
         }
     }
 
-    private fun topArtists(items: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
-        val lists = mutableListOf<String>()
-
-        items.forEach { a ->
-            for (artist in a.artists?.split(",", "&")!!) {
-                lists.add(artist)
-            }
+    private fun topArtists(artists: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
+        artists.size.toast()
+        youtubeAPI.artistsInfo(artists).onStart {
+            topCountryArtists = DataResponse.Loading
+        }.catch {
+            topCountryArtists = DataResponse.Error(it)
+        }.collectLatest {
+            topCountryArtists = DataResponse.Success(it)
         }
-        lists.shuffle()
-        if (lists.size > 15) {
-            val newList = ArrayList(lists.subList(0, 15))
-            lists.clear()
-            lists.addAll(newList)
-            newList.clear()
-        }
-        topCountryArtists = lists
     }
 
     private fun newReleaseMusic() = viewModelScope.launch(Dispatchers.IO) {

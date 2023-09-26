@@ -93,7 +93,7 @@ object YoutubeAPI {
                     "clientVersion": "1.20230918.01.00",
                     "timeZone": "${ip?.timezone}"
                 }
-            }, "query": "$q"
+            }, "query": "$q", "params": "EgWKAQIgAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -138,6 +138,9 @@ object CacheFiles {
     }
     val freshAddedSongs by lazy {
         File(context.cacheDir, "fresh-added-list.txt").apply { mkdirs() }
+    }
+    val topArtistsCountry by lazy {
+        File(context.cacheDir, "top-artists-country-list.txt").apply { mkdirs() }
     }
 }
 

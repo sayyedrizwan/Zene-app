@@ -73,6 +73,19 @@ data class YoutubeMusicMainSearchResponse(
                                         return name
                                     }
 
+                                    fun getArtistsNoCheck(): String? {
+                                        var name: String? = null
+                                        contents?.forEachIndexed { index, content ->
+                                            if (index == 0) content?.musicResponsiveListItemRenderer?.flexColumns?.forEachIndexed { ind, flex ->
+                                                if (ind == 0) flex?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEachIndexed { index, content ->
+                                                    if (index == 0) content?.text?.let { name = content.text }
+                                                }
+                                            }
+                                        }
+
+                                        return name
+                                    }
+
                                     data class BottomEndpoint(
                                         val clickTrackingParams: String?,
                                         val searchEndpoint: SearchEndpoint?

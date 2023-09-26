@@ -22,6 +22,10 @@ import kotlinx.coroutines.launch
 
 object UiUtils {
 
+    object ContentTypes {
+        const val THE_ARTISTS = "songs_artists"
+    }
+
     private const val FLAG_NO_LIMIT = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 
     fun Activity.transparentStatusAndNavigation() {

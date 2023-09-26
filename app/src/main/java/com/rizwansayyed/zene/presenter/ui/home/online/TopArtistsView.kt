@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.domain.TopArtistsResult
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.LightBlack
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
@@ -57,14 +57,14 @@ fun TopArtistsList() {
 }
 
 @Composable
-fun TopArtistsItems(artists: TopArtistsResult, width: Int) {
+fun TopArtistsItems(artists: MusicData, width: Int) {
     Box(
         Modifier
             .padding(4.dp)
             .size((width / 2).dp, (width / 2 + 90).dp)
     ) {
         AsyncImage(
-            artists.thumbnail, artists.name,
+            artists.thumbnail, artists.artists,
             Modifier
                 .align(Alignment.Center)
                 .fillMaxSize()
@@ -87,7 +87,7 @@ fun TopArtistsItems(artists: TopArtistsResult, width: Int) {
 
 
         TextSemiBold(
-            artists.name,
+            artists.artists ?: "",
             Modifier
                 .padding(8.dp)
                 .align(Alignment.BottomStart)
