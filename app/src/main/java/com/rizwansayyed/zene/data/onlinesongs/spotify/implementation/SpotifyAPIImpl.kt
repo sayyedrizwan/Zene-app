@@ -17,17 +17,20 @@ import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigManager
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
+import com.rizwansayyed.zene.domain.spotify.SpotifyItem
 import com.rizwansayyed.zene.domain.spotify.SpotifyTracksCacheResponse
 import com.rizwansayyed.zene.domain.spotify.toTxtCache
 import com.rizwansayyed.zene.domain.toTxtCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SpotifyAPIImpl @Inject constructor(
@@ -57,9 +60,28 @@ class SpotifyAPIImpl @Inject constructor(
         val songs = spotifyAPI.spotifyPlaylistSongs(bearer, pid)
 
         val music = mutableListOf<MusicData>()
-        songs.tracks?.items?.forEach { s ->
-            val sortName = "${s.track?.album?.name} - ${s.track?.wholeArtistsName()}"
-            youtubeMusic.musicInfoSearch(sortName, ip, key?.music ?: "")?.let { m -> music.add(m) }
+
+        suspend fun synList(s: SpotifyItem) {
+            val sortName = "${s.track?.album?.name} - ${(s.track?.wholeArtistsName())}"
+            youtubeMusic.musicInfoSearch(sortName, ip, key?.music ?: "")
+                ?.let { m -> if (!music.contains(m)) music.add(m) }
+        }
+
+        withContext(Dispatchers.IO) {
+            val first = async {
+                songs.tracks?.items?.forEachIndexed { index, s ->
+                    if (index <= songs.tracks.items.size / 2) synList(s)
+                }
+            }
+
+            val second = async {
+                songs.tracks?.items?.forEachIndexed { index, s ->
+                    if (index >= songs.tracks.items.size / 2) synList(s)
+                }
+            }
+
+            first.await()
+            second.await()
         }
         music.shuffle()
         music.toTxtCache()?.let { writeToCacheFile(topGlobalSongs, it) }
@@ -93,9 +115,28 @@ class SpotifyAPIImpl @Inject constructor(
         val songs = spotifyAPI.spotifyPlaylistSongs(bearer, pid)
 
         val music = mutableListOf<MusicData>()
-        songs.tracks?.items?.forEach { s ->
-            val sortName = "${s.track?.album?.name} - ${s.track?.wholeArtistsName()}"
-            youtubeMusic.musicInfoSearch(sortName, ipDetails, key?.music ?: "")?.let { m -> music.add(m) }
+
+        suspend fun synList(s: SpotifyItem) {
+            val sortName = "${s.track?.album?.name} - ${(s.track?.wholeArtistsName())}"
+            youtubeMusic.musicInfoSearch(sortName, ipDetails, key?.music ?: "")
+                ?.let { m -> if (!music.contains(m)) music.add(m) }
+        }
+
+        withContext(Dispatchers.IO) {
+            val first = async {
+                songs.tracks?.items?.forEachIndexed { index, s ->
+                    if (index <= songs.tracks.items.size / 2) synList(s)
+                }
+            }
+
+            val second = async {
+                songs.tracks?.items?.forEachIndexed { index, s ->
+                    if (index >= songs.tracks.items.size / 2) synList(s)
+                }
+            }
+
+            first.await()
+            second.await()
         }
         music.shuffle()
         music.toTxtCache()?.let { writeToCacheFile(topCountrySongs, it) }

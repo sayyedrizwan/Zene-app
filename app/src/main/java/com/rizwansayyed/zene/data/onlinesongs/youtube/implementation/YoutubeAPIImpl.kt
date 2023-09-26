@@ -13,16 +13,17 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigManager
 import com.rizwansayyed.zene.data.utils.sortNameForSearch
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.toTxtCache
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class YoutubeAPIImpl @Inject constructor(
@@ -95,12 +96,32 @@ class YoutubeAPIImpl @Inject constructor(
             }
         }
 
+
         val music = mutableListOf<MusicData>()
-        nameList.forEach {
+
+        suspend fun synList(it: String) {
             var sortName = sortNameForSearch(it)
             if (sortName.trim().isEmpty()) sortName = it
 
-            musicInfoSearch(sortName, ip, key?.music ?: "")?.let { m -> music.add(m) }
+            musicInfoSearch(sortName, ip, key?.music ?: "")?.let { m ->
+                if (!music.contains(m)) music.add(m)
+            }
+        }
+
+        withContext(Dispatchers.IO) {
+            val first = async {
+                nameList.forEachIndexed { index, s ->
+                    if (index <= nameList.size / 2) synList(s)
+                }
+            }
+
+            val second = async {
+                nameList.forEachIndexed { index, s ->
+                    if (index >= nameList.size / 2) synList(s)
+                }
+            }
+            first.await()
+            second.await()
         }
 
         val firstHalfSize = music.size / 2

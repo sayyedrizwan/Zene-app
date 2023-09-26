@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 @HiltViewModel
 class HomeApiViewModel @Inject constructor(
@@ -78,6 +80,7 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun countryTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
+        val start = System.currentTimeMillis()
         spotifyAPI.topSongsInCountry().onStart {
             topCountryTrendingSongs = DataResponse.Loading
         }.catch {
@@ -96,7 +99,6 @@ class HomeApiViewModel @Inject constructor(
                 lists.add(a)
             }
         }
-        lists.size.toast()
         val newList = ArrayList(lists.subList(0, lists.size / 2))
         lists.clear()
         lists.addAll(newList)
