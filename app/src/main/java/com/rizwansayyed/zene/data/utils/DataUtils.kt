@@ -65,15 +65,15 @@ object YoutubeAPI {
     const val YT_SEARCH_API = "search"
 
 
-    fun ytMusicMainSearchJsonBody(ip: IpJsonResponse, q: String): RequestBody {
+    fun ytMusicMainSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
             "context": {
                 "client": {
-                    "remoteHost": "${ip.query}",
+                    "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
                     "clientVersion": "1.20230918.01.00",
-                    "timeZone": "${ip.timezone}"
+                    "timeZone": "${ip?.timezone}"
                 }
             }, "query": "$q"
         }"""
@@ -83,15 +83,33 @@ object YoutubeAPI {
     }
 
 
-    fun ytJsonBody(ip: IpJsonResponse): RequestBody {
+    fun ytMusicAlbumSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
             "context": {
                 "client": {
-                    "remoteHost": "${ip.query}",
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }, "query": "$q"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+
+    fun ytJsonBody(ip: IpJsonResponse?): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB",
                     "clientVersion": "2.20230921.04.01",
-                    "timeZone": "${ip.timezone}"
+                    "timeZone": "${ip?.timezone}"
                 }
             }
         }"""

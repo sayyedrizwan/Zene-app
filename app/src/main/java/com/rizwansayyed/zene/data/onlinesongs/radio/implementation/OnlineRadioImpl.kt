@@ -26,8 +26,7 @@ import okhttp3.internal.filterList
 import javax.inject.Inject
 
 class OnlineRadioImpl @Inject constructor(
-    private val onlineRadio: OnlineRadioService,
-    private val ipJson: IpJsonService
+    private val onlineRadio: OnlineRadioService
 ) : OnlineRadioImplInterface {
 
     override suspend fun onlineRadioSearch(all: Boolean) = flow {
@@ -51,15 +50,11 @@ class OnlineRadioImpl @Inject constructor(
             }
         }
 
-        val ipDetails = ipJson.ip()
-        CoroutineScope(Dispatchers.IO).launch {
-            userIpDetails = flowOf(ipDetails)
-            if (isActive) cancel()
-        }
+        val ipDetails = userIpDetails.first()
 
         val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
         val response =
-            onlineRadio.radioSearch(radioSearchAPI(baseURL), ipDetails.countryCode ?: "us")
+            onlineRadio.radioSearch(radioSearchAPI(baseURL), ipDetails?.countryCode ?: "us")
         response.toTxtCache()?.let { writeToCacheFile(radioList, it) }
         if (all)
             emit(response)

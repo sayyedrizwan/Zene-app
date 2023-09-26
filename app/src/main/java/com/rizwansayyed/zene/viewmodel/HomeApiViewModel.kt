@@ -7,6 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
+import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
+import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
@@ -16,24 +20,35 @@ import com.rizwansayyed.zene.domain.spotify.SpotifyItem
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeApiViewModel @Inject constructor(
     private val onlineRadiosAPI: OnlineRadioImplInterface,
+    private val ip: IpJsonImplInterface,
     private val spotifyAPI: SpotifyAPIImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
 ) : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            delay(500)
+            try {
+                userIpDetails = flowOf(ip.ip().first())
+            } catch (e: Exception) {
+                e.message
+            }
+
+            delay(1.seconds)
             onlineRadiosInCity()
             globalTrendingSongs()
             countryTrendingSongs()
@@ -80,7 +95,6 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun countryTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
-        val start = System.currentTimeMillis()
         spotifyAPI.topSongsInCountry().onStart {
             topCountryTrendingSongs = DataResponse.Loading
         }.catch {
@@ -95,15 +109,17 @@ class HomeApiViewModel @Inject constructor(
         val lists = mutableListOf<String>()
 
         items.forEach { a ->
-            for (a in a.artists?.split(",", "&")!!) {
-                lists.add(a)
+            for (artist in a.artists?.split(",", "&")!!) {
+                lists.add(artist)
             }
         }
-        val newList = ArrayList(lists.subList(0, lists.size / 2))
-        lists.clear()
-        lists.addAll(newList)
         lists.shuffle()
-        newList.clear()
+        if (lists.size > 15) {
+            val newList = ArrayList(lists.subList(0, 15))
+            lists.clear()
+            lists.addAll(newList)
+            newList.clear()
+        }
         topCountryArtists = lists
     }
 

@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -35,7 +36,6 @@ import javax.inject.Inject
 
 class SpotifyAPIImpl @Inject constructor(
     private val spotifyAPI: SpotifyAPIService,
-    private val ipJson: IpJsonService,
     private val youtubeMusic: YoutubeAPIImplInterface,
     private val remoteConfig: RemoteConfigInterface,
 ) : SpotifyAPIImplInterface {
@@ -48,7 +48,7 @@ class SpotifyAPIImpl @Inject constructor(
                 return@flow
             }
         }
-        val ip = ipJson.ip()
+        val ip = userIpDetails.first()
         val key = remoteConfig.ytApiKeys()
 
         val token = spotifyAPI.spotifyAccessToken()
@@ -100,16 +100,12 @@ class SpotifyAPIImpl @Inject constructor(
         }
 
         val key = remoteConfig.ytApiKeys()
-        val ipDetails = ipJson.ip()
-        CoroutineScope(Dispatchers.IO).launch {
-            userIpDetails = flowOf(ipDetails)
-            if (isActive) cancel()
-        }
+        val ipDetails = userIpDetails.first()
 
         val token = spotifyAPI.spotifyAccessToken()
         val bearer = "${token.token_type} ${token.access_token}"
         val pid = spotifyAPI.spotifyPlaylistSearch(
-            bearer, "$SPOTIFY_COUNTRY_SEARCH${ipDetails.country}"
+            bearer, "$SPOTIFY_COUNTRY_SEARCH${ipDetails?.country}"
         ).playlists?.items?.first()?.id ?: return@flow
 
         val songs = spotifyAPI.spotifyPlaylistSongs(bearer, pid)

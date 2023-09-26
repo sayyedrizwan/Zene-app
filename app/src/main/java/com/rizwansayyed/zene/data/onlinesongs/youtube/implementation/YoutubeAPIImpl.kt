@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
 import androidx.compose.runtime.mutableStateListOf
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
@@ -29,7 +31,6 @@ import javax.inject.Inject
 class YoutubeAPIImpl @Inject constructor(
     private val youtubeAPI: YoutubeAPIService,
     private val youtubeMusicAPI: YoutubeMusicAPIService,
-    private val ipJson: IpJsonService,
     private val remoteConfig: RemoteConfigInterface,
     private val jsonScrap: JsoupScrapsInterface
 ) : YoutubeAPIImplInterface {
@@ -44,7 +45,7 @@ class YoutubeAPIImpl @Inject constructor(
                 emit(cache.list)
         }
 
-        val ip = ipJson.ip()
+        val ip = userIpDetails.first()
         val key = remoteConfig.ytApiKeys()
 
         var channelURL = ""
@@ -138,7 +139,7 @@ class YoutubeAPIImpl @Inject constructor(
         emit(music)
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun musicInfoSearch(n: String, ip: IpJsonResponse, key: String): MusicData? {
+    override suspend fun musicInfoSearch(n: String, ip: IpJsonResponse?, key: String): MusicData? {
         if (n.trim().isEmpty()) return null
 
         var m: MusicData? = null
@@ -167,4 +168,8 @@ class YoutubeAPIImpl @Inject constructor(
 
         return m
     }
+
+//    suspend fun artistsInfo() = flow {
+//
+//    }
 }
