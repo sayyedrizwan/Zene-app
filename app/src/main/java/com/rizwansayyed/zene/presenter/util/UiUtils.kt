@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
 object UiUtils {
@@ -43,4 +44,22 @@ object UiUtils {
     fun generateRadioName(): String {
         return "${context.resources.getString(R.string.radio)} ${(4..19).random()}"
     }
+
+    fun <T> weightedRandomChoice(items: List<T>, weights: List<Int> = listOf(3, 3, 1, 1, 1)): T? {
+        require(items.size == weights.size) { "Items and weights lists must have the same size" }
+
+        val totalWeight = weights.sum()
+        val threshold = Random.nextInt(totalWeight)
+
+        var cumulativeWeight = 0
+        for (i in items.indices) {
+            cumulativeWeight += weights[i]
+            if (threshold < cumulativeWeight) {
+                return items[i]
+            }
+        }
+
+        return null
+    }
+
 }

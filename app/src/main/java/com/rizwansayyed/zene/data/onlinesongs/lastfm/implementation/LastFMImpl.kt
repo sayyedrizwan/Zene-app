@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPII
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.weightedRandomChoice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -25,7 +26,7 @@ class LastFMImpl @Inject constructor(
         val key = remoteConfig.ytApiKeys()
 
         val res = lastFMS.topRecentPlayingSongs()
-        val song = res.results?.artist?.random()
+        val song = weightedRandomChoice(res.results?.artist ?: emptyList())
 
         val songName = "${song?.tracks?.first()?.name} - ${song?.name}"
         val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
