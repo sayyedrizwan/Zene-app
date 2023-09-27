@@ -37,6 +37,8 @@ class HomeApiViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
+        currentMostPlayingSong()
+
         try {
             userIpDetails = flowOf(ip.ip().first())
         } catch (e: Exception) {
@@ -48,7 +50,6 @@ class HomeApiViewModel @Inject constructor(
         globalTrendingSongs()
         countryTrendingSongs()
         newReleaseMusic()
-        currentMostPlayingSong()
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
@@ -68,7 +69,7 @@ class HomeApiViewModel @Inject constructor(
     var topCountryArtists by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
         private set
 
-    var mostPlayingSong by mutableStateOf<DataResponse<MusicData?>>(DataResponse.Empty)
+    var mostPlayingSong by mutableStateOf<DataResponse<Pair<MusicData?, String?>>>(DataResponse.Empty)
         private set
 
 

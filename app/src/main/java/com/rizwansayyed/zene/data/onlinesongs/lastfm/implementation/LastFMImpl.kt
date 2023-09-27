@@ -29,8 +29,10 @@ class LastFMImpl @Inject constructor(
         val song = weightedRandomChoice(res.results?.artist ?: emptyList())
 
         val songName = "${song?.tracks?.first()?.name} - ${song?.name}"
+
         val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
-        emit(songs)
+        songs?.artists = song?.name
+        emit(Pair(songs, song?.image ))
     }.flowOn(Dispatchers.IO)
 
 

@@ -214,6 +214,27 @@ fun TextThin(
     )
 }
 
+
+@Composable
+fun TextThinBig(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White,
+    singleLine: Boolean = false
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Thin,
+        maxLines = if (singleLine) 1 else 10,
+        fontSize = 15.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
+    )
+}
+
 @Composable
 fun Int.scaledSp(): TextUnit {
     val value: Int = this
