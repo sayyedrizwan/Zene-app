@@ -38,13 +38,18 @@ class LastFMImpl @Inject constructor(
         val artistDetails = lastFMS.searchArtists(name).results?.artistmatches?.artist?.first()
         var imgId = artistDetails?.image?.substringAfterLast("/")?.substringBeforeLast(".")
 
+        if (limit == 1) {
+            artistDetails?.image?.let { list.add(it) }
+            emit(list)
+            return@flow
+        }
+
         while (list.size <= limit) {
             val img = lastFMS.artistsImages(searchLastFMImageURLPath(imgId ?: ""))
             img.values.forEach {
                 it.src?.let { img -> list.add(img) }
                 imgId = it.next?.substringAfterLast("/")
             }
-
         }
         emit(list)
     }

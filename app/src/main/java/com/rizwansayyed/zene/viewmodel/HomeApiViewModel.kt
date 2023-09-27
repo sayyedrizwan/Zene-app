@@ -49,7 +49,6 @@ class HomeApiViewModel @Inject constructor(
         countryTrendingSongs()
         newReleaseMusic()
         currentMostPlayingSong()
-        images()
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
@@ -129,15 +128,4 @@ class HomeApiViewModel @Inject constructor(
             mostPlayingSong = DataResponse.Success(it)
         }
     }
-
-    private fun images() = viewModelScope.launch(Dispatchers.IO) {
-        lastFMAPI.artistsImages("taylor swift").onStart {
-
-        }.catch {
-            it.message?.toast()
-        }.collectLatest {
-            it.size.toast()
-        }
-    }
-
 }
