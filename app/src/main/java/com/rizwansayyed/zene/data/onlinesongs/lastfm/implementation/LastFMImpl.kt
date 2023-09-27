@@ -1,0 +1,32 @@
+package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
+
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.domain.MusicData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
+
+class LastFMImpl @Inject constructor(
+    private val lastFMS: LastFMService,
+    private val youtubeMusic: YoutubeAPIImplInterface,
+    private val remoteConfig: RemoteConfigInterface,
+) : LastFMImplInterface {
+
+    override suspend fun topRecentPlayingSongs() = flow {
+        val ip = DataStorageManager.userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()
+
+        val res = lastFMS.topRecentPlayingSongs()
+        val song = res.results?.artist?.random()
+
+        val songName = "${song?.tracks?.first()?.name} - ${song?.name}"
+        val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
+        emit(songs)
+    }.flowOn(Dispatchers.IO)
+
+}

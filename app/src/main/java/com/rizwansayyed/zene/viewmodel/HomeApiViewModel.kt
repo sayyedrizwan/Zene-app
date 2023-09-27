@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
@@ -32,22 +33,22 @@ class HomeApiViewModel @Inject constructor(
     private val ip: IpJsonImplInterface,
     private val spotifyAPI: SpotifyAPIImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
+    private val lastFMAPI: LastFMImplInterface,
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                userIpDetails = flowOf(ip.ip().first())
-            } catch (e: Exception) {
-                e.message
-            }
-
-            delay(1.seconds)
-            onlineRadiosInCity()
-            globalTrendingSongs()
-            countryTrendingSongs()
-            newReleaseMusic()
+    fun init() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            userIpDetails = flowOf(ip.ip().first())
+        } catch (e: Exception) {
+            e.message
         }
+
+        delay(1.seconds)
+        onlineRadiosInCity()
+        globalTrendingSongs()
+        countryTrendingSongs()
+        newReleaseMusic()
+        currentMostPlayingSong()
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
@@ -65,6 +66,9 @@ class HomeApiViewModel @Inject constructor(
         private set
 
     var topCountryArtists by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
+        private set
+
+    var mostPlayingSong by mutableStateOf<DataResponse<MusicData?>>(DataResponse.Empty)
         private set
 
 
@@ -100,7 +104,6 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun topArtists(artists: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
-        artists.size.toast()
         youtubeAPI.artistsInfo(artists).onStart {
             topCountryArtists = DataResponse.Loading
         }.catch {
@@ -113,6 +116,16 @@ class HomeApiViewModel @Inject constructor(
     private fun newReleaseMusic() = viewModelScope.launch(Dispatchers.IO) {
         youtubeAPI.newReleaseMusic().catch {}.collectLatest {
             freshAddedSongs = it
+        }
+    }
+
+    private fun currentMostPlayingSong() = viewModelScope.launch(Dispatchers.IO) {
+        lastFMAPI.topRecentPlayingSongs().onStart {
+            mostPlayingSong = DataResponse.Loading
+        }.catch {
+            mostPlayingSong = DataResponse.Error(it)
+        }.collectLatest {
+            mostPlayingSong = DataResponse.Success(it)
         }
     }
 

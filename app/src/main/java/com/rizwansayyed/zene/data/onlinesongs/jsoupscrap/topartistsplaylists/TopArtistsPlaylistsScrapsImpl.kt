@@ -1,7 +1,6 @@
-package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap
+package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists
 
 
-import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
@@ -20,7 +19,6 @@ import com.rizwansayyed.zene.domain.yt.YoutubeReleaseChannelResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -28,10 +26,10 @@ import org.jsoup.Jsoup
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-class JsoupScrapsImpl @Inject constructor(
+class TopArtistsPlaylistsScrapsImpl @Inject constructor(
     private val instagramInfo: InstagramInfoService,
     private val remoteConfig: RemoteConfigInterface
-) : JsoupScrapsInterface {
+) : TopArtistsPlaylistsScrapsInterface {
 
     override suspend fun topArtistsOfWeeks() = flow {
         val list = mutableListOf<MusicData>()

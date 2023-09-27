@@ -57,6 +57,13 @@ object SpotifyAPI {
     const val SPOTIFY_COUNTRY_SEARCH = "top+50+"
 }
 
+object LastFM {
+    const val LFM_BASE_URL = "https://kerve.last.fm"
+    const val LFM_TOP_LISTEN_SONGS = "kerve/charts"
+    const val LFM_SEARCH_ARTISTS = "kerve/search"
+
+}
+
 object YoutubeAPI {
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
     const val YT_MAIN_GUIDE = "guide"
@@ -157,7 +164,7 @@ fun sortNameForSearch(q: String): String {
 
     var name = ""
 
-   val n = q.lowercase().replace("(official video)", "")
+    val n = q.lowercase().replace("(official video)", "")
         .replace("(official audio)", "")
         .replace("full audio", "")
         .replace("(audio)", "")

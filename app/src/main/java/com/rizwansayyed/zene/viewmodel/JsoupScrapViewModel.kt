@@ -6,9 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -19,14 +18,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: JsoupScrapsInterface) :
+class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: TopArtistsPlaylistsScrapsInterface) :
     ViewModel() {
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(500)
-            topArtistsList()
-        }
+
+    fun init() = viewModelScope.launch(Dispatchers.IO) {
+        topArtistsList()
     }
 
     var showGlobalArtistInfo by mutableStateOf(true)

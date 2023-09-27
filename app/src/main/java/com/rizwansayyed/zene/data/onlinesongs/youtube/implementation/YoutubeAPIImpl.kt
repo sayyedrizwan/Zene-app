@@ -1,13 +1,12 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupscrap.JsoupScrapsInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
@@ -34,7 +33,7 @@ class YoutubeAPIImpl @Inject constructor(
     private val youtubeAPI: YoutubeAPIService,
     private val youtubeMusicAPI: YoutubeMusicAPIService,
     private val remoteConfig: RemoteConfigInterface,
-    private val jsonScrap: JsoupScrapsInterface
+    private val jsonScrap: TopArtistsPlaylistsScrapsInterface
 ) : YoutubeAPIImplInterface {
 
     override suspend fun newReleaseMusic() = flow {
