@@ -74,14 +74,14 @@ data class ArtistsSearchResponse(
             ) {
                 data class Playlink(
                     val `class`: String?,
-                    val data-affiliate: String?,
-                    val data-affiliate-id: String?,
-                    val data-artist-name: String?,
-                    val data-artist-url: String?,
-                    val data-track-name: String?,
-                    val data-track-url: String?,
-                    val data-youtube-id: String?,
-                    val data-youtube-url: String?,
+                    val `data-affiliate`: String?,
+                    val `data-affiliate-id`: String?,
+                    val `data-artist-name`: String?,
+                    val `data-artist-url`: String?,
+                    val `data-track-name`: String?,
+                    val `data-track-url`: String?,
+                    val `data-youtube-id`: String?,
+                    val `data-youtube-url`: String?,
                     val href: String?,
                     val target: String?,
                     val title: String?

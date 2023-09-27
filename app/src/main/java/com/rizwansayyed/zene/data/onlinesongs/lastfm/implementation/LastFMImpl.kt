@@ -1,8 +1,11 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.MusicData
 import kotlinx.coroutines.Dispatchers
@@ -29,4 +32,20 @@ class LastFMImpl @Inject constructor(
         emit(songs)
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun artistsImages(name: String, limit: Int) = flow {
+        val list = mutableListOf<String>()
+        val artistDetails = lastFMS.searchArtists(name).results?.artistmatches?.artist?.first()
+        var imgId = artistDetails?.image?.substringAfterLast("/")?.substringBeforeLast(".")
+
+        while (list.size <= limit) {
+            val img = lastFMS.artistsImages(searchLastFMImageURLPath(imgId ?: ""))
+            img.values.forEach {
+                it.src?.let { img -> list.add(img) }
+                imgId = it.next?.substringAfterLast("/")
+            }
+
+        }
+        emit(list)
+    }
 }

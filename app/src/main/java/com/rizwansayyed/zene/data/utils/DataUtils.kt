@@ -62,6 +62,10 @@ object LastFM {
     const val LFM_TOP_LISTEN_SONGS = "kerve/charts"
     const val LFM_SEARCH_ARTISTS = "kerve/search"
 
+
+    fun searchLastFMImageURLPath(id: String): String {
+       return "https://www.last.fm/music/Taylor+Swift/+images/$id/json"
+    }
 }
 
 object YoutubeAPI {

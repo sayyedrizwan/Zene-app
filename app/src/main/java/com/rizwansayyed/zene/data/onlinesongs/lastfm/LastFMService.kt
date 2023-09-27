@@ -4,6 +4,7 @@ package com.rizwansayyed.zene.data.onlinesongs.lastfm
 import com.rizwansayyed.zene.data.utils.LastFM.LFM_SEARCH_ARTISTS
 import com.rizwansayyed.zene.data.utils.LastFM.LFM_TOP_LISTEN_SONGS
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.lastfm.ArtistsImagesResponse
 import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
 import com.rizwansayyed.zene.domain.lastfm.TopRecentPlaySongsResponse
 import retrofit2.http.GET
@@ -23,5 +24,9 @@ interface LastFMService {
 
     @GET(LFM_SEARCH_ARTISTS)
     suspend fun searchArtists(@Query("q") q: String): ArtistsSearchResponse
+
+
+    @GET
+    suspend fun artistsImages(@Url q: String): ArtistsImagesResponse
 
 }
