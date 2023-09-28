@@ -15,7 +15,7 @@ data class MusicDataCache(
 
 data class MusicData(
     val thumbnail: String?,
-    val name: String?,
+    var name: String?,
     var artists: String?,
-    val pId: String?,
+    var pId: String?,
 )

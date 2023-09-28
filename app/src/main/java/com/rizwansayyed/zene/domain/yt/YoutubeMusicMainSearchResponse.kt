@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.domain.yt
 
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.artistsListToString
+
 data class YoutubeMusicMainSearchResponse(
     val contents: Contents?,
     val responseContext: ResponseContext?,
@@ -29,9 +32,6 @@ data class YoutubeMusicMainSearchResponse(
                             val header: Header?,
                             val trackingParams: String?
                         ) {
-                            fun getArtists() {
-
-                            }
 
                             data class Content(
                                 val musicCardShelfRenderer: MusicCardShelfRenderer?,
@@ -57,20 +57,7 @@ data class YoutubeMusicMainSearchResponse(
                                                 }
                                             }
                                         }
-
-                                        val name = buildString {
-                                            for (i in 0 until list.size) {
-                                                if (i > 0) {
-                                                    if (i == list.size.minus(1)) {
-                                                        append(" & ")
-                                                    } else {
-                                                        append(", ")
-                                                    }
-                                                }
-                                                append(list[i])
-                                            }
-                                        }
-                                        return name
+                                        return artistsListToString(list)
                                     }
 
                                     fun getArtistsNoCheck(): String? {
@@ -78,7 +65,9 @@ data class YoutubeMusicMainSearchResponse(
                                         contents?.forEachIndexed { index, content ->
                                             if (index == 0) content?.musicResponsiveListItemRenderer?.flexColumns?.forEachIndexed { ind, flex ->
                                                 if (ind == 0) flex?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEachIndexed { index, content ->
-                                                    if (index == 0) content?.text?.let { name = content.text }
+                                                    if (index == 0) content?.text?.let {
+                                                        name = content.text
+                                                    }
                                                 }
                                             }
                                         }

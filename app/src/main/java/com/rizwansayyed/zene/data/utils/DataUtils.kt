@@ -64,7 +64,7 @@ object LastFM {
 
 
     fun searchLastFMImageURLPath(id: String): String {
-       return "https://www.last.fm/music/Taylor+Swift/+images/$id/json"
+        return "https://www.last.fm/music/Taylor+Swift/+images/$id/json"
     }
 }
 
@@ -74,6 +74,8 @@ object YoutubeAPI {
 
     const val YT_MUSIC_BASE_URL = "https://music.youtube.com/youtubei/v1/"
     const val YT_SEARCH_API = "search"
+    const val YT_NEXT_API = "next"
+    const val YT_BROWSE_API = "browse"
 
 
     fun ytMusicMainSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
@@ -107,6 +109,47 @@ object YoutubeAPI {
             }, "query": "$q", "params": "EgWKAQIgAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D"
         }"""
 
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicNextJsonBody(ip: IpJsonResponse?, pId: String): RequestBody {
+        val json = """{
+            "videoId": "$pId",
+            "isAudioOnly": true,
+            "responsiveSignals": {
+                "videoInteraction": []
+            },
+            "queueContextParams": "",
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "originalUrl": "https://music.youtube.com/watch?v=$pId",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicBrowseSuggestJsonBody(ip: IpJsonResponse?, bId: String): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "timeZone": "${ip?.timezone}"
+                }
+            },
+            "browseId": "$bId"
+        }"""
         val mediaType = "application/json".toMediaTypeOrNull()
         return json.toRequestBody(mediaType)
     }

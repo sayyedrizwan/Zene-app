@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.os.Build
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlin.random.Random
 
@@ -29,6 +28,23 @@ object Utils {
         }
 
         return null
+    }
+
+    fun artistsListToString(list: MutableList<String>): String {
+        val artistName = buildString {
+            for (i in 0 until list.size) {
+                if (i > 0) {
+                    if (i == list.size.minus(1)) {
+                        append(" & ")
+                    } else {
+                        append(", ")
+                    }
+                }
+                append(list[i])
+            }
+        }
+
+        return artistName
     }
 
 }

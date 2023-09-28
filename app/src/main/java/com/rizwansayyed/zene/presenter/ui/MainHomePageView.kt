@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
 import com.rizwansayyed.zene.presenter.ui.home.online.PlaylistList
+import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLike
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
@@ -38,7 +39,7 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @Composable
 fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
-    val recentPlayList by room.recentSongPlayed.collectAsState(initial = null)
+    val recentPlayList by room.recentSongPlayed.collectAsState(initial = emptyList())
 
     val columnModifier = Modifier
         .fillMaxSize()
@@ -59,7 +60,7 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
                 TopBannerSuggestions()
         }
 
-        items(recentPlayList ?: emptyList()) {
+        items(recentPlayList) {
             RecentPlayItemsShort(it)
         }
 
@@ -86,6 +87,10 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
                 FreshAddedSongsList()
                 TopArtistsCountryList()
             }
+        }
+
+        item(span = { GridItemSpan(3) }) {
+            SongsYouMayLike()
         }
 
 

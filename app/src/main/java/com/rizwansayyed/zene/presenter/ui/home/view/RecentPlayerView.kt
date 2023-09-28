@@ -28,14 +28,13 @@ import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 
 @Composable
-fun RecentPlayList(list: List<RecentPlayedEntity>?) {
-    if (list != null) Column(verticalArrangement = Arrangement.Center) {
-        if (list.isNotEmpty())
-            TopInfoWithSeeMore(
-                R.string.recent_played, if (list.size >= 6) R.string.see_all else null
-            ) {
-                "recentplay see all".toast()
-            }
+fun RecentPlayList(list: List<RecentPlayedEntity>) {
+    if (list.isNotEmpty()) Column(verticalArrangement = Arrangement.Center) {
+        TopInfoWithSeeMore(
+            R.string.recent_played, if (list.size >= 6) R.string.see_all else null
+        ) {
+            "recentplay see all".toast()
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.domain.spotify
 
 import com.rizwansayyed.zene.data.utils.moshi
+import com.rizwansayyed.zene.utils.Utils.artistsListToString
 
 
 fun List<SpotifyItem>.toTxtCache(): String? {
@@ -113,20 +114,8 @@ data class SpotifyItem(
     ) {
 
         fun wholeArtistsName(): String {
-            val name = buildString {
-                for (i in 0 until (artists?.size ?: 0)) {
-                    if (i > 0) {
-                        if (i == (artists?.size?.minus(1) ?: 0)) {
-                            append(" & ")
-                        } else {
-                            append(", ")
-                        }
-                    }
-                    append(artists?.get(i)?.name)
-                }
-            }
-
-            return name
+            val list = artists?.map { it?.name ?: "" }?.toMutableList() ?: return ""
+            return artistsListToString(list)
         }
 
         data class Album(

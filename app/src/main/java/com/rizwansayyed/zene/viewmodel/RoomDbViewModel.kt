@@ -5,14 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.impl.RoomDBImpl
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImpl
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
@@ -20,30 +25,36 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RoomDbViewModel @Inject constructor(private val roomDBImpl: RoomDBImpl) : ViewModel() {
+class RoomDbViewModel @Inject constructor(
+    private val roomDBImpl: RoomDBImpl,
+    private val youtubeAPIImpl: YoutubeAPIImpl
+) : ViewModel() {
 
     init {
         viewModelScope.launch {
             delay(500)
             recentSixPlayedSongs()
             savedPlaylist()
+            songYouMayLike()
 
             delay(1500)
             tempInsert()
         }
     }
 
-    var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>?>>(flowOf(null))
+    var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
         private set
 
     var savePlaylists by mutableStateOf<Flow<List<SavedPlaylistEntity>>>(flowOf(emptyList()))
         private set
 
+    var songsYouMayLike by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
+        private set
 
 
     private fun recentSixPlayedSongs() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.recentSixPlayed().onStart {
-            recentSongPlayed = flowOf(null)
+            recentSongPlayed = flowOf(emptyList())
         }.catch {
             recentSongPlayed = flowOf(emptyList())
         }.collectLatest {
@@ -67,6 +78,18 @@ class RoomDbViewModel @Inject constructor(private val roomDBImpl: RoomDBImpl) : 
             savePlaylists = flowOf(emptyList())
         }.collectLatest {
             savePlaylists = it
+        }
+    }
+
+    private fun songYouMayLike() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.topTenList().catch { }.collectLatest {
+            youtubeAPIImpl.topTwoSongsSuggestionOnHistory(it.map { i -> i.pid }).onStart {
+                songsYouMayLike = DataResponse.Loading
+            }.catch { e ->
+                songsYouMayLike = DataResponse.Error(e)
+            }.collectLatest { res ->
+                songsYouMayLike = DataResponse.Success(res)
+            }
         }
     }
 }

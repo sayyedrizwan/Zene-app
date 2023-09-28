@@ -13,7 +13,9 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumSearchJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.sortNameForSearch
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -21,6 +23,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -221,4 +224,56 @@ class YoutubeAPIImpl @Inject constructor(
 
         emit(artistsLists.toList())
     }.flowOn(Dispatchers.IO)
+
+    suspend fun topTwoSongsSuggestionOnHistory(pIds: List<String>) = flow {
+        val list = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        pIds.forEach { id ->
+            val r =
+                youtubeMusicAPI.youtubeNextSearchResponse(ytMusicNextJsonBody(ip, id), key)
+            val browserId = r.browseID() ?: return@forEach
+
+            val songsList = youtubeMusicAPI
+                .youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, browserId), key)
+
+            songsList.contents?.sectionListRenderer?.contents?.forEach { c ->
+                if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.accessibilityData?.accessibilityData?.label?.lowercase() == "you might also like") {
+                    c.musicCarouselShelfRenderer.contents?.forEachIndexed { index, content ->
+                        if (index > 2) return@forEachIndexed
+
+                        val thumbnail =
+                            content?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                        val musicData = MusicData(thumbnail, "", "", null)
+                        val artists = mutableListOf<String>()
+
+                        content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { n ->
+                            n?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { na ->
+                                if (na?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV") {
+                                    musicData.name = na.text
+                                    na.navigationEndpoint.watchEndpoint.videoId.also {
+                                        musicData.pId = it
+                                    }
+                                }
+
+                                if (na?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
+                                    na.text?.let { artists.add(it) }
+                                }
+                            }
+                        }
+
+                        musicData.artists = artistsListToString(artists)
+
+                        if (musicData.pId != null)
+                            if (list.any { it.pId == musicData.pId }) list.add(musicData)
+                    }
+                }
+            }
+        }
+
+        list.shuffle()
+        emit(list)
+    }
 }
