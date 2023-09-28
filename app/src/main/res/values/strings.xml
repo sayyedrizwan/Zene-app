@@ -17,4 +17,6 @@
     <string name="trending_artists_in_country">Trending Artists in %s</string>
     <string name="currently_playing_song_on_app">Currently Most Playing Song on Zene</string>
     <string name="listeners">Listeners</string>
+    <string name="select_your_fav_artists">Select your favourite Artists</string>
+    <string name="songs_you_may_like">Song you may like</string>
 </resources>

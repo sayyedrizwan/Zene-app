@@ -8,6 +8,11 @@ fun List<MusicData>.toTxtCache(): String? {
     return moshi.adapter(r.javaClass).toJson(r)
 }
 
+
+fun TopSuggestMusicData.toTxtCache(): String? {
+    return moshi.adapter(TopSuggestMusicData::class.java).toJson(this)
+}
+
 data class MusicDataCache(
     val cacheTime: Long,
     val list: List<MusicData>
@@ -18,4 +23,11 @@ data class MusicData(
     var name: String?,
     var artists: String?,
     var pId: String?,
+)
+
+
+data class TopSuggestMusicData(
+    val cacheTime: Long,
+    val pList: List<String>,
+    val list: List<MusicData>
 )

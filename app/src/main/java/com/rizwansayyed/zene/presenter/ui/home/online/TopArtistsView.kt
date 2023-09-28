@@ -64,7 +64,7 @@ fun TopArtistsItems(artists: MusicData, width: Int) {
             .size((width / 2).dp, (width / 2 + 90).dp)
     ) {
         AsyncImage(
-            artists.thumbnail, artists.artists,
+            artists.thumbnail, artists.name,
             Modifier
                 .align(Alignment.Center)
                 .fillMaxSize()
@@ -87,7 +87,7 @@ fun TopArtistsItems(artists: MusicData, width: Int) {
 
 
         TextSemiBold(
-            artists.artists ?: "",
+            artists.name ?: "",
             Modifier
                 .padding(8.dp)
                 .align(Alignment.BottomStart)

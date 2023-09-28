@@ -196,6 +196,9 @@ object CacheFiles {
     val topArtistsCountry by lazy {
         File(context.cacheDir, "top-artists-country-list.txt").apply { mkdirs() }
     }
+    val songsForYouCache by lazy {
+        File(context.cacheDir, "songs-for-you-cache.txt").apply { mkdirs() }
+    }
 }
 
 object ScrapURL {

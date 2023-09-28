@@ -14,9 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkBlack
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
 import com.rizwansayyed.zene.presenter.ui.home.online.PlaylistList
+import com.rizwansayyed.zene.presenter.ui.home.online.SelectFavArtists
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLike
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
@@ -33,12 +34,15 @@ import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.view.OfflineDownloadHeader
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayItemsShort
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayList
+import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 
 @Composable
-fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
+fun MainHomePageView(
+    nav: HomeNavViewModel, room: RoomDbViewModel, home: HomeApiViewModel
+) {
     val recentPlayList by room.recentSongPlayed.collectAsState(initial = emptyList())
 
     val columnModifier = Modifier
@@ -90,8 +94,42 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
         }
 
         item(span = { GridItemSpan(3) }) {
-            SongsYouMayLike()
+            Column {
+                if (recentPlayList.isEmpty()) {
+                    TopInfoWithSeeMore(R.string.select_your_fav_artists, null) {}
+                } else
+                    TopInfoWithSeeMore(R.string.songs_you_may_like, null) {}
+            }
         }
+
+        if (recentPlayList.isEmpty()) {
+            when (val v = home.topGlobalTrendingSongs) {
+                DataResponse.Loading -> item(span = { GridItemSpan(3) }) { LoadingStateBar() }
+                is DataResponse.Success -> items(v.item.shuffled()) {
+                    it?.let { a ->
+                        SelectFavArtists(a, nav) {
+                            nav.selectedArtists(a.name ?: "")
+                        }
+                    }
+                }
+
+                else -> {}
+            }
+
+            when (val v = home.topCountryArtists) {
+                is DataResponse.Success -> items(v.item?.shuffled() ?: emptyList()) {
+                    SelectFavArtists(it, nav) {
+                        nav.selectedArtists(it.name ?: "")
+                    }
+                }
+
+                else -> {}
+            }
+        } else
+            item(span = { GridItemSpan(3) }) {
+                SongsYouMayLike()
+            }
+
 
 
         item {

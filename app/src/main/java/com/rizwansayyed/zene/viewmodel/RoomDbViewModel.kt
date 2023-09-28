@@ -35,11 +35,15 @@ class RoomDbViewModel @Inject constructor(
             delay(500)
             recentSixPlayedSongs()
             savedPlaylist()
-            songYouMayLike()
+            init()
 
             delay(1500)
             tempInsert()
         }
+    }
+
+    fun init(){
+        songYouMayLike()
     }
 
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
