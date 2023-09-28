@@ -25,8 +25,10 @@ import com.rizwansayyed.zene.presenter.theme.LightBlack
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextSemiBoldBig
+import com.rizwansayyed.zene.presenter.ui.TextSemiBoldDualLines
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TextThinBig
+import com.rizwansayyed.zene.presenter.util.UiUtils.toMoneyFormat
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 
 
@@ -75,7 +77,7 @@ fun CurrentMostPlayingSong() {
                             .padding(vertical = 15.dp),
                         Arrangement.Center, Alignment.CenterHorizontally
                     ) {
-                        AsyncImage(v.item.second, "", Modifier.fillMaxWidth())
+                        AsyncImage(v.item.second?.image, "", Modifier.fillMaxWidth())
 
                         Spacer(Modifier.height(7.dp))
 
@@ -93,11 +95,11 @@ fun CurrentMostPlayingSong() {
                             .padding(vertical = 20.dp),
                         Arrangement.Center, Alignment.CenterHorizontally
                     ) {
-                        TextSemiBoldBig("1,23,344")
+                        TextSemiBoldBig(v.item.second?.listeners?.toMoneyFormat() ?: "137,196")
 
                         Spacer(Modifier.height(3.dp))
 
-                        TextThin("Listeners")
+                        TextThin(stringResource(id = R.string.listeners))
                     }
 
                     Spacer(Modifier.height(5.dp))
@@ -111,7 +113,7 @@ fun CurrentMostPlayingSong() {
                                 .padding(vertical = 20.dp),
                             Arrangement.Center, Alignment.CenterHorizontally
                         ) {
-                            TextSemiBold(it, doCenter = true)
+                            TextSemiBoldDualLines(it, doCenter = true)
                         }
                     }
                 }

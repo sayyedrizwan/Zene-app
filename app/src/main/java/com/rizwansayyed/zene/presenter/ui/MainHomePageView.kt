@@ -51,17 +51,12 @@ fun MainHomePageView(nav: HomeNavViewModel, room: RoomDbViewModel) {
 
         item(span = { GridItemSpan(3) }) {
             if (nav.isOnline.value)
-                Column {}
+                Column {
+                    CurrentMostPlayingSong()
+                    RecentPlayList(recentPlayList)
+                }
             else
                 TopBannerSuggestions()
-        }
-
-        item(span = { GridItemSpan(3) }) {
-            Column {
-                CurrentMostPlayingSong()
-
-                RecentPlayList(recentPlayList)
-            }
         }
 
         items(recentPlayList ?: emptyList()) {

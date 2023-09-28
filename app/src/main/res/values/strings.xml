@@ -16,4 +16,5 @@
     <string name="fresh_added_songs">Fresh Added Songs</string>
     <string name="trending_artists_in_country">Trending Artists in %s</string>
     <string name="currently_playing_song_on_app">Currently Most Playing Song on Zene</string>
+    <string name="listeners">Listeners</string>
 </resources>

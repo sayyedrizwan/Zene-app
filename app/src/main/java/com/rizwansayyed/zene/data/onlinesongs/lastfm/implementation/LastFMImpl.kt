@@ -7,8 +7,7 @@ import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.presenter.util.UiUtils.weightedRandomChoice
+import com.rizwansayyed.zene.utils.Utils.weightedRandomChoice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -32,7 +31,7 @@ class LastFMImpl @Inject constructor(
 
         val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
         songs?.artists = song?.name
-        emit(Pair(songs, song?.image ))
+        emit(Pair(songs, song))
     }.flowOn(Dispatchers.IO)
 
 

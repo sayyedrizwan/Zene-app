@@ -52,6 +52,25 @@ fun TextSemiBold(
     )
 }
 
+@Composable
+fun TextSemiBoldDualLines(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.SemiBold,
+        maxLines = 2,
+        fontSize = 15.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
+    )
+}
+
 
 @Composable
 fun TextSemiBoldBig(

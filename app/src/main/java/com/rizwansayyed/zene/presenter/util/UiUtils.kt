@@ -1,16 +1,9 @@
 package com.rizwansayyed.zene.presenter.util
 
 import android.app.Activity
-import android.graphics.Color
 import android.os.Build
-import android.util.TypedValue
-import android.view.View
-import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import kotlin.random.Random
 
 
@@ -45,21 +39,9 @@ object UiUtils {
         return "${context.resources.getString(R.string.radio)} ${(4..19).random()}"
     }
 
-    fun <T> weightedRandomChoice(items: List<T>, weights: List<Int> = listOf(3, 3, 1, 1, 1)): T? {
-        require(items.size == weights.size) { "Items and weights lists must have the same size" }
-
-        val totalWeight = weights.sum()
-        val threshold = Random.nextInt(totalWeight)
-
-        var cumulativeWeight = 0
-        for (i in items.indices) {
-            cumulativeWeight += weights[i]
-            if (threshold < cumulativeWeight) {
-                return items[i]
-            }
-        }
-
-        return null
+    fun String.toMoneyFormat(): String {
+        val amount = this.toDoubleOrNull() ?: return "137,196"
+        return NumberFormat.getNumberInstance().format(amount)
     }
 
 }

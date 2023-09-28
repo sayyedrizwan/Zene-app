@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPII
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.lastfm.TopRecentPlaySongsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +70,7 @@ class HomeApiViewModel @Inject constructor(
     var topCountryArtists by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
         private set
 
-    var mostPlayingSong by mutableStateOf<DataResponse<Pair<MusicData?, String?>>>(DataResponse.Empty)
+    var mostPlayingSong by mutableStateOf<DataResponse<Pair<MusicData?, TopRecentPlaySongsResponse.Results.Artist?>>>(DataResponse.Empty)
         private set
 
 
