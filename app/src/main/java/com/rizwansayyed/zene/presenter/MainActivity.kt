@@ -19,6 +19,9 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
+// not all images are laoding properly on selecting users on first times
+
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -37,9 +40,9 @@ class MainActivity : ComponentActivity() {
                         navViewModel, roomViewModel, homeApiViewModel, jsoupScrapViewModel
                     )
 
-                    if (navViewModel.selectArtists.isNotEmpty()){
-                        SaveArtistsButton(Modifier.align(Alignment.BottomCenter))
-                    }
+                    if (navViewModel.selectArtists.isNotEmpty())
+                        SaveArtistsButton(Modifier.align(Alignment.BottomCenter), navViewModel)
+
                 }
 //                MainSplashView()
             }

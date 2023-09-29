@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Hour
@@ -27,7 +29,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
-import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
+import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
@@ -235,16 +237,9 @@ class YoutubeAPIImpl @Inject constructor(
 
     suspend fun topTwoSongsSuggestionOnHistory(pIds: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
-        if (cache != null) {
-            if (cache.pList == pIds) {
-                emit(cache.list)
-                return@flow
-            }
-            if (returnFromCache1Hour(cache.cacheTime) && cache.list.isNotEmpty()) {
-                emit(cache.list)
-                return@flow
-            } else
-                emit(cache.list)
+        if (cache != null) if (cache.pList == pIds) {
+            emit(cache.list)
+            return@flow
         }
 
         val list = mutableListOf<MusicData>()
@@ -288,7 +283,7 @@ class YoutubeAPIImpl @Inject constructor(
                         musicData.artists = artistsListToString(artists)
 
                         if (musicData.pId != null)
-                            if (list.any { it.pId == musicData.pId }) list.add(musicData)
+                            if (!list.any { it.pId == musicData.pId }) list.add(musicData)
                     }
                 }
             }
@@ -298,6 +293,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         TopSuggestMusicData(System.currentTimeMillis(), pIds, list).toTxtCache()
             ?.let { writeToCacheFile(songsForYouCache, it) }
+
         emit(list)
     }
 
@@ -332,7 +328,7 @@ class YoutubeAPIImpl @Inject constructor(
         var token = ""
         var clickParams = ""
 
-        fun addItems(shelf: YoutubeMusicAllSongsResponse.Contents.TabbedSearchResultsRenderer.Tab.TabRenderer.Content.SectionListRenderer.Content.MusicShelfRenderer.Content?) {
+        fun addItems(shelf: MusicShelfRendererSongs.Content?) {
             val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
                 ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
             val name = shelf?.musicResponsiveListItemRenderer?.names()
@@ -370,4 +366,32 @@ class YoutubeAPIImpl @Inject constructor(
 
         emit(list)
     }
+
+    override suspend fun songFromArtistsTopFive(artists: List<String>) = flow {
+        val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
+        if (cache != null) if (cache.list.isNotEmpty()) emit(cache.list)
+
+        val list = mutableListOf<MusicData>()
+
+        artists.forEach {
+            try {
+                val l = allSongsSearch(it).first()
+                if (l.size > 5)
+                    l.addAll(list.subList(0, 5))
+                else
+                    l.addAll(list)
+            } catch (e: Exception) {
+                e.message
+            }
+        }
+        if (list.isNotEmpty()) {
+            val tempList = list.shuffled()
+            TopSuggestMusicData(System.currentTimeMillis(), artists, tempList)
+                .toTxtCache()?.let { writeToCacheFile(songsForYouCache, it) }
+
+            emit(list)
+        }
+
+    }
+
 }

@@ -108,6 +108,36 @@ fun GlobalSongsItemsFull(items: MusicData?) {
 
 }
 
+
+@Composable
+fun GlobalSongsViewItems(items: MusicData?) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .padding(horizontal = 4.dp),
+        Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            items?.thumbnail, "",
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(17.dp)), contentScale = ContentScale.Crop
+        )
+
+        SongsTitleAndArtistsSmall(
+            items?.name ?: "",
+            items?.artists ?: "",
+            Modifier
+                .width(170.dp)
+                .padding(3.dp),
+            true
+        )
+    }
+
+}
+
 @Composable
 fun GlobalSongsItemsImg(items: MusicData?) {
     AsyncImage(

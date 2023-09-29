@@ -413,3 +413,8 @@ fun LoadingStateBar() {
         )
     }
 }
+
+@Composable
+fun EmptyView() {
+    Column {}
+}

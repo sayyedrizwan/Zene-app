@@ -1,9 +1,14 @@
 package com.rizwansayyed.zene.utils
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.presenter.MainActivity
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 
 object Utils {
@@ -45,6 +50,15 @@ object Utils {
         }
 
         return artistName
+    }
+
+    fun restartTheApp(context: Activity) {
+        "11111".toast()
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        context.finishAffinity()
+        context.startActivity(intent)
+        exitProcess(0)
+        "runnqqq111".toast()
     }
 
 }

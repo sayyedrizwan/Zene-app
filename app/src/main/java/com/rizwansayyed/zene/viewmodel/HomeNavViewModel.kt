@@ -40,4 +40,10 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
         }
         selectArtists.add(name.lowercase())
     }
+
+    fun clearAllArtists(){
+        selectArtists.forEach {
+            selectArtists.remove(it.lowercase())
+        }
+    }
 }

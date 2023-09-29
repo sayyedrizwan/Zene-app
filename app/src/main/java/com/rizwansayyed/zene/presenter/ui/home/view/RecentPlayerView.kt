@@ -59,6 +59,6 @@ fun RecentPlayItemsShort(song: RecentPlayedEntity) {
                 .clip(RoundedCornerShape(50))
         )
 
-        SongsTitleAndArtists(song.name, song.artists, Modifier, true)
+        SongsTitleAndArtists(song.name, song.artists, Modifier.fillMaxWidth(), true)
     }
 }

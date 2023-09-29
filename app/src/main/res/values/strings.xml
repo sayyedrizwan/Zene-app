@@ -19,6 +19,7 @@
     <string name="listeners">Listeners</string>
     <string name="suggest_me_now">Suggest me now</string>
     <string name="select_your_fav_artists">Select your favourite Artists</string>
-    <string name="songs_you_may_like">Song you may like</string>
-    <string name="songs_you_may_like_desc">look\'s like you are new here. select your favourite artists to get best songs recommendation or just listeners to 2 to 3 of your favourite songs.</string>
+    <string name="songs_you_may_like">Songs you may like</string>
+    <string name="can_just_select_six_artists_song_suggestions">You can just select any 6 artists. The songs suggestion will change depending on your songs history</string>
+    <string name="songs_you_may_like_desc">look\'s like you are new here. select your favourite artists to get best songs recommendation or just listen to 2 to 3 of your favourite songs.</string>
 </resources>
