@@ -124,7 +124,29 @@ fun MainHomePageView(
                 }
             }
 
+        when (val v = room.albumsYouMayLike) {
+            DataResponse.Empty -> {}
+            is DataResponse.Error -> {}
+            DataResponse.Loading -> item(span = { GridItemSpan(2) }) {
+                if (nav.isOnline.value) Column(Modifier.fillMaxWidth()) {
+                    TopInfoWithSeeMore(R.string.albums_you_may_like, null) {}
 
+                    LoadingStateBar()
+                }
+            }
+
+            is DataResponse.Success -> {
+                item(span = { GridItemSpan(2) }) {
+                    if (nav.isOnline.value) Column(Modifier.fillMaxWidth()) {
+                        TopInfoWithSeeMore(R.string.albums_you_may_like, null) {}
+                    }
+                }
+
+                items(v.item) {
+                    GlobalSongsViewItems(it)
+                }
+            }
+        }
         item {
             Column {
                 Spacer(Modifier.height(320.dp))

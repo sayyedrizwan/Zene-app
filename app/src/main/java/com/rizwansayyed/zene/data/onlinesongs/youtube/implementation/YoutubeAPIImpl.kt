@@ -12,11 +12,13 @@ import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
+import com.rizwansayyed.zene.data.utils.CacheFiles.albumsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.songsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumSearchJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
@@ -212,7 +214,7 @@ class YoutubeAPIImpl @Inject constructor(
         lists.forEach { n ->
             if (n.trim().isEmpty()) return@forEach
             val searchResponse =
-                youtubeMusicAPI.youtubeSearchResponse(ytMusicAlbumSearchJsonBody(ip, n), key)
+                youtubeMusicAPI.youtubeSearchResponse(ytMusicArtistsSearchJsonBody(ip, n), key)
 
             searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
                 if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
@@ -234,6 +236,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         emit(artistsLists.toList())
     }.flowOn(Dispatchers.IO)
+
 
     suspend fun topTwoSongsSuggestionOnHistory(pIds: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
@@ -391,7 +394,29 @@ class YoutubeAPIImpl @Inject constructor(
 
             emit(list)
         }
-
     }
 
+
+    override suspend fun artistsAlbums(names: List<String>) = flow {
+        val cache = responseCache(albumsForYouCache, TopSuggestMusicData::class.java)
+        if (cache != null) if (cache.pList == names) {
+            emit(cache.list)
+            return@flow
+        }
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        val list = mutableListOf<MusicData>()
+
+        names.forEach {
+            val r = youtubeMusicAPI
+                .youtubeSearchAllSongsResponse(ytMusicArtistsAlbumsJsonBody(ip, it), key)
+
+
+
+        }
+
+        emit(list)
+    }
 }

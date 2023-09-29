@@ -131,7 +131,7 @@ object YoutubeAPI {
     }
 
 
-    fun ytMusicAlbumSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
+    fun ytMusicArtistsSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
             "context": {
                 "client": {
@@ -142,6 +142,23 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, "query": "$q", "params": "EgWKAQIgAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicArtistsAlbumsJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }, "query": "$q", "params": "EgWKAQIYAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -232,6 +249,9 @@ object CacheFiles {
     }
     val songsForYouCache by lazy {
         File(context.cacheDir, "songs-for-you-cache.txt").apply { mkdirs() }
+    }
+    val albumsForYouCache by lazy {
+        File(context.cacheDir, "albums-for-you-cache.txt").apply { mkdirs() }
     }
 }
 

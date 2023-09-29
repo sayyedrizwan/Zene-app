@@ -53,12 +53,10 @@ object Utils {
     }
 
     fun restartTheApp(context: Activity) {
-        "11111".toast()
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
         context.finishAffinity()
         context.startActivity(intent)
         exitProcess(0)
-        "runnqqq111".toast()
     }
 
 }
