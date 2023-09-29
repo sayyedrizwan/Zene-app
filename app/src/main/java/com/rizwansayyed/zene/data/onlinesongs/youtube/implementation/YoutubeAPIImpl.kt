@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
@@ -19,6 +18,8 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.sortNameForSearch
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -26,6 +27,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
@@ -217,7 +219,7 @@ class YoutubeAPIImpl @Inject constructor(
                             ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
                     val a = s.musicShelfRenderer.getArtistsNoCheck()
-                     a.let {
+                    a.let {
                         if (!artistsLists.any { a ->
                                 a.artists?.trim()?.lowercase() == it?.lowercase()?.trim()
                             }) artistsLists.add(MusicData(thumbnail ?: "", it, it, THE_ARTISTS))
@@ -296,6 +298,76 @@ class YoutubeAPIImpl @Inject constructor(
 
         TopSuggestMusicData(System.currentTimeMillis(), pIds, list).toTxtCache()
             ?.let { writeToCacheFile(songsForYouCache, it) }
+        emit(list)
+    }
+
+
+    override suspend fun searchSuggestions(s: String) = flow {
+        val list = mutableListOf<String>()
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        val r =
+            youtubeMusicAPI.youtubeSearchSuggestion(ytMusicSearchSuggestionJsonBody(ip, s), key)
+
+        r.contents?.forEach { c ->
+            c?.searchSuggestionsSectionRenderer?.contents?.forEach { s ->
+                if (s?.searchSuggestionRenderer?.icon?.iconType == "SEARCH") {
+                    s.searchSuggestionRenderer.navigationEndpoint?.searchEndpoint?.query?.let {
+                        list.add(it)
+                    }
+                }
+            }
+        }
+
+        emit(list)
+    }
+
+    override suspend fun allSongsSearch(q: String) = flow {
+        val list = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        var token = ""
+        var clickParams = ""
+
+        fun addItems(shelf: YoutubeMusicAllSongsResponse.Contents.TabbedSearchResultsRenderer.Tab.TabRenderer.Content.SectionListRenderer.Content.MusicShelfRenderer.Content?) {
+            val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
+                ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+            val name = shelf?.musicResponsiveListItemRenderer?.names()
+            val artists = shelf?.getArtists()
+
+            list.add(MusicData(thumbnail ?: "", name?.first, artists, name?.second))
+        }
+
+        val r =
+            youtubeMusicAPI.youtubeSearchAllSongsResponse(ytMusicSearchAllSongsJsonBody(ip, q), key)
+
+        r.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+            c?.musicShelfRenderer?.contents?.forEach { shelf ->
+                addItems(shelf)
+            }
+
+            c?.musicShelfRenderer?.continuations?.forEach { i ->
+                token = i?.nextContinuationData?.continuation ?: ""
+                clickParams = i?.nextContinuationData?.clickTrackingParams ?: ""
+            }
+        }
+
+        if (token.isNotEmpty() && clickParams.isNotEmpty()) {
+            val res =
+                youtubeMusicAPI.youtubeMoreSearchAllSongsResponse(
+                    ytMusicSearchAllSongsJsonBody(ip, q), token, token, clickParams, key
+                )
+
+            res.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+                c?.musicShelfRenderer?.contents?.forEach { shelf ->
+                    addItems(shelf)
+                }
+            }
+        }
+
         emit(list)
     }
 }

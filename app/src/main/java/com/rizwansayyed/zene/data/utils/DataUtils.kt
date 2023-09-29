@@ -75,8 +75,8 @@ object YoutubeAPI {
     const val YT_MUSIC_BASE_URL = "https://music.youtube.com/youtubei/v1/"
     const val YT_SEARCH_API = "search"
     const val YT_NEXT_API = "next"
+    const val YT_SUGGESTIONS_API = "music/get_search_suggestions"
     const val YT_BROWSE_API = "browse"
-
 
     fun ytMusicMainSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
@@ -89,6 +89,41 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, "query": "$q"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicSearchSuggestionJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
+        val json = """{
+            "input": "$q",
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicSearchAllSongsJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
+        val json = """{
+            "context": {
+            "client": {
+            "remoteHost": "${ip?.query}",
+            "userAgent": "$USER_AGENT",
+            "clientName": "WEB_REMIX",
+            "clientVersion": "1.20230918.01.00",
+            "timeZone": "${ip?.timezone}"
+        }
+        }, "query": "$q", "params": "EgWKAQIIAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -181,7 +216,6 @@ object SearchEngine {
 }
 
 object CacheFiles {
-    val updateTheDate by lazy { File(context.cacheDir, "texxxt.json").apply { mkdirs() } }
     val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
     val topGlobalSongs by lazy {

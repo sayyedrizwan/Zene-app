@@ -3,14 +3,16 @@ package com.rizwansayyed.zene.data.onlinesongs.youtube
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_BROWSE_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_NEXT_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SEARCH_API
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SUGGESTIONS_API
 import com.rizwansayyed.zene.domain.yt.BrowserIdYTResponse
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicRelatedResponse
+import com.rizwansayyed.zene.domain.yt.YoutubeSearchSuggestionResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 interface YoutubeMusicAPIService {
 
@@ -21,12 +23,37 @@ interface YoutubeMusicAPIService {
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeMusicMainSearchResponse
 
+    @POST(YT_SEARCH_API)
+    suspend fun youtubeSearchAllSongsResponse(
+        @Body body: RequestBody,
+        @Query("key") key: String,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubeMusicAllSongsResponse
+
+    @POST(YT_SEARCH_API)
+    suspend fun youtubeMoreSearchAllSongsResponse(
+        @Body body: RequestBody,
+        @Query("ctoken") ctoken: String,
+        @Query("continuation") continuation: String,
+        @Query("itct") itct: String,
+        @Query("key") key: String,
+        @Query("type") type: Boolean = false,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubeMusicAllSongsResponse
+
     @POST(YT_NEXT_API)
     suspend fun youtubeNextSearchResponse(
         @Body body: RequestBody,
         @Query("key") key: String,
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): BrowserIdYTResponse
+
+    @POST(YT_SUGGESTIONS_API)
+    suspend fun youtubeSearchSuggestion(
+        @Body body: RequestBody,
+        @Query("key") key: String,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubeSearchSuggestionResponse
 
     @POST(YT_BROWSE_API)
     suspend fun youtubeBrowseResponse(
