@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -57,6 +58,9 @@ class HomeApiViewModel @Inject constructor(
         private set
 
 
+    var topArtistsList = mutableStateListOf<MusicData>()
+        private set
+
     var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<MusicData?>>>(DataResponse.Empty)
         private set
 
@@ -111,6 +115,7 @@ class HomeApiViewModel @Inject constructor(
         }.catch {
             topCountryArtists = DataResponse.Error(it)
         }.collectLatest {
+            topArtistsList.addAll(it)
             topCountryArtists = DataResponse.Success(it)
         }
     }

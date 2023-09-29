@@ -10,5 +10,6 @@ object DataStorageUtil {
 
     val IP_JSON = stringPreferencesKey("ip_json")
     val GLOBAL_SONG_IS_FULL = booleanPreferencesKey("global_song_is_full")
+    val SELECTED_FAVOURITE_ARTISTS_SONGS = stringPreferencesKey("selected_favourite_artists_songs")
 
 }

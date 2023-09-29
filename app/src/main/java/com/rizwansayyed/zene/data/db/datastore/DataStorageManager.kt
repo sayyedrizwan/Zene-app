@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DATA_STORE_DB
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.GLOBAL_SONG_IS_FULL
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IP_JSON
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SELECTED_FAVOURITE_ARTISTS_SONGS
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -28,6 +29,17 @@ object DataStorageManager {
         set(v) = runBlocking {
             val moshi = moshi.adapter(IpJsonResponse::class.java).toJson(v.first())
             context.dataStore.edit { it[IP_JSON] = moshi }
+            if (isActive) cancel()
+        }
+
+
+    var selectedFavouriteArtistsSongs: Flow<Array<String>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<String>::class.java).fromJson(it[SELECTED_FAVOURITE_ARTISTS_SONGS] ?: "[]")
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(Array<String>::class.java).toJson(v.first())
+            context.dataStore.edit { it[SELECTED_FAVOURITE_ARTISTS_SONGS] = moshi }
             if (isActive) cancel()
         }
 

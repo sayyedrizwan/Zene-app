@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,9 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: TopArtists
     var showGlobalArtistInfo by mutableStateOf(true)
         private set
 
+    var topArtistsList = mutableStateListOf<MusicData>()
+        private set
+
     var topArtists by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
@@ -39,6 +43,7 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: TopArtists
             showGlobalArtistInfo = false
             topArtists = DataResponse.Error(it)
         }.collectLatest {
+            topArtistsList.addAll(it)
             topArtists = DataResponse.Success(it)
         }
     }
