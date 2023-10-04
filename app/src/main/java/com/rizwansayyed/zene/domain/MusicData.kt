@@ -23,6 +23,7 @@ data class MusicData(
     var name: String?,
     var artists: String?,
     var pId: String?,
+    var type: MusicType?,
 )
 
 
@@ -31,3 +32,7 @@ data class TopSuggestMusicData(
     val pList: List<String>,
     val list: List<MusicData>
 )
+
+enum class MusicType {
+    MUSIC, ALBUMS, ARTISTS, PLAYLIST
+}

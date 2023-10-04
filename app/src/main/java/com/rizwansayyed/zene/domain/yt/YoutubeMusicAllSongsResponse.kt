@@ -139,6 +139,14 @@ data class MusicShelfRendererSongs(
             return artistsListToString(list)
         }
 
+        fun theName(): String {
+            return try {
+                musicResponsiveListItemRenderer?.flexColumns?.first()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.first()?.text ?: ""
+            } catch (e: Exception) {
+                ""
+            }
+        }
+
         data class MusicResponsiveListItemRenderer(
             val badges: List<Badge?>?,
             val flexColumnDisplayStyle: String?,
@@ -150,7 +158,6 @@ data class MusicShelfRendererSongs(
             val thumbnail: Thumbnail?,
             val trackingParams: String?
         ) {
-
             fun names(): Pair<String, String> {
                 var nameMain = ""
                 var videoMain = ""
@@ -555,8 +562,14 @@ data class MusicShelfRendererSongs(
 
                             data class PlayNavigationEndpoint(
                                 val clickTrackingParams: String?,
-                                val watchEndpoint: WatchEndpoint?
+                                val watchEndpoint: WatchEndpoint?,
+                                val watchPlaylistEndpoint: WatchPlaylistEndpoint?
                             ) {
+
+                                data class WatchPlaylistEndpoint(
+                                    val playlistId: String
+                                )
+
                                 data class WatchEndpoint(
                                     val videoId: String?,
                                     val watchEndpointMusicSupportedConfigs: WatchEndpointMusicSupportedConfigs?

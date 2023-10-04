@@ -1,24 +1,39 @@
 package com.rizwansayyed.zene.presenter.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.DarkBlack
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
@@ -43,8 +58,10 @@ import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
+import kotlinx.coroutines.FlowPreview
 
 
+@OptIn(FlowPreview::class)
 @Composable
 fun MainHomePageView(
     nav: HomeNavViewModel, room: RoomDbViewModel, home: HomeApiViewModel, jsoup: JsoupScrapViewModel
@@ -143,7 +160,7 @@ fun MainHomePageView(
                 }
 
                 items(v.item) {
-                    GlobalSongsViewItems(it)
+                    AlbumsViewItems(it)
                 }
             }
         }
@@ -153,4 +170,45 @@ fun MainHomePageView(
             }
         }
     }
+}
+
+
+@Composable
+fun AlbumsViewItems(items: MusicData?) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .padding(horizontal = 4.dp),
+        Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
+        Box {
+            AsyncImage(
+                items?.thumbnail, "",
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(17.dp)), contentScale = ContentScale.Crop
+            )
+
+
+            Image(
+                painterResource(id = R.drawable.ic_vanillamusic),
+                "",
+                Modifier.padding(9.dp).align(Alignment.BottomEnd).size(30.dp),
+                colorFilter = ColorFilter.tint(Color.Blue)
+            )
+        }
+
+        SongsTitleAndArtistsSmall(
+            items?.name ?: "",
+            items?.artists ?: "",
+            Modifier
+                .width(170.dp)
+                .padding(3.dp),
+            true
+        )
+
+    }
+
 }

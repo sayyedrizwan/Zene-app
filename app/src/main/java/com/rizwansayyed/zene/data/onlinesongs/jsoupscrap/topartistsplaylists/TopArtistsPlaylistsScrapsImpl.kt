@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.utils.getInstagramUsername
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.YoutubeReleaseChannelResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
@@ -63,7 +64,7 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
                     }
                 }
                 if (img.isNotEmpty() && name.isNotEmpty())
-                    list.add(MusicData(img, name, name, THE_ARTISTS))
+                    list.add(MusicData(img, name, name, THE_ARTISTS, MusicType.ARTISTS))
             }
         }
         for (i in 0 until 9) list.shuffle()

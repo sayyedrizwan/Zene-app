@@ -96,6 +96,8 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:${DependenciesVersion.V.version}")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${DependenciesVersion.COROUTINES.version}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${DependenciesVersion.COROUTINES.version}")
+
 
     implementation("androidx.room:room-ktx:${DependenciesVersion.ROOM.version}")
     ksp("androidx.room:room-compiler:${DependenciesVersion.ROOM.version}")

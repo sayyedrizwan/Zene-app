@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,11 +11,11 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavour
 import com.rizwansayyed.zene.data.db.impl.RoomDBImpl
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
-import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImpl
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -24,11 +25,13 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
+@FlowPreview
 @HiltViewModel
 class RoomDbViewModel @Inject constructor(
     private val roomDBImpl: RoomDBImpl,
-    private val youtubeAPIImpl: YoutubeAPIImpl
+    private val youtubeAPIImpl: YoutubeAPIImplInterface
 ) : ViewModel() {
 
     init {
@@ -44,11 +47,10 @@ class RoomDbViewModel @Inject constructor(
     }
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
-        roomDBImpl.topTenList().first().size.toast()
         if (roomDBImpl.topTenList().first().isNotEmpty())
             topTenSongsRecords()
         else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
-            selectedFavouriteArtistsSongs.first()?.toList()?.let { songYouMayLike(it) }
+            selectedFavouriteArtistsSongs.first()?.toList()?.let { songYouMayLikeArtists(it) }
     }
 
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
@@ -110,7 +112,7 @@ class RoomDbViewModel @Inject constructor(
 
     private fun songYouMayLike(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
-            youtubeAPIImpl.topTwoSongsSuggestionOnHistory(list.map { i -> i.pid }).onStart {
+            youtubeAPIImpl.topFourSongsSuggestionOnHistory(list.map { i -> i.pid }).onStart {
                 songsYouMayLike = DataResponse.Loading
             }.catch { e ->
                 songsYouMayLike = DataResponse.Error(e)
@@ -122,25 +124,27 @@ class RoomDbViewModel @Inject constructor(
 
     private fun albumsYouMayLike(list: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
         val l = ArrayList<String>().apply {
-            addAll(list.map { it.name ?: "" })
+            addAll(list.map { it.artists ?: "" })
         }
         l.addAll(l.flatMap { it.split(",", "&").map { i -> i.trim() } })
-        youtubeAPIImpl.artistsAlbums(l.toHashSet().toList()).onStart {
-            songsYouMayLike = DataResponse.Loading
+
+        youtubeAPIImpl.artistsAlbumsTopFive(l.toHashSet().toList()).onStart {
+            albumsYouMayLike = DataResponse.Loading
         }.catch { e ->
-            songsYouMayLike = DataResponse.Error(e)
+            albumsYouMayLike = DataResponse.Error(e)
         }.collectLatest { res ->
-            songsYouMayLike = DataResponse.Success(res)
+            albumsYouMayLike = DataResponse.Success(res)
         }
     }
 
-    private fun songYouMayLike(search: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPIImpl.songFromArtistsTopFive(search).onStart {
-            songsYouMayLike = DataResponse.Loading
-        }.catch {
-            songsYouMayLike = DataResponse.Error(it)
-        }.collectLatest {
-            songsYouMayLike = DataResponse.Success(it)
+    private fun songYouMayLikeArtists(search: List<String>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            youtubeAPIImpl.songFromArtistsTopFive(search).onStart {
+                songsYouMayLike = DataResponse.Loading
+            }.catch {
+                songsYouMayLike = DataResponse.Error(it)
+            }.collectLatest {
+                songsYouMayLike = DataResponse.Success(it)
+            }
         }
-    }
 }

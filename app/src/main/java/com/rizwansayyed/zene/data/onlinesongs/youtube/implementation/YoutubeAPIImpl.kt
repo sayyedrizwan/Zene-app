@@ -1,12 +1,9 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
-import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Hour
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
@@ -29,12 +26,14 @@ import com.rizwansayyed.zene.data.utils.sortNameForSearch
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -174,7 +173,9 @@ class YoutubeAPIImpl @Inject constructor(
 
                     val artists = s.musicShelfRenderer.getArtists()
 
-                    m = MusicData(thumbnail ?: "", name?.first, artists, name?.second)
+                    m = MusicData(
+                        thumbnail ?: "", name?.first, artists, name?.second, MusicType.MUSIC
+                    )
                 }
             }
         } catch (e: Exception) {
@@ -226,7 +227,9 @@ class YoutubeAPIImpl @Inject constructor(
                     a.let {
                         if (!artistsLists.any { a ->
                                 a.artists?.trim()?.lowercase() == it?.lowercase()?.trim()
-                            }) artistsLists.add(MusicData(thumbnail ?: "", it, it, THE_ARTISTS))
+                            }) artistsLists.add(
+                            MusicData(thumbnail ?: "", it, it, THE_ARTISTS, MusicType.ARTISTS)
+                        )
                     }
                 }
             }
@@ -238,7 +241,7 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    suspend fun topTwoSongsSuggestionOnHistory(pIds: List<String>) = flow {
+    override suspend fun topFourSongsSuggestionOnHistory(pIds: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
         if (cache != null) if (cache.pList == pIds) {
             emit(cache.list)
@@ -261,11 +264,11 @@ class YoutubeAPIImpl @Inject constructor(
             songsList.contents?.sectionListRenderer?.contents?.forEach { c ->
                 if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.accessibilityData?.accessibilityData?.label?.lowercase() == "you might also like") {
                     c.musicCarouselShelfRenderer.contents?.forEachIndexed { index, content ->
-                        if (index > 2) return@forEachIndexed
+                        if (index > 4) return@forEachIndexed
 
                         val thumbnail =
                             content?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-                        val musicData = MusicData(thumbnail, "", "", null)
+                        val musicData = MusicData(thumbnail, "", "", null, MusicType.MUSIC)
                         val artists = mutableListOf<String>()
 
                         content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { n ->
@@ -298,7 +301,7 @@ class YoutubeAPIImpl @Inject constructor(
             ?.let { writeToCacheFile(songsForYouCache, it) }
 
         emit(list)
-    }
+    }.flowOn(Dispatchers.IO)
 
 
     override suspend fun searchSuggestions(s: String) = flow {
@@ -320,7 +323,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         emit(list)
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun allSongsSearch(q: String) = flow {
         val list = mutableListOf<MusicData>()
@@ -337,7 +340,15 @@ class YoutubeAPIImpl @Inject constructor(
             val name = shelf?.musicResponsiveListItemRenderer?.names()
             val artists = shelf?.getArtists()
 
-            list.add(MusicData(thumbnail ?: "", name?.first, artists, name?.second))
+            list.add(
+                MusicData(
+                    thumbnail ?: "",
+                    name?.first,
+                    artists,
+                    name?.second,
+                    MusicType.MUSIC
+                )
+            )
         }
 
         val r =
@@ -368,7 +379,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         emit(list)
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun songFromArtistsTopFive(artists: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
@@ -394,10 +405,10 @@ class YoutubeAPIImpl @Inject constructor(
 
             emit(list)
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun artistsAlbums(names: List<String>) = flow {
+    override suspend fun artistsAlbumsTopFive(names: List<String>) = flow {
         val cache = responseCache(albumsForYouCache, TopSuggestMusicData::class.java)
         if (cache != null) if (cache.pList == names) {
             emit(cache.list)
@@ -413,10 +424,43 @@ class YoutubeAPIImpl @Inject constructor(
             val r = youtubeMusicAPI
                 .youtubeSearchAllSongsResponse(ytMusicArtistsAlbumsJsonBody(ip, it), key)
 
+            r.contents?.tabbedSearchResultsRenderer?.tabs?.forEach { tabs ->
+                tabs?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+                    c?.musicShelfRenderer?.contents?.forEachIndexed { index, content ->
+                        if (index > 5) return@forEach
 
+                        val thumbnail = content?.musicResponsiveListItemRenderer?.thumbnail
+                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
+                        val name = content?.theName()
+                        val artists = content?.getArtists()
+
+                        var isAlbums = false
+
+                        content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { flex ->
+                            flex?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { r ->
+                                if (r?.text?.lowercase() == "album") isAlbums = true
+                            }
+                        }
+                        val pId =
+                            content?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId
+
+                        if (isAlbums) name?.let {
+                            if (name.trim().isNotEmpty())
+                                list.add(MusicData(thumbnail, name, artists, pId, MusicType.ALBUMS))
+                        }
+                    }
+
+                }
+            }
 
         }
 
+        list.shuffle()
+
+        TopSuggestMusicData(System.currentTimeMillis(), names, list)
+            .toTxtCache()?.let { writeToCacheFile(songsForYouCache, it) }
+
         emit(list)
-    }
+    }.flowOn(Dispatchers.IO)
 }
