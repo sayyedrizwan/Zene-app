@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
-import com.rizwansayyed.zene.presenter.ui.MainHomePageView
-import com.rizwansayyed.zene.presenter.ui.MainHomepageNew
-import com.rizwansayyed.zene.presenter.ui.MainSplashView
+import com.rizwansayyed.zene.presenter.ui.MainHomepageOnlineNew
 import com.rizwansayyed.zene.presenter.ui.home.online.SaveArtistsButton
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -42,7 +40,7 @@ class MainActivity : ComponentActivity() {
 //                        navViewModel, roomViewModel, homeApiViewModel, jsoupScrapViewModel
 //                    )
 
-                    MainHomepageNew()
+                    MainHomepageOnlineNew()
 
                     if (navViewModel.selectArtists.isNotEmpty())
                         SaveArtistsButton(Modifier.align(Alignment.BottomCenter), navViewModel)
