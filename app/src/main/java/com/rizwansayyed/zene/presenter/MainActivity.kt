@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                         SaveArtistsButton(Modifier.align(Alignment.BottomCenter), navViewModel)
 
                 }
-                MainSplashView()
+//                MainSplashView()
             }
         }
 
