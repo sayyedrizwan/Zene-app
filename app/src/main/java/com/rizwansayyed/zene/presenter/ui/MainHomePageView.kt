@@ -1,5 +1,9 @@
 package com.rizwansayyed.zene.presenter.ui
 
+import android.graphics.drawable.Animatable
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +22,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -195,7 +203,10 @@ fun AlbumsViewItems(items: MusicData?) {
             Image(
                 painterResource(id = R.drawable.ic_vanillamusic),
                 "",
-                Modifier.padding(9.dp).align(Alignment.BottomEnd).size(30.dp),
+                Modifier
+                    .padding(9.dp)
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp),
                 colorFilter = ColorFilter.tint(Color.Blue)
             )
         }
