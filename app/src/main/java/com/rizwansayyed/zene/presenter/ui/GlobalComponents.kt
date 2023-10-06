@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,9 +27,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.presenter.theme.antroFamily
 import com.rizwansayyed.zene.presenter.theme.urbanistFamily
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+
+
 
 @Composable
 fun TextSemiBold(
@@ -38,7 +38,8 @@ fun TextSemiBold(
     modifier: Modifier = Modifier,
     doCenter: Boolean = false,
     color: Color = Color.White,
-    singleLine: Boolean = false
+    singleLine: Boolean = false,
+    size: Int = 16,
 ) {
     Text(
         v,
@@ -47,11 +48,80 @@ fun TextSemiBold(
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.SemiBold,
         maxLines = if (singleLine) 1 else 10,
-        fontSize = 15.scaledSp(),
+        fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null
     )
 }
 
+
+@Composable
+fun TextAntroSemiBold(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White,
+    singleLine: Boolean = false,
+    size: Int = 16,
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = antroFamily,
+        fontWeight = FontWeight.Normal,
+        maxLines = if (singleLine) 1 else 10,
+        fontSize = size.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
+    )
+}
+
+
+@Composable
+fun TextLight(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White,
+    singleLine: Boolean = false,
+    size: Int = 16,
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Light,
+        maxLines = if (singleLine) 1 else 10,
+        textAlign = if (doCenter) TextAlign.Center else null,
+        fontSize = size.scaledSp(),
+    )
+}
+
+
+@Composable
+fun TextMedium(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White,
+    singleLine: Boolean = false,
+    size: Int = 16,
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Medium,
+        maxLines = if (singleLine) 1 else 10,
+        textAlign = if (doCenter) TextAlign.Center else null,
+        fontSize = size.scaledSp(),
+    )
+}
+
+
+
+// ---------------------- old
 @Composable
 fun TextSemiBoldDualLines(
     v: String,
@@ -148,26 +218,6 @@ fun TextLight(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Light,
-        maxLines = if (singleLine) 1 else 10,
-        textAlign = if (doCenter) TextAlign.Center else null,
-        fontSize = 16.scaledSp(),
-    )
-}
-
-@Composable
-fun TextMedium(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Medium,
         maxLines = if (singleLine) 1 else 10,
         textAlign = if (doCenter) TextAlign.Center else null,
         fontSize = 16.scaledSp(),

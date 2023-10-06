@@ -44,9 +44,6 @@ val urbanistFamily = FontFamily(
     Font(R.font.urbanist_bold, FontWeight.Bold)
 )
 
-
-val gilroyFamily = FontFamily(
-    Font(R.font.gilroy_regular, FontWeight.Normal),
-    Font(R.font.gilroy_medium, FontWeight.Medium),
-    Font(R.font.gilroy_semibold, FontWeight.SemiBold)
+val antroFamily = FontFamily(
+    Font(R.font.antro_vectra_bold, FontWeight.Normal),
 )

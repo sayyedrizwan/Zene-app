@@ -2,6 +2,7 @@
     <string name="app_name">Zene</string>
     <string name="see_all">see all</string>
     <string name="view_all">view all</string>
+    <string name="by_rs">by rizwan sayyed</string>
     <string name="recent_played">Recent Played</string>
     <string name="recent_device_songs">Recent Device Songs</string>
     <string name="switch_">switch</string>
@@ -10,6 +11,7 @@
     <string name="radio">Radio</string>
     <string name="global_top_trending_artists">Global top trending artists</string>
     <string name="gt_trending_songs">Global top trending songs</string>
+    <string name="app_name_full">Zene: A Free Music App</string>
     <string name="radio_station_in_city">Radio Stations in your city</string>
     <string name="error_loading_radio_station">Error loading radio stations near you. Try again after some times.</string>
     <string name="top_songs_in_c">Top songs in %s</string>
@@ -23,4 +25,9 @@
     <string name="albums_you_may_like">Albums you may like</string>
     <string name="can_just_select_six_artists_song_suggestions">You can just select any 6 artists. The songs suggestion will change depending on your songs history</string>
     <string name="songs_you_may_like_desc">look\'s like you are new here. select your favourite artists to get best songs recommendation or just listen to 2 to 3 of your favourite songs.</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+    <string name="enjoy_free_access_one">Enjoy free access to 1 Billion+ songs and artists with zero ads</string>
+    <string name="enjoy_free_access_two">Get best recommended songs based on your song preferences and discover new musics</string>
+    <string name="enjoy_free_access_three">Sync your spotify, youtube music, apple music playlist and sync all your music</string>
 </resources>
