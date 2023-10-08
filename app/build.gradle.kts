@@ -116,6 +116,10 @@ dependencies {
     implementation("com.google.firebase:firebase-config-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
+    implementation("androidx.media3:media3-exoplayer:${DependenciesVersion.MEDIA3.version}")
+    implementation("androidx.media3:media3-exoplayer-dash:${DependenciesVersion.MEDIA3.version}")
+    implementation("androidx.media3:media3-ui:${DependenciesVersion.MEDIA3.version}")
+
 }
 
 enum class CompileSDK(val version: Int) {
@@ -130,7 +134,8 @@ enum class AndroidVersion(val version: String) {
 enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.7.2"), COMPOSE("2023.09.00"),
     HILT("2.48"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0-beta01"),
-    RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1")
+    RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1"),
+    MEDIA3("1.1.1")
 }
 
 enum class TestingDependenciesVersion(val version: String) {

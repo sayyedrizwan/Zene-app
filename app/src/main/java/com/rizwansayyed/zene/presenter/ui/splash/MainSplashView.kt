@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.splash
 
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -26,8 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.datasource.RawResourceDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.theme.BlackColor
@@ -44,27 +54,38 @@ val textSplashScreen = listOf(
     context.resources.getText(R.string.enjoy_free_access_three)
 )
 
+
 @OptIn(ExperimentalFoundationApi::class)
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 fun MainSplashView() {
     val coroutine = rememberCoroutineScope()
 
     var hideTempSplash by remember { mutableStateOf(false) }
+    var showLogin by remember { mutableStateOf(false) }
+
     val pagerState = rememberPagerState(pageCount = { 3 })
     val appName = stringResource(R.string.app_name)
 
     val animateBtnColor by animateColorAsState(
-        if (pagerState.canScrollForward) Color.White else MainColor,
-        label = "color"
+        if (pagerState.canScrollForward) Color.White else MainColor, label = "color"
     )
 
     if (hideTempSplash)
         Box(Modifier.fillMaxSize()) {
+            SplashPlayerView(Modifier.align(Alignment.Center))
+
             HorizontalPager(pagerState, Modifier.fillMaxSize()) {
                 Column(
                     Modifier
                         .fillMaxSize()
-                        .background(if (it == 0) MainColor else if (it == 1) DarkGreyColor else BlackColor)
+                        .background(
+                            when (it) {
+                                0 -> MainColor.copy(0.5f)
+                                1 -> BlackColor.copy(0.5f)
+                                else -> DarkGreyColor.copy(0.5f)
+                            }
+                        )
                 ) {}
             }
 
@@ -116,35 +137,44 @@ fun MainSplashView() {
                     if (pagerState.canScrollForward) Color.Black else Color.White, Modifier
                 ) {
                     coroutine.launch {
-                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        if (pagerState.canScrollForward)
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        else
+                            showLogin = true
                     }
                 }
             }
+
+            if (showLogin) LoginCard(Modifier.align(Alignment.BottomCenter))
         }
     else
         SplashScreenMain {
             hideTempSplash = true
         }
+}
 
 
-//    Box(Modifier.fillMaxWidth()) {
-//        HorizontalPager(state = pagerState) { page ->
-//            Text(
-//                text = "Page: $page",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(100.dp)
-//            )
-//        }
-//
-////        val coroutineScope = rememberCoroutineScope()
-////        Button(onClick = {
-////            coroutineScope.launch {
-////                // Call scroll to on pagerState
-////                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-////            }
-////        }, modifier = Modifier.align(Alignment.BottomCenter)) {
-////            Text("Jump to Page 5")
-////        }
-//    }
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+@Composable
+fun SplashPlayerView(modifier: Modifier) {
+    val context = LocalContext.current.applicationContext
+    val uri = RawResourceDataSource.buildRawResourceUri(R.raw.bg_musics)
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).also { p ->
+                p.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                p.useController = false
+                val player = ExoPlayer.Builder(context).build().apply {
+                    p.player = this
+                    videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+                    setMediaItem(MediaItem.fromUri(uri))
+                    repeatMode = Player.REPEAT_MODE_ALL
+                    prepare()
+                    playWhenReady = true
+                }
+                player.play()
+            }
+        }, modifier.fillMaxSize()
+    )
 }
