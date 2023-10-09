@@ -98,8 +98,13 @@ fun SplashScreenMain(done: () -> Unit) {
 fun CardButton(v: String, color: Color, colorT: Color, modifier: Modifier, click: () -> Unit) {
     Card(
         { click() },
-        modifier.fillMaxWidth(), colors = CardDefaults.cardColors(color), shape = RoundedCornerShape(79)
+        modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(color),
+        shape = RoundedCornerShape(79)
     ) {
-        TextSemiBold(v, Modifier.padding(16.dp).fillMaxWidth(), true, colorT)
+        TextSemiBold(v,
+            Modifier
+                .padding(16.dp)
+                .fillMaxWidth(), true, colorT)
     }
 }

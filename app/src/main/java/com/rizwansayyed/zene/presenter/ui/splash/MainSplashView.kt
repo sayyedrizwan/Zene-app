@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.presenter.ui.splash
 
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -30,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -51,6 +52,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.theme.BlackColor
@@ -60,7 +62,13 @@ import com.rizwansayyed.zene.presenter.ui.TextAntroSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextMedium
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.Utils.isInternetAvailable
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 
 val textSplashScreen = listOf(
@@ -77,8 +85,10 @@ fun MainSplashView() {
     val coroutine = rememberCoroutineScope()
     val activity = LocalContext.current as Activity
     val density = LocalDensity.current
+    val room: RoomDbViewModel = hiltViewModel()
 
     val artists by selectedFavouriteArtistsSongs.collectAsState(initial = emptyArray())
+    val selectArtists = remember { mutableStateListOf("") }
 
     var hideTempSplash by remember { mutableStateOf(false) }
     var showLogin by remember { mutableStateOf(false) }
@@ -169,7 +179,7 @@ fun MainSplashView() {
                             if ((artists?.size ?: 0) == 0)
                                 showLogin = true
                             else
-                                Log.d("TAG", "MainSplashView: close splash")
+                                doShowSplashScreen = flowOf(false)
                         }
                     }
                 }
@@ -186,11 +196,9 @@ fun MainSplashView() {
                 ),
                 exit = slideOutVertically() + shrinkVertically() + fadeOut()
             ) {
-                SelectArtistsCard({
+                SelectArtistsCard(selectArtists) {
                     showStartListeningBtn = it
-                }, {
-                    showLogin = false
-                })
+                }
             }
 
             if (showLogin && showStartListeningBtn) CardButton(
@@ -200,7 +208,8 @@ fun MainSplashView() {
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
             ) {
-
+                room.updateList(selectArtists)
+                doShowSplashScreen = flowOf(false)
             }
         }
     else

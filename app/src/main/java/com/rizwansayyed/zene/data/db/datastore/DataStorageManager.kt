@@ -22,10 +22,12 @@ import kotlinx.coroutines.runBlocking
 
 object DataStorageManager {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATA_STORE_DB)
+    private const val ARRAY_LIST = "[]"
+    private const val JSON_LIST = "{}"
 
     var userIpDetails: Flow<IpJsonResponse?>
         get() = context.dataStore.data.map {
-            moshi.adapter(IpJsonResponse::class.java).fromJson(it[IP_JSON] ?: "{}")
+            moshi.adapter(IpJsonResponse::class.java).fromJson(it[IP_JSON] ?: JSON_LIST)
         }
         set(v) = runBlocking {
             val moshi = moshi.adapter(IpJsonResponse::class.java).toJson(v.first())
@@ -36,7 +38,8 @@ object DataStorageManager {
 
     var selectedFavouriteArtistsSongs: Flow<Array<String>?>
         get() = context.dataStore.data.map {
-            moshi.adapter(Array<String>::class.java).fromJson(it[SELECTED_FAVOURITE_ARTISTS_SONGS] ?: "[]")
+            moshi.adapter(Array<String>::class.java)
+                .fromJson(it[SELECTED_FAVOURITE_ARTISTS_SONGS] ?: ARRAY_LIST)
         }
         set(v) = runBlocking {
             val moshi = moshi.adapter(Array<String>::class.java).toJson(v.first())

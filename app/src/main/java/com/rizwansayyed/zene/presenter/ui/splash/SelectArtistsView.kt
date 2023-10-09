@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +30,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
@@ -38,12 +42,12 @@ import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextLight
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun SelectArtistsCard(btn: (Boolean) -> Unit, close: () -> Unit) {
+fun SelectArtistsCard(selectArtists: SnapshotStateList<String>, btn: (Boolean) -> Unit) {
     val home: HomeApiViewModel = hiltViewModel()
 
-    val selectArtists = remember { mutableStateListOf<String?>(null) }
     val wholeArtists = remember { mutableStateListOf<MusicData?>(null) }
 
     Column(
@@ -71,7 +75,9 @@ fun SelectArtistsCard(btn: (Boolean) -> Unit, close: () -> Unit) {
                 TextLight(stringResource(R.string.select_from_favourite).lowercase(), size = 14)
             }
 
-            TextLight(stringResource(R.string.skip).lowercase(), size = 15)
+            TextLight(stringResource(R.string.skip).lowercase(), Modifier.clickable {
+                doShowSplashScreen = flowOf(false)
+            }, size = 15)
         }
 
 
@@ -115,10 +121,9 @@ fun SelectArtistsCard(btn: (Boolean) -> Unit, close: () -> Unit) {
                                 if (selectArtists.contains(m.artists))
                                     selectArtists.remove(m.artists)
                                 else {
-                                    selectArtists.add(m.artists)
+                                    selectArtists.add(m.artists ?: "")
                                     m.artists?.let { it1 -> home.topArtistsSearch(it1) }
                                 }
-
                                 btn(selectArtists.isNotEmpty())
                             }
                     }

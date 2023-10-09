@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
@@ -12,6 +13,7 @@ import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class RoomDbViewModel @Inject constructor(
@@ -42,7 +45,16 @@ class RoomDbViewModel @Inject constructor(
         }
     }
 
+    fun updateList(selectArtists: SnapshotStateList<String>) = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            selectedFavouriteArtistsSongs = flowOf(selectArtists.toTypedArray())
+        }
+        delay(1.seconds)
+        init()
+    }
     fun init() = viewModelScope.launch(Dispatchers.IO) {
+        selectedFavouriteArtistsSongs.first()?.size?.toast()
+
         if (roomDBImpl.topTenList().first().isNotEmpty())
             topTenSongsRecords()
         else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
