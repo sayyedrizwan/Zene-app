@@ -14,4 +14,5 @@ interface YoutubeAPIImplInterface {
     suspend fun songFromArtistsTopFive(artists: List<String>): Flow<List<MusicData>>
     suspend fun topFourSongsSuggestionOnHistory(pIds: List<String>): Flow<List<MusicData>>
     suspend fun artistsAlbumsTopFive(names: List<String>): Flow<List<MusicData>>
+    suspend fun searchArtistsInfo(s: String): Flow<List<MusicData>>
 }

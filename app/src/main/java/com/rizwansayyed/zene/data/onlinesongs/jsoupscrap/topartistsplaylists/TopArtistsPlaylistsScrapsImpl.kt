@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.YoutubeReleaseChannelResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
+import com.rizwansayyed.zene.presenter.util.UiUtils.isImagePresent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -49,11 +50,12 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
         jsoup.select("div.o-chart-results-list-row-container").forEach {
             var img =
                 it.selectFirst("img.c-lazy-image__img.lrv-u-background-color-grey-lightest.lrv-u-width-100p.lrv-u-display-block.lrv-u-height-auto")
-                    ?.attr("data-lazy-src")?.replace("-180x180.jpg", "-344x344.jpg") ?: ""
+                    ?.attr("data-lazy-src")?.replace("-180x180.jpg", "-344x344.jpg")
+                    ?.replace("-87x87.jpg", "-344x344.jpg") ?: ""
             val name = it.selectFirst("h3#title-of-a-story")?.text()
 
             if (name != null) {
-                if (img.contains("fallback.gif")) {
+                if (img.contains("fallback.gif") || img.isEmpty() || !isImagePresent(img)) {
                     img = ""
                     delay(1.seconds)
                     val (instagram, twitter) = searchEngineData(name).first()

@@ -2,11 +2,11 @@ package com.rizwansayyed.zene.utils
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.presenter.MainActivity
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.net.InetAddress
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
@@ -59,4 +59,14 @@ object Utils {
         exitProcess(0)
     }
 
+    suspend fun isInternetAvailable(): Boolean {
+      return  try {
+            withContext(Dispatchers.IO) {
+                InetAddress.getByName("www.google.com")
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }

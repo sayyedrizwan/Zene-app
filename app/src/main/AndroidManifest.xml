@@ -9,7 +9,6 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
-
     <application
         android:name=".di.ApplicationModule"
         android:allowBackup="true"

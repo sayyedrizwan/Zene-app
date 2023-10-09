@@ -1,8 +1,18 @@
 package com.rizwansayyed.zene.presenter.ui.splash
 
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,6 +28,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -39,12 +51,15 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextAntroSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextMedium
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.Utils.isInternetAvailable
 import kotlinx.coroutines.launch
 
 
@@ -60,12 +75,18 @@ val textSplashScreen = listOf(
 @Composable
 fun MainSplashView() {
     val coroutine = rememberCoroutineScope()
+    val activity = LocalContext.current as Activity
+    val density = LocalDensity.current
+
+    val artists by selectedFavouriteArtistsSongs.collectAsState(initial = emptyArray())
 
     var hideTempSplash by remember { mutableStateOf(false) }
     var showLogin by remember { mutableStateOf(false) }
+    var showStartListeningBtn by remember { mutableStateOf(false) }
 
     val pagerState = rememberPagerState(pageCount = { 3 })
     val appName = stringResource(R.string.app_name)
+    val noInternet = stringResource(R.string.internet_not_available)
 
     val animateBtnColor by animateColorAsState(
         if (pagerState.canScrollForward) Color.White else MainColor, label = "color"
@@ -139,18 +160,63 @@ fun MainSplashView() {
                     coroutine.launch {
                         if (pagerState.canScrollForward)
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                        else
-                            showLogin = true
+                        else {
+                            if (!isInternetAvailable()) {
+                                noInternet.toast()
+                                return@launch
+                            }
+
+                            if ((artists?.size ?: 0) == 0)
+                                showLogin = true
+                            else
+                                Log.d("TAG", "MainSplashView: close splash")
+                        }
                     }
                 }
             }
 
-            if (showLogin) LoginCard(Modifier.align(Alignment.BottomCenter))
+            AnimatedVisibility(
+                showLogin, Modifier.align(Alignment.BottomCenter),
+                enter = slideInVertically {
+                    with(density) { 40.dp.roundToPx() }
+                } + expandVertically(
+                    expandFrom = Alignment.Bottom
+                ) + fadeIn(
+                    initialAlpha = 0.3f
+                ),
+                exit = slideOutVertically() + shrinkVertically() + fadeOut()
+            ) {
+                SelectArtistsCard({
+                    showStartListeningBtn = it
+                }, {
+                    showLogin = false
+                })
+            }
+
+            if (showLogin && showStartListeningBtn) CardButton(
+                stringResource(R.string.start_listening), MainColor, Color.White,
+                Modifier
+                    .padding(vertical = 40.dp, horizontal = 5.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            ) {
+
+            }
         }
     else
         SplashScreenMain {
             hideTempSplash = true
         }
+
+
+    BackHandler {
+        if (showLogin) {
+            showLogin = false
+            return@BackHandler
+        }
+
+        activity.finish()
+    }
 }
 
 

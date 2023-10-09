@@ -53,6 +53,27 @@ fun TextSemiBold(
     )
 }
 
+@Composable
+fun TextBold(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White,
+    singleLine: Boolean = false,
+    size: Int = 16,
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Bold,
+        maxLines = if (singleLine) 1 else 10,
+        fontSize = size.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
+    )
+}
+
 
 @Composable
 fun TextAntroSemiBold(
@@ -105,7 +126,7 @@ fun TextMedium(
     doCenter: Boolean = false,
     color: Color = Color.White,
     singleLine: Boolean = false,
-    size: Int = 16,
+    size: Int = 16
 ) {
     Text(
         v,
@@ -116,6 +137,29 @@ fun TextMedium(
         maxLines = if (singleLine) 1 else 10,
         textAlign = if (doCenter) TextAlign.Center else null,
         fontSize = size.scaledSp(),
+    )
+}
+
+
+
+@Composable
+fun TextRegular(
+    v: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    doCenter: Boolean = false,
+    singleLine: Boolean = false,
+    size: Int = 16
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Normal,
+        maxLines = if (singleLine) 1 else 10,
+        textAlign = if (doCenter) TextAlign.Center else null,
+        fontSize = size.scaledSp()
     )
 }
 
@@ -180,67 +224,6 @@ fun TextBoldBig(
         maxLines = if (singleLine) 1 else 10,
         fontSize = 18.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null
-    )
-}
-
-@Composable
-fun TextBold(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Bold,
-        maxLines = if (singleLine) 1 else 10,
-        fontSize = 16.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
-    )
-}
-
-
-@Composable
-fun TextLight(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Light,
-        maxLines = if (singleLine) 1 else 10,
-        textAlign = if (doCenter) TextAlign.Center else null,
-        fontSize = 16.scaledSp(),
-    )
-}
-
-@Composable
-fun TextRegular(
-    v: String,
-    modifier: Modifier = Modifier,
-    color: Color = Color.White,
-    doCenter: Boolean = false,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Normal,
-        maxLines = if (singleLine) 1 else 10,
-        textAlign = if (doCenter) TextAlign.Center else null,
-        fontSize = 15.scaledSp()
     )
 }
 

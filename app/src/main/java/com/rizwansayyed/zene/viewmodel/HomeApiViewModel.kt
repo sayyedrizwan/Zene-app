@@ -46,7 +46,7 @@ class HomeApiViewModel @Inject constructor(
             e.message
         }
 
-        delay(1.seconds)
+        delay(2.seconds)
         onlineRadiosInCity()
         globalTrendingSongs()
         countryTrendingSongs()
@@ -73,7 +73,13 @@ class HomeApiViewModel @Inject constructor(
     var topCountryArtists by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
         private set
 
-    var mostPlayingSong by mutableStateOf<DataResponse<Pair<MusicData?, TopRecentPlaySongsResponse.Results.Artist?>>>(DataResponse.Empty)
+
+    var topArtistsSelect by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
+        private set
+
+    var mostPlayingSong by mutableStateOf<DataResponse<Pair<MusicData?, TopRecentPlaySongsResponse.Results.Artist?>>>(
+        DataResponse.Empty
+    )
         private set
 
 
@@ -116,6 +122,27 @@ class HomeApiViewModel @Inject constructor(
         }.collectLatest {
             topArtistsList.addAll(it)
             topCountryArtists = DataResponse.Success(it)
+        }
+    }
+
+    fun topArtistsSelects() = viewModelScope.launch(Dispatchers.IO) {
+        val ip = userIpDetails.first()
+        topArtistsSelect = DataResponse.Loading
+        topArtistsSelect = try {
+            val b = youtubeAPI.searchArtistsInfo("top 100").first()
+            val c = youtubeAPI.searchArtistsInfo("top ${ip?.country}").first()
+            val h = youtubeAPI.searchArtistsInfo("top hollywood").first()
+            val l = ArrayList<MusicData>(c + h + b)
+            l.random()
+            DataResponse.Success(l)
+        } catch (e: Exception) {
+            DataResponse.Error(e)
+        }
+    }
+
+    fun topArtistsSearch(artists: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.searchArtistsInfo(artists).catch {}.collectLatest {
+            topArtistsSelect = DataResponse.Success(it)
         }
     }
 

@@ -241,6 +241,47 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
+    override suspend fun searchArtistsInfo(s: String) = flow {
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        val artistsLists = mutableListOf<MusicData>()
+
+        val searchResponse =
+            youtubeMusicAPI.youtubeSearchResponse(ytMusicArtistsSearchJsonBody(ip, s), key)
+
+        searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
+            if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
+                s.musicShelfRenderer.contents?.forEach { content ->
+                    val thumbnail =
+                        content?.musicResponsiveListItemRenderer?.thumbnail
+                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
+                    content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { flex ->
+                        if (flex?.musicResponsiveListItemFlexColumnRenderer?.displayPriority?.trim() == "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH")
+                            flex.musicResponsiveListItemFlexColumnRenderer.text?.runs?.forEachIndexed { index, content ->
+                                if (index == 0) content?.text?.let {
+                                    if (it.lowercase() == "artist") return@let
+
+                                    if (!artistsLists.any { a ->
+                                            a.artists?.trim()?.lowercase() == it.lowercase().trim()
+                                        }) artistsLists.add(
+                                        MusicData(
+                                            thumbnail ?: "", it, it, THE_ARTISTS, MusicType.ARTISTS
+                                        )
+                                    )
+                                }
+                            }
+                    }
+                }
+            }
+        }
+
+        artistsLists.distinct()
+        emit(artistsLists.toList())
+    }.flowOn(Dispatchers.IO)
+
+
     override suspend fun topFourSongsSuggestionOnHistory(pIds: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
         if (cache != null) if (cache.pList == pIds) {

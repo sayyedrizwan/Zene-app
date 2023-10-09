@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -97,7 +98,7 @@ fun SplashScreenMain(done: () -> Unit) {
 fun CardButton(v: String, color: Color, colorT: Color, modifier: Modifier, click: () -> Unit) {
     Card(
         { click() },
-        modifier.fillMaxWidth(), colors = CardDefaults.cardColors(color)
+        modifier.fillMaxWidth(), colors = CardDefaults.cardColors(color), shape = RoundedCornerShape(79)
     ) {
         TextSemiBold(v, Modifier.padding(16.dp).fillMaxWidth(), true, colorT)
     }

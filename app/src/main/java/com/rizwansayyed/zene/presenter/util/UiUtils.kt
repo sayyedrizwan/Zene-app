@@ -11,8 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.URL
 import java.text.NumberFormat
-import kotlin.random.Random
 
 
 object UiUtils {
@@ -44,4 +45,15 @@ object UiUtils {
         return NumberFormat.getNumberInstance().format(amount)
     }
 
+    suspend fun isImagePresent(url: String): Boolean {
+        return try {
+            val connection = withContext(Dispatchers.IO) {
+                URL(url).openConnection()
+            }
+            val contentType = connection.getHeaderField("Content-Type")
+            contentType.startsWith("image/")
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
