@@ -47,11 +47,6 @@ fun HomepageTopView() {
         }
 
         Row {
-            SmallIcons(R.drawable.ic_search) {
-
-            }
-
-            Spacer(Modifier.width(9.dp))
 
             SmallIcons(R.drawable.ic_notification) {
 

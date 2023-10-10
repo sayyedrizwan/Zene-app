@@ -36,4 +36,8 @@
     <string name="enjoy_free_access_two">Get best recommended songs based on your song preferences and discover new musics</string>
     <string name="enjoy_free_access_three">Sync your spotify, youtube music, apple music playlist and sync all your music</string>
     <string name="internet_not_available">Internet not available</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="my_music">My Music</string>
+    <string name="feed">Feed</string>
 </resources>

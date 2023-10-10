@@ -1,11 +1,14 @@
 package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.utils.Utils.isInternetConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +22,15 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var isOnline = mutableStateOf(true)
         private set
 
+    var homeNav = mutableStateOf(HomeNavigation.HOME)
+        private set
+
     val selectArtists = mutableStateListOf<String>()
 
+
+    fun setHomeNav(h: HomeNavigation) {
+        homeNav.value = h
+    }
 
     fun checkAndSetOnlineStatus() = viewModelScope.launch(Dispatchers.IO) {
         isOnline.value = isInternetConnected()
@@ -34,14 +44,14 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     fun selectedArtists(name: String) {
         if (name.isEmpty()) return
 
-        if (selectArtists.contains(name.lowercase())){
+        if (selectArtists.contains(name.lowercase())) {
             selectArtists.remove(name.lowercase())
             return
         }
         selectArtists.add(name.lowercase())
     }
 
-    fun clearAllArtists(){
+    fun clearAllArtists() {
         selectArtists.forEach {
             selectArtists.remove(it.lowercase())
         }
