@@ -53,8 +53,6 @@ class RoomDbViewModel @Inject constructor(
         init()
     }
     fun init() = viewModelScope.launch(Dispatchers.IO) {
-        selectedFavouriteArtistsSongs.first()?.size?.toast()
-
         if (roomDBImpl.topTenList().first().isNotEmpty())
             topTenSongsRecords()
         else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
