@@ -77,9 +77,8 @@ class HomeApiViewModel @Inject constructor(
     var topArtistsSelect by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
         private set
 
-    var mostPlayingSong by mutableStateOf<DataResponse<Pair<MusicData?, TopRecentPlaySongsResponse.Results.Artist?>>>(
-        DataResponse.Empty
-    )
+
+    var mostPlayingSong by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
         private set
 
 

@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,11 +27,13 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.LightBlack
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
+import com.rizwansayyed.zene.presenter.ui.TextBoldBig
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextSemiBoldBig
 import com.rizwansayyed.zene.presenter.ui.TextSemiBoldDualLines
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TextThinBig
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.toMoneyFormat
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 
@@ -40,93 +46,64 @@ fun CurrentMostPlayingSong() {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
-            LoadingStateBar()
+            Column(Modifier.fillMaxWidth()) {
+                MostPlayingText()
 
-            TextThinBig(
-                stringResource(id = R.string.currently_playing_song_on_app).lowercase(),
-                Modifier
-                    .padding(14.dp)
-                    .fillMaxWidth(),
-                singleLine = true,
-                doCenter = true
-            )
+                Spacer(Modifier.height(20.dp))
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    MostPlayedSongsLoading()
+                    MostPlayedSongsLoading()
+                    MostPlayedSongsLoading()
+                }
+
+//                LoadingStateBar()
+            }
         }
 
         is DataResponse.Success -> {
-            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                AsyncImage(
-                    v.item.first?.thumbnail,
-                    "",
-                    Modifier
-                        .padding(3.dp)
-                        .weight(3f)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
+            Column(Modifier.fillMaxWidth()) {
+                MostPlayingText()
 
-                Column(
-                    Modifier
-                        .padding(3.dp)
-                        .weight(1f), Arrangement.Center, Alignment.CenterHorizontally
-                ) {
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(9.dp))
-                            .background(LightBlack)
-                            .padding(vertical = 15.dp),
-                        Arrangement.Center, Alignment.CenterHorizontally
-                    ) {
-                        AsyncImage(v.item.second?.image, "", Modifier.fillMaxWidth())
-
-                        Spacer(Modifier.height(7.dp))
-
-                        v.item.first?.artists?.let { TextThin(it) }
-
-                    }
-
-                    Spacer(Modifier.height(5.dp))
-
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(9.dp))
-                            .background(LightBlack)
-                            .padding(vertical = 20.dp),
-                        Arrangement.Center, Alignment.CenterHorizontally
-                    ) {
-                        TextSemiBoldBig(v.item.second?.listeners?.toMoneyFormat() ?: "137,196")
-
-                        Spacer(Modifier.height(3.dp))
-
-                        TextThin(stringResource(id = R.string.listeners))
-                    }
-
-                    Spacer(Modifier.height(5.dp))
-
-                    v.item.first?.name?.let {
-                        Column(
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(9.dp))
-                                .background(LightBlack)
-                                .padding(vertical = 20.dp),
-                            Arrangement.Center, Alignment.CenterHorizontally
-                        ) {
-                            TextSemiBoldDualLines(it, doCenter = true)
-                        }
-                    }
-                }
+                Spacer(Modifier.height(10.dp))
             }
-
-            TextThinBig(
-                stringResource(id = R.string.currently_playing_song_on_app).lowercase(),
-                Modifier
-                    .padding(14.dp)
-                    .fillMaxWidth(),
-                singleLine = true,
-                doCenter = true
-            )
         }
     }
+}
+
+@Composable
+fun MostPlayedSongsLoading() {
+    Column(
+        Modifier
+            .width((LocalConfiguration.current.screenWidthDp / 2).dp)
+            .height((LocalConfiguration.current.screenWidthDp / 1.9).dp)
+            .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+    ) {
+
+    }
+}
+
+@Composable
+fun MostPlayingText() {
+    TextBoldBig(
+        stringResource(id = R.string.zene_mostly_most_played).substringBefore("\n"),
+        Modifier
+            .padding(start = 14.dp)
+            .fillMaxWidth(),
+        size = 25
+    )
+
+    Spacer(Modifier.height(2.dp))
+
+    TextBoldBig(
+        stringResource(id = R.string.zene_mostly_most_played).substringAfter("\n"),
+        Modifier
+            .padding(start = 14.dp)
+            .fillMaxWidth(),
+        size = 25
+    )
 }

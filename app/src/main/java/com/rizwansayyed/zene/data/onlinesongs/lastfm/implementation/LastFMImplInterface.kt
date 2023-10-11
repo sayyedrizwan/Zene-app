@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface LastFMImplInterface {
 
-
     suspend fun artistsImages(name: String, limit: Int = 40): Flow<MutableList<String>>
-    suspend fun topRecentPlayingSongs(): Flow<Pair<MusicData?, TopRecentPlaySongsResponse.Results.Artist?>>
+
+
+    suspend fun topRecentPlayingSongs(): Flow<MutableList<MusicData>>
 }

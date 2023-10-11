@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.WhiteColor
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
+import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 @Composable
@@ -45,6 +46,10 @@ fun MainHomepageOnlineNew() {
     ) {
         item(span = { GridItemSpan(3) }) {
             HomepageTopView()
+        }
+
+        item(span = { GridItemSpan(3) }) {
+            CurrentMostPlayingSong()
         }
     }
 }

@@ -1,5 +1,10 @@
 package com.rizwansayyed.zene.presenter.ui
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
@@ -27,10 +34,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.antroFamily
 import com.rizwansayyed.zene.presenter.theme.urbanistFamily
 
 
+@Composable
+fun LoadingStateBar() {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(10.dp), Arrangement.Center, Alignment.CenterVertically
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.width(44.dp),
+            color = MainColor,
+            trackColor = MaterialTheme.colorScheme.secondary,
+        )
+    }
+}
 
 @Composable
 fun TextSemiBold(
@@ -141,7 +163,6 @@ fun TextMedium(
 }
 
 
-
 @Composable
 fun TextRegular(
     v: String,
@@ -163,6 +184,58 @@ fun TextRegular(
     )
 }
 
+
+@Composable
+fun TextBoldBig(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White,
+    singleLine: Boolean = false,
+    size: Int = 16
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Bold,
+        maxLines = if (singleLine) 1 else 10,
+        fontSize = size.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
+    )
+}
+
+@Composable
+fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush {
+    return if (showShimmer) {
+        val shimmerColors = listOf(
+            Color.LightGray.copy(alpha = 0.6f),
+            Color.LightGray.copy(alpha = 0.2f),
+            Color.LightGray.copy(alpha = 0.6f),
+        )
+
+        val transition = rememberInfiniteTransition(label = "")
+        val translateAnimation = transition.animateFloat(
+            initialValue = 0f,
+            targetValue = targetValue,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000), repeatMode = RepeatMode.Restart
+            ), label = ""
+        )
+        Brush.linearGradient(
+            colors = shimmerColors,
+            start = Offset.Zero,
+            end = Offset(x = translateAnimation.value, y = translateAnimation.value)
+        )
+    } else {
+        Brush.linearGradient(
+            colors = listOf(Color.Transparent, Color.Transparent),
+            start = Offset.Zero,
+            end = Offset.Zero
+        )
+    }
+}
 
 
 // ---------------------- old
@@ -200,27 +273,6 @@ fun TextSemiBoldBig(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.SemiBold,
-        maxLines = if (singleLine) 1 else 10,
-        fontSize = 18.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
-    )
-}
-
-
-@Composable
-fun TextBoldBig(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Bold,
         maxLines = if (singleLine) 1 else 10,
         fontSize = 18.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null
@@ -428,22 +480,6 @@ fun SongsTitleAndArtistsSmall(
         TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
         TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
         Spacer(Modifier.height(6.dp))
-    }
-}
-
-
-@Composable
-fun LoadingStateBar() {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(10.dp), Arrangement.Center, Alignment.CenterVertically
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.width(44.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            trackColor = MaterialTheme.colorScheme.secondary,
-        )
     }
 }
 
