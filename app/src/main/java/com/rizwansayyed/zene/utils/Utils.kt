@@ -7,7 +7,9 @@ import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.InetAddress
-import kotlin.random.Random
+import java.time.Instant
+import java.util.Calendar
+import java.util.Date
 import kotlin.system.exitProcess
 
 
@@ -17,22 +19,16 @@ object Utils {
         return cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
     }
 
-
-    fun <T> weightedRandomChoice(items: List<T>, weights: List<Int> = listOf(3, 3, 1, 1, 1)): T? {
-        require(items.size == weights.size) { "Items and weights lists must have the same size" }
-
-        val totalWeight = weights.sum()
-        val threshold = Random.nextInt(totalWeight)
-
-        var cumulativeWeight = 0
-        for (i in items.indices) {
-            cumulativeWeight += weights[i]
-            if (threshold < cumulativeWeight) {
-                return items[i]
-            }
+    fun daysOldTimestamp(days: Int = -2): Long {
+        val calendar = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_MONTH, days)
         }
+        return calendar.timeInMillis / 1000
+    }
 
-        return null
+    fun timestampDifference(ts: Long): Long {
+        val time = ts - System.currentTimeMillis()
+        return time / 1000
     }
 
     fun artistsListToString(list: MutableList<String>): String {
@@ -60,7 +56,7 @@ object Utils {
     }
 
     suspend fun isInternetAvailable(): Boolean {
-      return  try {
+        return try {
             withContext(Dispatchers.IO) {
                 InetAddress.getByName("www.google.com")
             }

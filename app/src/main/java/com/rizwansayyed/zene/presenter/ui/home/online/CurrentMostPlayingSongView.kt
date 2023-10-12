@@ -2,19 +2,20 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -25,16 +26,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.presenter.theme.LightBlack
-import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextBoldBig
+import com.rizwansayyed.zene.presenter.ui.TextLight
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.TextSemiBoldBig
-import com.rizwansayyed.zene.presenter.ui.TextSemiBoldDualLines
 import com.rizwansayyed.zene.presenter.ui.TextThin
-import com.rizwansayyed.zene.presenter.ui.TextThinBig
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
-import com.rizwansayyed.zene.presenter.util.UiUtils.toMoneyFormat
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 
 
@@ -51,17 +49,7 @@ fun CurrentMostPlayingSong() {
 
                 Spacer(Modifier.height(20.dp))
 
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    MostPlayedSongsLoading()
-                    MostPlayedSongsLoading()
-                    MostPlayedSongsLoading()
-                }
-
-//                LoadingStateBar()
+                MostPlayedSongsLoading()
             }
         }
 
@@ -69,7 +57,13 @@ fun CurrentMostPlayingSong() {
             Column(Modifier.fillMaxWidth()) {
                 MostPlayingText()
 
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(20.dp))
+
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(v.item ?: emptyList()) {
+                        MostPlayedSongView(it)
+                    }
+                }
             }
         }
     }
@@ -77,13 +71,63 @@ fun CurrentMostPlayingSong() {
 
 @Composable
 fun MostPlayedSongsLoading() {
-    Column(
+    Row(
         Modifier
-            .width((LocalConfiguration.current.screenWidthDp / 2).dp)
-            .height((LocalConfiguration.current.screenWidthDp / 1.9).dp)
-            .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
     ) {
+        repeat(5) {
+            Column(
+                Modifier
+                    .padding(horizontal = 12.dp)
+                    .width((LocalConfiguration.current.screenWidthDp / 1.7).dp)
+                    .height((LocalConfiguration.current.screenWidthDp / 1.2).dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+            ) {}
+        }
+    }
+}
 
+@Composable
+fun MostPlayedSongView(music: MusicData) {
+    Box(
+        Modifier
+            .padding(horizontal = 12.dp)
+            .width((LocalConfiguration.current.screenWidthDp / 1.7).dp)
+            .height((LocalConfiguration.current.screenWidthDp / 1.2).dp)
+            .clip(RoundedCornerShape(12.dp))
+    ) {
+        AsyncImage(
+            music.thumbnail,
+            music.name,
+            Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(
+            Modifier
+                .fillMaxSize()
+                .background(MainColor.copy(0.3f))
+        )
+
+        Column {
+            TextThin(
+                music.artists ?: "",
+                Modifier
+                    .padding(horizontal = 6.dp)
+                    .padding(top = 5.dp),
+                size = 14
+            )
+
+            TextSemiBold(
+                music.name ?: "",
+                Modifier
+                    .padding(horizontal = 6.dp)
+                    .padding(top = 5.dp),
+                size = 22
+            )
+        }
     }
 }
 

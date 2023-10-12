@@ -34,7 +34,6 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     fun checkAndSetOnlineStatus() = viewModelScope.launch(Dispatchers.IO) {
         isOnline.value = isInternetConnected()
-
     }
 
     fun resetConfig() = viewModelScope.launch(Dispatchers.IO) {
@@ -49,11 +48,5 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
             return
         }
         selectArtists.add(name.lowercase())
-    }
-
-    fun clearAllArtists() {
-        selectArtists.forEach {
-            selectArtists.remove(it.lowercase())
-        }
     }
 }

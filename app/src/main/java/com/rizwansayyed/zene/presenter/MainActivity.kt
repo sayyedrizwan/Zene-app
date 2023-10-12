@@ -13,19 +13,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.MainHomepageOnlineNew
 import com.rizwansayyed.zene.presenter.ui.home.online.SaveArtistsButton
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
+import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 
 // not all images are laoding properly on selecting users on first times
@@ -77,13 +87,23 @@ class MainActivity : ComponentActivity() {
 
         navViewModel.checkAndSetOnlineStatus()
         navViewModel.resetConfig()
+
+        apis()
     }
 
 
     override fun onStart() {
         super.onStart()
+        lifecycleScope.launch {
+            delay(1.seconds)
+            if (timestampDifference(lastAPISyncTime.first()) >= 20) apis()
+        }
+    }
+
+    private fun apis() {
         homeApiViewModel.init()
         jsoupScrapViewModel.init()
         roomViewModel.init()
+        lastAPISyncTime = flowOf(System.currentTimeMillis())
     }
 }

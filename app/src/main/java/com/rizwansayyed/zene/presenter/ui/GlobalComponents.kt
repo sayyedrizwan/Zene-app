@@ -54,6 +54,29 @@ fun LoadingStateBar() {
     }
 }
 
+
+@Composable
+fun TextThin(
+    v: String,
+    modifier: Modifier = Modifier,
+    doCenter: Boolean = false,
+    color: Color = Color.White,
+    singleLine: Boolean = false,
+    size: Int = 16
+) {
+    Text(
+        v,
+        modifier = modifier,
+        color = color,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Thin,
+        maxLines = if (singleLine) 1 else 10,
+        fontSize = size.scaledSp(),
+        textAlign = if (doCenter) TextAlign.Center else null
+    )
+}
+
+
 @Composable
 fun TextSemiBold(
     v: String,
@@ -297,27 +320,6 @@ fun TextRegularTwoLine(
         lineHeight = 18.sp
     )
 }
-
-@Composable
-fun TextThin(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Thin,
-        maxLines = if (singleLine) 1 else 10,
-        fontSize = 12.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
-    )
-}
-
 
 @Composable
 fun TextThinBig(
