@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.LightBlack
+import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
@@ -47,9 +48,9 @@ fun TopArtistsList() {
         is DataResponse.Error -> {}
         DataResponse.Loading -> LoadingStateBar()
         is DataResponse.Success -> LazyHorizontalGrid(
-            GridCells.Fixed(3), Modifier
+            GridCells.Fixed(2), Modifier
                 .fillMaxWidth()
-                .height((screenWidth / 1.8 * 3).dp)
+                .height((screenWidth / 1.8 * 2).dp)
         ) {
             items(v.item) { TopArtistsItems(it, screenWidth) }
         }
@@ -79,7 +80,7 @@ fun TopArtistsItems(artists: MusicData, width: Int) {
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.Transparent, Color.Transparent, Color.Black
+                            Color.Transparent, Color.Transparent, MainColor
                         )
                     )
                 )

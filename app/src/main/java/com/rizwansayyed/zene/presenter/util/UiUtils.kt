@@ -68,4 +68,14 @@ object UiUtils {
             this
         }
     }
+
+    fun String.toCapitalFirst(): String {
+        val words = this.split(",").map { it.trim() }
+        val capitalizedWords = words.map {
+            it.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+            }
+        }
+        return capitalizedWords.joinToString(", ")
+    }
 }

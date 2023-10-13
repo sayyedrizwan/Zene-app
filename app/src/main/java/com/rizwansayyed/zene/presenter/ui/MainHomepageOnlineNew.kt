@@ -35,6 +35,8 @@ import com.rizwansayyed.zene.presenter.theme.WhiteColor
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
+import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
+import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 @Composable
@@ -53,6 +55,13 @@ fun MainHomepageOnlineNew() {
             Column {
                 CurrentMostPlayingSong()
                 CityRadioViewList()
+            }
+        }
+
+        item(span = { GridItemSpan(3) }) {
+            Column {
+                TopArtistsList()
+                FreshAddedSongsList()
             }
         }
 

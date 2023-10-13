@@ -49,6 +49,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import kotlin.math.absoluteValue
@@ -113,22 +114,6 @@ fun CityRadioViewList() {
             ) { page ->
                 RadiosItems(page, radioPagerState, v.item[page])
             }
-
-
-//            LazyRow {
-//                items(v.item) {
-//                    RadiosItems()
-//                }
-//            }
-
-
-//            LazyHorizontalGrid(
-//                GridCells.Fixed(2), Modifier
-//                    .fillMaxWidth()
-//                    .height(430.dp)
-//            ) {
-//                items(v.item) { OnlineRadioItem(it) }
-//            }
         }
     }
 }
@@ -168,8 +153,7 @@ fun RadiosItems(
                     ((radioPagerState.currentPage - page) + radioPagerState.currentPageOffsetFraction).absoluteValue
                 alpha = lerp(0.5f, 1f, 0.8f - pageOffset.coerceIn(0f, 1f))
             },
-        RoundedCornerShape(12.dp),
-        CardDefaults.cardColors(MainColor)
+        RoundedCornerShape(12.dp), CardDefaults.cardColors(MainColor)
     ) {
         Box(
             Modifier
@@ -229,6 +213,12 @@ fun RadiosItems(
                         )
                     }
                 }
+                if (radio.language?.trim()?.isNotEmpty() == true) TextThin(
+                    radio.language.toCapitalFirst(),
+                    Modifier.padding(horizontal = 7.dp, vertical = 12.dp),
+                    size = 17
+                )
+
             }
         }
     }
