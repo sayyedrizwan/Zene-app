@@ -1,11 +1,14 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicDataWithArtists
+import com.rizwansayyed.zene.domain.MusicType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -19,16 +22,29 @@ class LastFMImpl @Inject constructor(
 ) : LastFMImplInterface {
 
     override suspend fun topRecentPlayingSongs() = flow {
-        val list = mutableListOf<MusicData>()
+        val list = mutableListOf<MusicDataWithArtists>()
 
         val ip = DataStorageManager.userIpDetails.first()
         val key = remoteConfig.ytApiKeys()
 
         val res = lastFMS.topRecentPlayingSongs()
-        res.results?.artist?.forEach {
-            val songName = "${it?.tracks?.first()?.name} - ${it?.name}"
+        res.results?.artist?.forEach { s ->
+            val songName = "${s?.tracks?.first()?.name} - ${s?.name}"
             val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
-            songs?.let { it1 -> list.add(it1) }
+            songs?.let { it1 ->
+                list.add(
+                    MusicDataWithArtists(
+                        it1.thumbnail ?: "",
+                        it1.name ?: "",
+                        it1.artists ?: "",
+                        s?.listeners ?: "",
+                        s?.image?.replace("174s/", "770x0/")?.replace(".png", ".jpg"),
+                        s?.name ?: "",
+                        it1.pId ?: "",
+                        it1.type ?: MusicType.MUSIC
+                    )
+                )
+            }
         }
         emit(list)
     }.flowOn(Dispatchers.IO)

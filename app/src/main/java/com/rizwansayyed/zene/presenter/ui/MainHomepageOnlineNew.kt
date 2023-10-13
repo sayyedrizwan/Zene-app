@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.WhiteColor
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
+import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
@@ -49,8 +50,19 @@ fun MainHomepageOnlineNew() {
         }
 
         item(span = { GridItemSpan(3) }) {
-            CurrentMostPlayingSong()
+            Column {
+                CurrentMostPlayingSong()
+                CityRadioViewList()
+            }
         }
+
+        item(span = { GridItemSpan(3) }) {
+            Column {
+                Spacer(Modifier.height(140.dp))
+            }
+        }
+
+
     }
 }
 
@@ -59,7 +71,7 @@ fun BottomNavBar(modifier: Modifier) {
     val nav: HomeNavViewModel = hiltViewModel()
     Row(
         modifier
-            .padding(bottom = 20.dp)
+            .padding(bottom = 25.dp)
             .padding(12.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(80))

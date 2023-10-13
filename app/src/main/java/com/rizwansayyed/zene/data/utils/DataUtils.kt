@@ -88,7 +88,7 @@ object YoutubeAPI {
                     "clientVersion": "1.20230918.01.00",
                     "timeZone": "${ip?.timezone}"
                 }
-            }, "query": "$q"
+            }, "query": "$q", "params": "EgWKAQIIAWoSEAMQBRAEEAkQDhAKEBAQERAV"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()

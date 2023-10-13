@@ -26,6 +26,17 @@ data class MusicData(
     var type: MusicType?,
 )
 
+data class MusicDataWithArtists(
+    val thumbnail: String?,
+    var name: String?,
+    var artists: String?,
+    var listeners: String?,
+    var artistsImg: String?,
+    var artistsName: String?,
+    var pId: String?,
+    var type: MusicType?,
+)
+
 
 data class TopSuggestMusicData(
     val cacheTime: Long,

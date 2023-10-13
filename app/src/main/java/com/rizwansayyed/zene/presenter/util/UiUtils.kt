@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
 import java.text.NumberFormat
+import java.util.Locale
 
 
 object UiUtils {
@@ -54,6 +55,17 @@ object UiUtils {
             contentType.startsWith("image/")
         } catch (e: Exception) {
             false
+        }
+    }
+
+    fun String.convertMoney(): String {
+        return try {
+            val format = NumberFormat.getNumberInstance(
+                Locale("en", "IN")
+            )
+            format.format(this.toLong())
+        } catch (e: Exception) {
+            this
         }
     }
 }

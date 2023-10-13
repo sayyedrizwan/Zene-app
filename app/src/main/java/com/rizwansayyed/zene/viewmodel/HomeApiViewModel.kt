@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioIm
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
 import com.rizwansayyed.zene.domain.lastfm.TopRecentPlaySongsResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,18 +40,19 @@ class HomeApiViewModel @Inject constructor(
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         currentMostPlayingSong()
-
-        try {
-            userIpDetails = flowOf(ip.ip().first())
-        } catch (e: Exception) {
-            e.message
+        ip.ip().catch {
+            onlineRadiosInCity()
+            globalTrendingSongs()
+            countryTrendingSongs()
+            newReleaseMusic()
+        }.collectLatest {
+            userIpDetails = flowOf(it)
+            delay(1.seconds)
+            onlineRadiosInCity()
+            globalTrendingSongs()
+            countryTrendingSongs()
+            newReleaseMusic()
         }
-
-        delay(2.seconds)
-        onlineRadiosInCity()
-        globalTrendingSongs()
-        countryTrendingSongs()
-        newReleaseMusic()
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
@@ -78,7 +80,7 @@ class HomeApiViewModel @Inject constructor(
         private set
 
 
-    var mostPlayingSong by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
+    var mostPlayingSong by mutableStateOf<DataResponse<List<MusicDataWithArtists>?>>(DataResponse.Empty)
         private set
 
 

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.domain.yt
 
+import android.util.Log
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 
@@ -48,11 +49,15 @@ data class YoutubeMusicMainSearchResponse(
                                 ) {
                                     fun getArtists(): String {
                                         val list = ArrayList<String>(10)
-                                        contents?.forEach { c ->
-                                            c?.musicResponsiveListItemRenderer?.flexColumns?.forEach { f ->
-                                                f?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { r ->
-                                                    if (r?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
-                                                        r.text?.let { list.add(it) }
+                                        contents?.first()?.musicResponsiveListItemRenderer?.flexColumns?.forEach { f ->
+                                            f?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { r ->
+                                                if (r?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
+                                                    r.text?.let {
+                                                        if (!list.any { n ->
+                                                                n.lowercase()
+                                                                    .trim() == it.lowercase()
+                                                                    .trim()
+                                                            }) list.add(it)
                                                     }
                                                 }
                                             }

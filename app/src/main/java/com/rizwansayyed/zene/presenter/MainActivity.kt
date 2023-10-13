@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTim
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.BottomNavBar
+import com.rizwansayyed.zene.presenter.ui.MainHomePageView
 import com.rizwansayyed.zene.presenter.ui.MainHomepageOnlineNew
 import com.rizwansayyed.zene.presenter.ui.home.online.SaveArtistsButton
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
@@ -58,9 +59,9 @@ class MainActivity : ComponentActivity() {
                 val doSplashScreen by doShowSplashScreen.collectAsState(initial = false)
 
                 Box(Modifier.fillMaxSize()) {
-//                    MainHomePageView(
-//                        navViewModel, roomViewModel, homeApiViewModel, jsoupScrapViewModel
-//                    )
+                    MainHomePageView(
+                        navViewModel, roomViewModel, homeApiViewModel, jsoupScrapViewModel
+                    )
 
                     MainHomepageOnlineNew()
 
