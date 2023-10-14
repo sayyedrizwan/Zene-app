@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsList
 import com.rizwansayyed.zene.data.utils.ScrapURL.TOP_ARTISTS
 import com.rizwansayyed.zene.data.utils.SearchEngine.searchEngineDataURL
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.generateYTMusicPlaylistURL
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.getInstagramUsername
 import com.rizwansayyed.zene.data.utils.moshi
@@ -58,7 +59,7 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
                 if (img.contains("fallback.gif") || img.isEmpty() || !isImagePresent(img)) {
                     img = ""
                     delay(1.seconds)
-                    val (instagram, twitter) = searchEngineData(name).first()
+                    val (instagram, _) = searchEngineData(name).first()
                     if (instagram.isNotEmpty()) {
                         val appId = remoteConfig.instagramAppID()
                         val i = instagramInfo.instagramInfo(appId, getInstagramUsername(instagram))

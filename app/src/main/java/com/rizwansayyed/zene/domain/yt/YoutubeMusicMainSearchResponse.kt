@@ -62,6 +62,20 @@ data class YoutubeMusicMainSearchResponse(
                                                 }
                                             }
                                         }
+
+                                        if (list.isEmpty()) {
+                                            contents?.first()?.musicResponsiveListItemRenderer?.flexColumns?.forEach { m ->
+                                                if ((m?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.size
+                                                        ?: 0) > 2
+                                                ) {
+                                                    m?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { txt ->
+                                                        txt?.text?.let { a ->
+                                                            if (a.lowercase().contains(" and ")) list.add(a)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                         return artistsListToString(list)
                                     }
 

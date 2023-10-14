@@ -78,6 +78,10 @@ object YoutubeAPI {
     const val YT_SUGGESTIONS_API = "music/get_search_suggestions"
     const val YT_BROWSE_API = "browse"
 
+    fun generateYTMusicPlaylistURL(pid: String): String {
+        return "https://music.youtube.com/playlist?list=$pid"
+    }
+
     fun ytMusicMainSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
             "context": {
@@ -220,6 +224,23 @@ object YoutubeAPI {
             }
         }"""
 
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicNewReleaseJsonBody(ip: IpJsonResponse?): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                     "remoteHost": "${ip?.query}",
+                     "userAgent": "$USER_AGENT", 
+                     "clientName": "WEB_REMIX",
+                     "clientVersion": "1.20231009.01.00",
+                     "timeZone": "${ip?.timezone}"
+                }
+            },
+            "browseId": "FEmusic_new_releases"
+        }"""
         val mediaType = "application/json".toMediaTypeOrNull()
         return json.toRequestBody(mediaType)
     }

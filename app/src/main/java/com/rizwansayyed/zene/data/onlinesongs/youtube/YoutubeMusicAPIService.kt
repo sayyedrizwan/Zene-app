@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.domain.yt.BrowserIdYTResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicRelatedResponse
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicReleaseResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeSearchSuggestionResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -61,5 +62,12 @@ interface YoutubeMusicAPIService {
         @Query("key") key: String,
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeMusicRelatedResponse
+
+    @POST(YT_BROWSE_API)
+    suspend fun youtubeReleaseResponse(
+        @Body body: RequestBody,
+        @Query("key") key: String,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubeMusicReleaseResponse
 
 }

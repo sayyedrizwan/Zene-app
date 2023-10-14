@@ -1,12 +1,14 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.albumsForYouCache
@@ -18,11 +20,14 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNewReleaseJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.data.utils.sortNameForSearch
+import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
@@ -30,6 +35,7 @@ import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicReleaseResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
@@ -39,116 +45,52 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class YoutubeAPIImpl @Inject constructor(
     private val youtubeAPI: YoutubeAPIService,
     private val youtubeMusicAPI: YoutubeMusicAPIService,
     private val remoteConfig: RemoteConfigInterface,
-    private val jsonScrap: TopArtistsPlaylistsScrapsInterface
+    private val jsonScrap: TopArtistsPlaylistsScrapsInterface,
+    private val ytJsonScrap: YoutubeScrapInterface
 ) : YoutubeAPIImplInterface {
 
     override suspend fun newReleaseMusic() = flow {
-        val cache = responseCache(freshAddedSongs, MusicDataCache::class.java)
-        if (cache != null) {
-            if (returnFromCache2Days(cache.cacheTime) && cache.list.isNotEmpty()) {
-                emit(cache.list)
-                return@flow
-            } else
-                emit(cache.list)
-        }
+//        val cache = responseCache(freshAddedSongs, MusicDataCache::class.java)
+//        if (cache != null) {
+//            if (returnFromCache2Days(cache.cacheTime) && cache.list.isNotEmpty()) {
+//                emit(cache.list)
+//                return@flow
+//            } else
+//                emit(cache.list)
+//        }
 
         val ip = userIpDetails.first()
         val key = remoteConfig.ytApiKeys()
 
-        var channelURL = ""
-        val musicChannelId = youtubeAPI.youtubePageResponse(ytJsonBody(ip), key?.yt ?: "")
+        val channels =
+            youtubeMusicAPI.youtubeReleaseResponse(ytMusicNewReleaseJsonBody(ip), key?.music ?: "")
 
-        musicChannelId.items?.forEach { mainItem ->
-            mainItem?.guideSectionRenderer?.items?.forEach { item ->
-                if (item?.guideEntryRenderer?.icon?.iconType?.lowercase()?.trim() == "music" &&
-                    item.guideEntryRenderer.formattedTitle?.simpleText?.lowercase()
-                        ?.trim() == "music" &&
-                    item.guideEntryRenderer.accessibility?.accessibilityData?.label?.lowercase()
-                        ?.trim() == "music"
-                ) channelURL =
-                    "https://www.youtube.com/${item.guideEntryRenderer.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url}"
-            }
-        }
-        if (channelURL.isEmpty()) return@flow
-
-        val getReleasePlaylist = jsonScrap.ytChannelJson(channelURL).first()
-
-        var pId = ""
-        getReleasePlaylist?.contents?.twoColumnBrowseResultsRenderer?.tabs?.forEach { tab ->
-            tab?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { info ->
-                info?.itemSectionRenderer?.contents?.forEach { c ->
-                    c?.shelfRenderer?.content?.horizontalListRenderer?.items?.forEach { items ->
-                        if (items?.compactStationRenderer?.title?.simpleText?.lowercase() == "released" && pId.isEmpty()) {
-                            pId = items.compactStationRenderer.navigationEndpoint?.watchEndpoint
-                                ?.playlistId ?: ""
-                        }
-                    }
+        val pList = mutableListOf<String>()
+        channels.contents?.singleColumnBrowseResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { content ->
+            content?.gridRenderer?.items?.forEach { items ->
+                items?.musicTwoRowItemRenderer?.thumbnailOverlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId?.let { pId ->
+                    pList.add(pId)
                 }
             }
         }
-
-        if (pId.isEmpty()) return@flow
-        val nameList = mutableStateListOf<String>()
-
-        val songsPlaylist =
-            jsonScrap.ytPlaylistItems("https://www.youtube.com/playlist?list=$pId").first()
-        songsPlaylist?.contents?.twoColumnBrowseResultsRenderer?.tabs?.forEach { tab ->
-            tab?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { content ->
-                content?.itemSectionRenderer?.contents?.forEach { item ->
-                    item?.playlistVideoListRenderer?.contents?.forEach { c ->
-                        c?.playlistVideoRenderer?.title?.runs?.forEachIndexed { index, txt ->
-                            if (index == 0) txt?.text?.let { nameList.add(it) }
-                        }
-                    }
-                }
-            }
-        }
-
-
         val music = mutableListOf<MusicData>()
 
-        suspend fun synList(it: String) {
-            var sortName = sortNameForSearch(it)
-            if (sortName.trim().isEmpty()) sortName = it
-
-            musicInfoSearch(sortName, ip, key?.music ?: "")?.let { m ->
-                if (!music.contains(m)) music.add(m)
+        pList.forEach {
+            ytJsonScrap.ytReleaseItems(it).first().forEach { name ->
+                val response = musicInfoSearch(name, ip, key?.music ?: "")
+                response?.let { m -> music.add(m) }
             }
         }
 
-        withContext(Dispatchers.IO) {
-            val first = async {
-                nameList.forEachIndexed { index, s ->
-                    if (index <= nameList.size / 2) synList(s)
-                }
-            }
-
-            val second = async {
-                nameList.forEachIndexed { index, s ->
-                    if (index >= nameList.size / 2) synList(s)
-                }
-            }
-            first.await()
-            second.await()
-        }
-
-        val firstHalfSize = music.size / 2
-        val topFirst = ArrayList(music.subList(0, firstHalfSize))
-        val topSecond = ArrayList(music.subList(firstHalfSize, music.size))
-        topFirst.shuffle()
-        topFirst.shuffle()
-        topSecond.shuffle()
-
-        music.clear()
-        music.addAll(topFirst)
-        music.addAll(topSecond)
         music.toTxtCache()?.let { writeToCacheFile(freshAddedSongs, it) }
+
         emit(music)
     }.flowOn(Dispatchers.IO)
 

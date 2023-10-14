@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
 import com.rizwansayyed.zene.domain.lastfm.TopRecentPlaySongsResponse
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -148,7 +150,11 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun newReleaseMusic() = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPI.newReleaseMusic().catch {}.collectLatest {
+        youtubeAPI.newReleaseMusic().catch {
+            Log.d("TAG", "newReleaseMusic:dd e ${it.message} ")
+
+            it.message?.toast()
+        }.collectLatest {
             freshAddedSongs = it
         }
     }
