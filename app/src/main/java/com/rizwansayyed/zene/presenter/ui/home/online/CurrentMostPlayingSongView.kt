@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextBoldBig
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
@@ -173,16 +174,9 @@ fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier) {
                 .padding(11.dp)
                 .align(Alignment.BottomCenter), Arrangement.Center, Alignment.CenterVertically
         ) {
-            Image(
-                painterResource(R.drawable.ic_menu),
-                "",
-                Modifier
-                    .size(25.dp)
-                    .clickable {
-                        "runnned".toast()
-                    },
-                colorFilter = ColorFilter.tint(Color.White)
-            )
+            MenuIcon {
+
+            }
             
             Spacer(Modifier.weight(1f))
 

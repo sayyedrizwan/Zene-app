@@ -70,7 +70,9 @@ data class YoutubeMusicMainSearchResponse(
                                                 ) {
                                                     m?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { txt ->
                                                         txt?.text?.let { a ->
-                                                            if (a.lowercase().contains(" and ")) list.add(a)
+                                                            if (a.lowercase().contains(" and ") ||
+                                                                a.lowercase().contains(" & ")
+                                                            ) list.add(a)
                                                         }
                                                     }
                                                 }

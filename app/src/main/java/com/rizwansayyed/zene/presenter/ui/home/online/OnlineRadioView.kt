@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
@@ -160,16 +161,9 @@ fun RadiosItems(
                 .padding(10.dp)
                 .fillMaxSize()
         ) {
-            Image(
-                painterResource(R.drawable.ic_menu), "",
-                Modifier
-                    .align(Alignment.TopStart)
-                    .size(25.dp)
-                    .clickable {
-                        "runnned".toast()
-                    },
-                colorFilter = ColorFilter.tint(Color.White)
-            )
+            MenuIcon(Modifier.align(Alignment.TopStart)) {
+
+            }
 
             Column(
                 Modifier

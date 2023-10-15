@@ -7,5 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface SpotifyAPIImplInterface {
 
     suspend fun globalTrendingSongs(): Flow<List<MusicData>>
+
     suspend fun topSongsInCountry(): Flow<List<MusicData>>
 }

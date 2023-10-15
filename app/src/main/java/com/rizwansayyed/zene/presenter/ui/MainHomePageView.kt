@@ -128,15 +128,7 @@ fun MainHomePageView(
         }
 
         if (recentPlayList.isEmpty() && selectedFavouriteArtists?.isEmpty() == true) {
-            items((jsoup.topArtistsList + home.topArtistsList)) {
-                SelectFavArtists(it, nav) {
-                    if (!nav.selectArtists.contains(it.name?.lowercase()) && nav.selectArtists.size > 6) {
-                        noMore.toast()
-                        return@SelectFavArtists
-                    }
-                    nav.selectedArtists(it.name ?: "")
-                }
-            }
+
         } else
             when (val v = room.songsYouMayLike) {
                 DataResponse.Empty -> {}

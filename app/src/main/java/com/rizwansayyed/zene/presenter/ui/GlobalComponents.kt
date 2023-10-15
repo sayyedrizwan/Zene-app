@@ -34,9 +34,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.antroFamily
 import com.rizwansayyed.zene.presenter.theme.urbanistFamily
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 
 
 @Composable
@@ -260,6 +262,18 @@ fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush
     }
 }
 
+@Composable
+fun MenuIcon(modifier: Modifier = Modifier, click: () -> Unit) {
+    Image(
+        painterResource(R.drawable.ic_menu), "",
+        modifier
+            .size(25.dp)
+            .clickable {
+                click()
+            },
+        colorFilter = ColorFilter.tint(Color.White)
+    )
+}
 
 // ---------------------- old
 @Composable

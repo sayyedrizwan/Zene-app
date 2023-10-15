@@ -42,19 +42,23 @@ class HomeApiViewModel @Inject constructor(
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         currentMostPlayingSong()
-        ip.ip().catch {
-            onlineRadiosInCity()
-            globalTrendingSongs()
-            countryTrendingSongs()
-            newReleaseMusic()
-        }.collectLatest {
-            userIpDetails = flowOf(it)
-            delay(1.seconds)
+        fun runs() {
             onlineRadiosInCity()
             globalTrendingSongs()
             countryTrendingSongs()
             newReleaseMusic()
         }
+
+        if (userIpDetails.first()?.query?.trim() == ip.awsIp().first().trim())
+            runs()
+        else
+            ip.ip().catch {
+                runs()
+            }.collectLatest {
+                userIpDetails = flowOf(it)
+                delay(1.seconds)
+                runs()
+            }
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
@@ -64,14 +68,14 @@ class HomeApiViewModel @Inject constructor(
     var topArtistsList = mutableStateListOf<MusicData>()
         private set
 
-    var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<MusicData?>>>(DataResponse.Empty)
+    var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<List<MusicData?>>>>(DataResponse.Empty)
         private set
 
     var topCountryTrendingSongs by mutableStateOf<DataResponse<List<MusicData?>>>(DataResponse.Empty)
         private set
 
 
-    var freshAddedSongs by mutableStateOf<List<MusicData?>>(emptyList())
+    var freshAddedSongs by mutableStateOf<DataResponse<List<MusicData?>>>(DataResponse.Empty)
         private set
 
     var topCountryArtists by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
@@ -102,7 +106,7 @@ class HomeApiViewModel @Inject constructor(
         }.catch {
             topGlobalTrendingSongs = DataResponse.Error(it)
         }.collectLatest {
-            topGlobalTrendingSongs = DataResponse.Success(it)
+            topGlobalTrendingSongs = DataResponse.Success(it.chunked(3))
         }
     }
 
@@ -150,12 +154,12 @@ class HomeApiViewModel @Inject constructor(
     }
 
     private fun newReleaseMusic() = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPI.newReleaseMusic().catch {
-            Log.d("TAG", "newReleaseMusic:dd e ${it.message} ")
-
-            it.message?.toast()
+        youtubeAPI.newReleaseMusic().onStart {
+            freshAddedSongs = DataResponse.Loading
+        }.catch {
+            freshAddedSongs = DataResponse.Error(it)
         }.collectLatest {
-            freshAddedSongs = it
+            freshAddedSongs = DataResponse.Success(it)
         }
     }
 

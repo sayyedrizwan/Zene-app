@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.InetAddress
-import java.time.Instant
 import java.util.Calendar
-import java.util.Date
 import kotlin.system.exitProcess
 
 
@@ -64,5 +66,27 @@ object Utils {
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun forSearchTxt(name: String): String {
+        val count = name.count { it == '|' }
+        if (count > 2) {
+            return name.substringBefore("|")
+        }
+        return name
+    }
+
+
+    fun checkAndClearCache() = CoroutineScope(Dispatchers.IO).launch {
+        var size: Long = 0
+        for (f in context.cacheDir.listFiles()!!) {
+            size += f.length()
+        }
+        val sizeInMB = size / (1024 * 1024)
+        if (sizeInMB.toInt() > 500) {
+            context.cacheDir.deleteRecursively()
+        }
+
+        if (isActive) cancel()
     }
 }

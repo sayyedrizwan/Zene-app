@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun TrendingSongsCountryList() {
     val homeViewModel: HomeApiViewModel = hiltViewModel()
-    val fullView by DataStorageManager.globalSongIsFull.collectAsState(false)
     val country by userIpDetails.collectAsState(initial = null)
 
     when (val v = homeViewModel.topCountryTrendingSongs) {
@@ -38,23 +37,11 @@ fun TrendingSongsCountryList() {
         is DataResponse.Error -> {}
         DataResponse.Loading -> {}
         is DataResponse.Success -> {
-            if (country?.city != null) if (fullView)
+            if (country?.city != null)
                 TopInfoWithImage(
-                    String.format(
-                        stringResource(id = R.string.top_songs_in_c), country?.country
-                    ), R.drawable.ic_layout_bottom
-                ) {
-                    DataStorageManager.globalSongIsFull = flowOf(false)
-                }
-            else
-                TopInfoWithImage(
-                    String.format(
-                        stringResource(id = R.string.top_songs_in_c), country?.country
-                    ), R.drawable.ic_border_all
-                ) {
-                    DataStorageManager.globalSongIsFull = flowOf(true)
-                }
-
+                    String.format(stringResource(id = R.string.top_songs_in_c), country?.country),
+                    null
+                ) {}
             LazyHorizontalGrid(
                 GridCells.Fixed(2), Modifier
                     .fillMaxWidth()

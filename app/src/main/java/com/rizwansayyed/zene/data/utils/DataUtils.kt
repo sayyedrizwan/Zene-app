@@ -33,6 +33,8 @@ object RadioOnlineAPI {
 
 
 object IpJsonAPI {
+    const val IP_AWS_BASE_URL = "https://checkip.amazonaws.com/"
+
     const val IP_BASE_URL = "http://ip-api.com/"
     const val IP_API = "json"
 }

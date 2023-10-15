@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists
 
 
+import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
@@ -51,12 +52,11 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
         jsoup.select("div.o-chart-results-list-row-container").forEach {
             var img =
                 it.selectFirst("img.c-lazy-image__img.lrv-u-background-color-grey-lightest.lrv-u-width-100p.lrv-u-display-block.lrv-u-height-auto")
-                    ?.attr("data-lazy-src")?.replace("-180x180.jpg", "-344x344.jpg")
-                    ?.replace("-87x87.jpg", "-344x344.jpg") ?: ""
+                    ?.attr("data-lazy-src") ?: ""
             val name = it.selectFirst("h3#title-of-a-story")?.text()
 
             if (name != null) {
-                if (img.contains("fallback.gif") || img.isEmpty() || !isImagePresent(img)) {
+                if (img.contains("fallback.gif") || img.isEmpty()) {
                     img = ""
                     delay(1.seconds)
                     val (instagram, _) = searchEngineData(name).first()
@@ -70,7 +70,6 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
                     list.add(MusicData(img, name, name, THE_ARTISTS, MusicType.ARTISTS))
             }
         }
-        for (i in 0 until 9) list.shuffle()
 
         list.toTxtCache()?.let { writeToCacheFile(topArtistsList, it) }
         emit(list)

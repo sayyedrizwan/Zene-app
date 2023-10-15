@@ -37,6 +37,8 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
+import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
+import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 @Composable
@@ -62,6 +64,13 @@ fun MainHomepageOnlineNew() {
             Column {
                 TopArtistsList()
                 FreshAddedSongsList()
+            }
+        }
+
+        item(span = { GridItemSpan(3) }) {
+            Column {
+                TopGlobalSongsList()
+                TrendingSongsCountryList()
             }
         }
 

@@ -1,21 +1,16 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
-
-import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
+import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
-import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.albumsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.songsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
@@ -25,9 +20,6 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.data.utils.sortNameForSearch
-import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
@@ -35,36 +27,29 @@ import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
-import com.rizwansayyed.zene.domain.yt.YoutubeMusicReleaseResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 
 class YoutubeAPIImpl @Inject constructor(
-    private val youtubeAPI: YoutubeAPIService,
     private val youtubeMusicAPI: YoutubeMusicAPIService,
     private val remoteConfig: RemoteConfigInterface,
-    private val jsonScrap: TopArtistsPlaylistsScrapsInterface,
     private val ytJsonScrap: YoutubeScrapInterface
 ) : YoutubeAPIImplInterface {
 
     override suspend fun newReleaseMusic() = flow {
-//        val cache = responseCache(freshAddedSongs, MusicDataCache::class.java)
-//        if (cache != null) {
-//            if (returnFromCache2Days(cache.cacheTime) && cache.list.isNotEmpty()) {
-//                emit(cache.list)
-//                return@flow
-//            } else
-//                emit(cache.list)
-//        }
+        val cache = responseCache(freshAddedSongs, MusicDataCache::class.java)
+        if (cache != null) {
+            if (returnFromCache1Days(cache.cacheTime) && cache.list.isNotEmpty()) {
+                emit(cache.list)
+                return@flow
+            } else
+                emit(cache.list)
+        }
 
         val ip = userIpDetails.first()
         val key = remoteConfig.ytApiKeys()

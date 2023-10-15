@@ -108,6 +108,7 @@ dependencies {
     ksp("com.squareup.moshi:moshi-kotlin-codegen:${DependenciesVersion.MOSHI.version}")
     implementation("com.squareup.moshi:moshi-kotlin:${DependenciesVersion.MOSHI.version}")
     implementation("com.squareup.retrofit2:converter-moshi:${DependenciesVersion.RETROFIT.version}")
+    implementation("com.squareup.retrofit2:converter-scalars:${DependenciesVersion.RETROFIT.version}")
 
     implementation("org.jsoup:jsoup:${DependenciesVersion.JSOUP.version}")
 

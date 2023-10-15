@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface IpJsonImplInterface {
     suspend fun ip(): Flow<IpJsonResponse>
+
+    suspend fun awsIp(): Flow<String>
 }

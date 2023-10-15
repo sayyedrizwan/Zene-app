@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 
 
@@ -40,19 +41,39 @@ fun TopArtistsList() {
     val jsoupViewModel: JsoupScrapViewModel = hiltViewModel()
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
-    if (jsoupViewModel.showGlobalArtistInfo)
-        TopInfoWithSeeMore(R.string.global_top_trending_artists, null) {}
-
     when (val v = jsoupViewModel.topArtists) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
-        DataResponse.Loading -> LoadingStateBar()
-        is DataResponse.Success -> LazyHorizontalGrid(
-            GridCells.Fixed(2), Modifier
-                .fillMaxWidth()
-                .height((screenWidth / 1.8 * 2).dp)
-        ) {
-            items(v.item) { TopArtistsItems(it, screenWidth) }
+        DataResponse.Loading -> {
+            TopInfoWithSeeMore(R.string.global_top_trending_artists, null) {}
+
+            LazyHorizontalGrid(
+                GridCells.Fixed(2), Modifier
+                    .fillMaxWidth()
+                    .height((screenWidth / 1.8 * 2).dp)
+                    .padding(4.dp)
+            ) {
+                items(40) {
+                    Spacer(
+                        Modifier
+                            .padding(4.dp)
+                            .size((screenWidth / 2).dp, (screenWidth / 2 + 90).dp)
+                            .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                    )
+                }
+            }
+        }
+
+        is DataResponse.Success -> {
+            TopInfoWithSeeMore(R.string.global_top_trending_artists, null) {}
+
+            LazyHorizontalGrid(
+                GridCells.Fixed(2), Modifier
+                    .fillMaxWidth()
+                    .height((screenWidth / 1.8 * 2).dp)
+            ) {
+                items(v.item) { TopArtistsItems(it, screenWidth) }
+            }
         }
     }
 }

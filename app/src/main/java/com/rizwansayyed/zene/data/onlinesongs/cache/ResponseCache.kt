@@ -52,6 +52,12 @@ fun returnFromCache1Hour(cacheTs: Long): Boolean {
 }
 
 
+fun returnFromCache1Days(cacheTs: Long): Boolean {
+    val min = (System.currentTimeMillis() - cacheTs) / (1000 * 60)
+    if (min > 1140) return false
+    return true
+}
+
 fun returnFromCache2Days(cacheTs: Long): Boolean {
     val min = (System.currentTimeMillis() - cacheTs) / (1000 * 60)
     if (min > 2880) return false

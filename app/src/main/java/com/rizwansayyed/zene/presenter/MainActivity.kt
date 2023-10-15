@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.SaveArtistsButton
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -59,9 +60,9 @@ class MainActivity : ComponentActivity() {
                 val doSplashScreen by doShowSplashScreen.collectAsState(initial = false)
 
                 Box(Modifier.fillMaxSize()) {
-                    MainHomePageView(
-                        navViewModel, roomViewModel, homeApiViewModel, jsoupScrapViewModel
-                    )
+//                    MainHomePageView(
+//                        navViewModel, roomViewModel, homeApiViewModel, jsoupScrapViewModel
+//                    )
 
                     MainHomepageOnlineNew()
 
@@ -95,6 +96,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        checkAndClearCache()
+
         lifecycleScope.launch {
             delay(1.seconds)
             if (timestampDifference(lastAPISyncTime.first()) >= 20) apis()
