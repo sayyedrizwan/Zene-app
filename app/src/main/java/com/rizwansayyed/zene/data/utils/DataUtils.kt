@@ -258,6 +258,7 @@ object SearchEngine {
 object CacheFiles {
     val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
+    val recentMostPlayedSongs by lazy { File(context.cacheDir, "recent-most-played-songs.txt").apply { mkdirs() } }
     val topGlobalSongs by lazy {
         File(context.cacheDir, "top-global-songs-list.txt").apply { mkdirs() }
     }

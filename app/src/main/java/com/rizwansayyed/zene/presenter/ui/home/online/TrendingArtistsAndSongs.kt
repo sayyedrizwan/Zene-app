@@ -26,7 +26,6 @@ import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import kotlinx.coroutines.flow.flowOf
 
-
 @Composable
 fun TrendingSongsCountryList() {
     val homeViewModel: HomeApiViewModel = hiltViewModel()
@@ -35,13 +34,23 @@ fun TrendingSongsCountryList() {
     when (val v = homeViewModel.topCountryTrendingSongs) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
-        DataResponse.Loading -> {}
+        DataResponse.Loading -> {
+            if (country?.city != null)
+                TopInfoWithImage(
+                    String.format(stringResource(id = R.string.top_songs_in_c), country?.country),
+                    null
+                ) {}
+        }
+
         is DataResponse.Success -> {
             if (country?.city != null)
                 TopInfoWithImage(
                     String.format(stringResource(id = R.string.top_songs_in_c), country?.country),
                     null
                 ) {}
+
+
+
             LazyHorizontalGrid(
                 GridCells.Fixed(2), Modifier
                     .fillMaxWidth()

@@ -2,13 +2,22 @@ package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
 import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
+import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
+import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Hours
+import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.data.utils.CacheFiles
+import com.rizwansayyed.zene.data.utils.CacheFiles.recentMostPlayedSongs
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
+import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.toTxtCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -22,6 +31,14 @@ class LastFMImpl @Inject constructor(
 ) : LastFMImplInterface {
 
     override suspend fun topRecentPlayingSongs() = flow {
+        val cache = responseCache(recentMostPlayedSongs, MusicDataWithArtistsCache::class.java)
+
+        if (cache != null) {
+            if (returnFromCache2Hours(cache.cacheTime) && cache.list.isNotEmpty()) {
+                emit(cache.list.toMutableList())
+                return@flow
+            }
+        }
         val list = mutableListOf<MusicDataWithArtists>()
 
         val ip = DataStorageManager.userIpDetails.first()
@@ -46,6 +63,8 @@ class LastFMImpl @Inject constructor(
                 )
             }
         }
+        list.toTxtCache()?.let { writeToCacheFile(recentMostPlayedSongs, it) }
+
         emit(list)
     }.flowOn(Dispatchers.IO)
 

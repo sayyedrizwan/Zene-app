@@ -65,3 +65,10 @@ fun returnFromCache2Days(cacheTs: Long): Boolean {
 }
 
 
+fun returnFromCache2Hours(cacheTs: Long): Boolean {
+    val min = (System.currentTimeMillis() - cacheTs) / (1000 * 60)
+    if (min > 120) return false
+    return true
+}
+
+
