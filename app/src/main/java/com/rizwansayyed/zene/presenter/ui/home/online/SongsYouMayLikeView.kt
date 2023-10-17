@@ -1,19 +1,23 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import android.app.Activity
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -25,25 +29,97 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.theme.BlackColor
+import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.PurpleGrey80
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
-import com.rizwansayyed.zene.presenter.ui.TextThinBig
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.utils.Utils.restartTheApp
+import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
+@Composable
+fun SongsYouMayLikeView() {
+    val homeViewModel: HomeApiViewModel = hiltViewModel()
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+
+    when (val v = homeViewModel.topCountryTrendingSongs) {
+        DataResponse.Empty -> {}
+        is DataResponse.Error -> {}
+        DataResponse.Loading -> {
+            TopInfoWithImage(stringResource(id = R.string.songs_you_may_like), null) {}
+
+            SongsYouMayLikeLoading(screenWidth)
+        }
+
+        is DataResponse.Success -> {
+            TopInfoWithImage(stringResource(id = R.string.songs_you_may_like), null) {}
+
+            LazyHorizontalGrid(
+                GridCells.Fixed(2), Modifier
+                    .fillMaxWidth()
+                    .height((screenWidth / 1.2 * 2).dp)
+            ) {
+                items(v.item) {
+                    SongsYouMayLikeItems(it, screenWidth)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SongsYouMayLikeItems(music: MusicData?, screenWidth: Int) {
+    Box(
+        Modifier
+            .padding(4.dp)
+            .size((screenWidth / 1.3).dp, (screenWidth / 1.2).dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(BlackColor)
+    ) {
+        AsyncImage(
+            music?.thumbnail, music?.name, Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(
+            Modifier
+                .fillMaxSize()
+                .background(MainColor.copy(0.3f))
+        )
+    }
+}
+
+@Composable
+fun SongsYouMayLikeLoading(screenWidth: Int) {
+    LazyHorizontalGrid(
+        GridCells.Fixed(2), Modifier
+            .fillMaxWidth()
+            .height((screenWidth / 1.5 * 2).dp)
+    ) {
+        items(40) {
+            Spacer(
+                Modifier
+                    .padding(4.dp)
+                    .size((screenWidth / 1.4).dp)
+                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+            )
+        }
+    }
+}
 
 @Composable
 fun SongYouMayTitle(
@@ -92,37 +168,6 @@ fun SaveArtistsButton(m: Modifier, nav: HomeNavViewModel) {
                 .padding(14.dp)
                 .fillMaxWidth(),
             true, Color.Black
-        )
-    }
-}
-
-@Composable
-fun SelectFavArtists(artists: MusicData, nav: HomeNavViewModel, click: () -> Unit) {
-    Column(
-        Modifier
-            .padding(6.dp)
-            .clickable {
-                click()
-            }) {
-        AsyncImage(
-            artists.thumbnail, artists.name,
-            Modifier
-                .fillMaxWidth()
-                .height(LocalConfiguration.current.screenWidthDp.dp / 2 - 20.dp)
-                .clip(RoundedCornerShape(50))
-                .border(
-                    if (nav.selectArtists.contains(artists.name?.lowercase())) 2.dp else 0.dp,
-                    if (nav.selectArtists.contains(artists.name?.lowercase())) Color.Red else Color.Transparent,
-                    RoundedCornerShape(50)
-                ),
-            contentScale = ContentScale.Crop
-        )
-
-        TextThinBig(
-            artists.name ?: "",
-            Modifier
-                .fillMaxWidth()
-                .padding(4.dp), true, singleLine = true
         )
     }
 }

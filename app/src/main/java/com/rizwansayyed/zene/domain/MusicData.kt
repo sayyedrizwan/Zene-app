@@ -9,7 +9,7 @@ fun List<MusicData>.toTxtCache(): String? {
 }
 
 
-fun List<MusicDataWithArtists>.toTxtCache(): String? {
+fun List<MusicDataWithArtists>.toCache(): String? {
     val r = MusicDataWithArtistsCache(System.currentTimeMillis(), this)
     return moshi.adapter(r.javaClass).toJson(r)
 }

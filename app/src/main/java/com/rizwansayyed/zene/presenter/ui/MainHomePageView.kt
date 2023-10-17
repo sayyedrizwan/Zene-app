@@ -1,9 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui
 
-import android.graphics.drawable.Animatable
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +18,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,11 +40,8 @@ import com.rizwansayyed.zene.presenter.ui.home.offline.TopBannerSuggestions
 import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
-import com.rizwansayyed.zene.presenter.ui.home.online.GlobalSongsItemsFull
-import com.rizwansayyed.zene.presenter.ui.home.online.GlobalSongsViewItems
 import com.rizwansayyed.zene.presenter.ui.home.online.LocalSongsTop
 import com.rizwansayyed.zene.presenter.ui.home.online.PlaylistList
-import com.rizwansayyed.zene.presenter.ui.home.online.SelectFavArtists
 import com.rizwansayyed.zene.presenter.ui.home.online.SongYouMayTitle
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
@@ -61,7 +50,6 @@ import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.view.OfflineDownloadHeader
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayItemsShort
 import com.rizwansayyed.zene.presenter.ui.home.view.RecentPlayList
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
@@ -136,7 +124,7 @@ fun MainHomePageView(
                 DataResponse.Loading -> item(span = { GridItemSpan(2) }) { LoadingStateBar() }
                 is DataResponse.Success -> {
                     items(v.item) {
-                        GlobalSongsViewItems(it)
+//                        GlobalSongsViewItems(it)
                     }
                 }
             }

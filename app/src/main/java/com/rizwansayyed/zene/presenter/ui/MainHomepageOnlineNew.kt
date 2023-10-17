@@ -15,34 +15,40 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
-import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.theme.WhiteColor
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
+import com.rizwansayyed.zene.presenter.ui.home.online.GlobalTrendingPagerItems
+import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeView
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
+import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 @Composable
 fun MainHomepageOnlineNew() {
+    val homeViewModel: HomeApiViewModel = hiltViewModel()
+
     LazyVerticalGrid(
         GridCells.Fixed(3),
         Modifier
@@ -73,6 +79,20 @@ fun MainHomepageOnlineNew() {
                 TrendingSongsCountryList()
             }
         }
+        when (val v = homeViewModel.topCountryTrendingSongs) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(3) }) {
+                GlobalTrendingPagerItems(it, false)
+            }
+
+            else -> {}
+        }
+
+        item(span = { GridItemSpan(3) }) {
+            Column {
+                SongsYouMayLikeView()
+            }
+        }
+
 
         item(span = { GridItemSpan(3) }) {
             Column {

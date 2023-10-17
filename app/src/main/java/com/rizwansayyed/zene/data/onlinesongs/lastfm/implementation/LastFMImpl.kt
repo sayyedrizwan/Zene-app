@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.toCache
 import com.rizwansayyed.zene.domain.toTxtCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -63,7 +64,7 @@ class LastFMImpl @Inject constructor(
                 )
             }
         }
-        list.toTxtCache()?.let { writeToCacheFile(recentMostPlayedSongs, it) }
+        list.toCache()?.let { writeToCacheFile(recentMostPlayedSongs, it) }
 
         emit(list)
     }.flowOn(Dispatchers.IO)
