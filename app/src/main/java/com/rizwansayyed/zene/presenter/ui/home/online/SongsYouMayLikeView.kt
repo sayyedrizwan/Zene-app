@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.utils.Utils.restartTheApp
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -53,10 +54,10 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun SongsYouMayLikeView() {
-    val homeViewModel: HomeApiViewModel = hiltViewModel()
+    val roomDb: RoomDbViewModel = hiltViewModel()
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
-    when (val v = homeViewModel.topCountryTrendingSongs) {
+    when (val v = roomDb.songsYouMayLike) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
@@ -66,15 +67,17 @@ fun SongsYouMayLikeView() {
         }
 
         is DataResponse.Success -> {
-            TopInfoWithImage(stringResource(id = R.string.songs_you_may_like), null) {}
+            if (v.item.isNotEmpty()) {
+                TopInfoWithImage(stringResource(id = R.string.songs_you_may_like), null) {}
 
-            LazyHorizontalGrid(
-                GridCells.Fixed(2), Modifier
-                    .fillMaxWidth()
-                    .height((screenWidth / 1.2 * 2).dp)
-            ) {
-                items(v.item) {
-                    SongsYouMayLikeItems(it, screenWidth)
+                LazyHorizontalGrid(
+                    GridCells.Fixed(2), Modifier
+                        .fillMaxWidth()
+                        .height((screenWidth / 1.2 * 2).dp)
+                ) {
+                    items(v.item) {
+                        SongsYouMayLikeItems(it, screenWidth)
+                    }
                 }
             }
         }
@@ -115,6 +118,7 @@ fun SongsYouMayLikeLoading(screenWidth: Int) {
                 Modifier
                     .padding(4.dp)
                     .size((screenWidth / 1.4).dp)
+                    .clip(RoundedCornerShape(18.dp))
                     .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
             )
         }

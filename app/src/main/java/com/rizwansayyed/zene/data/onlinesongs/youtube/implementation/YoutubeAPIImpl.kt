@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Days
@@ -359,9 +360,9 @@ class YoutubeAPIImpl @Inject constructor(
             try {
                 val l = allSongsSearch(it).first()
                 if (l.size > 5)
-                    l.addAll(list.subList(0, 5))
+                    list.addAll(l.subList(0, 5))
                 else
-                    l.addAll(list)
+                    list.addAll(l)
             } catch (e: Exception) {
                 e.message
             }
@@ -370,9 +371,8 @@ class YoutubeAPIImpl @Inject constructor(
             val tempList = list.shuffled()
             TopSuggestMusicData(System.currentTimeMillis(), artists, tempList)
                 .toTxtCache()?.let { writeToCacheFile(songsForYouCache, it) }
-
-            emit(list)
         }
+        emit(list.shuffled())
     }.flowOn(Dispatchers.IO)
 
 

@@ -56,7 +56,7 @@ class RoomDbViewModel @Inject constructor(
         if (roomDBImpl.topTenList().first().isNotEmpty())
             topTenSongsRecords()
         else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
-            selectedFavouriteArtistsSongs.first()?.toList()?.let { songYouMayLikeArtists(it) }
+            selectedFavouriteArtistsSongs.first()?.toList()?.let { songYouMayLikeArtists(it.distinct()) }
     }
 
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
@@ -116,6 +116,17 @@ class RoomDbViewModel @Inject constructor(
     }
 
 
+    private fun songYouMayLikeArtists(search: List<String>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            youtubeAPIImpl.songFromArtistsTopFive(search).onStart {
+                songsYouMayLike = DataResponse.Loading
+            }.catch {
+                songsYouMayLike = DataResponse.Error(it)
+            }.collectLatest {
+                songsYouMayLike = DataResponse.Success(it)
+            }
+        }
+
     private fun songYouMayLike(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
             youtubeAPIImpl.topFourSongsSuggestionOnHistory(list.map { i -> i.pid }).onStart {
@@ -142,15 +153,4 @@ class RoomDbViewModel @Inject constructor(
             albumsYouMayLike = DataResponse.Success(res)
         }
     }
-
-    private fun songYouMayLikeArtists(search: List<String>) =
-        viewModelScope.launch(Dispatchers.IO) {
-            youtubeAPIImpl.songFromArtistsTopFive(search).onStart {
-                songsYouMayLike = DataResponse.Loading
-            }.catch {
-                songsYouMayLike = DataResponse.Error(it)
-            }.collectLatest {
-                songsYouMayLike = DataResponse.Success(it)
-            }
-        }
 }
