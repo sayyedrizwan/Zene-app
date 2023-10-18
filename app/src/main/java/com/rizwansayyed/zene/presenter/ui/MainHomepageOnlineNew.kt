@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.GlobalTrendingPagerItems
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeView
+import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
@@ -90,6 +91,7 @@ fun MainHomepageOnlineNew() {
         item(span = { GridItemSpan(3) }) {
             Column {
                 SongsYouMayLikeView()
+                TopArtistsCountryList()
             }
         }
 
