@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,9 +26,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.presenter.theme.LightBlack
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
@@ -47,21 +44,7 @@ fun TopArtistsList() {
         DataResponse.Loading -> {
             TopInfoWithSeeMore(R.string.global_top_trending_artists, null) {}
 
-            LazyHorizontalGrid(
-                GridCells.Fixed(2), Modifier
-                    .fillMaxWidth()
-                    .height((screenWidth / 1.8 * 2).dp)
-                    .padding(4.dp)
-            ) {
-                items(40) {
-                    Spacer(
-                        Modifier
-                            .padding(4.dp)
-                            .size((screenWidth / 2).dp, (screenWidth / 2 + 90).dp)
-                            .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
-                    )
-                }
-            }
+            ArtistsLoadingCards(screenWidth)
         }
 
         is DataResponse.Success -> {
@@ -74,6 +57,25 @@ fun TopArtistsList() {
             ) {
                 items(v.item) { TopArtistsItems(it, screenWidth) }
             }
+        }
+    }
+}
+
+@Composable
+fun ArtistsLoadingCards(screenWidth: Int) {
+    LazyHorizontalGrid(
+        GridCells.Fixed(2), Modifier
+            .fillMaxWidth()
+            .height((screenWidth / 1.8 * 2).dp)
+            .padding(4.dp)
+    ) {
+        items(40) {
+            Spacer(
+                Modifier
+                    .padding(4.dp)
+                    .size((screenWidth / 2).dp, (screenWidth / 2 + 90).dp)
+                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+            )
         }
     }
 }

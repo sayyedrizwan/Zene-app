@@ -52,7 +52,7 @@ fun TopArtistsCountryList() {
                 null
             ) {}
 
-            LoadingStateBar()
+            ArtistsLoadingCards(screenWidth)
         }
 
         is DataResponse.Success -> {
