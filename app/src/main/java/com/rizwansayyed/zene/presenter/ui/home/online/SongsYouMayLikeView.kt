@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -73,7 +74,7 @@ fun SongsYouMayLikeView() {
                 LazyHorizontalGrid(
                     GridCells.Fixed(2), Modifier
                         .fillMaxWidth()
-                        .height((screenWidth / 1.2 * 2).dp)
+                        .height((screenWidth / 1.9 * 2).dp)
                 ) {
                     items(v.item) {
                         SongsYouMayLikeItems(it, screenWidth)
@@ -89,7 +90,7 @@ fun SongsYouMayLikeItems(music: MusicData?, screenWidth: Int) {
     Box(
         Modifier
             .padding(4.dp)
-            .size((screenWidth / 1.3).dp, (screenWidth / 1.2).dp)
+            .size((screenWidth / 2).dp, (screenWidth / 1.9).dp)
             .clip(RoundedCornerShape(18.dp))
             .background(BlackColor)
     ) {
@@ -103,6 +104,26 @@ fun SongsYouMayLikeItems(music: MusicData?, screenWidth: Int) {
                 .fillMaxSize()
                 .background(MainColor.copy(0.3f))
         )
+
+        Column(
+            Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+        ) {
+            TextSemiBold(
+                music?.name ?: "",
+                Modifier.padding(start = 8.dp),
+                singleLine = true, size = 15
+            )
+
+            TextThin(
+                music?.artists ?: "",
+                Modifier.padding(vertical = 3.dp, horizontal = 8.dp),
+                singleLine = true, size = 11
+            )
+
+            Spacer(Modifier.padding(5.dp))
+        }
     }
 }
 

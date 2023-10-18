@@ -359,10 +359,7 @@ class YoutubeAPIImpl @Inject constructor(
         artists.forEach {
             try {
                 val l = allSongsSearch(it).first()
-                if (l.size > 5)
-                    list.addAll(l.subList(0, 5))
-                else
-                    list.addAll(l)
+                list.addAll(l)
             } catch (e: Exception) {
                 e.message
             }
@@ -372,7 +369,7 @@ class YoutubeAPIImpl @Inject constructor(
             TopSuggestMusicData(System.currentTimeMillis(), artists, tempList)
                 .toTxtCache()?.let { writeToCacheFile(songsForYouCache, it) }
         }
-        emit(list.shuffled())
+        emit(list.shuffled().distinct())
     }.flowOn(Dispatchers.IO)
 
 

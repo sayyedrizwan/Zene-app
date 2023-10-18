@@ -107,13 +107,11 @@ fun TopArtistsItems(artists: MusicData, width: Int) {
                 )
         )
 
-
         TextSemiBold(
             artists.name ?: "",
             Modifier
                 .padding(8.dp)
                 .align(Alignment.BottomStart)
         )
-
     }
 }

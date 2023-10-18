@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,7 +75,8 @@ fun TextThin(
         fontWeight = FontWeight.Thin,
         maxLines = if (singleLine) 1 else 10,
         fontSize = size.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
+        textAlign = if (doCenter) TextAlign.Center else null,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -96,7 +98,8 @@ fun TextSemiBold(
         fontWeight = FontWeight.SemiBold,
         maxLines = if (singleLine) 1 else 10,
         fontSize = size.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
+        textAlign = if (doCenter) TextAlign.Center else null,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -117,7 +120,8 @@ fun TextBold(
         fontWeight = FontWeight.Bold,
         maxLines = if (singleLine) 1 else 10,
         fontSize = size.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
+        textAlign = if (doCenter) TextAlign.Center else null,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -162,6 +166,7 @@ fun TextLight(
         maxLines = if (singleLine) 1 else 10,
         textAlign = if (doCenter) TextAlign.Center else null,
         fontSize = size.scaledSp(),
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -184,6 +189,7 @@ fun TextMedium(
         maxLines = if (singleLine) 1 else 10,
         textAlign = if (doCenter) TextAlign.Center else null,
         fontSize = size.scaledSp(),
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -205,7 +211,8 @@ fun TextRegular(
         fontWeight = FontWeight.Normal,
         maxLines = if (singleLine) 1 else 10,
         textAlign = if (doCenter) TextAlign.Center else null,
-        fontSize = size.scaledSp()
+        fontSize = size.scaledSp(),
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -227,7 +234,8 @@ fun TextBoldBig(
         fontWeight = FontWeight.Bold,
         maxLines = if (singleLine) 1 else 10,
         fontSize = size.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
+        textAlign = if (doCenter) TextAlign.Center else null,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
