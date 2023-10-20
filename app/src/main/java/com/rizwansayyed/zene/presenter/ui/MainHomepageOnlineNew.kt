@@ -18,8 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +27,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
+import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItems
 import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
@@ -46,50 +44,52 @@ import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @Composable
 fun MainHomepageOnlineNew() {
     val homeViewModel: HomeApiViewModel = hiltViewModel()
+    val roomDbViewModel: RoomDbViewModel = hiltViewModel()
 
     LazyVerticalGrid(
-        GridCells.Fixed(3),
+        GridCells.Fixed(4),
         Modifier
             .fillMaxSize()
             .background(DarkGreyColor)
     ) {
-        item(span = { GridItemSpan(3) }) {
+        item(span = { GridItemSpan(4) }) {
             HomepageTopView()
         }
 
-        item(span = { GridItemSpan(3) }) {
+        item(span = { GridItemSpan(4) }) {
             Column {
                 CurrentMostPlayingSong()
                 CityRadioViewList()
             }
         }
 
-        item(span = { GridItemSpan(3) }) {
+        item(span = { GridItemSpan(4) }) {
             Column {
                 TopArtistsList()
                 FreshAddedSongsList()
             }
         }
 
-        item(span = { GridItemSpan(3) }) {
+        item(span = { GridItemSpan(4) }) {
             Column {
                 TopGlobalSongsList()
                 TrendingSongsCountryList()
             }
         }
         when (val v = homeViewModel.topCountryTrendingSongs) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(3) }) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(4) }) {
                 GlobalTrendingPagerItems(it, false)
             }
 
             else -> {}
         }
 
-        item(span = { GridItemSpan(3) }) {
+        item(span = { GridItemSpan(4) }) {
             Column {
                 SongsYouMayLikeView()
                 TopArtistsCountryList()
@@ -97,14 +97,22 @@ fun MainHomepageOnlineNew() {
         }
 
 
-        item(span = { GridItemSpan(3) }) {
+        item(span = { GridItemSpan(4) }) {
             Column {
                 RelatedAlbums()
             }
         }
 
+        when (val v = roomDbViewModel.albumsYouMayLike) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(2) }) {
+                AlbumsItems(it)
+            }
 
-        item(span = { GridItemSpan(3) }) {
+            else -> {}
+        }
+
+
+        item(span = { GridItemSpan(4) }) {
             Column {
                 Spacer(Modifier.height(180.dp))
             }

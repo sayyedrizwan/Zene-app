@@ -422,6 +422,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         list.shuffle()
+        list.shuffle()
 
         TopSuggestMusicData(System.currentTimeMillis(), names, list)
             .toTxtCache()?.let { writeToCacheFile(songsForYouCache, it) }
