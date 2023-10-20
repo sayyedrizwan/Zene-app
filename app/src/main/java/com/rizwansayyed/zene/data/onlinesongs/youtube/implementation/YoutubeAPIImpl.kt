@@ -371,7 +371,6 @@ class YoutubeAPIImpl @Inject constructor(
 
     override suspend fun artistsAlbumsTopFive(names: List<String>) = flow {
         val cache = responseCache(albumsForYouCache, TopSuggestMusicData::class.java)
-        Log.d("TAG", "artistsAlbumsTopFive: data ${cache?.pList} == $names")
         if (cache != null) if (cache.pList == names) {
             emit(cache.list)
             return@flow
@@ -389,7 +388,7 @@ class YoutubeAPIImpl @Inject constructor(
             r.contents?.tabbedSearchResultsRenderer?.tabs?.forEach { tabs ->
                 tabs?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
                     c?.musicShelfRenderer?.contents?.forEachIndexed { index, content ->
-                        if (index > 10) return@forEach
+                        if (index > 7) return@forEach
 
                         val thumbnail = content?.musicResponsiveListItemRenderer?.thumbnail
                             ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
