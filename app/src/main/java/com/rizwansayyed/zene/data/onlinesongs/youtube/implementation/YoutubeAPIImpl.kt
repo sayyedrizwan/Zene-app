@@ -311,11 +311,7 @@ class YoutubeAPIImpl @Inject constructor(
 
             list.add(
                 MusicData(
-                    thumbnail ?: "",
-                    name?.first,
-                    artists,
-                    name?.second,
-                    MusicType.MUSIC
+                    thumbnail ?: "", name?.first, artists, name?.second, MusicType.MUSIC
                 )
             )
         }
@@ -375,6 +371,7 @@ class YoutubeAPIImpl @Inject constructor(
 
     override suspend fun artistsAlbumsTopFive(names: List<String>) = flow {
         val cache = responseCache(albumsForYouCache, TopSuggestMusicData::class.java)
+        Log.d("TAG", "artistsAlbumsTopFive: data ${cache?.pList} == $names")
         if (cache != null) if (cache.pList == names) {
             emit(cache.list)
             return@flow
@@ -392,7 +389,7 @@ class YoutubeAPIImpl @Inject constructor(
             r.contents?.tabbedSearchResultsRenderer?.tabs?.forEach { tabs ->
                 tabs?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
                     c?.musicShelfRenderer?.contents?.forEachIndexed { index, content ->
-                        if (index > 5) return@forEach
+                        if (index > 10) return@forEach
 
                         val thumbnail = content?.musicResponsiveListItemRenderer?.thumbnail
                             ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
@@ -423,9 +420,10 @@ class YoutubeAPIImpl @Inject constructor(
 
         list.shuffle()
         list.shuffle()
+        list.shuffle()
 
         TopSuggestMusicData(System.currentTimeMillis(), names, list)
-            .toTxtCache()?.let { writeToCacheFile(songsForYouCache, it) }
+            .toTxtCache()?.let { writeToCacheFile(albumsForYouCache, it) }
 
         emit(list)
     }.flowOn(Dispatchers.IO)

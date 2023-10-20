@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -40,6 +41,7 @@ class RoomDbViewModel @Inject constructor(
             recentSixPlayedSongs()
             savedPlaylist()
             init()
+//            albumsYouMayLike(null)
 
             delay(1500)
             tempInsert()
@@ -84,13 +86,13 @@ class RoomDbViewModel @Inject constructor(
     }
 
     private fun tempInsert() = viewModelScope.launch(Dispatchers.IO) {
-//
+
 //        val insert = RecentPlayedEntity(
 //            null,
-//            "10,000 Hours",
-//            "Dan + Shay & Justin Bieber",
+//            "Afghan Jalebi (Ya Baba)",
+//            "Asrar & Akhtar Channal",
 //            3,
-//            "M6Qo43zkDeE",
+//            "NxzWKLosE7w",
 //            "https://lh3.googleusercontent.com/pGBh7nsGr5Ztbb9uW2SNHBZbGy2iFf8LlemrY4oc_CkTKSRGm5UHWuKfj11_THKqfvT8A3DoR_tUztbV_g=w847-h847-l90-rj",
 //            System.currentTimeMillis(),
 //            0,
@@ -140,9 +142,9 @@ class RoomDbViewModel @Inject constructor(
             }
         }
 
-    private fun albumsYouMayLike(list: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
+    private fun albumsYouMayLike(list: List<MusicData>?) = viewModelScope.launch(Dispatchers.IO) {
         val l = ArrayList<String>().apply {
-            addAll(list.map { it.artists ?: "" })
+            addAll(list?.map { it.artists ?: "" } ?: emptyList())
         }
         l.addAll(l.flatMap { it.split(",", "&").map { i -> i.trim() } })
 
