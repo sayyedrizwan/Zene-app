@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.PurpleGrey80
+import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
@@ -104,6 +105,10 @@ fun SongsYouMayLikeItems(music: MusicData?, screenWidth: Int) {
                 .fillMaxSize()
                 .background(MainColor.copy(0.3f))
         )
+
+        MenuIcon(Modifier.padding(5.dp).align(Alignment.TopEnd)) {
+
+        }
 
         Column(
             Modifier

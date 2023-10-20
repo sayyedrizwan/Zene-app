@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.GlobalTrendingPagerItems
+import com.rizwansayyed.zene.presenter.ui.home.online.RelatedAlbums
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeView
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
@@ -98,7 +99,14 @@ fun MainHomepageOnlineNew() {
 
         item(span = { GridItemSpan(3) }) {
             Column {
-                Spacer(Modifier.height(140.dp))
+                RelatedAlbums()
+            }
+        }
+
+
+        item(span = { GridItemSpan(3) }) {
+            Column {
+                Spacer(Modifier.height(180.dp))
             }
         }
 
