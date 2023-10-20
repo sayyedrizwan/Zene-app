@@ -195,6 +195,26 @@ object YoutubeAPI {
         return json.toRequestBody(mediaType)
     }
 
+
+    fun ytMusicUpNextJsonBody(ip: IpJsonResponse?, pId: String): RequestBody {
+        val json = """{
+            "playlistId": "RDAMVM$pId",
+            "isAudioOnly": true,
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20231016.01.00",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
     fun ytMusicBrowseSuggestJsonBody(ip: IpJsonResponse?, bId: String): RequestBody {
         val json = """{
             "context": {
@@ -258,7 +278,12 @@ object SearchEngine {
 object CacheFiles {
     val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
-    val recentMostPlayedSongs by lazy { File(context.cacheDir, "recent-most-played-songs.txt").apply { mkdirs() } }
+    val recentMostPlayedSongs by lazy {
+        File(
+            context.cacheDir,
+            "recent-most-played-songs.txt"
+        ).apply { mkdirs() }
+    }
     val topGlobalSongs by lazy {
         File(context.cacheDir, "top-global-songs-list.txt").apply { mkdirs() }
     }

@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNewReleaseJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
@@ -426,4 +427,26 @@ class YoutubeAPIImpl @Inject constructor(
 
         emit(list)
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun songsSuggestionsForUsers(pId: List<String>) = flow {
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        val list = mutableListOf<MusicData>()
+
+        pId.forEach { id ->
+            val upNextID = ""
+            val upNext =
+                youtubeMusicAPI.youtubeNextSearchResponse(ytMusicUpNextJsonBody(ip, id), key)
+
+            val related =
+                youtubeMusicAPI.youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, upNextID), key)
+
+
+        }
+
+
+        emit(list)
+    }
 }

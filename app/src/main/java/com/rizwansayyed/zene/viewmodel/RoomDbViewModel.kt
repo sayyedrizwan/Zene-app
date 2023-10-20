@@ -1,6 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,18 +9,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
-import com.rizwansayyed.zene.data.db.impl.RoomDBImpl
+import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -31,7 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class RoomDbViewModel @Inject constructor(
-    private val roomDBImpl: RoomDBImpl,
+    private val roomDBImpl: RoomDBInterface,
     private val youtubeAPIImpl: YoutubeAPIImplInterface
 ) : ViewModel() {
 
@@ -41,25 +39,28 @@ class RoomDbViewModel @Inject constructor(
             recentSixPlayedSongs()
             savedPlaylist()
             init()
-//            albumsYouMayLike(null)
+            albumsYouMayLike(null)
 
             delay(1500)
             tempInsert()
         }
     }
 
-    fun updateList(selectArtists: SnapshotStateList<String>) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateList(selectArtists: SnapshotStateList<String>) =
         viewModelScope.launch(Dispatchers.IO) {
-            selectedFavouriteArtistsSongs = flowOf(selectArtists.toTypedArray())
+            viewModelScope.launch(Dispatchers.IO) {
+                selectedFavouriteArtistsSongs = flowOf(selectArtists.toTypedArray())
+            }
+            delay(1.seconds)
+            init()
         }
-        delay(1.seconds)
-        init()
-    }
+
     fun init() = viewModelScope.launch(Dispatchers.IO) {
-        if (roomDBImpl.topTenList().first().isNotEmpty())
+        if (roomDBImpl.topTenList().first().isNotEmpty()) {
             topTenSongsRecords()
-        else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
-            selectedFavouriteArtistsSongs.first()?.toList()?.let { songYouMayLikeArtists(it.distinct()) }
+        } else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
+            selectedFavouriteArtistsSongs.first()?.toList()
+                ?.let { songYouMayLikeArtists(it.distinct()) }
     }
 
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
@@ -69,6 +70,9 @@ class RoomDbViewModel @Inject constructor(
         private set
 
     var songsYouMayLike by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
+        private set
+
+    var songsSuggestionForUsers by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
     var albumsYouMayLike by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
@@ -115,6 +119,7 @@ class RoomDbViewModel @Inject constructor(
     private fun topTenSongsRecords() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.topTenList().catch {}.collectLatest {
             songYouMayLike(it)
+            songsSuggestions(it)
         }
     }
 
@@ -156,4 +161,17 @@ class RoomDbViewModel @Inject constructor(
             albumsYouMayLike = DataResponse.Success(res)
         }
     }
+
+
+    private fun songsSuggestions(list: List<RecentPlayedEntity>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            youtubeAPIImpl.songsSuggestionsForUsers(list.map { i -> i.pid }).onStart {
+                songsSuggestionForUsers = DataResponse.Loading
+            }.catch { e ->
+                songsSuggestionForUsers = DataResponse.Error(e)
+            }.collectLatest { res ->
+                songsSuggestionForUsers = DataResponse.Success(res)
+            }
+        }
+
 }

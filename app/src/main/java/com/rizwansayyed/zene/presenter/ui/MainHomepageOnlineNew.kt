@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.GlobalTrendingPagerItems
 import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
 import com.rizwansayyed.zene.presenter.ui.home.online.MoodTopics
 import com.rizwansayyed.zene.presenter.ui.home.online.RelatedAlbums
+import com.rizwansayyed.zene.presenter.ui.home.online.SongsSuggestionsForYou
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeView
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
@@ -55,23 +56,23 @@ fun MainHomepageOnlineNew() {
     val roomDbViewModel: RoomDbViewModel = hiltViewModel()
 
     LazyVerticalGrid(
-        GridCells.Fixed(4),
+        GridCells.Fixed(12),
         Modifier
             .fillMaxSize()
             .background(DarkGreyColor)
     ) {
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(12) }) {
             HomepageTopView()
         }
 
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(12) }) {
             Column {
                 CurrentMostPlayingSong()
                 CityRadioViewList()
             }
         }
 
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(12) }) {
             Column {
                 TopArtistsList()
                 MoodTopics()
@@ -79,21 +80,21 @@ fun MainHomepageOnlineNew() {
             }
         }
 
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(12) }) {
             Column {
                 TopGlobalSongsList()
                 TrendingSongsCountryList()
             }
         }
         when (val v = homeViewModel.topCountryTrendingSongs) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(4) }) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(12) }) {
                 GlobalTrendingPagerItems(it, false)
             }
 
             else -> {}
         }
 
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(12) }) {
             Column {
                 SongsYouMayLikeView()
                 TopArtistsCountryList()
@@ -101,18 +102,18 @@ fun MainHomepageOnlineNew() {
         }
 
 
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(12) }) {
             Column {
                 RelatedAlbums()
             }
         }
 
         when (val v = roomDbViewModel.albumsYouMayLike) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(2) }) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(6) }) {
                 AlbumsItems(it)
             }
 
-            DataResponse.Loading -> items(6, span = { GridItemSpan(2) }) {
+            DataResponse.Loading -> items(6, span = { GridItemSpan(6) }) {
                 LoadingAlbumsCards()
             }
 
@@ -120,7 +121,14 @@ fun MainHomepageOnlineNew() {
         }
 
 
-        items(219, span = { GridItemSpan(2) }) {
+        item(span = { GridItemSpan(12) }) {
+            Column {
+                SongsSuggestionsForYou()
+            }
+        }
+
+
+        items(219, span = { GridItemSpan(4) }) {
             Column {
                 AsyncImage(
                     "https://lh3.googleusercontent.com/pGBh7nsGr5Ztbb9uW2SNHBZbGy2iFf8LlemrY4oc_CkTKSRGm5UHWuKfj11_THKqfvT8A3DoR_tUztbV_g=w544-h544-l90-rj",
@@ -133,7 +141,7 @@ fun MainHomepageOnlineNew() {
         }
 
 
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(12) }) {
             Column {
                 Spacer(Modifier.height(180.dp))
             }

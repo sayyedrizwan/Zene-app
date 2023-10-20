@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -17,6 +18,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 
 private val list = listOf(
     "\uD83D\uDE0A Happy",
@@ -48,6 +50,9 @@ fun MoodTopics() {
                     .clip(RoundedCornerShape(12.dp))
                     .background(MainColor)
                     .padding(vertical = 10.dp, horizontal = 22.dp)
+                    .clickable {
+                        it.substringAfter(" ").toast()
+                    }
             ) {
                 TextRegular(it, size = 14)
             }
