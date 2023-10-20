@@ -16,6 +16,7 @@
     <string name="error_loading_radio_station">Error loading radio stations near you. Try again after some times.</string>
     <string name="top_songs_in_c">Top songs in %s</string>
     <string name="fresh_added_songs">Fresh Added Songs</string>
+    <string name="mood">Mood</string>
     <string name="trending_artists_in_country">Trending Artists in %s</string>
     <string name="zene_mostly_most_played">Discover the Currently \nMost Playing Songs on Zene</string>
     <string name="listeners">Listeners</string>

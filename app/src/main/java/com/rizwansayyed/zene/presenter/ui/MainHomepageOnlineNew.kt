@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
@@ -36,6 +37,8 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.GlobalTrendingPagerItems
+import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
+import com.rizwansayyed.zene.presenter.ui.home.online.MoodTopics
 import com.rizwansayyed.zene.presenter.ui.home.online.RelatedAlbums
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeView
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
@@ -71,6 +74,7 @@ fun MainHomepageOnlineNew() {
         item(span = { GridItemSpan(4) }) {
             Column {
                 TopArtistsList()
+                MoodTopics()
                 FreshAddedSongsList()
             }
         }
@@ -108,7 +112,24 @@ fun MainHomepageOnlineNew() {
                 AlbumsItems(it)
             }
 
+            DataResponse.Loading -> items(6, span = { GridItemSpan(2) }) {
+                LoadingAlbumsCards()
+            }
+
             else -> {}
+        }
+
+
+        items(219, span = { GridItemSpan(2) }) {
+            Column {
+                AsyncImage(
+                    "https://lh3.googleusercontent.com/pGBh7nsGr5Ztbb9uW2SNHBZbGy2iFf8LlemrY4oc_CkTKSRGm5UHWuKfj11_THKqfvT8A3DoR_tUztbV_g=w544-h544-l90-rj",
+                    "",
+                    Modifier
+                        .padding(2.dp)
+                        .fillMaxWidth()
+                )
+            }
         }
 
 
@@ -155,11 +176,8 @@ fun BottomNavBar(modifier: Modifier) {
                 Spacer(Modifier.height(5.dp))
 
                 TextRegular(
-                    it.n,
-                    Modifier,
-                    if (nav.homeNav.value == it) Color.White else Color.Gray,
-                    doCenter = true,
-                    size = 10
+                    it.n, Modifier, if (nav.homeNav.value == it) Color.White else Color.Gray,
+                    doCenter = true, size = 10
                 )
             }
         }
