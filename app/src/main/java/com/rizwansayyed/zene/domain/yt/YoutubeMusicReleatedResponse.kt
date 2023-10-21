@@ -615,6 +615,7 @@ data class YTMusicResponsiveListItemRenderer(
     val thumbnail: Thumbnail?,
     val trackingParams: String?
 ) {
+
     data class FlexColumn(
         val musicResponsiveListItemFlexColumnRenderer: MusicResponsiveListItemFlexColumnRenderer?
     )

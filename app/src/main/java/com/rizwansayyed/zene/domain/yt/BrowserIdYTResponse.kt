@@ -809,6 +809,21 @@ data class PlaylistPanelVideoRenderer(
     val trackingParams: String?,
     val videoId: String?
 ) {
+    fun thumbnailURL(): String? {
+        return try {
+            thumbnail?.thumbnails?.first()?.url
+                ?.replace(
+                    "w60-h60",
+                    "w544-h544"
+                )
+                ?.replace(
+                    "w120-h120",
+                    "w544-h544"
+                )
+        } catch (e: Exception) {
+            ""
+        }
+    }
     data class LengthText(
         val accessibility: Accessibility?,
         val runs: List<Run?>?

@@ -436,14 +436,71 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<MusicData>()
 
         pId.forEach { id ->
-            val upNextID = "" //MUSIC_PAGE_TYPE_TRACK_RELATED
+            var upNextID = ""
             val upNext =
                 youtubeMusicAPI.youtubeNextSearchResponse(ytMusicUpNextJsonBody(ip, id), key)
 
-            val related =
-                youtubeMusicAPI.youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, upNextID), key)
+            upNext.contents?.singleColumnMusicWatchNextResultsRenderer?.tabbedRenderer?.watchNextTabbedResultsRenderer?.tabs?.forEach { tab ->
+                if (tab?.tabRenderer?.endpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_TRACK_RELATED")
+                    upNextID = tab.tabRenderer.endpoint.browseEndpoint.browseId ?: ""
+            }
 
+            upNext.contents?.singleColumnMusicWatchNextResultsRenderer?.tabbedRenderer?.watchNextTabbedResultsRenderer?.tabs?.forEach { tab ->
+                tab?.tabRenderer?.content?.musicQueueRenderer?.content?.playlistPanelRenderer?.contents?.forEach { content ->
+                    val name = content?.playlistPanelVideoRenderer?.title?.runs?.first()?.text
+                    val artists = mutableListOf<String>()
 
+                    content?.playlistPanelVideoRenderer?.longBylineText?.runs?.forEach { a ->
+                        if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
+                            a.text?.let { artists.add(it) }
+                    }
+
+                    val thumbnail = content?.playlistPanelVideoRenderer?.thumbnailURL()
+                    val pID = content?.playlistPanelVideoRenderer?.videoId ?: ""
+
+                    val music = MusicData(
+                        thumbnail, name, artistsListToString(artists), pID, MusicType.MUSIC
+                    )
+                    if (!list.any { it.pId == pID }) list.add(music)
+                }
+            }
+
+            val related = youtubeMusicAPI
+                .youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, upNextID), key)
+
+            related.contents?.sectionListRenderer?.contents?.forEach { c ->
+                if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.first()?.text?.lowercase() == "you might also like") {
+                    var name: String? = ""
+                    val artists = mutableListOf<String>()
+
+                    c.musicCarouselShelfRenderer.contents?.forEach { content ->
+                        content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { item ->
+                            item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
+                                if (n?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV")
+                                    name = n.text
+                            }
+
+                            item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
+                                if (n?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
+                                    n.text?.let { artists.add(it) }
+                            }
+
+                            val thumbnail =
+                                content.musicResponsiveListItemRenderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                            val pID =
+                                content.musicResponsiveListItemRenderer.playlistItemData?.videoId
+                                    ?: ""
+
+                            name?.let { n ->
+                                val music = MusicData(
+                                    thumbnail, n, artistsListToString(artists), pID, MusicType.MUSIC
+                                )
+                                if (!list.any { it.pId == pID }) list.add(music)
+                            }
+                        }
+                    }
+                }
+            }
         }
 
 

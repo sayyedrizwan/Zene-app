@@ -127,19 +127,27 @@ fun MainHomepageOnlineNew() {
             }
         }
 
+        when (val v = roomDbViewModel.songsSuggestionForUsers) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(4) }) {
+                Column {
+                    AsyncImage(
+                        it.thumbnail,
+                        it.name,
+                        Modifier
+                            .padding(2.dp)
+                            .fillMaxWidth()
+                    )
 
-        items(219, span = { GridItemSpan(4) }) {
-            Column {
-                AsyncImage(
-                    "https://lh3.googleusercontent.com/pGBh7nsGr5Ztbb9uW2SNHBZbGy2iFf8LlemrY4oc_CkTKSRGm5UHWuKfj11_THKqfvT8A3DoR_tUztbV_g=w544-h544-l90-rj",
-                    "",
-                    Modifier
-                        .padding(2.dp)
-                        .fillMaxWidth()
-                )
+                    TextThin(it.name ?: "")
+                }
             }
-        }
 
+            DataResponse.Loading -> items(6, span = { GridItemSpan(6) }) {
+                LoadingAlbumsCards()
+            }
+
+            else -> {}
+        }
 
         item(span = { GridItemSpan(12) }) {
             Column {
