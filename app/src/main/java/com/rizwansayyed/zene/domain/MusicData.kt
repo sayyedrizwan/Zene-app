@@ -19,6 +19,10 @@ fun TopSuggestMusicData.toTxtCache(): String? {
     return moshi.adapter(TopSuggestMusicData::class.java).toJson(this)
 }
 
+fun SongsSuggestionsData.toTxtCache(): String? {
+    return moshi.adapter(SongsSuggestionsData::class.java).toJson(this)
+}
+
 data class MusicDataCache(
     val cacheTime: Long,
     val list: List<MusicData>
@@ -57,7 +61,10 @@ data class TopSuggestMusicData(
 )
 
 data class SongsSuggestionsData(
-    val next: List<MusicData>, val related: List<MusicData>, val artists: List<MusicData>,
+    val cacheSId: List<String>,
+    val next: List<MusicData>,
+    val related: List<MusicData>,
+    val artists: List<MusicData>,
 )
 
 enum class MusicType {

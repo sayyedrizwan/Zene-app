@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -184,6 +185,7 @@ class RoomDbViewModel @Inject constructor(
                 artistsSuggestionForUsers = DataResponse.Error(e)
                 songsSuggestionForUsers = DataResponse.Error(e)
             }.collectLatest { res ->
+                Log.d("TAG", "songsSuggestions: data ${res.artists.size}")
                 artistsSuggestionForUsers = DataResponse.Success(res.artists)
 
                 if (res.related.size <= 15 || (res.next.size + res.related.size) <= 15) {

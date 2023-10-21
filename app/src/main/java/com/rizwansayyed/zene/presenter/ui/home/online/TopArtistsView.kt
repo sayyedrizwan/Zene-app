@@ -74,7 +74,7 @@ fun ArtistsLoadingCards(screenWidth: Int) {
                 Modifier
                     .padding(4.dp)
                     .size((screenWidth / 2).dp, (screenWidth / 2 + 90).dp)
-                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                    .background(shimmerBrush())
             )
         }
     }

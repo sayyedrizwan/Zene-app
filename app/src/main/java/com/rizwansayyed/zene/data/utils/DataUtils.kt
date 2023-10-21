@@ -304,6 +304,9 @@ object CacheFiles {
     val albumsForYouCache by lazy {
         File(context.cacheDir, "albums-for-you-cache.txt").apply { mkdirs() }
     }
+    val suggestionYouMayLikeCache by lazy {
+        File(context.cacheDir, "suggestion-you-may-like-cache.txt").apply { mkdirs() }
+    }
 }
 
 object ScrapURL {

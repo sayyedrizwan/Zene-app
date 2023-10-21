@@ -104,7 +104,7 @@ fun MostPlayedSongsLoading() {
                     .width((LocalConfiguration.current.screenWidthDp / 1.7).dp)
                     .height((LocalConfiguration.current.screenWidthDp / 1.2).dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                    .background(shimmerBrush())
             ) {}
         }
     }

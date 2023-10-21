@@ -133,7 +133,7 @@ fun RadioItemLoading() {
                     .width((LocalConfiguration.current.screenWidthDp - 80).dp)
                     .height((LocalConfiguration.current.screenWidthDp).dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                    .background(shimmerBrush())
             ) {}
         }
     }

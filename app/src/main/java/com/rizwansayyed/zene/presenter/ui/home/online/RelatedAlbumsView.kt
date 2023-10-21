@@ -51,7 +51,7 @@ fun LoadingAlbumsCards() {
                 .padding(5.dp)
                 .fillMaxWidth()
                 .height(190.dp)
-                .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                .background(shimmerBrush())
         )
 
         Spacer(Modifier.height(3.dp))
@@ -60,7 +60,7 @@ fun LoadingAlbumsCards() {
             Modifier
                 .padding(5.dp)
                 .size(24.dp, 6.dp)
-                .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                .background(shimmerBrush())
         )
 
         Spacer(Modifier.height(8.dp))

@@ -145,7 +145,7 @@ fun SongsYouMayLikeLoading(screenWidth: Int) {
                     .padding(4.dp)
                     .size((screenWidth / 1.4).dp)
                     .clip(RoundedCornerShape(18.dp))
-                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                    .background(shimmerBrush())
             )
         }
     }

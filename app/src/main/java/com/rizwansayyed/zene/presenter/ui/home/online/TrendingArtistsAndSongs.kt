@@ -50,7 +50,7 @@ fun TrendingSongsCountryList() {
                         .padding(vertical = 8.dp, horizontal = 7.dp)
                         .fillMaxWidth().height(130.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                        .background(shimmerBrush())
                         .padding(5.dp)
                 )
             }

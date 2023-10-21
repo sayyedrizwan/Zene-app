@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.albumsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.songsForYouCache
+import com.rizwansayyed.zene.data.utils.CacheFiles.suggestionYouMayLikeCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
@@ -438,7 +439,13 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun songsSuggestionsForUsers(pId: List<String>) = flow {
+    override suspend fun songsSuggestionsForUsers(sId: List<String>) = flow {
+        val cache = responseCache(suggestionYouMayLikeCache, SongsSuggestionsData::class.java)
+        if (cache != null) if (cache.cacheSId == sId) {
+            emit(cache)
+            return@flow
+        }
+
         val ip = userIpDetails.first()
         val key = remoteConfig.ytApiKeys()?.music ?: ""
 
@@ -446,7 +453,7 @@ class YoutubeAPIImpl @Inject constructor(
         val relatedList = mutableListOf<MusicData>()
         val artist = mutableListOf<MusicData>()
 
-        pId.forEach { id ->
+        sId.forEach { id ->
             if (id.trim().isEmpty()) return@forEach
 
             var upNextID = ""
@@ -521,7 +528,7 @@ class YoutubeAPIImpl @Inject constructor(
                         var name: String? = ""
                         var id: String? = ""
                         content?.musicTwoRowItemRenderer?.title?.runs?.forEach { a ->
-                            if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "music_page_type_artist") {
+                            if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
                                 name = a.text
                                 id = a.navigationEndpoint.browseEndpoint.browseId
                             }
@@ -537,7 +544,13 @@ class YoutubeAPIImpl @Inject constructor(
             }
         }
 
+        (1..4).forEach { _ ->
+            artist.shuffle()
+        }
 
-        emit(SongsSuggestionsData(upNextList, relatedList, artist))
+        val d = SongsSuggestionsData(sId, upNextList, relatedList, artist)
+        d.toTxtCache()?.let { writeToCacheFile(suggestionYouMayLikeCache, it) }
+
+        emit(d)
     }
 }

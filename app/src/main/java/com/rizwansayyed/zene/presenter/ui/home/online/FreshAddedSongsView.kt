@@ -57,7 +57,7 @@ fun FreshAddedSongsList() {
                 Modifier
                     .fillMaxWidth()
                     .height(LocalConfiguration.current.screenWidthDp.dp / 2)
-                    .background(shimmerBrush(targetValue = 2300f, showShimmer = true))
+                    .background(shimmerBrush())
             )
         }
 
