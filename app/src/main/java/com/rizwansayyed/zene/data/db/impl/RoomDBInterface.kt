@@ -18,6 +18,5 @@ interface RoomDBInterface {
     suspend fun savedPlaylists(): Flow<Flow<List<SavedPlaylistEntity>>>
 
     suspend fun insert(v: SavedPlaylistEntity): Flow<Unit>
-
-    suspend fun topTwentyList(): Flow<List<RecentPlayedEntity>>
+    suspend fun readRecentPlay(set: Int): Flow<List<RecentPlayedEntity>>
 }

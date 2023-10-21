@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItems
+import com.rizwansayyed.zene.presenter.ui.home.online.ArtistsYouMayLikeWithSongs
 import com.rizwansayyed.zene.presenter.ui.home.online.CityRadioViewList
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
@@ -129,6 +130,11 @@ fun MainHomepageOnlineNew() {
             Column {
                 SongsSuggestionsForYou()
                 SimilarArtists()
+            }
+        }
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
+                ArtistsYouMayLikeWithSongs()
             }
         }
 

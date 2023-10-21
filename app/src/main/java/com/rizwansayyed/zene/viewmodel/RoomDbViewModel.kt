@@ -59,11 +59,18 @@ class RoomDbViewModel @Inject constructor(
         }
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
-        if (roomDBImpl.topTwentyList().first().isNotEmpty()) {
+        if (roomDBImpl.readRecentPlay(2).first().isNotEmpty()) {
             topTwentySongsRecords()
+            artistsFansRead()
         } else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
-            selectedFavouriteArtistsSongs.first()?.toList()
-                ?.let { songYouMayLikeArtists(it.distinct()) }
+            selectedFavouriteArtistsSongs.first()?.toList()?.let {
+                songYouMayLikeArtists(it.distinct())
+
+                if (it.distinct().size > 14)
+                    artistsFans(it.distinct().subList(0, 14))
+                else
+                    artistsFans(it.distinct())
+            }
     }
 
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
@@ -128,7 +135,7 @@ class RoomDbViewModel @Inject constructor(
     }
 
     private fun topTwentySongsRecords() = viewModelScope.launch(Dispatchers.IO) {
-        roomDBImpl.topTwentyList().catch {}.collectLatest {
+        roomDBImpl.readRecentPlay(20).catch {}.collectLatest {
             songYouMayLike(it)
             songsSuggestions(it)
         }
@@ -159,11 +166,12 @@ class RoomDbViewModel @Inject constructor(
         }
 
     private fun albumsYouMayLike(list: List<MusicData>?) = viewModelScope.launch(Dispatchers.IO) {
-        val l = ArrayList<String>().apply {
-            addAll(list?.map { it.artists ?: "" } ?: emptyList())
+        val l = mutableListOf<String>()
+        list?.forEach { a ->
+            a.artists?.split(",", "&")?.forEach { n ->
+                l.add(n.trim())
+            }
         }
-        l.addAll(l.flatMap { it.split(",", "&").map { i -> i.trim() } })
-
         youtubeAPIImpl.artistsAlbumsTopFive(l.toHashSet().toList()).onStart {
             albumsYouMayLike = DataResponse.Loading
         }.catch { e ->
@@ -184,8 +192,8 @@ class RoomDbViewModel @Inject constructor(
             }.catch { e ->
                 artistsSuggestionForUsers = DataResponse.Error(e)
                 songsSuggestionForUsers = DataResponse.Error(e)
+                songsSuggestionForUsersTop = DataResponse.Error(e)
             }.collectLatest { res ->
-                Log.d("TAG", "songsSuggestions: data ${res.artists.size}")
                 artistsSuggestionForUsers = DataResponse.Success(res.artists)
 
                 if (res.related.size <= 15 || (res.next.size + res.related.size) <= 15) {
@@ -201,4 +209,20 @@ class RoomDbViewModel @Inject constructor(
             }
         }
 
+    private fun artistsFansRead() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.readRecentPlay(14).catch { }.collectLatest {
+            val l = mutableListOf<String>()
+            it.forEach { a ->
+                a.artists.split(",", "&").forEach { n ->
+                    l.add(n.trim())
+                }
+            }
+            artistsFans(l)
+        }
+    }
+
+
+    private fun artistsFans(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
+        Log.d("TAG", "artistsFans: get the lists of artists $list")
+    }
 }
