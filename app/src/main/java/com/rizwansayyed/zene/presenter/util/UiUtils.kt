@@ -19,6 +19,12 @@ import java.util.Locale
 
 object UiUtils {
 
+    object GridSpan {
+        const val TOTAL_ITEMS_GRID = 12
+        const val TWO_ITEMS_GRID = TOTAL_ITEMS_GRID / 2
+        const val THREE_ITEMS_GRID = TOTAL_ITEMS_GRID / 3
+    }
+
     object ContentTypes {
         const val THE_ARTISTS = "songs_artists"
     }

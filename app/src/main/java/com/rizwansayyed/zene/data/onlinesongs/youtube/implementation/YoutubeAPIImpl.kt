@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
@@ -211,7 +212,7 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun topFourSongsSuggestionOnHistory(pIds: List<String>) = flow {
+    override suspend fun topThreeSongsSuggestionOnHistory(pIds: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
         if (cache != null) if (cache.pList == pIds) {
             emit(cache.list)
@@ -224,6 +225,8 @@ class YoutubeAPIImpl @Inject constructor(
         val key = remoteConfig.ytApiKeys()?.music ?: ""
 
         pIds.forEach { id ->
+            if (id.trim().isEmpty()) return@forEach
+
             val r =
                 youtubeMusicAPI.youtubeNextSearchResponse(ytMusicNextJsonBody(ip, id), key)
             val browserId = r.browseID() ?: return@forEach
@@ -234,7 +237,7 @@ class YoutubeAPIImpl @Inject constructor(
             songsList.contents?.sectionListRenderer?.contents?.forEach { c ->
                 if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.accessibilityData?.accessibilityData?.label?.lowercase() == "you might also like") {
                     c.musicCarouselShelfRenderer.contents?.forEachIndexed { index, content ->
-                        if (index > 4) return@forEachIndexed
+                        if (index > 3) return@forEachIndexed
 
                         val thumbnail =
                             content?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
@@ -276,6 +279,11 @@ class YoutubeAPIImpl @Inject constructor(
 
     override suspend fun searchSuggestions(s: String) = flow {
         val list = mutableListOf<String>()
+
+        if (s.trim().isEmpty()) {
+            emit(list)
+            return@flow
+        }
         val ip = userIpDetails.first()
         val key = remoteConfig.ytApiKeys()?.music ?: ""
 
@@ -383,6 +391,8 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<MusicData>()
 
         names.forEach {
+            if (it.trim().isEmpty()) return@forEach
+
             val r = youtubeMusicAPI
                 .youtubeSearchAllSongsResponse(ytMusicArtistsAlbumsJsonBody(ip, it), key)
 
@@ -390,7 +400,6 @@ class YoutubeAPIImpl @Inject constructor(
                 tabs?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
                     c?.musicShelfRenderer?.contents?.forEachIndexed { index, content ->
                         if (index > 2) return@forEach
-
                         val thumbnail = content?.musicResponsiveListItemRenderer?.thumbnail
                             ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
@@ -433,9 +442,13 @@ class YoutubeAPIImpl @Inject constructor(
         val ip = userIpDetails.first()
         val key = remoteConfig.ytApiKeys()?.music ?: ""
 
-        val list = mutableListOf<MusicData>()
+        val upNextList = mutableListOf<MusicData>()
+        val relatedList = mutableListOf<MusicData>()
+        val artist = mutableListOf<MusicData>()
 
         pId.forEach { id ->
+            if (id.trim().isEmpty()) return@forEach
+
             var upNextID = ""
             val upNext =
                 youtubeMusicAPI.youtubeNextSearchResponse(ytMusicUpNextJsonBody(ip, id), key)
@@ -461,7 +474,8 @@ class YoutubeAPIImpl @Inject constructor(
                     val music = MusicData(
                         thumbnail, name, artistsListToString(artists), pID, MusicType.MUSIC
                     )
-                    if (!list.any { it.pId == pID }) list.add(music)
+                    if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
+                        upNextList.add(music)
                 }
             }
 
@@ -495,15 +509,35 @@ class YoutubeAPIImpl @Inject constructor(
                                 val music = MusicData(
                                     thumbnail, n, artistsListToString(artists), pID, MusicType.MUSIC
                                 )
-                                if (!list.any { it.pId == pID }) list.add(music)
+                                if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
+                                    relatedList.add(music)
                             }
                         }
+                    }
+                } else if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.first()?.text?.lowercase() == "similar artists") {
+                    c.musicCarouselShelfRenderer.contents?.forEach { content ->
+                        val thumbnail =
+                            content?.musicTwoRowItemRenderer?.thumbnailRenderer?.musicThumbnailRenderer?.thumbnailURL()
+                        var name: String? = ""
+                        var id: String? = ""
+                        content?.musicTwoRowItemRenderer?.title?.runs?.forEach { a ->
+                            if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "music_page_type_artist") {
+                                name = a.text
+                                id = a.navigationEndpoint.browseEndpoint.browseId
+                            }
+                        }
+
+                        val music = MusicData(
+                            thumbnail, name, name, id, MusicType.ARTISTS
+                        )
+                        if (!artist.any { it.name?.lowercase() == name?.lowercase() })
+                            artist.add(music)
                     }
                 }
             }
         }
 
 
-        emit(list)
+        emit(SongsSuggestionsData(upNextList, relatedList, artist))
     }
 }

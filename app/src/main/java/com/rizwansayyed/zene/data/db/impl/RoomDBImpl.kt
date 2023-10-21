@@ -21,8 +21,8 @@ class RoomDBImpl @Inject constructor(
         emit(recentPlayed.recentList())
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun topTenList() = flow {
-        emit(recentPlayed.topTenList())
+    override suspend fun topTwentyList() = flow {
+        emit(recentPlayed.topTwentyList())
     }.flowOn(Dispatchers.IO)
 
 

@@ -38,7 +38,6 @@ data class MusicDataWithArtistsCache(
 )
 
 
-
 data class MusicDataWithArtists(
     val thumbnail: String?,
     var name: String?,
@@ -55,6 +54,10 @@ data class TopSuggestMusicData(
     val cacheTime: Long,
     val pList: List<String>,
     val list: List<MusicData>
+)
+
+data class SongsSuggestionsData(
+    val next: List<MusicData>, val related: List<MusicData>, val artists: List<MusicData>,
 )
 
 enum class MusicType {

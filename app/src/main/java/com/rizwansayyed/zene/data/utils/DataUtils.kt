@@ -161,10 +161,12 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "1.20231016.01.00",
                     "timeZone": "${ip?.timezone}"
                 }
-            }, "query": "$q", "params": "EgWKAQIYAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
+            }, 
+            "query": "$q", 
+            "params": "EgWKAQIYAWoSEAMQCRAOEAoQBBAFEBEQFRAQ"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -338,6 +340,6 @@ fun sortNameForSearch(q: String): String {
 }
 
 const val USER_AGENT =
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36,gzip(gfe)"
 
 val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()

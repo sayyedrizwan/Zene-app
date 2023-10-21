@@ -46,6 +46,9 @@ import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
+import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.THREE_ITEMS_GRID
+import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
+import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
@@ -56,23 +59,23 @@ fun MainHomepageOnlineNew() {
     val roomDbViewModel: RoomDbViewModel = hiltViewModel()
 
     LazyVerticalGrid(
-        GridCells.Fixed(12),
+        GridCells.Fixed(TOTAL_ITEMS_GRID),
         Modifier
             .fillMaxSize()
             .background(DarkGreyColor)
     ) {
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             HomepageTopView()
         }
 
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 CurrentMostPlayingSong()
                 CityRadioViewList()
             }
         }
 
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TopArtistsList()
                 MoodTopics()
@@ -80,21 +83,21 @@ fun MainHomepageOnlineNew() {
             }
         }
 
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TopGlobalSongsList()
                 TrendingSongsCountryList()
             }
         }
         when (val v = homeViewModel.topCountryTrendingSongs) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(12) }) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
                 GlobalTrendingPagerItems(it, false)
             }
 
             else -> {}
         }
 
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 SongsYouMayLikeView()
                 TopArtistsCountryList()
@@ -102,18 +105,18 @@ fun MainHomepageOnlineNew() {
         }
 
 
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 RelatedAlbums()
             }
         }
 
         when (val v = roomDbViewModel.albumsYouMayLike) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(6) }) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 AlbumsItems(it)
             }
 
-            DataResponse.Loading -> items(6, span = { GridItemSpan(6) }) {
+            DataResponse.Loading -> items(6, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 LoadingAlbumsCards()
             }
 
@@ -121,35 +124,35 @@ fun MainHomepageOnlineNew() {
         }
 
 
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 SongsSuggestionsForYou()
             }
         }
 
-        when (val v = roomDbViewModel.songsSuggestionForUsers) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(4) }) {
-                Column {
-                    AsyncImage(
-                        it.thumbnail,
-                        it.name,
-                        Modifier
-                            .padding(2.dp)
-                            .fillMaxWidth()
-                    )
+//        when (val v = roomDbViewModel.songsSuggestionForUsers) {
+//            is DataResponse.Success -> items(v.item, span = { GridItemSpan(THREE_ITEMS_GRID) }) {
+//                Column {
+//                    AsyncImage(
+//                        it.thumbnail,
+//                        it.name,
+//                        Modifier
+//                            .padding(2.dp)
+//                            .fillMaxWidth()
+//                    )
+//
+//                    TextThin(it.name ?: "")
+//                }
+//            }
+//
+//            DataResponse.Loading -> items(6, span = { GridItemSpan(THREE_ITEMS_GRID) }) {
+//                LoadingAlbumsCards()
+//            }
+//
+//            else -> {}
+//        }
 
-                    TextThin(it.name ?: "")
-                }
-            }
-
-            DataResponse.Loading -> items(6, span = { GridItemSpan(6) }) {
-                LoadingAlbumsCards()
-            }
-
-            else -> {}
-        }
-
-        item(span = { GridItemSpan(12) }) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 Spacer(Modifier.height(180.dp))
             }

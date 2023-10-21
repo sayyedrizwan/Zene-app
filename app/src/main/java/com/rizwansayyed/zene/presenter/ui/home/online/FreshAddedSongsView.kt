@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -102,12 +103,16 @@ fun FreshAddedSongsList() {
 
 @Composable
 fun FreshAddedItems(music: MusicData) {
+    val roomDbViewModel : RoomDbViewModel = hiltViewModel()
     Row(
         Modifier
             .padding(horizontal = 5.dp)
             .fillMaxWidth()
     ) {
-        Column(Modifier.weight(1f).height(LocalConfiguration.current.screenWidthDp.dp / 2)) {
+        Column(
+            Modifier
+                .weight(1f)
+                .height(LocalConfiguration.current.screenWidthDp.dp / 2)) {
             TextSemiBold(
                 music.name ?: "",
                 Modifier.fillMaxWidth(),
@@ -121,7 +126,7 @@ fun FreshAddedItems(music: MusicData) {
             Spacer(Modifier.weight(1f))
 
             MenuIcon {
-
+                roomDbViewModel.tempInsert(music)
             }
         }
 

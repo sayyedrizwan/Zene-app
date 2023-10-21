@@ -519,9 +519,25 @@ data class MusicTwoRowItemRenderer(
             val thumbnailScale: String?,
             val trackingParams: String?
         ) {
+            fun thumbnailURL(): String? {
+                return try {
+                    thumbnail?.thumbnails?.first()?.url
+                        ?.replace(
+                            "w60-h60",
+                            "w544-h544"
+                        )
+                        ?.replace(
+                            "w120-h120",
+                            "w544-h544"
+                        )
+                } catch (e: Exception) {
+                    ""
+                }
+            }
             data class Thumbnail(
                 val thumbnails: List<Thumbnail?>?
             ) {
+
                 data class Thumbnail(
                     val height: Int?,
                     val url: String?,

@@ -14,11 +14,13 @@ import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -42,7 +44,7 @@ class RoomDbViewModel @Inject constructor(
             albumsYouMayLike(null)
 
             delay(1500)
-            tempInsert()
+//            tempInsert()
         }
     }
 
@@ -56,8 +58,8 @@ class RoomDbViewModel @Inject constructor(
         }
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
-        if (roomDBImpl.topTenList().first().isNotEmpty()) {
-            topTenSongsRecords()
+        if (roomDBImpl.topTwentyList().first().isNotEmpty()) {
+            topTwentySongsRecords()
         } else if (selectedFavouriteArtistsSongs.first()?.isNotEmpty() == true)
             selectedFavouriteArtistsSongs.first()?.toList()
                 ?.let { songYouMayLikeArtists(it.distinct()) }
@@ -75,6 +77,14 @@ class RoomDbViewModel @Inject constructor(
     var songsSuggestionForUsers by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
+    var songsSuggestionForUsersTop by mutableStateOf<DataResponse<List<List<MusicData>>>>(
+        DataResponse.Empty
+    )
+        private set
+
+    var artistsSuggestionForUsers by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
+        private set
+
     var albumsYouMayLike by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
@@ -89,21 +99,21 @@ class RoomDbViewModel @Inject constructor(
         }
     }
 
-    private fun tempInsert() = viewModelScope.launch(Dispatchers.IO) {
+    fun tempInsert(musicData: MusicData) = viewModelScope.launch(Dispatchers.IO) {
+        return@launch
+        val insert = RecentPlayedEntity(
+            null,
+            musicData.name ?: "",
+            musicData.artists ?: "",
+            (4..10).random(),
+            musicData.pId ?: "",
+            musicData.thumbnail ?: "",
+            System.currentTimeMillis(),
+            0,
+            0
+        )
 
-//        val insert = RecentPlayedEntity(
-//            null,
-//            "Afghan Jalebi (Ya Baba)",
-//            "Asrar & Akhtar Channal",
-//            3,
-//            "NxzWKLosE7w",
-//            "https://lh3.googleusercontent.com/pGBh7nsGr5Ztbb9uW2SNHBZbGy2iFf8LlemrY4oc_CkTKSRGm5UHWuKfj11_THKqfvT8A3DoR_tUztbV_g=w847-h847-l90-rj",
-//            System.currentTimeMillis(),
-//            0,
-//            0
-//        )
-//
-//        roomDBImpl.insert(insert).collect()
+        roomDBImpl.insert(insert).collect()
     }
 
     private fun savedPlaylist() = viewModelScope.launch(Dispatchers.IO) {
@@ -116,8 +126,8 @@ class RoomDbViewModel @Inject constructor(
         }
     }
 
-    private fun topTenSongsRecords() = viewModelScope.launch(Dispatchers.IO) {
-        roomDBImpl.topTenList().catch {}.collectLatest {
+    private fun topTwentySongsRecords() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.topTwentyList().catch {}.collectLatest {
             songYouMayLike(it)
             songsSuggestions(it)
         }
@@ -137,7 +147,7 @@ class RoomDbViewModel @Inject constructor(
 
     private fun songYouMayLike(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
-            youtubeAPIImpl.topFourSongsSuggestionOnHistory(list.map { i -> i.pid }).onStart {
+            youtubeAPIImpl.topThreeSongsSuggestionOnHistory(list.map { i -> i.pid }).onStart {
                 songsYouMayLike = DataResponse.Loading
             }.catch { e ->
                 songsYouMayLike = DataResponse.Error(e)
@@ -156,6 +166,7 @@ class RoomDbViewModel @Inject constructor(
         youtubeAPIImpl.artistsAlbumsTopFive(l.toHashSet().toList()).onStart {
             albumsYouMayLike = DataResponse.Loading
         }.catch { e ->
+            e.message?.toast()
             albumsYouMayLike = DataResponse.Error(e)
         }.collectLatest { res ->
             albumsYouMayLike = DataResponse.Success(res)
@@ -166,11 +177,25 @@ class RoomDbViewModel @Inject constructor(
     private fun songsSuggestions(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
             youtubeAPIImpl.songsSuggestionsForUsers(list.map { i -> i.pid }).onStart {
+                artistsSuggestionForUsers = DataResponse.Loading
+                songsSuggestionForUsersTop = DataResponse.Loading
                 songsSuggestionForUsers = DataResponse.Loading
             }.catch { e ->
+                artistsSuggestionForUsers = DataResponse.Error(e)
                 songsSuggestionForUsers = DataResponse.Error(e)
             }.collectLatest { res ->
-                songsSuggestionForUsers = DataResponse.Success(res)
+                artistsSuggestionForUsers = DataResponse.Success(res.artists)
+
+                if (res.related.size <= 15 || (res.next.size + res.related.size) <= 15) {
+                    songsSuggestionForUsersTop =
+                        DataResponse.Success((res.next + res.related).chunked(3))
+                } else {
+                    songsSuggestionForUsersTop =
+                        DataResponse.Success(res.related.subList(0, 15).chunked(3))
+                    val wholeList = res.related.subList(15, res.related.size) + res.next
+                    wholeList.shuffled()
+                    songsSuggestionForUsers = DataResponse.Success(wholeList)
+                }
             }
         }
 
