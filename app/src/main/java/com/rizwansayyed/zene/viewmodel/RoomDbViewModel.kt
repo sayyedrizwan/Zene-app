@@ -176,16 +176,15 @@ class RoomDbViewModel @Inject constructor(
                 l.add(n.trim())
             }
         }
+
         youtubeAPIImpl.artistsAlbumsTopFive(l.toHashSet().toList()).onStart {
             albumsYouMayLike = DataResponse.Loading
         }.catch { e ->
-            e.message?.toast()
             albumsYouMayLike = DataResponse.Error(e)
         }.collectLatest { res ->
             albumsYouMayLike = DataResponse.Success(res)
         }
     }
-//376261.80
 
     private fun songsSuggestions(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {

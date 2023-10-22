@@ -382,7 +382,7 @@ class YoutubeAPIImpl @Inject constructor(
 
     override suspend fun artistsAlbumsTopFive(names: List<String>) = flow {
         val cache = responseCache(albumsForYouCache, TopSuggestMusicData::class.java)
-        if (cache != null) if (cache.pList == names) {
+        if (cache != null) if (cache.pList == names || names.isEmpty()) {
             emit(cache.list)
             return@flow
         }

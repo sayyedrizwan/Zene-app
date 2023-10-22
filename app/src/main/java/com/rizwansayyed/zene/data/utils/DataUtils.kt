@@ -260,34 +260,17 @@ object SearchEngine {
 }
 
 object CacheFiles {
-    val radioList by lazy { File(context.cacheDir, "radio-online.txt").apply { mkdirs() } }
-    val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.txt").apply { mkdirs() } }
-    val recentMostPlayedSongs by lazy {
-        File(
-            context.cacheDir,
-            "recent-most-played-songs.txt"
-        ).apply { mkdirs() }
-    }
-    val topGlobalSongs by lazy {
-        File(context.cacheDir, "top-global-songs-list.txt").apply { mkdirs() }
-    }
-    val topCountrySongs by lazy {
-        File(context.cacheDir, "top-country-songs-list.txt").apply { mkdirs() }
-    }
-    val freshAddedSongs by lazy {
-        File(context.cacheDir, "fresh-added-list.txt").apply { mkdirs() }
-    }
-    val topArtistsCountry by lazy {
-        File(context.cacheDir, "top-artists-country-list.txt").apply { mkdirs() }
-    }
-    val songsForYouCache by lazy {
-        File(context.cacheDir, "songs-for-you-cache.txt").apply { mkdirs() }
-    }
-    val albumsForYouCache by lazy {
-        File(context.cacheDir, "albums-for-you-cache.txt").apply { mkdirs() }
-    }
+    val radioList by lazy { File(context.cacheDir, "radio-online.json") }
+    val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.json") }
+    val recentMostPlayedSongs by lazy { File(context.cacheDir, "recent-most-played-songs.json") }
+    val topGlobalSongs by lazy { File(context.cacheDir, "top-global-songs-list.json") }
+    val topCountrySongs by lazy { File(context.cacheDir, "top-country-songs-list.json") }
+    val freshAddedSongs by lazy { File(context.cacheDir, "fresh-added-list.json") }
+    val topArtistsCountry by lazy { File(context.cacheDir, "top-artists-country-list.json") }
+    val songsForYouCache by lazy { File(context.cacheDir, "songs-for-you-cache.json") }
+    val albumsForYouCache by lazy { File(context.cacheDir, "albums-for-you-cache.json") }
     val suggestionYouMayLikeCache by lazy {
-        File(context.cacheDir, "suggestion-you-may-like-cache.txt").apply { mkdirs() }
+        File(context.cacheDir, "suggestion-you-may-like-cache.json")
     }
 }
 

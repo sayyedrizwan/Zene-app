@@ -76,7 +76,6 @@ fun SongsYouMayLikeList(item: List<List<MusicData>>) {
                         .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
                         .width((width / 3 + 25).dp)
                 ) {
-
                     Box(
                         Modifier
                             .clip(RoundedCornerShape(2))
