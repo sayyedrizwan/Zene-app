@@ -130,14 +130,9 @@ fun MainHomepageOnlineNew() {
             Column {
                 SongsSuggestionsForYou()
                 SimilarArtists()
-            }
-        }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            Column {
                 ArtistsYouMayLikeWithSongs()
             }
         }
-
 
 //        when (val v = roomDbViewModel.songsSuggestionForUsers) {
 //            is DataResponse.Success -> items(v.item, span = { GridItemSpan(THREE_ITEMS_GRID) }) {

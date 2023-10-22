@@ -48,18 +48,24 @@ fun TopGlobalSongsList() {
         is DataResponse.Success -> {
             TopInfoWithImage(R.string.gt_trending_songs, null) {}
 
-            val pager = rememberPagerState(pageCount = { v.item.size })
-            HorizontalPager(
-                pager, contentPadding = PaddingValues(
-                    end = if ((pager.currentPage + 1) == pager.pageCount) 0.dp else 60.dp,
-                    start = if ((pager.currentPage + 1) == pager.pageCount) 60.dp else 0.dp
-                )
-            ) { page ->
-                Column {
-                    v.item[page].forEach { i ->
-                        GlobalTrendingPagerItems(i, true)
-                    }
-                }
+            PageWithHorizontal(v.item)
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PageWithHorizontal(item: List<List<MusicData?>>) {
+    val pager = rememberPagerState(pageCount = { item.size })
+    HorizontalPager(
+        pager, contentPadding = PaddingValues(
+            end = if ((pager.currentPage + 1) == pager.pageCount) 0.dp else 60.dp,
+            start = if ((pager.currentPage + 1) == pager.pageCount) 60.dp else 0.dp
+        )
+    ) { page ->
+        Column {
+            item[page].forEach { i ->
+                GlobalTrendingPagerItems(i, true)
             }
         }
     }

@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -83,6 +84,9 @@ class RoomDbViewModel @Inject constructor(
         private set
 
     var songsSuggestionForUsers by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
+        private set
+
+    var artistsFans by mutableStateOf<DataResponse<List<ArtistsFanData>>>(DataResponse.Empty)
         private set
 
     var songsSuggestionForUsersTop by mutableStateOf<DataResponse<List<List<MusicData>>>>(
@@ -223,6 +227,12 @@ class RoomDbViewModel @Inject constructor(
 
 
     private fun artistsFans(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        Log.d("TAG", "artistsFans: get the lists of artists $list")
+        youtubeAPIImpl.artistsFansItemSearch(list).onStart {
+            artistsFans = DataResponse.Loading
+        }.catch {
+            artistsFans = DataResponse.Error(it)
+        }.collectLatest {
+            artistsFans = DataResponse.Success(it)
+        }
     }
 }

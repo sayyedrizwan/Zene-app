@@ -60,6 +60,12 @@ data class TopSuggestMusicData(
     val list: List<MusicData>
 )
 
+data class ArtistsFanData(
+    val artistsName: String,
+    val artistsImg: String,
+    val list: List<MusicData>
+)
+
 data class SongsSuggestionsData(
     val cacheSId: List<String>,
     val next: List<MusicData>,
