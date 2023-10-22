@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
 import com.rizwansayyed.zene.presenter.ui.home.online.MoodTopics
 import com.rizwansayyed.zene.presenter.ui.home.online.RelatedAlbums
 import com.rizwansayyed.zene.presenter.ui.home.online.SimilarArtists
+import com.rizwansayyed.zene.presenter.ui.home.online.SongsForYouToExplore
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsSuggestionsForYou
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeView
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
@@ -131,6 +132,12 @@ fun MainHomepageOnlineNew() {
                 SongsSuggestionsForYou()
                 SimilarArtists()
                 ArtistsYouMayLikeWithSongs()
+            }
+        }
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
+                SongsForYouToExplore()
             }
         }
 
