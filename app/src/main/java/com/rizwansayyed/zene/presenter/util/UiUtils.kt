@@ -43,10 +43,6 @@ object UiUtils {
         if (isActive) cancel()
     }
 
-    fun generateRadioName(): String {
-        return "${context.resources.getString(R.string.radio)} ${(4..19).random()}"
-    }
-
     fun String.toMoneyFormat(): String {
         val amount = this.toDoubleOrNull() ?: return "137,196"
         return NumberFormat.getNumberInstance().format(amount)

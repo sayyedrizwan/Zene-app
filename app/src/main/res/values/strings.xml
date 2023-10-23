@@ -1,39 +1,26 @@
 <resources>
     <string name="app_name">Zene</string>
-    <string name="see_all">see all</string>
     <string name="view_all">view all</string>
     <string name="by_rs">by rizwan sayyed</string>
-    <string name="recent_played">Recent Played</string>
-    <string name="recent_device_songs">Recent Device Songs</string>
-    <string name="switch_">switch</string>
-    <string name="offline_downloaded_songs">Offline Downloaded Songs</string>
-    <string name="saved_playlists">Saved Playlists</string>
-    <string name="radio">Radio</string>
     <string name="global_top_trending_artists">Global top trending artists</string>
     <string name="gt_trending_songs">Global top trending songs</string>
-    <string name="app_name_full">Zene: A Free Music App</string>
     <string name="radio_station_in_city">Radio Stations in your city</string>
-    <string name="error_loading_radio_station">Error loading radio stations near you. Try again after some times.</string>
     <string name="top_songs_in_c">Top songs in %s</string>
     <string name="fresh_added_songs">Fresh Added Songs</string>
     <string name="mood">Mood</string>
     <string name="trending_artists_in_country">Trending Artists in %s</string>
     <string name="zene_mostly_most_played">Discover the Currently \nMost Playing Songs on Zene</string>
     <string name="listeners">Listeners</string>
-    <string name="suggest_me_now">Suggest me now</string>
     <string name="songs_you_may_like_to_listen">Songs you may like to listen</string>
+    <string name="speak_music_artists_album">Speak music, artist or album name to search</string>
     <string name="similar_artists">Similar Artists</string>
     <string name="your_favourite_artists">Your favourite artists</string>
     <string name="song_for_you_to_explore">Song For You to Explore</string>
-    <string name="select_your_fav_artists">Select your favourite Artists</string>
     <string name="select_artists">Select artists</string>
     <string name="skip">Skip</string>
     <string name="select_from_favourite">Select your favourite artists from the list.</string>
     <string name="artists_lists_try_again_later">Error getting artists list. Please try again later.</string>
     <string name="songs_you_may_like">Songs you may like</string>
-    <string name="albums_you_may_like">Albums you may like</string>
-    <string name="can_just_select_six_artists_song_suggestions">You can just select any 6 artists. The songs suggestion will change depending on your songs history</string>
-    <string name="songs_you_may_like_desc">look\'s like you are new here. select your favourite artists to get best songs recommendation or just listen to 2 to 3 of your favourite songs.</string>
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
     <string name="start_listening">Start Listening</string>
@@ -46,4 +33,5 @@
     <string name="search">Search</string>
     <string name="my_music">My Music</string>
     <string name="feed">Feed</string>
+    <string name="search_music_artists_album">Search music, artist or album</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.presenter.ui
+package com.rizwansayyed.zene.presenter.ui.home.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +33,7 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItems
 import com.rizwansayyed.zene.presenter.ui.home.online.ArtistsYouMayLikeWithSongs
@@ -64,7 +64,7 @@ import kotlinx.coroutines.flow.debounce
 
 @OptIn(FlowPreview::class)
 @Composable
-fun MainHomepageOnlineNew() {
+fun HomeView() {
     val homeNavModel: HomeNavViewModel = hiltViewModel()
     val homeViewModel: HomeApiViewModel = hiltViewModel()
     val roomDbViewModel: RoomDbViewModel = hiltViewModel()
