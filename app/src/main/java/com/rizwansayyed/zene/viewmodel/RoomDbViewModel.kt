@@ -178,7 +178,8 @@ class RoomDbViewModel @Inject constructor(
         }
 
         youtubeAPIImpl.artistsAlbumsTopFive(l.toHashSet().toList()).onStart {
-            albumsYouMayLike = DataResponse.Loading
+            if (albumsYouMayLike == DataResponse.Empty)
+                albumsYouMayLike = DataResponse.Loading
         }.catch { e ->
             albumsYouMayLike = DataResponse.Error(e)
         }.collectLatest { res ->
@@ -229,8 +230,10 @@ class RoomDbViewModel @Inject constructor(
         youtubeAPIImpl.artistsFansItemSearch(list).onStart {
             artistsFans = DataResponse.Loading
         }.catch {
+            Log.d("TAG", "artistsFans: ddd e ${it.message}")
             artistsFans = DataResponse.Error(it)
         }.collectLatest {
+            Log.d("TAG", "artistsFans: ddd ${it.size}")
             artistsFans = DataResponse.Success(it)
         }
     }

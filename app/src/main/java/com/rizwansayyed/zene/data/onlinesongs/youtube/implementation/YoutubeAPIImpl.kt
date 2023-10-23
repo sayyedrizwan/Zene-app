@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.albumsForYouCache
+import com.rizwansayyed.zene.data.utils.CacheFiles.artistsFanWithSongsCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.songsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.suggestionYouMayLikeCache
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBo
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.ArtistsFanData
+import com.rizwansayyed.zene.domain.ArtistsFanDataCache
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
@@ -557,6 +559,12 @@ class YoutubeAPIImpl @Inject constructor(
 
 
     override suspend fun artistsFansItemSearch(artists: List<String>) = flow {
+        val cache = responseCache(artistsFanWithSongsCache, ArtistsFanDataCache::class.java)
+        if (cache != null) if (cache.aList == artists) {
+            emit(cache.list)
+            return@flow
+        }
+
         val list = mutableListOf<ArtistsFanData>()
 
         val ip = userIpDetails.first()
@@ -565,52 +573,58 @@ class YoutubeAPIImpl @Inject constructor(
         artists.forEach { a ->
             if (a.trim().isEmpty()) return@forEach
 
-            val searchResponse =
-                youtubeMusicAPI.youtubeSearchResponse(ytMusicArtistsSearchJsonBody(ip, a), key)
+            try {
+                val searchResponse =
+                    youtubeMusicAPI.youtubeSearchResponse(ytMusicArtistsSearchJsonBody(ip, a), key)
 
-            var artist: Pair<String?, String?> = Pair("", "")
+                var artist: Pair<String?, String?> = Pair("", "")
 
-            searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEachIndexed { index, s ->
-                if (index != 0) return@forEachIndexed
+                searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEachIndexed { index, s ->
+                    if (index != 0) return@forEachIndexed
 
-                if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
-                    val thumbnail =
-                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
-                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                    if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
+                        val thumbnail =
+                            s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
+                                ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
-                    val name = s.musicShelfRenderer.getArtistsNoCheck()
-                    name?.let {
-                        artist = Pair(name, thumbnail)
+                        val name = s.musicShelfRenderer.getArtistsNoCheck()
+                        name?.let {
+                            artist = Pair(name, thumbnail)
+                        }
                     }
                 }
-            }
 
-            artist.first ?: return@forEach
+                artist.first ?: return@forEach
 
-            val songs = mutableListOf<MusicData>()
+                val songs = mutableListOf<MusicData>()
 
-            val r = youtubeMusicAPI.youtubeSearchAllSongsResponse(
-                ytMusicSearchAllSongsJsonBody(ip, artist.first!!), key
-            )
+                val r = youtubeMusicAPI.youtubeSearchAllSongsResponse(
+                    ytMusicSearchAllSongsJsonBody(ip, artist.first!!), key
+                )
 
-            r.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
-                c?.musicShelfRenderer?.contents?.forEach { shelf ->
-                    val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
-                        ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-                    val name = shelf?.musicResponsiveListItemRenderer?.names()
-                    val artistsN = shelf?.getArtists()
+                r.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+                    c?.musicShelfRenderer?.contents?.forEach { shelf ->
+                        val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
+                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                        val name = shelf?.musicResponsiveListItemRenderer?.names()
+                        val artistsN = shelf?.getArtists()
 
-                    songs.add(
-                        MusicData(
+                        val m = MusicData(
                             thumbnail ?: "", name?.first, artistsN, name?.second, MusicType.MUSIC
                         )
-                    )
+                        songs.add(m)
+                    }
                 }
-            }
 
-            if (!list.any { it.artistsName.lowercase() == artist.first!!.lowercase() })
-                list.add(ArtistsFanData(artist.first!!, artist.second ?: "", songs))
+                if (!list.any { it.artistsName.lowercase() == artist.first!!.lowercase() })
+                    list.add(ArtistsFanData(artist.first!!, artist.second ?: "", songs))
+            } catch (e: Exception) {
+                e.message
+            }
         }
+
+        ArtistsFanDataCache(artists, list).toTxtCache()
+            ?.let { writeToCacheFile(artistsFanWithSongsCache, it) }
 
         emit(list)
     }

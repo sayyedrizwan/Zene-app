@@ -49,9 +49,7 @@ class HomeApiViewModel @Inject constructor(
             newReleaseMusic()
         }
 
-        if (userIpDetails.first()?.query?.trim() == ip.awsIp().first().trim())
-            runs()
-        else
+        suspend fun runIp() {
             ip.ip().catch {
                 runs()
             }.collectLatest {
@@ -59,13 +57,19 @@ class HomeApiViewModel @Inject constructor(
                 delay(1.seconds)
                 runs()
             }
+        }
+
+        try {
+            if (userIpDetails.first()?.query?.trim() == ip.awsIp().first().trim())
+                runs()
+            else
+                runIp()
+        } catch (e: Exception) {
+            runIp()
+        }
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
-        private set
-
-
-    var topArtistsList = mutableStateListOf<MusicData>()
         private set
 
     var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<List<MusicData?>>>>(DataResponse.Empty)
@@ -127,7 +131,6 @@ class HomeApiViewModel @Inject constructor(
         }.catch {
             topCountryArtists = DataResponse.Error(it)
         }.collectLatest {
-            topArtistsList.addAll(it)
             topCountryArtists = DataResponse.Success(it)
         }
     }

@@ -9,5 +9,5 @@ interface RemoteConfigInterface {
 
     suspend fun ytApiKeys(): YtApiKeyResponse?
 
-    suspend fun config(doReset: Boolean): FirebaseRemoteConfig
+    suspend fun config(doReset: Boolean): FirebaseRemoteConfig?
 }

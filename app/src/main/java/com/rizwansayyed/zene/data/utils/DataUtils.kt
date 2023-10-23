@@ -269,6 +269,7 @@ object CacheFiles {
     val topArtistsCountry by lazy { File(context.cacheDir, "top-artists-country-list.json") }
     val songsForYouCache by lazy { File(context.cacheDir, "songs-for-you-cache.json") }
     val albumsForYouCache by lazy { File(context.cacheDir, "albums-for-you-cache.json") }
+    val artistsFanWithSongsCache by lazy { File(context.cacheDir, "artists-fan-with-songs-cache.json") }
     val suggestionYouMayLikeCache by lazy {
         File(context.cacheDir, "suggestion-you-may-like-cache.json")
     }

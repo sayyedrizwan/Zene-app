@@ -15,13 +15,13 @@ const val REMOTE_YT_API_KEYS = "ytApiKeys"
 class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
 
     override suspend fun instagramAppID(): String {
-        return config(false).getString(REMOTE_INSTAGRAM_APP_ID)
+        return config(false)?.getString(REMOTE_INSTAGRAM_APP_ID) ?: ""
     }
 
     override suspend fun ytApiKeys(): YtApiKeyResponse? {
-        val data = config(false).getString(REMOTE_YT_API_KEYS)
         return try {
-            moshi.adapter(YtApiKeyResponse::class.java).fromJson(data)
+            val data = config(false)?.getString(REMOTE_YT_API_KEYS)
+            moshi.adapter(YtApiKeyResponse::class.java).fromJson(data!!)
         } catch (e: Exception) {
             null
         }
@@ -29,15 +29,18 @@ class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
     }
 
 
-    override suspend fun config(doReset: Boolean): FirebaseRemoteConfig {
-        val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 3600
+    override suspend fun config(doReset: Boolean): FirebaseRemoteConfig? {
+        return try {
+            val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+            val configSettings = remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 3600
+            }
+            remoteConfig.setConfigSettingsAsync(configSettings)
+            remoteConfig.fetchAndActivate().await()
+            if (doReset) remoteConfig.reset()
+            remoteConfig
+        } catch (e: Exception) {
+            null
         }
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        remoteConfig.fetchAndActivate().await()
-        if (doReset) remoteConfig.reset()
-
-        return remoteConfig
     }
 }

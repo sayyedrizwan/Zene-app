@@ -60,50 +60,26 @@ import kotlin.math.absoluteValue
 fun CityRadioViewList() {
     val homeApi: HomeApiViewModel = hiltViewModel()
 
-    TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
-        "see all radio".toast()
-    }
-
-    LazyRow {
-        items(3) {
-            Row(
-                Modifier
-                    .padding(horizontal = 8.dp)
-                    .border(1.dp, Color.Black, RoundedCornerShape(30))
-                    .clip(RoundedCornerShape(30))
-                    .background(Color.White),
-                Arrangement.Center, Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    "https://1.bp.blogspot.com/-zqFqeHIezoQ/XWwTN0Jl0OI/AAAAAAAAAck/JiBc3HIncUIIrenqBm_BaIfLAGLxCQF4ACLcBGAs/s1600/free%2Bfm%2Brock.jpg",
-                    "",
-                    Modifier
-                        .padding(5.dp)
-                        .size(35.dp)
-                        .clip(RoundedCornerShape(100)),
-                    contentScale = ContentScale.Crop
-                )
-                TextThin(
-                    "Free FM Rock Bombay",
-                    Modifier.padding(end = 12.dp),
-                    color = Color.Black,
-                    size = 14
-                )
-            }
-        }
-    }
-
-    Spacer(Modifier.height(10.dp))
-
     when (val v = homeApi.onlineRadio) {
         DataResponse.Empty -> {}
-        is DataResponse.Error ->
-            TextThin(v.throwable.message ?: "", doCenter = true)
+        is DataResponse.Error -> {}
+        DataResponse.Loading -> {
+            TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
+                "see all radio".toast()
+            }
 
-        DataResponse.Loading -> RadioItemLoading()
-
+            RadioItemLoading()
+        }
         is DataResponse.Success -> {
             val radioPagerState = rememberPagerState(pageCount = { v.item.size })
+
+            TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
+                "see all radio".toast()
+            }
+
+            RadioFavList()
+
+            Spacer(Modifier.height(10.dp))
 
             HorizontalPager(
                 radioPagerState,
@@ -135,6 +111,38 @@ fun RadioItemLoading() {
                     .clip(RoundedCornerShape(12.dp))
                     .background(shimmerBrush())
             ) {}
+        }
+    }
+}
+
+@Composable
+fun RadioFavList() {
+    LazyRow {
+        items(3) {
+            Row(
+                Modifier
+                    .padding(horizontal = 8.dp)
+                    .border(1.dp, Color.Black, RoundedCornerShape(30))
+                    .clip(RoundedCornerShape(30))
+                    .background(Color.White),
+                Arrangement.Center, Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    "https://1.bp.blogspot.com/-zqFqeHIezoQ/XWwTN0Jl0OI/AAAAAAAAAck/JiBc3HIncUIIrenqBm_BaIfLAGLxCQF4ACLcBGAs/s1600/free%2Bfm%2Brock.jpg",
+                    "",
+                    Modifier
+                        .padding(5.dp)
+                        .size(35.dp)
+                        .clip(RoundedCornerShape(100)),
+                    contentScale = ContentScale.Crop
+                )
+                TextThin(
+                    "Free FM Rock Bombay",
+                    Modifier.padding(end = 12.dp),
+                    color = Color.Black,
+                    size = 14
+                )
+            }
         }
     }
 }
