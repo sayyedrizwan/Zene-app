@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
@@ -42,6 +41,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
 import com.rizwansayyed.zene.presenter.ui.home.online.MoodTopics
 import com.rizwansayyed.zene.presenter.ui.home.online.RelatedAlbums
 import com.rizwansayyed.zene.presenter.ui.home.online.SimilarArtists
+import com.rizwansayyed.zene.presenter.ui.home.online.SongsExploreItems
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsForYouToExplore
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsSuggestionsForYou
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeView
@@ -49,7 +49,6 @@ import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
-import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.THREE_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -140,6 +139,19 @@ fun MainHomepageOnlineNew() {
                 SongsForYouToExplore()
             }
         }
+
+        when (val v = roomDbViewModel.songsSuggestionForUsers) {
+            is DataResponse.Success -> items(v.item, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+                SongsExploreItems(it)
+            }
+
+            DataResponse.Loading -> items(20, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+                LoadingAlbumsCards()
+            }
+
+            else -> {}
+        }
+
 
 //        when (val v = roomDbViewModel.songsSuggestionForUsers) {
 //            is DataResponse.Success -> items(v.item, span = { GridItemSpan(THREE_ITEMS_GRID) }) {
