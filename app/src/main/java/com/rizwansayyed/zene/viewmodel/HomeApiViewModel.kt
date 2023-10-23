@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.searchHistoryList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
@@ -94,6 +95,10 @@ class HomeApiViewModel @Inject constructor(
         private set
 
 
+    var suggestionsSearchText by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
+        private set
+
+
     private fun onlineRadiosInCity() = viewModelScope.launch(Dispatchers.IO) {
         onlineRadiosAPI.onlineRadioSearch(false).onStart {
             onlineRadio = DataResponse.Loading
@@ -174,5 +179,26 @@ class HomeApiViewModel @Inject constructor(
         }.collectLatest {
             mostPlayingSong = DataResponse.Success(it)
         }
+    }
+
+    fun searchTextSuggestions(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.searchTextsSuggestions(q).onStart {
+            val list = ArrayList<String>()
+            searchHistoryList.first()?.forEach { s ->
+                if (q.trim().lowercase() != s.trim().lowercase() && list.size < 20)
+                    list.add(s)
+            }
+            list.add(0, q)
+            searchHistoryList = flowOf(list.toTypedArray())
+            suggestionsSearchText = DataResponse.Loading
+        }.catch {
+            suggestionsSearchText = DataResponse.Error(it)
+        }.collectLatest {
+            suggestionsSearchText = DataResponse.Success(it)
+        }
+    }
+
+    fun emptySearchText() = viewModelScope.launch(Dispatchers.IO) {
+        suggestionsSearchText = DataResponse.Empty
     }
 }

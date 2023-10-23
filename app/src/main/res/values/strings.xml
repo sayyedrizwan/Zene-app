@@ -34,4 +34,7 @@
     <string name="my_music">My Music</string>
     <string name="feed">Feed</string>
     <string name="search_music_artists_album">Search music, artist or album</string>
+    <string name="search_history">Search History</string>
+    <string name="no_search_history">No search history, the history of requests will appear here</string>
+    <string name="error_searching_try_again">Error searching. Please try again</string>
 </resources>

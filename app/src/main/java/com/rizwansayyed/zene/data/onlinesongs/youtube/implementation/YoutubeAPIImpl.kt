@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
-import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Days
@@ -22,6 +21,7 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNewReleaseJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchTxtSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.ArtistsFanData
@@ -160,7 +160,7 @@ class YoutubeAPIImpl @Inject constructor(
                     val a = s.musicShelfRenderer.getArtistsNoCheck()
                     a?.let {
                         if (!artistsLists.any { a ->
-                                a.artists?.trim()?.lowercase() == it?.lowercase()?.trim()
+                                a.artists?.trim()?.lowercase() == it.lowercase()?.trim()
                             }) artistsLists.add(
                             MusicData(thumbnail ?: "", it, it, THE_ARTISTS, MusicType.ARTISTS)
                         )
@@ -627,5 +627,35 @@ class YoutubeAPIImpl @Inject constructor(
             ?.let { writeToCacheFile(artistsFanWithSongsCache, it) }
 
         emit(list)
+    }
+
+
+    override suspend fun searchTextsSuggestions(q: String) = flow {
+        val search = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        val r = youtubeMusicAPI
+            .youtubeSearchTextSuggestionResponse(ytMusicSearchTxtSuggestionJsonBody(ip, q), key)
+
+        r.contents?.forEach { content ->
+            content?.searchSuggestionsSectionRenderer?.contents?.forEach { item ->
+                if (item?.searchSuggestionRenderer?.icon?.iconType?.lowercase() == "search") {
+                    val name =
+                        item.searchSuggestionRenderer.navigationEndpoint?.searchEndpoint?.query
+                            ?: ""
+                    val m = MusicData("", name, name, "", MusicType.TEXT)
+                    search.add(m)
+                } else {
+                    val thumbnail =
+                        item?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
+
+                }
+            }
+        }
+
+        emit(search)
     }
 }

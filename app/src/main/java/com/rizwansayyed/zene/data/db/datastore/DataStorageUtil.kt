@@ -11,6 +11,7 @@ object DataStorageUtil {
 
     val IP_JSON = stringPreferencesKey("ip_json")
     val SELECTED_FAVOURITE_ARTISTS_SONGS = stringPreferencesKey("selected_favourite_artists_songs")
+    val SEARCH_HISTORY_LIST = stringPreferencesKey("search_history_list")
     val DO_SHOW_SPLASH_SCREEN = booleanPreferencesKey("do_show_splash_screen")
     val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
 

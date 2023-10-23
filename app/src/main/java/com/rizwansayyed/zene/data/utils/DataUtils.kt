@@ -79,6 +79,7 @@ object YoutubeAPI {
     const val YT_NEXT_API = "next"
     const val YT_SUGGESTIONS_API = "music/get_search_suggestions"
     const val YT_BROWSE_API = "browse"
+    const val YT_SEARCH_SUGGESTION_API = "music/get_search_suggestions"
 
     fun generateYTMusicPlaylistURL(pid: String): String {
         return "https://music.youtube.com/playlist?list=$pid"
@@ -148,6 +149,24 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, "query": "$q", "params": "EgWKAQIgAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicSearchTxtSuggestionJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
+        val json = """{
+            "input": "$q",
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
