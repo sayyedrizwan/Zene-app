@@ -16,8 +16,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,17 +58,24 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 
+@OptIn(FlowPreview::class)
 @Composable
 fun MainHomepageOnlineNew() {
+    val homeNavModel: HomeNavViewModel = hiltViewModel()
     val homeViewModel: HomeApiViewModel = hiltViewModel()
     val roomDbViewModel: RoomDbViewModel = hiltViewModel()
+    val listState =
+        rememberLazyGridState(initialFirstVisibleItemIndex = homeNavModel.homeScrollPosition.intValue)
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_ITEMS_GRID),
         Modifier
             .fillMaxSize()
-            .background(DarkGreyColor)
+            .background(DarkGreyColor), listState
     ) {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             HomepageTopView()
@@ -73,6 +84,11 @@ fun MainHomepageOnlineNew() {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 CurrentMostPlayingSong()
+            }
+        }
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
                 CityRadioViewList()
             }
         }
@@ -80,7 +96,15 @@ fun MainHomepageOnlineNew() {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TopArtistsList()
+            }
+        }
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
                 MoodTopics()
+            }
+        }
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
                 FreshAddedSongsList()
             }
         }
@@ -88,6 +112,11 @@ fun MainHomepageOnlineNew() {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TopGlobalSongsList()
+            }
+        }
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
                 TrendingSongsCountryList()
             }
         }
@@ -102,10 +131,14 @@ fun MainHomepageOnlineNew() {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 SongsYouMayLikeView()
-                TopArtistsCountryList()
             }
         }
 
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
+                TopArtistsCountryList()
+            }
+        }
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
@@ -129,7 +162,19 @@ fun MainHomepageOnlineNew() {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 SongsSuggestionsForYou()
+            }
+        }
+
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
                 SimilarArtists()
+            }
+        }
+
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
                 ArtistsYouMayLikeWithSongs()
             }
         }
@@ -152,36 +197,19 @@ fun MainHomepageOnlineNew() {
             else -> {}
         }
 
-
-//        when (val v = roomDbViewModel.songsSuggestionForUsers) {
-//            is DataResponse.Success -> items(v.item, span = { GridItemSpan(THREE_ITEMS_GRID) }) {
-//                Column {
-//                    AsyncImage(
-//                        it.thumbnail,
-//                        it.name,
-//                        Modifier
-//                            .padding(2.dp)
-//                            .fillMaxWidth()
-//                    )
-//
-//                    TextThin(it.name ?: "")
-//                }
-//            }
-//
-//            DataResponse.Loading -> items(6, span = { GridItemSpan(THREE_ITEMS_GRID) }) {
-//                LoadingAlbumsCards()
-//            }
-//
-//            else -> {}
-//        }
-
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 Spacer(Modifier.height(180.dp))
             }
         }
+    }
 
-
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            listState.firstVisibleItemIndex
+        }.debounce(500L).collectLatest {
+            homeNavModel.setHomeScrollPosition(it)
+        }
     }
 }
 

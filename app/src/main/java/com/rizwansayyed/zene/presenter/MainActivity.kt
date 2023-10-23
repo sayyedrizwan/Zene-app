@@ -17,10 +17,12 @@ import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.domain.HomeNavigation
+import com.rizwansayyed.zene.domain.HomeNavigation.*
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.MainHomePageView
 import com.rizwansayyed.zene.presenter.ui.MainHomepageOnlineNew
+import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.online.SaveArtistsButton
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -38,10 +40,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
-
-
-// not all images are laoding properly on selecting users on first times
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -64,7 +62,12 @@ class MainActivity : ComponentActivity() {
 //                        navViewModel, roomViewModel, homeApiViewModel, jsoupScrapViewModel
 //                    )
 
-                    MainHomepageOnlineNew()
+                    when (navViewModel.homeNav.value) {
+                        HOME -> MainHomepageOnlineNew()
+                        FEED -> TextBold(v = "feed")
+                        SEARCH -> TextBold(v = "search")
+                        MY_MUSIC -> TextBold(v = "music")
+                    }
 
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))
 
@@ -77,8 +80,8 @@ class MainActivity : ComponentActivity() {
 
 
                 BackHandler {
-                    if (navViewModel.homeNav.value != HomeNavigation.HOME) {
-                        navViewModel.setHomeNav(HomeNavigation.HOME)
+                    if (navViewModel.homeNav.value != HOME) {
+                        navViewModel.setHomeNav(HOME)
                         return@BackHandler
                     }
 

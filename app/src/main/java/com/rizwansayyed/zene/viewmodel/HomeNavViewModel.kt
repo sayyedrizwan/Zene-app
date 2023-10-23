@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,6 +28,13 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     val selectArtists = mutableStateListOf<String>()
 
+
+    var homeScrollPosition = mutableIntStateOf(0)
+        private set
+
+    fun setHomeScrollPosition(v: Int) {
+        homeScrollPosition.value = v
+    }
 
     fun setHomeNav(h: HomeNavigation) {
         homeNav.value = h
