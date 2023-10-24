@@ -25,6 +25,8 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.data.utils.moshi
+import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.ArtistsFanDataCache
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -36,11 +38,14 @@ import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
+import com.rizwansayyed.zene.domain.yt.YoutubePlaylistItemsResponse
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.io.File
 import javax.inject.Inject
 
 class YoutubeAPIImpl @Inject constructor(
@@ -352,10 +357,9 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         if (token.isNotEmpty() && clickParams.isNotEmpty()) {
-            val res =
-                youtubeMusicAPI.youtubeMoreSearchAllSongsResponse(
-                    ytMusicNextSearchJsonBody(ip), token, token, clickParams, key
-                )
+            val res = youtubeMusicAPI.youtubeMoreSearchAllSongsResponse(
+                ytMusicNextSearchJsonBody(ip), token, token, clickParams, key
+            )
 
             res.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
                 c?.musicShelfRenderer?.contents?.forEach { shelf ->

@@ -112,6 +112,7 @@ object RetrofitAPIModule {
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("authority", "www.music.youtube.com")
+                .addHeader("content-type", "application/json")
                 .addHeader("cookie", "GPS=1;")
                 .addHeader("origin", "https://music.youtube.com")
                 .addHeader("x-origin", "https://music.youtube.com")

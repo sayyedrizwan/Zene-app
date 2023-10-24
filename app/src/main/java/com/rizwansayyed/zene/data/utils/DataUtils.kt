@@ -165,9 +165,7 @@ object YoutubeAPI {
                     "clientVersion": "1.20230918.01.00",
                     "platform": "DESKTOP",
                     "clientFormFactor": "UNKNOWN_FORM_FACTOR",
-                    "timeZone": "${ip?.timezone}",
-                    "screenWidthPoints": 705,
-                    "screenHeightPoints": 825
+                    "timeZone": "${ip?.timezone}"
                 },
                 "adSignalsInfo": {
                     "params": []
@@ -295,10 +293,7 @@ object CacheFiles {
     val songsForYouCache by lazy { File(context.cacheDir, "songs-for-you-cache.json") }
     val albumsForYouCache by lazy { File(context.cacheDir, "albums-for-you-cache.json") }
     val artistsFanWithSongsCache by lazy {
-        File(
-            context.cacheDir,
-            "artists-fan-with-songs-cache.json"
-        )
+        File(context.cacheDir, "artists-fan-with-songs-cache.json")
     }
     val suggestionYouMayLikeCache by lazy {
         File(context.cacheDir, "suggestion-you-may-like-cache.json")
