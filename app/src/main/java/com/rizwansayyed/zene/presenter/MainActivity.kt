@@ -28,7 +28,7 @@ import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
-import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialog
+import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))
                 }
 
-                if (navViewModel.songDetailDialog != null) MusicDialog()
+                if (navViewModel.songDetailDialog != null) MusicDialogSheet()
                 if (doSplashScreen) MainSplashView()
 
 

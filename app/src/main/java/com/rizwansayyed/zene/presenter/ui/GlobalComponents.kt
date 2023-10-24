@@ -116,7 +116,8 @@ fun TextSemiBold(
         maxLines = if (singleLine) 1 else 10,
         fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        style = TextStyle(lineHeight = 29.sp)
     )
 }
 
