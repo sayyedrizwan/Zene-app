@@ -42,4 +42,7 @@
     <string name="error_searching_try_again">Error searching. Please try again</string>
     <string name="error_loading_data_try_again">Error loading data. Please try again.</string>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="play">Play</string>
+    <string name="play_next">Play Next</string>
+    <string name="add_in_queue">Add in queue</string>
 </resources>

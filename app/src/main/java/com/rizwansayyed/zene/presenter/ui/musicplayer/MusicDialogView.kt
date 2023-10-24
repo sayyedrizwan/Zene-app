@@ -61,10 +61,13 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
 
         Spacer(Modifier.height(30.dp))
 
-        MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
+        MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
 
         }
-        MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
+        MusicDialogListItems(R.drawable.ic_play_next, stringResource(R.string.play_next)) {
+
+        }
+        MusicDialogListItems(R.drawable.ic_play_in_queue, stringResource(R.string.add_in_queue)) {
 
         }
         MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
