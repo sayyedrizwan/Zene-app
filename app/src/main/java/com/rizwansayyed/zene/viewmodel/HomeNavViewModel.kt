@@ -26,9 +26,6 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var homeNav = mutableStateOf(HomeNavigation.HOME)
         private set
 
-    val selectArtists = mutableStateListOf<String>()
-
-
     var homeScrollPosition = mutableIntStateOf(0)
         private set
 
@@ -46,15 +43,5 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     fun resetConfig() = viewModelScope.launch(Dispatchers.IO) {
         remoteConfig.config(true)
-    }
-
-    fun selectedArtists(name: String) {
-        if (name.isEmpty()) return
-
-        if (selectArtists.contains(name.lowercase())) {
-            selectArtists.remove(name.lowercase())
-            return
-        }
-        selectArtists.add(name.lowercase())
     }
 }
