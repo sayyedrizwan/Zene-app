@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPII
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.lastfm.TopRecentPlaySongsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -96,6 +97,10 @@ class HomeApiViewModel @Inject constructor(
 
 
     var suggestionsSearchText by mutableStateOf<DataResponse<List<MusicData>?>>(DataResponse.Empty)
+        private set
+
+
+    var searchData by mutableStateOf<DataResponse<SearchData?>>(DataResponse.Empty)
         private set
 
 
@@ -185,7 +190,7 @@ class HomeApiViewModel @Inject constructor(
         youtubeAPI.searchTextsSuggestions(q).onStart {
             val list = ArrayList<String>()
             searchHistoryList.first()?.forEach { s ->
-                if (q.trim().lowercase() != s.trim().lowercase() && list.size < 20)
+                if (q.trim().lowercase() != s.trim().lowercase() && list.size < 30)
                     list.add(s)
             }
             list.add(0, q)
@@ -201,4 +206,16 @@ class HomeApiViewModel @Inject constructor(
     fun emptySearchText() = viewModelScope.launch(Dispatchers.IO) {
         suggestionsSearchText = DataResponse.Empty
     }
+
+
+    fun searchData(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.searchData(q).onStart {
+            searchData = DataResponse.Loading
+        }.catch {
+            searchData = DataResponse.Error(it)
+        }.collectLatest {
+            searchData = DataResponse.Success(it)
+        }
+    }
+
 }

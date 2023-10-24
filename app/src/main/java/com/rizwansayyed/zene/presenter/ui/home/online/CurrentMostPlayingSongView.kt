@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.MenuIcon
+import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextBoldBig
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
@@ -150,12 +151,7 @@ fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier) {
                     .padding(horizontal = 6.dp)
                     .padding(top = 5.dp), Arrangement.Center, Alignment.CenterVertically
             ) {
-                Image(
-                    painterResource(R.drawable.ic_play),
-                    "",
-                    Modifier.size(20.dp),
-                    colorFilter = ColorFilter.tint(Color.White)
-                )
+                SmallIcons(R.drawable.ic_play, 20, 0) {}
 
                 TextRegular(
                     "${music.listeners?.convertMoney()} ${stringResource(R.string.listeners)}",
@@ -174,7 +170,7 @@ fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier) {
             MenuIcon {
 
             }
-            
+
             Spacer(Modifier.weight(1f))
 
             AsyncImage(

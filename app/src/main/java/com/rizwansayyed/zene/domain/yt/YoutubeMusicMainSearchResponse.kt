@@ -96,6 +96,16 @@ data class YoutubeMusicMainSearchResponse(
                                         return name
                                     }
 
+                                    fun getArtistsId(): String? {
+                                        var id: String? = null
+                                        contents?.forEachIndexed { index, content ->
+                                            if (index == 0) id =
+                                                content?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
+                                        }
+
+                                        return id
+                                    }
+
                                     data class BottomEndpoint(
                                         val clickTrackingParams: String?,
                                         val searchEndpoint: SearchEndpoint?

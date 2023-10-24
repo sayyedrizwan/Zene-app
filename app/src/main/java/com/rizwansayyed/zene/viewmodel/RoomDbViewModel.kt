@@ -230,10 +230,8 @@ class RoomDbViewModel @Inject constructor(
         youtubeAPIImpl.artistsFansItemSearch(list).onStart {
             artistsFans = DataResponse.Loading
         }.catch {
-            Log.d("TAG", "artistsFans: ddd e ${it.message}")
             artistsFans = DataResponse.Error(it)
         }.collectLatest {
-            Log.d("TAG", "artistsFans: ddd ${it.size}")
             artistsFans = DataResponse.Success(it)
         }
     }

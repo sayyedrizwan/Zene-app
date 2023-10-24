@@ -289,9 +289,6 @@ fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 2300f): Brush
 
 @Composable
 fun MenuIcon(modifier: Modifier = Modifier, click: () -> Unit) {
-    SmallIcons(R.drawable.ic_menu, 25) {
-        click()
-    }
     Image(
         painterResource(R.drawable.ic_menu), "",
         modifier
@@ -343,15 +340,9 @@ fun SearchEditTextView(
             fontWeight = FontWeight.SemiBold,
         ),
         trailingIcon = {
-            Image(
-                painterResource(R.drawable.ic_mic), "",
-                Modifier
-                    .size(25.dp)
-                    .clickable {
-                        listener.launch(startSpeech())
-                    },
-                colorFilter = ColorFilter.tint(Color.White)
-            )
+            SmallIcons(R.drawable.ic_mic) {
+                listener.launch(startSpeech())
+            }
         }
     )
 }
@@ -447,11 +438,11 @@ fun Int.scaledSp(): TextUnit {
 }
 
 @Composable
-fun SmallIcons(icon: Int, size: Int = 23, click: () -> Unit) {
+fun SmallIcons(icon: Int, size: Int = 23, p: Int = 5, click: () -> Unit) {
     Image(
         painterResource(icon), "",
         Modifier
-            .padding(5.dp)
+            .padding(p.dp)
             .size(size.dp)
             .clickable {
                 click()

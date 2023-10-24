@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Days
@@ -19,9 +20,9 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNewReleaseJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchTxtSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.ArtistsFanData
@@ -30,11 +31,11 @@ import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
-import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -103,12 +104,15 @@ class YoutubeAPIImpl @Inject constructor(
                             ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
                     val name =
-                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()
+                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.first
+
+                    val songsId =
+                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.first
 
                     val artists = s.musicShelfRenderer.getArtists()
 
                     m = MusicData(
-                        thumbnail ?: "", name?.first, artists, name?.second, MusicType.MUSIC
+                        thumbnail ?: "", name, artists, songsId, MusicType.MUSIC
                     )
                 }
             }
@@ -158,11 +162,13 @@ class YoutubeAPIImpl @Inject constructor(
                             ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
                     val a = s.musicShelfRenderer.getArtistsNoCheck()
+                    val id = s.musicShelfRenderer.getArtistsId()
+
                     a?.let {
                         if (!artistsLists.any { a ->
-                                a.artists?.trim()?.lowercase() == it.lowercase()?.trim()
+                                a.artists?.trim()?.lowercase() == it.lowercase().trim()
                             }) artistsLists.add(
-                            MusicData(thumbnail ?: "", it, it, THE_ARTISTS, MusicType.ARTISTS)
+                            MusicData(thumbnail ?: "", it, it, id, MusicType.ARTISTS)
                         )
                     }
                 }
@@ -190,9 +196,11 @@ class YoutubeAPIImpl @Inject constructor(
                     val thumbnail =
                         content?.musicResponsiveListItemRenderer?.thumbnail
                             ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                    val id = s.musicShelfRenderer.getArtistsId()
 
                     content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { flex ->
                         if (flex?.musicResponsiveListItemFlexColumnRenderer?.displayPriority?.trim() == "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH")
+
                             flex.musicResponsiveListItemFlexColumnRenderer.text?.runs?.forEachIndexed { index, content ->
                                 if (index == 0) content?.text?.let {
                                     if (it.lowercase() == "artist") return@let
@@ -201,7 +209,7 @@ class YoutubeAPIImpl @Inject constructor(
                                             a.artists?.trim()?.lowercase() == it.lowercase().trim()
                                         }) artistsLists.add(
                                         MusicData(
-                                            thumbnail ?: "", it, it, THE_ARTISTS, MusicType.ARTISTS
+                                            thumbnail ?: "", it, it, id, MusicType.ARTISTS
                                         )
                                     )
                                 }
@@ -316,17 +324,20 @@ class YoutubeAPIImpl @Inject constructor(
         var token = ""
         var clickParams = ""
 
-        fun addItems(shelf: MusicShelfRendererSongs.Content?) {
+        fun addItems(shelf: MusicShelfRendererSongs.Content?, i: Int) {
             val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
                 ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-            val name = shelf?.musicResponsiveListItemRenderer?.names()
+            val name = shelf?.musicResponsiveListItemRenderer?.names()?.first
+            val songId = shelf?.musicResponsiveListItemRenderer?.names()?.second
             val artists = shelf?.getArtists()
 
-            list.add(
-                MusicData(
-                    thumbnail ?: "", name?.first, artists, name?.second, MusicType.MUSIC
-                )
+            val m = MusicData(
+                thumbnail ?: "", name, artists, songId, MusicType.MUSIC
             )
+
+            Log.d("TAG", "addItems: data $i ${name} ")
+
+            list.add(m)
         }
 
         val r =
@@ -334,7 +345,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         r.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
             c?.musicShelfRenderer?.contents?.forEach { shelf ->
-                addItems(shelf)
+                addItems(shelf, 1)
             }
 
             c?.musicShelfRenderer?.continuations?.forEach { i ->
@@ -346,12 +357,12 @@ class YoutubeAPIImpl @Inject constructor(
         if (token.isNotEmpty() && clickParams.isNotEmpty()) {
             val res =
                 youtubeMusicAPI.youtubeMoreSearchAllSongsResponse(
-                    ytMusicSearchAllSongsJsonBody(ip, q), token, token, clickParams, key
+                    ytMusicNextSearchJsonBody(ip), token, token, clickParams, key
                 )
 
             res.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
                 c?.musicShelfRenderer?.contents?.forEach { shelf ->
-                    addItems(shelf)
+                    addItems(shelf, 2)
                 }
             }
         }
@@ -637,7 +648,7 @@ class YoutubeAPIImpl @Inject constructor(
         val key = remoteConfig.ytApiKeys()?.music ?: ""
 
         val r = youtubeMusicAPI
-            .youtubeSearchTextSuggestionResponse(ytMusicSearchTxtSuggestionJsonBody(ip, q), key)
+            .youtubeSearchTextSuggestionResponse(ytMusicSearchSuggestionJsonBody(ip, q), key)
 
         r.contents?.forEach { content ->
             content?.searchSuggestionsSectionRenderer?.contents?.forEach { item ->
@@ -647,15 +658,75 @@ class YoutubeAPIImpl @Inject constructor(
                             ?: ""
                     val m = MusicData("", name, name, "", MusicType.TEXT)
                     search.add(m)
-                } else {
-                    val thumbnail =
-                        item?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-
-
                 }
             }
         }
 
         emit(search)
+    }
+
+
+    override suspend fun searchData(q: String) = flow {
+        val albums = mutableListOf<MusicData>()
+        val artists = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.music ?: ""
+
+        val albumResponse = youtubeMusicAPI
+            .youtubeSearchAllSongsResponse(ytMusicArtistsAlbumsJsonBody(ip, q), key)
+
+        albumResponse.contents?.tabbedSearchResultsRenderer?.tabs?.forEach { tabs ->
+            tabs?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+                c?.musicShelfRenderer?.contents?.forEach { content ->
+                    val thumbnail = content?.musicResponsiveListItemRenderer?.thumbnail
+                        ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                    val name = content?.theName()
+
+                    var isAlbums = false
+
+                    content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { flex ->
+                        flex?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { r ->
+                            if (r?.text?.lowercase() == "album") isAlbums = true
+                        }
+                    }
+                    val pId =
+                        content?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId
+
+                    if (isAlbums) name?.let {
+                        if (name.trim().isNotEmpty())
+                            albums.add(MusicData(thumbnail, name, q, pId, MusicType.ALBUMS))
+                    }
+                }
+            }
+        }
+
+        val songs = allSongsSearch(q).first()
+
+        val artistsResponse =
+            youtubeMusicAPI.youtubeSearchResponse(ytMusicArtistsSearchJsonBody(ip, q), key)
+
+        artistsResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
+            if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
+                s.musicShelfRenderer.contents?.forEach { c ->
+                    val thumbnail = c?.musicResponsiveListItemRenderer?.thumbnail
+                        ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
+                    val name =
+                        c?.musicResponsiveListItemRenderer?.flexColumns?.first()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.first()?.text
+
+                    val id =
+                        c?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
+
+                    val music = MusicData(thumbnail, name, name, id, MusicType.ARTISTS)
+                    name?.let {
+                        artists.add(music)
+                    }
+                }
+            }
+        }
+
+
+        emit(SearchData(songs, albums, artists))
     }
 }

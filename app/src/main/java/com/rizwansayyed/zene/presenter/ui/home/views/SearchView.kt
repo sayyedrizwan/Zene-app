@@ -46,6 +46,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.searchHistoryL
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
+import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
@@ -56,7 +57,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
@@ -71,7 +74,8 @@ fun SearchView() {
     var searchJob by remember { mutableStateOf<Job?>(null) }
     var searchInfoText by remember { mutableStateOf("") }
 
-    val searchHistory by searchHistoryList.collectAsState(initial = emptyArray())
+    val searchHistory by searchHistoryList
+        .collectAsState(initial = runBlocking(Dispatchers.IO) { searchHistoryList.first() })
 
     val listener =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -185,7 +189,12 @@ fun SearchView() {
         }
     }
 
-    if (searchInfoText.isNotEmpty()) SearchViewInfo(searchInfoText)
+    if (searchInfoText.isNotEmpty()) SearchViewInfo(searchInfoText) {
+        searchInfoText = ""
+        text = ""
+        homeApiViewModel.emptySearchText()
+    }
+
 
     LaunchedEffect(Unit) {
         homeApiViewModel.emptySearchText()

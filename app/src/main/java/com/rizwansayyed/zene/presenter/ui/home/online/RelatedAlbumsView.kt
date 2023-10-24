@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,6 +83,29 @@ fun AlbumsItems(albums: MusicData) {
         Spacer(Modifier.height(6.dp))
 
         TextSemiBold(albums.name ?: "", Modifier.fillMaxWidth(), doCenter = true, size = 14)
+
+        Spacer(Modifier.height(12.dp))
+    }
+}
+
+
+@Composable
+fun AlbumsItemsShort(albums: MusicData) {
+    val width = (LocalConfiguration.current.screenWidthDp / 2 + 20).dp
+
+    Column(Modifier.width(width)) {
+        AsyncImage(
+            albums.thumbnail, "", Modifier
+                .padding(5.dp)
+                .width(width)
+        )
+
+        Spacer(Modifier.height(6.dp))
+
+        TextSemiBold(albums.name ?: "",
+            Modifier
+                .padding(horizontal = 9.dp)
+                .fillMaxWidth(), size = 14)
 
         Spacer(Modifier.height(12.dp))
     }

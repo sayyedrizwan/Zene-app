@@ -40,7 +40,7 @@ interface YoutubeMusicAPIService {
         @Query("continuation") continuation: String,
         @Query("itct") itct: String,
         @Query("key") key: String,
-        @Query("type") type: Boolean = false,
+        @Query("type") type: String = "next",
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeMusicAllSongsResponse
 

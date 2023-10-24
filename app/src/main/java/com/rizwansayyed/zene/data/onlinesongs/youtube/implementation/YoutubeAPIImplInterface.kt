@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +21,5 @@ interface YoutubeAPIImplInterface {
     suspend fun songsSuggestionsForUsers(sId: List<String>): Flow<SongsSuggestionsData>
     suspend fun artistsFansItemSearch(artists: List<String>): Flow<List<ArtistsFanData>>
     suspend fun searchTextsSuggestions(q: String): Flow<List<MusicData>>
+    suspend fun searchData(q: String): Flow<SearchData>
 }

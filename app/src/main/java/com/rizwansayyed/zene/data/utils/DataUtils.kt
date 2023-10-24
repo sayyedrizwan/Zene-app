@@ -122,15 +122,15 @@ object YoutubeAPI {
 
     fun ytMusicSearchAllSongsJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
-            "context": {
-            "client": {
-            "remoteHost": "${ip?.query}",
-            "userAgent": "$USER_AGENT",
-            "clientName": "WEB_REMIX",
-            "clientVersion": "1.20230918.01.00",
-            "timeZone": "${ip?.timezone}"
-        }
-        }, "query": "$q", "params": "EgWKAQIIAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
+                "context": {
+                    "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "1.20230918.01.00",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }, "query": "$q", "params": "EgWKAQIIAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -155,9 +155,8 @@ object YoutubeAPI {
         return json.toRequestBody(mediaType)
     }
 
-    fun ytMusicSearchTxtSuggestionJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
+    fun ytMusicNextSearchJsonBody(ip: IpJsonResponse?): RequestBody {
         val json = """{
-            "input": "$q",
             "context": {
                 "client": {
                     "remoteHost": "${ip?.query}",
@@ -288,7 +287,12 @@ object CacheFiles {
     val topArtistsCountry by lazy { File(context.cacheDir, "top-artists-country-list.json") }
     val songsForYouCache by lazy { File(context.cacheDir, "songs-for-you-cache.json") }
     val albumsForYouCache by lazy { File(context.cacheDir, "albums-for-you-cache.json") }
-    val artistsFanWithSongsCache by lazy { File(context.cacheDir, "artists-fan-with-songs-cache.json") }
+    val artistsFanWithSongsCache by lazy {
+        File(
+            context.cacheDir,
+            "artists-fan-with-songs-cache.json"
+        )
+    }
     val suggestionYouMayLikeCache by lazy {
         File(context.cacheDir, "suggestion-you-may-like-cache.json")
     }

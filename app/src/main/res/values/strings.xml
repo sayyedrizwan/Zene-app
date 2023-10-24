@@ -14,6 +14,9 @@
     <string name="songs_you_may_like_to_listen">Songs you may like to listen</string>
     <string name="speak_music_artists_album">Speak music, artist or album name to search</string>
     <string name="similar_artists">Similar Artists</string>
+    <string name="artists">Artists</string>
+    <string name="albums">Albums</string>
+    <string name="songs">Songs</string>
     <string name="your_favourite_artists">Your favourite artists</string>
     <string name="song_for_you_to_explore">Song For You to Explore</string>
     <string name="select_artists">Select artists</string>
@@ -37,4 +40,5 @@
     <string name="search_history">Search History</string>
     <string name="no_search_history">No search history, the history of requests will appear here</string>
     <string name="error_searching_try_again">Error searching. Please try again</string>
+    <string name="error_loading_data_try_again">Error loading data. Please try again.</string>
 </resources>
