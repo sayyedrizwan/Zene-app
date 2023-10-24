@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @Composable
@@ -67,6 +68,7 @@ fun SongsSuggestionsForYou() {
 @Composable
 fun SongsYouMayLikeList(item: List<List<MusicData>>) {
     val width = LocalConfiguration.current.screenWidthDp
+    val homeNavModel: HomeNavViewModel = hiltViewModel()
 
     item.forEach { i ->
         LazyRow(Modifier.fillMaxWidth()) {
@@ -102,7 +104,7 @@ fun SongsYouMayLikeList(item: List<List<MusicData>>) {
                         )
 
                         MenuIcon(Modifier.align(Alignment.TopEnd).padding(5.dp)) {
-
+                            homeNavModel.setSongDetailsDialog(it)
                         }
                     }
 

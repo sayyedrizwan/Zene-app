@@ -35,7 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
@@ -47,12 +49,14 @@ import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.convertMoney
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CurrentMostPlayingSong() {
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()
+    val homeNavModel: HomeNavViewModel = hiltViewModel()
 
     when (val v = homeApiViewModel.mostPlayingSong) {
         DataResponse.Empty -> {}
@@ -79,7 +83,8 @@ fun CurrentMostPlayingSong() {
                             it,
                             Modifier
                                 .animateItemPlacement()
-                                .clickable { it.pId?.toast() })
+                                .clickable { it.pId?.toast() }, homeNavModel
+                        )
                     }
                 }
             }
@@ -108,7 +113,7 @@ fun MostPlayedSongsLoading() {
 }
 
 @Composable
-fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier) {
+fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier, homeNav: HomeNavViewModel) {
     Box(
         modifier
             .padding(horizontal = 12.dp)
@@ -168,7 +173,10 @@ fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier) {
                 .align(Alignment.BottomCenter), Arrangement.Center, Alignment.CenterVertically
         ) {
             MenuIcon {
-
+                val m = MusicData(
+                    music.thumbnail, music.name, music.artistsName, music.pId, MusicType.MUSIC
+                )
+                homeNav.setSongDetailsDialog(m)
             }
 
             Spacer(Modifier.weight(1f))

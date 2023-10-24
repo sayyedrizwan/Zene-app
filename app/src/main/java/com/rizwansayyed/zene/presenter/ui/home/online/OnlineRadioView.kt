@@ -1,10 +1,8 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,18 +29,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.MenuIcon
@@ -53,12 +50,14 @@ import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CityRadioViewList() {
     val homeApi: HomeApiViewModel = hiltViewModel()
+    val homeNav: HomeNavViewModel = hiltViewModel()
 
     when (val v = homeApi.onlineRadio) {
         DataResponse.Empty -> {}
@@ -70,6 +69,7 @@ fun CityRadioViewList() {
 
             RadioItemLoading()
         }
+
         is DataResponse.Success -> {
             val radioPagerState = rememberPagerState(pageCount = { v.item.size })
 
@@ -89,7 +89,7 @@ fun CityRadioViewList() {
                     start = if ((radioPagerState.currentPage + 1) == radioPagerState.pageCount) 90.dp else 0.dp
                 ),
             ) { page ->
-                RadiosItems(page, radioPagerState, v.item[page])
+                RadiosItems(page, radioPagerState, v.item[page], homeNav)
             }
         }
     }
@@ -150,7 +150,8 @@ fun RadioFavList() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RadiosItems(
-    page: Int, radioPagerState: PagerState, radio: OnlineRadioResponseItem
+    page: Int, radioPagerState: PagerState,
+    radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel
 ) {
     Card(
         Modifier
@@ -170,7 +171,8 @@ fun RadiosItems(
                 .fillMaxSize()
         ) {
             MenuIcon(Modifier.align(Alignment.TopStart)) {
-
+                val m = MusicData(radio.favicon, radio.name, "", radio.stationuuid, MusicType.RADIO)
+                homeNav.setSongDetailsDialog(m)
             }
 
             Column(

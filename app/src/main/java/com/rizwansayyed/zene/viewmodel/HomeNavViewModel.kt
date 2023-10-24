@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.HomeNavigation
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.utils.Utils.isInternetConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,18 +24,25 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var isOnline = mutableStateOf(true)
         private set
 
-    var homeNav = mutableStateOf(HomeNavigation.HOME)
+    var homeNavV by mutableStateOf(HomeNavigation.HOME)
         private set
 
     var homeScrollPosition = mutableIntStateOf(0)
         private set
 
+    var songDetailDialog by mutableStateOf<MusicData?>(null)
+        private set
+
+    fun setSongDetailsDialog(v: MusicData?) {
+        songDetailDialog = v
+    }
+
     fun setHomeScrollPosition(v: Int) {
-        homeScrollPosition.value = v
+        homeScrollPosition.intValue = v
     }
 
     fun setHomeNav(h: HomeNavigation) {
-        homeNav.value = h
+        homeNavV = h
     }
 
     fun checkAndSetOnlineStatus() = viewModelScope.launch(Dispatchers.IO) {

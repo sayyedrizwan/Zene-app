@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @Composable
@@ -53,6 +54,7 @@ fun SongsForYouToExplore() {
 @Composable
 fun SongsExploreItems(music: MusicData) {
     val width = (LocalConfiguration.current.screenWidthDp / 2).dp
+    val homeNav: HomeNavViewModel = hiltViewModel()
 
     Column(Modifier.fillMaxWidth()) {
         Box(
@@ -86,7 +88,7 @@ fun SongsExploreItems(music: MusicData) {
                     .align(Alignment.TopEnd)
                     .padding(5.dp)
             ) {
-
+                homeNav.setSongDetailsDialog(music)
             }
         }
 

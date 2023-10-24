@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlin.math.absoluteValue
 
@@ -127,6 +128,7 @@ fun ArtistsFanItems(item: List<ArtistsFanData>) {
 @Composable
 fun ArtistsFanItemsSongs(list: List<MusicData>) {
     val width = LocalConfiguration.current.screenWidthDp
+    val homeNav: HomeNavViewModel = hiltViewModel()
 
     LazyRow(
         Modifier
@@ -136,14 +138,14 @@ fun ArtistsFanItemsSongs(list: List<MusicData>) {
             .background(MainColor)
     ) {
         items(list) {
-            ArtistsFanItemsSongsItems(it, width)
+            ArtistsFanItemsSongsItems(it, width, homeNav)
         }
     }
 }
 
 
 @Composable
-fun ArtistsFanItemsSongsItems(it: MusicData, width: Int) {
+fun ArtistsFanItemsSongsItems(it: MusicData, width: Int, homeNav: HomeNavViewModel) {
     Column(
         Modifier
             .padding(start = 10.dp, end = 15.dp)
@@ -179,8 +181,9 @@ fun ArtistsFanItemsSongsItems(it: MusicData, width: Int) {
             MenuIcon(
                 Modifier
                     .align(Alignment.TopEnd)
-                    .padding(5.dp)) {
-
+                    .padding(5.dp)
+            ) {
+                homeNav.setSongDetailsDialog(it)
             }
         }
 

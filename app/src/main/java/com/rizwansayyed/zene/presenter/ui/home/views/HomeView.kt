@@ -240,13 +240,13 @@ fun BottomNavBar(modifier: Modifier) {
                     painterResource(it.img),
                     "",
                     Modifier.size(25.dp),
-                    colorFilter = ColorFilter.tint(if (nav.homeNav.value == it) Color.White else Color.Gray)
+                    colorFilter = ColorFilter.tint(if (nav.homeNavV == it) Color.White else Color.Gray)
                 )
 
                 Spacer(Modifier.height(5.dp))
 
                 TextRegular(
-                    it.n, Modifier, if (nav.homeNav.value == it) Color.White else Color.Gray,
+                    it.n, Modifier, if (nav.homeNavV == it) Color.White else Color.Gray,
                     doCenter = true, size = 10
                 )
             }
