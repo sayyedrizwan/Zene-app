@@ -112,6 +112,7 @@ fun SearchView() {
                         homeApiViewModel.searchTextSuggestions(it)
                     }
                 }, {
+                    searchInfoText = text
                     keyboard?.hide()
                 })
             }

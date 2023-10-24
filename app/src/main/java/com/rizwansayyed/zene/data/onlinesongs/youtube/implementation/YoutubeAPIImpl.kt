@@ -357,15 +357,15 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         if (token.isNotEmpty() && clickParams.isNotEmpty()) {
-            val res = youtubeMusicAPI.youtubeMoreSearchAllSongsResponse(
-                ytMusicNextSearchJsonBody(ip), token, token, clickParams, key
-            )
-
-            res.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
-                c?.musicShelfRenderer?.contents?.forEach { shelf ->
-                    addItems(shelf)
-                }
-            }
+//            val res = youtubeMusicAPI.youtubeMoreSearchAllSongsResponse(
+//                ytMusicNextSearchJsonBody(ip), token, token, clickParams, key
+//            )
+//
+//            res.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+//                c?.musicShelfRenderer?.contents?.forEach { shelf ->
+//                    addItems(shelf)
+//                }
+//            }
         }
 
         emit(list)
