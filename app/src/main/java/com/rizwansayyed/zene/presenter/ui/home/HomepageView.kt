@@ -47,7 +47,6 @@ fun HomepageTopView() {
         }
 
         Row {
-
             SmallIcons(R.drawable.ic_notification) {
 
             }

@@ -34,7 +34,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -50,10 +49,8 @@ import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
-import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -188,7 +185,7 @@ fun SearchView() {
         }
     }
 
-    if (searchInfoText.isNotEmpty()) SearchViewInfo()
+    if (searchInfoText.isNotEmpty()) SearchViewInfo(searchInfoText)
 
     LaunchedEffect(Unit) {
         homeApiViewModel.emptySearchText()

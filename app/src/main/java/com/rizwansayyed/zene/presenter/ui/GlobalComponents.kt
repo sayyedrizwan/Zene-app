@@ -289,6 +289,9 @@ fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 2300f): Brush
 
 @Composable
 fun MenuIcon(modifier: Modifier = Modifier, click: () -> Unit) {
+    SmallIcons(R.drawable.ic_menu, 25) {
+        click()
+    }
     Image(
         painterResource(R.drawable.ic_menu), "",
         modifier
@@ -301,7 +304,12 @@ fun MenuIcon(modifier: Modifier = Modifier, click: () -> Unit) {
 }
 
 @Composable
-fun SearchEditTextView(text: String, listener: ManagedActivityResultLauncher<Intent, ActivityResult>,  onChange: (String) -> Unit, onDone: () -> Unit) {
+fun SearchEditTextView(
+    text: String,
+    listener: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    onChange: (String) -> Unit,
+    onDone: () -> Unit
+) {
     OutlinedTextField(
         value = text,
         onValueChange = { onChange(it) },
@@ -439,12 +447,12 @@ fun Int.scaledSp(): TextUnit {
 }
 
 @Composable
-fun SmallIcons(icon: Int, click: () -> Unit) {
+fun SmallIcons(icon: Int, size: Int = 23, click: () -> Unit) {
     Image(
         painterResource(icon), "",
         Modifier
             .padding(5.dp)
-            .size(23.dp)
+            .size(size.dp)
             .clickable {
                 click()
             },
@@ -523,7 +531,6 @@ fun TopInfoWithImage(v: Int, s: Int?, click: () -> Unit) {
 
 @Composable
 fun TopInfoWithImage(v: String, s: Int?, click: () -> Unit) {
-
     Spacer(Modifier.height(80.dp))
 
     Row(
