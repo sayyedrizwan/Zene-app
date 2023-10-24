@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -73,7 +74,8 @@ fun PageWithHorizontal(item: List<List<MusicData?>>) {
 
 @Composable
 fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean) {
-    val roomDbViewModel : RoomDbViewModel = hiltViewModel()
+    val homeNavViewModel : HomeNavViewModel = hiltViewModel()
+
     val gradient = Brush.linearGradient(
         colors = if (horizontal) listOf(BlackColor, BlackColor)
         else listOf(BlackColor, BlackColor, BlackColor, BlackColor, MainColor),
@@ -116,7 +118,7 @@ fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean) {
         }
 
         MenuIcon {
-            i?.let { roomDbViewModel.tempInsert(it) }
+            homeNavViewModel.setSongDetailsDialog(i)
         }
     }
 }

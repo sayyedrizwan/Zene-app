@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,13 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -52,8 +59,50 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
             homeNavModel.songDetailDialog?.thumbnail ?: ""
         )
 
+        Spacer(Modifier.height(30.dp))
+
+        MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
+
+        }
+        MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
+
+        }
+        MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
+
+        }
+
+//        MusicDialogListItems()
 
         Spacer(Modifier.height(130.dp))
+    }
+}
+
+
+@Composable
+fun MusicDialogListItems(icon: Int, title: String, click: () -> Unit) {
+    Row(
+        Modifier
+            .clickable {
+                click()
+            }
+            .padding(vertical = 14.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painterResource(icon), title,
+            Modifier
+                .padding(start = 19.dp, end = 6.dp)
+                .size(23.dp),
+            colorFilter = ColorFilter.tint(Color.LightGray)
+        )
+
+        TextRegular(
+            title,
+            Modifier
+                .padding(start = 6.dp)
+                .weight(1f), Color.LightGray, size = 17
+        )
     }
 }
 

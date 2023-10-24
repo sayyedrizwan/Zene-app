@@ -41,4 +41,5 @@
     <string name="no_search_history">No search history, the history of requests will appear here</string>
     <string name="error_searching_try_again">Error searching. Please try again</string>
     <string name="error_loading_data_try_again">Error loading data. Please try again.</string>
+    <string name="add_to_playlist">Add to playlist</string>
 </resources>

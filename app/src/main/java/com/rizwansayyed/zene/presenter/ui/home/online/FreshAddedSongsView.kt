@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -103,7 +104,8 @@ fun FreshAddedSongsList() {
 
 @Composable
 fun FreshAddedItems(music: MusicData) {
-    val roomDbViewModel : RoomDbViewModel = hiltViewModel()
+    val homeNavViewModel : HomeNavViewModel = hiltViewModel()
+
     Row(
         Modifier
             .padding(horizontal = 5.dp)
@@ -126,7 +128,7 @@ fun FreshAddedItems(music: MusicData) {
             Spacer(Modifier.weight(1f))
 
             MenuIcon {
-                roomDbViewModel.tempInsert(music)
+                homeNavViewModel.setSongDetailsDialog(music)
             }
         }
 
