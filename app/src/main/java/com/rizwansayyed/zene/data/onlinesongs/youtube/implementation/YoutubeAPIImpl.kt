@@ -324,7 +324,7 @@ class YoutubeAPIImpl @Inject constructor(
         var token = ""
         var clickParams = ""
 
-        fun addItems(shelf: MusicShelfRendererSongs.Content?, i: Int) {
+        fun addItems(shelf: MusicShelfRendererSongs.Content?) {
             val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
                 ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
             val name = shelf?.musicResponsiveListItemRenderer?.names()?.first
@@ -334,9 +334,6 @@ class YoutubeAPIImpl @Inject constructor(
             val m = MusicData(
                 thumbnail ?: "", name, artists, songId, MusicType.MUSIC
             )
-
-            Log.d("TAG", "addItems: data $i ${name} ")
-
             list.add(m)
         }
 
@@ -345,7 +342,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         r.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
             c?.musicShelfRenderer?.contents?.forEach { shelf ->
-                addItems(shelf, 1)
+                addItems(shelf)
             }
 
             c?.musicShelfRenderer?.continuations?.forEach { i ->
@@ -362,7 +359,7 @@ class YoutubeAPIImpl @Inject constructor(
 
             res.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
                 c?.musicShelfRenderer?.contents?.forEach { shelf ->
-                    addItems(shelf, 2)
+                    addItems(shelf)
                 }
             }
         }

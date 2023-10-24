@@ -163,7 +163,14 @@ object YoutubeAPI {
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
                     "clientVersion": "1.20230918.01.00",
-                    "timeZone": "${ip?.timezone}"
+                    "platform": "DESKTOP",
+                    "clientFormFactor": "UNKNOWN_FORM_FACTOR",
+                    "timeZone": "${ip?.timezone}",
+                    "screenWidthPoints": 705,
+                    "screenHeightPoints": 825
+                },
+                "adSignalsInfo": {
+                    "params": []
                 }
             }
         }"""
