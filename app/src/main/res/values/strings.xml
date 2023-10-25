@@ -53,4 +53,5 @@
     <string name="cancel">Cancel</string>
     <string name="rm_radio_from_fav">Remove radio from favourites</string>
     <string name="remove">Remove</string>
+    <string name="are_you_sure_rm_radio_from_fav">Are you sure want to remove this radio from your favourites list</string>
 </resources>

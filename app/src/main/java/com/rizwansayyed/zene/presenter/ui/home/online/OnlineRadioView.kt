@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +47,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
@@ -59,6 +63,11 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -126,7 +135,10 @@ fun RadioItemLoading() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RadioFavList(homeApi: HomeApiViewModel) {
+    val homeApiViewModel: HomeApiViewModel = hiltViewModel()
+
     var rmDialog by remember { mutableStateOf<String?>(null) }
+    val coroutine = rememberCoroutineScope()
 
     when (val v = homeApi.favouriteRadio) {
         DataResponse.Empty -> {}
@@ -175,9 +187,17 @@ fun RadioFavList(homeApi: HomeApiViewModel) {
 
     if (rmDialog != null) SimpleTextDialog(
         stringResource(R.string.rm_radio_from_fav),
-        stringResource(R.string.rm_radio_from_fav),
-        stringResource(R.string.remove),
-        { rmDialog = null },
+        stringResource(R.string.are_you_sure_rm_radio_from_fav),
+        stringResource(R.string.remove), {
+            coroutine.launch {
+                val radioList = favouriteRadioList.first()
+                val list = ArrayList<String>().apply { addAll(radioList ?: emptyArray()) }
+                list.remove(rmDialog)
+                favouriteRadioList = flowOf(list.toTypedArray())
+                homeApiViewModel.favouriteRadios(true)
+                rmDialog = null
+            }
+        },
         { rmDialog = null })
 }
 
