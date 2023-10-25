@@ -16,6 +16,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,13 +30,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +62,14 @@ fun MusicDialogSheet() {
 
 @Composable
 fun MusicDialogView(homeNavModel: HomeNavViewModel) {
+    val homeApiViewModel: HomeApiViewModel = hiltViewModel()
+
+    val addInQueue = stringResource(R.string.add_in_queue)
+    val offlineDownload = stringResource(R.string.offline_download)
+    val songInfo = stringResource(R.string.song_info)
+    val makeFavourite = stringResource(R.string.mark_as_favourite)
+    val removeFavourite = stringResource(R.string.rm_as_favourite)
+
     Column(Modifier.fillMaxWidth()) {
         TextAndImageSideBySide(
             homeNavModel.songDetailDialog?.name ?: "",
@@ -61,20 +79,59 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
 
         Spacer(Modifier.height(30.dp))
 
-        MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
+        if (homeNavModel.songDetailDialog?.type == MusicType.RADIO) {
+            val radioList by favouriteRadioList.collectAsState(runBlocking(Dispatchers.IO) { favouriteRadioList.first() })
+            MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
 
+            }
+
+            if (radioList?.any { it == homeNavModel.songDetailDialog?.pId } == true)
+                MusicDialogListItems(R.drawable.ic_favourite_circle, removeFavourite) {
+                    val list = ArrayList<String>().apply { addAll(radioList!!) }
+                    list.remove(homeNavModel.songDetailDialog?.pId)
+                    favouriteRadioList = flowOf(list.toTypedArray())
+                    homeApiViewModel.favouriteRadios(true)
+                }
+            else
+                MusicDialogListItems(R.drawable.ic_favourite, makeFavourite) {
+                    val list = ArrayList<String>().apply { addAll(radioList!!) }
+                    homeNavModel.songDetailDialog?.pId?.let { list.add(0, it) }
+                    favouriteRadioList = flowOf(list.toTypedArray())
+                    homeApiViewModel.favouriteRadios(true)
+                }
+        } else {
+            MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
+
+            }
+            MusicDialogListItems(R.drawable.ic_play_next, stringResource(R.string.play_next)) {
+
+            }
+            MusicDialogListItems(R.drawable.ic_play_in_queue, addInQueue) {
+
+            }
+            MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
+
+            }
+            MusicDialogListItems(R.drawable.ic_download, offlineDownload) {
+
+            }
+            MusicDialogListItems(R.drawable.ic_information_circle, songInfo) {
+
+            }
         }
-        MusicDialogListItems(R.drawable.ic_play_next, stringResource(R.string.play_next)) {
 
-        }
-        MusicDialogListItems(R.drawable.ic_play_in_queue, stringResource(R.string.add_in_queue)) {
-
-        }
-        MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
-
-        }
-
-//        MusicDialogListItems()
+        TextSemiBold(
+            stringResource(R.string.close),
+            Modifier
+                .clickable {
+                    homeNavModel.setSongDetailsDialog(null)
+                }
+                .padding(vertical = 50.dp)
+                .fillMaxWidth(),
+            true,
+            Color.LightGray,
+            size = 17
+        )
 
         Spacer(Modifier.height(130.dp))
     }

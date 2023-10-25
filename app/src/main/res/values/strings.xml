@@ -45,4 +45,12 @@
     <string name="play">Play</string>
     <string name="play_next">Play Next</string>
     <string name="add_in_queue">Add in queue</string>
+    <string name="offline_download">Offline download</string>
+    <string name="song_info">Song info</string>
+    <string name="close">Close</string>
+    <string name="mark_as_favourite">Mark as favourite</string>
+    <string name="rm_as_favourite">Remove as favourite</string>
+    <string name="cancel">Cancel</string>
+    <string name="rm_radio_from_fav">Remove radio from favourites</string>
+    <string name="remove">Remove</string>
 </resources>

@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.searchHistoryList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
@@ -15,6 +17,7 @@ import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplIn
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
@@ -44,6 +47,7 @@ class HomeApiViewModel @Inject constructor(
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         currentMostPlayingSong()
+        favouriteRadios(false)
         fun runs() {
             onlineRadiosInCity()
             globalTrendingSongs()
@@ -72,6 +76,9 @@ class HomeApiViewModel @Inject constructor(
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
+        private set
+
+    var favouriteRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
         private set
 
     var topGlobalTrendingSongs by mutableStateOf<DataResponse<List<List<MusicData?>>>>(DataResponse.Empty)
@@ -113,6 +120,21 @@ class HomeApiViewModel @Inject constructor(
             onlineRadio = DataResponse.Success(it)
         }
     }
+
+    fun favouriteRadios(clear: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        if (clear) CacheFiles.favRadio.deleteRecursively()
+
+        val favLists = favouriteRadioList.first()?.joinToString(",") ?: return@launch
+
+        onlineRadiosAPI.favouriteRadioLists(favLists).onStart {
+            favouriteRadio = DataResponse.Loading
+        }.catch {
+            favouriteRadio = DataResponse.Error(it)
+        }.collectLatest {
+            favouriteRadio = DataResponse.Success(it)
+        }
+    }
+
 
     private fun globalTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
         spotifyAPI.globalTrendingSongs().onStart {

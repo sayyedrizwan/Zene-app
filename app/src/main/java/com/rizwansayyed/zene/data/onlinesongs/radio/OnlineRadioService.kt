@@ -14,4 +14,10 @@ interface OnlineRadioService {
         @Query("countrycode") countryCode: String
     ): OnlineRadioResponse
 
+    @GET
+    suspend fun favouriteRadio(
+        @Url url: String,
+        @Query("uuids") uuids: String
+    ): OnlineRadioResponse
+
 }

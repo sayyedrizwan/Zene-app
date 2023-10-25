@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DATA_STORE_DB
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DO_SHOW_SPLASH_SCREEN
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.FAVOURITE_RADIO_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IP_JSON
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LAST_SYNC_TIME
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SEARCH_HISTORY_LIST
@@ -46,6 +47,16 @@ object DataStorageManager {
         set(v) = runBlocking {
             val moshi = moshi.adapter(Array<String>::class.java).toJson(v.first())
             context.dataStore.edit { it[SELECTED_FAVOURITE_ARTISTS_SONGS] = moshi }
+        }
+
+    var favouriteRadioList: Flow<Array<String>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<String>::class.java)
+                .fromJson(it[FAVOURITE_RADIO_LIST] ?: ARRAY_LIST)
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(Array<String>::class.java).toJson(v.first())
+            context.dataStore.edit { it[FAVOURITE_RADIO_LIST] = moshi }
         }
 
     var searchHistoryList: Flow<Array<String>?>

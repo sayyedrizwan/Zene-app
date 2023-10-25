@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -25,6 +27,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +53,7 @@ import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -77,7 +85,7 @@ fun CityRadioViewList() {
                 "see all radio".toast()
             }
 
-            RadioFavList()
+            RadioFavList(homeApi)
 
             Spacer(Modifier.height(10.dp))
 
@@ -115,36 +123,62 @@ fun RadioItemLoading() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RadioFavList() {
-    LazyRow {
-        items(3) {
-            Row(
-                Modifier
-                    .padding(horizontal = 8.dp)
-                    .border(1.dp, Color.Black, RoundedCornerShape(30))
-                    .clip(RoundedCornerShape(30))
-                    .background(Color.White),
-                Arrangement.Center, Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    "https://1.bp.blogspot.com/-zqFqeHIezoQ/XWwTN0Jl0OI/AAAAAAAAAck/JiBc3HIncUIIrenqBm_BaIfLAGLxCQF4ACLcBGAs/s1600/free%2Bfm%2Brock.jpg",
-                    "",
+fun RadioFavList(homeApi: HomeApiViewModel) {
+    var rmDialog by remember { mutableStateOf<String?>(null) }
+
+    when (val v = homeApi.favouriteRadio) {
+        DataResponse.Empty -> {}
+        is DataResponse.Error -> {}
+        DataResponse.Loading -> LazyRow {
+            items(6) {
+                Spacer(
                     Modifier
-                        .padding(5.dp)
-                        .size(35.dp)
-                        .clip(RoundedCornerShape(100)),
-                    contentScale = ContentScale.Crop
-                )
-                TextThin(
-                    "Free FM Rock Bombay",
-                    Modifier.padding(end = 12.dp),
-                    color = Color.Black,
-                    size = 14
+                        .padding(horizontal = 8.dp)
+                        .size(86.dp, 40.dp)
+                        .border(1.dp, Color.Black, RoundedCornerShape(30))
+                        .clip(RoundedCornerShape(30))
+                        .background(shimmerBrush())
                 )
             }
         }
+
+        is DataResponse.Success -> LazyRow {
+            items(v.item) {
+                Row(
+                    Modifier
+                        .padding(horizontal = 8.dp)
+                        .border(1.dp, Color.Black, RoundedCornerShape(30))
+                        .clip(RoundedCornerShape(30))
+                        .background(Color.White)
+                        .combinedClickable(onClick = {}, onLongClick = {
+                            rmDialog = it.stationuuid
+                        }),
+                    Arrangement.Center, Alignment.CenterVertically
+                ) {
+                    AsyncImage(
+                        it.favicon, it.name, Modifier
+                            .padding(5.dp)
+                            .size(35.dp)
+                            .clip(RoundedCornerShape(100)),
+                        contentScale = ContentScale.Crop
+                    )
+                    TextThin(
+                        it.name ?: "Radio", Modifier.padding(end = 12.dp),
+                        color = Color.Black, size = 14
+                    )
+                }
+            }
+        }
     }
+
+    if (rmDialog != null) SimpleTextDialog(
+        stringResource(R.string.rm_radio_from_fav),
+        stringResource(R.string.rm_radio_from_fav),
+        stringResource(R.string.remove),
+        { rmDialog = null },
+        { rmDialog = null })
 }
 
 @OptIn(ExperimentalFoundationApi::class)

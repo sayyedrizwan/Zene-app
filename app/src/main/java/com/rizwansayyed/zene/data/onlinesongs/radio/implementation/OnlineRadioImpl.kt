@@ -7,9 +7,11 @@ import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.radio.activeRadioBaseURL
+import com.rizwansayyed.zene.data.utils.CacheFiles.favRadio
 import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
 import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.RADIO_BASE_URL
 import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioSearchAPI
+import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioUUIDSearchAPI
 import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -70,6 +72,22 @@ class OnlineRadioImpl @Inject constructor(
             else
                 emit(stateRadio)
         }
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun favouriteRadioLists(uuid: String) = flow {
+        val cache = responseCache(favRadio, OnlineRadioCacheResponse::class.java)
+        if (cache != null) {
+            if (returnFromCache1Hour(cache.cacheTime) && cache.list.isNotEmpty()) {
+                emit(cache.list)
+                return@flow
+            }
+        }
+
+        val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
+        val response = onlineRadio.favouriteRadio(radioUUIDSearchAPI(baseURL), uuid)
+        response.toTxtCache()?.let { writeToCacheFile(favRadio, it) }
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
 }

@@ -28,6 +28,10 @@ object RadioOnlineAPI {
         return "$base/json/stations/search"
     }
 
+    fun radioUUIDSearchAPI(base: String): String {
+        return "$base/json/stations/byuuid"
+    }
+
     const val RADIO_BASE_URLS = "all.api.radio-browser.info"
 }
 
@@ -284,6 +288,7 @@ object SearchEngine {
 
 object CacheFiles {
     val radioList by lazy { File(context.cacheDir, "radio-online.json") }
+    val favRadio by lazy { File(context.cacheDir, "fav-radio.json") }
     val topArtistsList by lazy { File(context.cacheDir, "top-artists-list.json") }
     val recentMostPlayedSongs by lazy { File(context.cacheDir, "recent-most-played-songs.json") }
     val topGlobalSongs by lazy { File(context.cacheDir, "top-global-songs-list.json") }
