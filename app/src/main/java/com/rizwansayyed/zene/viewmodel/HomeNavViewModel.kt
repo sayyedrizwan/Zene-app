@@ -33,6 +33,9 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var songDetailDialog by mutableStateOf<MusicData?>(null)
         private set
 
+    var musicPlayerView by mutableStateOf<MusicData?>(null)
+        private set
+
     fun setSongDetailsDialog(v: MusicData?) {
         songDetailDialog = v
     }

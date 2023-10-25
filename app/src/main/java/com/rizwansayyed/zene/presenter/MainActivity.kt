@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
+import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
@@ -78,6 +79,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 if (navViewModel.songDetailDialog != null) MusicDialogSheet()
+                if (navViewModel.songDetailDialog != null) MusicPlayerView()
                 if (doSplashScreen) MainSplashView()
 
 
