@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
+import android.app.Activity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,10 +29,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
@@ -50,13 +56,20 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.convertMoney
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CurrentMostPlayingSong() {
+    val context = LocalContext.current as Activity
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()
     val homeNavModel: HomeNavViewModel = hiltViewModel()
+
+    val player = ExoPlayer.Builder(context).build()
 
     when (val v = homeApiViewModel.mostPlayingSong) {
         DataResponse.Empty -> {}
@@ -83,7 +96,27 @@ fun CurrentMostPlayingSong() {
                             it,
                             Modifier
                                 .animateItemPlacement()
-                                .clickable { it.pId?.toast() }, homeNavModel
+                                .clickable {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        "running".toast()
+                                        val mediaItem = MediaItem
+                                            .Builder()
+                                            .setMediaId(it.pId!!)
+                                            .setUri("https://www.pagalwrold.com/siteuploads/files/sfd34/16974/Jo%20Dhaga%20Tumse%20Jud%20Gaya%20Wafa%20Ka_320(PagalWorld).mp3")
+                                            .setMediaMetadata(
+                                                MediaMetadata.Builder()
+                                                    .setTitle(it?.name)
+                                                    .setArtist(it?.artists)
+                                                    .setArtworkUri(it.thumbnail?.toUri())
+                                                    .build()
+                                            )
+                                            .build()
+                                        player.setMediaItem(mediaItem, true)
+                                        player.playWhenReady = true
+                                        player.prepare()
+                                        player.play()
+                                    }
+                                }, homeNavModel
                         )
                     }
                 }
