@@ -122,7 +122,7 @@ class MainActivity : ComponentActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             delay(3.seconds)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startService(Intent(this@MainActivity, PlayerService::class.java))
+                startForegroundService(Intent(this@MainActivity, PlayerService::class.java))
             }
         }
 

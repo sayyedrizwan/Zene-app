@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.service
 
 import android.content.Intent
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@UnstableApi
 @AndroidEntryPoint
 class PlayerService : MediaSessionService() {
 
@@ -27,7 +29,7 @@ class PlayerService : MediaSessionService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        startPlayerNotification(player, this)
+        startPlayerNotification(player, this, mediaSession)
 
         CoroutineScope(Dispatchers.Main).launch {
             val music = MusicData(

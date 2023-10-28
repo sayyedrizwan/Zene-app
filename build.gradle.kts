@@ -1,5 +1,6 @@
 buildscript {
     val agp_version by extra("8.1.2")
+    val agp_version1 by extra("8.1.2")
 }
 plugins {
     id("com.android.application") version "8.1.2" apply false
