@@ -76,11 +76,11 @@ class PlayerService : MediaSessionService() {
             }
 
 //            if (controllerFuture == null) {
-                val controllerFuture = MediaController.Builder(this@PlayerService, sessionToken).buildAsync()
-                controllerFuture.addListener({
-                    val controller = controllerFuture.get()
-                    controller.addListener(l)
-                }, ContextCompat.getMainExecutor(this@PlayerService))
+//                val controllerFuture = MediaController.Builder(this@PlayerService, sessionToken).buildAsync()
+//                controllerFuture.addListener({
+//                    val controller = controllerFuture.get()
+//                    controller.addListener(l)
+//                }, ContextCompat.getMainExecutor(this@PlayerService))
 //            }
 
 
