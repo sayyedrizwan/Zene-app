@@ -2,12 +2,7 @@ package com.rizwansayyed.zene.service.player
 
 import android.content.Context
 import android.util.Log
-import androidx.core.net.toUri
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.session.MediaLibraryService
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData

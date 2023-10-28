@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service
 import android.content.Intent
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.rizwansayyed.zene.domain.MusicData
@@ -39,6 +40,10 @@ class PlayerService : MediaSessionService() {
                 "233",
                 MusicType.MUSIC
             )
+
+            val i = music.toMediaItem("https://rs1.seedr.cc/ff_get/1653950113/02%20-%20Right%20Heres%20The%20Spot.mp3?st=udLh1c2SzDBFG2VXV2bORA&e=1698590797")
+            val mediaSourceFactory = DefaultMediaSourceFactory(this@PlayerService)
+            mediaSourceFactory.createMediaSource(i)
 
             player.apply {
                 setMediaItem(music.toMediaItem("https://rs1.seedr.cc/ff_get/1653950113/02%20-%20Right%20Heres%20The%20Spot.mp3?st=udLh1c2SzDBFG2VXV2bORA&e=1698590797"))
