@@ -20,9 +20,9 @@ import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
 
 object Utils {
-    private const val PLAYER_NOTIFICATION_ID = 350
-    private const val PLAYER_NOTIFICATION_CHANNEL_NAME = "start_player_notification"
-    private const val PLAYER_NOTIFICATION_CHANNEL_ID = "start_player_notification_id"
+    const val PLAYER_NOTIFICATION_ID = 350
+    const val PLAYER_NOTIFICATION_CHANNEL_NAME = "start_player_notification"
+    const val PLAYER_NOTIFICATION_CHANNEL_ID = "start_player_notification_id"
 
 
     fun MusicData.toMediaItem(url: String): MediaItem {

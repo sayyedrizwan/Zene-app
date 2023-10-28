@@ -1,20 +1,12 @@
 package com.rizwansayyed.zene.di
 
 import android.content.Context
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.MediaSession
-import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDB
-import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDao
-import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedDao
-import com.rizwansayyed.zene.data.db.recentplay.RecentPlayerDB
-import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDB
-import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDao
-import com.rizwansayyed.zene.data.utils.DBNAME.OFFLINE_DOWNLOADED_SONGS_DB
-import com.rizwansayyed.zene.data.utils.DBNAME.RECENT_PLAYED_DB
-import com.rizwansayyed.zene.data.utils.DBNAME.SAVED_PLAYLIST_DB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,10 +19,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ExoPlayerModule {
 
+    private val audioAttributes = AudioAttributes.Builder()
+        .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+        .setUsage(C.USAGE_MEDIA)
+        .build()
+
+
     @Provides
     @Singleton
+    @UnstableApi
     fun exoPlayer(@ApplicationContext c: Context): ExoPlayer =
-        ExoPlayer.Builder(c).build()
+        ExoPlayer.Builder(c)
+            .setAudioAttributes(audioAttributes, true)
+            .setHandleAudioBecomingNoisy(true)
+            .setTrackSelector(DefaultTrackSelector(c)).build()
 
     @Provides
     @Singleton
