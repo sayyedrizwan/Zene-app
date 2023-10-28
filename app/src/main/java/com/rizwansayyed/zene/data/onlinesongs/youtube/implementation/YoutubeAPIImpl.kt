@@ -92,13 +92,15 @@ class YoutubeAPIImpl @Inject constructor(
         emit(music)
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun musicInfoSearch(n: String, ip: IpJsonResponse?, key: String): MusicData? {
-        if (n.trim().isEmpty()) return null
+    override suspend fun musicInfoSearch(q: String, ip: IpJsonResponse?, key: String): MusicData? {
+        val n = q.trim().lowercase().replace("teaser", "")
+
+        if (n.isEmpty()) return null
 
         var m: MusicData? = null
 
         try {
-            if (n.trim().isEmpty()) return null
+            if (n.isEmpty()) return null
             val searchResponse =
                 youtubeMusicAPI.youtubeSearchResponse(ytMusicMainSearchJsonBody(ip, n), key)
 
@@ -112,7 +114,7 @@ class YoutubeAPIImpl @Inject constructor(
                         s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.first
 
                     val songsId =
-                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.first
+                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.second
 
                     val artists = s.musicShelfRenderer.getArtists()
 

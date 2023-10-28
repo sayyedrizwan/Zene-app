@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.domain
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.rizwansayyed.zene.data.utils.moshi
+import java.io.Serializable
 
 
 fun List<MusicData>.toTxtCache(): String? {
@@ -39,6 +42,10 @@ data class MusicData(
     var pId: String?,
     var type: MusicType?,
 )
+
+fun List<MusicDataWithArtists>.toMusicDataList(): List<MusicData> {
+    return this.map { MusicData(it.thumbnail, it.name, it.artists, it.pId, it.type) }
+}
 
 data class MusicDataWithArtistsCache(
     val cacheTime: Long,

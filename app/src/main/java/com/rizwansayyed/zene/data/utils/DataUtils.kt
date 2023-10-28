@@ -74,6 +74,12 @@ object LastFM {
     }
 }
 
+
+object SongDownloader {
+    const val SONG_D_BASE_URL = "https://watchapi.whatever.social/"
+    const val SONG_DOWNLOAD_URL = "streams/oGA3aHWBO0I"
+}
+
 object YoutubeAPI {
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
     const val YT_MAIN_GUIDE = "guide"

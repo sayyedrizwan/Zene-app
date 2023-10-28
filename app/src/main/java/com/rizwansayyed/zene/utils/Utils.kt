@@ -2,8 +2,14 @@ package com.rizwansayyed.zene.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
+import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.service.SongPlayerService
+import com.rizwansayyed.zene.utils.Utils.IntentExtra.PLAY_SONG_MEDIA
+import com.rizwansayyed.zene.utils.Utils.IntentExtra.SONG_MEDIA_POSITION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -16,6 +22,22 @@ import kotlin.system.exitProcess
 
 
 object Utils {
+
+    object AppUrl {
+        private const val APP_URL = "https://zene.vercel.app"
+
+        fun appUrlSongShare(id: String): String {
+            val changeIdToOurs = id.lowercase().trim()
+            return "$APP_URL/s/$changeIdToOurs"
+        }
+
+    }
+
+    object IntentExtra {
+        const val PLAY_SONG_MEDIA = "play_song_media"
+        const val SONG_MEDIA_POSITION = "song_media_position"
+    }
+
     fun isInternetConnected(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
@@ -88,5 +110,16 @@ object Utils {
         }
 
         if (isActive) cancel()
+    }
+
+    fun startPlayingSong(m: Array<MusicData>?, p: Int) {
+        m ?: return
+        val l = moshi.adapter(Array<MusicData>::class.java).toJson(m)
+        Intent(context, SongPlayerService::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(PLAY_SONG_MEDIA, l)
+            putExtra(SONG_MEDIA_POSITION, p)
+            context.startService(this)
+        }
     }
 }

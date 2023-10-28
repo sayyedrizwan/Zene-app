@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.di
 
+import com.rizwansayyed.zene.data.onlinesongs.downloader.SongDownloaderService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.ip.AWSIpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
@@ -12,6 +13,7 @@ import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_AWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_BASE_URL
 import com.rizwansayyed.zene.data.utils.LastFM
+import com.rizwansayyed.zene.data.utils.SongDownloader.SONG_D_BASE_URL
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_BASE_URL
 import com.rizwansayyed.zene.data.utils.USER_AGENT
 import com.rizwansayyed.zene.data.utils.YoutubeAPI
@@ -142,5 +144,15 @@ object RetrofitAPIModule {
             .baseUrl(LastFM.LFM_BASE_URL).client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build().create(LastFMService::class.java)
+    }
+
+    @Provides
+    fun retrofitSongDownloaderService(): SongDownloaderService {
+        val builder = OkHttpClient.Builder()
+
+        return Retrofit.Builder()
+            .baseUrl(SONG_D_BASE_URL).client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build().create(SongDownloaderService::class.java)
     }
 }
