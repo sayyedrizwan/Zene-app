@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.session.MediaLibraryService
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData
@@ -32,41 +34,28 @@ class ExoPlayerManager @Inject constructor(
 
         }
 
+    @androidx.media3.common.util.UnstableApi
     suspend fun downloadAndStartPlaying(positionStartToPlay: Int) {
         withContext(Dispatchers.IO) {
             try {
                 val music = musicData?.get(positionStartToPlay)
                 music?.pId ?: return@withContext ""
                 val url = songDownloader.download(music.pId!!).first()
-                Log.d("TAG", "downloadAndStartPlaying: data ee ${e.message}")
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    player.apply {
-                        url?.let { u ->
-                            playWhenReady = true
-                            setMediaItem(music.toMediaItem(u))
-                            prepare()
-                            play()
-                        }
-                    }
-                }
+//                CoroutineScope(Dispatchers.Main).launch {
+//                    player.apply {
+//                        url?.let { u ->
+//                            playWhenReady = true
+//                            setMediaItem(music.toMediaItem(u))
+//                            prepare()
+//                            play()
+//                        }
+//                    }
+//                }
             } catch (e: Exception) {
                 Log.d("TAG", "downloadAndStartPlaying: data ee ${e.message}")
             }
         }
-    }
-
-
-    private fun MusicData.toMediaItem(url: String): MediaItem {
-        val metadata = MediaMetadata.Builder().setTitle(this.name)
-            .setDisplayTitle(this.name).setArtist(this.artists)
-            .setArtworkUri(this.thumbnail?.toUri()).build()
-
-        return MediaItem.Builder()
-            .setUri(url)
-            .setMediaId(this.pId ?: "")
-            .setMediaMetadata(metadata)
-            .build()
     }
 
     fun stop() {

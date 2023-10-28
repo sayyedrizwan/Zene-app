@@ -15,6 +15,6 @@ class SongDownloaderImpl @Inject constructor(private val songDownloaderService: 
             ?.filter { it?.mimeType?.lowercase()?.trim() == "audio/mp4" }
             ?.maxByOrNull { it?.bitrate ?: 0 }
 
-        emit(url?.url)
+        emit(downloader?.hls)
     }.flowOn(Dispatchers.IO)
 }

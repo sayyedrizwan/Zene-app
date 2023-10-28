@@ -124,6 +124,11 @@ class HomeApiViewModel @Inject constructor(
     fun favouriteRadios(clear: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         if (clear) CacheFiles.favRadio.deleteRecursively()
 
+        if (favouriteRadioList.first()?.isEmpty() == true){
+            favouriteRadio = DataResponse.Success(emptyList())
+            return@launch
+        }
+
         val favLists = favouriteRadioList.first()?.joinToString(",") ?: return@launch
 
         onlineRadiosAPI.favouriteRadioLists(favLists).onStart {

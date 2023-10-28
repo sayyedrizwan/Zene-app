@@ -37,11 +37,11 @@
             </intent-filter>
         </activity>
 
-
         <service
-            android:name=".service.SongPlayerService"
+            android:name=".service.PlayerService"
             android:exported="true"
-            android:foregroundServiceType="mediaPlayback">
+            android:foregroundServiceType="mediaPlayback"
+            android:permission="android.permission.INTERNET">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>

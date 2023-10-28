@@ -124,6 +124,7 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-dash:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.media3:media3-ui:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.media3:media3-session:${DependenciesVersion.MEDIA3.version}")
+    implementation("androidx.media3:media3-exoplayer-hls:${DependenciesVersion.MEDIA3.version}")
 
 }
 
