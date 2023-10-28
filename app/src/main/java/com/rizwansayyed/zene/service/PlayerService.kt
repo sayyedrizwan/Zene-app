@@ -10,9 +10,12 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.session.MediaController
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.ui.PlayerNotificationManager
@@ -46,13 +49,13 @@ class PlayerService : MediaSessionService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        CoroutineScope(Dispatchers.IO).launch {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel()
-            }
-            buildNotification()
-            startForegroundNotification()
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                createNotificationChannel()
+//            }
+//            buildNotification()
+//            startForegroundNotification()
+//        }
 
         CoroutineScope(Dispatchers.Main).launch {
             val music = MusicData(
@@ -63,9 +66,23 @@ class PlayerService : MediaSessionService() {
                 MusicType.MUSIC
             )
 
-            val i = music.toMediaItem("https://rs1.seedr.cc/ff_get/1653950113/02%20-%20Right%20Heres%20The%20Spot.mp3?st=udLh1c2SzDBFG2VXV2bORA&e=1698590797")
+            val i =
+                music.toMediaItem("https://rs1.seedr.cc/ff_get/1653950113/02%20-%20Right%20Heres%20The%20Spot.mp3?st=udLh1c2SzDBFG2VXV2bORA&e=1698590797")
 //            val mediaSourceFactory = DefaultMediaSourceFactory(this@PlayerService)
 //            mediaSourceFactory.createMediaSource(i)
+
+            val l = object : Player.Listener {
+
+            }
+
+//            if (controllerFuture == null) {
+                val controllerFuture = MediaController.Builder(this@PlayerService, sessionToken).buildAsync()
+                controllerFuture.addListener({
+                    val controller = controllerFuture.get()
+                    controller.addListener(l)
+                }, ContextCompat.getMainExecutor(this@PlayerService))
+//            }
+
 
             player.apply {
                 setMediaItem(music.toMediaItem("https://rs1.seedr.cc/ff_get/1653950113/02%20-%20Right%20Heres%20The%20Spot.mp3?st=udLh1c2SzDBFG2VXV2bORA&e=1698590797"))
