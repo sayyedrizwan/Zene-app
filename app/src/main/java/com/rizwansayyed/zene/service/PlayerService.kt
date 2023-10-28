@@ -49,13 +49,13 @@ class PlayerService : MediaSessionService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                createNotificationChannel()
-//            }
-//            buildNotification()
-//            startForegroundNotification()
-//        }
+        CoroutineScope(Dispatchers.IO).launch {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel()
+            }
+            buildNotification()
+            startForegroundNotification()
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             val music = MusicData(
@@ -68,8 +68,6 @@ class PlayerService : MediaSessionService() {
 
             val i =
                 music.toMediaItem("https://rs1.seedr.cc/ff_get/1653950113/02%20-%20Right%20Heres%20The%20Spot.mp3?st=udLh1c2SzDBFG2VXV2bORA&e=1698590797")
-//            val mediaSourceFactory = DefaultMediaSourceFactory(this@PlayerService)
-//            mediaSourceFactory.createMediaSource(i)
 
             val l = object : Player.Listener {
 
@@ -132,11 +130,11 @@ class PlayerService : MediaSessionService() {
                     .setSmallIconResourceId(R.mipmap.logo)
                     .build()
                     .also {
-//                        it.setMediaSessionToken(mediaSession.sessionCompatToken)
                         it.setUseFastForwardActionInCompactView(true)
                         it.setUseRewindActionInCompactView(true)
                         it.setUseNextActionInCompactView(false)
                         it.setPriority(NotificationCompat.PRIORITY_LOW)
+                        it.setMediaSessionToken(mediaSession.sessionCompatToken)
                         it.setPlayer(player)
                     }
             }

@@ -52,7 +52,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.majorVersion
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -124,6 +124,7 @@ dependencies {
 //    implementation("androidx.media3:media3-exoplayer-dash:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.media3:media3-ui:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.media3:media3-session:${DependenciesVersion.MEDIA3.version}")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 //    implementation("androidx.media3:media3-exoplayer-hls:${DependenciesVersion.MEDIA3.version}")
 
 }
@@ -139,7 +140,7 @@ enum class AndroidVersion(val version: String) {
 
 enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.8.0"), COMPOSE("2023.09.00"),
-    HILT("2.48"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0"),
+    HILT("2.48.1"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0"),
     RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1"),
     MEDIA3("1.1.1"), COMPOSE_UI_UTILS("1.5.4")
 }
