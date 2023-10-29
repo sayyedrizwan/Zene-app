@@ -1,28 +1,17 @@
-package com.rizwansayyed.zene.service
+package com.rizwansayyed.zene.service.player.utils
 
 import android.content.Intent
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultHttpDataSource
-import androidx.media3.datasource.FileDataSource
-import androidx.media3.datasource.cache.CacheDataSink
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.NoOpCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
-import java.io.File
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 
 object Utils {
 

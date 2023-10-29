@@ -14,9 +14,9 @@ import androidx.media3.session.MediaSession
 import androidx.media3.ui.PlayerNotificationManager
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.service.PlayerService
-import com.rizwansayyed.zene.service.Utils.PlayerNotification.PLAYER_NOTIFICATION_CHANNEL_ID
-import com.rizwansayyed.zene.service.Utils.PlayerNotification.PLAYER_NOTIFICATION_CHANNEL_NAME
-import com.rizwansayyed.zene.service.Utils.PlayerNotification.PLAYER_NOTIFICATION_ID
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotification.PLAYER_NOTIFICATION_CHANNEL_ID
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotification.PLAYER_NOTIFICATION_CHANNEL_NAME
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotification.PLAYER_NOTIFICATION_ID
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
+import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunningRun
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -64,6 +65,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)
+        ifPlayerServiceNotRunningRun()
         setContent {
             ZeneTheme {
                 val activity = LocalContext.current as Activity
@@ -120,8 +122,6 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         checkAndClearCache()
-
-        startService(Intent(this, PlayerService::class.java))
 
         lifecycleScope.launch {
             delay(1.seconds)

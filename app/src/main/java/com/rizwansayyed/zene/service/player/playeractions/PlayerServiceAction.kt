@@ -1,10 +1,9 @@
 package com.rizwansayyed.zene.service.player.playeractions
 
-import android.util.Log
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.service.Utils.toMediaItem
+import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext

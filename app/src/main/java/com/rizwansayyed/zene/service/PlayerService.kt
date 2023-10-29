@@ -1,26 +1,21 @@
 package com.rizwansayyed.zene.service
 
-
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.MusicType
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
-import com.rizwansayyed.zene.service.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
-import com.rizwansayyed.zene.service.Utils.toMediaItem
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import com.rizwansayyed.zene.service.player.notificationservice.PlayerServiceNotificationInterface
 import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceActionInterface
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +26,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@UnstableApi
 @AndroidEntryPoint
 class PlayerService : MediaSessionService() {
 
@@ -54,12 +48,21 @@ class PlayerService : MediaSessionService() {
 
         playerNotification.buildNotification(this@PlayerService)
 
+        player.addListener(playerListener)
+
         IntentFilter(PLAYER_SERVICE_ACTION).apply {
             ContextCompat.registerReceiver(
                 this@PlayerService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
             )
         }
         return START_STICKY
+    }
+
+    private val playerListener = object : Player.Listener {
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            super.onPlaybackStateChanged(playbackState)
+
+        }
     }
 
     private val receiver = object : BroadcastReceiver() {

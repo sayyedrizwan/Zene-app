@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Build
 import com.google.firebase.FirebaseApp
 import com.rizwansayyed.zene.service.PlayerService
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunningRun
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +26,7 @@ class ApplicationModule : Application() {
         super.onCreate()
         context = this
 
+        ifPlayerServiceNotRunningRun()
 
 //        FirebaseApp.initializeApp(this)
     }

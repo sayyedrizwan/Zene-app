@@ -1,13 +1,17 @@
 package com.rizwansayyed.zene.utils
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import androidx.core.graphics.drawable.toBitmapOrNull
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.service.PlayerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -116,5 +120,16 @@ object Utils {
             context.imageLoader.execute(request)
         }
         return bitmap
+    }
+
+    fun ifPlayerServiceNotRunningRun() {
+        fun isServiceRunning(): Boolean {
+            return (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
+                .getRunningServices(Integer.MAX_VALUE)
+                .any { it.service.className == PlayerService::class.java.name }
+        }
+
+        if (!isServiceRunning())
+            context.startService(Intent(context, PlayerService::class.java))
     }
 }
