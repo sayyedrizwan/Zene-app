@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.di.ApplicationModule
@@ -115,6 +116,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @UnstableApi
     override fun onStart() {
         super.onStart()
         checkAndClearCache()
@@ -122,7 +124,7 @@ class MainActivity : ComponentActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             delay(3.seconds)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(Intent(this@MainActivity, PlayerService::class.java))
+                startService(Intent(this@MainActivity, PlayerService::class.java))
             }
         }
 

@@ -73,15 +73,6 @@ class PlayerService : MediaSessionService() {
 
             }
 
-//            if (controllerFuture == null) {
-//                val controllerFuture = MediaController.Builder(this@PlayerService, sessionToken).buildAsync()
-//                controllerFuture.addListener({
-//                    val controller = controllerFuture.get()
-//                    controller.addListener(l)
-//                }, ContextCompat.getMainExecutor(this@PlayerService))
-//            }
-
-
             player.apply {
                 setMediaItem(music.toMediaItem("https://rs1.seedr.cc/ff_get/1653950113/02%20-%20Right%20Heres%20The%20Spot.mp3?st=udLh1c2SzDBFG2VXV2bORA&e=1698590797"))
                 playWhenReady = true
