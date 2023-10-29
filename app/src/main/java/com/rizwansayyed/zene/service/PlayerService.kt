@@ -61,7 +61,9 @@ class PlayerService : MediaSessionService() {
     private val playerListener = object : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
+            if (playbackState == Player.STATE_ENDED) {
 
+            }
         }
     }
 
