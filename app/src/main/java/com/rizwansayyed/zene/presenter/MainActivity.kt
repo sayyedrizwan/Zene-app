@@ -121,12 +121,7 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         checkAndClearCache()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(3.seconds)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startService(Intent(this@MainActivity, PlayerService::class.java))
-            }
-        }
+        startService(Intent(this, PlayerService::class.java))
 
         lifecycleScope.launch {
             delay(1.seconds)

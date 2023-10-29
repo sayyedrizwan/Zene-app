@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
@@ -48,13 +47,9 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.convertMoney
-import com.rizwansayyed.zene.utils.Utils.startPlayingSong
+import com.rizwansayyed.zene.service.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.UUID
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -64,8 +59,6 @@ fun CurrentMostPlayingSong() {
     val context = LocalContext.current as Activity
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()
     val homeNavModel: HomeNavViewModel = hiltViewModel()
-
-    val player = ExoPlayer.Builder(context).build()
 
     when (val v = homeApiViewModel.mostPlayingSong) {
         DataResponse.Empty -> {}
@@ -94,169 +87,7 @@ fun CurrentMostPlayingSong() {
                                 .animateItemPlacement()
                                 .clickable {
                                     val l = v.item?.toMusicDataList()
-                                    startPlayingSong(l?.toTypedArray(), i)
-                                    CoroutineScope(Dispatchers.Main).launch {
-//                                        val metadata = MediaMetadata
-//                                            .Builder()
-//                                            .setTitle(it.name)
-//                                            .setAlbumTitle("Albums")
-//                                            .setDisplayTitle(it.name)
-//                                            .setArtist(it.artists)
-//                                            .setArtworkUri(it.thumbnail?.toUri())
-//                                            .build()
-//
-//
-//                                        val mediaItem = MediaItem
-//                                            .Builder()
-//                                            .setUri("https://www.pagalwrold.com/siteuploads/files/sfd34/16973/Tera%20Mera%20Safar%20(Slowed%20Reverb)_320(PagalWorld).mp3")
-//                                            .setMediaId(
-//                                                it.pId ?: UUID
-//                                                    .randomUUID()
-//                                                    .toString()
-//                                            )
-//                                            .setMediaMetadata(metadata)
-//                                            .build()
-//
-//                                        player.apply {
-//                                            playWhenReady = true
-//                                            setMediaItem(mediaItem)
-//                                            prepare()
-//                                            play()
-//                                        }
-//
-//                                        val defaultMediaNotificationProvider =
-//                                            DefaultMediaNotificationProvider(mContext)
-//                                        defaultMediaNotificationProvider.setSmallIcon(R.drawable.blb_reverse_icon)
-//                                        val mediaNotification =
-//                                            defaultMediaNotificationProvider
-//                                                .createNotification(
-//                                                    mediaSession,
-//                                                    customLayout,
-//                                                    actionFactory,
-//                                                    onNotificationChangedCallback
-//                                                )
-//
-//
-//                                        val notificationManager =
-//                                            PlayerNotificationManager
-//                                                .Builder(context, 33, "sss")
-//                                                .setChannelImportance(NotificationUtil.IMPORTANCE_DEFAULT)
-//                                                .setSmallIconResourceId(R.drawable.ic_play)
-//                                                .setChannelDescriptionResourceId(R.string.app_name)
-//                                                .setChannelNameResourceId(R.string.app_name)
-////                                                .setMediaDescriptionAdapter(audioDescriptor)
-////                                                .setNotificationListener(notificationListener)
-//                                                .build()
-//
-//
-//                                        notificationManager.setPriority(NotificationCompat.PRIORITY_MIN)
-//                                        notificationManager.setUseRewindAction(false)
-//                                        notificationManager.setUseFastForwardAction(false)
-//                                        notificationManager.setUsePreviousAction(true)
-//                                        notificationManager.setUsePlayPauseActions(true)
-//                                        notificationManager.setUseNextAction(true)
-//                                        notificationManager.setPlayer(player)
-//
-//
-//                                        val metadata = getMetaDataFromMediaClass(media)
-//                                        val mediaItem = MediaItem.Builder()
-//                                            .setUri(media.dataURL)
-//                                            .setMediaId(media.mediaID)
-//                                            .setMediaMetadata(metadata)
-//                                            .build()
-//
-//                                        player.apply {
-//                                            setMediaItem(mediaItem)
-//                                            prepare()
-//                                            play()
-//                                        }
-//
-//                                        "running".toast()
-//                                        val mediaItem = MediaItem
-//                                            .Builder()
-//                                            .setMediaId(it.pId!!)
-//                                            .setUri(it.pId)
-//                                            .setMediaMetadata(
-//                                                MediaMetadata
-//                                                    .Builder()
-//                                                    .setTitle(it?.name)
-//                                                    .setArtist(it?.artists)
-//                                                    .setArtworkUri(it.thumbnail?.toUri())
-//                                                    .build()
-//                                            )
-//                                            .build()
-//                                        player.setMediaItem(mediaItem, true)
-//                                        player.playWhenReady = true
-//                                        player.prepare()
-//                                        player.play()
-//
-//                                        val mediaItem2 = MediaItem
-//                                            .Builder()
-//                                            .setMediaId(it.pId!!)
-//                                            .setUri("https://www.pagalwrold.com/siteuploads/files/sfd34/16973/Tera%20Mera%20Safar%20(Slowed%20Reverb)_320(PagalWorld).mp3")
-//                                            .setMediaMetadata(
-//                                                MediaMetadata
-//                                                    .Builder()
-//                                                    .setTitle(it?.name)
-//                                                    .setArtist(it?.artists)
-//                                                    .setArtworkUri(it.thumbnail?.toUri())
-//                                                    .build()
-//                                            )
-//                                            .build()
-////                                        player.setMediaItem(mediaItem2, true)
-//
-//
-//                                        player.setAudioAttributes(
-//                                            AudioAttributes
-//                                                .Builder()
-//                                                .setContentType(AUDIO_CONTENT_TYPE_MUSIC)
-//                                                .setUsage(USAGE_MEDIA)
-//                                                .build(), true
-//                                        )
-//
-//                                        val call = object : MediaSession.Callback {
-//
-//                                        }
-//
-//                                        val mediaSession =
-//                                            MediaSession
-//                                                .Builder(context, player)
-//                                                .setCallback(call)
-//                                                .build()
-//
-//                                        mediaSession.  setMediaNotificationProvider(object :
-//                                            MediaNotification.Provider {
-//                                            override fun createNotification(
-//                                                mediaSession: MediaSession,
-//                                                customLayout: ImmutableList<CommandButton>,
-//                                                actionFactory: MediaNotification.ActionFactory,
-//                                                onNotificationChangedCallback: MediaNotification.Provider.Callback
-//                                            ): MediaNotification {
-//                                                // This run every time when I press buttons on notification bar:
-//                                                return updateNotification(mediaSession)
-//                                            }
-//
-//                                            override fun handleCustomCommand(
-//                                                session: MediaSession,
-//                                                action: String,
-//                                                extras: Bundle
-//                                            ): Boolean {
-//                                                return false
-//                                            }
-//                                        })
-//
-//
-//                                        delay(3.seconds)
-//                                        player.removeMediaItem(player.currentMediaItemIndex)
-//                                        player.addMediaItem(
-//                                            player.currentMediaItemIndex,
-//                                            mediaItem2
-//                                        )
-//                                        player.playWhenReady = true
-//                                        player.prepare()
-//                                        player.play()
-
-                                    }
+                                    addAllPlayer(l?.toTypedArray(), i)
                                 }, homeNavModel
                         )
                     }

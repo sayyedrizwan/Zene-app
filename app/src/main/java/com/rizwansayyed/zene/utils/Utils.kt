@@ -2,14 +2,12 @@ package com.rizwansayyed.zene.utils
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
+import android.graphics.Bitmap
 import android.net.ConnectivityManager
-import com.rizwansayyed.zene.data.utils.moshi
+import androidx.core.graphics.drawable.toBitmapOrNull
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.service.SongPlayerService
-import com.rizwansayyed.zene.utils.Utils.IntentExtra.PLAY_SONG_MEDIA
-import com.rizwansayyed.zene.utils.Utils.IntentExtra.SONG_MEDIA_POSITION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -31,11 +29,6 @@ object Utils {
             return "$APP_URL/s/$changeIdToOurs"
         }
 
-    }
-
-    object IntentExtra {
-        const val PLAY_SONG_MEDIA = "play_song_media"
-        const val SONG_MEDIA_POSITION = "song_media_position"
     }
 
     fun isInternetConnected(): Boolean {
@@ -112,14 +105,16 @@ object Utils {
         if (isActive) cancel()
     }
 
-    fun startPlayingSong(m: Array<MusicData>?, p: Int) {
-        m ?: return
-        val l = moshi.adapter(Array<MusicData>::class.java).toJson(m)
-        Intent(context, SongPlayerService::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(PLAY_SONG_MEDIA, l)
-            putExtra(SONG_MEDIA_POSITION, p)
-            context.startService(this)
+    suspend fun bitmapFromURL(url: String): Bitmap? {
+        var bitmap: Bitmap? = null
+        withContext(Dispatchers.IO) {
+            val request = ImageRequest.Builder(context)
+                .data(url)
+                .target(onSuccess = { result ->
+                    bitmap = result.toBitmapOrNull()
+                }).build()
+            context.imageLoader.execute(request)
         }
+        return bitmap
     }
 }

@@ -9,12 +9,13 @@ import javax.inject.Inject
 
 class SongDownloaderImpl @Inject constructor(private val songDownloaderService: SongDownloaderService) :
     SongDownloaderInterface {
+
     override suspend fun download(songId: String) = flow {
         val downloader = songDownloaderService.download(songId)
          val url = downloader.audioStreams
             ?.filter { it?.mimeType?.lowercase()?.trim() == "audio/mp4" }
             ?.maxByOrNull { it?.bitrate ?: 0 }
 
-        emit(downloader?.hls)
+        emit(url?.url)
     }.flowOn(Dispatchers.IO)
 }

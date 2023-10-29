@@ -19,18 +19,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ExoPlayerModule {
 
-    private val audioAttributes = AudioAttributes.Builder()
-        .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-        .setUsage(C.USAGE_MEDIA)
-        .build()
-
+    @Provides
+    @Singleton
+    fun audioAttributes(): AudioAttributes =
+        AudioAttributes.Builder()
+            .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+            .setUsage(C.USAGE_MEDIA)
+            .build()
 
     @Provides
     @Singleton
     @UnstableApi
-    fun exoPlayer(@ApplicationContext c: Context): ExoPlayer =
+    fun exoPlayer(@ApplicationContext c: Context, audio: AudioAttributes): ExoPlayer =
         ExoPlayer.Builder(c)
-            .setAudioAttributes(audioAttributes, true)
+            .setAudioAttributes(audio, true)
             .setHandleAudioBecomingNoisy(true)
             .setTrackSelector(DefaultTrackSelector(c)).build()
 
