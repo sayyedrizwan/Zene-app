@@ -25,8 +25,7 @@ class SimpleMediaNotificationAdapter(
         player.mediaMetadata.artist ?: ""
 
     override fun getCurrentLargeIcon(
-        player: Player,
-        callback: PlayerNotificationManager.BitmapCallback
+        player: Player, callback: PlayerNotificationManager.BitmapCallback
     ): Bitmap? {
         val request = ImageRequest.Builder(context).data(player.mediaMetadata.artworkUri)
             .target(onSuccess = { result ->

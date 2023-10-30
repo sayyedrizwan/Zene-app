@@ -26,27 +26,17 @@ class PlayerServiceAction @Inject constructor(
         startPlaying(music, list, position)
     }
 
-
     override suspend fun updatePlaying(mediaItem: MediaItem?) {
         mediaItem ?: return
-        withContext(Dispatchers.IO) {
-            val musicPlayerDataLocal = musicPlayerData.first()
-            Log.d("TAG", "updatePlaying: running done = ${mediaItem.mediaId}")
+        val musicPlayerDataLocal = musicPlayerData.first()
 
-            var music: MusicData? = null
-            musicPlayerDataLocal?.songsLists?.forEach {
-                if (it?.pId == mediaItem.mediaId) {
-                    Log.d("TAG", "updatePlaying: running done ${it.pId} == ${mediaItem.mediaId}")
-                    music = it
-                }
-            }
-            music ?: return@withContext
+        val music = musicPlayerDataLocal?.songsLists?.first { it?.pId == mediaItem.mediaId }
+            ?: return
 
-            val position = musicPlayerDataLocal?.songsLists
-                ?.indexOfFirst { it?.pId == mediaItem.mediaId } ?: 0
+        val position =
+            musicPlayerDataLocal.songsLists.indexOfFirst { it?.pId == mediaItem.mediaId }
 
-            startPlaying(music, emptyArray(), position)
-        }
+        startPlaying(music, emptyArray(), position)
     }
 
     override suspend fun startPlaying(music: MusicData?, list: Array<MusicData?>?, position: Int) {
@@ -60,13 +50,10 @@ class PlayerServiceAction @Inject constructor(
             val currentPlayer =
                 MusicPlayerList(music?.name, music?.artists, music?.pId, music?.thumbnail)
 
-            val d = if (musicPlayerData.first()?.v == null)
-                musicPlayerData.first()
-            else
-                musicPlayerData.first()?.apply {
-                    v = currentPlayer
-                    songsLists = list?.toList()!!
-                }
+            val d = musicPlayerData.first()?.apply {
+                v = currentPlayer
+                if (list?.isNotEmpty() == true) songsLists = list.toList()
+            }
 
             musicPlayerData = flowOf(d)
         }
@@ -77,16 +64,24 @@ class PlayerServiceAction @Inject constructor(
             }
         }
 
+        Log.d("TAG", "startPlaying: runng $position = ${list?.size} ${music?.name} ${music?.pId}")
+
         val url = withContext(Dispatchers.IO) {
             try {
-                songDownloader.download(music?.pId!!).first()
+               val url =  songDownloader.download(music?.pId!!).first()
+                Log.d("TAG", "startPlaying: runng url ${url}")
+                url
             } catch (e: Exception) {
+                Log.d("TAG", "startPlaying: runng err ${e.message}")
+
                 null
             }
-        } ?: return
+        }
+
+        Log.d("TAG", "startPlaying: runng ${music?.name} = $url")
 
         withContext(Dispatchers.Main) {
-            player.replaceMediaItem(position, music!!.toMediaItem(url))
+            player.replaceMediaItem(position, music!!.toMediaItem(url!!))
             player.seekTo(position, 0)
 
             player.playWhenReady = true

@@ -334,6 +334,7 @@ class YoutubeAPIImpl @Inject constructor(
         fun addItems(shelf: MusicShelfRendererSongs.Content?) {
             val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
                 ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
             val name = shelf?.musicResponsiveListItemRenderer?.names()?.first
             val songId = shelf?.musicResponsiveListItemRenderer?.names()?.second
             val artists = shelf?.getArtists()

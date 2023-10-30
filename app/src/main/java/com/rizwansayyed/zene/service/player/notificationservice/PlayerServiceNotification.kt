@@ -49,7 +49,7 @@ class PlayerServiceNotification @Inject constructor(
 
     override fun buildNotification(playerService: PlayerService) {
         n.setMediaDescriptionAdapter(SimpleMediaNotificationAdapter(mediaSession.sessionActivity))
-            .setSmallIconResourceId(R.mipmap.logo)
+            .setSmallIconResourceId(R.drawable.logo_color)
             .build().apply {
                 setUseFastForwardActionInCompactView(true)
                 setUseRewindActionInCompactView(true)
