@@ -10,11 +10,13 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DO_SHOW_SPLASH_SC
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.FAVOURITE_RADIO_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IP_JSON
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LAST_SYNC_TIME
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.MUSIC_PLAYER_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SEARCH_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SELECTED_FAVOURITE_ARTISTS_SONGS
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
+import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import kotlinx.coroutines.flow.Flow
@@ -66,6 +68,16 @@ object DataStorageManager {
         set(v) = runBlocking {
             val moshi = moshi.adapter(Array<String>::class.java).toJson(v.first())
             context.dataStore.edit { it[SEARCH_HISTORY_LIST] = moshi }
+        }
+
+
+    var musicPlayerData: Flow<MusicPlayerData?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(MusicPlayerData::class.java).fromJson(it[MUSIC_PLAYER_DATA] ?: JSON_LIST)
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(MusicPlayerData::class.java).toJson(v.first())
+            context.dataStore.edit { it[MUSIC_PLAYER_DATA] = moshi }
         }
 
 

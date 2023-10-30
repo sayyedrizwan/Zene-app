@@ -1,17 +1,23 @@
 package com.rizwansayyed.zene.service.player.utils
 
 import android.content.Intent
+import android.net.Uri
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
+import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.seconds
 
 object Utils {
 
@@ -37,13 +43,18 @@ object Utils {
             .setArtworkUri(this.thumbnail?.toUri()).build()
 
         return MediaItem.Builder()
-            .setUri(url)
+            .setUri(Uri.parse(url))
             .setMediaId(this.pId ?: (123..9999).random().toString())
             .setMediaMetadata(metadata)
             .build()
     }
 
-    fun addAllPlayer(l: Array<MusicData>?, p: Int) {
+    fun addAllPlayer(l: Array<MusicData>?, p: Int) = runBlocking {
+        if (!ifPlayerServiceNotRunning()){
+            context.startService(Intent(context, PlayerService::class.java))
+            delay(2.seconds)
+        }
+
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_ALL_PLAYER_ITEM)
             putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData>::class.java).toJson(l))

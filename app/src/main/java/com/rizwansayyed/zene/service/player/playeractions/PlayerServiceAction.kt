@@ -1,11 +1,18 @@
 package com.rizwansayyed.zene.service.player.playeractions
 
+import android.util.Log
+import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicPlayerData
+import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -14,35 +21,79 @@ class PlayerServiceAction @Inject constructor(
     private val songDownloader: SongDownloaderInterface
 ) : PlayerServiceActionInterface {
 
-    override suspend fun addMultipleItemsAndPlay(list: Array<MusicData>?, position: Int) {
-        withContext(Dispatchers.Main) {
-            player.clearMediaItems()
+    override suspend fun addMultipleItemsAndPlay(list: Array<MusicData?>?, position: Int) {
+        val music = if ((list?.size ?: 0) >= position) list?.get(position) else return
+        startPlaying(music, list, position)
+    }
 
-            list?.forEach { m ->
-                player.addMediaItem(m.toMediaItem(m.pId ?: ""))
-            }
 
-            var url: String?
+    override suspend fun updatePlaying(mediaItem: MediaItem?) {
+        mediaItem ?: return
+        withContext(Dispatchers.IO) {
+            val musicPlayerDataLocal = musicPlayerData.first()
+            Log.d("TAG", "updatePlaying: running done = ${mediaItem.mediaId}")
 
-            withContext(Dispatchers.IO) {
-                url = try {
-                    val music = list?.get(position)
-                    songDownloader.download(music?.pId!!).first()
-                } catch (e: Exception) {
-                    null
+            var music: MusicData? = null
+            musicPlayerDataLocal?.songsLists?.forEach {
+                if (it?.pId == mediaItem.mediaId) {
+                    Log.d("TAG", "updatePlaying: running done ${it.pId} == ${mediaItem.mediaId}")
+                    music = it
                 }
             }
+            music ?: return@withContext
 
-            url ?: return@withContext
+            val position = musicPlayerDataLocal?.songsLists
+                ?.indexOfFirst { it?.pId == mediaItem.mediaId } ?: 0
 
-            val m = list?.get(position)?.toMediaItem(url!!) ?: return@withContext
-            player.replaceMediaItem(position, m)
+            startPlaying(music, emptyArray(), position)
+        }
+    }
+
+    override suspend fun startPlaying(music: MusicData?, list: Array<MusicData?>?, position: Int) {
+        withContext(Dispatchers.Main) {
+            player.pause()
+            player.stop()
+
+            if (list?.isNotEmpty() == true) player.clearMediaItems()
+        }
+        withContext(Dispatchers.IO) {
+            val currentPlayer =
+                MusicPlayerList(music?.name, music?.artists, music?.pId, music?.thumbnail)
+
+            val d = if (musicPlayerData.first()?.v == null)
+                musicPlayerData.first()
+            else
+                musicPlayerData.first()?.apply {
+                    v = currentPlayer
+                    songsLists = list?.toList()!!
+                }
+
+            musicPlayerData = flowOf(d)
+        }
+
+        withContext(Dispatchers.Main) {
+            if (list?.isNotEmpty() == true) list.forEach { m ->
+                m?.toMediaItem(m.pId ?: "")?.let { player.addMediaItem(it) }
+            }
+        }
+
+        val url = withContext(Dispatchers.IO) {
+            try {
+                songDownloader.download(music?.pId!!).first()
+            } catch (e: Exception) {
+                null
+            }
+        } ?: return
+
+        withContext(Dispatchers.Main) {
+            player.replaceMediaItem(position, music!!.toMediaItem(url))
             player.seekTo(position, 0)
-
 
             player.playWhenReady = true
             player.prepare()
             player.play()
         }
     }
+
+
 }

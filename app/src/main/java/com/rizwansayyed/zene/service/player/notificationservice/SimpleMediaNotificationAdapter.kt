@@ -23,13 +23,13 @@ class SimpleMediaNotificationAdapter(
 ) : PlayerNotificationManager.MediaDescriptionAdapter {
 
     override fun getCurrentContentTitle(player: Player): CharSequence =
-        player.mediaMetadata.albumTitle ?: ""
+        player.mediaMetadata.title ?: ""
 
     override fun createCurrentContentIntent(player: Player): PendingIntent? =
         pendingIntent
 
     override fun getCurrentContentText(player: Player): CharSequence =
-        player.mediaMetadata.displayTitle ?: ""
+        player.mediaMetadata.artist ?: ""
 
     override fun getCurrentLargeIcon(
         player: Player,

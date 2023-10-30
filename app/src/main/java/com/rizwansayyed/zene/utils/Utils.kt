@@ -122,14 +122,10 @@ object Utils {
         return bitmap
     }
 
-    fun ifPlayerServiceNotRunningRun() {
-        fun isServiceRunning(): Boolean {
-            return (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
-                .getRunningServices(Integer.MAX_VALUE)
-                .any { it.service.className == PlayerService::class.java.name }
-        }
+    fun ifPlayerServiceNotRunning(): Boolean {
+        return (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
+            .getRunningServices(Integer.MAX_VALUE)
+            .any { it.service.className == PlayerService::class.java.name }
 
-        if (!isServiceRunning())
-            context.startService(Intent(context, PlayerService::class.java))
     }
 }
