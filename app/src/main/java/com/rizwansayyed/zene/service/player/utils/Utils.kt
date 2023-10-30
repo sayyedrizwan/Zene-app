@@ -44,13 +44,14 @@ object Utils {
 
         return MediaItem.Builder()
             .setUri(Uri.parse(url))
+            .setMimeType("audio/mp4")
             .setMediaId(this.pId ?: (123..9999).random().toString())
             .setMediaMetadata(metadata)
             .build()
     }
 
     fun addAllPlayer(l: Array<MusicData>?, p: Int) = runBlocking {
-        if (!ifPlayerServiceNotRunning()){
+        if (!ifPlayerServiceNotRunning()) {
             context.startService(Intent(context, PlayerService::class.java))
             delay(2.seconds)
         }

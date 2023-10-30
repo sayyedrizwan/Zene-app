@@ -1,21 +1,14 @@
 package com.rizwansayyed.zene.service.player.notificationservice
 
 import android.app.PendingIntent
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import android.graphics.drawable.BitmapDrawable
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.PlayerNotificationManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.utils.Utils.bitmapFromURL
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 @UnstableApi
 class SimpleMediaNotificationAdapter(
@@ -35,18 +28,12 @@ class SimpleMediaNotificationAdapter(
         player: Player,
         callback: PlayerNotificationManager.BitmapCallback
     ): Bitmap? {
-        Glide.with(context)
-            .asBitmap()
-            .load(player.mediaMetadata.artworkUri)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    callback.onBitmap(resource)
-                }
+        val request = ImageRequest.Builder(context).data(player.mediaMetadata.artworkUri)
+            .target(onSuccess = { result ->
+                callback.onBitmap((result as BitmapDrawable).bitmap)
+            }).build()
 
-                override fun onLoadCleared(placeholder: Drawable?) = Unit
-            })
-
+        ImageLoader.Builder(context).crossfade(true).build().enqueue(request)
         return null
     }
 }

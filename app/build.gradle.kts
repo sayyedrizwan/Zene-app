@@ -124,10 +124,7 @@ dependencies {
     implementation("androidx.media3:media3-ui:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.media3:media3-session:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.media3:media3-exoplayer-hls:${DependenciesVersion.MEDIA3.version}")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-
+    implementation("androidx.legacy:legacy-support-v4:${DependenciesVersion.V.version}")
 }
 
 enum class CompileSDK(val version: Int) {
