@@ -148,10 +148,8 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitSongDownloaderService(): SongDownloaderService {
-        val builder = OkHttpClient.Builder()
-
         return Retrofit.Builder()
-            .baseUrl(SONG_D_BASE_URL).client(okHttpClient)
+            .baseUrl("https://demo.com").client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build().create(SongDownloaderService::class.java)
     }

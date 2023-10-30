@@ -76,6 +76,17 @@ object LastFM {
 
 
 object SongDownloader {
+    const val YT_CW_BASE_URL = "https://yt-cw.fabdl.com/youtube/get"
+
+
+    fun ytConvertor(id: String): String {
+        return "https://yt.fabdl.com/youtube/mp3-convert-progress/$id"
+    }
+
+    fun ytURL(id: String): String {
+        return "https://www.youtube.com/watch?v=$id"
+    }
+
     const val SONG_D_BASE_URL = "https://watchapi.whatever.social/"
     const val SONG_DOWNLOAD_URL = "streams/"
 }
