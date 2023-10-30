@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists
 
 
-import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
@@ -10,7 +9,6 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsList
 import com.rizwansayyed.zene.data.utils.ScrapURL.TOP_ARTISTS
 import com.rizwansayyed.zene.data.utils.SearchEngine.searchEngineDataURL
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.generateYTMusicPlaylistURL
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.data.utils.getInstagramUsername
 import com.rizwansayyed.zene.data.utils.moshi

@@ -86,9 +86,6 @@ object SongDownloader {
     fun ytURL(id: String): String {
         return "https://www.youtube.com/watch?v=$id"
     }
-
-    const val SONG_D_BASE_URL = "https://watchapi.whatever.social/"
-    const val SONG_DOWNLOAD_URL = "streams/"
 }
 
 object YoutubeAPI {

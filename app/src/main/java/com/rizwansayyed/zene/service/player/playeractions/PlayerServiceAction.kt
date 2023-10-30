@@ -64,21 +64,13 @@ class PlayerServiceAction @Inject constructor(
             }
         }
 
-        Log.d("TAG", "startPlaying: runng $position = ${list?.size} ${music?.name} ${music?.pId}")
-
         val url = withContext(Dispatchers.IO) {
             try {
-               val url =  songDownloader.download(music?.pId!!).first()
-                Log.d("TAG", "startPlaying: runng url ${url}")
-                url
+                songDownloader.download(music?.pId!!).first()
             } catch (e: Exception) {
-                Log.d("TAG", "startPlaying: runng err ${e.message}")
-
                 null
             }
         }
-
-        Log.d("TAG", "startPlaying: runng ${music?.name} = $url")
 
         withContext(Dispatchers.Main) {
             player.replaceMediaItem(position, music!!.toMediaItem(url!!))

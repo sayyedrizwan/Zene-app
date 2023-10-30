@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.data.onlinesongs.downloader.implementation
 
-import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SongDownloaderService
 import com.rizwansayyed.zene.data.utils.SongDownloader.ytConvertor
 import com.rizwansayyed.zene.data.utils.SongDownloader.ytURL
@@ -13,10 +12,10 @@ class SongDownloaderImpl @Inject constructor(private val songDownloaderService: 
     SongDownloaderInterface {
 
     override suspend fun download(songId: String) = flow {
-        val downloader = songDownloaderService.download(ytURL(songId))
+        val downloader = songDownloaderService.download(watchUrl = ytURL(songId))
         val id = downloader.result!!.mp3_task_data!!.tid ?: ""
         val convertor = songDownloaderService.converter(ytConvertor(id))
-        val playURL = "https://yt.fabdl.com/${convertor.result?.download_url}"
+        val playURL = "https://yt.fabdl.com${convertor.result?.download_url}"
         emit(playURL)
     }.flowOn(Dispatchers.IO)
 }

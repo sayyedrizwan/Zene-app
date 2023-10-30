@@ -1,8 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
+
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -36,7 +34,6 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: TopArtists
         jsoupScrap.topArtistsOfWeeks().onStart {
             topArtists = DataResponse.Loading
         }.catch {
-            Log.d("TAG", "topArtistsList: error ${it.message}")
             topArtists = DataResponse.Error(it)
         }.collectLatest {
             topArtists = DataResponse.Success(it)

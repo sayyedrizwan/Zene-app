@@ -12,9 +12,9 @@ interface SongDownloaderService {
 
     @GET
     suspend fun download(
+        @Url url: String = YT_CW_BASE_URL,
         @Query("url") watchUrl: String,
         @Query("mp3_task") task: Int = 2,
-        @Url url: String = YT_CW_BASE_URL
     ): DownloadYTCWResponse
 
     @GET

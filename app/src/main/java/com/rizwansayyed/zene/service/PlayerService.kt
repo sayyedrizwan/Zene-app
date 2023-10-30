@@ -74,14 +74,12 @@ class PlayerService : MediaSessionService() {
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
             CoroutineScope(Dispatchers.IO).launch {
-                Log.d("TAG", "onPlayerError: data $retry")
                 if (retry >= 1) return@launch
 
                 if (error.message?.lowercase()?.trim()?.contains("source error") == true) {
                     retry += 1
                     withContext(Dispatchers.Main) {
                         currentPlayingMusic = player.currentMediaItem?.mediaId ?: ""
-                        Log.d("TAG", "onPlayerError: data runned")
                         playerServiceAction.updatePlaying(player.currentMediaItem)
                     }
                 }
@@ -90,15 +88,9 @@ class PlayerService : MediaSessionService() {
             }
         }
 
-//        override fun onPlayerErrorChanged(error: PlaybackException?) {
-//            super.onPlayerErrorChanged(error)
-//
-//            Log.d("TAG", "onPlayerErrorChanged: running")
-//        }
-
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
-            Log.d("TAG", "onMediaItemTransition: runnnnedd 111 == $playbackState ")
+
             if (playbackState == Player.STATE_READY) {
                 retry = 0
             }
