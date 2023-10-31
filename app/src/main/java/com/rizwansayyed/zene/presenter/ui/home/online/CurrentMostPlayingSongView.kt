@@ -53,7 +53,6 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 
 @OptIn(ExperimentalFoundationApi::class)
-@androidx.media3.common.util.UnstableApi
 @Composable
 fun CurrentMostPlayingSong() {
     val context = LocalContext.current as Activity
