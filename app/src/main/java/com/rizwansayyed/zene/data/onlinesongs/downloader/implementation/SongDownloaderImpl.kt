@@ -22,10 +22,9 @@ class SongDownloaderImpl @Inject constructor(
         val downloader = songDownloaderService.download(watchUrl = ytURL(songId))
         val id = downloader.result!!.mp3_task_data!!.tid ?: ""
         val convertor = songDownloaderService.converter(ytConvertor(id))
-        if (convertor.error?.message == null) {
-            val playURL = "https://yt.fabdl.com${convertor.result?.download_url}"
+        if (convertor.error?.message == null && convertor.result?.download_url != null) {
+            val playURL = "https://yt.fabdl.com${convertor.result.download_url}"
             emit(playURL)
-
             return@flow
         }
 

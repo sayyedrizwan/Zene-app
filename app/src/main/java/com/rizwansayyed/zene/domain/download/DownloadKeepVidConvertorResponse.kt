@@ -5,5 +5,5 @@ data class ConvertorKeepVidConvertorResponse(
 )
 
 data class DownloadKeepVidConvertorResponse(
-    val ready: Int?, val dlurl: String, val expires: String?, val n: String?, val title: String?
+    val ready: Int?, val dlurl: String
 )
