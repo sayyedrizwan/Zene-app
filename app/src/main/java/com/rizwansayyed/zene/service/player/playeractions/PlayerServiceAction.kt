@@ -70,12 +70,12 @@ class PlayerServiceAction @Inject constructor(
                 m?.toMediaItem(m.pId ?: "")?.let { player.addMediaItem(it) }
             }
         }
+        player.seekTo(position, 0)
 
         val url = withContext(Dispatchers.IO) {
             try {
                 songDownloader.download(music?.pId!!).first()
             } catch (e: Exception) {
-                Log.d("TAG", "download: on download runnng ${e.message}")
                 null
             }
         } ?: return

@@ -1,11 +1,13 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists
 
 
+import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
+import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsList
 import com.rizwansayyed.zene.data.utils.ScrapURL.TOP_ARTISTS
 import com.rizwansayyed.zene.data.utils.SearchEngine.searchEngineDataURL
@@ -29,8 +31,7 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 class TopArtistsPlaylistsScrapsImpl @Inject constructor(
-    private val instagramInfo: InstagramInfoService,
-    private val remoteConfig: RemoteConfigInterface
+    private val lastFM: LastFMImplInterface
 ) : TopArtistsPlaylistsScrapsInterface {
 
     override suspend fun topArtistsOfWeeks() = flow {
@@ -55,14 +56,8 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
 
             if (name != null) {
                 if (img.contains("fallback.gif") || img.isEmpty()) {
-                    img = ""
-                    delay(1.seconds)
-                    val (instagram, _) = searchEngineData(name).first()
-                    if (instagram.isNotEmpty()) {
-                        val appId = remoteConfig.instagramAppID()
-                        val i = instagramInfo.instagramInfo(appId, getInstagramUsername(instagram))
-                        img = i.data?.user?.profile_pic_url_hd ?: ""
-                    }
+                    img = lastFM.artistsImages(name, 1).first().first()
+
                 }
                 if (img.isNotEmpty() && name.isNotEmpty())
                     list.add(MusicData(img, name, name, THE_ARTISTS, MusicType.ARTISTS))
@@ -71,28 +66,6 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
 
         list.toTxtCache()?.let { writeToCacheFile(topArtistsList, it) }
         emit(list)
-    }.flowOn(Dispatchers.IO)
-
-
-    override suspend fun searchEngineData(name: String) = flow {
-        var instagram = ""
-        var twitter = ""
-        val response = jsoupResponseData(searchEngineDataURL(name))
-        if (response != null) {
-            val jsoup = Jsoup.parse(response)
-            jsoup.select("li.b_algo").forEach {
-                val url = it.selectFirst("a.tilk")?.attr("href")
-
-                if (url?.contains("twitter.com") == true && twitter.isEmpty())
-                    twitter = url
-
-                if (url?.contains("instagram.com") == true && instagram.isEmpty())
-                    instagram = url
-            }
-
-            emit(Pair(instagram, twitter))
-        } else
-            emit(Pair(instagram, twitter))
     }.flowOn(Dispatchers.IO)
 
 

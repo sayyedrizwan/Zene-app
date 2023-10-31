@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -34,6 +35,7 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: TopArtists
         jsoupScrap.topArtistsOfWeeks().onStart {
             topArtists = DataResponse.Loading
         }.catch {
+            it.message?.toast()
             topArtists = DataResponse.Error(it)
         }.collectLatest {
             topArtists = DataResponse.Success(it)
