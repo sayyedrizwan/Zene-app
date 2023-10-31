@@ -35,6 +35,9 @@ object Utils {
 
         const val PLAY_SONG_MEDIA = "play_song_media"
         const val SONG_MEDIA_POSITION = "song_media_position"
+
+
+        const val OPEN_MUSIC_PLAYER = "open_music_player"
     }
 
     fun MusicData.toMediaItem(url: String): MediaItem {

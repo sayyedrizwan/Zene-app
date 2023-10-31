@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.di
 
 import android.app.Application
 import android.content.Intent
+import com.google.firebase.ktx.Firebase
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
@@ -24,6 +25,7 @@ class ApplicationModule : Application() {
         if (!ifPlayerServiceNotRunning()){
             context.startService(Intent(context, PlayerService::class.java))
         }
+
 
 //        FirebaseApp.initializeApp(this)
     }

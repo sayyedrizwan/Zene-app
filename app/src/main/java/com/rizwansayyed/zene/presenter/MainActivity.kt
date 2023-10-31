@@ -24,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.HomeNavigation.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
@@ -36,6 +37,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -43,6 +45,7 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -109,7 +112,13 @@ class MainActivity : ComponentActivity() {
         navViewModel.checkAndSetOnlineStatus()
         navViewModel.resetConfig()
 
+        doOpenMusicPlayer(intent)
         apis()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let { doOpenMusicPlayer(it) }
     }
 
 
@@ -129,5 +138,14 @@ class MainActivity : ComponentActivity() {
         jsoupScrapViewModel.init()
         roomViewModel.init()
         lastAPISyncTime = flowOf(System.currentTimeMillis())
+    }
+
+    private fun doOpenMusicPlayer(i: Intent) = lifecycleScope.launch(Dispatchers.IO) {
+        val doOpenPlayer = i.getBooleanExtra(OPEN_MUSIC_PLAYER, false)
+        if (doOpenPlayer) {
+            val musicPlayerDataLocal = musicPlayerData.first()
+            musicPlayerDataLocal?.show = true
+            musicPlayerData = flowOf(musicPlayerDataLocal)
+        }
     }
 }

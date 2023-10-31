@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.domain
 
 data class MusicPlayerData(
-    val show: Boolean = false,
+    var show: Boolean = false,
     var v: MusicPlayerList? = null,
     val currentTs: Long = 0,
     val duration: Long = 0,

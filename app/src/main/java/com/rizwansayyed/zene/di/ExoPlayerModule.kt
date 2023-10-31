@@ -13,6 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.seconds
 
 
 @Module
@@ -34,6 +35,8 @@ object ExoPlayerModule {
         ExoPlayer.Builder(c)
             .setAudioAttributes(audio, true)
             .setHandleAudioBecomingNoisy(true)
+            .setSeekForwardIncrementMs(5.seconds.inWholeMilliseconds)
+            .setSeekBackIncrementMs(5.seconds.inWholeMilliseconds)
             .setTrackSelector(DefaultTrackSelector(c)).build()
 
     @Provides
