@@ -2,13 +2,12 @@ package com.rizwansayyed.zene.di
 
 import android.app.Application
 import android.content.Intent
-import com.google.firebase.ktx.Firebase
+import android.util.Log
+import com.rizwansayyed.zene.presenter.MainActivity
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
-import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
 import dagger.hilt.android.HiltAndroidApp
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
 
 
 @HiltAndroidApp
@@ -22,10 +21,22 @@ class ApplicationModule : Application() {
         super.onCreate()
         context = this
 
-        if (!ifPlayerServiceNotRunning()){
+        if (!ifPlayerServiceNotRunning()) {
             context.startService(Intent(context, PlayerService::class.java))
         }
 
+        Thread.setDefaultUncaughtExceptionHandler { thread, e ->
+            context.cacheDir.deleteRecursively()
+
+            "crashed".toast()
+
+            Log.d("TAG", "onCreate: Crash Detected $thread ${e.message}")
+
+            Intent(this, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(this)
+            }
+        }
 
 //        FirebaseApp.initializeApp(this)
     }
