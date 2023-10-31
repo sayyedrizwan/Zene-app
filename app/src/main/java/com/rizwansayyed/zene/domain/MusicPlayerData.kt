@@ -9,7 +9,8 @@ data class MusicPlayerData(
     val songID: String = "",
     val videoID: String = "",
     val songsLyrics: String = "",
-    var songsLists: List<MusicData?> = emptyList()
+    var songsLists: List<MusicData?> = emptyList(),
+    var playType: MusicType?
 )
 
 data class MusicPlayerList(

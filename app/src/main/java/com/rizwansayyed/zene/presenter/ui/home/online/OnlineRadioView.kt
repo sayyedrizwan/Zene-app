@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +26,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +47,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicType
@@ -61,10 +60,9 @@ import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.player.utils.Utils.playRadioOnPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -164,7 +162,9 @@ fun RadioFavList(homeApi: HomeApiViewModel) {
                         .border(1.dp, Color.Black, RoundedCornerShape(30))
                         .clip(RoundedCornerShape(30))
                         .background(Color.White)
-                        .combinedClickable(onClick = {}, onLongClick = {
+                        .combinedClickable(onClick = {
+                            playRadioOnPlayer(it)
+                        }, onLongClick = {
                             rmDialog = it.stationuuid
                         }),
                     Arrangement.Center, Alignment.CenterVertically
@@ -201,13 +201,14 @@ fun RadioFavList(homeApi: HomeApiViewModel) {
         { rmDialog = null })
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun RadiosItems(
     page: Int, radioPagerState: PagerState,
     radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel
 ) {
     Card(
+        { playRadioOnPlayer(radio) },
         Modifier
             .padding(horizontal = 8.dp)
             .fillMaxWidth()
@@ -217,7 +218,7 @@ fun RadiosItems(
                     ((radioPagerState.currentPage - page) + radioPagerState.currentPageOffsetFraction).absoluteValue
                 alpha = lerp(0.5f, 1f, 0.8f - pageOffset.coerceIn(0f, 1f))
             },
-        RoundedCornerShape(12.dp), CardDefaults.cardColors(MainColor)
+        shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(MainColor)
     ) {
         Box(
             Modifier

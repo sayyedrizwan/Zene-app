@@ -2,12 +2,18 @@ package com.rizwansayyed.zene.service.player.playeractions
 
 import android.util.Log
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
+import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -52,6 +58,7 @@ class PlayerServiceAction @Inject constructor(
 
             val d = musicPlayerData.first()?.apply {
                 v = currentPlayer
+                playType = MusicType.MUSIC
                 if (list?.isNotEmpty() == true) songsLists = list.toList()
             }
 
@@ -68,12 +75,13 @@ class PlayerServiceAction @Inject constructor(
             try {
                 songDownloader.download(music?.pId!!).first()
             } catch (e: Exception) {
+                Log.d("TAG", "download: on download runnng ${e.message}")
                 null
             }
-        }
+        } ?: return
 
         withContext(Dispatchers.Main) {
-            player.replaceMediaItem(position, music!!.toMediaItem(url!!))
+            player.replaceMediaItem(position, music!!.toMediaItem(url))
             player.seekTo(position, 0)
 
             player.playWhenReady = true
@@ -82,5 +90,42 @@ class PlayerServiceAction @Inject constructor(
         }
     }
 
+
+    @UnstableApi
+    override suspend fun playLiveRadio(radio: OnlineRadioResponseItem) {
+        withContext(Dispatchers.Main) {
+            player.pause()
+            player.stop()
+
+        }
+
+        withContext(Dispatchers.IO) {
+            val i =
+                radio.favicon?.ifEmpty { "https://cdn-icons-png.flaticon.com/512/7999/7999266.png" }
+            val currentPlayer = MusicPlayerList(radio.name, radio.language, radio.serveruuid, i)
+
+            val d = musicPlayerData.first()?.apply {
+                v = currentPlayer
+                playType = MusicType.RADIO
+                songsLists = emptyList()
+            }
+            musicPlayerData = flowOf(d)
+        }
+
+        withContext(Dispatchers.Main) {
+            val item = radio.toMusicData().toMediaItem(radio.url_resolved!!)
+            if (radio.url_resolved.contains(".m3u8")) {
+                val mediaSource =
+                    HlsMediaSource.Factory(DefaultHttpDataSource.Factory()).createMediaSource(item)
+
+                player.setMediaSource(mediaSource)
+            } else
+                player.setMediaItem(item)
+
+            player.playWhenReady = true
+            player.prepare()
+            player.play()
+        }
+    }
 
 }

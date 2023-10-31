@@ -1,18 +1,14 @@
 package com.rizwansayyed.zene.data.utils
 
-import androidx.compose.runtime.Composable
-import androidx.core.net.toUri
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
+import com.rizwansayyed.zene.domain.download.KeepVideoTsId
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
 
 
 object DBNAME {
@@ -76,15 +72,21 @@ object LastFM {
 
 
 object SongDownloader {
-    const val YT_CW_BASE_URL = "https://yt-cw.fabdl.com/youtube/get"
+    const val APPLICATION_X_FORM_URL_ENCODE = "application/x-www-form-urlencoded; charset=UTF-8"
 
+    const val YT_CW_BASE_URL = "https://yt-cw.fabdl.com/youtube/get"
+    const val KEEP_VID_BASE_URL = "https://ww12.keepvid.works/convert/"
+
+    fun ytURL(id: String): String {
+        return "https://www.youtube.com/watch?v=$id"
+    }
 
     fun ytConvertor(id: String): String {
         return "https://yt.fabdl.com/youtube/mp3-convert-progress/$id"
     }
 
-    fun ytURL(id: String): String {
-        return "https://www.youtube.com/watch?v=$id"
+    fun keepVidButtonBaseURL(id: String): String {
+        return "https://ww12.keepvid.works/button/?url=${ytURL(id)}"
     }
 }
 
@@ -291,6 +293,16 @@ object YoutubeAPI {
         val mediaType = "application/json".toMediaTypeOrNull()
         return json.toRequestBody(mediaType)
     }
+
+
+    fun keepVidConvertor(v: KeepVideoTsId?): RequestBody {
+        val json = """
+            url=${v?.url}&convert=${v?.convert}&token_id=${v?.token_id}&token_validto=${v?.token_validto}
+        """.trimIndent()
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
 }
 
 object SearchEngine {
@@ -326,30 +338,6 @@ object ScrapURL {
 
 fun getInstagramUsername(i: String): String {
     return i.substringAfter("instagram.com/").replace("/", "")
-}
-
-fun sortNameForSearch(q: String): String {
-
-    var name = ""
-
-    val n = q.lowercase().replace("(official video)", "")
-        .replace("(official audio)", "")
-        .replace("full audio", "")
-        .replace("(audio)", "")
-
-    if (n.contains(" | ")) {
-        if (n.split(" | ").size > 2) {
-            n.split(" | ").forEachIndexed { index, s ->
-                if (index == 0) name = s
-                if (index == 1) name += " - $s"
-            }
-        } else {
-            name = n.substringBefore(" | ")
-        }
-        return name
-    }
-
-    return n
 }
 
 const val USER_AGENT =

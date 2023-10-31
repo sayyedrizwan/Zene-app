@@ -14,6 +14,12 @@ fun OnlineRadioResponse.toTxtCache(): String? {
     return moshi.adapter(r.javaClass).toJson(r)
 }
 
+fun OnlineRadioResponseItem.toMusicData(): MusicData {
+    val i =
+        favicon?.ifEmpty { "https://cdn-icons-png.flaticon.com/512/7999/7999266.png" }
+    return MusicData(i, name, language, serveruuid, MusicType.RADIO)
+}
+
 data class OnlineRadioResponseItem(
     val bitrate: Int?,
     val changeuuid: String?,
@@ -43,7 +49,7 @@ data class OnlineRadioResponseItem(
     val lastlocalchecktime: String?,
     val lastlocalchecktime_iso8601: Any?,
     val name: String?,
-    val serveruuid: Any?,
+    val serveruuid: String?,
     val ssl_error: Int?,
     val state: String?,
     val stationuuid: String?,

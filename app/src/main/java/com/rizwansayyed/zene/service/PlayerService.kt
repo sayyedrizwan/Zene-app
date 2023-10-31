@@ -16,6 +16,7 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import com.rizwansayyed.zene.service.player.notificationservice.PlayerServiceNotificationInterface
 import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceActionInterface
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -112,16 +114,21 @@ class PlayerService : MediaSessionService() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent ?: return
             when (intent.getStringExtra(PLAYER_SERVICE_TYPE)) {
-                ADD_ALL_PLAYER_ITEM -> {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val list = moshi.adapter(Array<MusicData?>::class.java)
-                            .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
-                        val position = intent.getIntExtra(SONG_MEDIA_POSITION, 0)
+                ADD_ALL_PLAYER_ITEM -> CoroutineScope(Dispatchers.IO).launch {
+                    val list = moshi.adapter(Array<MusicData?>::class.java)
+                        .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
+                    val position = intent.getIntExtra(SONG_MEDIA_POSITION, 0)
 
-                        currentPlayingMusic = list?.get(position)?.pId ?: ""
-                        playerServiceAction.addMultipleItemsAndPlay(list, position)
-                        if (isActive) cancel()
-                    }
+                    currentPlayingMusic = list?.get(position)?.pId ?: ""
+                    playerServiceAction.addMultipleItemsAndPlay(list, position)
+                    if (isActive) cancel()
+                }
+
+                PLAY_LIVE_RADIO -> CoroutineScope(Dispatchers.IO).launch {
+                    val r = moshi.adapter(OnlineRadioResponseItem::class.java)
+                        .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
+                    r?.let { playerServiceAction.playLiveRadio(it) }
+                    if (isActive) cancel()
                 }
             }
         }

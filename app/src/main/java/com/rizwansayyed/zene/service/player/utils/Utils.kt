@@ -8,16 +8,14 @@ import androidx.media3.common.MediaMetadata
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.service.PlayerService
+import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
-import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlin.time.Duration.Companion.seconds
 
 object Utils {
 
@@ -32,6 +30,8 @@ object Utils {
         const val PLAYER_SERVICE_TYPE = "player_service_type"
 
         const val ADD_ALL_PLAYER_ITEM = "add_all_player_item"
+        const val PLAY_LIVE_RADIO = "play_live_radio"
+
 
         const val PLAY_SONG_MEDIA = "play_song_media"
         const val SONG_MEDIA_POSITION = "song_media_position"
@@ -53,16 +53,19 @@ object Utils {
             .build()
     }
 
-    fun addAllPlayer(l: Array<MusicData>?, p: Int) = runBlocking {
-        if (!ifPlayerServiceNotRunning()) {
-            context.startService(Intent(context, PlayerService::class.java))
-            delay(2.seconds)
-        }
-
+    fun addAllPlayer(l: Array<MusicData?>?, p: Int) = runBlocking {
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_ALL_PLAYER_ITEM)
-            putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData>::class.java).toJson(l))
+            putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData?>::class.java).toJson(l))
             putExtra(SONG_MEDIA_POSITION, p)
+            context.sendBroadcast(this)
+        }
+    }
+
+    fun playRadioOnPlayer(radio: OnlineRadioResponseItem) = runBlocking {
+        Intent(PLAYER_SERVICE_ACTION).apply {
+            putExtra(PLAYER_SERVICE_TYPE, PLAY_LIVE_RADIO)
+            putExtra(PLAY_SONG_MEDIA, moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio))
             context.sendBroadcast(this)
         }
     }

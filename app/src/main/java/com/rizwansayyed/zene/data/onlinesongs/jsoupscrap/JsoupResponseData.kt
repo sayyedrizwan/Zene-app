@@ -21,6 +21,7 @@ suspend fun jsoupResponseData(url: String): String? {
             .url(url)
             .method("GET", null)
             .addHeader("authority", getMainDomain(url) ?: "")
+            .addHeader("Referer", getMainDomain(url) ?: "")
             .addHeader("user-agent", USER_AGENT)
             .build()
 

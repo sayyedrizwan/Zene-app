@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.toMusicDataList
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.LightBlack
 import com.rizwansayyed.zene.presenter.theme.MainColor
@@ -39,6 +41,8 @@ import com.rizwansayyed.zene.presenter.ui.TextLight
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
@@ -76,7 +80,9 @@ fun FreshAddedSongsList() {
 
                 HorizontalPager(state = pager) { page ->
                     v.item[page]?.let {
-                        FreshAddedItems(it)
+                        FreshAddedItems(it) {
+                            addAllPlayer(v.item.toTypedArray(), page)
+                        }
                     }
                 }
                 Spacer(Modifier.height(25.dp))
@@ -103,18 +109,22 @@ fun FreshAddedSongsList() {
 }
 
 @Composable
-fun FreshAddedItems(music: MusicData) {
-    val homeNavViewModel : HomeNavViewModel = hiltViewModel()
+fun FreshAddedItems(music: MusicData, click: () -> Unit) {
+    val homeNavViewModel: HomeNavViewModel = hiltViewModel()
 
     Row(
         Modifier
             .padding(horizontal = 5.dp)
             .fillMaxWidth()
+            .clickable {
+                click()
+            }
     ) {
         Column(
             Modifier
                 .weight(1f)
-                .height(LocalConfiguration.current.screenWidthDp.dp / 2)) {
+                .height(LocalConfiguration.current.screenWidthDp.dp / 2)
+        ) {
             TextSemiBold(
                 music.name ?: "",
                 Modifier.fillMaxWidth(),
