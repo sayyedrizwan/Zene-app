@@ -39,6 +39,9 @@ import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.service.player.utils.Utils.addToEndPlayer
+import com.rizwansayyed.zene.service.player.utils.Utils.playNextPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlinx.coroutines.Dispatchers
@@ -82,7 +85,8 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
         if (homeNavModel.songDetailDialog?.type == MusicType.RADIO) {
             val radioList by favouriteRadioList.collectAsState(runBlocking(Dispatchers.IO) { favouriteRadioList.first() })
             MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
-
+                addAllPlayer(listOf(homeNavModel.songDetailDialog).toTypedArray(), 0)
+                homeNavModel.setSongDetailsDialog(null)
             }
 
             if (radioList?.any { it == homeNavModel.songDetailDialog?.pId } == true)
@@ -101,13 +105,16 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
                 }
         } else {
             MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
-
+                addAllPlayer(listOf(homeNavModel.songDetailDialog).toTypedArray(), 0)
+                homeNavModel.setSongDetailsDialog(null)
             }
             MusicDialogListItems(R.drawable.ic_play_next, stringResource(R.string.play_next)) {
-
+                playNextPlayer(homeNavModel.songDetailDialog)
+                homeNavModel.setSongDetailsDialog(null)
             }
             MusicDialogListItems(R.drawable.ic_play_in_queue, addInQueue) {
-
+                addToEndPlayer(homeNavModel.songDetailDialog)
+                homeNavModel.setSongDetailsDialog(null)
             }
             MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
 

@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service.player.utils
 
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -9,7 +10,10 @@ import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_AT_END_ITEM
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_NEXT_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
@@ -30,6 +34,8 @@ object Utils {
         const val PLAYER_SERVICE_TYPE = "player_service_type"
 
         const val ADD_ALL_PLAYER_ITEM = "add_all_player_item"
+        const val ADD_PLAY_NEXT_ITEM = "add_play_next_item"
+        const val ADD_PLAY_AT_END_ITEM = "add_play_at_end_item"
         const val PLAY_LIVE_RADIO = "play_live_radio"
 
 
@@ -62,11 +68,38 @@ object Utils {
         }
     }
 
-    fun playRadioOnPlayer(radio: OnlineRadioResponseItem) = runBlocking {
+    fun playNextPlayer(l: MusicData?) = runBlocking {
         Intent(PLAYER_SERVICE_ACTION).apply {
-            putExtra(PLAYER_SERVICE_TYPE, PLAY_LIVE_RADIO)
-            putExtra(PLAY_SONG_MEDIA, moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio))
+            putExtra(PLAYER_SERVICE_TYPE, ADD_PLAY_NEXT_ITEM)
+            putExtra(PLAY_SONG_MEDIA, moshi.adapter(MusicData::class.java).toJson(l))
             context.sendBroadcast(this)
         }
+    }
+
+    fun addToEndPlayer(l: MusicData?) = runBlocking {
+        Intent(PLAYER_SERVICE_ACTION).apply {
+            putExtra(PLAYER_SERVICE_TYPE, ADD_PLAY_AT_END_ITEM)
+            putExtra(PLAY_SONG_MEDIA, moshi.adapter(MusicData::class.java).toJson(l))
+            context.sendBroadcast(this)
+        }
+    }
+
+    fun playRadioOnPlayer(radio: OnlineRadioResponseItem) = runBlocking {
+        val mediaData = moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio)
+        Intent(PLAYER_SERVICE_ACTION).apply {
+            putExtra(PLAYER_SERVICE_TYPE, PLAY_LIVE_RADIO)
+            putExtra(PLAY_SONG_MEDIA, mediaData)
+            context.sendBroadcast(this)
+        }
+    }
+
+    fun openSettingsPermission(v: String?) {
+        val intent = Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            data = Uri.fromParts("package", context.packageName, null)
+        }
+        context.startActivity(intent)
+
+        v?.toast()
     }
 }

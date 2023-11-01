@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.toMusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -97,7 +98,6 @@ class PlayerServiceAction @Inject constructor(
         withContext(Dispatchers.Main) {
             player.pause()
             player.stop()
-
         }
 
         withContext(Dispatchers.IO) {
@@ -126,6 +126,67 @@ class PlayerServiceAction @Inject constructor(
             player.playWhenReady = true
             player.prepare()
             player.play()
+        }
+    }
+
+    override suspend fun addItemToNext(music: MusicData) {
+        val lists = withContext(Dispatchers.IO) {
+            musicPlayerData.first()?.songsLists
+        }
+        val tempLists = ArrayList(lists ?: emptyList())
+        val presentOn = lists?.indexOfFirst { it?.pId == music.pId }
+
+        if ((presentOn ?: -1) >= 0){
+            tempLists.removeAt(presentOn!!)
+
+            withContext(Dispatchers.Main) {
+                player.removeMediaItem(presentOn)
+            }
+        }
+
+        withContext(Dispatchers.Main) {
+            val currentIndex = player.currentMediaItemIndex + 1
+            tempLists.add(currentIndex, music)
+
+            player.addMediaItem(currentIndex, music.toMediaItem(music.pId ?: ""))
+        }
+        withContext(Dispatchers.IO) {
+            val d = musicPlayerData.first()?.apply {
+                songsLists = tempLists
+            }
+            musicPlayerData = flowOf(d)
+        }
+    }
+
+    override suspend fun addItemToEnd(music: MusicData) {
+        val lists = withContext(Dispatchers.IO) {
+            musicPlayerData.first()?.songsLists
+        }
+        val tempLists = ArrayList(lists ?: emptyList())
+        val presentOn = lists?.indexOfFirst { it?.pId == music.pId }
+
+        if ((presentOn ?: -1) >= 0){
+            tempLists.removeAt(presentOn!!)
+
+            withContext(Dispatchers.Main) {
+                player.removeMediaItem(presentOn)
+            }
+        }
+
+        withContext(Dispatchers.Main) {
+            tempLists.add(tempLists.size, music)
+
+            player.addMediaItem(tempLists.size, music.toMediaItem(music.pId ?: ""))
+        }
+        withContext(Dispatchers.IO) {
+            val d = musicPlayerData.first()?.apply {
+                songsLists = tempLists
+            }
+            musicPlayerData = flowOf(d)
+        }
+
+        withContext(Dispatchers.Main) {
+            player.addMediaItem(player.mediaItemCount, music.toMediaItem(music.pId ?: ""))
         }
     }
 

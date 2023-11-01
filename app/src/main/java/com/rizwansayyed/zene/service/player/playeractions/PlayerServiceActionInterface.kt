@@ -9,4 +9,7 @@ interface PlayerServiceActionInterface {
     suspend fun updatePlaying(mediaItem: MediaItem?)
     suspend fun startPlaying(music: MusicData?, list: Array<MusicData?>?, position: Int)
     suspend fun playLiveRadio(radio: OnlineRadioResponseItem)
+
+    suspend fun addItemToNext(music: MusicData)
+    suspend fun addItemToEnd(music: MusicData)
 }

@@ -4,20 +4,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
@@ -25,6 +21,8 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import com.rizwansayyed.zene.service.player.notificationservice.PlayerServiceNotificationInterface
 import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceActionInterface
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_AT_END_ITEM
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_NEXT_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -72,28 +70,37 @@ class PlayerService : MediaSessionService() {
         return START_STICKY
     }
 
+    fun playerError(error: PlaybackException) = CoroutineScope(Dispatchers.IO).launch {
+        if (retry >= 1) return@launch
+
+        if (error.message?.lowercase()?.trim()?.contains("source error") == true) {
+            retry += 1
+            withContext(Dispatchers.Main) {
+                currentPlayingMusic = player.currentMediaItem?.mediaId ?: ""
+                playerServiceAction.updatePlaying(player.currentMediaItem)
+            }
+        }
+
+        if (isActive) cancel()
+    }
+
     private val playerListener = object : Player.Listener {
+        override fun onPlayerErrorChanged(error: PlaybackException?) {
+            super.onPlayerErrorChanged(error)
+            error ?: return
+            playerError(error)
+        }
+
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
-            CoroutineScope(Dispatchers.IO).launch {
-                if (retry >= 1) return@launch
-
-                if (error.message?.lowercase()?.trim()?.contains("source error") == true) {
-                    retry += 1
-                    withContext(Dispatchers.Main) {
-                        currentPlayingMusic = player.currentMediaItem?.mediaId ?: ""
-                        playerServiceAction.updatePlaying(player.currentMediaItem)
-                    }
-                }
-
-                if (isActive) cancel()
-            }
+            playerError(error)
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
-
             if (playbackState == Player.STATE_READY) {
+                retry = 0
+            } else if (playbackState == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
                 retry = 0
             }
         }
@@ -128,6 +135,20 @@ class PlayerService : MediaSessionService() {
                     val r = moshi.adapter(OnlineRadioResponseItem::class.java)
                         .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
                     r?.let { playerServiceAction.playLiveRadio(it) }
+                    if (isActive) cancel()
+                }
+
+                ADD_PLAY_NEXT_ITEM -> CoroutineScope(Dispatchers.IO).launch {
+                    val r = moshi.adapter(MusicData::class.java)
+                        .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
+                    r?.let { playerServiceAction.addItemToNext(it) }
+                    if (isActive) cancel()
+                }
+
+                ADD_PLAY_AT_END_ITEM -> CoroutineScope(Dispatchers.IO).launch {
+                    val r = moshi.adapter(MusicData::class.java)
+                        .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
+                    r?.let { playerServiceAction.addItemToEnd(it) }
                     if (isActive) cancel()
                 }
             }

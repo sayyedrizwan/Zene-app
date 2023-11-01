@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -7,7 +8,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,8 +23,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
@@ -36,8 +41,13 @@ import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
+import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
+import com.rizwansayyed.zene.utils.NotificationViewManager
+import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL
+import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL_ID
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -45,6 +55,7 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -70,6 +81,12 @@ class MainActivity : ComponentActivity() {
                 val activity = LocalContext.current as Activity
                 val keyboard = LocalSoftwareKeyboardController.current
                 val doSplashScreen by doShowSplashScreen.collectAsState(initial = false)
+
+                val notificationValue = stringResource(id = R.string.need_notification_p)
+                val notificationP =
+                    rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                        if (!it) openSettingsPermission(notificationValue)
+                    }
 
                 Box(
                     Modifier
@@ -106,6 +123,10 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     keyboard?.hide()
+                }
+                LaunchedEffect(doSplashScreen) {
+                    if (!doSplashScreen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        notificationP.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
         }
