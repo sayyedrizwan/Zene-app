@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -37,6 +39,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
@@ -66,17 +69,21 @@ fun SongsSuggestionsForYou() {
 }
 
 @Composable
-fun SongsYouMayLikeList(item: List<List<MusicData>>) {
+fun SongsYouMayLikeList(itemList: List<List<MusicData>>) {
     val width = LocalConfiguration.current.screenWidthDp
     val homeNavModel: HomeNavViewModel = hiltViewModel()
 
-    item.forEach { i ->
+    itemList.forEach { d ->
         LazyRow(Modifier.fillMaxWidth()) {
-            items(i) {
+            itemsIndexed(d) { i, item ->
                 Column(
                     Modifier
                         .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
                         .width((width / 3 + 25).dp)
+                        .clickable {
+                            val list = itemList.flatten()
+                            addAllPlayer(list.toTypedArray(), i)
+                        }
                 ) {
                     Box(
                         Modifier
@@ -84,7 +91,7 @@ fun SongsYouMayLikeList(item: List<List<MusicData>>) {
                             .size((width / 3 + 20).dp)
                     ) {
                         AsyncImage(
-                            it.thumbnail,
+                            item.thumbnail,
                             "",
                             Modifier
                                 .clip(RoundedCornerShape(2))
@@ -103,18 +110,22 @@ fun SongsYouMayLikeList(item: List<List<MusicData>>) {
                                 )
                         )
 
-                        MenuIcon(Modifier.align(Alignment.TopEnd).padding(5.dp)) {
-                            homeNavModel.setSongDetailsDialog(it)
+                        MenuIcon(
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(5.dp)
+                        ) {
+                            homeNavModel.setSongDetailsDialog(item)
                         }
                     }
 
                     Spacer(Modifier.height(7.dp))
 
-                    TextSemiBold(it.name ?: "", singleLine = true, size = 15)
+                    TextSemiBold(item.name ?: "", singleLine = true, size = 15)
 
                     Spacer(Modifier.height(7.dp))
 
-                    TextThin(it.artists ?: "", singleLine = true, size = 13)
+                    TextThin(item.artists ?: "", singleLine = true, size = 13)
 
                     Spacer(Modifier.height(10.dp))
                 }

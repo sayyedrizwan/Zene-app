@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -55,6 +56,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
@@ -121,9 +123,13 @@ fun HomeView() {
             }
         }
         when (val v = homeViewModel.topCountryTrendingSongs) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-                GlobalTrendingPagerItems(it, false)
-            }
+            is DataResponse.Success ->
+                itemsIndexed(
+                    v.item, span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
+                    GlobalTrendingPagerItems(item, false) {
+                        addAllPlayer(v.item.toTypedArray(), i)
+                    }
+                }
 
             else -> {}
         }
@@ -186,8 +192,11 @@ fun HomeView() {
         }
 
         when (val v = roomDbViewModel.songsSuggestionForUsers) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
-                SongsExploreItems(it)
+            is DataResponse.Success -> itemsIndexed(
+                v.item, span = { _, _ -> GridItemSpan(TWO_ITEMS_GRID) }) { i, m ->
+                SongsExploreItems(m) {
+                    addAllPlayer(v.item.toTypedArray(), i)
+                }
             }
 
             DataResponse.Loading -> items(20, span = { GridItemSpan(TWO_ITEMS_GRID) }) {

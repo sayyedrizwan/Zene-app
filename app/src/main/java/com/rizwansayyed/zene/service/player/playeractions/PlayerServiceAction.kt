@@ -69,8 +69,9 @@ class PlayerServiceAction @Inject constructor(
             if (list?.isNotEmpty() == true) list.forEach { m ->
                 m?.toMediaItem(m.pId ?: "")?.let { player.addMediaItem(it) }
             }
+
+            player.seekTo(position, 0)
         }
-        player.seekTo(position, 0)
 
         val url = withContext(Dispatchers.IO) {
             try {

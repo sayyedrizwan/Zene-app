@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +46,7 @@ import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlin.math.absoluteValue
@@ -94,6 +97,9 @@ fun ArtistsFanItems(item: List<ArtistsFanData>) {
                         stop = 1f,
                         fraction = 1f - pageOffset.coerceIn(0f, 1f)
                     )
+                }
+                .clickable {
+
                 }, Arrangement.Center, Alignment.CenterHorizontally
         ) {
             AsyncImage(
@@ -137,19 +143,26 @@ fun ArtistsFanItemsSongs(list: List<MusicData>) {
             .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
             .background(MainColor)
     ) {
-        items(list) {
-            ArtistsFanItemsSongsItems(it, width, homeNav)
+        itemsIndexed(list) { i, m ->
+            ArtistsFanItemsSongsItems(m, width, homeNav) {
+                addAllPlayer(list.toTypedArray(), i)
+            }
         }
     }
 }
 
 
 @Composable
-fun ArtistsFanItemsSongsItems(it: MusicData, width: Int, homeNav: HomeNavViewModel) {
+fun ArtistsFanItemsSongsItems(
+    it: MusicData, width: Int, homeNav: HomeNavViewModel, click: () -> Unit
+) {
     Column(
         Modifier
             .padding(start = 10.dp, end = 15.dp)
             .width((width / 2 + 25).dp)
+            .clickable {
+                click()
+            }
     ) {
         Spacer(Modifier.height(10.dp))
 

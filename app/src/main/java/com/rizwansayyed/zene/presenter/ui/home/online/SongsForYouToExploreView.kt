@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -52,7 +53,7 @@ fun SongsForYouToExplore() {
 }
 
 @Composable
-fun SongsExploreItems(music: MusicData) {
+fun SongsExploreItems(music: MusicData, click: () -> Unit) {
     val width = (LocalConfiguration.current.screenWidthDp / 2).dp
     val homeNav: HomeNavViewModel = hiltViewModel()
 
@@ -62,6 +63,9 @@ fun SongsExploreItems(music: MusicData) {
                 .padding(5.dp)
                 .clip(RoundedCornerShape(2))
                 .fillMaxWidth()
+                .clickable {
+                    click()
+                }
         ) {
             AsyncImage(
                 music.thumbnail,

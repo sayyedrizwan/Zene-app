@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,6 +35,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
@@ -60,8 +63,10 @@ fun SongsYouMayLikeView() {
                         .fillMaxWidth()
                         .height((screenWidth / 1.9 * 2).dp)
                 ) {
-                    items(v.item) {
-                        SongsYouMayLikeItems(it, screenWidth, homeNav)
+                    itemsIndexed(v.item) { i, item ->
+                        SongsYouMayLikeItems(item, screenWidth, homeNav) {
+                            addAllPlayer(v.item.toTypedArray(), i)
+                        }
                     }
                 }
             }
@@ -70,13 +75,18 @@ fun SongsYouMayLikeView() {
 }
 
 @Composable
-fun SongsYouMayLikeItems(music: MusicData?, screenWidth: Int, homeNav: HomeNavViewModel) {
+fun SongsYouMayLikeItems(
+    music: MusicData?, screenWidth: Int, homeNav: HomeNavViewModel, click: () -> Unit
+) {
     Box(
         Modifier
             .padding(4.dp)
             .size((screenWidth / 2).dp, (screenWidth / 1.9).dp)
             .clip(RoundedCornerShape(18.dp))
             .background(BlackColor)
+            .clickable {
+                click()
+            }
     ) {
         AsyncImage(
             music?.thumbnail, music?.name, Modifier.fillMaxSize(),
@@ -89,7 +99,11 @@ fun SongsYouMayLikeItems(music: MusicData?, screenWidth: Int, homeNav: HomeNavVi
                 .background(MainColor.copy(0.3f))
         )
 
-        MenuIcon(Modifier.padding(5.dp).align(Alignment.TopEnd)) {
+        MenuIcon(
+            Modifier
+                .padding(5.dp)
+                .align(Alignment.TopEnd)
+        ) {
             homeNav.setSongDetailsDialog(music)
         }
 

@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,8 @@ import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
+import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
@@ -66,15 +69,17 @@ fun PageWithHorizontal(item: List<List<MusicData?>>) {
     ) { page ->
         Column {
             item[page].forEach { i ->
-                GlobalTrendingPagerItems(i, true)
+                GlobalTrendingPagerItems(i, true) {
+                    addAllPlayer(item.flatten().toTypedArray(), page)
+                }
             }
         }
     }
 }
 
 @Composable
-fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean) {
-    val homeNavViewModel : HomeNavViewModel = hiltViewModel()
+fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean, click: () -> Unit) {
+    val homeNavViewModel: HomeNavViewModel = hiltViewModel()
 
     val gradient = Brush.linearGradient(
         colors = if (horizontal) listOf(BlackColor, BlackColor)
@@ -90,7 +95,10 @@ fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(gradient)
-            .padding(5.dp),
+            .padding(5.dp)
+            .clickable {
+                click()
+            },
         verticalAlignment = CenterVertically
     ) {
         AsyncImage(

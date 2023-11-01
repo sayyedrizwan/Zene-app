@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +40,7 @@ import com.rizwansayyed.zene.presenter.util.UiUtils
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 
 
@@ -118,8 +120,12 @@ fun SearchViewInfo(s: String, close: () -> Unit) {
                         }
                     }
 
-                items(v.item?.songs ?: emptyList(), span = { GridItemSpan(TWO_ITEMS_GRID) }) {
-                    SongsExploreItems(it)
+                itemsIndexed(
+                    v.item?.songs ?: emptyList(),
+                    span = { _, _ -> GridItemSpan(TWO_ITEMS_GRID) }) { i, m ->
+                    SongsExploreItems(m) {
+                        addAllPlayer((v.item?.songs ?: emptyList()).toTypedArray(), i)
+                    }
                 }
 
                 items(1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
