@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.presenter.ui.home.online
+package com.rizwansayyed.zene.presenter.ui.home.online.radio
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -74,12 +74,14 @@ fun CityRadioViewList() {
     val homeApi: HomeApiViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
 
+    var seeAll by remember { mutableStateOf(false) }
+
     when (val v = homeApi.onlineRadio) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
             TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
-                "see all radio".toast()
+                seeAll = true
             }
 
             RadioItemLoading()
@@ -89,7 +91,7 @@ fun CityRadioViewList() {
             val radioPagerState = rememberPagerState(pageCount = { v.item.size })
 
             TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
-                "see all radio".toast()
+                seeAll = true
             }
 
             RadioFavList(homeApi)
@@ -108,6 +110,8 @@ fun CityRadioViewList() {
             }
         }
     }
+
+    if (seeAll) OnlineRadioViewAllView()
 }
 
 @Composable
