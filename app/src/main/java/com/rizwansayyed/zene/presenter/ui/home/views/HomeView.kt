@@ -222,6 +222,7 @@ fun HomeView() {
     }
 }
 
+
 @Composable
 fun BottomNavBar(modifier: Modifier) {
     val nav: HomeNavViewModel = hiltViewModel()
@@ -236,6 +237,8 @@ fun BottomNavBar(modifier: Modifier) {
         Alignment.CenterVertically
     ) {
         HomeNavigation.entries.forEach {
+            if (!it.doShow) return@forEach
+
             Column(
                 Modifier
                     .padding(vertical = 15.dp)

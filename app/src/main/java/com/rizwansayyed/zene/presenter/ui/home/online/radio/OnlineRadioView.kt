@@ -48,6 +48,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
+import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
@@ -74,14 +75,12 @@ fun CityRadioViewList() {
     val homeApi: HomeApiViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
 
-    var seeAll by remember { mutableStateOf(false) }
-
     when (val v = homeApi.onlineRadio) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
             TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
-                seeAll = true
+                homeNav.setHomeNav(HomeNavigation.ALL_RADIO)
             }
 
             RadioItemLoading()
@@ -91,7 +90,7 @@ fun CityRadioViewList() {
             val radioPagerState = rememberPagerState(pageCount = { v.item.size })
 
             TopInfoWithSeeMore(R.string.radio_station_in_city, R.string.view_all) {
-                seeAll = true
+                homeNav.setHomeNav(HomeNavigation.ALL_RADIO)
             }
 
             RadioFavList(homeApi)
@@ -110,8 +109,6 @@ fun CityRadioViewList() {
             }
         }
     }
-
-    if (seeAll) OnlineRadioViewAllView()
 }
 
 @Composable
@@ -208,7 +205,7 @@ fun RadioFavList(homeApi: HomeApiViewModel) {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun RadiosItems(
-    page: Int, radioPagerState: PagerState,
+    page: Int, radioPagerState: PagerState?,
     radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel
 ) {
     Card(
@@ -218,9 +215,11 @@ fun RadiosItems(
             .fillMaxWidth()
             .height((LocalConfiguration.current.screenWidthDp).dp)
             .graphicsLayer {
-                val pageOffset =
-                    ((radioPagerState.currentPage - page) + radioPagerState.currentPageOffsetFraction).absoluteValue
-                alpha = lerp(0.5f, 1f, 0.8f - pageOffset.coerceIn(0f, 1f))
+                if (radioPagerState != null) {
+                    val pageOffset =
+                        ((radioPagerState.currentPage - page) + radioPagerState.currentPageOffsetFraction).absoluteValue
+                    alpha = lerp(0.5f, 1f, 0.8f - pageOffset.coerceIn(0f, 1f))
+                }
             },
         shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(MainColor)
     ) {

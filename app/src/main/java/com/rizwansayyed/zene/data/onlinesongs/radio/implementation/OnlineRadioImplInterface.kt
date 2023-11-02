@@ -9,4 +9,5 @@ interface OnlineRadioImplInterface {
     suspend fun onlineRadioSearch(all: Boolean = true): Flow<OnlineRadioResponse>
 
     suspend fun favouriteRadioLists(uuid: String): Flow<List<OnlineRadioResponseItem>>
+    suspend fun searchOnlineRadio(q: String): Flow<OnlineRadioResponse>
 }

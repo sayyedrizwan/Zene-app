@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.TextBold
+import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
@@ -95,6 +96,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     when (navViewModel.homeNavV) {
                         HOME -> HomeView()
+                        ALL_RADIO -> OnlineRadioViewAllView()
                         FEED -> TextBold(v = "feed")
                         SEARCH -> SearchView()
                         MY_MUSIC -> TextBold(v = "music")

@@ -20,4 +20,7 @@ interface OnlineRadioService {
         @Query("uuids") uuids: String
     ): OnlineRadioResponse
 
+    @GET
+    suspend fun searchRadio(@Url url: String): OnlineRadioResponse
+
 }

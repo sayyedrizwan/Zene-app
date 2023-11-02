@@ -28,6 +28,10 @@ object RadioOnlineAPI {
         return "$base/json/stations/byuuid"
     }
 
+    fun searchRadioNameAPI(base: String, name: String): String {
+        return "$base/json/stations/byname/$name"
+    }
+
     const val RADIO_BASE_URLS = "all.api.radio-browser.info"
 }
 

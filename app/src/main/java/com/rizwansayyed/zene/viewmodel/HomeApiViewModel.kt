@@ -78,6 +78,9 @@ class HomeApiViewModel @Inject constructor(
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
         private set
 
+    var onlineRadioAll by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
+        private set
+
     var favouriteRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
         private set
 
@@ -121,10 +124,30 @@ class HomeApiViewModel @Inject constructor(
         }
     }
 
+    fun onlineRadiosInCountry() = viewModelScope.launch(Dispatchers.IO) {
+        onlineRadiosAPI.onlineRadioSearch(true).onStart {
+            onlineRadioAll = DataResponse.Loading
+        }.catch {
+            onlineRadioAll = DataResponse.Error(it)
+        }.collectLatest {
+            onlineRadioAll = DataResponse.Success(it)
+        }
+    }
+
+    fun onlineRadiosSearch(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        onlineRadiosAPI.searchOnlineRadio(q).onStart {
+            onlineRadioAll = DataResponse.Loading
+        }.catch {
+            onlineRadioAll = DataResponse.Error(it)
+        }.collectLatest {
+            onlineRadioAll = DataResponse.Success(it)
+        }
+    }
+
     fun favouriteRadios(clear: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         if (clear) CacheFiles.favRadio.deleteRecursively()
 
-        if (favouriteRadioList.first()?.isEmpty() == true){
+        if (favouriteRadioList.first()?.isEmpty() == true) {
             favouriteRadio = DataResponse.Success(emptyList())
             return@launch
         }

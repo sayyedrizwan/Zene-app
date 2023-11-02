@@ -303,8 +303,9 @@ fun MenuIcon(modifier: Modifier = Modifier, click: () -> Unit) {
 
 @Composable
 fun SearchEditTextView(
+    p: String,
     text: String,
-    listener: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    listener: ManagedActivityResultLauncher<Intent, ActivityResult>?,
     onChange: (String) -> Unit,
     onDone: () -> Unit
 ) {
@@ -321,10 +322,7 @@ fun SearchEditTextView(
         ),
         shape = CircleShape,
         placeholder = {
-            TextThin(
-                stringResource(id = R.string.search_music_artists_album),
-                color = Color.LightGray
-            )
+            TextThin(p, color = Color.LightGray)
         },
         maxLines = 1,
         singleLine = true,
@@ -341,9 +339,10 @@ fun SearchEditTextView(
             fontWeight = FontWeight.SemiBold,
         ),
         trailingIcon = {
-            SmallIcons(R.drawable.ic_mic) {
-                listener.launch(startSpeech())
-            }
+            if (listener != null)
+                SmallIcons(R.drawable.ic_mic) {
+                    listener.launch(startSpeech())
+                }
         }
     )
 }

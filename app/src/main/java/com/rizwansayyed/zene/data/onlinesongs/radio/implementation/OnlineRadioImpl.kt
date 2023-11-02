@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.radioList
 import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.RADIO_BASE_URL
 import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioSearchAPI
 import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioUUIDSearchAPI
+import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.searchRadioNameAPI
 import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -87,6 +88,12 @@ class OnlineRadioImpl @Inject constructor(
         val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
         val response = onlineRadio.favouriteRadio(radioUUIDSearchAPI(baseURL), uuid)
         response.toTxtCache()?.let { writeToCacheFile(favRadio, it) }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun searchOnlineRadio(q: String) = flow {
+        val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
+        val response = onlineRadio.searchRadio(searchRadioNameAPI(baseURL, q))
         emit(response)
     }.flowOn(Dispatchers.IO)
 

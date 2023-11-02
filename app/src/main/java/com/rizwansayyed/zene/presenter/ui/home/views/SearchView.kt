@@ -73,6 +73,7 @@ fun SearchView() {
     var text by remember { mutableStateOf("") }
     var searchJob by remember { mutableStateOf<Job?>(null) }
     var searchInfoText by remember { mutableStateOf("") }
+    val sMusic = stringResource(id = R.string.search_music_artists_album)
 
     val searchHistory by searchHistoryList
         .collectAsState(initial = runBlocking(Dispatchers.IO) { searchHistoryList.first() })
@@ -102,7 +103,7 @@ fun SearchView() {
                     top = 54.dp
                 ), contentAlignment = Alignment.Center
             ) {
-                SearchEditTextView(text, listener, {
+                SearchEditTextView(sMusic, text, listener, {
                     text = it
                     if (it.length <= 2) return@SearchEditTextView
 
