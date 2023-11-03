@@ -12,6 +12,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -105,7 +106,9 @@ class MainActivity : ComponentActivity() {
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))
                 }
 
-                if (navViewModel.songDetailDialog != null) MusicDialogSheet()
+                AnimatedVisibility(navViewModel.songDetailDialog != null) {
+                    MusicDialogSheet()
+                }
                 if (navViewModel.songDetailDialog != null) MusicPlayerView()
                 if (doSplashScreen) MainSplashView()
 

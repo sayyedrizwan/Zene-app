@@ -229,7 +229,10 @@ fun RadiosItems(
                 .fillMaxSize()
         ) {
             MenuIcon(Modifier.align(Alignment.TopStart)) {
-                val m = MusicData(radio.favicon, radio.name, "", radio.stationuuid, MusicType.RADIO)
+                val m = MusicData(
+                    radio.favicon, radio.name, radio.language, radio.stationuuid, MusicType.RADIO
+                )
+                homeNav.setRadioTemp(radio)
                 homeNav.setSongDetailsDialog(m)
             }
 

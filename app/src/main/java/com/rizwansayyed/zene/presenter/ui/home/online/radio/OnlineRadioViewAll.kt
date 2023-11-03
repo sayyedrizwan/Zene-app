@@ -1,17 +1,25 @@
 package com.rizwansayyed.zene.presenter.ui.home.online.radio
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,22 +30,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
+import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.player.utils.Utils.playRadioOnPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -134,7 +151,7 @@ fun OnlineRadioViewAllView() {
 
                 items(v.item, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                     Box(Modifier.padding(1.dp)) {
-                        RadioSearchCard(it)
+                        RadioSearchCard(it, homeNav)
                     }
                 }
             }
@@ -147,6 +164,42 @@ fun OnlineRadioViewAllView() {
 }
 
 @Composable
-fun RadioSearchCard(radio: OnlineRadioResponseItem) {
+fun RadioSearchCard(radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel) {
+    Column(
+        Modifier
+            .padding(5.dp)
+            .width(LocalConfiguration.current.screenWidthDp.dp / 2)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MainColor)
+            .aspectRatio(1f)
+            .clickable {
+                playRadioOnPlayer(radio)
+            },
+        Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp, end = 3.dp)
+        ) {
+            MenuIcon(Modifier.align(Alignment.CenterEnd)) {
+                homeNav.setRadioTemp(radio)
+                homeNav.setSongDetailsDialog(radio.toMusicData())
+            }
+        }
 
+        AsyncImage(
+            radio.favicon, radio.name,
+            Modifier
+                .padding(top = 25.dp)
+                .clip(RoundedCornerShape(50))
+                .size(50.dp)
+        )
+
+        Spacer(Modifier.height(4.dp))
+        TextSemiBold(radio.name ?: "", doCenter = true, size = 14)
+        Spacer(Modifier.height(4.dp))
+        TextThin(radio.language?.toCapitalFirst() ?: "", doCenter = true, size = 12)
+        Spacer(Modifier.height(25.dp))
+    }
 }

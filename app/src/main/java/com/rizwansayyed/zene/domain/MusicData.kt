@@ -36,11 +36,12 @@ data class MusicDataCache(
 )
 
 data class MusicData(
-    val thumbnail: String?,
-    var name: String?,
-    var artists: String?,
+    val thumbnail: String? = "",
+    var name: String? = "",
+    var artists: String? = "",
     var pId: String?,
     var type: MusicType?,
+    var url: String? = ""
 )
 
 fun List<MusicDataWithArtists>.toMusicDataList(): List<MusicData> {

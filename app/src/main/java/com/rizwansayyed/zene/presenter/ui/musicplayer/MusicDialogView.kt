@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
-import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.addToEndPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playNextPlayer
+import com.rizwansayyed.zene.service.player.utils.Utils.playRadioOnPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlinx.coroutines.Dispatchers
@@ -85,7 +86,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
         if (homeNavModel.songDetailDialog?.type == MusicType.RADIO) {
             val radioList by favouriteRadioList.collectAsState(runBlocking(Dispatchers.IO) { favouriteRadioList.first() })
             MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
-                addAllPlayer(listOf(homeNavModel.songDetailDialog).toTypedArray(), 0)
+                playRadioOnPlayer(homeNavModel.onlineRadioTemps!!)
                 homeNavModel.setSongDetailsDialog(null)
             }
 
