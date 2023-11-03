@@ -34,6 +34,9 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var songDetailDialog by mutableStateOf<MusicData?>(null)
         private set
 
+    var selectedArtists by mutableStateOf("")
+        private set
+
     var onlineRadioTemps by mutableStateOf<OnlineRadioResponseItem?>(null)
         private set
 
@@ -54,6 +57,10 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     fun setHomeNav(h: HomeNavigation) {
         homeNavV = h
+    }
+
+    fun setArtists(a: String) {
+        selectedArtists = a
     }
 
     fun checkAndSetOnlineStatus() = viewModelScope.launch(Dispatchers.IO) {

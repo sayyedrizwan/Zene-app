@@ -30,10 +30,12 @@ import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 @Composable
 fun TopArtistsCountryList() {
     val homeViewModel: HomeApiViewModel = hiltViewModel()
+    val homeNav: HomeNavViewModel = hiltViewModel()
 
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
@@ -72,7 +74,9 @@ fun TopArtistsCountryList() {
                     .height((250 * 2).dp)
             ) {
                 items(v.item ?: emptyList()) {
-                    TopArtistsItems(it, screenWidth)
+                    TopArtistsItems(it, screenWidth) {
+                        homeNav.setArtists(it.name ?: "")
+                    }
                 }
             }
         }

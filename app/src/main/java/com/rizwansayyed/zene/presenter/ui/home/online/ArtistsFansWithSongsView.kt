@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -54,6 +53,7 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun ArtistsYouMayLikeWithSongs() {
+    val homeNav: HomeNavViewModel = hiltViewModel()
     val roomDbViewModel: RoomDbViewModel = hiltViewModel()
 
     when (val v = roomDbViewModel.artistsFans) {
@@ -68,14 +68,14 @@ fun ArtistsYouMayLikeWithSongs() {
         is DataResponse.Success -> {
             TopInfoWithSeeMore(stringResource(id = R.string.your_favourite_artists), null) {}
 
-            ArtistsFanItems(v.item)
+            ArtistsFanItems(v.item, homeNav)
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ArtistsFanItems(item: List<ArtistsFanData>) {
+fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel, ) {
     val pagerState = rememberPagerState(pageCount = { Int.MAX_VALUE })
     val w = (LocalConfiguration.current.screenWidthDp / 1.4).dp
     val l = ((LocalConfiguration.current.screenWidthDp - w.value) / 2).dp
@@ -99,7 +99,7 @@ fun ArtistsFanItems(item: List<ArtistsFanData>) {
                     )
                 }
                 .clickable {
-
+                    homeNav.setArtists(i.artistsName)
                 }, Arrangement.Center, Alignment.CenterHorizontally
         ) {
             AsyncImage(

@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,12 +31,14 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 
 
 @Composable
 fun TopArtistsList() {
     val jsoupViewModel: JsoupScrapViewModel = hiltViewModel()
+    val homeNav: HomeNavViewModel = hiltViewModel()
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
     when (val v = jsoupViewModel.topArtists) {
@@ -55,7 +58,11 @@ fun TopArtistsList() {
                     .fillMaxWidth()
                     .height((screenWidth / 1.8 * 2).dp)
             ) {
-                items(v.item) { TopArtistsItems(it, screenWidth) }
+                items(v.item) {
+                    TopArtistsItems(it, screenWidth) {
+                        homeNav.setArtists(it.name ?: "")
+                    }
+                }
             }
         }
     }
@@ -81,11 +88,14 @@ fun ArtistsLoadingCards(screenWidth: Int) {
 }
 
 @Composable
-fun TopArtistsItems(artists: MusicData, width: Int) {
+fun TopArtistsItems(artists: MusicData, width: Int, click: () -> Unit) {
     Box(
         Modifier
             .padding(4.dp)
             .size((width / 2).dp, (width / 2 + 90).dp)
+            .clickable {
+                click()
+            }
     ) {
         AsyncImage(
             artists.thumbnail, artists.name,

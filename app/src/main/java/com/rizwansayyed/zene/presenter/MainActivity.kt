@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
+import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
@@ -106,9 +107,14 @@ class MainActivity : ComponentActivity() {
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))
                 }
 
+                AnimatedVisibility(navViewModel.selectedArtists.isNotEmpty()) {
+                    ArtistsView()
+                }
+
                 AnimatedVisibility(navViewModel.songDetailDialog != null) {
                     MusicDialogSheet()
                 }
+
                 if (navViewModel.songDetailDialog != null) MusicPlayerView()
                 if (doSplashScreen) MainSplashView()
 
@@ -116,6 +122,10 @@ class MainActivity : ComponentActivity() {
                 BackHandler {
                     if (navViewModel.songDetailDialog != null) {
                         navViewModel.setSongDetailsDialog(null)
+                        return@BackHandler
+                    }
+                    if (navViewModel.selectedArtists.isNotEmpty()) {
+                        navViewModel.setArtists("")
                         return@BackHandler
                     }
                     if (navViewModel.homeNavV != HOME) {

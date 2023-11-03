@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,11 +27,13 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 
 @Composable
 fun SimilarArtists() {
+    val homeNav: HomeNavViewModel = hiltViewModel()
     val roomDbViewModel: RoomDbViewModel = hiltViewModel()
 
     when (val v = roomDbViewModel.artistsSuggestionForUsers) {
@@ -40,7 +43,7 @@ fun SimilarArtists() {
             TopInfoWithSeeMore(stringResource(id = R.string.similar_artists), null) {}
 
             LazyRow(Modifier.fillMaxWidth()) {
-                items(15){
+                items(15) {
                     SimilarArtistsItemsLoading()
                 }
             }
@@ -52,7 +55,9 @@ fun SimilarArtists() {
 
                 LazyRow(Modifier.fillMaxWidth()) {
                     items(v.item) {
-                        SimilarArtistsItems(it)
+                        SimilarArtistsItems(it) {
+                            homeNav.setArtists(it.name ?: "")
+                        }
                     }
                 }
             }
@@ -83,8 +88,14 @@ fun SimilarArtistsItemsLoading() {
 }
 
 @Composable
-fun SimilarArtistsItems(music: MusicData) {
-    Column(Modifier.width(200.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+fun SimilarArtistsItems(music: MusicData, click: () -> Unit) {
+    Column(
+        Modifier
+            .width(200.dp)
+            .clickable {
+                click()
+            }, Arrangement.Center, Alignment.CenterHorizontally
+    ) {
         AsyncImage(
             music.thumbnail, "",
             Modifier
