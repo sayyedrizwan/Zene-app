@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -30,14 +31,14 @@ class ArtistsViewModel @Inject constructor(private val lastFMImpl: LastFMImplInt
 
 
     private fun searchImg(a: String) = viewModelScope.launch(Dispatchers.IO) {
-        lastFMImpl.artistsImages(a, 70).onStart {
+        lastFMImpl.artistsImages(a, 80).onStart {
             artistsImages = DataResponse.Loading
         }.catch {
+            it.message?.toast()
             artistsImages = DataResponse.Error(it)
         }.collectLatest {
             artistsImages = DataResponse.Success(it)
         }
     }
-
 
 }

@@ -1,11 +1,15 @@
 package com.rizwansayyed.zene.service.player.utils
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.provider.Settings
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
@@ -19,6 +23,11 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 object Utils {
@@ -102,4 +111,15 @@ object Utils {
 
         v?.toast()
     }
+
+    fun downloadImageAsBitmap(uri: Uri?, done: (Bitmap) -> Unit) =
+        CoroutineScope(Dispatchers.IO).launch {
+            val request = ImageRequest.Builder(context).data(uri)
+                .target(onSuccess = { result ->
+                    done((result as BitmapDrawable).bitmap)
+                }).build()
+            ImageLoader.Builder(context).crossfade(true).build().enqueue(request)
+
+            if (isActive) cancel()
+        }
 }

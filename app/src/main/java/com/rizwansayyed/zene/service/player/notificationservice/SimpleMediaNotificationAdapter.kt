@@ -9,6 +9,7 @@ import androidx.media3.ui.PlayerNotificationManager
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
 
 @UnstableApi
 class SimpleMediaNotificationAdapter(
@@ -27,12 +28,9 @@ class SimpleMediaNotificationAdapter(
     override fun getCurrentLargeIcon(
         player: Player, callback: PlayerNotificationManager.BitmapCallback
     ): Bitmap? {
-        val request = ImageRequest.Builder(context).data(player.mediaMetadata.artworkUri)
-            .target(onSuccess = { result ->
-                callback.onBitmap((result as BitmapDrawable).bitmap)
-            }).build()
-
-        ImageLoader.Builder(context).crossfade(true).build().enqueue(request)
+        downloadImageAsBitmap(player.mediaMetadata.artworkUri) {
+            callback.onBitmap(it)
+        }
         return null
     }
 }

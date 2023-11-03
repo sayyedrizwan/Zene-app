@@ -84,6 +84,7 @@ class MainActivity : ComponentActivity() {
                 val activity = LocalContext.current as Activity
                 val keyboard = LocalSoftwareKeyboardController.current
                 val doSplashScreen by doShowSplashScreen.collectAsState(initial = false)
+                val songPlayerView by musicPlayerData.collectAsState(initial = null)
 
                 val notificationValue = stringResource(id = R.string.need_notification_p)
                 val notificationP =
@@ -104,18 +105,20 @@ class MainActivity : ComponentActivity() {
                         MY_MUSIC -> TextBold(v = "music")
                     }
 
+                    AnimatedVisibility(navViewModel.selectedArtists.isNotEmpty()) {
+                        ArtistsView()
+                    }
+
+
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))
                 }
 
-                AnimatedVisibility(navViewModel.selectedArtists.isNotEmpty()) {
-                    ArtistsView()
-                }
+                if (songPlayerView?.show == true) MusicPlayerView()
 
                 AnimatedVisibility(navViewModel.songDetailDialog != null) {
                     MusicDialogSheet()
                 }
 
-                if (navViewModel.songDetailDialog != null) MusicPlayerView()
                 if (doSplashScreen) MainSplashView()
 
 
@@ -137,8 +140,16 @@ class MainActivity : ComponentActivity() {
                 }
 
                 LaunchedEffect(Unit) {
+                    delay(1.seconds)
                     navViewModel.setArtists("Taylor Swift")
                     keyboard?.hide()
+                }
+                LaunchedEffect(navViewModel.homeNavV) {
+                    navViewModel.setArtists("")
+                    navViewModel.setSongDetailsDialog(null)
+
+                    val mpd = musicPlayerData.first()?.apply { show = false }
+                    musicPlayerData = flowOf(mpd)
                 }
                 LaunchedEffect(doSplashScreen) {
                     if (!doSplashScreen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)

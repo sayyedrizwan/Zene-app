@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.home.artists
 
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,10 +24,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.Utils.homeSetWallpaper
 import com.rizwansayyed.zene.utils.Utils.littleVibrate
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import kotlinx.coroutines.FlowPreview
@@ -38,7 +39,6 @@ import kotlinx.coroutines.flow.debounce
 @OptIn(FlowPreview::class)
 @Composable
 fun MainImageAndList() {
-    val context = LocalContext.current.applicationContext
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
     val listState = rememberLazyListState()
 
@@ -64,8 +64,7 @@ fun MainImageAndList() {
                 items(v.item) {
                     SmallImageView(it) { i ->
                         img = i
-                        val intent = Intent(Intent.ACTION_SET_WALLPAPER)
-                        context.startActivity(intent)
+                        homeSetWallpaper(i)
                     }
                 }
             }
@@ -78,6 +77,13 @@ fun MainImageAndList() {
                     img = v.item[it]
                 }
             }
+        }
+    }
+
+    DisposableEffect(Unit){
+        "runned".toast()
+        onDispose {
+            "dispose".toast()
         }
     }
 }

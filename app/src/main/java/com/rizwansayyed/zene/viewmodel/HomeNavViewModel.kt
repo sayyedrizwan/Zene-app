@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.utils.Utils.isInternetConnected
 import com.rizwansayyed.zene.utils.Utils.littleVibrate
@@ -39,9 +40,6 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
         private set
 
     var onlineRadioTemps by mutableStateOf<OnlineRadioResponseItem?>(null)
-        private set
-
-    var musicPlayerView by mutableStateOf<MusicData?>(null)
         private set
 
     fun setSongDetailsDialog(v: MusicData?) {

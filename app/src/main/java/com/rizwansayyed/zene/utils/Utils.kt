@@ -5,23 +5,34 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.os.Build
+import android.os.Environment
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.webkit.MimeTypeMap
+import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmapOrNull
+import androidx.core.net.toUri
 import coil.imageLoader
 import coil.request.ImageRequest
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
+import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.net.InetAddress
 import java.util.Calendar
 import kotlin.system.exitProcess
@@ -148,5 +159,27 @@ object Utils {
             vibrator.vibrate(vibe)
         } else
             vibrator.vibrate(100)
+    }
+
+    private fun File.writeBitmap(bitmap: Bitmap) {
+        outputStream().use { out ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            out.flush()
+        }
+    }
+
+    private fun getMimeType(url: String): String? {
+        var type: String? = null
+        val extension = MimeTypeMap.getFileExtensionFromUrl(url)
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        }
+        return type
+    }
+
+    fun homeSetWallpaper(url: String) {
+        downloadImageAsBitmap(url.toUri()) {
+
+        }
     }
 }

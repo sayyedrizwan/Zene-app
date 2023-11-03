@@ -84,6 +84,7 @@ class LastFMImpl @Inject constructor(
         while (list.size <= limit) {
             val img = lastFMS.artistsImages(searchLastFMImageURLPath(imgId ?: ""))
             img.values.forEach {
+                Log.d("TAG", "artistsImages: data ${it.src}")
                 it.src?.let { img -> list.add(img) }
                 imgId = it.next?.substringAfterLast("/")
             }
