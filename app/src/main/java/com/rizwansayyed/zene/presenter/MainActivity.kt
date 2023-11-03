@@ -137,6 +137,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 LaunchedEffect(Unit) {
+                    navViewModel.setArtists("Taylor Swift")
                     keyboard?.hide()
                 }
                 LaunchedEffect(doSplashScreen) {

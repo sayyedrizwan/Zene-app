@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.utils.Utils.isInternetConnected
+import com.rizwansayyed.zene.utils.Utils.littleVibrate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,6 +45,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
         private set
 
     fun setSongDetailsDialog(v: MusicData?) {
+        if (v != null) littleVibrate()
         songDetailDialog = v
     }
 

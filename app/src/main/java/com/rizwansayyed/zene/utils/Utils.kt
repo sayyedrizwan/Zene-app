@@ -4,9 +4,13 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
-import android.content.Intent
+import android.content.Context.VIBRATOR_SERVICE
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.core.graphics.drawable.toBitmapOrNull
 import coil.imageLoader
 import coil.request.ImageRequest
@@ -126,6 +130,23 @@ object Utils {
         return (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
             .getRunningServices(Integer.MAX_VALUE)
             .any { it.service.className == PlayerService::class.java.name }
+    }
 
+
+    private val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val vibratorManager =
+            context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        vibratorManager.defaultVibrator
+    } else {
+        @Suppress("DEPRECATION")
+        context.getSystemService(VIBRATOR_SERVICE) as Vibrator
+    }
+
+    fun littleVibrate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val vibe = VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
+            vibrator.vibrate(vibe)
+        } else
+            vibrator.vibrate(100)
     }
 }
