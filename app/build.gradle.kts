@@ -92,7 +92,7 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:${DependenciesVersion.HILT.version}")
     kapt("com.google.dagger:hilt-android-compiler:${DependenciesVersion.HILT.version}")
-    implementation("androidx.hilt:hilt-navigation-compose:${DependenciesVersion.V.version}")
+    implementation("androidx.hilt:hilt-navigation-compose:${DependenciesVersion.HILT_COMPOSE.version}")
 
     implementation("io.coil-kt:coil-compose:${DependenciesVersion.COIL.version}")
 
@@ -139,7 +139,7 @@ enum class AndroidVersion(val version: String) {
 
 enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.8.0"), COMPOSE("2023.09.00"),
-    HILT("2.48.1"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0"),
+    HILT("2.48.1"), HILT_COMPOSE("1.1.0"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0"),
     RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1"),
     MEDIA3("1.1.1"), COMPOSE_UI_UTILS("1.5.4")
 }
