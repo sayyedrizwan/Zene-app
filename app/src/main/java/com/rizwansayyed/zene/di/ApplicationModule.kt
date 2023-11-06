@@ -29,6 +29,7 @@ class ApplicationModule : Application() {
             context.startService(Intent(context, PlayerService::class.java))
         }
 
+
         Thread.setDefaultUncaughtExceptionHandler { thread, e ->
             context.cacheDir.deleteRecursively()
 

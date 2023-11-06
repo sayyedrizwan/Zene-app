@@ -1,9 +1,14 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap
 
+import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.generateYTMusicPlaylistURL
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytThisYearVideoSearch
 import com.rizwansayyed.zene.data.utils.moshi
+import com.rizwansayyed.zene.domain.yt.YoutubeLatestSearchVideoResponse
 import com.rizwansayyed.zene.domain.yt.YoutubePlaylistItemsResponse
+import com.rizwansayyed.zene.domain.yt.YoutubeReleaseChannelResponse
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.Utils.forSearchTxt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -42,6 +47,35 @@ class YoutubeScrapsImpl @Inject constructor() : YoutubeScrapInterface {
         }
 
         emit(list)
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun ytThisYearArtistOfficialVideos(name: String) = flow {
+        var videoId = ""
+        var response = jsoupResponseData(ytThisYearVideoSearch(name))
+        val jsoup = Jsoup.parse(response!!)
+
+        jsoup.select("script").forEach {
+            if (it.html().contains("var ytInitialData ="))
+                response = it.html()
+        }
+
+        val pattern = Regex("ytInitialData\\s*=\\s*([^;]+)")
+        val ytInitialDataJson = pattern.find(response ?: "")?.groups?.get(1)?.value
+        val vidList = moshi.adapter(YoutubeLatestSearchVideoResponse::class.java)
+            .fromJson(ytInitialDataJson ?: "")
+
+        vidList?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEachIndexed { index, content ->
+            if (index <= 3 && videoId.isEmpty() &&
+                content?.videoRenderer?.title?.runs?.first()?.text?.lowercase()
+                    ?.contains("official") == true &&
+                content.videoRenderer.title.runs.first()?.text?.lowercase()
+                    ?.contains("video") == true
+            ) videoId = content.videoRenderer.videoId ?: ""
+
+        }
+
+        emit(videoId)
     }.flowOn(Dispatchers.IO)
 
 }

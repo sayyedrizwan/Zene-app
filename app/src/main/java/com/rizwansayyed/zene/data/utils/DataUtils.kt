@@ -105,6 +105,11 @@ object YoutubeAPI {
     const val YT_BROWSE_API = "browse"
     const val YT_SEARCH_SUGGESTION_API = "music/get_search_suggestions"
 
+    fun ytThisYearVideoSearch(n: String): String {
+        return "https://www.youtube.com/results?search_query=" +
+                "${n.replace(" ", "%20")}%20official%20song&sp=EgIIBQ%253D%253D&themeRefresh=1"
+    }
+
     fun generateYTMusicPlaylistURL(pid: String): String {
         return "https://music.youtube.com/playlist?list=$pid"
     }

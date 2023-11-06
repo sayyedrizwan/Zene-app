@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapsImpl
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,14 +20,17 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ArtistsViewModel @Inject constructor(private val lastFMImpl: LastFMImplInterface) :
-    ViewModel() {
+class ArtistsViewModel @Inject constructor(
+    private val lastFMImpl: LastFMImplInterface,
+    private val youtubeScraps: YoutubeScrapInterface
+) : ViewModel() {
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
         private set
 
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
+        latestVideo(a)
         searchImg(a)
     }
 
@@ -34,10 +39,17 @@ class ArtistsViewModel @Inject constructor(private val lastFMImpl: LastFMImplInt
         lastFMImpl.artistsImages(a, 80).onStart {
             artistsImages = DataResponse.Loading
         }.catch {
-            it.message?.toast()
             artistsImages = DataResponse.Error(it)
         }.collectLatest {
             artistsImages = DataResponse.Success(it)
+        }
+    }
+
+    private fun latestVideo(a: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeScraps.ytThisYearArtistOfficialVideos(a).catch {
+            it.message?.toast()
+        }.collectLatest {
+            it.toast()
         }
     }
 

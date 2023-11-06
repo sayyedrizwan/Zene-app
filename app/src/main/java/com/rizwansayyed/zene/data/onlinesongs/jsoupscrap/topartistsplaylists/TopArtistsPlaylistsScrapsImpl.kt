@@ -68,39 +68,4 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
         emit(list)
     }.flowOn(Dispatchers.IO)
 
-
-    override suspend fun ytChannelJson(path: String) = flow {
-        var response = jsoupResponseData(path)
-        val jsoup = Jsoup.parse(response!!)
-        jsoup.select("script").forEach {
-            if (it.html().contains("var ytInitialData ="))
-                response = it.html()
-        }
-
-        val pattern = Regex("ytInitialData\\s*=\\s*([^;]+)")
-        val ytInitialDataJson = pattern.find(response ?: "")?.groups?.get(1)?.value
-        val getReleasePlaylist = moshi.adapter(YoutubeReleaseChannelResponse::class.java)
-            .fromJson(ytInitialDataJson ?: "")
-
-
-        emit(getReleasePlaylist)
-    }.flowOn(Dispatchers.IO)
-
-
-    override suspend fun ytPlaylistItems(path: String) = flow {
-        var response = jsoupResponseData(path)
-        val jsoup = Jsoup.parse(response!!)
-
-        jsoup.select("script").forEach {
-            if (it.html().contains("var ytInitialData ="))
-                response = it.html()
-        }
-        val pattern = Regex("ytInitialData\\s*=\\s*([^;]+)")
-        val ytInitialDataJson = pattern.find(response ?: "")?.groups?.get(1)?.value
-
-        val getReleasePlaylist = moshi.adapter(YoutubeReleaseChannelResponse::class.java)
-            .fromJson(ytInitialDataJson ?: "")
-
-        emit(getReleasePlaylist)
-    }.flowOn(Dispatchers.IO)
 }
