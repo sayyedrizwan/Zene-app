@@ -33,7 +33,7 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
-import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -49,14 +49,14 @@ fun SongsYouMayLikeView() {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
-            TopInfoWithImage(stringResource(id = R.string.songs_you_may_like), null) {}
+            TopInfoWithSeeMore(stringResource(id = R.string.songs_you_may_like), null) {}
 
             SongsYouMayLikeLoading(screenWidth)
         }
 
         is DataResponse.Success -> {
             if (v.item.isNotEmpty()) {
-                TopInfoWithImage(stringResource(id = R.string.songs_you_may_like), null) {}
+                TopInfoWithSeeMore(stringResource(id = R.string.songs_you_may_like), null) {}
 
                 LazyHorizontalGrid(
                     GridCells.Fixed(2), Modifier

@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +59,9 @@ import com.rizwansayyed.zene.presenter.ui.home.views.startSpeech
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
+
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 @Composable
 fun LoadingStateBar() {
@@ -347,86 +351,6 @@ fun SearchEditTextView(
     )
 }
 
-// ---------------------- old
-@Composable
-fun TextSemiBoldDualLines(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.SemiBold,
-        maxLines = 2,
-        fontSize = 15.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
-    )
-}
-
-
-@Composable
-fun TextSemiBoldBig(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.SemiBold,
-        maxLines = if (singleLine) 1 else 10,
-        fontSize = 18.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
-    )
-}
-
-@Composable
-fun TextRegularTwoLine(
-    v: String,
-    color: Color = Color.White,
-    doCenter: Boolean = false
-) {
-    Text(
-        v,
-        modifier = Modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Normal,
-        maxLines = 2,
-        textAlign = if (doCenter) TextAlign.Center else null,
-        fontSize = 15.scaledSp(),
-        lineHeight = 18.sp
-    )
-}
-
-@Composable
-fun TextThinBig(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Thin,
-        maxLines = if (singleLine) 1 else 10,
-        fontSize = 15.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null
-    )
-}
-
 @Composable
 fun Int.scaledSp(): TextUnit {
     val value: Int = this
@@ -461,7 +385,7 @@ fun TopInfoWithSeeMore(v: Int, s: Int?, click: () -> Unit) {
             .padding(bottom = 11.dp)
             .fillMaxWidth()
     ) {
-        TextSemiBoldBig(stringResource(id = v))
+        TextSemiBold(stringResource(id = v), size = 18)
 
         Spacer(Modifier.weight(1f))
 
@@ -481,7 +405,7 @@ fun TopInfoWithSeeMore(v: String, s: Int?, click: () -> Unit) {
             .padding(bottom = 11.dp)
             .fillMaxWidth()
     ) {
-        TextSemiBoldBig(v)
+        TextSemiBold(v, size = 18)
 
         Spacer(Modifier.weight(1f))
 
@@ -489,88 +413,4 @@ fun TopInfoWithSeeMore(v: String, s: Int?, click: () -> Unit) {
             click()
         })
     }
-}
-
-@Composable
-fun TopInfoWithImage(v: Int, s: Int?, click: () -> Unit) {
-
-    Spacer(Modifier.height(80.dp))
-
-    Row(
-        Modifier
-            .padding(horizontal = 4.dp)
-            .padding(bottom = 11.dp)
-            .fillMaxWidth(),
-        Arrangement.Center, Alignment.CenterVertically
-    ) {
-        TextSemiBoldBig(stringResource(id = v))
-
-        Spacer(Modifier.weight(1f))
-
-
-        if (s != null) Image(
-            painterResource(s), "",
-            Modifier
-                .size(24.dp)
-                .clickable {
-                    click()
-                }, colorFilter = ColorFilter.tint(Color.White)
-        )
-    }
-}
-
-
-@Composable
-fun TopInfoWithImage(v: String, s: Int?, click: () -> Unit) {
-    Spacer(Modifier.height(80.dp))
-
-    Row(
-        Modifier
-            .padding(horizontal = 4.dp)
-            .padding(bottom = 11.dp)
-            .fillMaxWidth(),
-        Arrangement.Center, Alignment.CenterVertically
-    ) {
-        TextSemiBoldBig(v)
-
-        Spacer(Modifier.weight(1f))
-
-
-        if (s != null) Image(
-            painterResource(s), "",
-            Modifier
-                .size(24.dp)
-                .clickable {
-                    click()
-                }, colorFilter = ColorFilter.tint(Color.White)
-        )
-    }
-}
-
-@Composable
-fun SongsTitleAndArtists(title: String, artists: String, modifier: Modifier, doCenter: Boolean) {
-    Column {
-        Spacer(Modifier.height(14.dp))
-        TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
-        Spacer(Modifier.height(4.dp))
-        TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
-        Spacer(Modifier.height(16.dp))
-    }
-}
-
-@Composable
-fun SongsTitleAndArtistsSmall(
-    title: String, artists: String, modifier: Modifier, doCenter: Boolean
-) {
-    Column {
-        Spacer(Modifier.height(6.dp))
-        TextSemiBold(title, modifier, doCenter = doCenter, singleLine = true)
-        TextThin(artists, modifier, doCenter = doCenter, singleLine = true)
-        Spacer(Modifier.height(6.dp))
-    }
-}
-
-@Composable
-fun EmptyView() {
-    Column {}
 }

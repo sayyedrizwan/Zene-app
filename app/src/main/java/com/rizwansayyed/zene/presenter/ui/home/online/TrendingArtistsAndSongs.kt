@@ -1,17 +1,10 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,8 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
-import com.rizwansayyed.zene.presenter.ui.TextThin
-import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 
@@ -39,7 +31,7 @@ fun TrendingSongsCountryList() {
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
             if (country?.city != null)
-                TopInfoWithImage(
+                TopInfoWithSeeMore(
                     String.format(stringResource(id = R.string.top_songs_in_c), country?.country),
                     null
                 ) {}
@@ -57,7 +49,7 @@ fun TrendingSongsCountryList() {
         }
 
         is DataResponse.Success -> if (country?.city != null)
-            TopInfoWithImage(
+            TopInfoWithSeeMore(
                 String.format(stringResource(id = R.string.top_songs_in_c), country?.country),
                 null
             ) {}

@@ -21,8 +21,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.TextThin
-import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
@@ -34,12 +33,12 @@ fun RelatedAlbums() {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
-            TopInfoWithImage(stringResource(id = R.string.albums_for_you), null) {}
+            TopInfoWithSeeMore(stringResource(id = R.string.albums_for_you), null) {}
         }
 
         is DataResponse.Success -> {
             if (v.item.isNotEmpty()) {
-                TopInfoWithImage(stringResource(id = R.string.albums_for_you), null) {}
+                TopInfoWithSeeMore(stringResource(id = R.string.albums_for_you), null) {}
             }
         }
     }

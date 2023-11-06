@@ -33,14 +33,11 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
-import com.rizwansayyed.zene.presenter.ui.TopInfoWithImage
-import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
-import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopGlobalSongsList() {
     val homeViewModel: HomeApiViewModel = hiltViewModel()
@@ -50,7 +47,7 @@ fun TopGlobalSongsList() {
         is DataResponse.Error -> {}
         DataResponse.Loading -> {}
         is DataResponse.Success -> {
-            TopInfoWithImage(R.string.gt_trending_songs, null) {}
+            TopInfoWithSeeMore(R.string.gt_trending_songs, null) {}
 
             PageWithHorizontal(v.item)
         }

@@ -79,13 +79,6 @@ fun MainImageAndList() {
             }
         }
     }
-
-    DisposableEffect(Unit){
-        "runned".toast()
-        onDispose {
-            "dispose".toast()
-        }
-    }
 }
 
 

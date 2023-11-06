@@ -161,22 +161,6 @@ object Utils {
             vibrator.vibrate(100)
     }
 
-    private fun File.writeBitmap(bitmap: Bitmap) {
-        outputStream().use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            out.flush()
-        }
-    }
-
-    private fun getMimeType(url: String): String? {
-        var type: String? = null
-        val extension = MimeTypeMap.getFileExtensionFromUrl(url)
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-        }
-        return type
-    }
-
     fun homeSetWallpaper(url: String) {
         downloadImageAsBitmap(url.toUri()) {
 
