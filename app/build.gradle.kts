@@ -89,6 +89,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.11.0")
+
 
     implementation("com.google.dagger:hilt-android:${DependenciesVersion.HILT.version}")
     kapt("com.google.dagger:hilt-android-compiler:${DependenciesVersion.HILT.version}")

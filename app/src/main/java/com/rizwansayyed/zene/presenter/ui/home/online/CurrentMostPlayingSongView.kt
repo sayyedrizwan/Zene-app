@@ -55,7 +55,6 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CurrentMostPlayingSong() {
-    val context = LocalContext.current as Activity
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()
     val homeNavModel: HomeNavViewModel = hiltViewModel()
 

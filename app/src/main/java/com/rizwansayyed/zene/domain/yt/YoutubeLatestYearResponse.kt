@@ -1,6 +1,6 @@
 package com.rizwansayyed.zene.domain.yt
 
-data class YoutubeLatestSearchVideoResponse(
+data class YoutubeLatestYearResponse(
     val contents: Contents?,
     val estimatedResults: String?,
     val header: Header?,
@@ -26,10 +26,10 @@ data class YoutubeLatestSearchVideoResponse(
                     val trackingParams: String?
                 ) {
                     data class Content(
-                        val continuationItemRenderer: ContinuationItemRendererYtSearch?,
-                        val itemSectionRenderer: ItemSectionRendererYTSearch?
+                        val continuationItemRenderer: ContinuationItemRenderer?,
+                        val itemSectionRenderer: ItemSectionRenderer?
                     ) {
-                        data class ContinuationItemRendererYtSearch(
+                        data class ContinuationItemRenderer(
                             val continuationEndpoint: ContinuationEndpoint?,
                             val loggingDirectives: LoggingDirectives?,
                             val trigger: String?
@@ -57,6 +57,18 @@ data class YoutubeLatestSearchVideoResponse(
                             data class LoggingDirectives(
                                 val trackingParams: String?
                             )
+                        }
+
+                        data class ItemSectionRenderer(
+                            val contents: List<Content?>?,
+                            val trackingParams: String?
+                        ) {
+                            data class Content(
+                                val reelShelfRenderer: ReelShelfRendererLatestYoutube?,
+                                val videoRenderer: VideoRendererLatestYoutube?
+                            ) {
+
+                            }
                         }
                     }
 
@@ -111,25 +123,8 @@ data class YoutubeLatestSearchVideoResponse(
                             val popupType: String?
                         ) {
                             data class Popup(
-                                val searchFilterOptionsDialogRenderer: SearchFilterOptionsDialogRenderer?
-                            ) {
-                                data class SearchFilterOptionsDialogRenderer(
-                                    val groups: List<Group?>?,
-                                    val title: Title?
-                                ) {
-                                    data class Group(
-                                        val searchFilterGroupRenderer: SearchFilterGroupRenderer?
-                                    )
-
-                                    data class Title(
-                                        val runs: List<Run?>?
-                                    ) {
-                                        data class Run(
-                                            val text: String?
-                                        )
-                                    }
-                                }
-                            }
+                                val searchFilterOptionsDialogRenderer: SearchFilterOptionsDialogRendererYoutubeLatest?
+                            )
                         }
                     }
 
@@ -155,6 +150,7 @@ data class YoutubeLatestSearchVideoResponse(
         val webResponseContextExtensionData: WebResponseContextExtensionData?
     ) {
         data class MainAppWebResponseContext(
+            val datasyncId: String?,
             val loggedOut: Boolean?,
             val trackingParam: String?
         )
@@ -170,14 +166,8 @@ data class YoutubeLatestSearchVideoResponse(
         }
 
         data class WebResponseContextExtensionData(
-            val hasDecorated: Boolean?,
-            val ytConfigData: YtConfigData?
-        ) {
-            data class YtConfigData(
-                val rootVisualElementType: Int?,
-                val visitorData: String?
-            )
-        }
+            val hasDecorated: Boolean?
+        )
     }
 
     data class Topbar(
@@ -527,54 +517,98 @@ data class YoutubeLatestSearchVideoResponse(
             }
 
             data class TopbarButton(
-                val buttonRenderer: ButtonRenderer?,
+                val notificationTopbarButtonRenderer: NotificationTopbarButtonRenderer?,
                 val topbarMenuButtonRenderer: TopbarMenuButtonRenderer?
             ) {
-                data class ButtonRenderer(
+                data class NotificationTopbarButtonRenderer(
+                    val accessibility: Accessibility?,
+                    val handlerDatas: List<String?>?,
                     val icon: Icon?,
-                    val navigationEndpoint: NavigationEndpoint?,
-                    val size: String?,
+                    val menuRequest: MenuRequest?,
+                    val notificationCount: Int?,
                     val style: String?,
-                    val targetId: String?,
-                    val text: Text?,
-                    val trackingParams: String?
+                    val tooltip: String?,
+                    val trackingParams: String?,
+                    val updateUnseenCountEndpoint: UpdateUnseenCountEndpoint?
                 ) {
+                    data class Accessibility(
+                        val accessibilityData: AccessibilityData?
+                    ) {
+                        data class AccessibilityData(
+                            val label: String?
+                        )
+                    }
+
                     data class Icon(
                         val iconType: String?
                     )
 
-                    data class NavigationEndpoint(
+                    data class MenuRequest(
                         val clickTrackingParams: String?,
                         val commandMetadata: CommandMetadata?,
-                        val signInEndpoint: SignInEndpoint?
+                        val signalServiceEndpoint: SignalServiceEndpoint?
                     ) {
                         data class CommandMetadata(
                             val webCommandMetadata: WebCommandMetadata?
                         ) {
                             data class WebCommandMetadata(
-                                val rootVe: Int?,
-                                val url: String?,
-                                val webPageType: String?
+                                val apiUrl: String?,
+                                val sendPost: Boolean?
                             )
                         }
 
-                        data class SignInEndpoint(
-                            val idamTag: String?
-                        )
+                        data class SignalServiceEndpoint(
+                            val actions: List<Action?>?,
+                            val signal: String?
+                        ) {
+                            data class Action(
+                                val clickTrackingParams: String?,
+                                val openPopupAction: OpenPopupAction?
+                            ) {
+                                data class OpenPopupAction(
+                                    val beReused: Boolean?,
+                                    val popup: Popup?,
+                                    val popupType: String?
+                                ) {
+                                    data class Popup(
+                                        val multiPageMenuRenderer: MultiPageMenuRenderer?
+                                    ) {
+                                        data class MultiPageMenuRenderer(
+                                            val showLoadingSpinner: Boolean?,
+                                            val style: String?,
+                                            val trackingParams: String?
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
 
-                    data class Text(
-                        val runs: List<Run?>?
+                    data class UpdateUnseenCountEndpoint(
+                        val clickTrackingParams: String?,
+                        val commandMetadata: CommandMetadata?,
+                        val signalServiceEndpoint: SignalServiceEndpoint?
                     ) {
-                        data class Run(
-                            val text: String?
+                        data class CommandMetadata(
+                            val webCommandMetadata: WebCommandMetadata?
+                        ) {
+                            data class WebCommandMetadata(
+                                val apiUrl: String?,
+                                val sendPost: Boolean?
+                            )
+                        }
+
+                        data class SignalServiceEndpoint(
+                            val signal: String?
                         )
                     }
                 }
 
                 data class TopbarMenuButtonRenderer(
                     val accessibility: Accessibility?,
+                    val avatar: Avatar?,
                     val icon: Icon?,
+                    val menuRenderer: MenuRenderer?,
                     val menuRequest: MenuRequest?,
                     val style: String?,
                     val tooltip: String?,
@@ -588,9 +622,96 @@ data class YoutubeLatestSearchVideoResponse(
                         )
                     }
 
+                    data class Avatar(
+                        val accessibility: Accessibility?,
+                        val thumbnails: List<Thumbnail?>?
+                    ) {
+                        data class Accessibility(
+                            val accessibilityData: AccessibilityData?
+                        ) {
+                            data class AccessibilityData(
+                                val label: String?
+                            )
+                        }
+
+                        data class Thumbnail(
+                            val height: Int?,
+                            val url: String?,
+                            val width: Int?
+                        )
+                    }
+
                     data class Icon(
                         val iconType: String?
                     )
+
+                    data class MenuRenderer(
+                        val multiPageMenuRenderer: MultiPageMenuRenderer?
+                    ) {
+                        data class MultiPageMenuRenderer(
+                            val sections: List<Section?>?,
+                            val style: String?,
+                            val trackingParams: String?
+                        ) {
+                            data class Section(
+                                val multiPageMenuSectionRenderer: MultiPageMenuSectionRenderer?
+                            ) {
+                                data class MultiPageMenuSectionRenderer(
+                                    val items: List<Item?>?,
+                                    val trackingParams: String?
+                                ) {
+                                    data class Item(
+                                        val compactLinkRenderer: CompactLinkRenderer?
+                                    ) {
+                                        data class CompactLinkRenderer(
+                                            val icon: Icon?,
+                                            val navigationEndpoint: NavigationEndpoint?,
+                                            val style: String?,
+                                            val title: Title?,
+                                            val trackingParams: String?
+                                        ) {
+                                            data class Icon(
+                                                val iconType: String?
+                                            )
+
+                                            data class NavigationEndpoint(
+                                                val clickTrackingParams: String?,
+                                                val commandMetadata: CommandMetadata?,
+                                                val signalNavigationEndpoint: SignalNavigationEndpoint?,
+                                                val uploadEndpoint: UploadEndpoint?
+                                            ) {
+                                                data class CommandMetadata(
+                                                    val webCommandMetadata: WebCommandMetadata?
+                                                ) {
+                                                    data class WebCommandMetadata(
+                                                        val rootVe: Int?,
+                                                        val url: String?,
+                                                        val webPageType: String?
+                                                    )
+                                                }
+
+                                                data class SignalNavigationEndpoint(
+                                                    val signal: String?
+                                                )
+
+                                                data class UploadEndpoint(
+                                                    val hack: Boolean?
+                                                )
+                                            }
+
+                                            data class Title(
+                                                val runs: List<Run?>?
+                                            ) {
+                                                data class Run(
+                                                    val text: String?
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     data class MenuRequest(
                         val clickTrackingParams: String?,
@@ -854,8 +975,7 @@ data class YoutubeLatestSearchVideoResponse(
     }
 }
 
-
-data class ReelShelfRendererYtSearch(
+data class ReelShelfRendererLatestYoutube(
     val button: Button?,
     val icon: Icon?,
     val items: List<Item?>?,
@@ -1052,7 +1172,8 @@ data class ReelShelfRendererYtSearch(
                     }
 
                     data class Item(
-                        val menuNavigationItemRenderer: MenuNavigationItemRenderer?
+                        val menuNavigationItemRenderer: MenuNavigationItemRenderer?,
+                        val menuServiceItemRenderer: MenuServiceItemRenderer?
                     ) {
                         data class MenuNavigationItemRenderer(
                             val accessibility: Accessibility?,
@@ -1098,6 +1219,44 @@ data class ReelShelfRendererYtSearch(
                                         )
                                     }
                                 }
+                            }
+
+                            data class Text(
+                                val runs: List<Run?>?
+                            ) {
+                                data class Run(
+                                    val text: String?
+                                )
+                            }
+                        }
+
+                        data class MenuServiceItemRenderer(
+                            val icon: Icon?,
+                            val serviceEndpoint: ServiceEndpoint?,
+                            val text: Text?,
+                            val trackingParams: String?
+                        ) {
+                            data class Icon(
+                                val iconType: String?
+                            )
+
+                            data class ServiceEndpoint(
+                                val clickTrackingParams: String?,
+                                val commandMetadata: CommandMetadata?,
+                                val getReportFormEndpoint: GetReportFormEndpoint?
+                            ) {
+                                data class CommandMetadata(
+                                    val webCommandMetadata: WebCommandMetadata?
+                                ) {
+                                    data class WebCommandMetadata(
+                                        val apiUrl: String?,
+                                        val sendPost: Boolean?
+                                    )
+                                }
+
+                                data class GetReportFormEndpoint(
+                                    val params: String?
+                                )
                             }
 
                             data class Text(
@@ -1205,485 +1364,91 @@ data class ReelShelfRendererYtSearch(
     )
 }
 
-data class ItemSectionRendererYTSearch(
-    val contents: List<Content?>?,
-    val trackingParams: String?
+
+data class VideoRendererLatestYoutube(
+    val badges: List<Badge?>?,
+    val channelThumbnailSupportedRenderers: ChannelThumbnailSupportedRenderers?,
+    val detailedMetadataSnippets: List<DetailedMetadataSnippet?>?,
+    val inlinePlaybackEndpoint: InlinePlaybackEndpoint?,
+    val isWatched: Boolean?,
+    val lengthText: LengthText?,
+    val longBylineText: LongBylineText?,
+    val menu: Menu?,
+    val navigationEndpoint: NavigationEndpoint?,
+    val ownerBadges: List<OwnerBadge?>?,
+    val ownerText: OwnerText?,
+    val publishedTimeText: PublishedTimeText?,
+    val richThumbnail: RichThumbnail?,
+    val searchVideoResultEntityKey: String?,
+    val shortBylineText: ShortBylineText?,
+    val shortViewCountText: ShortViewCountText?,
+    val showActionMenu: Boolean?,
+    val thumbnail: Thumbnail?,
+    val thumbnailOverlays: List<ThumbnailOverlay?>?,
+    val title: Title?,
+    val trackingParams: String?,
+    val videoId: String?,
+    val viewCountText: ViewCountText?
 ) {
-    data class Content(
-        val reelShelfRenderer: ReelShelfRendererYtSearch?,
-        val videoRenderer: VideoRenderer?
+    fun thumbnailURL(): String? {
+        return try {
+            thumbnail?.thumbnails?.maxByOrNull {
+                it?.width ?: 0
+            }?.url
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    data class Badge(
+        val metadataBadgeRenderer: MetadataBadgeRenderer?
     ) {
-
-
-        data class VideoRenderer(
-            val badges: List<Badge?>?,
-            val channelThumbnailSupportedRenderers: ChannelThumbnailSupportedRenderers?,
-            val detailedMetadataSnippets: List<DetailedMetadataSnippet?>?,
-            val inlinePlaybackEndpoint: InlinePlaybackEndpoint?,
-            val lengthText: LengthText?,
-            val longBylineText: LongBylineText?,
-            val menu: Menu?,
-            val navigationEndpoint: NavigationEndpoint?,
-            val ownerBadges: List<OwnerBadge?>?,
-            val ownerText: OwnerText?,
-            val publishedTimeText: PublishedTimeText?,
-            val richThumbnail: RichThumbnail?,
-            val searchVideoResultEntityKey: String?,
-            val shortBylineText: ShortBylineText?,
-            val shortViewCountText: ShortViewCountText?,
-            val showActionMenu: Boolean?,
-            val thumbnail: Thumbnail?,
-            val thumbnailOverlays: List<ThumbnailOverlay?>?,
-            val title: Title?,
-            val trackingParams: String?,
-            val videoId: String?,
-            val viewCountText: ViewCountText?
+        data class MetadataBadgeRenderer(
+            val accessibilityData: AccessibilityData?,
+            val label: String?,
+            val style: String?,
+            val trackingParams: String?
         ) {
-            data class Badge(
-                val metadataBadgeRenderer: MetadataBadgeRenderer?
+            data class AccessibilityData(
+                val label: String?
+            )
+        }
+    }
+
+    data class ChannelThumbnailSupportedRenderers(
+        val channelThumbnailWithLinkRenderer: ChannelThumbnailWithLinkRenderer?
+    ) {
+        data class ChannelThumbnailWithLinkRenderer(
+            val accessibility: Accessibility?,
+            val navigationEndpoint: NavigationEndpoint?,
+            val thumbnail: Thumbnail?
+        ) {
+            data class Accessibility(
+                val accessibilityData: AccessibilityData?
             ) {
-                data class MetadataBadgeRenderer(
-                    val accessibilityData: AccessibilityData?,
-                    val label: String?,
-                    val style: String?,
-                    val trackingParams: String?
-                ) {
-                    data class AccessibilityData(
-                        val label: String?
-                    )
-                }
-            }
-
-            data class ChannelThumbnailSupportedRenderers(
-                val channelThumbnailWithLinkRenderer: ChannelThumbnailWithLinkRenderer?
-            ) {
-                data class ChannelThumbnailWithLinkRenderer(
-                    val accessibility: Accessibility?,
-                    val navigationEndpoint: NavigationEndpoint?,
-                    val thumbnail: Thumbnail?
-                ) {
-                    data class Accessibility(
-                        val accessibilityData: AccessibilityData?
-                    ) {
-                        data class AccessibilityData(
-                            val label: String?
-                        )
-                    }
-
-                    data class NavigationEndpoint(
-                        val browseEndpoint: BrowseEndpoint?,
-                        val clickTrackingParams: String?,
-                        val commandMetadata: CommandMetadata?
-                    ) {
-                        data class BrowseEndpoint(
-                            val browseId: String?,
-                            val canonicalBaseUrl: String?
-                        )
-
-                        data class CommandMetadata(
-                            val webCommandMetadata: WebCommandMetadata?
-                        ) {
-                            data class WebCommandMetadata(
-                                val apiUrl: String?,
-                                val rootVe: Int?,
-                                val url: String?,
-                                val webPageType: String?
-                            )
-                        }
-                    }
-
-                    data class Thumbnail(
-                        val thumbnails: List<Thumbnail?>?
-                    ) {
-                        data class Thumbnail(
-                            val height: Int?,
-                            val url: String?,
-                            val width: Int?
-                        )
-                    }
-                }
-            }
-
-            data class DetailedMetadataSnippet(
-                val maxOneLine: Boolean?,
-                val snippetHoverText: SnippetHoverText?,
-                val snippetText: SnippetText?
-            ) {
-                data class SnippetHoverText(
-                    val runs: List<Run?>?
-                ) {
-                    data class Run(
-                        val text: String?
-                    )
-                }
-
-                data class SnippetText(
-                    val runs: List<Run?>?
-                ) {
-                    data class Run(
-                        val bold: Boolean?,
-                        val text: String?
-                    )
-                }
-            }
-
-            data class InlinePlaybackEndpoint(
-                val clickTrackingParams: String?,
-                val commandMetadata: CommandMetadata?,
-                val watchEndpoint: WatchEndpoint?
-            ) {
-                data class CommandMetadata(
-                    val webCommandMetadata: WebCommandMetadata?
-                ) {
-                    data class WebCommandMetadata(
-                        val rootVe: Int?,
-                        val url: String?,
-                        val webPageType: String?
-                    )
-                }
-
-                data class WatchEndpoint(
-                    val params: String?,
-                    val playerExtraUrlParams: List<PlayerExtraUrlParam?>?,
-                    val playerParams: String?,
-                    val videoId: String?,
-                    val watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig?
-                ) {
-                    data class PlayerExtraUrlParam(
-                        val key: String?,
-                        val value: String?
-                    )
-
-                    data class WatchEndpointSupportedOnesieConfig(
-                        val html5PlaybackOnesieConfig: Html5PlaybackOnesieConfig?
-                    ) {
-                        data class Html5PlaybackOnesieConfig(
-                            val commonConfig: CommonConfig?
-                        ) {
-                            data class CommonConfig(
-                                val url: String?
-                            )
-                        }
-                    }
-                }
-            }
-
-            data class LengthText(
-                val accessibility: Accessibility?,
-                val simpleText: String?
-            ) {
-                data class Accessibility(
-                    val accessibilityData: AccessibilityData?
-                ) {
-                    data class AccessibilityData(
-                        val label: String?
-                    )
-                }
-            }
-
-            data class LongBylineText(
-                val runs: List<Run?>?
-            ) {
-                data class Run(
-                    val navigationEndpoint: NavigationEndpoint?,
-                    val text: String?
-                ) {
-                    data class NavigationEndpoint(
-                        val browseEndpoint: BrowseEndpoint?,
-                        val clickTrackingParams: String?,
-                        val commandMetadata: CommandMetadata?
-                    ) {
-                        data class BrowseEndpoint(
-                            val browseId: String?,
-                            val canonicalBaseUrl: String?
-                        )
-
-                        data class CommandMetadata(
-                            val webCommandMetadata: WebCommandMetadata?
-                        ) {
-                            data class WebCommandMetadata(
-                                val apiUrl: String?,
-                                val rootVe: Int?,
-                                val url: String?,
-                                val webPageType: String?
-                            )
-                        }
-                    }
-                }
-            }
-
-            data class Menu(
-                val menuRenderer: MenuRenderer?
-            ) {
-                data class MenuRenderer(
-                    val accessibility: Accessibility?,
-                    val items: List<Item?>?,
-                    val trackingParams: String?
-                ) {
-                    data class Accessibility(
-                        val accessibilityData: AccessibilityData?
-                    ) {
-                        data class AccessibilityData(
-                            val label: String?
-                        )
-                    }
-
-                    data class Item(
-                        val menuServiceItemRenderer: MenuServiceItemRenderer?
-                    ) {
-                        data class MenuServiceItemRenderer(
-                            val hasSeparator: Boolean?,
-                            val icon: Icon?,
-                            val serviceEndpoint: ServiceEndpoint?,
-                            val text: Text?,
-                            val trackingParams: String?
-                        ) {
-                            data class Icon(
-                                val iconType: String?
-                            )
-
-                            data class ServiceEndpoint(
-                                val clickTrackingParams: String?,
-                                val commandMetadata: CommandMetadata?,
-                                val shareEntityServiceEndpoint: ShareEntityServiceEndpoint?,
-                                val signalServiceEndpoint: SignalServiceEndpoint?
-                            ) {
-                                data class CommandMetadata(
-                                    val webCommandMetadata: WebCommandMetadata?
-                                ) {
-                                    data class WebCommandMetadata(
-                                        val apiUrl: String?,
-                                        val sendPost: Boolean?
-                                    )
-                                }
-
-                                data class ShareEntityServiceEndpoint(
-                                    val commands: List<Command?>?,
-                                    val serializedShareEntity: String?
-                                ) {
-                                    data class Command(
-                                        val clickTrackingParams: String?,
-                                        val openPopupAction: OpenPopupAction?
-                                    ) {
-                                        data class OpenPopupAction(
-                                            val beReused: Boolean?,
-                                            val popup: Popup?,
-                                            val popupType: String?
-                                        ) {
-                                            data class Popup(
-                                                val unifiedSharePanelRenderer: UnifiedSharePanelRenderer?
-                                            ) {
-                                                data class UnifiedSharePanelRenderer(
-                                                    val showLoadingSpinner: Boolean?,
-                                                    val trackingParams: String?
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-
-                                data class SignalServiceEndpoint(
-                                    val actions: List<Action?>?,
-                                    val signal: String?
-                                ) {
-                                    data class Action(
-                                        val addToPlaylistCommand: AddToPlaylistCommand?,
-                                        val clickTrackingParams: String?
-                                    ) {
-                                        data class AddToPlaylistCommand(
-                                            val listType: String?,
-                                            val onCreateListCommand: OnCreateListCommand?,
-                                            val openMiniplayer: Boolean?,
-                                            val videoId: String?,
-                                            val videoIds: List<String?>?
-                                        ) {
-                                            data class OnCreateListCommand(
-                                                val clickTrackingParams: String?,
-                                                val commandMetadata: CommandMetadata?,
-                                                val createPlaylistServiceEndpoint: CreatePlaylistServiceEndpoint?
-                                            ) {
-                                                data class CommandMetadata(
-                                                    val webCommandMetadata: WebCommandMetadata?
-                                                ) {
-                                                    data class WebCommandMetadata(
-                                                        val apiUrl: String?,
-                                                        val sendPost: Boolean?
-                                                    )
-                                                }
-
-                                                data class CreatePlaylistServiceEndpoint(
-                                                    val params: String?,
-                                                    val videoIds: List<String?>?
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            data class Text(
-                                val runs: List<Run?>?
-                            ) {
-                                data class Run(
-                                    val text: String?
-                                )
-                            }
-                        }
-                    }
-                }
+                data class AccessibilityData(
+                    val label: String?
+                )
             }
 
             data class NavigationEndpoint(
+                val browseEndpoint: BrowseEndpoint?,
                 val clickTrackingParams: String?,
-                val commandMetadata: CommandMetadata?,
-                val watchEndpoint: WatchEndpoint?
+                val commandMetadata: CommandMetadata?
             ) {
+                data class BrowseEndpoint(
+                    val browseId: String?,
+                    val canonicalBaseUrl: String?
+                )
+
                 data class CommandMetadata(
                     val webCommandMetadata: WebCommandMetadata?
                 ) {
                     data class WebCommandMetadata(
+                        val apiUrl: String?,
                         val rootVe: Int?,
                         val url: String?,
                         val webPageType: String?
-                    )
-                }
-
-                data class WatchEndpoint(
-                    val params: String?,
-                    val playerParams: String?,
-                    val videoId: String?,
-                    val watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig?
-                ) {
-                    data class WatchEndpointSupportedOnesieConfig(
-                        val html5PlaybackOnesieConfig: Html5PlaybackOnesieConfig?
-                    ) {
-                        data class Html5PlaybackOnesieConfig(
-                            val commonConfig: CommonConfig?
-                        ) {
-                            data class CommonConfig(
-                                val url: String?
-                            )
-                        }
-                    }
-                }
-            }
-
-            data class OwnerBadge(
-                val metadataBadgeRenderer: MetadataBadgeRenderer?
-            ) {
-                data class MetadataBadgeRenderer(
-                    val accessibilityData: AccessibilityData?,
-                    val icon: Icon?,
-                    val style: String?,
-                    val tooltip: String?,
-                    val trackingParams: String?
-                ) {
-                    data class AccessibilityData(
-                        val label: String?
-                    )
-
-                    data class Icon(
-                        val iconType: String?
-                    )
-                }
-            }
-
-            data class OwnerText(
-                val runs: List<Run?>?
-            ) {
-                data class Run(
-                    val navigationEndpoint: NavigationEndpoint?,
-                    val text: String?
-                ) {
-                    data class NavigationEndpoint(
-                        val browseEndpoint: BrowseEndpoint?,
-                        val clickTrackingParams: String?,
-                        val commandMetadata: CommandMetadata?
-                    ) {
-                        data class BrowseEndpoint(
-                            val browseId: String?,
-                            val canonicalBaseUrl: String?
-                        )
-
-                        data class CommandMetadata(
-                            val webCommandMetadata: WebCommandMetadata?
-                        ) {
-                            data class WebCommandMetadata(
-                                val apiUrl: String?,
-                                val rootVe: Int?,
-                                val url: String?,
-                                val webPageType: String?
-                            )
-                        }
-                    }
-                }
-            }
-
-            data class PublishedTimeText(
-                val simpleText: String?
-            )
-
-            data class RichThumbnail(
-                val movingThumbnailRenderer: MovingThumbnailRenderer?
-            ) {
-                data class MovingThumbnailRenderer(
-                    val enableHoveredLogging: Boolean?,
-                    val enableOverlay: Boolean?,
-                    val movingThumbnailDetails: MovingThumbnailDetails?
-                ) {
-                    data class MovingThumbnailDetails(
-                        val logAsMovingThumbnail: Boolean?,
-                        val thumbnails: List<Thumbnail?>?
-                    ) {
-                        data class Thumbnail(
-                            val height: Int?,
-                            val url: String?,
-                            val width: Int?
-                        )
-                    }
-                }
-            }
-
-            data class ShortBylineText(
-                val runs: List<Run?>?
-            ) {
-                data class Run(
-                    val navigationEndpoint: NavigationEndpoint?,
-                    val text: String?
-                ) {
-                    data class NavigationEndpoint(
-                        val browseEndpoint: BrowseEndpoint?,
-                        val clickTrackingParams: String?,
-                        val commandMetadata: CommandMetadata?
-                    ) {
-                        data class BrowseEndpoint(
-                            val browseId: String?,
-                            val canonicalBaseUrl: String?
-                        )
-
-                        data class CommandMetadata(
-                            val webCommandMetadata: WebCommandMetadata?
-                        ) {
-                            data class WebCommandMetadata(
-                                val apiUrl: String?,
-                                val rootVe: Int?,
-                                val url: String?,
-                                val webPageType: String?
-                            )
-                        }
-                    }
-                }
-            }
-
-            data class ShortViewCountText(
-                val accessibility: Accessibility?,
-                val simpleText: String?
-            ) {
-                data class Accessibility(
-                    val accessibilityData: AccessibilityData?
-                ) {
-                    data class AccessibilityData(
-                        val label: String?
                     )
                 }
             }
@@ -1697,122 +1462,160 @@ data class ItemSectionRendererYTSearch(
                     val width: Int?
                 )
             }
+        }
+    }
 
-            data class ThumbnailOverlay(
-                val thumbnailOverlayLoadingPreviewRenderer: ThumbnailOverlayLoadingPreviewRenderer?,
-                val thumbnailOverlayNowPlayingRenderer: ThumbnailOverlayNowPlayingRenderer?,
-                val thumbnailOverlayTimeStatusRenderer: ThumbnailOverlayTimeStatusRenderer?,
-                val thumbnailOverlayToggleButtonRenderer: ThumbnailOverlayToggleButtonRenderer?
+    data class DetailedMetadataSnippet(
+        val maxOneLine: Boolean?,
+        val snippetHoverText: SnippetHoverText?,
+        val snippetText: SnippetText?
+    ) {
+        data class SnippetHoverText(
+            val runs: List<Run?>?
+        ) {
+            data class Run(
+                val text: String?
+            )
+        }
+
+        data class SnippetText(
+            val runs: List<Run?>?
+        ) {
+            data class Run(
+                val bold: Boolean?,
+                val text: String?
+            )
+        }
+    }
+
+    data class InlinePlaybackEndpoint(
+        val clickTrackingParams: String?,
+        val commandMetadata: CommandMetadata?,
+        val watchEndpoint: WatchEndpoint?
+    ) {
+        data class CommandMetadata(
+            val webCommandMetadata: WebCommandMetadata?
+        ) {
+            data class WebCommandMetadata(
+                val rootVe: Int?,
+                val url: String?,
+                val webPageType: String?
+            )
+        }
+
+        data class WatchEndpoint(
+            val params: String?,
+            val playerExtraUrlParams: List<PlayerExtraUrlParam?>?,
+            val playerParams: String?,
+            val videoId: String?,
+            val watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig?
+        ) {
+            data class PlayerExtraUrlParam(
+                val key: String?,
+                val value: String?
+            )
+
+            data class WatchEndpointSupportedOnesieConfig(
+                val html5PlaybackOnesieConfig: Html5PlaybackOnesieConfig?
             ) {
-                data class ThumbnailOverlayLoadingPreviewRenderer(
-                    val text: Text?
+                data class Html5PlaybackOnesieConfig(
+                    val commonConfig: CommonConfig?
                 ) {
-                    data class Text(
-                        val runs: List<Run?>?
-                    ) {
-                        data class Run(
-                            val text: String?
-                        )
-                    }
+                    data class CommonConfig(
+                        val url: String?
+                    )
                 }
+            }
+        }
+    }
 
-                data class ThumbnailOverlayNowPlayingRenderer(
-                    val text: Text?
+    data class LengthText(
+        val accessibility: Accessibility?,
+        val simpleText: String?
+    ) {
+        data class Accessibility(
+            val accessibilityData: AccessibilityData?
+        ) {
+            data class AccessibilityData(
+                val label: String?
+            )
+        }
+    }
+
+    data class LongBylineText(
+        val runs: List<Run?>?
+    ) {
+        data class Run(
+            val navigationEndpoint: NavigationEndpoint?,
+            val text: String?
+        ) {
+            data class NavigationEndpoint(
+                val browseEndpoint: BrowseEndpoint?,
+                val clickTrackingParams: String?,
+                val commandMetadata: CommandMetadata?
+            ) {
+                data class BrowseEndpoint(
+                    val browseId: String?,
+                    val canonicalBaseUrl: String?
+                )
+
+                data class CommandMetadata(
+                    val webCommandMetadata: WebCommandMetadata?
                 ) {
-                    data class Text(
-                        val runs: List<Run?>?
-                    ) {
-                        data class Run(
-                            val text: String?
-                        )
-                    }
+                    data class WebCommandMetadata(
+                        val apiUrl: String?,
+                        val rootVe: Int?,
+                        val url: String?,
+                        val webPageType: String?
+                    )
                 }
+            }
+        }
+    }
 
-                data class ThumbnailOverlayTimeStatusRenderer(
-                    val style: String?,
-                    val text: Text?
+    data class Menu(
+        val menuRenderer: MenuRenderer?
+    ) {
+        data class MenuRenderer(
+            val accessibility: Accessibility?,
+            val items: List<Item?>?,
+            val trackingParams: String?
+        ) {
+            data class Accessibility(
+                val accessibilityData: AccessibilityData?
+            ) {
+                data class AccessibilityData(
+                    val label: String?
+                )
+            }
+
+            data class Item(
+                val menuServiceItemRenderer: MenuServiceItemRenderer?
+            ) {
+                data class MenuServiceItemRenderer(
+                    val hasSeparator: Boolean?,
+                    val icon: Icon?,
+                    val serviceEndpoint: ServiceEndpoint?,
+                    val text: Text?,
+                    val trackingParams: String?
                 ) {
-                    data class Text(
-                        val accessibility: Accessibility?,
-                        val simpleText: String?
-                    ) {
-                        data class Accessibility(
-                            val accessibilityData: AccessibilityData?
-                        ) {
-                            data class AccessibilityData(
-                                val label: String?
-                            )
-                        }
-                    }
-                }
-
-                data class ThumbnailOverlayToggleButtonRenderer(
-                    val isToggled: Boolean?,
-                    val toggledAccessibility: ToggledAccessibility?,
-                    val toggledIcon: ToggledIcon?,
-                    val toggledServiceEndpoint: ToggledServiceEndpoint?,
-                    val toggledTooltip: String?,
-                    val trackingParams: String?,
-                    val untoggledAccessibility: UntoggledAccessibility?,
-                    val untoggledIcon: UntoggledIcon?,
-                    val untoggledServiceEndpoint: UntoggledServiceEndpoint?,
-                    val untoggledTooltip: String?
-                ) {
-                    data class ToggledAccessibility(
-                        val accessibilityData: AccessibilityData?
-                    ) {
-                        data class AccessibilityData(
-                            val label: String?
-                        )
-                    }
-
-                    data class ToggledIcon(
+                    data class Icon(
                         val iconType: String?
                     )
 
-                    data class ToggledServiceEndpoint(
+                    data class ServiceEndpoint(
+                        val addToPlaylistServiceEndpoint: AddToPlaylistServiceEndpoint?,
                         val clickTrackingParams: String?,
                         val commandMetadata: CommandMetadata?,
-                        val playlistEditEndpoint: PlaylistEditEndpoint?
-                    ) {
-                        data class CommandMetadata(
-                            val webCommandMetadata: WebCommandMetadata?
-                        ) {
-                            data class WebCommandMetadata(
-                                val apiUrl: String?,
-                                val sendPost: Boolean?
-                            )
-                        }
-
-                        data class PlaylistEditEndpoint(
-                            val actions: List<Action?>?,
-                            val playlistId: String?
-                        ) {
-                            data class Action(
-                                val action: String?,
-                                val removedVideoId: String?
-                            )
-                        }
-                    }
-
-                    data class UntoggledAccessibility(
-                        val accessibilityData: AccessibilityData?
-                    ) {
-                        data class AccessibilityData(
-                            val label: String?
-                        )
-                    }
-
-                    data class UntoggledIcon(
-                        val iconType: String?
-                    )
-
-                    data class UntoggledServiceEndpoint(
-                        val clickTrackingParams: String?,
-                        val commandMetadata: CommandMetadata?,
+                        val getReportFormEndpoint: GetReportFormEndpoint?,
                         val playlistEditEndpoint: PlaylistEditEndpoint?,
+                        val shareEntityServiceEndpoint: ShareEntityServiceEndpoint?,
                         val signalServiceEndpoint: SignalServiceEndpoint?
                     ) {
+                        data class AddToPlaylistServiceEndpoint(
+                            val videoId: String?
+                        )
+
                         data class CommandMetadata(
                             val webCommandMetadata: WebCommandMetadata?
                         ) {
@@ -1821,6 +1624,10 @@ data class ItemSectionRendererYTSearch(
                                 val sendPost: Boolean?
                             )
                         }
+
+                        data class GetReportFormEndpoint(
+                            val params: String?
+                        )
 
                         data class PlaylistEditEndpoint(
                             val actions: List<Action?>?,
@@ -1830,6 +1637,31 @@ data class ItemSectionRendererYTSearch(
                                 val action: String?,
                                 val addedVideoId: String?
                             )
+                        }
+
+                        data class ShareEntityServiceEndpoint(
+                            val commands: List<Command?>?,
+                            val serializedShareEntity: String?
+                        ) {
+                            data class Command(
+                                val clickTrackingParams: String?,
+                                val openPopupAction: OpenPopupAction?
+                            ) {
+                                data class OpenPopupAction(
+                                    val beReused: Boolean?,
+                                    val popup: Popup?,
+                                    val popupType: String?
+                                ) {
+                                    data class Popup(
+                                        val unifiedSharePanelRenderer: UnifiedSharePanelRenderer?
+                                    ) {
+                                        data class UnifiedSharePanelRenderer(
+                                            val showLoadingSpinner: Boolean?,
+                                            val trackingParams: String?
+                                        )
+                                    }
+                                }
+                            }
                         }
 
                         data class SignalServiceEndpoint(
@@ -1870,12 +1702,226 @@ data class ItemSectionRendererYTSearch(
                             }
                         }
                     }
+
+                    data class Text(
+                        val runs: List<Run?>?
+                    ) {
+                        data class Run(
+                            val text: String?
+                        )
+                    }
                 }
             }
+        }
+    }
 
-            data class Title(
-                val accessibility: Accessibility?,
+    data class NavigationEndpoint(
+        val clickTrackingParams: String?,
+        val commandMetadata: CommandMetadata?,
+        val watchEndpoint: WatchEndpoint?
+    ) {
+        data class CommandMetadata(
+            val webCommandMetadata: WebCommandMetadata?
+        ) {
+            data class WebCommandMetadata(
+                val rootVe: Int?,
+                val url: String?,
+                val webPageType: String?
+            )
+        }
+
+        data class WatchEndpoint(
+            val params: String?,
+            val playerParams: String?,
+            val videoId: String?,
+            val watchEndpointSupportedOnesieConfig: WatchEndpointSupportedOnesieConfig?
+        ) {
+            data class WatchEndpointSupportedOnesieConfig(
+                val html5PlaybackOnesieConfig: Html5PlaybackOnesieConfig?
+            ) {
+                data class Html5PlaybackOnesieConfig(
+                    val commonConfig: CommonConfig?
+                ) {
+                    data class CommonConfig(
+                        val url: String?
+                    )
+                }
+            }
+        }
+    }
+
+    data class OwnerBadge(
+        val metadataBadgeRenderer: MetadataBadgeRenderer?
+    ) {
+        data class MetadataBadgeRenderer(
+            val accessibilityData: AccessibilityData?,
+            val icon: Icon?,
+            val style: String?,
+            val tooltip: String?,
+            val trackingParams: String?
+        ) {
+            data class AccessibilityData(
+                val label: String?
+            )
+
+            data class Icon(
+                val iconType: String?
+            )
+        }
+    }
+
+    data class OwnerText(
+        val runs: List<Run?>?
+    ) {
+        data class Run(
+            val navigationEndpoint: NavigationEndpoint?,
+            val text: String?
+        ) {
+            data class NavigationEndpoint(
+                val browseEndpoint: BrowseEndpoint?,
+                val clickTrackingParams: String?,
+                val commandMetadata: CommandMetadata?
+            ) {
+                data class BrowseEndpoint(
+                    val browseId: String?,
+                    val canonicalBaseUrl: String?
+                )
+
+                data class CommandMetadata(
+                    val webCommandMetadata: WebCommandMetadata?
+                ) {
+                    data class WebCommandMetadata(
+                        val apiUrl: String?,
+                        val rootVe: Int?,
+                        val url: String?,
+                        val webPageType: String?
+                    )
+                }
+            }
+        }
+    }
+
+    data class PublishedTimeText(
+        val simpleText: String?
+    )
+
+    data class RichThumbnail(
+        val movingThumbnailRenderer: MovingThumbnailRenderer?
+    ) {
+        data class MovingThumbnailRenderer(
+            val enableHoveredLogging: Boolean?,
+            val enableOverlay: Boolean?,
+            val movingThumbnailDetails: MovingThumbnailDetails?
+        ) {
+            data class MovingThumbnailDetails(
+                val logAsMovingThumbnail: Boolean?,
+                val thumbnails: List<Thumbnail?>?
+            ) {
+                data class Thumbnail(
+                    val height: Int?,
+                    val url: String?,
+                    val width: Int?
+                )
+            }
+        }
+    }
+
+    data class ShortBylineText(
+        val runs: List<Run?>?
+    ) {
+        data class Run(
+            val navigationEndpoint: NavigationEndpoint?,
+            val text: String?
+        ) {
+            data class NavigationEndpoint(
+                val browseEndpoint: BrowseEndpoint?,
+                val clickTrackingParams: String?,
+                val commandMetadata: CommandMetadata?
+            ) {
+                data class BrowseEndpoint(
+                    val browseId: String?,
+                    val canonicalBaseUrl: String?
+                )
+
+                data class CommandMetadata(
+                    val webCommandMetadata: WebCommandMetadata?
+                ) {
+                    data class WebCommandMetadata(
+                        val apiUrl: String?,
+                        val rootVe: Int?,
+                        val url: String?,
+                        val webPageType: String?
+                    )
+                }
+            }
+        }
+    }
+
+    data class ShortViewCountText(
+        val accessibility: Accessibility?,
+        val simpleText: String?
+    ) {
+        data class Accessibility(
+            val accessibilityData: AccessibilityData?
+        ) {
+            data class AccessibilityData(
+                val label: String?
+            )
+        }
+    }
+
+    data class Thumbnail(
+        val thumbnails: List<Thumbnail?>?
+    ) {
+        data class Thumbnail(
+            val height: Int?,
+            val url: String?,
+            val width: Int?
+        )
+    }
+
+    data class ThumbnailOverlay(
+        val thumbnailOverlayLoadingPreviewRenderer: ThumbnailOverlayLoadingPreviewRenderer?,
+        val thumbnailOverlayNowPlayingRenderer: ThumbnailOverlayNowPlayingRenderer?,
+        val thumbnailOverlayResumePlaybackRenderer: ThumbnailOverlayResumePlaybackRenderer?,
+        val thumbnailOverlayTimeStatusRenderer: ThumbnailOverlayTimeStatusRenderer?,
+        val thumbnailOverlayToggleButtonRenderer: ThumbnailOverlayToggleButtonRenderer?
+    ) {
+        data class ThumbnailOverlayLoadingPreviewRenderer(
+            val text: Text?
+        ) {
+            data class Text(
                 val runs: List<Run?>?
+            ) {
+                data class Run(
+                    val text: String?
+                )
+            }
+        }
+
+        data class ThumbnailOverlayNowPlayingRenderer(
+            val text: Text?
+        ) {
+            data class Text(
+                val runs: List<Run?>?
+            ) {
+                data class Run(
+                    val text: String?
+                )
+            }
+        }
+
+        data class ThumbnailOverlayResumePlaybackRenderer(
+            val percentDurationWatched: Int?
+        )
+
+        data class ThumbnailOverlayTimeStatusRenderer(
+            val style: String?,
+            val text: Text?
+        ) {
+            data class Text(
+                val accessibility: Accessibility?,
+                val simpleText: String?
             ) {
                 data class Accessibility(
                     val accessibilityData: AccessibilityData?
@@ -1884,62 +1930,219 @@ data class ItemSectionRendererYTSearch(
                         val label: String?
                     )
                 }
+            }
+        }
 
-                data class Run(
-                    val text: String?
+        data class ThumbnailOverlayToggleButtonRenderer(
+            val isToggled: Boolean?,
+            val toggledAccessibility: ToggledAccessibility?,
+            val toggledIcon: ToggledIcon?,
+            val toggledServiceEndpoint: ToggledServiceEndpoint?,
+            val toggledTooltip: String?,
+            val trackingParams: String?,
+            val untoggledAccessibility: UntoggledAccessibility?,
+            val untoggledIcon: UntoggledIcon?,
+            val untoggledServiceEndpoint: UntoggledServiceEndpoint?,
+            val untoggledTooltip: String?
+        ) {
+            data class ToggledAccessibility(
+                val accessibilityData: AccessibilityData?
+            ) {
+                data class AccessibilityData(
+                    val label: String?
                 )
             }
 
-            data class ViewCountText(
-                val simpleText: String?
-            )
-        }
-    }
-}
-
-data class SearchFilterGroupRenderer(
-    val filters: List<Filter?>?,
-    val title: Title?,
-    val trackingParams: String?
-) {
-    data class Filter(
-        val searchFilterRenderer: SearchFilterRenderer?
-    ) {
-        data class SearchFilterRenderer(
-            val label: Label?,
-            val navigationEndpoint: NavigationEndpoint?,
-            val status: String?,
-            val tooltip: String?,
-            val trackingParams: String?
-        ) {
-            data class Label(
-                val simpleText: String?
+            data class ToggledIcon(
+                val iconType: String?
             )
 
-            data class NavigationEndpoint(
+            data class ToggledServiceEndpoint(
                 val clickTrackingParams: String?,
                 val commandMetadata: CommandMetadata?,
-                val searchEndpoint: SearchEndpoint?
+                val playlistEditEndpoint: PlaylistEditEndpoint?
             ) {
                 data class CommandMetadata(
                     val webCommandMetadata: WebCommandMetadata?
                 ) {
                     data class WebCommandMetadata(
-                        val rootVe: Int?,
-                        val url: String?,
-                        val webPageType: String?
+                        val apiUrl: String?,
+                        val sendPost: Boolean?
                     )
                 }
 
-                data class SearchEndpoint(
-                    val params: String?,
-                    val query: String?
+                data class PlaylistEditEndpoint(
+                    val actions: List<Action?>?,
+                    val playlistId: String?
+                ) {
+                    data class Action(
+                        val action: String?,
+                        val removedVideoId: String?
+                    )
+                }
+            }
+
+            data class UntoggledAccessibility(
+                val accessibilityData: AccessibilityData?
+            ) {
+                data class AccessibilityData(
+                    val label: String?
                 )
+            }
+
+            data class UntoggledIcon(
+                val iconType: String?
+            )
+
+            data class UntoggledServiceEndpoint(
+                val clickTrackingParams: String?,
+                val commandMetadata: CommandMetadata?,
+                val playlistEditEndpoint: PlaylistEditEndpoint?,
+                val signalServiceEndpoint: SignalServiceEndpoint?
+            ) {
+                data class CommandMetadata(
+                    val webCommandMetadata: WebCommandMetadata?
+                ) {
+                    data class WebCommandMetadata(
+                        val apiUrl: String?,
+                        val sendPost: Boolean?
+                    )
+                }
+
+                data class PlaylistEditEndpoint(
+                    val actions: List<Action?>?,
+                    val playlistId: String?
+                ) {
+                    data class Action(
+                        val action: String?,
+                        val addedVideoId: String?
+                    )
+                }
+
+                data class SignalServiceEndpoint(
+                    val actions: List<Action?>?,
+                    val signal: String?
+                ) {
+                    data class Action(
+                        val addToPlaylistCommand: AddToPlaylistCommand?,
+                        val clickTrackingParams: String?
+                    ) {
+                        data class AddToPlaylistCommand(
+                            val listType: String?,
+                            val onCreateListCommand: OnCreateListCommand?,
+                            val openMiniplayer: Boolean?,
+                            val videoId: String?,
+                            val videoIds: List<String?>?
+                        ) {
+                            data class OnCreateListCommand(
+                                val clickTrackingParams: String?,
+                                val commandMetadata: CommandMetadata?,
+                                val createPlaylistServiceEndpoint: CreatePlaylistServiceEndpoint?
+                            ) {
+                                data class CommandMetadata(
+                                    val webCommandMetadata: WebCommandMetadata?
+                                ) {
+                                    data class WebCommandMetadata(
+                                        val apiUrl: String?,
+                                        val sendPost: Boolean?
+                                    )
+                                }
+
+                                data class CreatePlaylistServiceEndpoint(
+                                    val params: String?,
+                                    val videoIds: List<String?>?
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     data class Title(
+        val accessibility: Accessibility?,
+        val runs: List<Run?>?
+    ) {
+        data class Accessibility(
+            val accessibilityData: AccessibilityData?
+        ) {
+            data class AccessibilityData(
+                val label: String?
+            )
+        }
+
+        data class Run(
+            val text: String?
+        )
+    }
+
+    data class ViewCountText(
         val simpleText: String?
     )
+}
+
+
+data class SearchFilterOptionsDialogRendererYoutubeLatest(
+    val groups: List<Group?>?,
+    val title: Title?
+) {
+    data class Group(
+        val searchFilterGroupRenderer: SearchFilterGroupRenderer?
+    ) {
+        data class SearchFilterGroupRenderer(
+            val filters: List<Filter?>?,
+            val title: Title?,
+            val trackingParams: String?
+        ) {
+            data class Filter(
+                val searchFilterRenderer: SearchFilterRenderer?
+            ) {
+                data class SearchFilterRenderer(
+                    val label: Label?,
+                    val navigationEndpoint: NavigationEndpoint?,
+                    val status: String?,
+                    val tooltip: String?,
+                    val trackingParams: String?
+                ) {
+                    data class Label(
+                        val simpleText: String?
+                    )
+
+                    data class NavigationEndpoint(
+                        val clickTrackingParams: String?,
+                        val commandMetadata: CommandMetadata?,
+                        val searchEndpoint: SearchEndpoint?
+                    ) {
+                        data class CommandMetadata(
+                            val webCommandMetadata: WebCommandMetadata?
+                        ) {
+                            data class WebCommandMetadata(
+                                val rootVe: Int?,
+                                val url: String?,
+                                val webPageType: String?
+                            )
+                        }
+
+                        data class SearchEndpoint(
+                            val params: String?,
+                            val query: String?
+                        )
+                    }
+                }
+            }
+
+            data class Title(
+                val simpleText: String?
+            )
+        }
+    }
+
+    data class Title(
+        val runs: List<Run?>?
+    ) {
+        data class Run(
+            val text: String?
+        )
+    }
 }

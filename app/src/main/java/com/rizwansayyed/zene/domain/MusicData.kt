@@ -97,5 +97,5 @@ data class SongsSuggestionsData(
 )
 
 enum class MusicType {
-    MUSIC, ALBUMS, ARTISTS, PLAYLIST, TEXT, RADIO
+    MUSIC, ALBUMS, ARTISTS, PLAYLIST, TEXT, RADIO, VIDEO
 }

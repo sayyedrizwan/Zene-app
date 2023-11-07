@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LAST_SYNC_TIME
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.MUSIC_PLAYER_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SEARCH_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SELECTED_FAVOURITE_ARTISTS_SONGS
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.cookiesName
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -93,4 +94,13 @@ object DataStorageManager {
         set(v) = runBlocking {
             context.dataStore.edit { it[LAST_SYNC_TIME] = v.first() }
         }
+
+
+    suspend fun cookiesData(domain: String): String {
+       return context.dataStore.data.map { it[cookiesName(domain)] ?: "" }.first()
+    }
+
+    fun cookiesData(domain: String, v: String) = runBlocking {
+        context.dataStore.edit { it[cookiesName(domain)] = v }
+    }
 }

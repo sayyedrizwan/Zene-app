@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.presenter.ui.home.artists
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
@@ -27,11 +28,15 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
-@SuppressLint("SetJavaScriptEnabled")
-class WebViewForArtistsVideo(context: Context) : WebView(context) {
+@SuppressLint("SetJavaScriptEnabled", "ViewConstructor")
+class WebViewForArtistsVideo(
+    context: Context,
+    private val vId: String,
+    private val url: (String) -> Unit
+) : WebView(context) {
 
     companion object {
-        const val SAVE_FROM_BASE_URL = "https://en.savefrom.net/"
+        const val SAVE_FROM_BASE_URL = "https://en.savefrom.net/391GA/"
     }
 
     var theCaptureVideoUrl = ""
@@ -40,7 +45,7 @@ class WebViewForArtistsVideo(context: Context) : WebView(context) {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
             if (newProgress != 100) return
-            view?.evaluateJavascript(setInput, null)
+            view?.evaluateJavascript(setInput(vId), null)
             view?.evaluateJavascript(startLoading, null)
 
 
@@ -74,12 +79,15 @@ class WebViewForArtistsVideo(context: Context) : WebView(context) {
     @JavascriptInterface
     fun vUrl(value: String) {
         theCaptureVideoUrl = value
+        url(value)
     }
 
 
     object RunFunctions {
-        const val setInput =
-            "javascript:document.getElementById('sf_url').value = 'https://www.youtube.com/watch?v=5domUjBEsU8'"
+        fun setInput(id: String): String {
+            return "javascript:document.getElementById('sf_url').value = 'https://www.youtube.com/watch?v=$id'"
+        }
+
         const val startLoading = "javascript:document.getElementById('sf_submit').click()"
 
         private const val classNameOfDownloadTag =

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.db.datastore
 
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -16,4 +17,7 @@ object DataStorageUtil {
     val FAVOURITE_RADIO_LIST = stringPreferencesKey("favourite_radio_list")
     val MUSIC_PLAYER_DATA = stringPreferencesKey("music_player_data")
 
+    fun cookiesName(domain: String): Preferences.Key<String> {
+        return stringPreferencesKey("${domain}_cookie")
+    }
 }

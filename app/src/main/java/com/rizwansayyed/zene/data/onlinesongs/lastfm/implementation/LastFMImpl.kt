@@ -90,4 +90,10 @@ class LastFMImpl @Inject constructor(
         }
         emit(list)
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun searchArtistsImage(name: String) = flow {
+        val artistDetails = lastFMS.searchArtists(name).results?.artistmatches?.artist?.first()
+        emit(artistDetails?.image)
+    }.flowOn(Dispatchers.IO)
 }

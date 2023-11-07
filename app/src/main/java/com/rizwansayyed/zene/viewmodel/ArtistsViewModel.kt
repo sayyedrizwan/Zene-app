@@ -6,10 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapsImpl
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -22,14 +21,22 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtistsViewModel @Inject constructor(
     private val lastFMImpl: LastFMImplInterface,
-    private val youtubeScraps: YoutubeScrapInterface
+    private val youtubeAPI: YoutubeAPIImplInterface,
+    private val bingScraps: BingScrapsInterface
 ) : ViewModel() {
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
         private set
 
+    var artistsImage by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
+        private set
+
+    var artistsVideoId by mutableStateOf("")
+        private set
+
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
+        searchImgOne(a)
         latestVideo(a)
         searchImg(a)
     }
@@ -45,11 +52,23 @@ class ArtistsViewModel @Inject constructor(
         }
     }
 
-    private fun latestVideo(a: String) = viewModelScope.launch(Dispatchers.IO) {
-        youtubeScraps.ytThisYearArtistOfficialVideos(a).catch {
-            it.message?.toast()
+    private fun searchImgOne(a: String) = viewModelScope.launch(Dispatchers.IO) {
+        lastFMImpl.searchArtistsImage(a).onStart {
+            artistsImage = DataResponse.Loading
+        }.catch {
+            artistsImage = DataResponse.Error(it)
         }.collectLatest {
-            it.toast()
+            artistsImage = DataResponse.Success(it ?: "")
+        }
+    }
+
+    private fun latestVideo(a: String) = viewModelScope.launch(Dispatchers.IO) {
+        bingScraps.bingOfficialVideo(a).onStart {
+            artistsVideoId = ""
+        }.catch {
+            artistsVideoId = ""
+        }.collectLatest {
+            artistsVideoId = it
         }
     }
 

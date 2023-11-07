@@ -95,8 +95,12 @@ object SongDownloader {
 }
 
 object YoutubeAPI {
+    private const val ytLatestClientVersion = "2.20231106.01.00"
+    private const val ytMusicLatestClientVersion = "1.20231101.01.00"
+
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
     const val YT_MAIN_GUIDE = "guide"
+    const val YT_SEARCH = "search"
 
     const val YT_MUSIC_BASE_URL = "https://music.youtube.com/youtubei/v1/"
     const val YT_SEARCH_API = "search"
@@ -105,10 +109,6 @@ object YoutubeAPI {
     const val YT_BROWSE_API = "browse"
     const val YT_SEARCH_SUGGESTION_API = "music/get_search_suggestions"
 
-    fun ytThisYearVideoSearch(n: String): String {
-        return "https://www.youtube.com/results?search_query=" +
-                "${n.replace(" ", "%20")}%20official%20song&sp=EgIIBQ%253D%253D&themeRefresh=1"
-    }
 
     fun generateYTMusicPlaylistURL(pid: String): String {
         return "https://music.youtube.com/playlist?list=$pid"
@@ -121,7 +121,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
             }, "query": "$q", "params": "EgWKAQIIAWoSEAMQBRAEEAkQDhAKEBAQERAV"
@@ -139,7 +139,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
             }
@@ -156,7 +156,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
             }, "query": "$q", "params": "EgWKAQIIAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
@@ -174,7 +174,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
             }, "query": "$q", "params": "EgWKAQIgAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D"
@@ -191,7 +191,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "platform": "DESKTOP",
                     "clientFormFactor": "UNKNOWN_FORM_FACTOR",
                     "timeZone": "${ip?.timezone}"
@@ -213,12 +213,31 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20231016.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
             }, 
             "query": "$q", 
             "params": "EgWKAQIYAWoSEAMQCRAOEAoQBBAFEBEQFRAQ"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytLatestMusicSearch(ip: IpJsonResponse?, q: String): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB",
+                    "clientVersion": "$ytLatestClientVersion",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }, 
+            "query": "$q", 
+            "params": "EgIIBQ%3D%3D"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -238,7 +257,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "originalUrl": "https://music.youtube.com/watch?v=$pId",
                     "timeZone": "${ip?.timezone}"
                 }
@@ -259,7 +278,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20231016.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
             }
@@ -276,7 +295,7 @@ object YoutubeAPI {
                     "remoteHost": "${ip?.query}",
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
-                    "clientVersion": "1.20230918.01.00",
+                    "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
             },
@@ -293,7 +312,7 @@ object YoutubeAPI {
                      "remoteHost": "${ip?.query}",
                      "userAgent": "$USER_AGENT", 
                      "clientName": "WEB_REMIX",
-                     "clientVersion": "1.20231009.01.00",
+                     "clientVersion": "$ytMusicLatestClientVersion",
                      "timeZone": "${ip?.timezone}"
                 }
             },
@@ -311,13 +330,6 @@ object YoutubeAPI {
 
         val mediaType = "application/json".toMediaTypeOrNull()
         return json.toRequestBody(mediaType)
-    }
-}
-
-object SearchEngine {
-    fun searchEngineDataURL(name: String): String {
-        val n = name.lowercase().replace(" ", "+")
-        return "https://www.bing.com/search?q=$n+twitter+and+instagram+official+account"
     }
 }
 
@@ -342,6 +354,8 @@ object CacheFiles {
 
 object ScrapURL {
     const val TOP_ARTISTS = "https://www.billboard.com/charts/artist-100/"
+
+    const val BING_SEARCH = "https://www.bing.com/videos/search?q="
 }
 
 

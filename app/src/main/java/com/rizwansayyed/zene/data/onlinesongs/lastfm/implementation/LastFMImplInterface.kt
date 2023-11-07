@@ -10,4 +10,5 @@ interface LastFMImplInterface {
     suspend fun artistsImages(name: String, limit: Int = 40): Flow<MutableList<String>>
 
     suspend fun topRecentPlayingSongs(): Flow<MutableList<MusicDataWithArtists>>
+    suspend fun searchArtistsImage(name: String): Flow<String?>
 }
