@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing
 
 
+import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.ScrapURL.BING_SEARCH
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +20,13 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
         var id = ""
 
         jsoup.select("#mc_vtvc_video_4").forEach {
-            if (!id.contains("youtube.com/watch"))
-                id = it.selectFirst(".mc_vtvc_con_rc")?.attr("ourl") ?: ""
+            val title =
+                it.selectFirst(".mc_vtvc_title.b_promtxt")?.attr("title")?.trim()?.lowercase() ?: ""
+
+            if (!id.contains("youtube.com/watch") && id.isEmpty() && title.lowercase()
+                    .contains("official") && title.lowercase()
+                    .contains("video") && !title.lowercase().lowercase().contains("ft.")
+            ) id = it.selectFirst(".mc_vtvc_con_rc")?.attr("ourl") ?: ""
         }
 
         emit(id.substringAfter("?v="))

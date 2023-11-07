@@ -399,24 +399,6 @@ class YoutubeAPIImpl @Inject constructor(
         emit(list)
     }.flowOn(Dispatchers.IO)
 
-
-    override suspend fun ytThisYearArtistOfficialVideos(q: String) = flow {
-        var vidId = ""
-
-        val songSearch = allYoutubeVideoThisYearSearch("${q.lowercase()} official songs").first()
-
-        songSearch.forEach {
-            if (vidId.isEmpty() &&
-                it.name?.lowercase()?.contains("official") == true &&
-                it.name?.lowercase()?.contains("video")!! &&
-                !it.name?.lowercase()?.lowercase()?.contains("ft.")!!
-            ) {
-                vidId = it.pId ?: ""
-            }
-        }
-        emit(vidId)
-    }.flowOn(Dispatchers.IO)
-
     override suspend fun songFromArtistsTopFive(artists: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
         if (cache != null) if (cache.list.isNotEmpty()) emit(cache.list)
