@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -34,6 +33,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.service.player.AndroidExoPlayer
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 
 @Composable
@@ -79,38 +79,17 @@ fun TopArtistsImageView() {
 }
 
 
-@SuppressLint("UnsafeOptInUsageError")
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
-fun ArtistsSongURL(videoLink: String) {
-    val content = LocalContext.current.applicationContext
+fun ArtistsSongURL(videoLink: String, androidExoPlayer: AndroidExoPlayer) {
     val height = (LocalConfiguration.current.screenHeightDp / 1.3).dp
-
-    val exoPlayer = ExoPlayer.Builder(content).build().apply {
-        repeatMode = Player.REPEAT_MODE_ONE
-        volume = 0f
-    }
-
-    val mediaItem = MediaItem.Builder().setMediaId("artists_video").setUri(videoLink).build()
 
     Box(
         Modifier
             .fillMaxWidth()
             .size(height)
     ) {
-        AndroidView(
-            { ctx ->
-                PlayerView(ctx).apply {
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    player = exoPlayer
-                    player?.setMediaItem(mediaItem)
-                    useController = false
-                    setKeepContentOnPlayerReset(true)
-                    setShutterBackgroundColor(Color.Transparent.toArgb())
-                    player?.prepare()
-                    player?.playWhenReady = true
-                }
-            }, Modifier.fillMaxSize()
-        )
+        androidExoPlayer.AlbumsArtistsVideo(url = videoLink)
 
         Spacer(
             Modifier
@@ -125,14 +104,5 @@ fun ArtistsSongURL(videoLink: String) {
                     )
                 )
         )
-    }
-
-    LaunchedEffect(exoPlayer.currentPosition) {
-        Log.d("TAG", "ArtistsSongURL: running ${exoPlayer.currentPosition}")
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.pause()
-        }
     }
 }

@@ -7,6 +7,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.MediaSession
+import com.rizwansayyed.zene.service.player.AndroidExoPlayer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,4 +44,9 @@ object ExoPlayerModule {
     @Singleton
     fun mediaSession(@ApplicationContext c: Context, e: ExoPlayer): MediaSession =
         MediaSession.Builder(c, e).build()
+
+    @Provides
+    @Singleton
+    fun androidExoPlayer(@ApplicationContext c: Context): AndroidExoPlayer = AndroidExoPlayer(c)
+
 }
