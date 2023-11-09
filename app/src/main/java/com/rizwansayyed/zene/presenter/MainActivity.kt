@@ -61,6 +61,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+
+//reduce time in artists album video player
+//(optional) reduce time in playing song via api
+// if going ahead or back multiple time on via via notification is causing problem. fix it....
+
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 

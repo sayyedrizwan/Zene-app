@@ -32,10 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -73,6 +75,25 @@ fun LoadingStateBar() {
             trackColor = MaterialTheme.colorScheme.secondary,
         )
     }
+}
+
+@Composable
+fun LoadingCircle(s: Int) {
+    val strokeWidth = 5.dp
+
+    CircularProgressIndicator(
+        modifier = Modifier
+            .size(s.dp)
+            .drawBehind {
+                drawCircle(
+                    Color.White,
+                    radius = size.width / 2 - strokeWidth.toPx() / 2,
+                    style = Stroke(strokeWidth.toPx())
+                )
+            },
+        color = Color.LightGray,
+        strokeWidth = strokeWidth
+    )
 }
 
 
@@ -362,6 +383,17 @@ fun SmallIcons(icon: Int, size: Int = 23, p: Int = 5, click: () -> Unit) {
             .clickable {
                 click()
             },
+        colorFilter = ColorFilter.tint(Color.White)
+    )
+}
+
+@Composable
+fun SmallIcons(icon: Int, size: Int = 23, p: Int = 5) {
+    Image(
+        painterResource(icon), "",
+        Modifier
+            .padding(p.dp)
+            .size(size.dp),
         colorFilter = ColorFilter.tint(Color.White)
     )
 }

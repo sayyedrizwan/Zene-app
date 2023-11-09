@@ -36,10 +36,7 @@ fun HomepageTopView() {
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painterResource(R.mipmap.r_logo), "",
-                Modifier.size(46.dp)
-            )
+            SmallIcons(R.mipmap.r_logo, 46, 0)
 
             Spacer(Modifier.width(9.dp))
 

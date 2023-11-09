@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Days
@@ -15,6 +16,7 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.songsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.suggestionYouMayLikeCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytArtistsPlaylistJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytLatestMusicSearch
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
@@ -26,8 +28,6 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.ArtistsFanDataCache
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
 import com.rizwansayyed.zene.domain.yt.YoutubeLatestYearResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubePlaylistItemsResponse
+import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -399,6 +400,33 @@ class YoutubeAPIImpl @Inject constructor(
         emit(list)
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun searchArtistsPlaylistsForRadio(q: String) = flow {
+        val list = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.ytApiKeys()?.yt ?: ""
+
+        val r = youtubeAPI.youtubeSearchResponse(ytArtistsPlaylistJsonBody(ip, q), key)
+        r.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEach { c ->
+            val name = c?.videoRenderer?.title?.runs?.first()?.text
+            val vId = c?.videoRenderer?.videoId ?: return@forEach
+
+            if (name?.lowercase()?.contains(q.lowercase().trim()) == true) return@forEach
+
+            val thumbnail = c.videoRenderer.thumbnailURL()
+
+            val m = MusicData(
+                thumbnail ?: "", "${q.toCapitalFirst()} Radio",
+                q.lowercase(), vId, MusicType.MUSIC
+            )
+            list.add(m)
+        }
+        list.shuffle()
+
+        emit(list.random())
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun songFromArtistsTopFive(artists: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
         if (cache != null) if (cache.list.isNotEmpty()) emit(cache.list)
@@ -595,7 +623,7 @@ class YoutubeAPIImpl @Inject constructor(
         d.toTxtCache()?.let { writeToCacheFile(suggestionYouMayLikeCache, it) }
 
         emit(d)
-    }
+    }.flowOn(Dispatchers.IO)
 
 
     override suspend fun artistsFansItemSearch(artists: List<String>) = flow {
@@ -667,7 +695,7 @@ class YoutubeAPIImpl @Inject constructor(
             ?.let { writeToCacheFile(artistsFanWithSongsCache, it) }
 
         emit(list)
-    }
+    }.flowOn(Dispatchers.IO)
 
 
     override suspend fun searchTextsSuggestions(q: String) = flow {
@@ -692,7 +720,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         emit(search)
-    }
+    }.flowOn(Dispatchers.IO)
 
 
     override suspend fun searchData(q: String) = flow {
@@ -757,5 +785,5 @@ class YoutubeAPIImpl @Inject constructor(
 
 
         emit(SearchData(songs, albums, artists))
-    }
+    }.flowOn(Dispatchers.IO)
 }

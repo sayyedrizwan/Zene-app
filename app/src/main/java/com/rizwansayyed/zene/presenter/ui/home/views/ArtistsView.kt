@@ -1,17 +1,11 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -30,6 +24,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsButtonView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNameWithDescription
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
@@ -61,9 +56,11 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
 
         ArtistsNameWithDescription()
 
+        Spacer(Modifier.height(30.dp))
 
-        Spacer(Modifier.height(100.dp))
+        ArtistsButtonView()
 
+        Spacer(Modifier.height(190.dp))
     }
 
     LaunchedEffect(artistsViewModel.artistsVideoId) {

@@ -100,7 +100,7 @@ object SongDownloader {
 }
 
 object YoutubeAPI {
-    private const val ytLatestClientVersion = "2.20231106.01.00"
+    private const val ytLatestClientVersion = "2.20231106.01.01"
     private const val ytMusicLatestClientVersion = "1.20231101.01.00"
 
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
@@ -224,6 +224,25 @@ object YoutubeAPI {
             }, 
             "query": "$q", 
             "params": "EgWKAQIYAWoSEAMQCRAOEAoQBBAFEBEQFRAQ"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytArtistsPlaylistJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB",
+                    "clientVersion": "$ytLatestClientVersion",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }, 
+            "query": "$q", 
+           "params": "EgYIBRABGAI%3D"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()

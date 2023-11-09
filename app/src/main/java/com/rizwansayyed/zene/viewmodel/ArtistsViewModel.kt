@@ -10,8 +10,9 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -24,10 +25,14 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtistsViewModel @Inject constructor(
     private val lastFMImpl: LastFMImplInterface,
+    private val youtubeAPI: YoutubeAPIImplInterface,
     private val bingScraps: BingScrapsInterface
 ) : ViewModel() {
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
+        private set
+
+    var radioStatus by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
         private set
 
     var artistsDesc by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
@@ -42,8 +47,9 @@ class ArtistsViewModel @Inject constructor(
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
         latestVideo(a)
-
+        radioStatus = DataResponse.Empty
         lastFMImpl.artistsUsername(a).onStart {
+            artistsDesc = DataResponse.Loading
             artistsImage = DataResponse.Loading
         }.catch {
             artistsImage = DataResponse.Error(it)
@@ -53,6 +59,19 @@ class ArtistsViewModel @Inject constructor(
                 searchImg(i)
                 artistsDesc(i)
             }
+        }
+    }
+
+    fun startArtistsRadioPlaylist(artistsName: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (radioStatus == DataResponse.Loading) return@launch
+
+        youtubeAPI.searchArtistsPlaylistsForRadio(artistsName).onStart {
+            radioStatus = DataResponse.Loading
+        }.catch {
+            radioStatus = DataResponse.Empty
+        }.collectLatest {
+            addAllPlayer(listOf(it).toTypedArray(), 0)
+            radioStatus = DataResponse.Empty
         }
     }
 

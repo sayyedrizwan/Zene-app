@@ -136,7 +136,7 @@ class PlayerServiceAction @Inject constructor(
         val tempLists = ArrayList(lists ?: emptyList())
         val presentOn = lists?.indexOfFirst { it?.pId == music.pId }
 
-        if ((presentOn ?: -1) >= 0){
+        if ((presentOn ?: -1) >= 0) {
             tempLists.removeAt(presentOn!!)
 
             withContext(Dispatchers.Main) {
@@ -165,7 +165,7 @@ class PlayerServiceAction @Inject constructor(
         val tempLists = ArrayList(lists ?: emptyList())
         val presentOn = lists?.indexOfFirst { it?.pId == music.pId }
 
-        if ((presentOn ?: -1) >= 0){
+        if ((presentOn ?: -1) >= 0) {
             tempLists.removeAt(presentOn!!)
 
             withContext(Dispatchers.Main) {

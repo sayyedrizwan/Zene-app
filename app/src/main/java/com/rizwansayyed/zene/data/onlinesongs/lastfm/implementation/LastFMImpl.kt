@@ -72,7 +72,7 @@ class LastFMImpl @Inject constructor(
 
     override suspend fun artistsUsername(name: String) = flow {
         emit(lastFMS.searchArtists(name).results?.artistmatches?.artist?.first())
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun artistsImages(name: LastFMArtist?, limit: Int) = flow {
         val list = mutableListOf<String>()
