@@ -47,11 +47,15 @@ class AndroidExoPlayer @Inject constructor(@ApplicationContext c: Context) {
         }, Modifier.fillMaxSize())
 
         DisposableEffect(lifecycleOwner) {
-            val observer = LifecycleEventObserver { source, event ->
+            val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_START) {
                     player.play()
-                } else if (event == Lifecycle.Event.ON_PAUSE) {
+                }
+                if (event == Lifecycle.Event.ON_PAUSE) {
                     player.pause()
+                }
+                if (event == Lifecycle.Event.ON_DESTROY) {
+                    destroy()
                 }
             }
 
@@ -63,7 +67,7 @@ class AndroidExoPlayer @Inject constructor(@ApplicationContext c: Context) {
     }
 
 
-    fun destroy() {
+    private fun destroy() {
         mediaSession.release()
         player.release()
     }
