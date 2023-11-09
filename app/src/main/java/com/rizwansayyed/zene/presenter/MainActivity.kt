@@ -43,7 +43,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
-import com.rizwansayyed.zene.service.player.AndroidExoPlayer
+import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
@@ -65,7 +65,7 @@ import kotlin.time.Duration.Companion.seconds
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var androidExoPlayer: AndroidExoPlayer
+    lateinit var artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer
 
     private val navViewModel: HomeNavViewModel by viewModels()
     private val roomViewModel: RoomDbViewModel by viewModels()
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     AnimatedVisibility(navViewModel.selectedArtists.isNotEmpty()) {
-                        ArtistsView(androidExoPlayer)
+                        ArtistsView(artistsThumbnailPlayer)
                     }
 
 

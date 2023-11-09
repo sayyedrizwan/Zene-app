@@ -18,13 +18,14 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
 import com.rizwansayyed.zene.presenter.ui.home.artists.WebViewForArtistsVideo
-import com.rizwansayyed.zene.service.player.AndroidExoPlayer
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 
 @Composable
-fun ArtistsView(androidExoPlayer: AndroidExoPlayer) {
+fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
@@ -40,7 +41,7 @@ fun ArtistsView(androidExoPlayer: AndroidExoPlayer) {
         if (videoLink.isEmpty())
             TopArtistsImageView()
         else
-            ArtistsSongURL(videoLink, androidExoPlayer)
+            ArtistsSongURL(videoLink, artistsThumbnailPlayer)
     }
 
     LaunchedEffect(artistsViewModel.artistsVideoId) {

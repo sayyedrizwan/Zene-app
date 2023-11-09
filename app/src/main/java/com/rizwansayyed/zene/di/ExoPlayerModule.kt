@@ -7,7 +7,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.MediaSession
-import com.rizwansayyed.zene.service.player.AndroidExoPlayer
+import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,6 +47,6 @@ object ExoPlayerModule {
 
     @Provides
     @Singleton
-    fun androidExoPlayer(@ApplicationContext c: Context): AndroidExoPlayer = AndroidExoPlayer(c)
+    fun androidExoPlayer(@ApplicationContext c: Context): ArtistsThumbnailVideoPlayer = ArtistsThumbnailVideoPlayer(c)
 
 }

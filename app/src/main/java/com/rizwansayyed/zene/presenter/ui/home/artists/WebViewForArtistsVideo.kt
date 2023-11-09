@@ -45,11 +45,12 @@ class WebViewForArtistsVideo(
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
             if (newProgress != 100) return
-            view?.evaluateJavascript(setInput(vId), null)
-            view?.evaluateJavascript(startLoading, null)
-
 
             CoroutineScope(Dispatchers.Main).launch {
+                delay(2.seconds)
+                view?.evaluateJavascript(setInput(vId), null)
+                view?.evaluateJavascript(startLoading, null)
+
                 while (theCaptureVideoUrl.isEmpty()) {
                     delay(2.seconds)
                     view?.evaluateJavascript(getDownloadLink, null)

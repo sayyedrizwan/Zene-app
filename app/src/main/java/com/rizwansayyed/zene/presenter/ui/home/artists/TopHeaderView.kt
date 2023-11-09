@@ -1,7 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.home.artists
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -10,30 +8,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
-import com.rizwansayyed.zene.service.player.AndroidExoPlayer
+import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 
 @Composable
@@ -81,7 +68,7 @@ fun TopArtistsImageView() {
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
-fun ArtistsSongURL(videoLink: String, androidExoPlayer: AndroidExoPlayer) {
+fun ArtistsSongURL(videoLink: String, artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
     val height = (LocalConfiguration.current.screenHeightDp / 1.3).dp
 
     Box(
@@ -89,7 +76,7 @@ fun ArtistsSongURL(videoLink: String, androidExoPlayer: AndroidExoPlayer) {
             .fillMaxWidth()
             .size(height)
     ) {
-        androidExoPlayer.AlbumsArtistsVideo(url = videoLink)
+        artistsThumbnailPlayer.AlbumsArtistsVideo(url = videoLink)
 
         Spacer(
             Modifier
