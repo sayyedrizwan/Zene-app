@@ -1,11 +1,9 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists
 
 
-import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
-import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsList
@@ -21,7 +19,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 class TopArtistsPlaylistsScrapsImpl @Inject constructor(
     private val lastFM: LastFMImplInterface
@@ -49,7 +46,8 @@ class TopArtistsPlaylistsScrapsImpl @Inject constructor(
 
             if (name != null) {
                 if (img.contains("fallback.gif") || img.isEmpty()) {
-                    img = lastFM.artistsImages(name, 1).first().first()
+                    val userName = lastFM.artistsUsername(name).first()
+                    img = lastFM.artistsImages(userName, 1).first().first()
 
                 }
                 if (img.isNotEmpty() && name.isNotEmpty())

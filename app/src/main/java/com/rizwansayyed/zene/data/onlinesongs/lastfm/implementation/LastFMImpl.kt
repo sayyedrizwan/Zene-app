@@ -1,28 +1,28 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
-import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
-import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Hours
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.recentMostPlayedSongs
+import com.rizwansayyed.zene.data.utils.LastFM.artistsWikiInfo
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
+import com.rizwansayyed.zene.data.utils.YoutubeAPI
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
+import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.toCache
-import com.rizwansayyed.zene.domain.toTxtCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import org.jsoup.Jsoup
 import javax.inject.Inject
 
 class LastFMImpl @Inject constructor(
@@ -70,13 +70,16 @@ class LastFMImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun artistsImages(name: String, limit: Int) = flow {
+    override suspend fun artistsUsername(name: String) = flow {
+        emit(lastFMS.searchArtists(name).results?.artistmatches?.artist?.first())
+    }
+
+    override suspend fun artistsImages(name: LastFMArtist?, limit: Int) = flow {
         val list = mutableListOf<String>()
-        val artistDetails = lastFMS.searchArtists(name).results?.artistmatches?.artist?.first()
-        var imgId = artistDetails?.image?.substringAfterLast("/")?.substringBeforeLast(".")
+        var imgId = name?.image?.substringAfterLast("/")?.substringBeforeLast(".")
 
         if (limit == 1) {
-            artistDetails?.image?.let { list.add(it) }
+            name?.image?.let { list.add(it) }
             emit(list)
             return@flow
         }
@@ -92,8 +95,17 @@ class LastFMImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun searchArtistsImage(name: String) = flow {
-        val artistDetails = lastFMS.searchArtists(name).results?.artistmatches?.artist?.first()
-        emit(artistDetails?.image)
+    override suspend fun artistsDescription(user: LastFMArtist) = flow {
+        val response = jsoupResponseData(artistsWikiInfo(user.url ?: ""))
+        val jsoup = Jsoup.parse(response!!)
+
+        var artistsInfo = ""
+
+        jsoup.selectFirst(".wiki-content")?.select("p")?.forEachIndexed { index, element ->
+            if (index > 2) return@forEachIndexed
+            artistsInfo += " "
+            artistsInfo += element.text()
+        }
+        emit(artistsInfo)
     }.flowOn(Dispatchers.IO)
 }

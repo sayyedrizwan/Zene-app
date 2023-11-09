@@ -69,6 +69,11 @@ object LastFM {
     const val LFM_SEARCH_ARTISTS = "kerve/search"
 
 
+    fun artistsWikiInfo(url:String): String {
+        return "$url/+wiki"
+    }
+
+
     fun searchLastFMImageURLPath(id: String): String {
         return "https://www.last.fm/music/Taylor+Swift/+images/$id/json"
     }

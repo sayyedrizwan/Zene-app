@@ -38,27 +38,8 @@ data class ArtistsSearchResponse(
         }
 
         data class Artistmatches(
-            val artist: List<Artist?>?
-        ) {
-            data class Artist(
-                val image: String?,
-                val listeners: String?,
-                val name: String?,
-                val sr: Sr?,
-                val streamable: String?,
-                val url: String?
-            ) {
-                data class Sr(
-                    val fw: String?,
-                    val md5: String?,
-                    val qw: Double?,
-                    val sw: String?,
-                    val w: String?,
-                    val w1: Int?,
-                    val w2: Int?
-                )
-            }
-        }
+            val artist: List<LastFMArtist?>?
+        )
 
         data class Trackmatches(
             val track: List<Track?>?
@@ -100,4 +81,23 @@ data class ArtistsSearchResponse(
             }
         }
     }
+}
+
+data class LastFMArtist(
+    val image: String?,
+    val listeners: String?,
+    val name: String?,
+    val sr: Sr?,
+    val streamable: String?,
+    val url: String?
+) {
+    data class Sr(
+        val fw: String?,
+        val md5: String?,
+        val qw: Double?,
+        val sw: String?,
+        val w: String?,
+        val w1: Int?,
+        val w2: Int?
+    )
 }

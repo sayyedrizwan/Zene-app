@@ -1,14 +1,16 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
-import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
-import com.rizwansayyed.zene.domain.lastfm.TopRecentPlaySongsResponse
+import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
+import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import kotlinx.coroutines.flow.Flow
 
 interface LastFMImplInterface {
 
-    suspend fun artistsImages(name: String, limit: Int = 40): Flow<MutableList<String>>
+    suspend fun artistsImages(name: LastFMArtist?, limit: Int = 40): Flow<MutableList<String>>
 
     suspend fun topRecentPlayingSongs(): Flow<MutableList<MusicDataWithArtists>>
-    suspend fun searchArtistsImage(name: String): Flow<String?>
+
+    suspend fun artistsUsername(name: String): Flow<LastFMArtist?>
+    suspend fun artistsDescription(user: LastFMArtist): Flow<String>
 }

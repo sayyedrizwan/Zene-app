@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,8 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
+import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -21,11 +24,13 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtistsViewModel @Inject constructor(
     private val lastFMImpl: LastFMImplInterface,
-    private val youtubeAPI: YoutubeAPIImplInterface,
     private val bingScraps: BingScrapsInterface
 ) : ViewModel() {
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
+        private set
+
+    var artistsDesc by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
         private set
 
     var artistsImage by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
@@ -36,13 +41,22 @@ class ArtistsViewModel @Inject constructor(
 
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
-        searchImgOne(a)
         latestVideo(a)
-        searchImg(a)
+
+        lastFMImpl.artistsUsername(a).onStart {
+            artistsImage = DataResponse.Loading
+        }.catch {
+            artistsImage = DataResponse.Error(it)
+        }.collectLatest {
+            artistsImage = DataResponse.Success(it?.image ?: "")
+            it?.let { i ->
+                searchImg(i)
+                artistsDesc(i)
+            }
+        }
     }
 
-
-    private fun searchImg(a: String) = viewModelScope.launch(Dispatchers.IO) {
+    private fun searchImg(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
         lastFMImpl.artistsImages(a, 80).onStart {
             artistsImages = DataResponse.Loading
         }.catch {
@@ -52,13 +66,13 @@ class ArtistsViewModel @Inject constructor(
         }
     }
 
-    private fun searchImgOne(a: String) = viewModelScope.launch(Dispatchers.IO) {
-        lastFMImpl.searchArtistsImage(a).onStart {
-            artistsImage = DataResponse.Loading
+    private fun artistsDesc(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
+        lastFMImpl.artistsDescription(a).onStart {
+            artistsDesc = DataResponse.Loading
         }.catch {
-            artistsImage = DataResponse.Error(it)
+            artistsDesc = DataResponse.Error(it)
         }.collectLatest {
-            artistsImage = DataResponse.Success(it ?: "")
+            artistsDesc = DataResponse.Success(it)
         }
     }
 

@@ -90,7 +90,7 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
             while (doLoop) {
                 delay(1.seconds)
                 if (ePlayer.currentPosition / 1000 < 2) {
-                    ePlayer.seekTo(ePlayer.duration / 2)
+                    ePlayer.seekTo(ePlayer.duration / 100 * 3)
                     ePlayer.play()
                 }
 
@@ -127,6 +127,11 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
         }
     }
 
+    fun muteUnMute() {
+        if (ePlayer.volume == 0f) ePlayer.volume = 1f
+        else ePlayer.volume = 0f
+
+    }
 
     private fun destroy() {
         mediaSession.release()

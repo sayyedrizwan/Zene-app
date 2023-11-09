@@ -91,7 +91,7 @@ fun TextThin(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Thin,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null,
         overflow = TextOverflow.Ellipsis
@@ -114,7 +114,7 @@ fun TextSemiBold(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.SemiBold,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null,
         overflow = TextOverflow.Ellipsis,
@@ -137,7 +137,7 @@ fun TextBold(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Bold,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null,
         overflow = TextOverflow.Ellipsis
@@ -160,7 +160,7 @@ fun TextAntroSemiBold(
         color = color,
         fontFamily = antroFamily,
         fontWeight = FontWeight.Normal,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null
     )
@@ -182,7 +182,7 @@ fun TextLight(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Light,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         textAlign = if (doCenter) TextAlign.Center else null,
         fontSize = size.scaledSp(),
         overflow = TextOverflow.Ellipsis
@@ -205,7 +205,7 @@ fun TextMedium(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Medium,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         textAlign = if (doCenter) TextAlign.Center else null,
         fontSize = size.scaledSp(),
         overflow = TextOverflow.Ellipsis
@@ -228,7 +228,7 @@ fun TextRegular(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Normal,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         textAlign = if (doCenter) TextAlign.Center else null,
         fontSize = size.scaledSp(),
         overflow = TextOverflow.Ellipsis
@@ -251,7 +251,7 @@ fun TextBoldBig(
         color = color,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Bold,
-        maxLines = if (singleLine) 1 else 10,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null,
         overflow = TextOverflow.Ellipsis
