@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsButtonView
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsImagesView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNameWithDescription
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
@@ -59,6 +60,10 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
         Spacer(Modifier.height(30.dp))
 
         ArtistsButtonView()
+
+        Spacer(Modifier.height(40.dp))
+
+        ArtistsImagesView()
 
         Spacer(Modifier.height(190.dp))
     }
