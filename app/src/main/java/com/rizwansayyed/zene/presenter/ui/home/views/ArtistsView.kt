@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsButtonView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsImagesView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNameWithDescription
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSocialMediaProfile
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
 import com.rizwansayyed.zene.presenter.ui.home.artists.WebViewForArtistsVideo
@@ -46,40 +47,31 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
 
     var videoLink by remember { mutableStateOf("") }
 
-    LazyColumn(
+    Column(
         Modifier
             .fillMaxSize()
             .background(DarkGreyColor)
-//            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState())
     ) {
-        item {
-            Column(Modifier.fillMaxWidth()) {
-                if (videoLink.isEmpty())
-                    TopArtistsImageView()
-                else
-                    ArtistsSongURL(videoLink, artistsThumbnailPlayer)
-            }
-        }
-        item {
-            Column(Modifier.fillMaxWidth()) {
-                ArtistsNameWithDescription()
-                Spacer(Modifier.height(30.dp))
-            }
-        }
-        item {
-            Column(Modifier.fillMaxWidth()) {
-                ArtistsButtonView()
-                Spacer(Modifier.height(40.dp))
-            }
-        }
-        item {
-            Column(Modifier.fillMaxWidth()) {
-                ArtistsImagesView()
-            }
-        }
-        item {
-            Spacer(Modifier.height(190.dp))
-        }
+        if (videoLink.isEmpty())
+            TopArtistsImageView()
+        else
+            ArtistsSongURL(videoLink, artistsThumbnailPlayer)
+
+        ArtistsNameWithDescription()
+        Spacer(Modifier.height(30.dp))
+
+        ArtistsButtonView()
+        Spacer(Modifier.height(40.dp))
+
+        ArtistsImagesView()
+        Spacer(Modifier.height(40.dp))
+
+        ArtistsSocialMediaProfile()
+        Spacer(Modifier.height(40.dp))
+
+
+        Spacer(Modifier.height(190.dp))
     }
 
     LaunchedEffect(artistsViewModel.artistsVideoId) {

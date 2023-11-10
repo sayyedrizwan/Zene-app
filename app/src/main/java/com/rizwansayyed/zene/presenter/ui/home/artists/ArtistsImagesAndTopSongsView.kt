@@ -3,9 +3,12 @@ package com.rizwansayyed.zene.presenter.ui.home.artists
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,13 +20,17 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,8 +75,7 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
     HorizontalPager(
         pagerState, Modifier.fillMaxWidth(), PaddingValues(horizontal = paddingReminder.dp)
     ) { page ->
-        Card(
-            {},
+        Card({},
             Modifier
                 .padding(top = if (page == pagerState.currentPage) 0.dp else 60.dp)
                 .padding(7.dp)
@@ -85,7 +91,9 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
             AsyncImage(
                 item[page],
                 "",
-                if (isLoading) Modifier.background(shimmerBrush()).fillMaxSize()
+                if (isLoading) Modifier
+                    .background(shimmerBrush())
+                    .fillMaxSize()
                 else Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -94,5 +102,33 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
 
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(item.size / 2)
+    }
+}
+
+@Composable
+fun ArtistsSocialMediaProfile() {
+    val artistsViewModel: ArtistsViewModel = hiltViewModel()
+
+    ArtistsProfileLoading()
+    when (val v = artistsViewModel.artistSocialProfile) {
+        DataResponse.Empty -> {}
+        is DataResponse.Error -> {}
+        DataResponse.Loading -> ArtistsProfileLoading()
+        is DataResponse.Success -> {}
+    }
+}
+
+
+@Composable
+fun ArtistsProfileLoading() {
+    Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
+        repeat(3) {
+            Image(
+                painterResource(R.drawable.ic_instagram), "",
+                Modifier
+                    .size(35.dp)
+                    .background(shimmerBrush())
+            )
+        }
     }
 }

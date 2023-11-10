@@ -9,8 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
+import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +28,8 @@ import javax.inject.Inject
 class ArtistsViewModel @Inject constructor(
     private val lastFMImpl: LastFMImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
-    private val bingScraps: BingScrapsInterface
+    private val bingScraps: BingScrapsInterface,
+    private val soundCloud: SoundCloudImplInterface
 ) : ViewModel() {
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
@@ -41,12 +44,16 @@ class ArtistsViewModel @Inject constructor(
     var artistsImage by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
         private set
 
+    var artistSocialProfile by mutableStateOf<DataResponse<SoundCloudProfileResponse>>(DataResponse.Empty)
+        private set
+
     var artistsVideoId by mutableStateOf("")
         private set
 
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
         latestVideo(a)
+        userSocialProfile(a)
         radioStatus = DataResponse.Empty
         lastFMImpl.artistsUsername(a).onStart {
             artistsDesc = DataResponse.Loading
@@ -102,6 +109,16 @@ class ArtistsViewModel @Inject constructor(
             artistsVideoId = ""
         }.collectLatest {
             artistsVideoId = it
+        }
+    }
+
+    private fun userSocialProfile(a: String) = viewModelScope.launch(Dispatchers.IO) {
+        soundCloud.artistsSocialNetwork(a).onStart {
+            artistSocialProfile = DataResponse.Loading
+        }.catch {
+            artistSocialProfile = DataResponse.Error(it)
+        }.collectLatest {
+            artistSocialProfile = DataResponse.Success(it)
         }
     }
 

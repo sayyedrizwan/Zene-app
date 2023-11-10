@@ -29,6 +29,7 @@ import androidx.media3.session.MediaSession
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import java.io.File
@@ -76,6 +77,7 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
                 player = ePlayer
                 player?.setMediaItem(MediaItem.fromUri(Uri.parse(url)))
                 useController = false
+
                 setKeepContentOnPlayerReset(true)
                 setShutterBackgroundColor(Color.Transparent.toArgb())
                 player?.prepare()
@@ -102,7 +104,7 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
 
         DisposableEffect(lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_START) {
+                if (event == Lifecycle.Event.ON_RESUME) {
                     ePlayer.play()
                 }
                 if (event == Lifecycle.Event.ON_PAUSE) {
@@ -115,6 +117,7 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
 
             lifecycleOwner.lifecycle.addObserver(observer)
             onDispose {
+                destroy()
                 lifecycleOwner.lifecycle.removeObserver(observer)
                 doLoop = false
             }
@@ -134,8 +137,13 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
     }
 
     private fun destroy() {
-        mediaSession.release()
-        ePlayer.release()
+        ePlayer.clearMediaItems()
+        try {
+            mediaSession.release()
+            ePlayer.release()
+        }catch (e: Exception){
+            ePlayer.pause()
+        }
     }
 
     enum class TYPE {

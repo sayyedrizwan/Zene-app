@@ -7,7 +7,7 @@ interface RemoteConfigInterface {
 
     suspend fun instagramAppID(): String
 
-    suspend fun ytApiKeys(): YtApiKeyResponse?
 
     suspend fun config(doReset: Boolean): FirebaseRemoteConfig?
+    suspend fun allApiKeys(): YtApiKeyResponse?
 }

@@ -69,7 +69,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()
+        val key = remoteConfig.allApiKeys()
 
         val channels =
             youtubeMusicAPI.youtubeReleaseResponse(ytMusicNewReleaseJsonBody(ip), key?.music ?: "")
@@ -144,7 +144,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         val lists = mutableListOf<String>()
         val artistsLists = mutableListOf<MusicData>()
@@ -194,7 +194,7 @@ class YoutubeAPIImpl @Inject constructor(
 
     override suspend fun searchArtistsInfo(s: String) = flow {
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         val artistsLists = mutableListOf<MusicData>()
 
@@ -245,7 +245,7 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         pIds.forEach { id ->
             if (id.trim().isEmpty()) return@forEach
@@ -308,7 +308,7 @@ class YoutubeAPIImpl @Inject constructor(
             return@flow
         }
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         val r =
             youtubeMusicAPI.youtubeSearchSuggestion(ytMusicSearchSuggestionJsonBody(ip, s), key)
@@ -330,7 +330,7 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         var token = ""
         var clickParams = ""
@@ -382,7 +382,7 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.yt ?: ""
+        val key = remoteConfig.allApiKeys()?.yt ?: ""
 
         val r = youtubeAPI.youtubeSearchResponse(ytLatestMusicSearch(ip, q), key)
 
@@ -405,7 +405,7 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.yt ?: ""
+        val key = remoteConfig.allApiKeys()?.yt ?: ""
 
         val r = youtubeAPI.youtubeSearchResponse(ytArtistsPlaylistJsonBody(ip, q), key)
 
@@ -456,7 +456,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         val list = mutableListOf<MusicData>()
 
@@ -516,7 +516,7 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         val upNextList = mutableListOf<MusicData>()
         val relatedList = mutableListOf<MusicData>()
@@ -634,7 +634,7 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<ArtistsFanData>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         artists.forEach { a ->
             if (a.trim().isEmpty()) return@forEach
@@ -700,7 +700,7 @@ class YoutubeAPIImpl @Inject constructor(
         val search = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         val r = youtubeMusicAPI
             .youtubeSearchTextSuggestionResponse(ytMusicSearchSuggestionJsonBody(ip, q), key)
@@ -726,7 +726,7 @@ class YoutubeAPIImpl @Inject constructor(
         val artists = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         val albumResponse = youtubeMusicAPI
             .youtubeSearchAllSongsResponse(ytMusicArtistsAlbumsJsonBody(ip, q), key)

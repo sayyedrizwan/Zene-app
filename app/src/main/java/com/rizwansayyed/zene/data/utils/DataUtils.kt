@@ -74,8 +74,8 @@ object LastFM {
     }
 
 
-    fun searchLastFMImageURLPath(id: String): String {
-        return "https://www.last.fm/music/Taylor+Swift/+images/$id/json"
+    fun searchLastFMImageURLPath(url:String, id: String): String {
+        return "$url/+images/$id/json"
     }
 }
 
@@ -98,6 +98,13 @@ object SongDownloader {
         return "https://ww12.keepvid.works/button/?url=${ytURL(id)}"
     }
 }
+
+object SoundCloudAPI {
+    const val SOUND_CLOUD_BASE_URL = "https://api-v2.soundcloud.com/"
+    const val SOUND_CLOUD_SEARCH = "search"
+
+}
+
 
 object YoutubeAPI {
     private const val ytLatestClientVersion = "2.20231106.01.01"

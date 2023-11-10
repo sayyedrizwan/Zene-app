@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Hours
@@ -43,7 +44,7 @@ class LastFMImpl @Inject constructor(
         val list = mutableListOf<MusicDataWithArtists>()
 
         val ip = DataStorageManager.userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()
+        val key = remoteConfig.allApiKeys()
 
         val res = lastFMS.topRecentPlayingSongs()
         res.results?.artist?.forEach { s ->
@@ -85,7 +86,7 @@ class LastFMImpl @Inject constructor(
         }
 
         while (list.size <= limit) {
-            val img = lastFMS.artistsImages(searchLastFMImageURLPath(imgId ?: ""))
+            val img = lastFMS.artistsImages(searchLastFMImageURLPath(name?.url ?: "", imgId ?: ""))
             img.values.forEach {
                 it.src?.let { img -> list.add(img) }
                 imgId = it.next?.substringAfterLast("/")

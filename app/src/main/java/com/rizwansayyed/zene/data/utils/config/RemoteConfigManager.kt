@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 const val REMOTE_INSTAGRAM_APP_ID = "instagramAppID"
-const val REMOTE_YT_API_KEYS = "ytApiKeys"
+const val REMOTE_ALL_API_KEYS = "allApiKeys"
 
 class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
 
@@ -20,9 +20,9 @@ class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
         return config(false)?.getString(REMOTE_INSTAGRAM_APP_ID) ?: ""
     }
 
-    override suspend fun ytApiKeys(): YtApiKeyResponse? {
+    override suspend fun allApiKeys(): YtApiKeyResponse? {
         return try {
-            val data = config(false)?.getString(REMOTE_YT_API_KEYS)
+            val data = config(false)?.getString(REMOTE_ALL_API_KEYS)
             moshi.adapter(YtApiKeyResponse::class.java).fromJson(data!!)
         } catch (e: Exception) {
             null

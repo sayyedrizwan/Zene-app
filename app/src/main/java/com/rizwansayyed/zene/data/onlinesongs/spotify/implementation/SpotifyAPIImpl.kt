@@ -49,7 +49,7 @@ class SpotifyAPIImpl @Inject constructor(
             }
         }
         val ip = userIpDetails.first()
-        val key = remoteConfig.ytApiKeys()
+        val key = remoteConfig.allApiKeys()
 
         val token = spotifyAPI.spotifyAccessToken()
         val bearer = "${token.token_type} ${token.access_token}"
@@ -99,7 +99,7 @@ class SpotifyAPIImpl @Inject constructor(
             }
         }
 
-        val key = remoteConfig.ytApiKeys()
+        val key = remoteConfig.allApiKeys()
         val ipDetails = userIpDetails.first()
 
         val token = spotifyAPI.spotifyAccessToken()

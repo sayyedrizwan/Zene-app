@@ -112,7 +112,6 @@ class MainActivity : ComponentActivity() {
                         ArtistsView(artistsThumbnailPlayer)
                     }
 
-
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))
                 }
 
@@ -144,7 +143,7 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
-                    navViewModel.setArtists("Taylor Swift")
+                    navViewModel.setArtists("Selena Gomez")
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
