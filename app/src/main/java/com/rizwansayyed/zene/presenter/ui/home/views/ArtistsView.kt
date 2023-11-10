@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -44,28 +46,40 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
 
     var videoLink by remember { mutableStateOf("") }
 
-    Column(
+    LazyColumn(
         Modifier
             .fillMaxSize()
             .background(DarkGreyColor)
-            .verticalScroll(rememberScrollState())
+//            .verticalScroll(rememberScrollState())
     ) {
-        if (videoLink.isEmpty())
-            TopArtistsImageView()
-        else
-            ArtistsSongURL(videoLink, artistsThumbnailPlayer)
-
-        ArtistsNameWithDescription()
-
-        Spacer(Modifier.height(30.dp))
-
-        ArtistsButtonView()
-
-        Spacer(Modifier.height(40.dp))
-
-        ArtistsImagesView()
-
-        Spacer(Modifier.height(190.dp))
+        item {
+            Column(Modifier.fillMaxWidth()) {
+                if (videoLink.isEmpty())
+                    TopArtistsImageView()
+                else
+                    ArtistsSongURL(videoLink, artistsThumbnailPlayer)
+            }
+        }
+        item {
+            Column(Modifier.fillMaxWidth()) {
+                ArtistsNameWithDescription()
+                Spacer(Modifier.height(30.dp))
+            }
+        }
+        item {
+            Column(Modifier.fillMaxWidth()) {
+                ArtistsButtonView()
+                Spacer(Modifier.height(40.dp))
+            }
+        }
+        item {
+            Column(Modifier.fillMaxWidth()) {
+                ArtistsImagesView()
+            }
+        }
+        item {
+            Spacer(Modifier.height(190.dp))
+        }
     }
 
     LaunchedEffect(artistsViewModel.artistsVideoId) {
