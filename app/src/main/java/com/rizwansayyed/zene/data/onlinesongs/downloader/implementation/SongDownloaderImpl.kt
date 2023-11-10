@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.data.onlinesongs.downloader.implementation
 
 import android.util.Log
+import com.maxrave.kotlinyoutubeextractor.State
+import com.maxrave.kotlinyoutubeextractor.YTExtractor
+import com.maxrave.kotlinyoutubeextractor.getAudioOnly
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SongDownloaderService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.keepvid.KeepVidScrapInfo
 import com.rizwansayyed.zene.data.utils.SongDownloader
@@ -8,6 +11,7 @@ import com.rizwansayyed.zene.data.utils.SongDownloader.keepVidButtonBaseURL
 import com.rizwansayyed.zene.data.utils.SongDownloader.ytConvertor
 import com.rizwansayyed.zene.data.utils.SongDownloader.ytURL
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.keepVidConvertor
+import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -19,24 +23,39 @@ class SongDownloaderImpl @Inject constructor(
 ) : SongDownloaderInterface {
 
     override suspend fun download(songId: String) = flow {
-        val downloader = songDownloaderService.download(watchUrl = ytURL(songId))
-        val id = downloader.result!!.mp3_task_data!!.tid ?: ""
-        val convertor = songDownloaderService.converter(ytConvertor(id))
-        if (convertor.error?.message == null && convertor.result?.download_url != null) {
-            val playURL = "https://yt.fabdl.com${convertor.result.download_url}"
-            emit(playURL)
+        val yt = YTExtractor(context, true, LOGGING = true, retryCount = 2).apply {
+            extract(songId)
+        }
+
+        if (yt.state == State.SUCCESS) {
+            val url = yt.getYTFiles()?.getAudioOnly()?.maxBy { it.meta?.audioBitrate ?: 0 }
+            emit(url?.url)
             return@flow
         }
 
-        val downloaderKV = keepVidScrap.getTsId(songId)
-        val convertorKV = songDownloaderService.convertorKeepVid(
-            referer = keepVidButtonBaseURL(songId), body = keepVidConvertor(downloaderKV)
-        )
+        emit("")
+        return@flow
 
-        val downloadResponse = songDownloaderService.downloaderKeepVid(
-            referer = keepVidButtonBaseURL(songId),
-            jobId = convertorKV.jobid, time = downloaderKV?.token_validto ?: ""
-        )
-        emit(downloadResponse.dlurl)
+
+//        val downloader = songDownloaderService.download(watchUrl = ytURL(songId))
+//        val id = downloader.result!!.mp3_task_data!!.tid ?: ""
+//        val convertor = songDownloaderService.converter(ytConvertor(id))
+//        if (convertor.error?.message == null && convertor.result?.download_url != null) {
+//            val playURL = "https://yt.fabdl.com${convertor.result.download_url}"
+//            emit(playURL)
+//            return@flow
+//        }
+//
+//        val downloaderKV = keepVidScrap.getTsId(songId)
+//        val convertorKV = songDownloaderService.convertorKeepVid(
+//            referer = keepVidButtonBaseURL(songId), body = keepVidConvertor(downloaderKV)
+//        )
+//
+//        val downloadResponse = songDownloaderService.downloaderKeepVid(
+//            referer = keepVidButtonBaseURL(songId),
+//            jobId = convertorKV.jobid, time = downloaderKV?.token_validto ?: ""
+//        )
+//
+//        emit(downloadResponse.dlurl)
     }.flowOn(Dispatchers.IO)
 }

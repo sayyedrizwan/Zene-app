@@ -408,11 +408,12 @@ class YoutubeAPIImpl @Inject constructor(
         val key = remoteConfig.ytApiKeys()?.yt ?: ""
 
         val r = youtubeAPI.youtubeSearchResponse(ytArtistsPlaylistJsonBody(ip, q), key)
+
         r.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEach { c ->
             val name = c?.videoRenderer?.title?.runs?.first()?.text
             val vId = c?.videoRenderer?.videoId ?: return@forEach
 
-            if (name?.lowercase()?.contains(q.lowercase().trim()) == true) return@forEach
+//            if (name?.lowercase()?.contains(q.lowercase().trim()) == true) return@forEach
 
             val thumbnail = c.videoRenderer.thumbnailURL()
 

@@ -89,9 +89,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.11.0")
-
-
     implementation("com.google.dagger:hilt-android:${DependenciesVersion.HILT.version}")
     kapt("com.google.dagger:hilt-android-compiler:${DependenciesVersion.HILT.version}")
     implementation("androidx.hilt:hilt-navigation-compose:${DependenciesVersion.HILT_COMPOSE.version}")
@@ -111,7 +108,10 @@ dependencies {
     ksp("com.squareup.moshi:moshi-kotlin-codegen:${DependenciesVersion.MOSHI.version}")
     implementation("com.squareup.moshi:moshi-kotlin:${DependenciesVersion.MOSHI.version}")
     implementation("com.squareup.retrofit2:converter-moshi:${DependenciesVersion.RETROFIT.version}")
+    implementation("com.squareup.retrofit2:converter-gson:${DependenciesVersion.RETROFIT.version}")
     implementation("com.squareup.retrofit2:converter-scalars:${DependenciesVersion.RETROFIT.version}")
+
+    implementation("com.github.evgenyneu:js-evaluator-for-android:${DependenciesVersion.JS_EVALUATOR.version}")
 
     implementation("org.jsoup:jsoup:${DependenciesVersion.JSOUP.version}")
 
@@ -143,7 +143,7 @@ enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.8.0"), COMPOSE("2023.09.00"),
     HILT("2.48.1"), HILT_COMPOSE("1.1.0"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0"),
     RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1"),
-    MEDIA3("1.1.1"), COMPOSE_UI_UTILS("1.5.4")
+    MEDIA3("1.1.1"), COMPOSE_UI_UTILS("1.5.4"), JS_EVALUATOR("v6.0.0")
 }
 
 enum class TestingDependenciesVersion(val version: String) {

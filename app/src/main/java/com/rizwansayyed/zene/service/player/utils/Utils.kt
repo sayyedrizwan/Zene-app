@@ -34,8 +34,8 @@ object Utils {
 
     object PlayerNotification {
         const val PLAYER_NOTIFICATION_ID = 350
-        const val PLAYER_NOTIFICATION_CHANNEL_NAME = "start_player_notification"
-        const val PLAYER_NOTIFICATION_CHANNEL_ID = "start_player_notification_id"
+        const val PLAYER_NOTIFICATION_CHANNEL_NAME = "Player Notification"
+        const val PLAYER_NOTIFICATION_CHANNEL_ID = "player_notification_id"
     }
 
     object PlayerNotificationAction {

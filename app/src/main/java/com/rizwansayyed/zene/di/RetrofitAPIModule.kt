@@ -25,6 +25,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
@@ -44,14 +45,14 @@ object RetrofitAPIModule {
     @Provides
     fun retrofitOnlineRadioService(): OnlineRadioService = Retrofit.Builder()
         .baseUrl("https://demo.com").client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(GsonConverterFactory.create())
         .build().create(OnlineRadioService::class.java)
 
 
     @Provides
     fun retrofitIpJsonService(): IpJsonService = Retrofit.Builder()
         .baseUrl(IP_BASE_URL).client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(GsonConverterFactory.create())
         .build().create(IpJsonService::class.java)
 
 
@@ -65,7 +66,7 @@ object RetrofitAPIModule {
     @Provides
     fun retrofitSpotifyApiService(): SpotifyAPIService = Retrofit.Builder()
         .baseUrl(SPOTIFY_API_BASE_URL).client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(GsonConverterFactory.create())
         .build().create(SpotifyAPIService::class.java)
 
 
@@ -80,7 +81,7 @@ object RetrofitAPIModule {
         })
         return Retrofit.Builder()
             .baseUrl(INSTAGRAM_BASE_URL).client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(GsonConverterFactory.create())
             .client(builder.build())
             .build().create(InstagramInfoService::class.java)
     }
@@ -101,7 +102,8 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(YT_BASE_URL).client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(GsonConverterFactory.create())
+//            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build().create(YoutubeAPIService::class.java)
     }
 
@@ -122,7 +124,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(YT_MUSIC_BASE_URL).client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(GsonConverterFactory.create())
             .build().create(YoutubeMusicAPIService::class.java)
     }
 
@@ -140,7 +142,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(LastFM.LFM_BASE_URL).client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(GsonConverterFactory.create())
             .build().create(LastFMService::class.java)
     }
 
@@ -148,7 +150,7 @@ object RetrofitAPIModule {
     fun retrofitSongDownloaderService(): SongDownloaderService {
         return Retrofit.Builder()
             .baseUrl("https://demo.com").client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(GsonConverterFactory.create())
             .build().create(SongDownloaderService::class.java)
     }
 }
