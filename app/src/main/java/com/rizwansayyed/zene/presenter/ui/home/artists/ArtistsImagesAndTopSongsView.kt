@@ -5,16 +5,22 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,16 +37,49 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.soundcloud.SocialMediaAccounts
+import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.SmallIcons
+import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import kotlin.math.absoluteValue
+
+private val socialMedia = listOf(
+    SocialMediaAccounts(
+        R.drawable.ic_internet, context.resources.getString(R.string.website), "website"
+    ),
+    SocialMediaAccounts(
+        R.drawable.ic_instagram, context.resources.getString(R.string.instagram), "instagram"
+    ),
+    SocialMediaAccounts(
+        R.drawable.ic_facebook, context.resources.getString(R.string.facebook), "facebook"
+    ),
+    SocialMediaAccounts(
+        R.drawable.ic_twitter, context.resources.getString(R.string.facebook), "twitter"
+    ),
+    SocialMediaAccounts(
+        R.drawable.ic_youtube, context.resources.getString(R.string.facebook), "youtube"
+    ),
+    SocialMediaAccounts(
+        R.drawable.ic_snapchat, context.resources.getString(R.string.facebook), "snapchat"
+    ),
+    SocialMediaAccounts(
+        R.drawable.store_with_bag, context.resources.getString(R.string.facebook), "merch store"
+    ),
+    SocialMediaAccounts(
+        R.drawable.ic_atomic, context.resources.getString(R.string.facebook), "bandpage"
+    )
+)
 
 @Composable
 fun ArtistsImagesView() {
@@ -110,25 +149,39 @@ fun ArtistsSocialMediaProfile() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
 
     ArtistsProfileLoading()
-    when (val v = artistsViewModel.artistSocialProfile) {
-        DataResponse.Empty -> {}
-        is DataResponse.Error -> {}
-        DataResponse.Loading -> ArtistsProfileLoading()
-        is DataResponse.Success -> {}
-    }
+
+//    when (val v = artistsViewModel.artistSocialProfile) {
+//        DataResponse.Empty -> {}
+//        is DataResponse.Error -> {}
+//        DataResponse.Loading -> ArtistsProfileLoading()
+//        is DataResponse.Success -> {}
+//    }
 }
 
 
 @Composable
 fun ArtistsProfileLoading() {
-    Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-        repeat(3) {
-            Image(
-                painterResource(R.drawable.ic_instagram), "",
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+    ) {
+        socialMedia.forEach {
+            Row(
                 Modifier
-                    .size(35.dp)
-                    .background(shimmerBrush())
-            )
+                    .padding(horizontal = 17.dp)
+                    .clickable {}
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MainColor)
+                    .padding(vertical = 10.dp, horizontal = 22.dp),
+                Arrangement.Center, Alignment.CenterVertically
+            ) {
+                SmallIcons(it.icon, 22, 5)
+
+                Spacer(Modifier.width(6.dp))
+
+                TextRegular(stringResource(R.string.pin), size = 16)
+            }
         }
     }
 }
