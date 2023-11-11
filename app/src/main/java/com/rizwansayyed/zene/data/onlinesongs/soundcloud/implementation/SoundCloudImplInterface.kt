@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioSearchAPI
 import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.radioUUIDSearchAPI
 import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.searchRadioNameAPI
 import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
+import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponse
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -32,5 +33,5 @@ import javax.inject.Inject
 
 interface SoundCloudImplInterface {
 
-    suspend fun artistsSocialNetwork(q: String): Flow<SoundCloudProfileResponse>
+    suspend fun artistsProfileDetails(q: String): Flow<SoundCloudProfileInfo>
 }

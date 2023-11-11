@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplIn
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
+import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
@@ -44,7 +45,7 @@ class ArtistsViewModel @Inject constructor(
     var artistsImage by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
         private set
 
-    var artistSocialProfile by mutableStateOf<DataResponse<SoundCloudProfileResponse>>(DataResponse.Empty)
+    var artistSocialProfile by mutableStateOf<DataResponse<SoundCloudProfileInfo>>(DataResponse.Empty)
         private set
 
     var artistsVideoId by mutableStateOf("")
@@ -113,7 +114,7 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun userSocialProfile(a: String) = viewModelScope.launch(Dispatchers.IO) {
-        soundCloud.artistsSocialNetwork(a).onStart {
+        soundCloud.artistsProfileDetails(a).onStart {
             artistSocialProfile = DataResponse.Loading
         }.catch {
             artistSocialProfile = DataResponse.Error(it)

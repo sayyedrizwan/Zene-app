@@ -102,6 +102,7 @@ object SongDownloader {
 object SoundCloudAPI {
     const val SOUND_CLOUD_BASE_URL = "https://api-v2.soundcloud.com/"
     const val SOUND_CLOUD_SEARCH = "search"
+    const val SOUND_WEB_PROFILE = "users/{username}/web-profiles"
 
 }
 
