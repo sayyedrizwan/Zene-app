@@ -84,7 +84,7 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun searchImg(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
-        lastFMImpl.artistsImages(a, 80).onStart {
+        lastFMImpl.artistsImages(a, 100).onStart {
             artistsImages = DataResponse.Loading
         }.catch {
             artistsImages = DataResponse.Error(it)

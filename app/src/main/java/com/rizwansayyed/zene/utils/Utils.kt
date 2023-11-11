@@ -166,4 +166,23 @@ object Utils {
 
         }
     }
+
+    fun formatNumberToFollowers(number: Int): String {
+        val suffixes = listOf("K", "M", "B", "T", "P", "E")
+        var num = number
+        var index = 0
+
+        while (num >= 1000 && index < suffixes.size - 1) {
+            num /= 1000
+            index++
+        }
+
+        return if (index == 0) {
+            "$num"
+        } else {
+            val formattedNum = String.format("%.1f", num.toDouble())
+            "$formattedNum${suffixes[index - 1]}"
+        }
+    }
+
 }

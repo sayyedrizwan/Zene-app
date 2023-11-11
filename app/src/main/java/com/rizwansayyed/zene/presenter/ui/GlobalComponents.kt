@@ -257,28 +257,6 @@ fun TextRegular(
 }
 
 
-@Composable
-fun TextBoldBig(
-    v: String,
-    modifier: Modifier = Modifier,
-    doCenter: Boolean = false,
-    color: Color = Color.White,
-    singleLine: Boolean = false,
-    size: Int = 16
-) {
-    Text(
-        v,
-        modifier = modifier,
-        color = color,
-        fontFamily = urbanistFamily,
-        fontWeight = FontWeight.Bold,
-        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
-        fontSize = size.scaledSp(),
-        textAlign = if (doCenter) TextAlign.Center else null,
-        overflow = TextOverflow.Ellipsis
-    )
-}
-
 
 @Composable
 fun shimmerBrush(): Brush {

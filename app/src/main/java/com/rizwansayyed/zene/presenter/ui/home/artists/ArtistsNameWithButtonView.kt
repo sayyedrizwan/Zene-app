@@ -112,4 +112,21 @@ fun ArtistsButtonView() {
             TextRegular(stringResource(R.string.radio), size = 16)
         }
     }
+
+    Row(
+        Modifier
+            .padding(10.dp)
+            .clickable {}
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(MainColor)
+            .padding(vertical = 10.dp, horizontal = 22.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        SmallIcons(R.drawable.ic_share, 22, 5)
+
+        Spacer(Modifier.width(6.dp))
+
+        TextRegular(stringResource(R.string.share), size = 16)
+    }
 }

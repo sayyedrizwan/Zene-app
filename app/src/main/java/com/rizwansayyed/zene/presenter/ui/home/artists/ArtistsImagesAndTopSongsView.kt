@@ -54,33 +54,6 @@ import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import kotlin.math.absoluteValue
 
-private val socialMedia = listOf(
-    SocialMediaAccounts(
-        R.drawable.ic_internet, context.resources.getString(R.string.website), "website"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_instagram, context.resources.getString(R.string.instagram), "instagram"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_facebook, context.resources.getString(R.string.facebook), "facebook"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_twitter, context.resources.getString(R.string.facebook), "twitter"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_youtube, context.resources.getString(R.string.facebook), "youtube"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_snapchat, context.resources.getString(R.string.facebook), "snapchat"
-    ),
-    SocialMediaAccounts(
-        R.drawable.store_with_bag, context.resources.getString(R.string.facebook), "merch store"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_atomic, context.resources.getString(R.string.facebook), "bandpage"
-    )
-)
-
 @Composable
 fun ArtistsImagesView() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
@@ -141,47 +114,5 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
 
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(item.size / 2)
-    }
-}
-
-@Composable
-fun ArtistsSocialMediaProfile() {
-    val artistsViewModel: ArtistsViewModel = hiltViewModel()
-
-    ArtistsProfileLoading()
-
-//    when (val v = artistsViewModel.artistSocialProfile) {
-//        DataResponse.Empty -> {}
-//        is DataResponse.Error -> {}
-//        DataResponse.Loading -> ArtistsProfileLoading()
-//        is DataResponse.Success -> {}
-//    }
-}
-
-
-@Composable
-fun ArtistsProfileLoading() {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-    ) {
-        socialMedia.forEach {
-            Row(
-                Modifier
-                    .padding(horizontal = 17.dp)
-                    .clickable {}
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MainColor)
-                    .padding(vertical = 10.dp, horizontal = 22.dp),
-                Arrangement.Center, Alignment.CenterVertically
-            ) {
-                SmallIcons(it.icon, 22, 5)
-
-                Spacer(Modifier.width(6.dp))
-
-                TextRegular(stringResource(R.string.pin), size = 16)
-            }
-        }
     }
 }

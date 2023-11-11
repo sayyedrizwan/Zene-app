@@ -41,7 +41,7 @@ import com.rizwansayyed.zene.domain.toMusicDataList
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
-import com.rizwansayyed.zene.presenter.ui.TextBoldBig
+import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
@@ -197,7 +197,7 @@ fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier, homeNav:
 
 @Composable
 fun MostPlayingText() {
-    TextBoldBig(
+    TextBold(
         stringResource(id = R.string.zene_mostly_most_played).substringBefore("\n"),
         Modifier
             .padding(start = 14.dp)
@@ -207,7 +207,7 @@ fun MostPlayingText() {
 
     Spacer(Modifier.height(2.dp))
 
-    TextBoldBig(
+    TextBold(
         stringResource(id = R.string.zene_mostly_most_played).substringAfter("\n"),
         Modifier
             .padding(start = 14.dp)

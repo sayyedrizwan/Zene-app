@@ -64,7 +64,9 @@
     <string name="need_notification_p">Need notification permission to show notification of playing music</string>
     <string name="are_you_sure_rm_radio_from_fav">Are you sure want to remove this radio from your favourites list</string>
     <string name="pin">Pin</string>
+    <string name="share">Share</string>
     <string name="website">Website</string>
     <string name="instagram">Instagram</string>
     <string name="facebook">Facebook</string>
+    <string name="pinned_by_users">pinned by %s users</string>
 </resources>

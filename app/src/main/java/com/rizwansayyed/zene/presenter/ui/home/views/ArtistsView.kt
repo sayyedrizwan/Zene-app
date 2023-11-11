@@ -22,7 +22,8 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsButtonView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsImagesView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNameWithDescription
-import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSocialMediaProfile
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsProfilePin
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSocialMedia
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
 import com.rizwansayyed.zene.presenter.ui.home.artists.WebViewForArtistsVideo
@@ -53,13 +54,16 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
         ArtistsNameWithDescription()
         Spacer(Modifier.height(30.dp))
 
+        ArtistsProfilePin()
+        Spacer(Modifier.height(10.dp))
+
         ArtistsButtonView()
+        Spacer(Modifier.height(20.dp))
+
+        ArtistsSocialMedia()
         Spacer(Modifier.height(40.dp))
 
         ArtistsImagesView()
-        Spacer(Modifier.height(40.dp))
-
-        ArtistsSocialMediaProfile()
         Spacer(Modifier.height(40.dp))
 
 
