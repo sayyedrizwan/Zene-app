@@ -2,25 +2,25 @@ package com.rizwansayyed.zene.presenter.ui.home.artists
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,14 +30,13 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.soundcloud.SocialMediaAccounts
-import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.ui.SmallIcons
+import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponseItem
 import com.rizwansayyed.zene.presenter.ui.TextBold
-import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.utils.Utils.formatNumberToFollowers
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
+import java.net.URL
 
 
 private val socialMedia = listOf(
@@ -83,15 +82,74 @@ private val socialMedia = listOf(
     )
 )
 
+private fun getDomain(url: String): String {
+    return try {
+        val uri = URL(url)
+        val host = uri.host
+        if (host.startsWith("www.")) {
+            host.substring(4)
+        } else {
+            host
+        }
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+fun String?.slash(): String {
+    return this?.substringAfterLast("/") ?: ""
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ArtistsSocialMedia() {
-    ArtistsSocialMediaLoading()
+    val artists: ArtistsViewModel = hiltViewModel()
 
-    FlowRow {
-        repeat(10) {
-            ArtistsSocialMediaButton(R.drawable.ic_internet, stringResource(R.string.website))
+    when (val v = artists.artistSocialProfile) {
+        DataResponse.Empty -> {}
+        is DataResponse.Error -> {}
+        DataResponse.Loading -> ArtistsSocialMediaLoading()
+        is DataResponse.Success -> FlowRow {
+            v.item.social.forEach { social ->
+                ArtistsSocialMediaList(social)
+            }
+        }
+    }
+}
+
+@Composable
+fun ArtistsSocialMediaList(social: SoundCloudProfileResponseItem) {
+    when {
+        social.url?.lowercase()?.contains("facebook.com") == true -> ArtistsSocialMediaButton(
+            R.drawable.ic_facebook, "@${social.url.slash()}", stringResource(R.string.facebook)
+        )
+
+        social.url?.lowercase()?.contains("twitter.com") == true -> ArtistsSocialMediaButton(
+            R.drawable.ic_twitter, "@${social.url.slash()}", stringResource(R.string.twitter)
+        )
+
+        social.url?.lowercase()?.contains("instagram.com") == true -> ArtistsSocialMediaButton(
+            R.drawable.ic_instagram, "@${social.url.slash()}", stringResource(R.string.instagram)
+        )
+
+        social.url?.lowercase()?.contains("youtube.com") == true -> ArtistsSocialMediaButton(
+            R.drawable.ic_youtube, "/${social.url.slash()}", stringResource(R.string.youtube)
+        )
+
+        social.url?.lowercase()?.contains("snapchat.com") == true -> ArtistsSocialMediaButton(
+            R.drawable.ic_snapchat, "@${social.url.slash()}", stringResource(R.string.snapchat)
+        )
+
+        social.url?.lowercase()?.contains("tiktok.com") == true -> ArtistsSocialMediaButton(
+            R.drawable.ic_tiktok, social.url.slash(), stringResource(R.string.tiktok)
+        )
+
+        social.network?.lowercase()?.contains("personal") == true &&
+                social.title?.lowercase()?.contains("website") == true -> {
+            val d = getDomain(social.url ?: "")
+            ArtistsSocialMediaButton(
+                R.drawable.ic_internet, d, stringResource(R.string.website)
+            )
         }
     }
 }
@@ -102,6 +160,7 @@ fun ArtistsSocialMediaLoading() {
         Spacer(
             Modifier
                 .padding(5.dp)
+                .height(95.dp)
                 .weight(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .background(shimmerBrush())
@@ -110,6 +169,7 @@ fun ArtistsSocialMediaLoading() {
         Spacer(
             Modifier
                 .padding(5.dp)
+                .height(95.dp)
                 .weight(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .background(shimmerBrush())
@@ -118,20 +178,34 @@ fun ArtistsSocialMediaLoading() {
 }
 
 @Composable
-fun ArtistsSocialMediaButton(img: Int, s: String) {
-    Column(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / 3)) {
-        Image(
-            painterResource(img),
-            "",
+fun ArtistsSocialMediaButton(img: Int, s: String, t: String) {
+    Box(
+        Modifier
+            .width(LocalConfiguration.current.screenWidthDp.dp / 2)
+            .padding(5.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.Black)
+    ) {
+        Column(
             Modifier
-                .padding(5.dp)
-                .size(40.dp)
-                .clip(RoundedCornerShape(50))
-                .background(Color.Black)
-                .padding(5.dp)
-        )
+                .align(Alignment.TopStart)
+                .padding(horizontal = 7.dp)
+        ) {
+            Spacer(Modifier.height(27.dp))
+            TextThin(t, size = 14)
+            Spacer(Modifier.height(15.dp))
+            TextThin(s, size = 12)
+            Spacer(Modifier.height(27.dp))
+        }
 
-        TextThin(s, Modifier.fillMaxWidth(), doCenter = true)
+        Image(
+            painterResource(img), "",
+            Modifier
+                .padding(10.dp)
+                .size(25.dp)
+                .align(Alignment.BottomEnd),
+            colorFilter = ColorFilter.tint(Color.White)
+        )
     }
 }
 

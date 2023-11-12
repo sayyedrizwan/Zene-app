@@ -58,7 +58,7 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
         Spacer(Modifier.height(10.dp))
 
         ArtistsButtonView()
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(40.dp))
 
         ArtistsSocialMedia()
         Spacer(Modifier.height(40.dp))

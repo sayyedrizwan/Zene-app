@@ -68,5 +68,11 @@
     <string name="website">Website</string>
     <string name="instagram">Instagram</string>
     <string name="facebook">Facebook</string>
+    <string name="youtube">Youtube</string>
+    <string name="snapchat">Snapchat</string>
+    <string name="tiktok">Tiktok</string>
+    <string name="store">Store</string>
+    <string name="brand_page">Brand page</string>
+    <string name="twitter">Twitter</string>
     <string name="pinned_by_users">pinned by %s users</string>
 </resources>
