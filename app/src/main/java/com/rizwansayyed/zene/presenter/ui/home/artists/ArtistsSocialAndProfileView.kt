@@ -1,7 +1,10 @@
 package com.rizwansayyed.zene.presenter.ui.home.artists
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +37,7 @@ import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponseItem
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.utils.Utils.formatNumberToFollowers
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import java.net.URL
@@ -97,6 +101,15 @@ private fun getDomain(url: String): String {
 }
 
 fun String?.slash(): String {
+    if ((this?.substringAfterLast("/") ?: "").length <= 2) {
+        val lastSlashIndex = this?.lastIndexOf('/') ?: 0
+        val secondLastSlashIndex = this?.lastIndexOf('/', lastSlashIndex - 1) ?: 0
+
+        return if (secondLastSlashIndex >= 0) {
+            val result = this?.substring(secondLastSlashIndex + 1)
+            result?.replace("/", "") ?: ""
+        } else this?.substringAfterLast("/") ?: ""
+    }
     return this?.substringAfterLast("/") ?: ""
 }
 
@@ -110,7 +123,16 @@ fun ArtistsSocialMedia() {
         is DataResponse.Error -> {}
         DataResponse.Loading -> ArtistsSocialMediaLoading()
         is DataResponse.Success -> FlowRow {
-            v.item.social.forEach { social ->
+            v.item.social.forEachIndexed { index, social ->
+                if (index == 0) {
+                    val d = getDomain(social.url ?: "")
+                    ArtistsSocialMediaButton(
+                        R.drawable.ic_internet, d, stringResource(R.string.website)
+                    ) {
+                        Uri.parse(social.url).customBrowser()
+                    }
+                    return@forEachIndexed
+                }
                 ArtistsSocialMediaList(social)
             }
         }
@@ -122,34 +144,44 @@ fun ArtistsSocialMediaList(social: SoundCloudProfileResponseItem) {
     when {
         social.url?.lowercase()?.contains("facebook.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_facebook, "@${social.url.slash()}", stringResource(R.string.facebook)
-        )
+        ) {
+            Uri.parse(social.url).customBrowser()
+        }
 
         social.url?.lowercase()?.contains("twitter.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_twitter, "@${social.url.slash()}", stringResource(R.string.twitter)
-        )
+        ) {
+            Uri.parse(social.url).customBrowser()
+        }
 
         social.url?.lowercase()?.contains("instagram.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_instagram, "@${social.url.slash()}", stringResource(R.string.instagram)
-        )
+        ) {
+            Uri.parse(social.url).customBrowser()
+        }
 
         social.url?.lowercase()?.contains("youtube.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_youtube, "/${social.url.slash()}", stringResource(R.string.youtube)
-        )
+        ) {
+            Uri.parse(social.url).customBrowser()
+        }
 
         social.url?.lowercase()?.contains("snapchat.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_snapchat, "@${social.url.slash()}", stringResource(R.string.snapchat)
-        )
+        ) {
+            Uri.parse(social.url).customBrowser()
+        }
 
         social.url?.lowercase()?.contains("tiktok.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_tiktok, social.url.slash(), stringResource(R.string.tiktok)
-        )
+        ) {
+            Uri.parse(social.url).customBrowser()
+        }
 
-        social.network?.lowercase()?.contains("personal") == true &&
-                social.title?.lowercase()?.contains("website") == true -> {
-            val d = getDomain(social.url ?: "")
-            ArtistsSocialMediaButton(
-                R.drawable.ic_internet, d, stringResource(R.string.website)
-            )
+        social.url?.lowercase()?.contains("/store") == true -> ArtistsSocialMediaButton(
+            R.drawable.store_with_bag, getDomain(social.url), stringResource(R.string.store)
+        ) {
+            Uri.parse(social.url).customBrowser()
         }
     }
 }
@@ -178,13 +210,14 @@ fun ArtistsSocialMediaLoading() {
 }
 
 @Composable
-fun ArtistsSocialMediaButton(img: Int, s: String, t: String) {
+fun ArtistsSocialMediaButton(img: Int, s: String, t: String, click: () -> Unit) {
     Box(
         Modifier
             .width(LocalConfiguration.current.screenWidthDp.dp / 2)
             .padding(5.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color.Black)
+            .clickable { click() }
     ) {
         Column(
             Modifier

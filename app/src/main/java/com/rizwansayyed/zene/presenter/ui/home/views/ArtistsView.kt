@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsButtonView
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsEvents
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsImagesView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNameWithDescription
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsProfilePin
@@ -64,6 +65,9 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
         Spacer(Modifier.height(40.dp))
 
         ArtistsImagesView()
+        Spacer(Modifier.height(40.dp))
+
+        ArtistsEvents()
         Spacer(Modifier.height(40.dp))
 
 
