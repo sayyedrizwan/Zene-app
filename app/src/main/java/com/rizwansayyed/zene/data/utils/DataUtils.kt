@@ -403,7 +403,7 @@ object ScrapURL {
         return "https://www.songkick.com/${path}/calendar"
     }
     fun songKickArtistsCalendarInfo(path: String): String {
-        return "https://www.songkick.com/${path}"
+        return "https://www.songkick.com${path}"
     }
 }
 

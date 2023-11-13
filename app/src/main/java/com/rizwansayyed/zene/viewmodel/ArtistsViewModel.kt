@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScraps
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -19,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -46,6 +48,9 @@ class ArtistsViewModel @Inject constructor(
         private set
 
     var artistSocialProfile by mutableStateOf<DataResponse<SoundCloudProfileInfo>>(DataResponse.Empty)
+        private set
+
+    var artistsEvents by mutableStateOf<DataResponse<ArrayList<ArtistsEvents>?>>(DataResponse.Empty)
         private set
 
     var artistsVideoId by mutableStateOf("")
@@ -125,19 +130,35 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun artistsEvents(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
-        lastFMImpl.artistsEvent(a).catch {
-
-        }.collectLatest {
-
+        var list = try {
+            lastFMImpl.artistsEvent(a).first()
+        } catch (e: Exception) {
+            null
         }
 
-//        songKick.artistsEvents(a).onStart {
-////            artistSocialProfile = DataResponse.Loading
-//        }.catch {
-////            artistSocialProfile = DataResponse.Error(it)
-//        }.collectLatest {
-////            artistSocialProfile = DataResponse.Success(it)
-//        }
+        if (list != null) {
+            artistsEvents = DataResponse.Success(list)
+            return@launch
+        }
+
+        if (a.name?.isEmpty() == true) {
+            artistsEvents = DataResponse.Error(Exception("No Name Found"))
+            return@launch
+        }
+
+
+        list = try {
+            songKick.artistsEvents(a.name!!).first()
+        } catch (e: Exception) {
+            null
+        }
+
+        if (list == null) {
+            artistsEvents = DataResponse.Error(Exception("No Found"))
+            return@launch
+        }
+
+        artistsEvents = DataResponse.Success(list)
     }
 
 }

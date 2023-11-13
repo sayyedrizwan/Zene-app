@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.YoutubeAPI
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.ArtistsArtists
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
@@ -129,7 +130,7 @@ class LastFMImpl @Inject constructor(
                 jsoupResponseData(eventInfoURL)?.replace("   ", "")?.replace("\n", "")!!
             )
 
-            val title = events.selectFirst("h1.header-title")?.text()
+            val name = events.selectFirst("h1.header-title")?.text()
             var time = events.selectFirst("p.qa-event-date")?.selectFirst("span")?.attr("content")
             if (time == null) {
                 time = events.selectFirst("p.qa-event-date")?.selectFirst("strong")?.attr("content")
@@ -138,20 +139,22 @@ class LastFMImpl @Inject constructor(
             val bookingLink =
                 events.selectFirst("a.event-detail-long-link.external-link")?.attr("href")
 
-            val file = File(context.cacheDir, "aaa.html")
-            writeToCacheFile(file, j.selectFirst("ol")?.html() ?: "nooo")
+            val artist = ArrayList<ArtistsArtists>()
 
             events.selectFirst("ol.grid-items")
                 ?.select("div.grid-items-cover-image.js-link-block.link-block")?.forEach { list ->
-                    val img =
+                    val artistsImg =
                         list.selectFirst("div.grid-items-cover-image-image")?.select("img")
                             ?.attr("src")
-                    val name =
+                    val artistsN =
                         list.selectFirst("div.grid-items-cover-image-image")?.select("img")
                             ?.attr("alt")?.replace("Image for", "")?.replace("'", "")
-
+                    artistsN?.let { artist.add(ArtistsArtists(it, artistsImg ?: "")) }
                 }
+
+            list.add(ArtistsEvents(name, time, address, bookingLink, artist))
         }
+
         emit(list)
     }.flowOn(Dispatchers.IO)
 }

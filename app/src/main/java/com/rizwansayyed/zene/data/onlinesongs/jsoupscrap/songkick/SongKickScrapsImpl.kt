@@ -27,10 +27,20 @@ class SongKickScrapsImpl @Inject constructor() : SongKickScrapsImplInterface {
             val path = c.selectFirst("a")?.attr("href") ?: ""
             val cRes = Jsoup.parse(jsoupResponseData(songKickArtistsCalendarInfo(path))!!)
 
-            Log.d("TAG", "artistsEvents: the srcs ${cRes.selectFirst("div.additional-details-container")?.text()}")
+            val time = cRes.selectFirst("div.date-and-name")?.selectFirst("p")?.text()?.substringBefore("-")
+            val address = cRes.selectFirst("div.location")?.text()
+            var name = cRes.selectFirst("h1.h0.summary")?.text()
+            if (name == null){
+                name = cRes.selectFirst("h1.h0.summary")?.text()
+            }
+            val link =
+                "https://www.songkick.com" + cRes.selectFirst("a.buy-ticket-link")?.attr("href")
+
+
+            list.add(ArtistsEvents(name, time, address, link, emptyList()))
         }
 
-        emit("")
+        emit(list)
     }.flowOn(Dispatchers.IO)
 
 }
