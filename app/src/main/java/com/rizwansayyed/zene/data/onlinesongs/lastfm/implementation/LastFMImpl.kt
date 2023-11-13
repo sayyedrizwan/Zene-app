@@ -9,10 +9,14 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles.recentMostPlayedSongs
+import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
+import com.rizwansayyed.zene.data.utils.LastFM.artistsEventInfo
 import com.rizwansayyed.zene.data.utils.LastFM.artistsWikiInfo
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.YoutubeAPI
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
 import com.rizwansayyed.zene.domain.MusicType
@@ -24,6 +28,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
+import java.io.File
 import javax.inject.Inject
 
 class LastFMImpl @Inject constructor(
@@ -108,5 +113,45 @@ class LastFMImpl @Inject constructor(
             artistsInfo += element.text()
         }
         emit(artistsInfo)
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun artistsEvent(user: LastFMArtist) = flow {
+        val list = ArrayList<ArtistsEvents>(100)
+
+        val response = jsoupResponseData(artistsEventInfo(user.url ?: ""))
+        val jsoup =
+            Jsoup.parse(response!!).select("a.events-list-item-event-name.link-block-target")
+
+        jsoup.forEach { j ->
+            val eventInfoURL = "$LAST_FM_BASE_URL${j.attr("href").substringAfter("/")}"
+            val events = Jsoup.parse(
+                jsoupResponseData(eventInfoURL)?.replace("   ", "")?.replace("\n", "")!!
+            )
+
+            val title = events.selectFirst("h1.header-title")?.text()
+            var time = events.selectFirst("p.qa-event-date")?.selectFirst("span")?.attr("content")
+            if (time == null) {
+                time = events.selectFirst("p.qa-event-date")?.selectFirst("strong")?.attr("content")
+            }
+            val address = events.selectFirst("p.event-detail-address")?.text()
+            val bookingLink =
+                events.selectFirst("a.event-detail-long-link.external-link")?.attr("href")
+
+            val file = File(context.cacheDir, "aaa.html")
+            writeToCacheFile(file, j.selectFirst("ol")?.html() ?: "nooo")
+
+            events.selectFirst("ol.grid-items")
+                ?.select("div.grid-items-cover-image.js-link-block.link-block")?.forEach { list ->
+                    val img =
+                        list.selectFirst("div.grid-items-cover-image-image")?.select("img")
+                            ?.attr("src")
+                    val name =
+                        list.selectFirst("div.grid-items-cover-image-image")?.select("img")
+                            ?.attr("alt")?.replace("Image for", "")?.replace("'", "")
+
+                }
+        }
+        emit(list)
     }.flowOn(Dispatchers.IO)
 }

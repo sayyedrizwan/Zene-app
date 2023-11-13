@@ -6,6 +6,7 @@
     <string name="gt_trending_songs">Global top trending songs</string>
     <string name="radio_station_in_city">Radio Stations in your city</string>
     <string name="artist_photos">Artist Photos</string>
+    <string name="upcoming_events">Upcoming Events</string>
     <string name="top_songs_in_c">Top songs in %s</string>
     <string name="fresh_added_songs">Fresh Added Songs</string>
     <string name="mood">Mood</string>

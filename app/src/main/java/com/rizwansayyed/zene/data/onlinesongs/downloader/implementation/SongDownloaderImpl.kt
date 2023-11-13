@@ -1,26 +1,16 @@
 package com.rizwansayyed.zene.data.onlinesongs.downloader.implementation
 
-import android.util.Log
 import com.maxrave.kotlinyoutubeextractor.State
 import com.maxrave.kotlinyoutubeextractor.YTExtractor
 import com.maxrave.kotlinyoutubeextractor.getAudioOnly
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SongDownloaderService
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.keepvid.KeepVidScrapInfo
-import com.rizwansayyed.zene.data.utils.SongDownloader
-import com.rizwansayyed.zene.data.utils.SongDownloader.keepVidButtonBaseURL
-import com.rizwansayyed.zene.data.utils.SongDownloader.ytConvertor
-import com.rizwansayyed.zene.data.utils.SongDownloader.ytURL
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.keepVidConvertor
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class SongDownloaderImpl @Inject constructor(
-    private val songDownloaderService: SongDownloaderService,
-    private val keepVidScrap: KeepVidScrapInfo
-) : SongDownloaderInterface {
+class SongDownloaderImpl @Inject constructor() : SongDownloaderInterface {
 
     override suspend fun download(songId: String) = flow {
         val yt = YTExtractor(context, true, LOGGING = true, retryCount = 2).apply {

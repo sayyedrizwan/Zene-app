@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,12 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
-import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +29,8 @@ class ArtistsViewModel @Inject constructor(
     private val lastFMImpl: LastFMImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val bingScraps: BingScrapsInterface,
-    private val soundCloud: SoundCloudImplInterface
+    private val soundCloud: SoundCloudImplInterface,
+    private val songKick: SongKickScrapsImplInterface
 ) : ViewModel() {
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
@@ -66,6 +66,7 @@ class ArtistsViewModel @Inject constructor(
             it?.let { i ->
                 searchImg(i)
                 artistsDesc(i)
+                artistsEvents(i)
             }
         }
     }
@@ -121,6 +122,22 @@ class ArtistsViewModel @Inject constructor(
         }.collectLatest {
             artistSocialProfile = DataResponse.Success(it)
         }
+    }
+
+    private fun artistsEvents(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
+        lastFMImpl.artistsEvent(a).catch {
+
+        }.collectLatest {
+
+        }
+
+//        songKick.artistsEvents(a).onStart {
+////            artistSocialProfile = DataResponse.Loading
+//        }.catch {
+////            artistSocialProfile = DataResponse.Error(it)
+//        }.collectLatest {
+////            artistSocialProfile = DataResponse.Success(it)
+//        }
     }
 
 }

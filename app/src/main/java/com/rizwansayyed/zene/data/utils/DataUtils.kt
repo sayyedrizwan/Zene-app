@@ -64,17 +64,21 @@ object SpotifyAPI {
 }
 
 object LastFM {
+    const val LAST_FM_BASE_URL = "https://www.last.fm/"
     const val LFM_BASE_URL = "https://kerve.last.fm"
     const val LFM_TOP_LISTEN_SONGS = "kerve/charts"
     const val LFM_SEARCH_ARTISTS = "kerve/search"
 
 
-    fun artistsWikiInfo(url:String): String {
+    fun artistsWikiInfo(url: String): String {
         return "$url/+wiki"
     }
 
+    fun artistsEventInfo(url: String): String {
+        return "$url/+events"
+    }
 
-    fun searchLastFMImageURLPath(url:String, id: String): String {
+    fun searchLastFMImageURLPath(url: String, id: String): String {
         return "$url/+images/$id/json"
     }
 }
@@ -388,6 +392,19 @@ object ScrapURL {
     const val TOP_ARTISTS = "https://www.billboard.com/charts/artist-100/"
 
     const val BING_SEARCH = "https://www.bing.com/videos/search?q="
+
+    fun songKickArtistsSearch(artists: String): String {
+        return "https://www.songkick.com/search?page=1&per_page=10&query=${
+            artists.trim().lowercase().replace(" ", "+")
+        }&type=artists"
+    }
+
+    fun songKickArtistsCalendar(path: String): String {
+        return "https://www.songkick.com/${path}/calendar"
+    }
+    fun songKickArtistsCalendarInfo(path: String): String {
+        return "https://www.songkick.com/${path}"
+    }
 }
 
 

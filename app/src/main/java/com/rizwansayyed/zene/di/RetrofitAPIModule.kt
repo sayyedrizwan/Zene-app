@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_AWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_BASE_URL
 import com.rizwansayyed.zene.data.utils.LastFM
+import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
 import com.rizwansayyed.zene.data.utils.SoundCloudAPI.SOUND_CLOUD_BASE_URL
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_BASE_URL
 import com.rizwansayyed.zene.data.utils.USER_AGENT
@@ -153,8 +154,8 @@ object RetrofitAPIModule {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
-                .addHeader("referer", "https://www.last.fm/")
-                .addHeader("origin", "https://www.last.fm")
+                .addHeader("referer", LAST_FM_BASE_URL)
+                .addHeader("origin", LAST_FM_BASE_URL)
                 .addHeader("user-agent", USER_AGENT)
             chain.proceed(chains.build())
         })
