@@ -121,17 +121,6 @@ class LastFMImpl @Inject constructor(
 
     override suspend fun artistsEvent(user: LastFMArtist) = flow {
         val list = ArrayList<ArtistsEvents>(30)
-
-        val recentMostPlayedSongs by lazy { File(context.cacheDir, "test-songs.json") }
-        val cache = responseCache(recentMostPlayedSongs, Array<ArtistsEvents>::class.java)
-
-        if (cache != null) {
-            list.addAll(cache)
-
-            emit(list)
-            return@flow
-        }
-
         val response = jsoupResponseData(artistsEventInfo(user.url ?: ""))
         val jsoup =
             Jsoup.parse(response!!).select("a.events-list-item-event-name.link-block-target")
@@ -163,12 +152,6 @@ class LastFMImpl @Inject constructor(
 
             list.add(ArtistsEvents(name, time, address, bookingLink, artist))
         }
-
-        writeToCacheFile(
-            recentMostPlayedSongs,
-            moshi.adapter(Array<ArtistsEvents>::class.java).toJson(list.toTypedArray())
-        )
-
         emit(list)
     }.flowOn(Dispatchers.IO)
 }

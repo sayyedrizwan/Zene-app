@@ -1,9 +1,11 @@
 package com.rizwansayyed.zene.presenter.ui.home.artists
 
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,9 +35,14 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.SmallIcons
+import com.rizwansayyed.zene.presenter.ui.TextBold
+import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -47,7 +55,14 @@ fun ArtistsEvents() {
     when (val v = artistsViewModel.artistsEvents) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
-        DataResponse.Loading -> TextThin(v = "Loading")
+        DataResponse.Loading -> Spacer(
+            Modifier
+                .padding(5.dp)
+                .fillMaxWidth()
+                .height(LocalConfiguration.current.screenWidthDp.dp)
+                .clip(RoundedCornerShape(6))
+                .background(shimmerBrush())
+        )
         is DataResponse.Success -> {
             val pager = rememberPagerState(pageCount = { v.item?.size ?: 0 })
             HorizontalPager(pager, Modifier.fillMaxWidth()) { page ->
@@ -72,7 +87,6 @@ fun ArtistsEvents() {
         }
     }
 
-
 }
 
 @Composable
@@ -84,6 +98,11 @@ fun EventsItems(events: ArtistsEvents, artist: ArtistsViewModel) {
             .height(LocalConfiguration.current.screenWidthDp.dp)
             .clip(RoundedCornerShape(6))
             .background(Color.Black)
+            .clickable {
+                Uri
+                    .parse(events.link)
+                    .customBrowser()
+            }
     ) {
         val img: String = if (events.artists.isNotEmpty()) events.artists[0].img else
             when (val v = artist.artistsImage) {
@@ -102,15 +121,16 @@ fun EventsItems(events: ArtistsEvents, artist: ArtistsViewModel) {
             Modifier
                 .align(Alignment.TopCenter)
                 .padding()
-                .padding(top = 10.dp, end = 10.dp)
+                .padding(top = 10.dp, end = 10.dp, start = 10.dp),
+            Arrangement.Center, Alignment.CenterVertically
         ) {
-
             Row {
                 events.artists.forEachIndexed { index, a ->
                     if (index > 5) return@forEachIndexed
                     AsyncImage(
                         a.img, a.name,
                         Modifier
+                            .offset(x = if (index == 0) 0.dp else (-20 * index).dp)
                             .size(40.dp)
                             .clip(RoundedCornerShape(50))
                             .border(1.dp, Color.White, RoundedCornerShape(50))
@@ -132,89 +152,31 @@ fun EventsItems(events: ArtistsEvents, artist: ArtistsViewModel) {
                 TextThin(events.year(), size = 14)
             }
         }
-    }
 
-//    Row(
-//        Modifier
-//            .padding(5.dp)
-//            .fillMaxWidth()
-//            .height(intrinsicSize = IntrinsicSize.Max)
-//            .wrapContentHeight()
-//            .clip(RoundedCornerShape(14.dp))
-//            .background(Color.Black),
-//        Arrangement.Center, Alignment.CenterVertically
-//    ) {
-//        Column(Modifier.weight(1f)) {
-//            Spacer(Modifier.height(23.dp))
-//
-//            TextBold(
-//                events.eventName ?: "",
-//                Modifier
-//                    .padding(start = 10.dp)
-//                    .fillMaxWidth(), size = 25
-//            )
-//
-//            val size = events.address?.split(",")
-//
-//            if ((size?.size ?: 0) > 3)
-//                TextThin(
-//                    "${size?.get(0)}, ${size?.get(size.size - 1)}",
-//                    Modifier
-//                        .padding(start = 10.dp, top = 9.dp)
-//                        .fillMaxWidth(), size = 14
-//                )
-//            else
-//                TextThin(
-//                    events.address ?: "",
-//                    Modifier
-//                        .padding(start = 10.dp, top = 9.dp)
-//                        .fillMaxWidth(), size = 14
-//                )
-//
-//            Spacer(Modifier.weight(1f))
-//
-//            Row(
-//                Modifier
-//                    .fillMaxWidth()
-//                    .padding(start = 12.dp, top = 19.dp)
-//            ) {
-//                events.artists.forEach {
-//                    AsyncImage(
-//                        it.img, it.name,
-//                        Modifier
-//                            .padding(horizontal = 3.dp)
-//                            .clip(RoundedCornerShape(50.dp))
-//                            .size(40.dp), contentScale = ContentScale.Crop
-//                    )
-//                }
-//            }
-//
-//            Spacer(Modifier.height(23.dp))
-//        }
-//        Column(Modifier, Arrangement.Center, Alignment.CenterHorizontally) {
-//            Column(
-//                Modifier
-//                    .padding(vertical = 20.dp, horizontal = 25.dp)
-//                    .clip(RoundedCornerShape(14.dp))
-//                    .background(MainColor)
-//                    .padding(7.dp),
-//                Arrangement.Center,
-//                Alignment.CenterHorizontally
-//            ) {
-//                TextThin(events.date(), size = 17)
-//                TextSemiBold(events.month(), size = 39)
-//                TextThin(events.year(), size = 17)
-//            }
-//
-//
-//            Button(
-//                onClick = { Uri.parse(events.link).customBrowser() },
-//                colors = ButtonDefaults.buttonColors(MainColor)
-//            ) {
-//                TextThin(stringResource(R.string.book), color = Color.White)
-//            }
-//
-//            Spacer(Modifier.height(13.dp))
-//        }
-//    }
+        Column(
+            Modifier
+                .padding(bottom = 10.dp)
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+        ) {
+            val size = events.address?.split(",")
+
+            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                SmallIcons(R.drawable.ic_location, size = 18)
+                val address =
+                    if ((size?.size ?: 0) >= 2) "${size?.get(size.size - 1)}"
+                    else events.address ?: ""
+                TextRegular(address, Modifier.fillMaxWidth(), singleLine = true)
+            }
+
+            TextBold(
+                events.eventName ?: "",
+                Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth(),
+                singleLine = true,
+                size = 25
+            )
+        }
+    }
 }

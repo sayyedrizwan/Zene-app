@@ -64,6 +64,7 @@ class ArtistsViewModel @Inject constructor(
         lastFMImpl.artistsUsername(a).onStart {
             artistsDesc = DataResponse.Loading
             artistsImage = DataResponse.Loading
+            artistsEvents = DataResponse.Loading
         }.catch {
             artistsImage = DataResponse.Error(it)
         }.collectLatest {
@@ -130,6 +131,7 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun artistsEvents(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
+        artistsEvents = DataResponse.Loading
         var list = try {
             lastFMImpl.artistsEvent(a).first()
         } catch (e: Exception) {
