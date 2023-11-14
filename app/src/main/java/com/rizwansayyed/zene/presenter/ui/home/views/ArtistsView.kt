@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNameWithDescriptio
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsProfilePin
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSocialMedia
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsTopSongs
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
 import com.rizwansayyed.zene.presenter.ui.home.artists.WebViewForArtistsVideo
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
@@ -68,6 +69,9 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
         Spacer(Modifier.height(40.dp))
 
         ArtistsEvents()
+        Spacer(Modifier.height(40.dp))
+
+        ArtistsTopSongs()
         Spacer(Modifier.height(40.dp))
 
 

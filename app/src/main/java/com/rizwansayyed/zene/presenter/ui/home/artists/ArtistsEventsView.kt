@@ -50,20 +50,24 @@ import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 fun ArtistsEvents() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
 
-    TopInfoWithSeeMore(R.string.upcoming_events, null) {}
-
     when (val v = artistsViewModel.artistsEvents) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
-        DataResponse.Loading -> Spacer(
-            Modifier
-                .padding(5.dp)
-                .fillMaxWidth()
-                .height(LocalConfiguration.current.screenWidthDp.dp)
-                .clip(RoundedCornerShape(6))
-                .background(shimmerBrush())
-        )
+        DataResponse.Loading -> {
+            TopInfoWithSeeMore(R.string.upcoming_events, null) {}
+
+            Spacer(
+                Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
+                    .height(LocalConfiguration.current.screenWidthDp.dp)
+                    .clip(RoundedCornerShape(6))
+                    .background(shimmerBrush())
+            )
+        }
         is DataResponse.Success -> {
+            TopInfoWithSeeMore(R.string.upcoming_events, null) {}
+
             val pager = rememberPagerState(pageCount = { v.item?.size ?: 0 })
             HorizontalPager(pager, Modifier.fillMaxWidth()) { page ->
                 EventsItems(v.item?.get(page)!!, artistsViewModel)
