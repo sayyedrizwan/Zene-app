@@ -120,7 +120,7 @@ class LastFMImpl @Inject constructor(
 
 
     override suspend fun artistsEvent(user: LastFMArtist) = flow {
-        val list = ArrayList<ArtistsEvents>(100)
+        val list = ArrayList<ArtistsEvents>(30)
 
         val recentMostPlayedSongs by lazy { File(context.cacheDir, "test-songs.json") }
         val cache = responseCache(recentMostPlayedSongs, Array<ArtistsEvents>::class.java)
