@@ -34,6 +34,8 @@
     <string name="enjoy_free_access_three">Sync your spotify, youtube music, apple music playlist and sync all your music</string>
     <string name="internet_not_available">Internet not available</string>
     <string name="albums_for_you">Albums for you</string>
+    <string name="show_full_desc">show full description</string>
+    <string name="hide_desc">hide description</string>
     <string name="radio">Radio</string>
     <string name="home">Home</string>
     <string name="search">Search</string>

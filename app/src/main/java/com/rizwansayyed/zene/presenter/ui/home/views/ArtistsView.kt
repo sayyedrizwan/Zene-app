@@ -53,7 +53,7 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             ArtistsSongURL(videoLink, artistsThumbnailPlayer)
 
         ArtistsNameWithDescription()
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(90.dp))
 
         ArtistsProfilePin()
         Spacer(Modifier.height(10.dp))

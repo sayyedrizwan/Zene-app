@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
-                    navViewModel.setArtists("ed sheeran")
+                    navViewModel.setArtists("Ed Sheeran")
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {

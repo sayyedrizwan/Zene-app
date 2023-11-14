@@ -3,11 +3,14 @@ package com.rizwansayyed.zene.presenter.ui
 import android.content.Intent
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -115,6 +119,27 @@ fun TextThin(
         maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         fontSize = size.scaledSp(),
         textAlign = if (doCenter) TextAlign.Center else null,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+
+@Composable
+fun TextThinArtistsDesc(
+    v: String, showFull: Boolean = false
+) {
+    Text(
+        v,
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .offset(y = (-15).dp)
+            .animateContentSize(spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)),
+        color = Color.White,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Thin,
+        maxLines = if (showFull) Int.MAX_VALUE else 5,
+        fontSize = 14.scaledSp(),
+        textAlign = TextAlign.Start,
         overflow = TextOverflow.Ellipsis
     )
 }
@@ -255,7 +280,6 @@ fun TextRegular(
         overflow = TextOverflow.Ellipsis
     )
 }
-
 
 
 @Composable

@@ -11,21 +11,34 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.theme.Purple80
+import com.rizwansayyed.zene.presenter.theme.urbanistFamily
 import com.rizwansayyed.zene.presenter.ui.LoadingCircle
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
+import com.rizwansayyed.zene.presenter.ui.scaledSp
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -34,6 +47,8 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 fun ArtistsNameWithDescription() {
     val homeNav: HomeNavViewModel = hiltViewModel()
     val artists: ArtistsViewModel = hiltViewModel()
+
+    var showFullDesc by remember { mutableStateOf(false) }
 
     TextSemiBold(
         homeNav.selectedArtists,
@@ -56,14 +71,19 @@ fun ArtistsNameWithDescription() {
             )
         }
 
-        is DataResponse.Success ->
-            TextThin(
-                v.item.trim(),
+
+        is DataResponse.Success -> {
+            TextThinArtistsDesc(v.item.trim(), showFullDesc)
+
+            TextRegular(
+                stringResource(if (showFullDesc) R.string.hide_desc else R.string.show_full_desc),
                 Modifier
                     .padding(horizontal = 10.dp)
-                    .offset(y = (-15).dp),
-                size = 14
+                    .clickable {
+                        showFullDesc = !showFullDesc
+                    }, size = 14, color = Purple80
             )
+        }
     }
 }
 
@@ -102,7 +122,7 @@ fun ArtistsButtonView() {
                 .padding(vertical = 10.dp, horizontal = 22.dp),
             Arrangement.Center, Alignment.CenterVertically
         ) {
-            when(artists.radioStatus){
+            when (artists.radioStatus) {
                 DataResponse.Loading -> LoadingCircle(22)
                 else -> SmallIcons(R.drawable.ic_airdrop, 22, 5)
             }
