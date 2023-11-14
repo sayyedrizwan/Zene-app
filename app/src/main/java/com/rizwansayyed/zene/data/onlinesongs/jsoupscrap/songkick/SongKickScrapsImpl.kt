@@ -30,9 +30,10 @@ class SongKickScrapsImpl @Inject constructor() : SongKickScrapsImplInterface {
             val time = cRes.selectFirst("div.date-and-name")?.selectFirst("p")?.text()?.substringBefore("-")
             val address = cRes.selectFirst("div.location")?.text()
             var name = cRes.selectFirst("h1.h0.summary")?.text()
-            if (name == null){
-                name = cRes.selectFirst("h1.h0.summary")?.text()
-            }
+            name = if (name == null)
+                cRes.selectFirst("h1.h0.summary")?.text()
+            else
+                "$name Tour"
             val link =
                 "https://www.songkick.com" + cRes.selectFirst("a.buy-ticket-link")?.attr("href")
 

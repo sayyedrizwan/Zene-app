@@ -146,7 +146,6 @@ class ArtistsViewModel @Inject constructor(
             return@launch
         }
 
-
         list = try {
             songKick.artistsEvents(a.name!!).first()
         } catch (e: Exception) {

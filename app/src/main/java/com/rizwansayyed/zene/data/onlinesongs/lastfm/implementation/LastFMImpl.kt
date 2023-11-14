@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.recentMostPlayedSongs
 import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
 import com.rizwansayyed.zene.data.utils.LastFM.artistsEventInfo
@@ -15,6 +16,7 @@ import com.rizwansayyed.zene.data.utils.LastFM.artistsWikiInfo
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.YoutubeAPI
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.ArtistsArtists
 import com.rizwansayyed.zene.domain.ArtistsEvents
@@ -120,6 +122,16 @@ class LastFMImpl @Inject constructor(
     override suspend fun artistsEvent(user: LastFMArtist) = flow {
         val list = ArrayList<ArtistsEvents>(100)
 
+        val recentMostPlayedSongs by lazy { File(context.cacheDir, "test-songs.json") }
+        val cache = responseCache(recentMostPlayedSongs, Array<ArtistsEvents>::class.java)
+
+        if (cache != null) {
+            list.addAll(cache)
+
+            emit(list)
+            return@flow
+        }
+
         val response = jsoupResponseData(artistsEventInfo(user.url ?: ""))
         val jsoup =
             Jsoup.parse(response!!).select("a.events-list-item-event-name.link-block-target")
@@ -131,10 +143,7 @@ class LastFMImpl @Inject constructor(
             )
 
             val name = events.selectFirst("h1.header-title")?.text()
-            var time = events.selectFirst("p.qa-event-date")?.selectFirst("span")?.attr("content")
-            if (time == null) {
-                time = events.selectFirst("p.qa-event-date")?.selectFirst("strong")?.attr("content")
-            }
+            val time = events.selectFirst("p.qa-event-date")?.selectFirst("strong")?.text()
             val address = events.selectFirst("p.event-detail-address")?.text()
             val bookingLink =
                 events.selectFirst("a.event-detail-long-link.external-link")?.attr("href")
@@ -154,6 +163,11 @@ class LastFMImpl @Inject constructor(
 
             list.add(ArtistsEvents(name, time, address, bookingLink, artist))
         }
+
+        writeToCacheFile(
+            recentMostPlayedSongs,
+            moshi.adapter(Array<ArtistsEvents>::class.java).toJson(list.toTypedArray())
+        )
 
         emit(list)
     }.flowOn(Dispatchers.IO)

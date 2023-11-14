@@ -76,4 +76,5 @@
     <string name="brand_page">Brand page</string>
     <string name="twitter">Twitter</string>
     <string name="pinned_by_users">pinned by %s users</string>
+    <string name="book">Book</string>
 </resources>

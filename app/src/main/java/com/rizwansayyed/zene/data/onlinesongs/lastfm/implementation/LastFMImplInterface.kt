@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface LastFMImplInterface {
 
     suspend fun artistsImages(name: LastFMArtist?, limit: Int = 40): Flow<MutableList<String>>
-
     suspend fun topRecentPlayingSongs(): Flow<MutableList<MusicDataWithArtists>>
-
     suspend fun artistsUsername(name: String): Flow<LastFMArtist?>
     suspend fun artistsDescription(user: LastFMArtist): Flow<String>
     suspend fun artistsEvent(user: LastFMArtist): Flow<ArrayList<ArtistsEvents>>

@@ -5,28 +5,20 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
-import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import android.os.StrictMode
-import android.os.StrictMode.VmPolicy
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.webkit.MimeTypeMap
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.core.net.toUri
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
 import kotlinx.coroutines.CoroutineScope
@@ -35,10 +27,12 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.net.InetAddress
-import java.net.URL
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Locale
 import kotlin.system.exitProcess
 
 

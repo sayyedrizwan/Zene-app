@@ -47,25 +47,25 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             .background(DarkGreyColor)
             .verticalScroll(rememberScrollState())
     ) {
-        if (videoLink.isEmpty())
-            TopArtistsImageView()
-        else
-            ArtistsSongURL(videoLink, artistsThumbnailPlayer)
-
-        ArtistsNameWithDescription()
-        Spacer(Modifier.height(30.dp))
-
-        ArtistsProfilePin()
-        Spacer(Modifier.height(10.dp))
-
-        ArtistsButtonView()
-        Spacer(Modifier.height(40.dp))
-
-        ArtistsSocialMedia()
-        Spacer(Modifier.height(40.dp))
-
-        ArtistsImagesView()
-        Spacer(Modifier.height(40.dp))
+//        if (videoLink.isEmpty())
+//            TopArtistsImageView()
+//        else
+//            ArtistsSongURL(videoLink, artistsThumbnailPlayer)
+//
+//        ArtistsNameWithDescription()
+//        Spacer(Modifier.height(30.dp))
+//
+//        ArtistsProfilePin()
+//        Spacer(Modifier.height(10.dp))
+//
+//        ArtistsButtonView()
+//        Spacer(Modifier.height(40.dp))
+//
+//        ArtistsSocialMedia()
+//        Spacer(Modifier.height(40.dp))
+//
+//        ArtistsImagesView()
+//        Spacer(Modifier.height(40.dp))
 
         ArtistsEvents()
         Spacer(Modifier.height(40.dp))
