@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.utils.USER_AGENT
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,7 @@ suspend fun jsoupResponseData(url: String): String? {
             .method("GET", null)
             .addHeader("authority", getMainDomain(url) ?: "")
             .addHeader("Referer", getMainDomain(url) ?: "")
+            .addHeader("referer", getMainDomain(url) ?: "")
             .addHeader("user-agent", USER_AGENT)
             .addHeader("Cookie", DataStorageManager.cookiesData(getMainDomain(url) ?: ""))
             .build()
@@ -33,7 +35,7 @@ suspend fun jsoupResponseData(url: String): String? {
 
         if (response.isSuccessful) {
             val cookieList = response.headers("Set-Cookie")
-            if (cookieList.size > 2 && (cookieRetry[getMainDomain(url) ?: ""] ?: 0) <= 2) {
+            if (cookieList.size >= 2 && (cookieRetry[getMainDomain(url) ?: ""] ?: 0) <= 2) {
                 return@withContext retryWithCookieResponseData(url, response.headers("Set-Cookie"))
             }
 

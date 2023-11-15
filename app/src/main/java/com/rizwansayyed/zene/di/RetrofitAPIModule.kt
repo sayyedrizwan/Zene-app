@@ -1,6 +1,6 @@
 package com.rizwansayyed.zene.di
 
-import com.rizwansayyed.zene.data.onlinesongs.downloader.SongDownloaderService
+import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.ip.AWSIpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
 import com.rizwansayyed.zene.data.utils.SoundCloudAPI.SOUND_CLOUD_BASE_URL
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_BASE_URL
 import com.rizwansayyed.zene.data.utils.USER_AGENT
+import com.rizwansayyed.zene.data.utils.VideoDownloaderAPI.SAVE_FROM_BASE_URL
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_BASE_URL
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_MUSIC_BASE_URL
 import com.rizwansayyed.zene.data.utils.moshi
@@ -31,7 +32,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -166,11 +166,21 @@ object RetrofitAPIModule {
             .build().create(LastFMService::class.java)
     }
 
+
     @Provides
-    fun retrofitSongDownloaderService(): SongDownloaderService {
+    fun retrofitSaveFromDownloaderService(): SaveFromDownloaderService {
+        val builder = OkHttpClient.Builder()
+        builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val chains = chain.request().newBuilder()
+                .addHeader("referer", SAVE_FROM_BASE_URL)
+                .addHeader("origin", SAVE_FROM_BASE_URL)
+                .addHeader("user-agent", USER_AGENT)
+            chain.proceed(chains.build())
+        })
+
         return Retrofit.Builder()
-            .baseUrl("https://demo.com").client(okHttpClient)
+            .baseUrl(SAVE_FROM_BASE_URL).client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .build().create(SongDownloaderService::class.java)
+            .build().create(SaveFromDownloaderService::class.java)
     }
 }

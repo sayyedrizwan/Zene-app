@@ -28,7 +28,6 @@ import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSocialMedia
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsTopSongs
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
-import com.rizwansayyed.zene.presenter.ui.home.artists.WebViewForArtistsVideo
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -38,9 +37,6 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
-    val context = LocalContext.current.applicationContext
-
-    var videoLink by remember { mutableStateOf("") }
 
     Column(
         Modifier
@@ -48,10 +44,10 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             .background(DarkGreyColor)
             .verticalScroll(rememberScrollState())
     ) {
-        if (videoLink.isEmpty())
+        if (artistsViewModel.artistsVideoId.isEmpty())
             TopArtistsImageView()
         else
-            ArtistsSongURL(videoLink, artistsThumbnailPlayer)
+            ArtistsSongURL(artistsViewModel.artistsVideoId, artistsThumbnailPlayer)
 
         ArtistsNameWithDescription()
         Spacer(Modifier.height(90.dp))
@@ -76,13 +72,6 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
 
 
         Spacer(Modifier.height(190.dp))
-    }
-
-    LaunchedEffect(artistsViewModel.artistsVideoId) {
-        if (artistsViewModel.artistsVideoId.isNotEmpty())
-            WebViewForArtistsVideo(context, artistsViewModel.artistsVideoId) {
-                videoLink = it
-            }
     }
 
     LaunchedEffect(Unit) {

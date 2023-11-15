@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.recentMostPlayedSongs
 import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
 import com.rizwansayyed.zene.data.utils.LastFM.artistsEventInfo
+import com.rizwansayyed.zene.data.utils.LastFM.artistsTopSongsInfo
 import com.rizwansayyed.zene.data.utils.LastFM.artistsWikiInfo
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
 import com.rizwansayyed.zene.data.utils.YoutubeAPI
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.ArtistsArtists
 import com.rizwansayyed.zene.domain.ArtistsEvents
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
 import com.rizwansayyed.zene.domain.MusicType
@@ -153,5 +155,25 @@ class LastFMImpl @Inject constructor(
             list.add(ArtistsEvents(name, time, address, bookingLink, artist))
         }
         emit(list)
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun artistsTopSongs(user: LastFMArtist) = flow {
+        val songsLists = ArrayList<MusicData>(11)
+
+        val response = jsoupResponseData(artistsTopSongsInfo(user.url ?: ""))
+        val jsoup = Jsoup.parse(response!!)
+        val artistsName = jsoup.selectFirst("h1.header-new-title")?.text() ?: user.name ?: ""
+
+        val ip = DataStorageManager.userIpDetails.first()
+        val key = remoteConfig.allApiKeys()
+
+        jsoup.select("td.chartlist-name").forEachIndexed { index, element ->
+            if (index > 10) return@forEachIndexed
+            val songName = "${element.text()} - $artistsName"
+            val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
+            songs?.let { songsLists.add(it) }
+        }
+
+        emit(songsLists)
     }.flowOn(Dispatchers.IO)
 }

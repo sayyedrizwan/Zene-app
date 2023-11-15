@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,19 +31,21 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
+import com.rizwansayyed.zene.data.utils.CacheFiles
+import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.HomeNavigation.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
-import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
+import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
@@ -54,12 +57,15 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import java.net.URL
+import org.jsoup.Connection
+import org.jsoup.Jsoup
+import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -145,7 +151,7 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
-                    navViewModel.setArtists("Ed Sheeran")
+                    navViewModel.setArtists("Taylor Swift")
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {

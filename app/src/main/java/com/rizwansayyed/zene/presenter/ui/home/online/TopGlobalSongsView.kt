@@ -111,14 +111,14 @@ fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean, click: () -> Un
         Column(Modifier.weight(1f)) {
             TextSemiBold(
                 i?.name ?: "",
-                Modifier.padding(start = 8.dp), singleLine = true, size = if (horizontal) 15 else 19
+                Modifier.padding(start = 8.dp), singleLine = true, size = if (horizontal) 15 else 17
             )
 
             TextThin(
                 i?.artists ?: "",
                 Modifier.padding(vertical = 3.dp, horizontal = 8.dp),
                 singleLine = true,
-                size = if (horizontal) 11 else 15
+                size = if (horizontal) 11 else 13
             )
         }
 

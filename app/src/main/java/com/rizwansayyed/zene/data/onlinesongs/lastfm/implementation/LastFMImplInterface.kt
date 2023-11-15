@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
 import com.rizwansayyed.zene.domain.ArtistsEvents
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
@@ -13,4 +14,5 @@ interface LastFMImplInterface {
     suspend fun artistsUsername(name: String): Flow<LastFMArtist?>
     suspend fun artistsDescription(user: LastFMArtist): Flow<String>
     suspend fun artistsEvent(user: LastFMArtist): Flow<ArrayList<ArtistsEvents>>
+    suspend fun artistsTopSongs(user: LastFMArtist): Flow<ArrayList<MusicData>>
 }

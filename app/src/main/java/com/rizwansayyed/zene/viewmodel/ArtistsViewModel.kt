@@ -6,15 +6,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.ArtistsEvents
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,8 @@ class ArtistsViewModel @Inject constructor(
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val bingScraps: BingScrapsInterface,
     private val soundCloud: SoundCloudImplInterface,
-    private val songKick: SongKickScrapsImplInterface
+    private val songKick: SongKickScrapsImplInterface,
+    private val songDownloader: SongDownloaderInterface
 ) : ViewModel() {
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
@@ -50,7 +52,10 @@ class ArtistsViewModel @Inject constructor(
     var artistSocialProfile by mutableStateOf<DataResponse<SoundCloudProfileInfo>>(DataResponse.Empty)
         private set
 
-    var artistsEvents by mutableStateOf<DataResponse<ArrayList<ArtistsEvents>?>>(DataResponse.Empty)
+    var artistsEvents by mutableStateOf<DataResponse<List<ArtistsEvents>?>>(DataResponse.Empty)
+        private set
+
+    var artistsTopSongs by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
     var artistsVideoId by mutableStateOf("")
@@ -59,7 +64,7 @@ class ArtistsViewModel @Inject constructor(
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
         latestVideo(a)
-        userSocialProfile(a)
+        socialProfile(a)
         radioStatus = DataResponse.Empty
         lastFMImpl.artistsUsername(a).onStart {
             artistsDesc = DataResponse.Loading
@@ -73,6 +78,7 @@ class ArtistsViewModel @Inject constructor(
                 searchImg(i)
                 artistsDesc(i)
                 artistsEvents(i)
+                topSongs(i)
             }
         }
     }
@@ -111,22 +117,42 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun latestVideo(a: String) = viewModelScope.launch(Dispatchers.IO) {
-        bingScraps.bingOfficialVideo(a).onStart {
+        artistsVideoId = ""
+
+        val vId = try {
+            bingScraps.bingOfficialVideo(a).first()
+        } catch (e: Exception) {
+            null
+        }
+
+        if (vId == null) {
             artistsVideoId = ""
-        }.catch {
+            return@launch
+        }
+        songDownloader.downloadVideo(vId).catch {
             artistsVideoId = ""
         }.collectLatest {
-            artistsVideoId = it
+            artistsVideoId = it ?: ""
         }
     }
 
-    private fun userSocialProfile(a: String) = viewModelScope.launch(Dispatchers.IO) {
+    private fun socialProfile(a: String) = viewModelScope.launch(Dispatchers.IO) {
         soundCloud.artistsProfileDetails(a).onStart {
             artistSocialProfile = DataResponse.Loading
         }.catch {
             artistSocialProfile = DataResponse.Error(it)
         }.collectLatest {
             artistSocialProfile = DataResponse.Success(it)
+        }
+    }
+
+    private fun topSongs(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
+        lastFMImpl.artistsTopSongs(a).onStart {
+            artistsTopSongs = DataResponse.Loading
+        }.catch {
+            artistsTopSongs = DataResponse.Error(it)
+        }.collectLatest {
+            artistsTopSongs = DataResponse.Success(it)
         }
     }
 
@@ -139,7 +165,7 @@ class ArtistsViewModel @Inject constructor(
         }
 
         if (list != null) {
-            artistsEvents = DataResponse.Success(list)
+            artistsEvents = DataResponse.Success(list.reversed())
             return@launch
         }
 

@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.data.utils
 
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
-import com.rizwansayyed.zene.domain.download.KeepVideoTsId
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -15,6 +14,11 @@ object DBNAME {
     const val RECENT_PLAYED_DB = "recent_played_db"
     const val OFFLINE_DOWNLOADED_SONGS_DB = "offline_songs_db"
     const val SAVED_PLAYLIST_DB = "saved_playlist_db"
+}
+
+object VideoDownloaderAPI{
+    const val SAVE_FROM_BASE_URL = "https://www.savefrom.live/"
+    const val SAVE_FROM_VIDEO_API = "wp-json/aio-dl/video-data/"
 }
 
 object RadioOnlineAPI {
@@ -76,6 +80,10 @@ object LastFM {
 
     fun artistsEventInfo(url: String): String {
         return "$url/+events"
+    }
+
+    fun artistsTopSongsInfo(url: String): String {
+        return "$url/+tracks?date_preset=LAST_7_DAYS#top-tracks"
     }
 
     fun searchLastFMImageURLPath(url: String, id: String): String {
@@ -354,16 +362,6 @@ object YoutubeAPI {
             },
             "browseId": "FEmusic_new_releases"
         }"""
-        val mediaType = "application/json".toMediaTypeOrNull()
-        return json.toRequestBody(mediaType)
-    }
-
-
-    fun keepVidConvertor(v: KeepVideoTsId?): RequestBody {
-        val json = """
-            url=${v?.url}&convert=${v?.convert}&token_id=${v?.token_id}&token_validto=${v?.token_validto}
-        """.trimIndent()
-
         val mediaType = "application/json".toMediaTypeOrNull()
         return json.toRequestBody(mediaType)
     }
