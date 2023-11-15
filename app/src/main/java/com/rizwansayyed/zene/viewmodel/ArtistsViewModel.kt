@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundClo
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
@@ -58,13 +59,16 @@ class ArtistsViewModel @Inject constructor(
     var artistsTopSongs by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
-    var artistsVideoId by mutableStateOf("")
+    var searchData by mutableStateOf<DataResponse<SearchData?>>(DataResponse.Empty)
         private set
 
+    var artistsVideoId by mutableStateOf("")
+        private set
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
         latestVideo(a)
         socialProfile(a)
+        searchData(a)
         radioStatus = DataResponse.Empty
         lastFMImpl.artistsUsername(a).onStart {
             artistsDesc = DataResponse.Loading
@@ -186,6 +190,17 @@ class ArtistsViewModel @Inject constructor(
         }
 
         artistsEvents = DataResponse.Success(list)
+    }
+
+
+    private fun searchData(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.searchData(q).onStart {
+            searchData = DataResponse.Loading
+        }.catch {
+            searchData = DataResponse.Error(it)
+        }.collectLatest {
+            searchData = DataResponse.Success(it)
+        }
     }
 
 }

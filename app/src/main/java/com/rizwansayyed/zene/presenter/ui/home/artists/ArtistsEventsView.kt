@@ -166,6 +166,8 @@ fun EventsItems(events: ArtistsEvents, artist: ArtistsViewModel) {
             val size = events.address?.split(",")
 
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                Spacer(Modifier.width(9.dp))
+
                 SmallIcons(R.drawable.ic_location, size = 18, p = 0)
                 val address =
                     if ((size?.size ?: 0) >= 2) "${size?.get(size.size - 1)}"

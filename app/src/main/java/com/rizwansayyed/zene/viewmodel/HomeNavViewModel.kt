@@ -17,8 +17,11 @@ import com.rizwansayyed.zene.utils.Utils.isInternetConnected
 import com.rizwansayyed.zene.utils.Utils.littleVibrate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfigInterface) :
@@ -59,7 +62,11 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
         homeNavV = h
     }
 
-    fun setArtists(a: String) {
+    fun setArtists(a: String) = viewModelScope.launch {
+        if (selectedArtists.isNotEmpty()) {
+            selectedArtists = ""
+            delay(100.milliseconds)
+        }
         selectedArtists = a
     }
 
