@@ -122,7 +122,7 @@ class LastFMImpl @Inject constructor(
 
 
     override suspend fun artistsEvent(user: LastFMArtist) = flow {
-        val list = ArrayList<ArtistsEvents>(30)
+        val list = ArrayList<ArtistsEvents>(15)
         val response = jsoupResponseData(artistsEventInfo(user.url ?: ""))
         val jsoup =
             Jsoup.parse(response!!).select("a.events-list-item-event-name.link-block-target")

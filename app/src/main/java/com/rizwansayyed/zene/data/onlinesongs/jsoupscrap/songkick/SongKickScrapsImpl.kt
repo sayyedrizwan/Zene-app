@@ -15,7 +15,7 @@ import javax.inject.Inject
 class SongKickScrapsImpl @Inject constructor() : SongKickScrapsImplInterface {
 
     override suspend fun artistsEvents(a: String) = flow {
-        val list = ArrayList<ArtistsEvents>(30)
+        val list = ArrayList<ArtistsEvents>(15)
 
         val response = jsoupResponseData(songKickArtistsSearch(a))
         val src = Jsoup.parse(response!!).selectFirst("li.artist")?.selectFirst("a")?.attr("href")
