@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -70,13 +71,16 @@ fun LoadingAlbumsCards() {
 
 
 @Composable
-fun AlbumsItems(albums: MusicData) {
+fun AlbumsItems(albums: MusicData, click: () -> Unit) {
     Column(Modifier.fillMaxWidth()) {
         AsyncImage(
             albums.thumbnail, "",
             Modifier
                 .padding(5.dp)
                 .fillMaxWidth()
+                .clickable {
+                    click()
+                }
         )
 
         Spacer(Modifier.height(6.dp))
@@ -89,22 +93,26 @@ fun AlbumsItems(albums: MusicData) {
 
 
 @Composable
-fun AlbumsItemsShort(albums: MusicData) {
+fun AlbumsItemsShort(albums: MusicData, click: () -> Unit) {
     val width = (LocalConfiguration.current.screenWidthDp / 2 + 20).dp
 
     Column(Modifier.width(width)) {
         AsyncImage(
             albums.thumbnail, "", Modifier
                 .padding(5.dp)
-                .width(width)
+                .width(width).clickable {
+                    click()
+                }
         )
 
         Spacer(Modifier.height(6.dp))
 
-        TextSemiBold(albums.name ?: "",
+        TextSemiBold(
+            albums.name ?: "",
             Modifier
                 .padding(horizontal = 9.dp)
-                .fillMaxWidth(), size = 14)
+                .fillMaxWidth(), size = 14
+        )
 
         Spacer(Modifier.height(12.dp))
     }

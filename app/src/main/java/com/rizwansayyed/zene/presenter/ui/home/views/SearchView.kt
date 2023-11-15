@@ -306,8 +306,6 @@ fun startSpeech(): Intent {
 }
 
 
-
-
 @Composable
 fun SearchViewInfo(s: String, close: () -> Unit) {
     val homeNav: HomeNavViewModel = hiltViewModel()
@@ -374,7 +372,9 @@ fun SearchViewInfo(s: String, close: () -> Unit) {
 
                             LazyRow(Modifier.fillMaxWidth()) {
                                 items(v.item.albums) { album ->
-                                    AlbumsItemsShort(album)
+                                    AlbumsItemsShort(album) {
+                                        homeNav.setAlbum(album.pId ?: "")
+                                    }
                                 }
                             }
                         }

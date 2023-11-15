@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 @Composable
 fun ArtistsAlbumsList() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
+    val homeNavViewModel: HomeNavViewModel = hiltViewModel()
 
     when (val v = artistsViewModel.searchData) {
         DataResponse.Empty -> {}
@@ -56,7 +57,9 @@ fun ArtistsAlbumsList() {
             FlowRow {
                 v.item?.albums?.forEach {
                     Box(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / 2)) {
-                        AlbumsItems(it)
+                        AlbumsItems(it) {
+                            homeNavViewModel.setAlbum(it.pId ?: "")
+                        }
                     }
                 }
             }

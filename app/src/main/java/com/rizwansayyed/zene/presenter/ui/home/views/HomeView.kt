@@ -162,7 +162,9 @@ fun HomeView() {
 
         when (val v = roomDbViewModel.albumsYouMayLike) {
             is DataResponse.Success -> items(v.item, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
-                AlbumsItems(it)
+                AlbumsItems(it) {
+                    homeNavModel.setAlbum(it.pId ?: "")
+                }
             }
 
             DataResponse.Loading -> items(6, span = { GridItemSpan(TWO_ITEMS_GRID) }) {

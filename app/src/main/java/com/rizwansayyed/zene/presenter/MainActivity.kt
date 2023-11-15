@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
+import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
 import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
@@ -70,9 +71,7 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 
-//reduce time in artists album video player
-//(optional) reduce time in playing song via api
-// if going ahead or back multiple time on via via notification is causing problem. fix it....
+// if going ahead or back on song multiple time on via via notification is causing problem. fix it....
 
 
 @AndroidEntryPoint
@@ -118,6 +117,9 @@ class MainActivity : ComponentActivity() {
 
                     AnimatedVisibility(navViewModel.selectedArtists.isNotEmpty()) {
                         ArtistsView(artistsThumbnailPlayer)
+                    }
+                    AnimatedVisibility(navViewModel.selectedAlbum.length > 3) {
+                        AlbumView()
                     }
 
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))

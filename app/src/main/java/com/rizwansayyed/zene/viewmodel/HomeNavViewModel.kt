@@ -42,6 +42,9 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var selectedArtists by mutableStateOf("")
         private set
 
+    var selectedAlbum by mutableStateOf("")
+        private set
+
     var onlineRadioTemps by mutableStateOf<OnlineRadioResponseItem?>(null)
         private set
 
@@ -68,6 +71,14 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
             delay(100.milliseconds)
         }
         selectedArtists = a
+    }
+
+    fun setAlbum(a: String) = viewModelScope.launch {
+        if (selectedAlbum.isNotEmpty()) {
+            selectedAlbum = ""
+            delay(100.milliseconds)
+        }
+        selectedAlbum = a
     }
 
     fun checkAndSetOnlineStatus() = viewModelScope.launch(Dispatchers.IO) {
