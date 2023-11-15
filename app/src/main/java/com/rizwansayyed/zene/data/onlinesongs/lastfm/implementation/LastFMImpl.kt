@@ -127,7 +127,8 @@ class LastFMImpl @Inject constructor(
         val jsoup =
             Jsoup.parse(response!!).select("a.events-list-item-event-name.link-block-target")
 
-        jsoup.forEach { j ->
+        jsoup.forEachIndexed { index, j ->
+            if (index > 15) return@forEachIndexed
             val eventInfoURL = "$LAST_FM_BASE_URL${j.attr("href").substringAfter("/")}"
             val events = Jsoup.parse(
                 jsoupResponseData(eventInfoURL)?.replace("   ", "")?.replace("\n", "")!!

@@ -23,7 +23,8 @@ class SongKickScrapsImpl @Inject constructor() : SongKickScrapsImplInterface {
         val responseCalendar = jsoupResponseData(songKickArtistsCalendar(src ?: ""))
         val calendars = Jsoup.parse(responseCalendar!!).select("li.event-listing")
 
-        calendars.forEach { c ->
+        calendars.forEachIndexed { index, c ->
+            if (index > 15) return@forEachIndexed
             val path = c.selectFirst("a")?.attr("href") ?: ""
             val cRes = Jsoup.parse(jsoupResponseData(songKickArtistsCalendarInfo(path))!!)
 

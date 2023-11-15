@@ -96,6 +96,15 @@ data class SongsSuggestionsData(
     val artists: List<MusicData>,
 )
 
+data class PlaylistItemsData(
+    val thumbnail: String,
+    val artistsName: String,
+    val year: String,
+    val totalTime: String,
+    val description: String,
+    val list: List<MusicData>
+)
+
 enum class MusicType {
     MUSIC, ALBUMS, ARTISTS, PLAYLIST, TEXT, RADIO, VIDEO
 }

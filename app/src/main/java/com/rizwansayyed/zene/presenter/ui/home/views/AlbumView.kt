@@ -32,7 +32,6 @@ fun AlbumView() {
             .background(DarkGreyColor), listState
     ) {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-
             TextMedium(homeNav.selectedAlbum)
         }
     }

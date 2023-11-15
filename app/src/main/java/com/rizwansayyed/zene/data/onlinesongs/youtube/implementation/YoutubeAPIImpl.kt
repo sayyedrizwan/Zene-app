@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.suggestionYouMayLikeCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytArtistsPlaylistJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytLatestMusicSearch
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumsDetailsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
@@ -378,6 +379,43 @@ class YoutubeAPIImpl @Inject constructor(
         emit(list)
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun albumsSearch(q: String) = flow {
+        val list = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.music ?: ""
+
+        val r = youtubeMusicAPI.youtubeSearchPlaylist(ytMusicAlbumsDetailsJsonBody(ip, q), key)
+        val name = r.header?.musicDetailHeaderRenderer?.title?.runs?.first()?.text
+
+        r.contents?.singleColumnBrowseResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.first()?.musicShelfRenderer?.contents?.forEach {
+            val sName =
+                it?.musicResponsiveListItemRenderer?.flexColumns?.first()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.first()?.text
+
+            val songs = musicInfoSearch("$sName - $name", ip, key)
+            songs?.let { it1 -> list.add(it1) }
+        }
+
+
+        var artist: String? = ""
+        r.header?.musicDetailHeaderRenderer?.subtitle?.runs?.forEach {
+            if (it?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
+                artist = it.text
+        }
+
+        val thumbnail =
+            r.header?.musicDetailHeaderRenderer?.thumbnail?.croppedSquareThumbnailRenderer?.thumbnail?.thumbnailURL()
+        val desc = r.header?.musicDetailHeaderRenderer?.description?.runs?.first()?.text
+        var timeLength = ""
+        r.header?.musicDetailHeaderRenderer?.secondSubtitle?.runs?.forEach {
+            if (it?.text?.contains("minutes") == true)
+                timeLength = it.text
+        }
+
+        emit(list)
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun allYoutubeVideoThisYearSearch(q: String) = flow {
         val list = mutableListOf<MusicData>()
 
@@ -484,7 +522,7 @@ class YoutubeAPIImpl @Inject constructor(
                             }
                         }
                         val pId =
-                            content?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId
+                            content?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
 
                         if (isAlbums) name?.let {
                             if (name.trim().isNotEmpty())
@@ -745,8 +783,9 @@ class YoutubeAPIImpl @Inject constructor(
                             if (r?.text?.lowercase() == "album") isAlbums = true
                         }
                     }
+
                     val pId =
-                        content?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId
+                        content?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
 
                     if (isAlbums) name?.let {
                         if (name.trim().isNotEmpty())

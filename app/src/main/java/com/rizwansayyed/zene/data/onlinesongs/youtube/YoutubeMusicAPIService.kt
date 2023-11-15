@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicRelatedResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicReleaseResponse
+import com.rizwansayyed.zene.domain.yt.YoutubePlaylistAlbumsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeSearchSuggestionResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeSearchTextSuggestionResponse
 import okhttp3.RequestBody
@@ -25,6 +26,13 @@ interface YoutubeMusicAPIService {
         @Query("key") key: String,
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeMusicMainSearchResponse
+
+    @POST(YT_SEARCH_API)
+    suspend fun youtubeSearchPlaylist(
+        @Body body: RequestBody,
+        @Query("key") key: String,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubePlaylistAlbumsResponse
 
     @POST(YT_SEARCH_API)
     suspend fun youtubeSearchAllSongsResponse(
