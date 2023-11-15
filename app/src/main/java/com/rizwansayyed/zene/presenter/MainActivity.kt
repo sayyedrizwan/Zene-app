@@ -72,6 +72,7 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // if going ahead or back on song multiple time on via via notification is causing problem. fix it....
+// work on artists share and pin and artists photos
 
 
 @AndroidEntryPoint
