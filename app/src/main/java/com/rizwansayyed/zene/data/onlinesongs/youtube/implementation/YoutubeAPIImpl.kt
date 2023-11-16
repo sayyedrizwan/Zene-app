@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.PlaylistItemsData
 import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
@@ -413,7 +414,7 @@ class YoutubeAPIImpl @Inject constructor(
                 timeLength = it.text
         }
 
-        emit(list)
+        emit(PlaylistItemsData(thumbnail, name, artist, timeLength, desc, list))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun allYoutubeVideoThisYearSearch(q: String) = flow {

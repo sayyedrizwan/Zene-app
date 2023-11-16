@@ -97,11 +97,11 @@ data class SongsSuggestionsData(
 )
 
 data class PlaylistItemsData(
-    val thumbnail: String,
-    val artistsName: String,
-    val year: String,
-    val totalTime: String,
-    val description: String,
+    val thumbnail: String?,
+    val name: String?,
+    val artistsName: String?,
+    val totalTime: String?,
+    val description: String?,
     val list: List<MusicData>
 )
 
