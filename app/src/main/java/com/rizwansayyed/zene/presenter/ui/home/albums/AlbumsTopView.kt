@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.home.albums
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItemsShort
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils
 import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
@@ -51,7 +53,27 @@ fun AlbumTopInfoDetails() {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
+            Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
+                Spacer(
+                    Modifier
+                        .padding(10.dp)
+                        .size(width)
+                        .background(shimmerBrush())
+                )
+                Spacer(Modifier.height(5.dp))
+                Spacer(
+                    Modifier
+                        .size(75.dp, 15.dp)
+                        .background(shimmerBrush())
+                )
 
+                Spacer(Modifier.height(5.dp))
+                Spacer(
+                    Modifier
+                        .size(57.dp, 11.dp)
+                        .background(shimmerBrush())
+                )
+            }
         }
 
         is DataResponse.Success -> {
@@ -62,13 +84,9 @@ fun AlbumTopInfoDetails() {
                     .size(width),
                 contentScale = ContentScale.Crop
             )
-
             Spacer(Modifier.height(5.dp))
-
             TextSemiBold(v.item.name ?: "", Modifier.fillMaxSize(), true, size = 26)
-
             Spacer(Modifier.height(5.dp))
-
             TextThin(v.item.artistsName ?: "", Modifier.fillMaxSize(), true, size = 20)
         }
     }
@@ -76,8 +94,9 @@ fun AlbumTopInfoDetails() {
     Spacer(Modifier.height(80.dp))
 }
 
+
 @Composable
-fun AlbumsSongsList(music: MusicData, menu:() -> Unit, play:() -> Unit) {
+fun AlbumsSongsList(music: MusicData, menu: () -> Unit, play: () -> Unit) {
     Row(
         Modifier
             .padding(vertical = 4.dp)
@@ -98,7 +117,7 @@ fun AlbumsSongsList(music: MusicData, menu:() -> Unit, play:() -> Unit) {
         )
 
         Spacer(Modifier.width(8.dp))
-        
+
         TextRegular(music.name ?: "", Modifier.weight(1f), size = 15)
 
         MenuIcon {
@@ -110,9 +129,14 @@ fun AlbumsSongsList(music: MusicData, menu:() -> Unit, play:() -> Unit) {
 @Composable
 fun ArtistsDesc() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
-    
+
     when (val v = artistsViewModel.playlistAlbum) {
-        is DataResponse.Success -> TextThin(v.item.description ?: "", Modifier.fillMaxWidth(), true, size = 16)
+        is DataResponse.Success -> TextThin(
+            v.item.description ?: "",
+            Modifier.fillMaxWidth(),
+            true,
+            size = 16
+        )
 
         else -> {}
     }
@@ -124,12 +148,15 @@ fun SimilarArtistsAlbums() {
     val homeNav: HomeNavViewModel = hiltViewModel()
 
     Column(Modifier.fillMaxWidth()) {
-        TopInfoWithSeeMore(stringResource(id = R.string.albums), null) {}
         when (val v = artistsViewModel.similarAlbumPlaylistAlbum) {
-            is DataResponse.Success -> LazyRow(Modifier.fillMaxWidth()) {
-                items(v.item) { album ->
-                    AlbumsItemsShort(album) {
-                        homeNav.setAlbum(album.pId ?: "")
+            is DataResponse.Success -> {
+                TopInfoWithSeeMore(stringResource(id = R.string.albums), null) {}
+
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(v.item) { album ->
+                        AlbumsItemsShort(album) {
+                            homeNav.setAlbum(album.pId ?: "")
+                        }
                     }
                 }
             }

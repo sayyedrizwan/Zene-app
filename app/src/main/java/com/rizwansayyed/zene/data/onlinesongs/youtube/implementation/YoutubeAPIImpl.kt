@@ -395,8 +395,12 @@ class YoutubeAPIImpl @Inject constructor(
             val sName =
                 it?.musicResponsiveListItemRenderer?.flexColumns?.first()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.first()?.text
 
-            val songs = musicInfoSearch("$sName - $name", ip, key)
-            songs?.let { it1 -> list.add(it1) }
+            val pId =
+                it?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint?.videoId
+
+            list.add(MusicData("", sName, name, pId, MusicType.MUSIC))
+//            val songs = musicInfoSearch("$sName - $name", ip, key)
+//            songs?.let { it1 -> list.add(it1) }
         }
 
 

@@ -58,25 +58,21 @@ fun AlbumView() {
                 }
             }
 
-            when (val v = artistsViewModel.playlistAlbum) {
-                DataResponse.Loading -> {}
-                is DataResponse.Success -> itemsIndexed(
-                    v.item.list, span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
-                    AlbumsSongsList(item, {
-                        homeNav.setSongDetailsDialog(item)
-                    }, {
-                        addAllPlayer(v.item.list.toTypedArray(), i)
-                    })
-                }
-
-                else -> {}
+            itemsIndexed(
+                artistsViewModel.playlistSongsItem,
+                span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
+                AlbumsSongsList(item, {
+                    homeNav.setSongDetailsDialog(item)
+                }, {
+                    addAllPlayer(artistsViewModel.playlistSongsItem.toTypedArray(), i)
+                })
             }
 
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
                 Column {
                     Spacer(Modifier.height(50.dp))
                     ArtistsDesc()
-                    Spacer(Modifier.height(150.dp))
+                    Spacer(Modifier.height(50.dp))
                 }
             }
 
