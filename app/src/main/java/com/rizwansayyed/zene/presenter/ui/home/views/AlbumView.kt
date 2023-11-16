@@ -37,10 +37,11 @@ import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
 @Composable
 fun AlbumView() {
-    val artistsViewModel: ArtistsViewModel = hiltViewModel()
+    val playlistAlbumViewModel: PlaylistAlbumViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
     val listState = rememberLazyGridState()
 
@@ -59,12 +60,12 @@ fun AlbumView() {
             }
 
             itemsIndexed(
-                artistsViewModel.playlistSongsItem,
+                playlistAlbumViewModel.playlistSongsItem,
                 span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
                 AlbumsSongsList(item, {
                     homeNav.setSongDetailsDialog(item)
                 }, {
-                    addAllPlayer(artistsViewModel.playlistSongsItem.toTypedArray(), i)
+                    addAllPlayer(playlistAlbumViewModel.playlistSongsItem.toTypedArray(), i)
                 })
             }
 
@@ -99,7 +100,7 @@ fun AlbumView() {
 
     LaunchedEffect(homeNav.selectedAlbum) {
         if (homeNav.selectedAlbum.isNotEmpty()) {
-            artistsViewModel.playlistAlbum(homeNav.selectedAlbum)
+            playlistAlbumViewModel.playlistAlbum(homeNav.selectedAlbum)
             listState.scrollToItem(0)
         }
     }

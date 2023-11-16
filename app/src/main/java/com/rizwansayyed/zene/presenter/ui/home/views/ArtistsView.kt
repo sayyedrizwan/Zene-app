@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsEvents
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsImagesView
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsLatestSongs
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNameWithDescription
+import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsNews
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsProfilePin
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSimilarList
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSocialMedia
@@ -91,6 +92,9 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             Spacer(Modifier.height(40.dp))
 
             ArtistsSimilarList()
+            Spacer(Modifier.height(40.dp))
+
+            ArtistsNews()
 
             Spacer(Modifier.height(190.dp))
         }

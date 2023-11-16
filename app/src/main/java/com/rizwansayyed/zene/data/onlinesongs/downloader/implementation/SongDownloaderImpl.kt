@@ -21,7 +21,7 @@ class SongDownloaderImpl @Inject constructor(private val saveFromDownloader: Sav
     SongDownloaderInterface {
 
     override suspend fun download(songId: String) = flow {
-        val yt = YTExtractor(context, true, LOGGING = true, retryCount = 2).apply {
+        val yt = YTExtractor(context, true, LOGGING = false, retryCount = 2).apply {
             extract(songId)
         }
 

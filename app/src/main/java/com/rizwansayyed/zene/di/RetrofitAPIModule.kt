@@ -5,11 +5,13 @@ import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.ip.AWSIpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
+import com.rizwansayyed.zene.data.onlinesongs.news.GoogleNewsService
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.SoundCloudApiService
 import com.rizwansayyed.zene.data.onlinesongs.spotify.SpotifyAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
+import com.rizwansayyed.zene.data.utils.GoogleNewsAPI.GOOGLE_NEWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_AWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_BASE_URL
@@ -32,6 +34,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.util.concurrent.TimeUnit
 
 
@@ -183,4 +186,11 @@ object RetrofitAPIModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(SaveFromDownloaderService::class.java)
     }
+
+
+    @Provides
+    fun retrofitGoogleNewsService(): GoogleNewsService = Retrofit.Builder()
+        .baseUrl(GOOGLE_NEWS_BASE_URL).client(okHttpClient)
+        .addConverterFactory(SimpleXmlConverterFactory.create())
+        .build().create(GoogleNewsService::class.java)
 }

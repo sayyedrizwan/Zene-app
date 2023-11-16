@@ -1,23 +1,21 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.news.implementation.GoogleNewsInterface
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.PlaylistItemsData
 import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
@@ -40,17 +38,8 @@ class ArtistsViewModel @Inject constructor(
     private val soundCloud: SoundCloudImplInterface,
     private val songKick: SongKickScrapsImplInterface,
     private val songDownloader: SongDownloaderInterface,
-    private val remoteConfig: RemoteConfigInterface
+    private val googleNews: GoogleNewsInterface
 ) : ViewModel() {
-
-    var playlistSongsItem = mutableStateListOf<MusicData>()
-        private set
-
-    var similarAlbumPlaylistAlbum by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
-        private set
-
-    var playlistAlbum by mutableStateOf<DataResponse<PlaylistItemsData>>(DataResponse.Empty)
-        private set
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
         private set
@@ -81,6 +70,7 @@ class ArtistsViewModel @Inject constructor(
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
         latestVideo(a)
+        artistsNews(a)
         socialProfile(a)
         searchData(a)
         radioStatus = DataResponse.Empty
@@ -217,47 +207,14 @@ class ArtistsViewModel @Inject constructor(
         }
     }
 
-
-    fun playlistAlbum(id: String) = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPI.albumsSearch(id).onStart {
-            playlistAlbum = DataResponse.Loading
+    private fun artistsNews(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        googleNews.searchNews(q).onStart {
+//            searchData = DataResponse.Loading
         }.catch {
-            playlistAlbum = DataResponse.Error(it)
+            Log.d("TAG", "artistsNews: data error ${it.message}")
+//            searchData = DataResponse.Error(it)
         }.collectLatest {
-            it.name?.let { n -> searchSimilarAlbums(n) }
-            playlistAlbum = DataResponse.Success(it)
-
-            keepAddingSongsToPlaylist(it.list)
-
-
-        }
-    }
-
-    private fun keepAddingSongsToPlaylist(list: List<MusicData>) =
-        viewModelScope.launch(Dispatchers.IO) {
-            playlistSongsItem.clear()
-            val ip = DataStorageManager.userIpDetails.first()
-            val key = remoteConfig.allApiKeys()?.music ?: ""
-
-            list.forEach { m ->
-                viewModelScope.launch(Dispatchers.IO) {
-                    try {
-                        val s = youtubeAPI.musicInfoSearch("${m.name} - ${m.artists}", ip, key)
-                        s?.let { playlistSongsItem.add(it) }
-                    } catch (e: Exception) {
-                        e.message
-                    }
-                }
-            }
-        }
-
-    private fun searchSimilarAlbums(search: String) = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPI.searchData(search).onStart {
-            similarAlbumPlaylistAlbum = DataResponse.Loading
-        }.catch {
-            similarAlbumPlaylistAlbum = DataResponse.Error(it)
-        }.collectLatest {
-            similarAlbumPlaylistAlbum = DataResponse.Success(it.albums)
+            Log.d("TAG", "artistsNews: data $it")
         }
     }
 }

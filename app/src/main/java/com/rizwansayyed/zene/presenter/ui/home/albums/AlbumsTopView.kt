@@ -41,15 +41,16 @@ import com.rizwansayyed.zene.presenter.util.UiUtils
 import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
 @Composable
 fun AlbumTopInfoDetails() {
-    val artistsViewModel: ArtistsViewModel = hiltViewModel()
+    val playlistAlbumViewModel: PlaylistAlbumViewModel = hiltViewModel()
     val width = LocalConfiguration.current.screenWidthDp.dp
 
     Spacer(Modifier.height(80.dp))
 
-    when (val v = artistsViewModel.playlistAlbum) {
+    when (val v = playlistAlbumViewModel.playlistAlbum) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
@@ -128,9 +129,9 @@ fun AlbumsSongsList(music: MusicData, menu: () -> Unit, play: () -> Unit) {
 
 @Composable
 fun ArtistsDesc() {
-    val artistsViewModel: ArtistsViewModel = hiltViewModel()
+    val playlistAlbumViewModel: PlaylistAlbumViewModel = hiltViewModel()
 
-    when (val v = artistsViewModel.playlistAlbum) {
+    when (val v = playlistAlbumViewModel.playlistAlbum) {
         is DataResponse.Success -> TextThin(
             v.item.description ?: "",
             Modifier.fillMaxWidth(),
@@ -144,11 +145,11 @@ fun ArtistsDesc() {
 
 @Composable
 fun SimilarArtistsAlbums() {
-    val artistsViewModel: ArtistsViewModel = hiltViewModel()
+    val playlistAlbumViewModel: PlaylistAlbumViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
 
     Column(Modifier.fillMaxWidth()) {
-        when (val v = artistsViewModel.similarAlbumPlaylistAlbum) {
+        when (val v = playlistAlbumViewModel.similarAlbumPlaylistAlbum) {
             is DataResponse.Success -> {
                 TopInfoWithSeeMore(stringResource(id = R.string.albums), null) {}
 

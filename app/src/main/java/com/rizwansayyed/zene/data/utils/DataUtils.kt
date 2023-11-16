@@ -67,6 +67,12 @@ object SpotifyAPI {
     const val SPOTIFY_COUNTRY_SEARCH = "top+50+"
 }
 
+object GoogleNewsAPI {
+    const val GOOGLE_NEWS_BASE_URL = "https://news.google.com/"
+    const val GOOGLE_NEWS_API = "rss/search"
+
+}
+
 object LastFM {
     const val LAST_FM_BASE_URL = "https://www.last.fm/"
     const val LFM_BASE_URL = "https://kerve.last.fm"
