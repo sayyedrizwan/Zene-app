@@ -154,11 +154,12 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
-                    navViewModel.setArtists("Taylor Swift")
+                    navViewModel.setAlbum("MPREb_5XXbjpMgJar")
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
                     navViewModel.setArtists("")
+                    navViewModel.setAlbum("")
                     navViewModel.setSongDetailsDialog(null)
 
                     val mpd = musicPlayerData.first()?.apply { show = false }
