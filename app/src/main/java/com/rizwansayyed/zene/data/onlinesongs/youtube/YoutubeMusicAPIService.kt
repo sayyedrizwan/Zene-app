@@ -27,8 +27,8 @@ interface YoutubeMusicAPIService {
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeMusicMainSearchResponse
 
-    @POST(YT_SEARCH_API)
-    suspend fun youtubeSearchPlaylist(
+    @POST(YT_BROWSE_API)
+    suspend fun youtubeBrowsePlaylist(
         @Body body: RequestBody,
         @Query("key") key: String,
         @Query("prettyPrint") prettyPrint: Boolean = false,

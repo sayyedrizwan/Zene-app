@@ -381,13 +381,14 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun albumsSearch(q: String) = flow {
+    override suspend fun albumsSearch(id: String) = flow {
         val list = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.music ?: ""
 
-        val r = youtubeMusicAPI.youtubeSearchPlaylist(ytMusicAlbumsDetailsJsonBody(ip, q), key)
+        val r = youtubeMusicAPI.youtubeBrowsePlaylist(ytMusicAlbumsDetailsJsonBody(ip, id), key)
+
         val name = r.header?.musicDetailHeaderRenderer?.title?.runs?.first()?.text
 
         r.contents?.singleColumnBrowseResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.first()?.musicShelfRenderer?.contents?.forEach {

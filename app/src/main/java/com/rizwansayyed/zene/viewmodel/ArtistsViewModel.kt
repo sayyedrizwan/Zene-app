@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +15,7 @@ import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundClo
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.PlaylistItemsData
 import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
@@ -37,6 +39,9 @@ class ArtistsViewModel @Inject constructor(
     private val songKick: SongKickScrapsImplInterface,
     private val songDownloader: SongDownloaderInterface
 ) : ViewModel() {
+
+    var playlistAlbum by mutableStateOf<DataResponse<PlaylistItemsData>>(DataResponse.Empty)
+        private set
 
     var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
         private set
@@ -203,4 +208,14 @@ class ArtistsViewModel @Inject constructor(
         }
     }
 
+
+    fun playlistAlbum(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.albumsSearch(id).onStart {
+            playlistAlbum = DataResponse.Loading
+        }.catch {
+            playlistAlbum = DataResponse.Error(it)
+        }.collectLatest {
+            playlistAlbum = DataResponse.Success(it)
+        }
+    }
 }
