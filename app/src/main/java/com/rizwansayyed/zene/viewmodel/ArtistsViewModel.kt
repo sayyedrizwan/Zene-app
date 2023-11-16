@@ -40,6 +40,9 @@ class ArtistsViewModel @Inject constructor(
     private val songDownloader: SongDownloaderInterface
 ) : ViewModel() {
 
+    var similarAlbumPlaylistAlbum by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
+        private set
+
     var playlistAlbum by mutableStateOf<DataResponse<PlaylistItemsData>>(DataResponse.Empty)
         private set
 
@@ -215,7 +218,18 @@ class ArtistsViewModel @Inject constructor(
         }.catch {
             playlistAlbum = DataResponse.Error(it)
         }.collectLatest {
+            it.name?.let { n -> searchSimilarAlbums(n) }
             playlistAlbum = DataResponse.Success(it)
+        }
+    }
+
+    private fun searchSimilarAlbums(search: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.searchData(search).onStart {
+            similarAlbumPlaylistAlbum = DataResponse.Loading
+        }.catch {
+            similarAlbumPlaylistAlbum = DataResponse.Error(it)
+        }.collectLatest {
+            similarAlbumPlaylistAlbum = DataResponse.Success(it.albums)
         }
     }
 }

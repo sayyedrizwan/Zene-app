@@ -135,6 +135,8 @@ fun FreshAddedItems(music: MusicData, click: () -> Unit) {
             MenuIcon {
                 homeNavViewModel.setSongDetailsDialog(music)
             }
+
+            Spacer(Modifier.height(8.dp))
         }
 
         AsyncImage(

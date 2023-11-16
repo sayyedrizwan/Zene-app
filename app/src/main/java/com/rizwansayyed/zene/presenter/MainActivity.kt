@@ -144,6 +144,10 @@ class MainActivity : ComponentActivity() {
                         navViewModel.setArtists("")
                         return@BackHandler
                     }
+                    if (navViewModel.selectedAlbum.isNotEmpty()) {
+                        navViewModel.setAlbum("")
+                        return@BackHandler
+                    }
                     if (navViewModel.homeNavV != HOME) {
                         navViewModel.setHomeNav(HOME)
                         return@BackHandler

@@ -96,7 +96,7 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
         }
 
         Column {
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(19.dp))
 
             SmallIcons(icon = R.drawable.ic_arrow_left, 28, 10) {
                 homeNav.setArtists("")

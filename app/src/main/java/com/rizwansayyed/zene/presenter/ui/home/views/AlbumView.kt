@@ -5,22 +5,36 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
-import com.rizwansayyed.zene.presenter.ui.TextMedium
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.home.albums.AlbumTopInfoDetails
+import com.rizwansayyed.zene.presenter.ui.home.albums.AlbumsSongsList
+import com.rizwansayyed.zene.presenter.ui.home.albums.ArtistsDesc
+import com.rizwansayyed.zene.presenter.ui.home.albums.SimilarArtistsAlbums
+import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItemsShort
+import com.rizwansayyed.zene.presenter.ui.home.online.GlobalTrendingPagerItems
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
+import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
@@ -36,16 +50,47 @@ fun AlbumView() {
             .background(DarkGreyColor)
     ) {
         LazyVerticalGrid(
-            GridCells.Fixed(TOTAL_ITEMS_GRID),
-            Modifier.fillMaxSize(), listState
+            GridCells.Fixed(TOTAL_ITEMS_GRID), Modifier.fillMaxSize(), listState
         ) {
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-                AlbumTopInfoDetails()
+                Column {
+                    AlbumTopInfoDetails()
+                }
+            }
+
+            when (val v = artistsViewModel.playlistAlbum) {
+                DataResponse.Loading -> {}
+                is DataResponse.Success -> itemsIndexed(
+                    v.item.list, span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
+                    AlbumsSongsList(item, {
+                        homeNav.setSongDetailsDialog(item)
+                    }, {
+                        addAllPlayer(v.item.list.toTypedArray(), i)
+                    })
+                }
+
+                else -> {}
+            }
+
+            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                Column {
+                    Spacer(Modifier.height(50.dp))
+                    ArtistsDesc()
+                    Spacer(Modifier.height(150.dp))
+                }
+            }
+
+            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                SimilarArtistsAlbums()
+            }
+
+            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                Spacer(Modifier.height(150.dp))
             }
         }
 
         Column {
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(19.dp))
 
             SmallIcons(icon = R.drawable.ic_arrow_left, 28, 10) {
                 homeNav.setAlbum("")
