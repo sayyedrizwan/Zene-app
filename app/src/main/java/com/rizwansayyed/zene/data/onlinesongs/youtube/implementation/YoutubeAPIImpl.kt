@@ -399,8 +399,6 @@ class YoutubeAPIImpl @Inject constructor(
                 it?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint?.videoId
 
             list.add(MusicData("", sName, name, pId, MusicType.MUSIC))
-//            val songs = musicInfoSearch("$sName - $name", ip, key)
-//            songs?.let { it1 -> list.add(it1) }
         }
 
 
@@ -418,7 +416,6 @@ class YoutubeAPIImpl @Inject constructor(
             if (it?.text?.contains("minutes") == true)
                 timeLength = it.text
         }
-
         emit(PlaylistItemsData(thumbnail, name, artist, timeLength, desc, list))
     }.flowOn(Dispatchers.IO)
 
