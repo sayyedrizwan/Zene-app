@@ -292,7 +292,7 @@ fun TextRegularNews(v: String) {
         fontWeight = FontWeight.Normal,
         maxLines = 2,
         textAlign = TextAlign.Start,
-        fontSize = 18.scaledSp(),
+        fontSize = 16.scaledSp(),
         overflow = TextOverflow.Ellipsis
     )
 }

@@ -38,6 +38,9 @@ import kotlin.system.exitProcess
 
 object Utils {
 
+    val tempEmptyList =
+        listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")
+
     object AppUrl {
         private const val APP_URL = "https://zene.vercel.app"
 

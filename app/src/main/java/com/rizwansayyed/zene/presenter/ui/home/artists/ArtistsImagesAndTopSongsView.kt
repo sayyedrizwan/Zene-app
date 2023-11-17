@@ -51,6 +51,7 @@ import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.Utils.tempEmptyList
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import kotlin.math.absoluteValue
 
@@ -64,7 +65,7 @@ fun ArtistsImagesView() {
         DataResponse.Loading -> {
             TopInfoWithSeeMore(R.string.artist_photos, null) {}
 
-            ArtistPhotoAlbum(listOf("", "", "", "", "", "", "", "", "", ""), true)
+            ArtistPhotoAlbum(tempEmptyList, true)
         }
 
         is DataResponse.Success -> {

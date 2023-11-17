@@ -33,18 +33,42 @@ import com.rizwansayyed.zene.presenter.ui.TextRegularNews
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.utils.Utils.customBrowser
+import com.rizwansayyed.zene.utils.Utils.tempEmptyList
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 
 @Composable
 fun ArtistsNews() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
+    val width = LocalConfiguration.current.screenWidthDp.dp - 40.dp
 
     when (val v = artistsViewModel.artistsNews) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
             TopInfoWithSeeMore(R.string.artist_news, null) {}
+
+            LazyRow(Modifier.fillMaxWidth()) {
+                items(4) {
+                    Column(
+                        Modifier
+                            .padding(horizontal = 5.dp)
+                            .width(width)
+                    ) {
+                        repeat(5) {
+                            Spacer(
+                                Modifier
+                                    .padding(bottom = 6.dp)
+                                    .fillMaxWidth()
+                                    .height(140.dp)
+                                    .clip(RoundedCornerShape(12))
+                                    .background(shimmerBrush())
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         is DataResponse.Success -> {
@@ -82,7 +106,9 @@ fun ArtistsNewsItems(n: GoogleNewsResponse.Channel.Item) {
             .clip(RoundedCornerShape(12))
             .background(MainColor)
             .clickable {
-                Uri.parse(n.link).customBrowser()
+                Uri
+                    .parse(n.link)
+                    .customBrowser()
             },
         Arrangement.Center, Alignment.CenterVertically
     ) {
