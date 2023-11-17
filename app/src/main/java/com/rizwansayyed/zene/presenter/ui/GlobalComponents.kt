@@ -283,6 +283,22 @@ fun TextRegular(
 
 
 @Composable
+fun TextRegularNews(v: String) {
+    Text(
+        v,
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.White,
+        fontFamily = urbanistFamily,
+        fontWeight = FontWeight.Normal,
+        maxLines = 2,
+        textAlign = TextAlign.Start,
+        fontSize = 14.scaledSp(),
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+
+@Composable
 fun shimmerBrush(): Brush {
     val shimmerColors = listOf(
         Color.LightGray.copy(alpha = 0.6f),

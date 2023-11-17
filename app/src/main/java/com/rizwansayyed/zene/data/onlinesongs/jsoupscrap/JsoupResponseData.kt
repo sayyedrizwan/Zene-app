@@ -92,3 +92,8 @@ fun getMainDomain(url: String): String? {
         null
     }
 }
+
+
+fun getFavIcon(url: String): String {
+    return "https://icon.horse/icon/${url.substringAfter("https://")}"
+}

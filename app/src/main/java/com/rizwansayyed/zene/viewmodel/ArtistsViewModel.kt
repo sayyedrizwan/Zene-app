@@ -66,7 +66,9 @@ class ArtistsViewModel @Inject constructor(
     var searchData by mutableStateOf<DataResponse<SearchData?>>(DataResponse.Empty)
         private set
 
-    var artistsNews by mutableStateOf<DataResponse<GoogleNewsResponse>>(DataResponse.Empty)
+    var artistsNews by mutableStateOf<DataResponse<List<List<GoogleNewsResponse.Channel.Item>>>>(
+        DataResponse.Empty
+    )
         private set
 
     var artistsVideoId by mutableStateOf("")
@@ -177,7 +179,7 @@ class ArtistsViewModel @Inject constructor(
         }
 
         if (list != null) {
-            artistsEvents = DataResponse.Success(list.reversed())
+            artistsEvents = DataResponse.Success(list)
             return@launch
         }
 
@@ -217,7 +219,7 @@ class ArtistsViewModel @Inject constructor(
         }.catch {
             artistsNews = DataResponse.Error(it)
         }.collectLatest {
-            artistsNews = DataResponse.Success(it)
+            artistsNews = DataResponse.Success(it.channel?.items?.chunked(5) ?: emptyList())
         }
     }
 }
