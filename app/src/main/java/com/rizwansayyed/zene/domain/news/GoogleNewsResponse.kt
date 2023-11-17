@@ -4,6 +4,9 @@ import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Root(name = "rss", strict = false)
 data class GoogleNewsResponse constructor(
@@ -36,6 +39,20 @@ data class GoogleNewsResponse constructor(
             @field:Element(name = "source")
             var source: Source? = null
         ) {
+            fun convertToMilliseconds(): Long {
+                val dateFormat =
+                    SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault())
+                return dateFormat.parse(pubDate!!)!!.time
+            }
+
+            fun timestamp(): String {
+                val originalDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault())
+                val newDateFormat = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
+                val newDateString: String = newDateFormat.format(originalDateFormat.parse(pubDate!!)!!)
+                val calendar = Calendar.getInstance().get(Calendar.YEAR)
+                return newDateString.replace(calendar.toString(), "").trim()
+            }
+
             @Root(name = "source", strict = false)
             data class Source constructor(
                 @field:Attribute(name = "url")

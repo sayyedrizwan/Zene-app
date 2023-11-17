@@ -1,10 +1,14 @@
 package com.rizwansayyed.zene.presenter.ui.home.artists
 
+import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,7 +31,9 @@ import com.rizwansayyed.zene.domain.news.GoogleNewsResponse
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextRegularNews
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 
 @Composable
@@ -74,16 +80,32 @@ fun ArtistsNewsItems(n: GoogleNewsResponse.Channel.Item) {
             .padding(bottom = 6.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(12))
-            .background(MainColor),
+            .background(MainColor)
+            .clickable {
+                Uri.parse(n.link).customBrowser()
+            },
         Arrangement.Center, Alignment.CenterVertically
     ) {
         AsyncImage(
             getFavIcon(n.source?.url ?: ""), "",
             Modifier
-                .padding(horizontal = 7.dp)
-                .size(50.dp)
+                .padding(horizontal = 7.dp, vertical = 20.dp)
+                .size(58.dp)
         )
 
-        TextRegularNews(n.title ?: "")
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(vertical = 6.dp)
+        ) {
+            val domain = n.source?.url?.substringAfter("https://")?.replace("www.", "") ?: ""
+            TextThin("$domain • ${n.timestamp()}", size = 10)
+
+            Spacer(Modifier.height(8.dp))
+
+            TextRegularNews(n.title ?: "")
+
+            Spacer(Modifier.height(8.dp))
+        }
     }
 }

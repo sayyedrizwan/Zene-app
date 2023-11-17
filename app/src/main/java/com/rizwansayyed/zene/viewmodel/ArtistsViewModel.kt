@@ -219,7 +219,8 @@ class ArtistsViewModel @Inject constructor(
         }.catch {
             artistsNews = DataResponse.Error(it)
         }.collectLatest {
-            artistsNews = DataResponse.Success(it.channel?.items?.chunked(5) ?: emptyList())
+            val list = it.channel?.items?.sortedByDescending { i -> i.convertToMilliseconds() }
+            artistsNews = DataResponse.Success(list?.chunked(5) ?: emptyList())
         }
     }
 }
