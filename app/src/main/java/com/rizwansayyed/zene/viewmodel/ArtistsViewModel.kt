@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
+import com.rizwansayyed.zene.domain.news.GoogleNewsResponse
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,6 +64,9 @@ class ArtistsViewModel @Inject constructor(
         private set
 
     var searchData by mutableStateOf<DataResponse<SearchData?>>(DataResponse.Empty)
+        private set
+
+    var artistsNews by mutableStateOf<DataResponse<GoogleNewsResponse>>(DataResponse.Empty)
         private set
 
     var artistsVideoId by mutableStateOf("")
@@ -209,12 +213,11 @@ class ArtistsViewModel @Inject constructor(
 
     private fun artistsNews(q: String) = viewModelScope.launch(Dispatchers.IO) {
         googleNews.searchNews(q).onStart {
-//            searchData = DataResponse.Loading
+            artistsNews = DataResponse.Loading
         }.catch {
-            Log.d("TAG", "artistsNews: data error ${it.message}")
-//            searchData = DataResponse.Error(it)
+            artistsNews = DataResponse.Error(it)
         }.collectLatest {
-            Log.d("TAG", "artistsNews: data $it")
+            artistsNews = DataResponse.Success(it)
         }
     }
 }

@@ -25,6 +25,7 @@
     <string name="select_artists">Select artists</string>
     <string name="skip">Skip</string>
     <string name="latest_songs">Latest Songs</string>
+    <string name="artist_news">Artist News</string>
     <string name="select_from_favourite">Select your favourite artists from the list.</string>
     <string name="artists_lists_try_again_later">Error getting artists list. Please try again later.</string>
     <string name="songs_you_may_like">Songs you may like</string>

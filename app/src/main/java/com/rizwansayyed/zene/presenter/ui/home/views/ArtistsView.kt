@@ -91,10 +91,10 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             ArtistsLatestSongs()
             Spacer(Modifier.height(40.dp))
 
-            ArtistsSimilarList()
+            ArtistsNews()
             Spacer(Modifier.height(40.dp))
 
-            ArtistsNews()
+            ArtistsSimilarList()
 
             Spacer(Modifier.height(190.dp))
         }

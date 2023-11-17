@@ -1,42 +1,46 @@
 package com.rizwansayyed.zene.domain.news
 
-data class GoogleNewsResponse(
-    val rss: Rss?
-) {
-    data class Rss(
-        val `_version`: String?,
-//        val `_xmlns:media`: String?,
-        val channel: Channel?
-    ) {
-        data class Channel(
-            val copyright: String?,
-            val description: String?,
-            val generator: String?,
-            val item: List<Item?>?,
-            val language: String?,
-            val lastBuildDate: String?,
-            val link: String?,
-            val title: String?,
-            val webMaster: String?
-        ) {
-            data class Item(
-                val description: String?,
-                val guid: Guid?,
-                val link: String?,
-                val pubDate: String?,
-                val source: Source?,
-                val title: String?
-            ) {
-                data class Guid(
-                    val __text: String?,
-                    val _isPermaLink: String?
-                )
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.ElementList
+import org.simpleframework.xml.Root
 
-                data class Source(
-                    val __text: String?,
-                    val _url: String?
-                )
-            }
+@Root(name = "rss", strict = false)
+data class GoogleNewsResponse constructor(
+    @field:Element(name = "channel")
+    var channel: Channel? = null
+) {
+
+    @Root(name = "channel", strict = false)
+    data class Channel constructor(
+        @field:ElementList(name = "item", inline = true)
+        var items: List<Item>? = null
+    ) {
+        @Root(name = "item", strict = false)
+        data class Item constructor(
+            @field:Element(name = "title")
+            var title: String? = null,
+
+            @field:Element(name = "link")
+            var link: String? = null,
+
+            @field:Element(name = "guid")
+            var guid: String? = null,
+
+            @field:Element(name = "pubDate")
+            var pubDate: String? = null,
+
+            @field:Element(name = "description")
+            var description: String? = null,
+
+            @field:Element(name = "source")
+            var source: Source? = null
+        ) {
+            @Root(name = "source", strict = false)
+            data class Source constructor(
+                @field:Attribute(name = "url")
+                var url: String? = null
+            )
         }
     }
 }
