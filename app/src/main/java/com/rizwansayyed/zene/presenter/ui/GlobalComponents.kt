@@ -131,13 +131,13 @@ fun TextThinArtistsDesc(
     Text(
         v,
         modifier = Modifier
-            .padding(horizontal = 10.dp)
-            .offset(y = (-15).dp)
+            .padding(top = 20.dp)
+            .padding(end = 10.dp, start = 14.dp)
             .animateContentSize(spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)),
         color = Color.White,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Thin,
-        maxLines = if (showFull) Int.MAX_VALUE else 5,
+        maxLines = if (showFull) Int.MAX_VALUE else 2,
         fontSize = 14.scaledSp(),
         textAlign = TextAlign.Start,
         overflow = TextOverflow.Ellipsis

@@ -47,12 +47,14 @@ fun RelatedAlbums() {
 
 @Composable
 fun LoadingAlbumsCards() {
-    Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
+    val size = (LocalConfiguration.current.screenWidthDp / 2.1).dp
+
+    Column(Modifier.width(size), Arrangement.Center, Alignment.CenterHorizontally) {
         Spacer(
             Modifier
                 .padding(5.dp)
                 .fillMaxWidth()
-                .height(190.dp)
+                .height(size)
                 .background(shimmerBrush())
         )
 
@@ -72,7 +74,9 @@ fun LoadingAlbumsCards() {
 
 @Composable
 fun AlbumsItems(albums: MusicData, click: () -> Unit) {
-    Column(Modifier.fillMaxWidth()) {
+    val size = (LocalConfiguration.current.screenWidthDp / 2.1).dp
+
+    Column(Modifier.width(size)) {
         AsyncImage(
             albums.thumbnail, "",
             Modifier
@@ -85,7 +89,13 @@ fun AlbumsItems(albums: MusicData, click: () -> Unit) {
 
         Spacer(Modifier.height(6.dp))
 
-        TextSemiBold(albums.name ?: "", Modifier.fillMaxWidth(), doCenter = true, size = 14)
+        TextSemiBold(
+            albums.name ?: "",
+            Modifier.padding(end = 6.dp).fillMaxWidth(),
+            false,
+            singleLine = true,
+            size = 14
+        )
 
         Spacer(Modifier.height(12.dp))
     }
@@ -100,7 +110,8 @@ fun AlbumsItemsShort(albums: MusicData, click: () -> Unit) {
         AsyncImage(
             albums.thumbnail, "", Modifier
                 .padding(5.dp)
-                .width(width).clickable {
+                .width(width)
+                .clickable {
                     click()
                 }
         )

@@ -59,37 +59,37 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             .background(DarkGreyColor)
     ) {
         Column(Modifier.verticalScroll(scrollState)) {
-//            if (artistsViewModel.artistsVideoId.isEmpty())
-//                TopArtistsImageView()
-//            else
-//                ArtistsSongURL(artistsViewModel.artistsVideoId, artistsThumbnailPlayer)
-//
-//            ArtistsNameWithDescription()
-//            Spacer(Modifier.height(90.dp))
-//
-//            ArtistsProfilePin()
-//            Spacer(Modifier.height(10.dp))
-//
-//            ArtistsButtonView()
-//            Spacer(Modifier.height(40.dp))
-//
-//            ArtistsSocialMedia()
-//            Spacer(Modifier.height(40.dp))
-//
-//            ArtistsImagesView()
-//            Spacer(Modifier.height(40.dp))
-//
-//            ArtistsEvents()
-//            Spacer(Modifier.height(40.dp))
-//
-//            ArtistsTopSongs()
-//            Spacer(Modifier.height(40.dp))
-//
-//            ArtistsAlbumsList()
-//            Spacer(Modifier.height(40.dp))
-//
-//            ArtistsLatestSongs()
-//            Spacer(Modifier.height(40.dp))
+            if (artistsViewModel.artistsVideoId.isEmpty())
+                TopArtistsImageView()
+            else
+                ArtistsSongURL(artistsViewModel.artistsVideoId, artistsThumbnailPlayer)
+
+            ArtistsNameWithDescription()
+            Spacer(Modifier.height(90.dp))
+
+            ArtistsProfilePin()
+            Spacer(Modifier.height(10.dp))
+
+            ArtistsButtonView()
+            Spacer(Modifier.height(40.dp))
+
+            ArtistsSocialMedia()
+            Spacer(Modifier.height(40.dp))
+
+            ArtistsImagesView()
+            Spacer(Modifier.height(40.dp))
+
+            ArtistsEvents()
+            Spacer(Modifier.height(40.dp))
+
+            ArtistsTopSongs()
+            Spacer(Modifier.height(40.dp))
+
+            ArtistsAlbumsList()
+            Spacer(Modifier.height(40.dp))
+
+            ArtistsLatestSongs()
+            Spacer(Modifier.height(40.dp))
 
             ArtistsNews()
             Spacer(Modifier.height(40.dp))

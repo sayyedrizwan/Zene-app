@@ -86,7 +86,7 @@ class PlaylistAlbumViewModel @Inject constructor(
         }.catch {
             similarAlbumPlaylistAlbum = DataResponse.Error(it)
         }.collectLatest {
-            similarAlbumPlaylistAlbum = DataResponse.Success(it.albums)
+            similarAlbumPlaylistAlbum = DataResponse.Success(it.albums.subList(1, it.albums.size))
         }
     }
 }

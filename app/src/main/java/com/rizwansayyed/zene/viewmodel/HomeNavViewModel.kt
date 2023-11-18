@@ -70,6 +70,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
             selectedArtists = ""
             delay(100.milliseconds)
         }
+        selectedAlbum = ""
         selectedArtists = a
     }
 
