@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
@@ -46,7 +47,14 @@ fun AlbumsTopThumbnail() {
     val height = LocalConfiguration.current.screenHeightDp.dp / 2
 
     when (val v = playlistAlbum.playlistAlbum) {
-        DataResponse.Loading -> {}
+        DataResponse.Loading -> Spacer(
+            Modifier
+                .fillMaxWidth()
+                .height(height)
+                .padding(15.dp)
+                .background(shimmerBrush())
+        )
+
         is DataResponse.Success -> AsyncImage(
             v.item.thumbnail, v.item.name, Modifier
                 .fillMaxWidth()
@@ -64,7 +72,16 @@ fun AlbumNameWithPlayAllButton() {
     var desc by remember { mutableStateOf(false) }
 
     when (val v = playlistAlbum.playlistAlbum) {
-        DataResponse.Loading -> {}
+        DataResponse.Loading -> repeat(9) {
+            Spacer(
+                Modifier
+                    .padding(horizontal = 10.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(11.dp)
+                    .background(shimmerBrush())
+            )
+        }
+
         is DataResponse.Success -> {
             Row(
                 Modifier

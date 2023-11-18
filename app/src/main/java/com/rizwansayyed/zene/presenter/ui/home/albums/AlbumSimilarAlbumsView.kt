@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItems
+import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
@@ -28,7 +29,12 @@ fun SimilarAlbums() {
     Spacer(Modifier.height(30.dp))
 
     when (val v = playlistAlbum.similarAlbumPlaylistAlbum) {
-        DataResponse.Loading -> {}
+        DataResponse.Loading ->LazyRow(Modifier.fillMaxWidth()) {
+            items(9) {
+                LoadingAlbumsCards()
+            }
+        }
+
         is DataResponse.Success -> LazyRow(Modifier.fillMaxWidth()) {
             items(v.item) {
                 AlbumsItems(it) {

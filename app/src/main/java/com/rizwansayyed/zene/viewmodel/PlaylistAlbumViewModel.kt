@@ -50,6 +50,7 @@ class PlaylistAlbumViewModel @Inject constructor(
 
     fun playlistAlbum(id: String) = viewModelScope.launch(Dispatchers.IO) {
         youtubeAPI.albumsSearch(id).onStart {
+            similarAlbumPlaylistAlbum = DataResponse.Loading
             playlistAlbum = DataResponse.Loading
         }.catch {
             playlistAlbum = DataResponse.Error(it)
