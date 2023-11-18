@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service.player
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -49,22 +50,6 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
     }
     private val mediaSession by lazy { MediaSession.Builder(c, ePlayer).build() }
     private var type: TYPE = TYPE.ARTISTS_THUMBNAIL
-
-    private fun makeMediaCache(url: String): ProgressiveMediaSource {
-        val usedCache = LeastRecentlyUsedCacheEvictor((100 * 1024 * 1024).toLong())
-        val databaseProvider = StandaloneDatabaseProvider(c)
-
-        val simpleCache = SimpleCache(File(c.cacheDir, "player_media"), usedCache, databaseProvider)
-
-        val cacheDataSourceFactory = CacheDataSource.Factory()
-            .setCache(simpleCache)
-            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-
-        val mediaItem = MediaItem.fromUri(Uri.parse(url))
-
-        return ProgressiveMediaSource.Factory(cacheDataSourceFactory)
-            .createMediaSource(mediaItem)
-    }
 
     @Composable
     fun AlbumsArtistsVideo(url: String) {
@@ -127,6 +112,7 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
         if (playbackState == Player.STATE_READY && type == TYPE.ARTISTS_THUMBNAIL) {
+            Log.d("TAG", "onPlaybackStateChanged: changed ")
         }
     }
 
@@ -141,7 +127,7 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
         try {
             mediaSession.release()
             ePlayer.release()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ePlayer.pause()
         }
     }

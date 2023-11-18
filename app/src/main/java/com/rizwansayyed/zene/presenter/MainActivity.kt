@@ -70,6 +70,7 @@ import kotlin.time.Duration.Companion.seconds
 // if going ahead or back on song multiple time on via via notification is causing problem. fix it....
 // work on artists share and pin and artists photos
 // make playlist save and all options.
+// start search song after voice command
 
 
 @AndroidEntryPoint
@@ -133,7 +134,7 @@ class MainActivity : ComponentActivity() {
                     slideInVertically(initialOffsetY = { it / 2 }),
                     slideOutVertically(targetOffsetY = { it / 2 }),
                 ) {
-                    MusicPlayerView()
+                    MusicPlayerView(player)
                 }
 
                 AnimatedVisibility(navViewModel.songDetailDialog != null) {

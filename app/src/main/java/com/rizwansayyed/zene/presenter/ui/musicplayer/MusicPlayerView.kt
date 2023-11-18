@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,38 +22,42 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.PlayerBackgroundImage
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
-fun MusicPlayerView() {
-    val p by musicPlayerData.collectAsState(initial = null)
+fun MusicPlayerView(player: ExoPlayer) {
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val p by musicPlayerData.collectAsState(initial = runBlocking(Dispatchers.IO) { musicPlayerData.first() })
+
     Box(
         Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        AsyncImage(
-            p?.v?.thumbnail, p?.v?.songName,
-            Modifier
-                .fillMaxSize()
-                .blur(116.dp),
-            contentScale = ContentScale.Crop
-        )
+        PlayerBackgroundImage(p)
+
+    }
+
+    LaunchedEffect(Unit) {
+        if (p?.songID != player.currentMediaItem?.mediaId)
+            p?.let { playerViewModel.init(it) }
     }
 }
 

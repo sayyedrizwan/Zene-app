@@ -71,7 +71,7 @@ class ArtistsViewModel @Inject constructor(
     )
         private set
 
-    var artistsVideoId by mutableStateOf("")
+    var artistsVideoURL by mutableStateOf("")
         private set
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -131,7 +131,7 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun latestVideo(a: String) = viewModelScope.launch(Dispatchers.IO) {
-        artistsVideoId = ""
+        artistsVideoURL = ""
 
         val vId = try {
             bingScraps.bingOfficialVideo(a).first()
@@ -140,13 +140,15 @@ class ArtistsViewModel @Inject constructor(
         }
 
         if (vId == null) {
-            artistsVideoId = ""
+            artistsVideoURL = ""
             return@launch
         }
+
+
         songDownloader.downloadVideo(vId).catch {
-            artistsVideoId = ""
+            artistsVideoURL = ""
         }.collectLatest {
-            artistsVideoId = it ?: ""
+            artistsVideoURL = it ?: ""
         }
     }
 

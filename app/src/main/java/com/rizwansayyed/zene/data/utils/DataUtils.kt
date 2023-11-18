@@ -16,7 +16,7 @@ object DBNAME {
     const val SAVED_PLAYLIST_DB = "saved_playlist_db"
 }
 
-object VideoDownloaderAPI{
+object VideoDownloaderAPI {
     const val SAVE_FROM_BASE_URL = "https://www.savefrom.live/"
     const val SAVE_FROM_VIDEO_API = "wp-json/aio-dl/video-data/"
 }
@@ -312,7 +312,7 @@ object YoutubeAPI {
         return json.toRequestBody(mediaType)
     }
 
-    fun ytLatestMusicSearch(ip: IpJsonResponse?, q: String): RequestBody {
+    fun ytLatestMusicSearch(ip: IpJsonResponse?, q: String, doLatest: Boolean): RequestBody {
         val json = """{
             "context": {
                 "client": {
@@ -323,8 +323,7 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, 
-            "query": "$q", 
-            "params": "EgIIBQ%3D%3D"
+            "query": "$q" ${if (doLatest) ", \"params\": \"EgIIBQ%3D%3D\"" else ""}
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -443,6 +442,7 @@ object ScrapURL {
     fun songKickArtistsCalendar(path: String): String {
         return "https://www.songkick.com/${path}/calendar"
     }
+
     fun songKickArtistsCalendarInfo(path: String): String {
         return "https://www.songkick.com${path}"
     }

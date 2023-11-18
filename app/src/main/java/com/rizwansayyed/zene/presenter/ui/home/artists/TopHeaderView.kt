@@ -90,7 +90,7 @@ fun ArtistsSongURL(videoLink: String, artistsThumbnailPlayer: ArtistsThumbnailVi
             .fillMaxWidth()
             .size(height)
     ) {
-        artistsThumbnailPlayer.AlbumsArtistsVideo(url = videoLink)
+        artistsThumbnailPlayer.AlbumsArtistsVideo(videoLink)
 
         Spacer(
             Modifier

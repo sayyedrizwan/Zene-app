@@ -62,7 +62,7 @@ object Utils {
 
         return MediaItem.Builder()
             .setUri(Uri.parse(url))
-            .setMimeType("audio/mp4")
+            .setMimeType("audio/mp3")
             .setMediaId(this.pId ?: (123..9999).random().toString())
             .setMediaMetadata(metadata)
             .build()

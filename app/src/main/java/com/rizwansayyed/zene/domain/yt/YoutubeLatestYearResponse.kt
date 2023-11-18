@@ -1081,6 +1081,16 @@ data class ReelShelfRendererLatestYoutube(
             val videoType: String?,
             val viewCountText: ViewCountText?
         ) {
+
+            fun thumbnailURL(): String? {
+                return try {
+                    thumbnail?.thumbnails?.maxByOrNull {
+                        it?.width ?: 0
+                    }?.url
+                } catch (e: Exception) {
+                    ""
+                }
+            }
             data class Accessibility(
                 val accessibilityData: AccessibilityData?
             ) {
@@ -1337,6 +1347,7 @@ data class ReelShelfRendererLatestYoutube(
                 val isOriginalAspectRatio: Boolean?,
                 val thumbnails: List<Thumbnail?>?
             ) {
+
                 data class Thumbnail(
                     val height: Int?,
                     val url: String?,

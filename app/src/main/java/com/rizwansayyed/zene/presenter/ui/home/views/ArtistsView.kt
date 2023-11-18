@@ -59,10 +59,10 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             .background(DarkGreyColor)
     ) {
         Column(Modifier.verticalScroll(scrollState)) {
-            if (artistsViewModel.artistsVideoId.isEmpty())
+            if (artistsViewModel.artistsVideoURL.isEmpty())
                 TopArtistsImageView()
             else
-                ArtistsSongURL(artistsViewModel.artistsVideoId, artistsThumbnailPlayer)
+                ArtistsSongURL(artistsViewModel.artistsVideoURL, artistsThumbnailPlayer)
 
             ArtistsNameWithDescription()
             Spacer(Modifier.height(90.dp))

@@ -6,8 +6,9 @@ data class MusicPlayerData(
     val currentTs: Long = 0,
     val duration: Long = 0,
     val backShorts: List<String> = emptyList(),
-    val songID: String = "",
-    val videoID: String = "",
+    var songID: String = "",
+    var videoID: String = "",
+    var shortsID: String = "",
     val songsLyrics: String = "",
     var songsLists: List<MusicData?> = emptyList(),
     var playType: MusicType?

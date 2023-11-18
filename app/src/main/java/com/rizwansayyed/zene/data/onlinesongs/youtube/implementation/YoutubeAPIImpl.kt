@@ -419,13 +419,13 @@ class YoutubeAPIImpl @Inject constructor(
         emit(PlaylistItemsData(thumbnail, albumName, artist, timeLength, desc, list))
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun allYoutubeVideoThisYearSearch(q: String) = flow {
+    override suspend fun youtubeVideoThisYearSearch(q: String) = flow {
         val list = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.yt ?: ""
 
-        val r = youtubeAPI.youtubeSearchResponse(ytLatestMusicSearch(ip, q), key)
+        val r = youtubeAPI.youtubeSearchResponse(ytLatestMusicSearch(ip, q, true), key)
 
         r.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEach { c ->
             val vId = c?.videoRenderer?.videoId
@@ -436,6 +436,35 @@ class YoutubeAPIImpl @Inject constructor(
                 thumbnail ?: "", name, "", vId, MusicType.VIDEO
             )
             list.add(m)
+        }
+
+        emit(list)
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun youtubeShortsThisYearSearch(q: String) = flow {
+        val list = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.yt ?: ""
+
+        val r = youtubeAPI
+            .youtubeSearchResponse(ytLatestMusicSearch(ip, "${q.lowercase()} shorts", false), key)
+
+        r.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEach { c ->
+            if (c?.reelShelfRenderer?.title?.simpleText?.lowercase() != "shorts") return@forEach
+
+            c.reelShelfRenderer.items?.forEach { shorts ->
+                val vId = shorts?.reelItemRenderer?.videoId
+                val thumbnail = shorts?.reelItemRenderer?.thumbnailURL()
+                val name = shorts?.reelItemRenderer?.headline?.simpleText
+                val viewsInArtists = shorts?.reelItemRenderer?.viewCountText?.simpleText
+
+                val m = MusicData(
+                    thumbnail ?: "", name, viewsInArtists, vId, MusicType.VIDEO
+                )
+                list.add(m)
+            }
         }
 
         emit(list)

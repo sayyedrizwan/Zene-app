@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.presenter.ui.home.artists
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -74,15 +76,18 @@ fun ArtistsNameWithDescription() {
 
         is DataResponse.Success -> {
             TextThinArtistsDesc(v.item.trim(), showFullDesc)
+            Spacer(Modifier.height(5.dp))
 
-            TextRegular(
-                stringResource(if (showFullDesc) R.string.hide_desc else R.string.show_full_desc),
-                Modifier
-                    .padding(horizontal = 10.dp)
-                    .clickable {
+            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                if (showFullDesc) Box(Modifier.rotate(180f)) {
+                    SmallIcons(R.drawable.ic_arrow_down_sharp) {
                         showFullDesc = !showFullDesc
-                    }, size = 14, color = Purple80
-            )
+                    }
+                }
+                else SmallIcons(R.drawable.ic_arrow_down_sharp) {
+                    showFullDesc = !showFullDesc
+                }
+            }
         }
     }
 }
