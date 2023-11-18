@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScrapsImplInterface
@@ -63,13 +65,16 @@ class PlaylistAlbumViewModel @Inject constructor(
 
     private fun addSongsToPlaylist(list: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
         playlistSongsItem.clear()
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         list.forEach { m ->
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
                     try {
-                        val s = youtubeAPI.songDetail(m.pId ?: "").first()
-                        playlistSongsItem.add(s)
+                        val name = "${m.name} - ${m.artists}"
+                        val s = youtubeAPI.musicInfoSearch(name, ip, key)
+                        s?.let { playlistSongsItem.add(it) }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

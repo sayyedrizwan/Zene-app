@@ -831,6 +831,7 @@ class YoutubeAPIImpl @Inject constructor(
                         c?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
 
                     val music = MusicData(thumbnail, name, name, id, MusicType.ARTISTS)
+
                     name?.let {
                         artists.add(music)
                     }

@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.onlinesongs.youtube
 
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_BROWSE_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_NEXT_API
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_PLAYER_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SEARCH_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SEARCH_SUGGESTION_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SUGGESTIONS_API
@@ -88,7 +89,7 @@ interface YoutubeMusicAPIService {
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeSearchTextSuggestionResponse
 
-    @POST(YT_SEARCH_SUGGESTION_API)
+    @POST(YT_PLAYER_API)
     suspend fun songDetail(
         @Body body: RequestBody,
         @Query("key") key: String,

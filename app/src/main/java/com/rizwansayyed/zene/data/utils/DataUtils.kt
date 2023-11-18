@@ -139,6 +139,7 @@ object YoutubeAPI {
     const val YT_SUGGESTIONS_API = "music/get_search_suggestions"
     const val YT_BROWSE_API = "browse"
     const val YT_SEARCH_SUGGESTION_API = "music/get_search_suggestions"
+    const val YT_PLAYER_API = "player"
 
 
     fun generateYTMusicPlaylistURL(pid: String): String {
@@ -182,7 +183,7 @@ object YoutubeAPI {
 
     fun ytMusicMusicDetails(ip: IpJsonResponse?, id: String): RequestBody {
         val json = """{
-            "videoId": "${id}",
+            "videoId": "$id",
             "context": {
                 "client": {
                     "remoteHost": "${ip?.query}",

@@ -27,6 +27,8 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +39,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
@@ -235,42 +239,49 @@ fun HomeView() {
 
 @Composable
 fun BottomNavBar(modifier: Modifier) {
+    val player by musicPlayerData.collectAsState(initial = null)
     val nav: HomeNavViewModel = hiltViewModel()
-    Row(
-        modifier
-            .padding(bottom = 25.dp)
-            .padding(12.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(80))
-            .background(BlackColor),
-        Arrangement.SpaceEvenly,
-        Alignment.CenterVertically
-    ) {
-        HomeNavigation.entries.forEach {
-            if (!it.doShow) return@forEach
+    Column(Modifier.fillMaxWidth()) {
+        player?.v?.thumbnail?.let {
+            AsyncImage(player?.v?.thumbnail, player?.v?.songName, Modifier.size(50.dp))
+        }
 
-            Column(
-                Modifier
-                    .padding(vertical = 15.dp)
-                    .clickable {
-                        nav.setHomeNav(it)
-                    },
-                Arrangement.Center,
-                Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painterResource(it.img),
-                    "",
-                    Modifier.size(25.dp),
-                    colorFilter = ColorFilter.tint(if (nav.homeNavV == it) Color.White else Color.Gray)
-                )
+        Row(
+            modifier
+                .padding(bottom = 25.dp)
+                .padding(12.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(80))
+                .background(BlackColor),
+            Arrangement.SpaceEvenly,
+            Alignment.CenterVertically
+        ) {
+            HomeNavigation.entries.forEach {
+                if (!it.doShow) return@forEach
 
-                Spacer(Modifier.height(5.dp))
+                Column(
+                    Modifier
+                        .padding(vertical = 15.dp)
+                        .clickable {
+                            nav.setHomeNav(it)
+                        },
+                    Arrangement.Center,
+                    Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painterResource(it.img),
+                        "",
+                        Modifier.size(25.dp),
+                        colorFilter = ColorFilter.tint(if (nav.homeNavV == it) Color.White else Color.Gray)
+                    )
 
-                TextRegular(
-                    it.n, Modifier, if (nav.homeNavV == it) Color.White else Color.Gray,
-                    doCenter = true, size = 10
-                )
+                    Spacer(Modifier.height(5.dp))
+
+                    TextRegular(
+                        it.n, Modifier, if (nav.homeNavV == it) Color.White else Color.Gray,
+                        doCenter = true, size = 10
+                    )
+                }
             }
         }
     }

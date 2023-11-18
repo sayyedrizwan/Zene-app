@@ -7,3 +7,9 @@ import androidx.compose.runtime.Composable
 fun MusicPlayerView() {
 
 }
+
+
+@Composable
+fun SmallMusicPlayingIcon() {
+    
+}

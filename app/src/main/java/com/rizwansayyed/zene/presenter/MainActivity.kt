@@ -46,6 +46,7 @@ import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
+import com.rizwansayyed.zene.presenter.ui.musicplayer.SmallMusicPlayingIcon
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
@@ -73,6 +74,7 @@ import kotlin.time.Duration.Companion.seconds
 
 // if going ahead or back on song multiple time on via via notification is causing problem. fix it....
 // work on artists share and pin and artists photos
+// make playlist save and all options.
 
 
 @AndroidEntryPoint
@@ -125,6 +127,8 @@ class MainActivity : ComponentActivity() {
 
                     BottomNavBar(Modifier.align(Alignment.BottomCenter))
                 }
+
+
 
                 if (songPlayerView?.show == true) MusicPlayerView()
 
