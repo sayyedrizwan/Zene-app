@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -13,12 +12,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -27,13 +29,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
-import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
-import com.rizwansayyed.zene.data.utils.CacheFiles
-import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.HomeNavigation.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
@@ -46,7 +46,6 @@ import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
-import com.rizwansayyed.zene.presenter.ui.musicplayer.SmallMusicPlayingIcon
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
@@ -59,15 +58,11 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import org.jsoup.Connection
-import org.jsoup.Jsoup
-import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -82,6 +77,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer
+
+    @Inject
+    lateinit var player: ExoPlayer
 
     private val navViewModel: HomeNavViewModel by viewModels()
     private val roomViewModel: RoomDbViewModel by viewModels()
@@ -98,6 +96,7 @@ class MainActivity : ComponentActivity() {
                 val keyboard = LocalSoftwareKeyboardController.current
                 val doSplashScreen by doShowSplashScreen.collectAsState(initial = false)
                 val songPlayerView by musicPlayerData.collectAsState(initial = null)
+                val coroutine = rememberCoroutineScope()
 
                 val notificationValue = stringResource(id = R.string.need_notification_p)
                 val notificationP =
@@ -125,12 +124,17 @@ class MainActivity : ComponentActivity() {
                         AlbumView()
                     }
 
-                    BottomNavBar(Modifier.align(Alignment.BottomCenter))
+                    BottomNavBar(Modifier.align(Alignment.BottomCenter), player)
                 }
 
 
-
-                if (songPlayerView?.show == true) MusicPlayerView()
+                AnimatedVisibility(
+                    songPlayerView?.show == true, Modifier,
+                    slideInVertically(initialOffsetY = { it / 2 }),
+                    slideOutVertically(targetOffsetY = { it / 2 }),
+                ) {
+                    MusicPlayerView()
+                }
 
                 AnimatedVisibility(navViewModel.songDetailDialog != null) {
                     MusicDialogSheet()
@@ -140,30 +144,31 @@ class MainActivity : ComponentActivity() {
 
 
                 BackHandler {
-                    if (navViewModel.songDetailDialog != null) {
-                        navViewModel.setSongDetailsDialog(null)
-                        return@BackHandler
-                    }
-                    if (navViewModel.selectedArtists.isNotEmpty()) {
-                        navViewModel.setArtists("")
-                        return@BackHandler
-                    }
-                    if (navViewModel.selectedAlbum.isNotEmpty()) {
-                        navViewModel.setAlbum("")
-                        return@BackHandler
-                    }
-                    if (navViewModel.homeNavV != HOME) {
-                        navViewModel.setHomeNav(HOME)
-                        return@BackHandler
-                    }
+                    coroutine.launch(Dispatchers.IO) {
+                        if (musicPlayerData.first()?.show == true) {
+                            musicPlayerData =
+                                flowOf(musicPlayerData.first()?.apply { show = false })
+                            return@launch
+                        }
+                        if (navViewModel.selectedArtists.isNotEmpty()) {
+                            navViewModel.setArtists("")
+                            return@launch
+                        }
+                        if (navViewModel.selectedAlbum.isNotEmpty()) {
+                            navViewModel.setAlbum("")
+                            return@launch
+                        }
+                        if (navViewModel.homeNavV != HOME) {
+                            navViewModel.setHomeNav(HOME)
+                            return@launch
+                        }
 
-                    activity.finish()
+                        activity.finish()
+                    }
                 }
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
-//                    navViewModel.setArtists("Taylor Swift")
-                    navViewModel.setAlbum("MPREb_5XXbjpMgJar")
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {

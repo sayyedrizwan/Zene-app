@@ -1,6 +1,10 @@
 package com.rizwansayyed.zene.presenter.ui
 
 import android.content.Intent
+import android.graphics.BlendMode
+import android.os.Build
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.animation.animateContentSize
@@ -36,12 +40,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +62,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.exoplayer.upstream.Allocation
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor

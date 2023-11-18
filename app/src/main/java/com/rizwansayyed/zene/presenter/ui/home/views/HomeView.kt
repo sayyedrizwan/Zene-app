@@ -1,11 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
-import android.R.attr
-import android.view.View
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +21,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,11 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
@@ -65,6 +55,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.TopArtistsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TopGlobalSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.TrendingSongsCountryList
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.CityRadioViewList
+import com.rizwansayyed.zene.presenter.ui.musicplayer.BottomNavImage
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
@@ -236,18 +227,14 @@ fun HomeView() {
     }
 }
 
-
 @Composable
-fun BottomNavBar(modifier: Modifier) {
-    val player by musicPlayerData.collectAsState(initial = null)
+fun BottomNavBar(modifier: Modifier, player: ExoPlayer) {
     val nav: HomeNavViewModel = hiltViewModel()
-    Column(Modifier.fillMaxWidth()) {
-        player?.v?.thumbnail?.let {
-            AsyncImage(player?.v?.thumbnail, player?.v?.songName, Modifier.size(50.dp))
-        }
+    Column(modifier.fillMaxWidth()) {
+        BottomNavImage(player)
 
         Row(
-            modifier
+            Modifier
                 .padding(bottom = 25.dp)
                 .padding(12.dp)
                 .fillMaxWidth()

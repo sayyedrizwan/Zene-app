@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Intent
 import android.util.Log
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
@@ -12,6 +14,13 @@ import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANN
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL_ID
 import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 
 @HiltAndroidApp
@@ -45,6 +54,15 @@ class ApplicationModule : Application() {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(this)
             }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val playerData = musicPlayerData.first()?.apply {
+                show = false
+            }
+            musicPlayerData = flowOf(playerData)
+
+            if (isActive) cancel()
         }
 
 //        FirebaseApp.initializeApp(this)
