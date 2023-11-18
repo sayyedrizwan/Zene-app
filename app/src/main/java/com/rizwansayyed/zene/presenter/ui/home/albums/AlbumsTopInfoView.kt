@@ -90,20 +90,22 @@ fun AlbumNameWithPlayAllButton() {
                 )
             }
 
-            TextThinArtistsDesc(v.item.description ?: "", desc)
-            Spacer(Modifier.height(5.dp))
 
-            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                if (desc) Box(Modifier.rotate(180f)) {
-                    SmallIcons(R.drawable.ic_arrow_down_sharp) {
+            if ((v.item.description?.length ?: 0) > 2) {
+                TextThinArtistsDesc(v.item.description ?: "", desc)
+                Spacer(Modifier.height(5.dp))
+
+                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                    if (desc) Box(Modifier.rotate(180f)) {
+                        SmallIcons(R.drawable.ic_arrow_down_sharp) {
+                            desc = !desc
+                        }
+                    }
+                    else SmallIcons(R.drawable.ic_arrow_down_sharp) {
                         desc = !desc
                     }
                 }
-                else SmallIcons(R.drawable.ic_arrow_down_sharp) {
-                    desc = !desc
-                }
             }
-
             Spacer(Modifier.height(5.dp))
 
         }
