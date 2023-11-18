@@ -813,6 +813,7 @@ data class MusicResponsiveListItemRendererPlaylist(
                 ) {
                     data class NavigationEndpoint(
                         val clickTrackingParams: String?,
+                        val browseEndpoint: Menu.MenuRenderer.Item.MenuNavigationItemRenderer.NavigationEndpoint.BrowseEndpoint?,
                         val watchEndpoint: WatchEndpoint?
                     ) {
                         data class WatchEndpoint(

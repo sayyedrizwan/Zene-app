@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMusicDetails
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNewReleaseJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
@@ -59,7 +60,6 @@ class YoutubeAPIImpl @Inject constructor(
     private val remoteConfig: RemoteConfigInterface,
     private val ytJsonScrap: YoutubeScrapInterface
 ) : YoutubeAPIImplInterface {
-
     override suspend fun newReleaseMusic() = flow {
         val cache = responseCache(freshAddedSongs, MusicDataCache::class.java)
         if (cache != null) {
@@ -389,7 +389,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         val r = youtubeMusicAPI.youtubeBrowsePlaylist(ytMusicAlbumsDetailsJsonBody(ip, id), key)
 
-        val name = r.header?.musicDetailHeaderRenderer?.title?.runs?.first()?.text
+        val albumName = r.header?.musicDetailHeaderRenderer?.title?.runs?.first()?.text
 
         r.contents?.singleColumnBrowseResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.first()?.musicShelfRenderer?.contents?.forEach {
             val sName =
@@ -398,7 +398,7 @@ class YoutubeAPIImpl @Inject constructor(
             val pId =
                 it?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint?.videoId
 
-            list.add(MusicData("", sName, name, pId, MusicType.MUSIC))
+            list.add(MusicData("", sName, albumName, pId, MusicType.MUSIC))
         }
 
 
@@ -416,7 +416,7 @@ class YoutubeAPIImpl @Inject constructor(
             if (it?.text?.contains("minutes") == true)
                 timeLength = it.text
         }
-        emit(PlaylistItemsData(thumbnail, name, artist, timeLength, desc, list))
+        emit(PlaylistItemsData(thumbnail, albumName, artist, timeLength, desc, list))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun allYoutubeVideoThisYearSearch(q: String) = flow {
@@ -762,6 +762,21 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
+    override suspend fun songDetail(songId: String) = flow {
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.music ?: ""
+
+        val r = youtubeMusicAPI.songDetail(ytMusicMusicDetails(ip, songId), key)
+
+        val vId = r.videoDetails?.videoId
+        val name = r.videoDetails?.title
+        val artists = r.videoDetails?.author
+        val thumbnail = r.videoDetails?.thumbnailURL()
+
+        emit(MusicData(thumbnail, name, artists, vId, MusicType.MUSIC))
+    }.flowOn(Dispatchers.IO)
+
+
     override suspend fun searchData(q: String) = flow {
         val albums = mutableListOf<MusicData>()
         val artists = mutableListOf<MusicData>()
@@ -822,7 +837,6 @@ class YoutubeAPIImpl @Inject constructor(
                 }
             }
         }
-
 
         emit(SearchData(songs, albums, artists))
     }.flowOn(Dispatchers.IO)

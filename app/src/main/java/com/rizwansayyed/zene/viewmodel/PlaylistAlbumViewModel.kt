@@ -55,24 +55,21 @@ class PlaylistAlbumViewModel @Inject constructor(
         }.catch {
             playlistAlbum = DataResponse.Error(it)
         }.collectLatest {
-            it.name?.let { n -> searchSimilarAlbums(n) }
             playlistAlbum = DataResponse.Success(it)
-
+            searchSimilarAlbums("${it.name} - ${it.artistsName}")
             addSongsToPlaylist(it.list)
         }
     }
 
     private fun addSongsToPlaylist(list: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
         playlistSongsItem.clear()
-        val ip = DataStorageManager.userIpDetails.first()
-        val key = remoteConfig.allApiKeys()?.music ?: ""
 
         list.forEach { m ->
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
                     try {
-                        val s = youtubeAPI.musicInfoSearch("${m.name} - ${m.artists}", ip, key)
-                        s?.let { playlistSongsItem.add(it) }
+                        val s = youtubeAPI.songDetail(m.pId ?: "").first()
+                        playlistSongsItem.add(s)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

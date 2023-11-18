@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicRelatedResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicReleaseResponse
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicSongDetailResponse
 import com.rizwansayyed.zene.domain.yt.YoutubePlaylistAlbumsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeSearchSuggestionResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeSearchTextSuggestionResponse
@@ -86,5 +87,12 @@ interface YoutubeMusicAPIService {
         @Query("key") key: String,
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeSearchTextSuggestionResponse
+
+    @POST(YT_SEARCH_SUGGESTION_API)
+    suspend fun songDetail(
+        @Body body: RequestBody,
+        @Query("key") key: String,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubeMusicSongDetailResponse
 
 }

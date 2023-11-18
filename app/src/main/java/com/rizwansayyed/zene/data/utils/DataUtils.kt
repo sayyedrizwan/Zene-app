@@ -180,6 +180,25 @@ object YoutubeAPI {
         return json.toRequestBody(mediaType)
     }
 
+    fun ytMusicMusicDetails(ip: IpJsonResponse?, id: String): RequestBody {
+        val json = """{
+            "videoId": "${id}",
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB_REMIX",
+                    "clientVersion": "$ytMusicLatestClientVersion",
+                    "timeZone": "${ip?.timezone}",
+                    "clientScreen": "WATCH_FULL_SCREEN"
+                }
+            }
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
     fun ytMusicSearchAllSongsJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
                 "context": {
