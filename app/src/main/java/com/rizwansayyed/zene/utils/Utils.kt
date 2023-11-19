@@ -14,11 +14,16 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.blue
 import androidx.core.graphics.drawable.toBitmapOrNull
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.core.net.toUri
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
 import kotlinx.coroutines.CoroutineScope

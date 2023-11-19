@@ -113,7 +113,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-simplexml:${DependenciesVersion.RETROFIT.version}")
 
     implementation("androidx.browser:browser:${DependenciesVersion.BROWSER.version}")
-
     implementation("com.github.evgenyneu:js-evaluator-for-android:${DependenciesVersion.JS_EVALUATOR.version}")
 
     implementation("org.jsoup:jsoup:${DependenciesVersion.JSOUP.version}")

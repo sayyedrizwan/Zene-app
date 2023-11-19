@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,13 +30,16 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.ui.musicplayer.view.PlayerBackgroundImage
+import com.rizwansayyed.zene.presenter.ui.backgroundPalette
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.SongsThumbnailsWithList
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -51,13 +53,15 @@ fun MusicPlayerView(player: ExoPlayer) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val p by musicPlayerData.collectAsState(initial = runBlocking(Dispatchers.IO) { musicPlayerData.first() })
 
-    Box(
+    Column(
         Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .backgroundPalette()
     ) {
-        PlayerBackgroundImage(p)
+        TopPlayerHeader()
 
+        SongsThumbnailsWithList(p)
     }
 
     LaunchedEffect(Unit) {
@@ -118,6 +122,12 @@ fun BottomNavImage(player: ExoPlayer) {
             override fun onIsPlayingChanged(p: Boolean) {
                 super.onIsPlayingChanged(p)
                 isPlaying = p
+            }
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+                if (!mediaItem?.requestMetadata?.mediaUri.toString().contains("https://"))
+                    isLoading = true
             }
         }
         player.addListener(playerListener)

@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
 import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
+import com.rizwansayyed.zene.presenter.ui.home.views.SettingsView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
@@ -116,6 +117,7 @@ class MainActivity : ComponentActivity() {
                         FEED -> TextBold(v = "feed")
                         SEARCH -> SearchView()
                         MY_MUSIC -> TextBold(v = "music")
+                        SETTINGS -> SettingsView()
                     }
 
                     AnimatedVisibility(navViewModel.selectedArtists.isNotEmpty()) {

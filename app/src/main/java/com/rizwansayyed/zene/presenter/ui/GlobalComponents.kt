@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.BlendMode
 import android.os.Build
@@ -40,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -62,7 +64,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.media3.exoplayer.upstream.Allocation
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
@@ -462,4 +463,22 @@ fun TopInfoWithSeeMore(v: String, s: Int?, click: () -> Unit) {
             click()
         })
     }
+}
+
+
+@SuppressLint("UnnecessaryComposedModifier")
+fun Modifier.backgroundPalette(): Modifier = composed {
+    this.background(
+        brush = Brush.linearGradient(
+//            start = Offset(0f, 0f),
+//            end = Offset(100f, 100f),
+            colors = listOf(
+                MainColor.copy(0.2f),
+                MainColor.copy(0.4f),
+                MainColor.copy(0.5f),
+                MainColor.copy(0.7f),
+                MainColor
+            )
+        )
+    )
 }

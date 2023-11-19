@@ -15,11 +15,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextBold
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 @Composable
-fun HomepageTopView() {
+fun HomepageTopView(homeNav: HomeNavViewModel) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -46,7 +48,7 @@ fun HomepageTopView() {
             Spacer(Modifier.width(9.dp))
 
             SmallIcons(R.drawable.ic_setting) {
-
+                homeNav.setHomeNav(HomeNavigation.SETTINGS)
             }
         }
     }

@@ -65,6 +65,7 @@ fun ArtistsEvents() {
                     .background(shimmerBrush())
             )
         }
+
         is DataResponse.Success -> {
             TopInfoWithSeeMore(R.string.upcoming_events, null) {}
 

@@ -83,7 +83,7 @@ fun HomeView() {
             .background(DarkGreyColor), listState
     ) {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            HomepageTopView()
+            HomepageTopView(homeNavModel)
         }
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
