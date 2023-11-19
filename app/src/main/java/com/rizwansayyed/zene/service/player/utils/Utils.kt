@@ -3,13 +3,17 @@ package com.rizwansayyed.zene.service.player.utils
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.media.MediaPlayer
+import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.provider.Settings
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import coil.ImageLoader
 import coil.request.ImageRequest
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
@@ -29,6 +33,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+
 
 object Utils {
 
@@ -122,4 +127,15 @@ object Utils {
 
             if (isActive) cancel()
         }
+
+    fun openEqualizer() {
+        val mediaPlayer = MediaPlayer()
+        val sessionID = mediaPlayer.audioSessionId
+
+        val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionID)
+        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+        context.startActivity(intent)
+    }
 }

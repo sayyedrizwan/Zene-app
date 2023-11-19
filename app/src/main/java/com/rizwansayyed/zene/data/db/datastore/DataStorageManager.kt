@@ -28,7 +28,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 object DataStorageManager {
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATA_STORE_DB)
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATA_STORE_DB)
     private const val ARRAY_LIST = "[]"
     private const val JSON_LIST = "{}"
 

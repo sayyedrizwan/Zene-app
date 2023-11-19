@@ -77,39 +77,40 @@ fun BottomNavImage(player: ExoPlayer) {
     var isPlaying by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
-    Row(Modifier.fillMaxWidth()) {
-        Spacer(Modifier.weight(1f))
-        Box(
-            Modifier
-                .background(Color.Black)
-                .clickable {
-                    coroutine.launch(Dispatchers.IO) {
-                        val playerData = musicPlayerData
-                            .first()
-                            ?.apply {
-                                show = true
-                            }
-                        musicPlayerData = flowOf(playerData)
-                    }
-                }) {
-            p?.v?.thumbnail?.let {
+    if (p?.v?.thumbnail != null)
+        Row(Modifier.fillMaxWidth()) {
+            Spacer(Modifier.weight(1f))
+            Box(
+                Modifier
+                    .background(Color.Black)
+                    .clickable {
+                        coroutine.launch(Dispatchers.IO) {
+                            val playerData = musicPlayerData
+                                .first()
+                                ?.apply {
+                                    show = true
+                                }
+                            musicPlayerData = flowOf(playerData)
+                        }
+                    }) {
+
                 AsyncImage(p?.v?.thumbnail, p?.v?.songName, Modifier.size(50.dp))
+
+
+                if (isLoading)
+                    SmallLoadingSpinner(Modifier.align(Alignment.BottomCenter))
+                else
+                    Image(
+                        painterResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
+                        "",
+                        Modifier
+                            .align(Alignment.Center)
+                            .size(20.dp),
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
             }
-
-
-            if (isLoading)
-                SmallLoadingSpinner(Modifier.align(Alignment.BottomCenter))
-            else
-                Image(
-                    painterResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play), "",
-                    Modifier
-                        .align(Alignment.Center)
-                        .size(20.dp),
-                    colorFilter = ColorFilter.tint(Color.White)
-                )
+            Spacer(Modifier.width(7.dp))
         }
-        Spacer(Modifier.width(7.dp))
-    }
 
     DisposableEffect(Unit) {
         val playerListener = object : Player.Listener {
