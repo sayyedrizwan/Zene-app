@@ -28,11 +28,22 @@ object DataStorageUtil {
         val SONGS_QUALITY_SETTINGS = intPreferencesKey("songs_quality_settings")
         val SEEK_BUTTON_SETTINGS = intPreferencesKey("seek_button_settings")
         val SONG_SPEED_SETTINGS = intPreferencesKey("song_speed_settings")
+        val LOOP_SETTINGS = booleanPreferencesKey("loop_settings")
+        val AUTOPLAY_SETTINGS = booleanPreferencesKey("autoplay_settings")
+        val DO_OFFLINE_DOWNLOAD_WIFI_SETTINGS = booleanPreferencesKey("do_offline_download_wifi_settings")
+        val SHOW_PLAYING_SONG_ON_LOCK_SCREEN_SETTINGS = booleanPreferencesKey("show_pLaying_song_on_lock_screen_settings")
+        val SET_WALLPAPER_SETTINGS = intPreferencesKey("set_wallpaper_settings")
+        val PAUSE_MUSIC_ON_HEADPHONE_DETACH_SETTINGS = booleanPreferencesKey("pause_music_on_headphone_detach_settings")
     }
 }
+//630755
 
 enum class OfflineSongsInfo(val v: Int) {
     LOCAL_SONGS(0), SUGGESTED_SONGS(1), OFFLINE_DOWNLOAD(2)
+}
+
+enum class SetWallpaperInfo(val v: Int) {
+    SONG_THUMBNAIL(0), ARTIST_IMAGE(1), NONE(2)
 }
 
 enum class SongsQualityInfo(val v: Int) {

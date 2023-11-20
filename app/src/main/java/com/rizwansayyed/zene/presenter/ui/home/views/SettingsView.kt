@@ -1,37 +1,33 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.doOfflineDownloadWifiSettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.offlineSongsSettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.pauseMusicOnHeadphoneDetachSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.seekButtonSettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.setWallpaperSettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.showPlayingSongOnLockScreenSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songQualitySettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songSpeedSettings
 import com.rizwansayyed.zene.data.db.datastore.OfflineSongsInfo
 import com.rizwansayyed.zene.data.db.datastore.SeekButton
+import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.db.datastore.SongsQualityInfo
 import com.rizwansayyed.zene.presenter.theme.BlackColor
@@ -41,6 +37,9 @@ import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItems
+import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsCard
+import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsLayout
 import com.rizwansayyed.zene.presenter.util.UiUtils
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
 import kotlinx.coroutines.flow.flowOf
@@ -64,12 +63,18 @@ fun SettingsView() {
         OfflineModesSettings()
         SongQualitySettings()
 
+        SeekButtonSettings()
+        SongSpeedSettings()
+        LoopSettings()
+        AutoPlaySettings()
+        OfflineDownloadSettings()
+        SongOnLockScreenSettings()
+        SetWallpaperSettings()
+        PlaySongWhenAlarmSettings()
+        PauseMusicOnHeadphoneDetachSettings()
         SettingsItemsCard(R.string.equalizer) {
             openEqualizer()
         }
-
-        SeekButtonSettings()
-        SongSpeedSettings()
 
         Spacer(Modifier.height(120.dp))
     }
@@ -162,74 +167,101 @@ fun SongQualitySettings() {
 }
 
 @Composable
-fun SettingsItems(text: Int, showMarker: Boolean, click: () -> Unit) {
-    Row(
-        Modifier
-            .padding(5.dp)
-            .fillMaxWidth()
-            .clickable {
-                click()
-            }, Arrangement.Center, Alignment.CenterVertically
-    ) {
-        TextRegular(
-            stringResource(text),
-            Modifier
-                .padding(vertical = 16.dp, horizontal = 14.dp)
-                .weight(1f),
-            size = 14
-        )
-        if (showMarker) SmallIcons(R.drawable.ic_tick)
+fun LoopSettings() {
+    val v by loopSettings.collectAsState(initial = false)
+    SettingsLayout(R.string.play_song_on_loop) {
+        SettingsItems(R.string.enable, v) {
+            loopSettings = flowOf(true)
+        }
+        SettingsItems(R.string.disable, !v) {
+            loopSettings = flowOf(false)
+        }
     }
 }
 
 @Composable
-fun SettingsItemsCard(text: Int, click: () -> Unit) {
-
-    Row(
-        Modifier
-            .padding(5.dp)
-            .padding(horizontal = 7.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(BlackColor)
-            .clickable {
-                click()
-            }, Arrangement.Center, Alignment.CenterVertically
-    ) {
-        TextRegular(
-            stringResource(text),
-            Modifier
-                .padding(vertical = 16.dp, horizontal = 14.dp)
-                .weight(1f),
-            size = 14
-        )
-
-        SmallIcons(R.drawable.ic_arrow_right)
-
-        Spacer(Modifier.width(5.dp))
+fun AutoPlaySettings() {
+    val v by autoplaySettings.collectAsState(initial = true)
+    SettingsLayout(R.string.autoplay_next_song) {
+        SettingsItems(R.string.enable, v) {
+            autoplaySettings = flowOf(true)
+        }
+        SettingsItems(R.string.disable, !v) {
+            autoplaySettings = flowOf(false)
+        }
     }
+}
 
+@Composable
+fun OfflineDownloadSettings() {
+    val v by doOfflineDownloadWifiSettings.collectAsState(initial = false)
+    SettingsLayout(R.string.offline_download) {
+        SettingsItems(R.string.wifi_mobile_data, !v) {
+            doOfflineDownloadWifiSettings = flowOf(false)
+        }
+        SettingsItems(R.string.only_connect_to_wifi, v) {
+            doOfflineDownloadWifiSettings = flowOf(true)
+        }
+    }
+}
 
-    Spacer(Modifier.height(95.dp))
+@Composable
+fun SongOnLockScreenSettings() {
+    val v by showPlayingSongOnLockScreenSettings.collectAsState(initial = false)
+    SettingsLayout(R.string.show_playing_song_on_lock_screen) {
+        SettingsItems(R.string.enable, v) {
+            showPlayingSongOnLockScreenSettings = flowOf(true)
+        }
+        SettingsItems(R.string.disable, !v) {
+            showPlayingSongOnLockScreenSettings = flowOf(false)
+        }
+    }
 }
 
 
 @Composable
-fun SettingsLayout(title: Int, content: @Composable ColumnScope.() -> Unit) {
-    TextBold(stringResource(title), Modifier.padding(horizontal = 14.dp), size = 19)
-
-    Spacer(Modifier.height(9.dp))
-
-    Column(
-        Modifier
-            .padding(horizontal = 10.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(BlackColor)
-    ) {
-        content()
+fun SetWallpaperSettings() {
+    val v by setWallpaperSettings.collectAsState(initial = SetWallpaperInfo.NONE.v)
+    SettingsLayout(R.string.set_wallpaper_on_song_playing) {
+        SettingsItems(R.string.none, v == SetWallpaperInfo.NONE.v) {
+            setWallpaperSettings = flowOf(SetWallpaperInfo.NONE.v)
+        }
+        SettingsItems(R.string.artist_image, v == SetWallpaperInfo.ARTIST_IMAGE.v) {
+            setWallpaperSettings = flowOf(SetWallpaperInfo.ARTIST_IMAGE.v)
+        }
+        SettingsItems(R.string.song_thumbnail, v == SetWallpaperInfo.SONG_THUMBNAIL.v) {
+            setWallpaperSettings = flowOf(SetWallpaperInfo.SONG_THUMBNAIL.v)
+        }
     }
-
-
-    Spacer(Modifier.height(95.dp))
 }
+
+@Composable
+fun PlaySongWhenAlarmSettings() {
+    val v by setWallpaperSettings.collectAsState(initial = SetWallpaperInfo.NONE.v)
+    SettingsLayout(R.string.set_alarm_to_play_song) {
+        SettingsItems(R.string.none, v == SetWallpaperInfo.NONE.v) {
+            setWallpaperSettings = flowOf(SetWallpaperInfo.NONE.v)
+        }
+        SettingsItems(R.string.artist_image, v == SetWallpaperInfo.ARTIST_IMAGE.v) {
+            setWallpaperSettings = flowOf(SetWallpaperInfo.ARTIST_IMAGE.v)
+        }
+        SettingsItems(R.string.song_thumbnail, v == SetWallpaperInfo.SONG_THUMBNAIL.v) {
+            setWallpaperSettings = flowOf(SetWallpaperInfo.SONG_THUMBNAIL.v)
+        }
+    }
+}
+
+@Composable
+fun PauseMusicOnHeadphoneDetachSettings() {
+    val v by pauseMusicOnHeadphoneDetachSettings.collectAsState(initial = false)
+    SettingsLayout(R.string.pause_on_headphone_detach) {
+        SettingsItems(R.string.enable, v) {
+            pauseMusicOnHeadphoneDetachSettings = flowOf(true)
+        }
+        SettingsItems(R.string.disable, !v) {
+            pauseMusicOnHeadphoneDetachSettings = flowOf(false)
+        }
+    }
+}
+
+//create a video that superman is drinking coffie in a cafe, then he comes out any fly in the sky and 3 seconds his phone ring and he get an alert 'Dolphin tracker: You forgot you wallet' on his phone. The he fly back in that cafe and pick up his wallet.

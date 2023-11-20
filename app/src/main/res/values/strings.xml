@@ -18,6 +18,8 @@
     <string name="speak_music_artists_album">Speak music, artist or album name to search</string>
     <string name="similar_artists">Similar Artists</string>
     <string name="artists">Artists</string>
+    <string name="artist_image">Artist Image</string>
+    <string name="song_thumbnail">Song Thumbnail</string>
     <string name="albums">Albums</string>
     <string name="songs">Songs</string>
     <string name="your_favourite_artists">Your favourite artists</string>
@@ -61,6 +63,10 @@
     <string name="play_next">Play Next</string>
     <string name="add_in_queue">Add in queue</string>
     <string name="offline_download">Offline download</string>
+    <string name="show_playing_song_on_lock_screen">Show App Playing Song on Lockscreen</string>
+    <string name="set_wallpaper_on_song_playing">Set Wallpaper on Song Playing</string>
+    <string name="set_alarm_to_play_song">Set Alarm to Play Song</string>
+    <string name="pause_on_headphone_detach">Pause on headphone detach</string>
     <string name="song_info">Song info</string>
     <string name="close">Close</string>
     <string name="mark_as_favourite">Mark as favourite</string>
@@ -89,6 +95,8 @@
     <string name="suggested_songs">Suggested songs</string>
     <string name="offline_downloaded_songs">Offline downloaded songs</string>
     <string name="song_quality">Song Quality Streaming</string>
+    <string name="play_song_on_loop">Play Song On Loop</string>
+    <string name="autoplay_next_song">Autoplay Next Song</string>
     <string name="high_quality_on_wifi">High Quality on WiFi</string>
     <string name="high_quality">High Quality</string>
     <string name="low_quality">Low Quality</string>
@@ -108,4 +116,9 @@
     <string name="one_five">1.5x</string>
     <string name="one_seven_five">1.75x</string>
     <string name="two_zero">2.0x</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="wifi_mobile_data">WiFi + Mobile Data</string>
+    <string name="only_connect_to_wifi">Only when connected to WiFi</string>
+    <string name="none">None</string>
 </resources>
