@@ -121,4 +121,7 @@
     <string name="wifi_mobile_data">WiFi + Mobile Data</string>
     <string name="only_connect_to_wifi">Only when connected to WiFi</string>
     <string name="none">None</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="feedback">Feedback</string>
+    <string name="privacy_policy">Privacy Policy</string>
 </resources>

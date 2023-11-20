@@ -49,7 +49,6 @@ fun SettingsItems(text: Int, showMarker: Boolean, click: () -> Unit) {
 
 @Composable
 fun SettingsItemsCard(text: Int, click: () -> Unit) {
-
     Row(
         Modifier
             .padding(5.dp)
@@ -75,7 +74,37 @@ fun SettingsItemsCard(text: Int, click: () -> Unit) {
     }
 
 
-    Spacer(Modifier.height(95.dp))
+    Spacer(Modifier.height(35.dp))
+}
+
+
+@Composable
+fun SettingsItemsCard(text: Int, body: String, click: () -> Unit) {
+
+    Row(
+        Modifier
+            .padding(5.dp)
+            .padding(horizontal = 7.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(BlackColor)
+            .clickable {
+                click()
+            }, Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextRegular(
+            stringResource(text),
+            Modifier
+                .padding(vertical = 16.dp, horizontal = 14.dp)
+                .weight(1f),
+            size = 14
+        )
+
+        TextThin(body, Modifier.padding(end = 9.dp), size = 14)
+    }
+
+
+    Spacer(Modifier.height(35.dp))
 }
 
 

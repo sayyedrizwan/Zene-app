@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.doOfflineDownloadWifiSettings
@@ -72,11 +74,28 @@ fun SettingsView() {
         SetWallpaperSettings()
         PlaySongWhenAlarmSettings()
         PauseMusicOnHeadphoneDetachSettings()
+
+        Spacer(Modifier.height(20.dp))
+
         SettingsItemsCard(R.string.equalizer) {
             openEqualizer()
         }
 
-        Spacer(Modifier.height(120.dp))
+        SettingsItemsCard(R.string.clear_cache, "2.38 MB") {
+
+        }
+
+        SettingsItemsCard(R.string.feedback) {
+        }
+
+        SettingsItemsCard(R.string.privacy_policy) {
+        }
+
+        Spacer(Modifier.height(35.dp))
+
+        TextThin("Version ${BuildConfig.VERSION_NAME}", Modifier.padding(horizontal = 24.dp))
+
+        Spacer(Modifier.height(150.dp))
     }
 }
 

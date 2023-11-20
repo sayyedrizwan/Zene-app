@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -58,6 +60,7 @@ fun MusicPlayerView(player: ExoPlayer) {
             .fillMaxSize()
             .background(Color.Black)
             .backgroundPalette()
+            .verticalScroll(rememberScrollState())
     ) {
         TopPlayerHeader()
 

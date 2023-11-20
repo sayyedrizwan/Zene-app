@@ -172,7 +172,6 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
-                    navViewModel.setHomeNav(SETTINGS)
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
