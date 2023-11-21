@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerDat
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayerNotPlay
 import com.rizwansayyed.zene.utils.NotificationViewManager
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL_ID
@@ -17,10 +18,13 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 @HiltAndroidApp
@@ -37,7 +41,6 @@ class ApplicationModule : Application() {
         if (!ifPlayerServiceNotRunning()) {
             context.startService(Intent(context, PlayerService::class.java))
         }
-
 
         Thread.setDefaultUncaughtExceptionHandler { thread, e ->
             context.cacheDir.deleteRecursively()
@@ -62,6 +65,16 @@ class ApplicationModule : Application() {
             }
             musicPlayerData = flowOf(playerData)
 
+            delay(3.seconds)
+
+            if ((playerData?.songsLists?.size ?: 0) > 0) {
+                var songPosition = 0
+                playerData?.songsLists?.forEachIndexed { i, musicData ->
+                    if (musicData?.pId == playerData.songID) songPosition = i
+                }
+
+                addAllPlayerNotPlay(playerData?.songsLists?.toTypedArray(), songPosition)
+            }
             if (isActive) cancel()
         }
 

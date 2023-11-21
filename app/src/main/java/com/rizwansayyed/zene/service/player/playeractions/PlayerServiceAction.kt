@@ -30,7 +30,12 @@ class PlayerServiceAction @Inject constructor(
 
     override suspend fun addMultipleItemsAndPlay(list: Array<MusicData?>?, position: Int) {
         val music = if ((list?.size ?: 0) >= position) list?.get(position) else return
-        startPlaying(music, list, position)
+        startPlaying(music, list, position, true)
+    }
+
+    override suspend fun addMultipleItemsAndNotPlay(list: Array<MusicData?>?, position: Int) {
+        val music = if ((list?.size ?: 0) >= position) list?.get(position) else return
+        startPlaying(music, list, position, false)
     }
 
     override suspend fun updatePlaying(mediaItem: MediaItem?) {
@@ -43,10 +48,12 @@ class PlayerServiceAction @Inject constructor(
         val position =
             musicPlayerDataLocal.songsLists.indexOfFirst { it?.pId == mediaItem.mediaId }
 
-        startPlaying(music, emptyArray(), position)
+        startPlaying(music, emptyArray(), position, true)
     }
 
-    override suspend fun startPlaying(music: MusicData?, list: Array<MusicData?>?, position: Int) {
+    override suspend fun startPlaying(
+        music: MusicData?, list: Array<MusicData?>?, position: Int, doPlay: Boolean
+    ) {
         withContext(Dispatchers.Main) {
             player.pause()
             player.stop()
@@ -86,9 +93,11 @@ class PlayerServiceAction @Inject constructor(
             player.replaceMediaItem(position, music!!.toMediaItem(url))
             player.seekTo(position, 0)
 
-            player.playWhenReady = true
+            player.playWhenReady = doPlay
+
             player.prepare()
-            player.play()
+            if (doPlay) player.play()
+            else player.pause()
         }
     }
 

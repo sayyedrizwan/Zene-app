@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,8 +41,12 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerButtons
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerSliders
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.SongsThumbnailsWithList
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
+import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
+import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -64,7 +69,11 @@ fun MusicPlayerView(player: ExoPlayer) {
     ) {
         TopPlayerHeader()
 
-        SongsThumbnailsWithList(p, player)
+        SongsThumbnailsWithList(p)
+
+        MusicPlayerSliders(player)
+
+        MusicPlayerButtons(player)
     }
 
     LaunchedEffect(Unit) {
@@ -116,38 +125,35 @@ fun BottomNavImage(player: ExoPlayer) {
         }
 
     DisposableEffect(Unit) {
-        val playerListener = object : Player.Listener {
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                super.onPlaybackStateChanged(playbackState)
-                isLoading = playbackState == ExoPlayer.STATE_BUFFERING
-
+        val playerListener = object : PlayerServiceInterface {
+            override fun songInfoDownloading(b: Boolean) {
+                isLoading = b
             }
 
-            override fun onIsPlayingChanged(p: Boolean) {
-                super.onIsPlayingChanged(p)
-                isPlaying = p
+            override fun songBuffering(b: Boolean) {
+                isLoading = b
             }
 
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                super.onMediaItemTransition(mediaItem, reason)
-                if (!mediaItem?.requestMetadata?.mediaUri.toString().contains("https://"))
+            override fun mediaItemUpdate(mediaItem: MediaItem) {
+                if (!mediaItem.requestMetadata.mediaUri.toString().contains("https://"))
                     isLoading = true
             }
+
         }
-        player.addListener(playerListener)
+        PlayServiceListener.getInstance().addListener(playerListener)
         isPlaying = player.isPlaying
 
         onDispose {
-            player.removeListener(playerListener)
+            PlayServiceListener.getInstance().rmListener(playerListener)
         }
     }
 }
 
 
 @Composable
-fun SmallLoadingSpinner(modifier: Modifier) {
-    Column(modifier.size(50.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-        Spacer(Modifier.height(12.dp))
+fun SmallLoadingSpinner(modifier: Modifier, size: Int = 50) {
+    Column(modifier.size(size.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+      Spacer(Modifier.height(12.dp))
 
         CircularProgressIndicator(
             modifier = Modifier.width(20.dp),

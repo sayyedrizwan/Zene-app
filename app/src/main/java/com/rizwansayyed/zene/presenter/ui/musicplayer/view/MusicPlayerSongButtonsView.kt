@@ -1,11 +1,20 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -19,12 +28,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.GreyColor
+import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextRegular
+import com.rizwansayyed.zene.presenter.ui.musicplayer.SmallLoadingSpinner
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.formatExoplayerDuration
+import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
+import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
+import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.seekToTimestamp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -86,7 +105,81 @@ fun MusicPlayerSliders(player: ExoPlayer) {
 
 @Composable
 fun MusicPlayerButtons(player: ExoPlayer) {
-    Row {
+    var isLoading by remember { mutableStateOf(false) }
+    var isPlaying by remember { mutableStateOf(false) }
 
+    Row(
+        Modifier
+            .padding(top = 11.dp)
+            .padding(horizontal = 16.dp)
+            .fillMaxSize(),
+        Arrangement.SpaceBetween, Alignment.CenterVertically
+    ) {
+        MusicPlayerButton(R.drawable.ic_song_previous) {
+            player.seekToPrevious()
+        }
+
+        if (isLoading)
+            CircularProgressIndicator(
+                modifier = Modifier.width(30.dp),
+                color = Color.White,
+                trackColor = MainColor,
+            )
+        else
+            if (isPlaying)
+                MusicPlayerButton(R.drawable.ic_pause) {
+                    player.pause()
+                }
+            else
+                MusicPlayerButton(R.drawable.ic_play) {
+                    player.play()
+                }
+
+        MusicPlayerButton(R.drawable.ic_song_next) {
+            player.seekToNext()
+        }
     }
+
+
+    DisposableEffect(Unit) {
+        val playerListener = object : PlayerServiceInterface {
+            override fun songInfoDownloading(b: Boolean) {
+                isLoading = b
+            }
+
+            override fun songBuffering(b: Boolean) {
+                isLoading = b
+            }
+
+            override fun mediaItemUpdate(mediaItem: MediaItem) {
+                if (!mediaItem.requestMetadata.mediaUri.toString().contains("https://"))
+                    isLoading = true
+            }
+
+            override fun playingStateChange() {
+                super.playingStateChange()
+                isPlaying = player.isPlaying
+            }
+
+        }
+        PlayServiceListener.getInstance().addListener(playerListener)
+        isPlaying = player.isPlaying
+
+        onDispose {
+            PlayServiceListener.getInstance().rmListener(playerListener)
+        }
+    }
+}
+
+@Composable
+fun MusicPlayerButton(icon: Int, click: () -> Unit) {
+    Image(
+        painterResource(icon), "",
+        Modifier
+            .clickable {
+                click()
+            }
+            .size(33.dp),
+        colorFilter = ColorFilter.tint(Color.White)
+    )
 }

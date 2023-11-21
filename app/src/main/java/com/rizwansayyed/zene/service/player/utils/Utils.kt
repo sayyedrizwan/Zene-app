@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM_NO_PLAY
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_AT_END_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_NEXT_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
@@ -45,10 +46,11 @@ object Utils {
     }
 
     object PlayerNotificationAction {
-        const val PLAYER_SERVICE_ACTION = "player_service_action"
+        val PLAYER_SERVICE_ACTION = "${context.packageName}_player_service_action"
         const val PLAYER_SERVICE_TYPE = "player_service_type"
 
         const val ADD_ALL_PLAYER_ITEM = "add_all_player_item"
+        const val ADD_ALL_PLAYER_ITEM_NO_PLAY = "add_all_player_item_no_play"
         const val ADD_PLAY_NEXT_ITEM = "add_play_next_item"
         const val ADD_PLAY_AT_END_ITEM = "add_play_at_end_item"
         const val PLAY_LIVE_RADIO = "play_live_radio"
@@ -84,6 +86,15 @@ object Utils {
         }
     }
 
+    fun addAllPlayerNotPlay(l: Array<MusicData?>?, p: Int) {
+        Intent(PLAYER_SERVICE_ACTION).apply {
+            putExtra(PLAYER_SERVICE_TYPE, ADD_ALL_PLAYER_ITEM_NO_PLAY)
+            putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData?>::class.java).toJson(l))
+            putExtra(SONG_MEDIA_POSITION, p)
+            context.sendBroadcast(this)
+        }
+    }
+
     fun playNextPlayer(l: MusicData?) {
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_PLAY_NEXT_ITEM)
@@ -110,7 +121,7 @@ object Utils {
     }
 
     fun seekToTimestamp(t: Long) {
-       Intent(PLAYER_SERVICE_ACTION).apply {
+        Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, SEEK_TO_TIMESTAMP)
             putExtra(SONG_MEDIA_POSITION, t)
             context.sendBroadcast(this)
@@ -147,5 +158,14 @@ object Utils {
         intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionID)
         intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
         context.startActivity(intent)
+    }
+
+
+    object PlayerActionService {
+        val PLAYER_SERVICE_ACTION = "${context.packageName}_player_service_action"
+
+        fun playerActionIntentFilter(){
+
+        }
     }
 }

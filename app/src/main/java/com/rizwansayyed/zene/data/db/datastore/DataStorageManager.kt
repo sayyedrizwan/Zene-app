@@ -76,9 +76,11 @@ object DataStorageManager {
         get() = context.dataStore.data.map {
             moshi.adapter(MusicPlayerData::class.java).fromJson(it[MUSIC_PLAYER_DATA] ?: JSON_LIST)
         }
-        set(v) = runBlocking {
-            val moshi = moshi.adapter(MusicPlayerData::class.java).toJson(v.first())
-            context.dataStore.edit { it[MUSIC_PLAYER_DATA] = moshi }
+        set(v) = synchronized(this) {
+            runBlocking {
+                val moshi = moshi.adapter(MusicPlayerData::class.java).toJson(v.first())
+                context.dataStore.edit { it[MUSIC_PLAYER_DATA] = moshi }
+            }
         }
 
 
@@ -97,7 +99,7 @@ object DataStorageManager {
 
 
     suspend fun cookiesData(domain: String): String {
-       return context.dataStore.data.map { it[cookiesName(domain)] ?: "" }.first()
+        return context.dataStore.data.map { it[cookiesName(domain)] ?: "" }.first()
     }
 
     fun cookiesData(domain: String, v: String) = runBlocking {

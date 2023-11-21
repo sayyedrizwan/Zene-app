@@ -60,7 +60,7 @@ fun TopPlayerHeader() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SongsThumbnailsWithList(p: MusicPlayerData?, player: ExoPlayer) {
+fun SongsThumbnailsWithList(p: MusicPlayerData?) {
     Spacer(Modifier.height(20.dp))
 
     val pagerState = rememberPagerState(pageCount = { p?.songsLists?.size ?: 0 })
@@ -76,10 +76,6 @@ fun SongsThumbnailsWithList(p: MusicPlayerData?, player: ExoPlayer) {
     Spacer(Modifier.height(7.dp))
 
     MusicTitleAndBodyText(p, pagerState)
-
-    MusicPlayerSliders(player)
-
-    MusicPlayerButtons(player)
 
 
     LaunchedEffect(p) {

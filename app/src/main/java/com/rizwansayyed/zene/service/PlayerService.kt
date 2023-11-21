@@ -15,6 +15,7 @@ import androidx.media3.session.MediaSessionService
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
@@ -22,6 +23,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import com.rizwansayyed.zene.service.player.notificationservice.PlayerServiceNotificationInterface
 import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceActionInterface
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM_NO_PLAY
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_AT_END_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_NEXT_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
@@ -86,6 +88,7 @@ class PlayerService : MediaSessionService() {
         if (isActive) cancel()
     }
 
+
     private val playerListener = object : Player.Listener {
         override fun onPlayerErrorChanged(error: PlaybackException?) {
             super.onPlayerErrorChanged(error)
@@ -93,13 +96,26 @@ class PlayerService : MediaSessionService() {
             playerError(error)
         }
 
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            super.onIsPlayingChanged(isPlaying)
+            PlayServiceListener.getInstance().playingState()
+        }
+
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
             playerError(error)
         }
 
+        override fun onIsLoadingChanged(isLoading: Boolean) {
+            super.onIsLoadingChanged(isLoading)
+            PlayServiceListener.getInstance().isBuffering(isLoading)
+        }
+
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
+            PlayServiceListener.getInstance()
+                .isSongInfoDownload(playbackState == Player.STATE_BUFFERING)
+
             if (playbackState == Player.STATE_READY) {
                 retry = 0
             } else if (playbackState == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
@@ -109,6 +125,8 @@ class PlayerService : MediaSessionService() {
 
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             super.onMediaItemTransition(mediaItem, reason)
+            mediaItem?.let { PlayServiceListener.getInstance().mediaItemUpdate(it) }
+
             CoroutineScope(Dispatchers.IO).launch {
                 if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
                     if (currentPlayingMusic != mediaItem?.mediaId)
@@ -130,6 +148,16 @@ class PlayerService : MediaSessionService() {
 
                     currentPlayingMusic = list?.get(position)?.pId ?: ""
                     playerServiceAction.addMultipleItemsAndPlay(list, position)
+                    if (isActive) cancel()
+                }
+
+                ADD_ALL_PLAYER_ITEM_NO_PLAY -> CoroutineScope(Dispatchers.IO).launch {
+                    val list = moshi.adapter(Array<MusicData?>::class.java)
+                        .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
+                    val position = intent.getIntExtra(SONG_MEDIA_POSITION, 0)
+
+                    currentPlayingMusic = list?.get(position)?.pId ?: ""
+                    playerServiceAction.addMultipleItemsAndNotPlay(list, position)
                     if (isActive) cancel()
                 }
 
