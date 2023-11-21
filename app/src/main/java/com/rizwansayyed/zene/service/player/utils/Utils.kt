@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,6 +52,7 @@ object Utils {
         const val ADD_PLAY_NEXT_ITEM = "add_play_next_item"
         const val ADD_PLAY_AT_END_ITEM = "add_play_at_end_item"
         const val PLAY_LIVE_RADIO = "play_live_radio"
+        const val SEEK_TO_TIMESTAMP = "seek_to_timestamp"
 
 
         const val PLAY_SONG_MEDIA = "play_song_media"
@@ -73,7 +75,7 @@ object Utils {
             .build()
     }
 
-    fun addAllPlayer(l: Array<MusicData?>?, p: Int) = runBlocking {
+    fun addAllPlayer(l: Array<MusicData?>?, p: Int) {
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_ALL_PLAYER_ITEM)
             putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData?>::class.java).toJson(l))
@@ -82,7 +84,7 @@ object Utils {
         }
     }
 
-    fun playNextPlayer(l: MusicData?) = runBlocking {
+    fun playNextPlayer(l: MusicData?) {
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_PLAY_NEXT_ITEM)
             putExtra(PLAY_SONG_MEDIA, moshi.adapter(MusicData::class.java).toJson(l))
@@ -90,7 +92,7 @@ object Utils {
         }
     }
 
-    fun addToEndPlayer(l: MusicData?) = runBlocking {
+    fun addToEndPlayer(l: MusicData?) {
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_PLAY_AT_END_ITEM)
             putExtra(PLAY_SONG_MEDIA, moshi.adapter(MusicData::class.java).toJson(l))
@@ -98,11 +100,19 @@ object Utils {
         }
     }
 
-    fun playRadioOnPlayer(radio: OnlineRadioResponseItem) = runBlocking {
+    fun playRadioOnPlayer(radio: OnlineRadioResponseItem) {
         val mediaData = moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio)
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, PLAY_LIVE_RADIO)
             putExtra(PLAY_SONG_MEDIA, mediaData)
+            context.sendBroadcast(this)
+        }
+    }
+
+    fun seekToTimestamp(t: Long) {
+       Intent(PLAYER_SERVICE_ACTION).apply {
+            putExtra(PLAYER_SERVICE_TYPE, SEEK_TO_TIMESTAMP)
+            putExtra(SONG_MEDIA_POSITION, t)
             context.sendBroadcast(this)
         }
     }

@@ -190,4 +190,10 @@ class PlayerServiceAction @Inject constructor(
         }
     }
 
+    override suspend fun seekTo(ts: Long) {
+        withContext(Dispatchers.Main) {
+            player.seekTo(ts)
+        }
+    }
+
 }

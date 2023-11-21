@@ -64,7 +64,7 @@ fun MusicPlayerView(player: ExoPlayer) {
     ) {
         TopPlayerHeader()
 
-        SongsThumbnailsWithList(p)
+        SongsThumbnailsWithList(p, player)
     }
 
     LaunchedEffect(Unit) {

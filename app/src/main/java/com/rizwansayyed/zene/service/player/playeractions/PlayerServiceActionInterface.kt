@@ -12,4 +12,5 @@ interface PlayerServiceActionInterface {
 
     suspend fun addItemToNext(music: MusicData)
     suspend fun addItemToEnd(music: MusicData)
+    suspend fun seekTo(ts: Long)
 }
