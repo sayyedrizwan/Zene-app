@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,12 +25,10 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.presenter.theme.GreyColor
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.formatExoplayerDuration
-import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.seekToTimestamp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.log
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +42,6 @@ fun MusicPlayerSliders(player: ExoPlayer) {
     var totalTime by remember { mutableStateOf("0:00") }
     var currentTime by remember { mutableStateOf("0:00") }
     var valueEndRange by remember { mutableFloatStateOf(1f) }
-
 
     Row(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterVertically) {
         Spacer(Modifier.height(3.dp))
@@ -77,18 +73,20 @@ fun MusicPlayerSliders(player: ExoPlayer) {
                 totalTime = formatExoplayerDuration(player.duration)
                 valueEndRange = if (player.duration.toString().contains("-")) 1f
                 else player.duration.toFloat()
-
                 sliderPosition = player.currentPosition.toFloat()
 
-                Log.d(
-                    "TAG",
-                    "MusicPlayerSliders: date ${player.currentPosition} ${player.duration}"
-                )
                 delay(1.seconds)
             }
         }
         onDispose {
             job?.cancel()
         }
+    }
+}
+
+@Composable
+fun MusicPlayerButtons(player: ExoPlayer) {
+    Row {
+
     }
 }

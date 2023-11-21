@@ -79,6 +79,8 @@ fun SongsThumbnailsWithList(p: MusicPlayerData?, player: ExoPlayer) {
 
     MusicPlayerSliders(player)
 
+    MusicPlayerButtons(player)
+
 
     LaunchedEffect(p) {
         p?.songsLists?.forEachIndexed { i, musicData ->
