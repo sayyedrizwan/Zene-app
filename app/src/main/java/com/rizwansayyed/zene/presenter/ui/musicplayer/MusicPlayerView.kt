@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,7 +33,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
@@ -42,6 +40,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerDat
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerButtons
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerLyrics
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerSliders
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.SongsThumbnailsWithList
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
@@ -74,11 +73,14 @@ fun MusicPlayerView(player: ExoPlayer) {
         MusicPlayerSliders(player)
 
         MusicPlayerButtons(player)
+
+        MusicPlayerLyrics()
     }
 
-    LaunchedEffect(Unit) {
-        if (p?.songID != player.currentMediaItem?.mediaId)
-            p?.let { playerViewModel.init(it) }
+    LaunchedEffect(p) {
+//        if (p?.songID != player.currentMediaItem?.mediaId)
+        p?.let { playerViewModel.init(it) }
+
     }
 }
 
@@ -153,7 +155,7 @@ fun BottomNavImage(player: ExoPlayer) {
 @Composable
 fun SmallLoadingSpinner(modifier: Modifier, size: Int = 50) {
     Column(modifier.size(size.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-      Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(12.dp))
 
         CircularProgressIndicator(
             modifier = Modifier.width(20.dp),

@@ -62,6 +62,7 @@ class ApplicationModule : Application() {
         CoroutineScope(Dispatchers.IO).launch {
             val playerData = musicPlayerData.first()?.apply {
                 show = false
+                songID = ""
             }
             musicPlayerData = flowOf(playerData)
 
@@ -70,7 +71,7 @@ class ApplicationModule : Application() {
             if ((playerData?.songsLists?.size ?: 0) > 0) {
                 var songPosition = 0
                 playerData?.songsLists?.forEachIndexed { i, musicData ->
-                    if (musicData?.pId == playerData.songID) songPosition = i
+                    if (musicData?.pId == playerData.v?.songID) songPosition = i
                 }
 
                 addAllPlayerNotPlay(playerData?.songsLists?.toTypedArray(), songPosition)

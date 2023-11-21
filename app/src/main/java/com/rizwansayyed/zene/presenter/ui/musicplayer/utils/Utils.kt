@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.utils
 
+import android.util.Log
+import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 object Utils {
 
@@ -15,4 +18,21 @@ object Utils {
         }
     }
 
+
+    private var lastTimestamp = System.currentTimeMillis() - 4000
+    fun onClickOn3SecDelay(run: () -> Unit) {
+        if (abs(System.currentTimeMillis() - lastTimestamp) <= 3000) return
+        lastTimestamp = System.currentTimeMillis()
+        run()
+    }
+
+
+    fun areSongNamesEqual(songName1: String, songName2: String): Boolean {
+        val song1 = songName1.split(" ")
+        val song2 = songName2.split(" ")
+        val commonWords = song2.intersect(song1.toSet())
+
+        if (commonWords.size >= 3) return true
+        return false
+    }
 }

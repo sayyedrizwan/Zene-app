@@ -428,6 +428,14 @@ object CacheFiles {
     }
 }
 
+object RentAdvisorSubtitles {
+    const val RENT_ADVISER_BASE_URL = "https://www.rentanadviser.com/subtitles/"
+
+    fun searchOnRentAdviser(q: String): String {
+        return "${RENT_ADVISER_BASE_URL}subtitles4songs.aspx?q=$q"
+    }
+}
+
 object ScrapURL {
     const val TOP_ARTISTS = "https://www.billboard.com/charts/artist-100/"
 

@@ -77,7 +77,6 @@ fun SongsThumbnailsWithList(p: MusicPlayerData?) {
 
     MusicTitleAndBodyText(p, pagerState)
 
-
     LaunchedEffect(p) {
         p?.songsLists?.forEachIndexed { i, musicData ->
             if (musicData?.pId == p.v?.songID) pagerState.scrollToPage(i)

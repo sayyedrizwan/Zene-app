@@ -1,19 +1,15 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
@@ -38,12 +34,12 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.GreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
-import com.rizwansayyed.zene.presenter.ui.musicplayer.SmallLoadingSpinner
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.formatExoplayerDuration
+import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.onClickOn3SecDelay
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
-import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.seekToTimestamp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -111,12 +107,15 @@ fun MusicPlayerButtons(player: ExoPlayer) {
     Row(
         Modifier
             .padding(top = 11.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 30.dp)
             .fillMaxSize(),
         Arrangement.SpaceBetween, Alignment.CenterVertically
     ) {
-        MusicPlayerButton(R.drawable.ic_song_previous) {
-            player.seekToPrevious()
+
+        SmallIcons(R.drawable.ic_song_previous, 25) {
+            onClickOn3SecDelay {
+                player.seekToPrevious()
+            }
         }
 
         if (isLoading)
@@ -127,16 +126,18 @@ fun MusicPlayerButtons(player: ExoPlayer) {
             )
         else
             if (isPlaying)
-                MusicPlayerButton(R.drawable.ic_pause) {
+                SmallIcons(R.drawable.ic_pause, 38) {
                     player.pause()
                 }
             else
-                MusicPlayerButton(R.drawable.ic_play) {
-                    player.play()
+                SmallIcons(R.drawable.ic_play, 38) {
+                    player.pause()
                 }
 
-        MusicPlayerButton(R.drawable.ic_song_next) {
-            player.seekToNext()
+        SmallIcons(R.drawable.ic_song_next, 25) {
+            onClickOn3SecDelay {
+                player.seekToNext()
+            }
         }
     }
 
