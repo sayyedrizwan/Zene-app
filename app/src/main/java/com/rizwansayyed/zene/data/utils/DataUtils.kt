@@ -436,6 +436,15 @@ object RentAdvisorSubtitles {
     }
 }
 
+object GeniusURL {
+    const val GENIUS_BASE_URL = "https://genius.com"
+
+    fun geniusMusicSearch(q: String): String {
+        return "${GENIUS_BASE_URL}/api/search/multi?q=${q.lowercase()}"
+    }
+}
+
+
 object ScrapURL {
     const val TOP_ARTISTS = "https://www.billboard.com/charts/artist-100/"
 

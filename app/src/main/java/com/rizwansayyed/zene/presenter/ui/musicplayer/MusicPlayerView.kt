@@ -74,13 +74,15 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         MusicPlayerButtons(player)
 
-        MusicPlayerLyrics()
+        MusicPlayerLyrics(playerViewModel)
     }
 
     LaunchedEffect(p) {
-//        if (p?.songID != player.currentMediaItem?.mediaId)
-        p?.let { playerViewModel.init(it) }
+        if (p?.songID != player.currentMediaItem?.mediaId)
+            p?.let { playerViewModel.init(it) }
 
+        if (playerViewModel.lyricsInfo == null)
+            p?.let { playerViewModel.searchLyrics(it) }
     }
 }
 
