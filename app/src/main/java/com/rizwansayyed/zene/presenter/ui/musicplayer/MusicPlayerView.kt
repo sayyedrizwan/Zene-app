@@ -74,7 +74,9 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         MusicPlayerButtons(player)
 
-        MusicPlayerLyrics(playerViewModel)
+        Spacer(Modifier.height(30.dp))
+
+        MusicPlayerLyrics(playerViewModel, player)
     }
 
     LaunchedEffect(p) {

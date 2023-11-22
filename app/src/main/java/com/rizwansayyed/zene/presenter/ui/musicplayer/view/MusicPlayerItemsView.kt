@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,7 +90,7 @@ fun ImageOfSongWithPlayIcon(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun MusicTitleAndBodyText(p: MusicPlayerData?, pagerState: PagerState) {
     val homeNav: HomeNavViewModel = hiltViewModel()
@@ -103,21 +105,24 @@ fun MusicTitleAndBodyText(p: MusicPlayerData?, pagerState: PagerState) {
 
     Spacer(Modifier.height(7.dp))
 
-    Row(
+    FlowRow(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 6.dp), Arrangement.Center, Alignment.CenterVertically
+            .padding(horizontal = 6.dp), Arrangement.Center, Arrangement.Center
     ) {
         p?.songsLists?.get(pagerState.currentPage)?.artists?.split(",", "&")?.forEach {
-            TextThin(it, Modifier.clickable {
-                homeNav.setArtists(it)
-                coroutine.launch {
-                    val playerData = DataStorageManager.musicPlayerData.first()?.apply {
-                        show = false
+            if (it.trim() == "," || it.trim() == "&")
+                TextThin(it, size = 15)
+            else
+                TextThin(it, Modifier.clickable {
+                    homeNav.setArtists(it)
+                    coroutine.launch {
+                        val playerData = DataStorageManager.musicPlayerData.first()?.apply {
+                            show = false
+                        }
+                        DataStorageManager.musicPlayerData = flowOf(playerData)
                     }
-                    DataStorageManager.musicPlayerData = flowOf(playerData)
-                }
-            }, size = 15)
+                }, size = 15)
         }
     }
 }

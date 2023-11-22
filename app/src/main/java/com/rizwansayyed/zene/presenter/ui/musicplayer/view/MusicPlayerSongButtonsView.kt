@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -75,7 +77,10 @@ fun MusicPlayerSliders(player: ExoPlayer) {
             thumb = {},
             valueRange = 0f..valueEndRange
         )
-        TextRegular(totalTime, Modifier.padding(end = 4.dp), size = 15)
+        if (totalTime.contains("-"))
+            TextRegular("0:00", Modifier.padding(end = 4.dp), size = 15)
+        else
+            TextRegular(totalTime, Modifier.padding(end = 4.dp), size = 15)
 
         Spacer(Modifier.height(3.dp))
     }
@@ -131,7 +136,7 @@ fun MusicPlayerButtons(player: ExoPlayer) {
                 }
             else
                 SmallIcons(R.drawable.ic_play, 38) {
-                    player.pause()
+                    player.play()
                 }
 
         SmallIcons(R.drawable.ic_song_next, 25) {
@@ -141,20 +146,14 @@ fun MusicPlayerButtons(player: ExoPlayer) {
         }
     }
 
-
     DisposableEffect(Unit) {
         val playerListener = object : PlayerServiceInterface {
-            override fun songInfoDownloading(b: Boolean) {
-                isLoading = b
-            }
-
             override fun songBuffering(b: Boolean) {
                 isLoading = b
             }
 
             override fun mediaItemUpdate(mediaItem: MediaItem) {
-                if (!mediaItem.requestMetadata.mediaUri.toString().contains("https://"))
-                    isLoading = true
+                isLoading = !mediaItem.requestMetadata.mediaUri.toString().contains("https://")
             }
 
             override fun playingStateChange() {
@@ -170,17 +169,4 @@ fun MusicPlayerButtons(player: ExoPlayer) {
             PlayServiceListener.getInstance().rmListener(playerListener)
         }
     }
-}
-
-@Composable
-fun MusicPlayerButton(icon: Int, click: () -> Unit) {
-    Image(
-        painterResource(icon), "",
-        Modifier
-            .clickable {
-                click()
-            }
-            .size(33.dp),
-        colorFilter = ColorFilter.tint(Color.White)
-    )
 }

@@ -36,12 +36,6 @@ class PlayServiceListener {
         }
     }
 
-    fun isSongInfoDownload(b: Boolean) {
-        for (listener in listeners) {
-            listener.songInfoDownloading(b)
-        }
-    }
-
     fun mediaItemUpdate(b: MediaItem) {
         for (listener in listeners) {
             listener.mediaItemUpdate(b)

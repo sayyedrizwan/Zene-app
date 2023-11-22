@@ -106,15 +106,10 @@ class PlayerService : MediaSessionService() {
             playerError(error)
         }
 
-        override fun onIsLoadingChanged(isLoading: Boolean) {
-            super.onIsLoadingChanged(isLoading)
-            PlayServiceListener.getInstance().isBuffering(isLoading)
-        }
-
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
-            PlayServiceListener.getInstance()
-                .isSongInfoDownload(playbackState == Player.STATE_BUFFERING)
+           PlayServiceListener.getInstance()
+                .isBuffering(playbackState == Player.STATE_BUFFERING)
 
             if (playbackState == Player.STATE_READY) {
                 retry = 0
