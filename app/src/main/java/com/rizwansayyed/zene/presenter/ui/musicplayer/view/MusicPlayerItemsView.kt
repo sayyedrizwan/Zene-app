@@ -110,19 +110,20 @@ fun MusicTitleAndBodyText(p: MusicPlayerData?, pagerState: PagerState) {
             .fillMaxWidth()
             .padding(horizontal = 6.dp), Arrangement.Center, Arrangement.Center
     ) {
-        p?.songsLists?.get(pagerState.currentPage)?.artists?.split(",", "&")?.forEach {
-            if (it.trim() == "," || it.trim() == "&")
-                TextThin(it, size = 15)
-            else
-                TextThin(it, Modifier.clickable {
-                    homeNav.setArtists(it)
-                    coroutine.launch {
-                        val playerData = DataStorageManager.musicPlayerData.first()?.apply {
-                            show = false
+        p?.songsLists?.get(pagerState.currentPage)?.artists?.replace(",", "/,")
+            ?.replace("&", "/&")?.split("/")?.forEach {
+                if (it.trim() == "," || it.trim() == "&")
+                    TextThin(it, size = 15)
+                else
+                    TextThin(it, Modifier.clickable {
+                        homeNav.setArtists(it)
+                        coroutine.launch {
+                            val playerData = DataStorageManager.musicPlayerData.first()?.apply {
+                                show = false
+                            }
+                            DataStorageManager.musicPlayerData = flowOf(playerData)
                         }
-                        DataStorageManager.musicPlayerData = flowOf(playerData)
-                    }
-                }, size = 15)
-        }
+                    }, size = 15)
+            }
     }
 }

@@ -72,6 +72,7 @@ import kotlin.time.Duration.Companion.seconds
 // work on artists share and pin and artists photos
 // make playlist save and all options.
 // start search song after voice command
+// some songs lyrics not in sync.
 
 
 @AndroidEntryPoint

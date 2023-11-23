@@ -257,4 +257,9 @@ data class GeniusSearchResponse(
     }
 }
 
-data class GeniusLyricsWithInfo(val lyrics: String, val info: String, val subtitles: Boolean)
+data class GeniusLyricsWithInfo(
+    val songId: String,
+    val lyrics: String,
+    val info: String,
+    val subtitles: Boolean
+)

@@ -1,14 +1,12 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles
 
-import android.util.Log
-import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.GeniusURL.GENIUS_BASE_URL
 import com.rizwansayyed.zene.data.utils.GeniusURL.geniusMusicSearch
 import com.rizwansayyed.zene.data.utils.RentAdvisorSubtitles.RENT_ADVISER_BASE_URL
 import com.rizwansayyed.zene.data.utils.RentAdvisorSubtitles.searchOnRentAdviser
 import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
 import com.rizwansayyed.zene.domain.subtitles.GeniusSearchResponse
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
@@ -21,16 +19,16 @@ import javax.inject.Inject
 
 class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
 
-    override suspend fun searchSubtitles(songName: String, artistName: String) = flow {
-        val searchName = "${songName.substringBefore("-").substringBefore("(")} - " +
-                artistName.substringBefore(",").substringBefore("&")
+    override suspend fun searchSubtitles(data: MusicPlayerList) = flow {
+        val searchName = "${data.songName?.substringBefore("-")?.substringBefore("(")} - " +
+                data.artists?.substringBefore(",")?.substringBefore("&")
         val response = jsoupResponseData(searchOnRentAdviser(searchName))
         val jsoup = Jsoup.parse(response!!)
 
         val link = jsoup.selectFirst("div#tablecontainer")?.selectFirst("a")
         val subtitleLink = "$RENT_ADVISER_BASE_URL${link?.attr("href")}"
 
-        if (areSongNamesEqual("$artistName - $songName", link?.text() ?: "")) {
+        if (areSongNamesEqual("${data.artists} - ${data.songName}", link?.text() ?: "")) {
             val subtitleResponse = jsoupResponseData(subtitleLink)
             val subtitleJsoup = Jsoup.parse(subtitleResponse!!)
                 .selectFirst("span#ctl00_ContentPlaceHolder1_lbllyrics_simple")
@@ -38,20 +36,20 @@ class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
                     (subtitleJsoup?.select("br")?.mapNotNull { it.nextSibling() }
                         ?.joinToString("\n")
                         ?.replace("by RentAnAdviser.com", " \uD83C\uDFB6") ?: "")
-            emit(GeniusLyricsWithInfo(text, "", true))
+            emit(GeniusLyricsWithInfo(data.songID ?: "", text, "", true))
 
             return@flow
         }
 
-        val lyrics = searchSubtitlesOnGenius(songName, artistName).first()
+        val lyrics = searchSubtitlesOnGenius(data).first()
 
         emit(lyrics)
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun searchSubtitlesOnGenius(songName: String, artistName: String) = flow {
-        val searchName = "${artistName.substringBefore(",").substringBefore("&")} - " +
-                songName.substringBefore("-").substringBefore("(")
+    override suspend fun searchSubtitlesOnGenius(data: MusicPlayerList) = flow {
+        val searchName = "${data.artists?.substringBefore(",")?.substringBefore("&")} - " +
+                data.songName?.substringBefore("-")?.substringBefore("(")
         val response = jsoupResponseData(geniusMusicSearch(searchName))
 
         val searchData = moshi.adapter(GeniusSearchResponse::class.java).fromJson(response!!)
@@ -59,7 +57,7 @@ class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
         searchData?.response?.sections?.forEach { s ->
             if (s?.type == "top_hit") s.hits?.forEach { h ->
                 if (areSongNamesEqual(
-                        "$artistName - $songName", h?.result?.full_title ?: ""
+                        "${data.artists} - ${data.songName}", h?.result?.full_title ?: ""
                     ) && link.isEmpty()
                 ) link = h?.result?.path ?: ""
             }
@@ -78,6 +76,6 @@ class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
 
         val lyrics: String =
             lyricsJsoup.selectFirst("div.Lyrics__Container-sc-1ynbvzw-1.kUgSbL")?.text() ?: ""
-        emit(GeniusLyricsWithInfo(lyrics, songInfo, false))
+        emit(GeniusLyricsWithInfo(data.songID ?: "", lyrics, songInfo, false))
     }.flowOn(Dispatchers.IO)
 }

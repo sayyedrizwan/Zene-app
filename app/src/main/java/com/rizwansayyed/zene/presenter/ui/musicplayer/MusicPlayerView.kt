@@ -48,6 +48,7 @@ import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -83,8 +84,7 @@ fun MusicPlayerView(player: ExoPlayer) {
         if (p?.songID != player.currentMediaItem?.mediaId)
             p?.let { playerViewModel.init(it) }
 
-        if (playerViewModel.lyricsInfo == null)
-            p?.let { playerViewModel.searchLyrics(it) }
+        p?.let { playerViewModel.searchLyrics(it) }
     }
 }
 
