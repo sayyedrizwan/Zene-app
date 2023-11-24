@@ -36,9 +36,12 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButton
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerLyrics
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerRelatedSongs
@@ -75,19 +78,28 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         MusicPlayerButtons(player)
 
+        Spacer(Modifier.height(10.dp))
+
+        MusicActionButtons()
+
         Spacer(Modifier.height(30.dp))
 
         MusicPlayerLyrics(playerViewModel, player)
 
         MusicPlayerRelatedSongs(playerViewModel)
+
+        Spacer(Modifier.height(90.dp))
     }
 
     LaunchedEffect(p) {
         if (p?.songID != player.currentMediaItem?.mediaId)
             p?.let { playerViewModel.init(it) }
 
+
+        if (p?.songID != player.currentMediaItem?.mediaId || playerViewModel.relatedSongs == DataResponse.Empty)
+            p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }
+
         p?.let { playerViewModel.searchLyrics(it) }
-        p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }
     }
 }
 
