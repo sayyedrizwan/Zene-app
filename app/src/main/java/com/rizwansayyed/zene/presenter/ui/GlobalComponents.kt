@@ -2,10 +2,6 @@ package com.rizwansayyed.zene.presenter.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BlendMode
-import android.os.Build
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.animation.animateContentSize

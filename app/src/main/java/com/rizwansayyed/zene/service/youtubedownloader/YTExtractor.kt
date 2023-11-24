@@ -38,7 +38,12 @@ import java.util.regex.Pattern
  * @param LOGGING Enable logging, default is false.
  */
 
-class YTExtractor(val con: Context, val CACHING: Boolean = false, val LOGGING: Boolean = false, val retryCount: Int = 1) {
+class YTExtractor(
+    val con: Context,
+    val CACHING: Boolean = false,
+    val LOGGING: Boolean = false,
+    val retryCount: Int = 1
+) {
     private val LOG_TAG = "Kotlin YouTube Extractor"
     private val CACHE_FILE_NAME = "decipher_js_funct"
 
@@ -290,7 +295,8 @@ class YTExtractor(val con: Context, val CACHING: Boolean = false, val LOGGING: B
             }
             val videoDetails = ytPlayerResponse?.getJSONObject("videoDetails")
             if (videoDetails != null) {
-                Log.d(LOG_TAG, "videoDetails: $videoDetails")
+                if (LOGGING) Log.d(LOG_TAG, "videoDetails: $videoDetails")
+
                 videoMeta = VideoMeta(
                     videoDetails.getString("videoId"),
                     videoDetails.getString("title"),
@@ -634,15 +640,13 @@ class YTExtractor(val con: Context, val CACHING: Boolean = false, val LOGGING: B
                                     )
                                     state = State.SUCCESS
                                     return@async temp
-                                }
-                                else {
+                                } else {
                                     retry++
                                     state = State.ERROR
                                     Log.e(LOG_TAG, "Extraction failed cause 403 HTTP Error")
                                 }
                             }
-                        }
-                        catch (e: IOException){
+                        } catch (e: IOException) {
                             retry++
                             state = State.ERROR
                             Log.e(LOG_TAG, "Extraction failed cause 403 HTTP Error", e)
@@ -666,6 +670,7 @@ class YTExtractor(val con: Context, val CACHING: Boolean = false, val LOGGING: B
     fun getVideoMeta(): VideoMeta? {
         return videoMeta
     }
+
     /**
      * After extract, you can get the video stream URL data if state is SUCCESS
      * Please check the state before call this function

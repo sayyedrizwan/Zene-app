@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -57,17 +55,31 @@ fun ImageOfSongWithPlayIcon(
             .size(width)
             .padding(horizontal = 8.dp)
     ) {
-        AsyncImage(item?.thumbnail, item?.name,
-            Modifier
-                .align(Alignment.Center)
-                .fillMaxSize()
-                .graphicsLayer {
-                    val pageOffset = (
-                            (pagerState.currentPage - page) + pagerState
-                                .currentPageOffsetFraction
-                            ).absoluteValue
-                    alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
-                })
+        if (item?.pId == p?.v?.songID)
+            MusicYoutubeWebView(
+                Modifier
+                    .padding(20.dp)
+                    .align(Alignment.Center)
+                    .size(width)
+                    .graphicsLayer {
+                        val pageOffset = (
+                                (pagerState.currentPage - page) + pagerState
+                                    .currentPageOffsetFraction
+                                ).absoluteValue
+                        alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+                    })
+        else
+            AsyncImage(item?.thumbnail, item?.name,
+                Modifier
+                    .align(Alignment.Center)
+                    .size(width)
+                    .graphicsLayer {
+                        val pageOffset = (
+                                (pagerState.currentPage - page) + pagerState
+                                    .currentPageOffsetFraction
+                                ).absoluteValue
+                        alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+                    })
 
         if (item?.pId != p?.v?.songID)
             Image(

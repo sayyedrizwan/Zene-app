@@ -78,7 +78,7 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         MusicPlayerButtons(player)
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(20.dp))
 
         MusicActionButtons()
 
@@ -95,6 +95,8 @@ fun MusicPlayerView(player: ExoPlayer) {
         if (p?.songID != player.currentMediaItem?.mediaId)
             p?.let { playerViewModel.init(it) }
 
+        if (p?.songID != player.currentMediaItem?.mediaId || playerViewModel.relatedSongs == DataResponse.Empty)
+            p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }
 
         if (p?.songID != player.currentMediaItem?.mediaId || playerViewModel.relatedSongs == DataResponse.Empty)
             p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }

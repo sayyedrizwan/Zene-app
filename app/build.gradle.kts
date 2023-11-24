@@ -116,6 +116,7 @@ dependencies {
     implementation("com.github.evgenyneu:js-evaluator-for-android:${DependenciesVersion.JS_EVALUATOR.version}")
 
     implementation("org.jsoup:jsoup:${DependenciesVersion.JSOUP.version}")
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:${DependenciesVersion.YT_PLAYER.version}")
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:${DependenciesVersion.OK_HTTP.version}"))
     implementation("com.squareup.okhttp3:okhttp")
@@ -145,7 +146,7 @@ enum class DependenciesVersion(val version: String) {
     KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.8.0"), COMPOSE("2023.09.00"),
     HILT("2.48.1"), HILT_COMPOSE("1.1.0"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0"),
     RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1"),
-    MEDIA3("1.2.0"), COMPOSE_UI_UTILS("1.5.4"), JS_EVALUATOR("v6.0.0"), BROWSER("1.6.0")
+    MEDIA3("1.2.0"), COMPOSE_UI_UTILS("1.5.4"), JS_EVALUATOR("v6.0.0"), BROWSER("1.7.0"), YT_PLAYER("12.1.0")
 }
 
 enum class TestingDependenciesVersion(val version: String) {
