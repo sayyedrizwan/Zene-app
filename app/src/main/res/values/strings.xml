@@ -31,6 +31,7 @@
     <string name="select_from_favourite">Select your favourite artists from the list.</string>
     <string name="artists_lists_try_again_later">Error getting artists list. Please try again later.</string>
     <string name="songs_you_may_like">Songs you may like</string>
+    <string name="related_songs">Related Songs</string>
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
     <string name="start_listening">Start Listening</string>
@@ -124,4 +125,5 @@
     <string name="clear_cache">Clear Cache</string>
     <string name="feedback">Feedback</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="lyrics">Lyrics</string>
 </resources>

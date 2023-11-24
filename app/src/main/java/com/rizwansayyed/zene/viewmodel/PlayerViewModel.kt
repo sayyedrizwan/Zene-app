@@ -6,9 +6,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapsImpl
+import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
+import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,10 +29,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val subtitlesScraps: SubtitlesScrapsImplInterface
+    private val subtitlesScraps: SubtitlesScrapsImplInterface,
+    private val youtubeAPI: YoutubeAPIImplInterface
 ) : ViewModel() {
 
     var lyricsInfo by mutableStateOf<GeniusLyricsWithInfo?>(null)
+        private set
+
+    var relatedSongs by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
     fun init(data: MusicPlayerData) = viewModelScope.launch(Dispatchers.IO) {
@@ -42,10 +52,20 @@ class PlayerViewModel @Inject constructor(
             }.catch {
                 lyricsInfo = GeniusLyricsWithInfo(d.v?.songID ?: "", "", "", false)
             }.collectLatest {
-                Log.d("TAG", "searchLyrics: runnned $it")
                 lyricsInfo = it
             }
         }
     }
 
+
+    fun similarSongsArtists(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.songsSuggestionsForUsers(listOf(id)).onStart {
+            relatedSongs = DataResponse.Loading
+        }.catch {
+            relatedSongs = DataResponse.Error(it)
+        }.collectLatest {
+            val list = (it.related + it.next).shuffled()
+            relatedSongs = DataResponse.Success(list)
+        }
+    }
 }

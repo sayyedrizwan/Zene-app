@@ -65,9 +65,9 @@ fun PageWithHorizontal(item: List<List<MusicData?>>) {
         )
     ) { page ->
         Column {
-            item[page].forEach { i ->
-                GlobalTrendingPagerItems(i, true) {
-                    addAllPlayer(item.flatten().toTypedArray(), page)
+            item[page].forEachIndexed { i, musicData ->
+                GlobalTrendingPagerItems(musicData, true) {
+                    addAllPlayer(item.flatten().toTypedArray(), i)
                 }
             }
         }

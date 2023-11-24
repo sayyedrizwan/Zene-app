@@ -20,9 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.ui.TextRegular
+import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.formatExoplayerDuration
@@ -45,20 +48,28 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
             Modifier
                 .padding(10.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(17))
+                .clip(RoundedCornerShape(17.dp))
                 .background(Color.Black)
                 .padding(10.dp)
         ) {
+
             Spacer(Modifier.height(6.dp))
+            TextSemiBold(stringResource(R.string.lyrics), size = 20)
+            Spacer(Modifier.height(12.dp))
             TextRegular(v = text)
+            Spacer(Modifier.height(6.dp))
         }
     }
+
+
 
     DisposableEffect(Unit) {
         job = coroutine.launch {
             while (true) {
                 val v = playerViewModel.lyricsInfo
+
                 if (v?.lyrics?.isNotEmpty() == true && v.subtitles) {
+                    text = " "
                     val currentTime = formatExoplayerDuration(player.currentPosition)
                     if (!v.lyrics.substringAfter("[$currentTime").substringAfter("[")
                             .substringBefore("]").contains("00:00")
@@ -67,7 +78,7 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
                             .substringBefore("[")
                     }
                 } else if (v?.lyrics?.isNotEmpty() == true){
-                    text = v.lyrics
+                    text = v.lyrics.replace("[", "\n[")
                 }
 
                 delay(1.seconds)

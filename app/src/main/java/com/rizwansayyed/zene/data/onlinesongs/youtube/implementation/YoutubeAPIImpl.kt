@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNewReleaseJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextDetails
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.ArtistsFanData
@@ -611,7 +612,10 @@ class YoutubeAPIImpl @Inject constructor(
 
                     content?.playlistPanelVideoRenderer?.longBylineText?.runs?.forEach { a ->
                         if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
-                            a.text?.let { artists.add(it) }
+                            if (!artists.any {
+                                    it.trim().lowercase() == a.text?.trim()?.lowercase()
+                                })
+                                a.text?.let { artists.add(it) }
                     }
 
                     val thumbnail = content?.playlistPanelVideoRenderer?.thumbnailURL()
@@ -642,7 +646,10 @@ class YoutubeAPIImpl @Inject constructor(
 
                             item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
                                 if (n?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
-                                    n.text?.let { artists.add(it) }
+                                    if (!artists.any {
+                                            it.trim().lowercase() == n.text?.trim()?.lowercase()
+                                        })
+                                        n.text?.let { artists.add(it) }
                             }
 
                             val thumbnail =

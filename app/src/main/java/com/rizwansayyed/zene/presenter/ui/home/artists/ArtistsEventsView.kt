@@ -67,26 +67,28 @@ fun ArtistsEvents() {
         }
 
         is DataResponse.Success -> {
-            TopInfoWithSeeMore(R.string.upcoming_events, null) {}
+            if ((v.item?.size ?: 0) > 0) {
+                TopInfoWithSeeMore(R.string.upcoming_events, null) {}
 
-            val pager = rememberPagerState(pageCount = { v.item?.size ?: 0 })
-            HorizontalPager(pager, Modifier.fillMaxWidth()) { page ->
-                EventsItems(v.item?.get(page)!!, artistsViewModel)
-            }
+                val pager = rememberPagerState(pageCount = { v.item?.size ?: 0 })
+                HorizontalPager(pager, Modifier.fillMaxWidth()) { page ->
+                    EventsItems(v.item?.get(page)!!, artistsViewModel)
+                }
 
-            Spacer(Modifier.height(15.dp))
+                Spacer(Modifier.height(15.dp))
 
-            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                for (i in 0 until pager.pageCount) {
-                    Column(
-                        Modifier
-                            .animateContentSize()
-                            .padding(bottom = 14.dp)
-                            .padding(horizontal = 4.dp)
-                            .size(if (pager.currentPage == i) 26.dp else 3.dp, 3.dp)
-                            .clip(RoundedCornerShape(5.dp))
-                            .background(if (pager.currentPage == i) Color.Gray else Color.White)
-                    ) {}
+                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                    for (i in 0 until pager.pageCount) {
+                        Column(
+                            Modifier
+                                .animateContentSize()
+                                .padding(bottom = 14.dp)
+                                .padding(horizontal = 4.dp)
+                                .size(if (pager.currentPage == i) 26.dp else 3.dp, 3.dp)
+                                .clip(RoundedCornerShape(5.dp))
+                                .background(if (pager.currentPage == i) Color.Gray else Color.White)
+                        ) {}
+                    }
                 }
             }
         }

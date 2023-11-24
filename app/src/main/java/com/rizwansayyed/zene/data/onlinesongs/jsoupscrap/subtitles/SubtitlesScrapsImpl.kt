@@ -74,8 +74,10 @@ class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
                 songInfo += "\n \n"
             }
 
-        val lyrics: String =
-            lyricsJsoup.selectFirst("div.Lyrics__Container-sc-1ynbvzw-1.kUgSbL")?.text() ?: ""
+        var lyrics = ""
+            lyricsJsoup.select("div.Lyrics__Container-sc-1ynbvzw-1.kUgSbL").forEach {
+                lyrics += it.text()
+            }
         emit(GeniusLyricsWithInfo(data.songID ?: "", lyrics, songInfo, false))
     }.flowOn(Dispatchers.IO)
 }

@@ -69,9 +69,11 @@ fun ArtistsImagesView() {
         }
 
         is DataResponse.Success -> {
-            TopInfoWithSeeMore(R.string.artist_photos, null) {}
+            if (v.item.isNotEmpty()) {
+                TopInfoWithSeeMore(R.string.artist_photos, null) {}
 
-            ArtistPhotoAlbum(v.item, false)
+                ArtistPhotoAlbum(v.item, false)
+            }
         }
     }
 }

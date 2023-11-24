@@ -41,6 +41,7 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerLyrics
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerRelatedSongs
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerSliders
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.SongsThumbnailsWithList
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
@@ -48,7 +49,6 @@ import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -78,6 +78,8 @@ fun MusicPlayerView(player: ExoPlayer) {
         Spacer(Modifier.height(30.dp))
 
         MusicPlayerLyrics(playerViewModel, player)
+
+        MusicPlayerRelatedSongs(playerViewModel)
     }
 
     LaunchedEffect(p) {
@@ -85,6 +87,7 @@ fun MusicPlayerView(player: ExoPlayer) {
             p?.let { playerViewModel.init(it) }
 
         p?.let { playerViewModel.searchLyrics(it) }
+        p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }
     }
 }
 
@@ -143,6 +146,11 @@ fun BottomNavImage(player: ExoPlayer) {
             override fun mediaItemUpdate(mediaItem: MediaItem) {
                 if (!mediaItem.requestMetadata.mediaUri.toString().contains("https://"))
                     isLoading = true
+            }
+
+            override fun playingStateChange() {
+                super.playingStateChange()
+                isPlaying = player.isPlaying
             }
 
         }
