@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -50,6 +52,9 @@ fun MusicActionButton(drawable: Int, txt: String, click: () -> Unit) {
         Modifier
             .padding(6.dp)
             .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
+            .clickable {
+                click()
+            }
             .padding(horizontal = 6.dp, vertical = 3.dp),
         Arrangement.Center, Alignment.CenterVertically
     ) {
