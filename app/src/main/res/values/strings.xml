@@ -126,4 +126,8 @@
     <string name="feedback">Feedback</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="lyrics">Lyrics</string>
+    <string name="switch_to_video">Switch to Video</string>
+    <string name="switch_to_lyrics_video">Switch to Lyrics Video</string>
+    <string name="enable_loop">Enable Loop</string>
+    <string name="enable_autoplay">Enable Autoplay</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
@@ -25,29 +26,32 @@ import com.rizwansayyed.zene.presenter.ui.TextThin
 
 @Composable
 fun MusicActionButtons() {
-
     Row(
         Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()), Arrangement.Center, Alignment.CenterVertically
     ) {
-        repeat(5) {
-            MusicActionButton(R.drawable.ic_play, "autoplay") {}
-        }
+        MusicActionButton(R.drawable.ic_flim_video, R.string.switch_to_video) {}
+        MusicActionButton(R.drawable.ic_closed_caption, R.string.switch_to_lyrics_video) {}
+        MusicActionButton(R.drawable.ic_repeat, R.string.enable_loop) {}
+        MusicActionButton(R.drawable.ic_autoplay, R.string.enable_autoplay) {}
+        MusicActionButton(R.drawable.ic_share, R.string.share) {}
+        MusicActionButton(R.drawable.ic_playlist, R.string.add_to_playlist) {}
+        MusicActionButton(R.drawable.ic_download, R.string.offline_download) {}
+
     }
 
     // autoplay
     // loop
     // add to playlists
     // share
-    // add to playlist
-    //download
+    // download
     // switch to video
     // switch to lyrics video
 }
 
 @Composable
-fun MusicActionButton(drawable: Int, txt: String, click: () -> Unit) {
+fun MusicActionButton(drawable: Int, txt: Int, click: () -> Unit) {
     Row(
         Modifier
             .padding(6.dp)
@@ -60,7 +64,7 @@ fun MusicActionButton(drawable: Int, txt: String, click: () -> Unit) {
     ) {
 
         SmallIcons(icon = drawable, size = 17)
-        TextRegular(v = txt)
+        TextRegular(v = stringResource(txt))
 
         Spacer(Modifier.width(6.dp))
     }

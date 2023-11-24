@@ -95,7 +95,7 @@ fun MusicPlayerSliders(player: ExoPlayer) {
                 else player.duration.toFloat()
                 sliderPosition = player.currentPosition.toFloat()
 
-                delay(1.seconds)
+                delay(1.2.seconds)
             }
         }
         onDispose {
