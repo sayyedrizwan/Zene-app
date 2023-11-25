@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.playerwebview.MusicYoutubeWebView
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlinx.coroutines.flow.first
@@ -55,31 +56,21 @@ fun ImageOfSongWithPlayIcon(
             .size(width)
             .padding(horizontal = 8.dp)
     ) {
+        val modifier = Modifier
+            .align(Alignment.Center)
+            .size(width)
+            .graphicsLayer {
+                val pageOffset = (
+                        (pagerState.currentPage - page) + pagerState
+                            .currentPageOffsetFraction
+                        ).absoluteValue
+                alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+            }
+
         if (item?.pId == p?.v?.songID)
-            MusicYoutubeWebView(
-                Modifier
-                    .padding(20.dp)
-                    .align(Alignment.Center)
-                    .size(width)
-                    .graphicsLayer {
-                        val pageOffset = (
-                                (pagerState.currentPage - page) + pagerState
-                                    .currentPageOffsetFraction
-                                ).absoluteValue
-                        alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
-                    })
+            MusicYoutubeWebView(modifier)
         else
-            AsyncImage(item?.thumbnail, item?.name,
-                Modifier
-                    .align(Alignment.Center)
-                    .size(width)
-                    .graphicsLayer {
-                        val pageOffset = (
-                                (pagerState.currentPage - page) + pagerState
-                                    .currentPageOffsetFraction
-                                ).absoluteValue
-                        alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
-                    })
+            AsyncImage(item?.thumbnail, item?.name, modifier)
 
         if (item?.pId != p?.v?.songID)
             Image(
