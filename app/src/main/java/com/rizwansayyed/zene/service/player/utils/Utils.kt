@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_PAUSE_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
@@ -53,6 +54,7 @@ object Utils {
         const val ADD_ALL_PLAYER_ITEM_NO_PLAY = "add_all_player_item_no_play"
         const val ADD_PLAY_NEXT_ITEM = "add_play_next_item"
         const val ADD_PLAY_AT_END_ITEM = "add_play_at_end_item"
+        const val PLAY_PAUSE_MEDIA = "play_pause_media"
         const val PLAY_LIVE_RADIO = "play_live_radio"
         const val SEEK_TO_TIMESTAMP = "seek_to_timestamp"
 
@@ -111,6 +113,14 @@ object Utils {
         }
     }
 
+    fun playOrPauseMedia(doPlay: Boolean) {
+        Intent(PLAYER_SERVICE_ACTION).apply {
+            putExtra(PLAYER_SERVICE_TYPE, PLAY_PAUSE_MEDIA)
+            putExtra(PLAY_SONG_MEDIA, doPlay)
+            context.sendBroadcast(this)
+        }
+    }
+
     fun playRadioOnPlayer(radio: OnlineRadioResponseItem) {
         val mediaData = moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio)
         Intent(PLAYER_SERVICE_ACTION).apply {
@@ -164,7 +174,7 @@ object Utils {
     object PlayerActionService {
         val PLAYER_SERVICE_ACTION = "${context.packageName}_player_service_action"
 
-        fun playerActionIntentFilter(){
+        fun playerActionIntentFilter() {
 
         }
     }

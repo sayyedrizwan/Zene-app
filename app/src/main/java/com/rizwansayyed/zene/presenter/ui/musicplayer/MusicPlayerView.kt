@@ -1,5 +1,9 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
+import android.view.View
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,8 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -38,9 +44,9 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
-import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButton
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerLyrics
@@ -92,6 +98,8 @@ fun MusicPlayerView(player: ExoPlayer) {
     }
 
     LaunchedEffect(p) {
+        if (p?.playType == MusicType.RADIO) return@LaunchedEffect
+
         if (p?.songID != player.currentMediaItem?.mediaId)
             p?.let { playerViewModel.init(it) }
 
@@ -104,6 +112,7 @@ fun MusicPlayerView(player: ExoPlayer) {
         p?.let { playerViewModel.searchLyrics(it) }
     }
 }
+
 
 @Composable
 fun BottomNavImage(player: ExoPlayer) {

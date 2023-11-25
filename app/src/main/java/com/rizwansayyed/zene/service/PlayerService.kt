@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_AT_END_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_NEXT_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_PAUSE_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -174,6 +175,12 @@ class PlayerService : MediaSessionService() {
                     val r = moshi.adapter(MusicData::class.java)
                         .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
                     r?.let { playerServiceAction.addItemToEnd(it) }
+                    if (isActive) cancel()
+                }
+
+                PLAY_PAUSE_MEDIA -> CoroutineScope(Dispatchers.Main).launch {
+                    val doPlay = intent.getBooleanExtra(PLAY_SONG_MEDIA, false)
+                    if (doPlay) player.play() else player.pause()
                     if (isActive) cancel()
                 }
 

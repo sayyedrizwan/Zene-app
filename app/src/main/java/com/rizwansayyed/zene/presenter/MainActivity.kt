@@ -67,6 +67,33 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+// click on map and open view.
+// add sos in tracker view
+// view map on last seen
+//location, sos, location history,
+// add request to top.
+// add dialog of added member.
+// small view on show card (Mark Lost).
+
+// digital tag on clicking phone sync
+// increase map bottom dialog to see the icon.
+// change to shopify store only on India.
+
+// cover profile pic
+
+// events info working
+// GPS is off.
+
+// maps change icons type.
+
+// fix crash bug on IOS
+
+//sos and link qr big button's
+// location and sos status via icon.
+
+
+
+
 
 // if going ahead or back on song multiple time on via via notification is causing problem. fix it....
 // work on artists share and pin and artists photos
