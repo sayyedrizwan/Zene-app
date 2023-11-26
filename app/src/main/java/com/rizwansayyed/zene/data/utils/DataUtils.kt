@@ -126,7 +126,7 @@ object SoundCloudAPI {
 
 
 object YoutubeAPI {
-    private const val ytLatestClientVersion = "2.20231106.01.01"
+    private const val ytLatestClientVersion = "2.20231121.08.00"
     private const val ytMusicLatestClientVersion = "1.20231108.01.00"
 
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
@@ -156,7 +156,12 @@ object YoutubeAPI {
                     "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
-            }, "query": "$q", "params": "EgWKAQIIAWoSEAMQBRAEEAkQDhAKEBAQERAV"
+            }, "query": "${
+            q.replace(
+                "\"",
+                "\\\""
+            )
+        }", "params": "EgWKAQIIAWoSEAMQBRAEEAkQDhAKEBAQERAV"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -232,7 +237,12 @@ object YoutubeAPI {
                     "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
-            }, "query": "$q", "params": "EgWKAQIIAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
+            }, "query": "${
+            q.replace(
+                "\"",
+                "\\\""
+            )
+        }", "params": "EgWKAQIIAWoSEAMQCRAOEAoQBRAEEBEQFRAQ"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -267,7 +277,12 @@ object YoutubeAPI {
                     "clientVersion": "$ytMusicLatestClientVersion",
                     "timeZone": "${ip?.timezone}"
                 }
-            }, "query": "$q", "params": "EgWKAQIgAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D"
+            }, "query": "${
+            q.replace(
+                "\"",
+                "\\\""
+            )
+        }", "params": "EgWKAQIgAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -307,7 +322,7 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, 
-            "query": "$q", 
+            "query": "${q.replace("\"", "\\\"")}", 
             "params": "EgWKAQIYAWoSEAMQCRAOEAoQBBAFEBEQFRAQ"
         }"""
 
@@ -326,7 +341,7 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, 
-            "query": "$q", 
+            "query": "${q.replace("\"", "\\\"")}", 
            "params": "EgYIBRABGAI%3D"
         }"""
 
@@ -345,7 +360,8 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, 
-            "query": "$q" ${if (doLatest) ", \"params\": \"EgIIBQ%3D%3D\"" else ""}
+            "query": "${q.replace("\"", "\\\"")}" 
+            ${if (doLatest) ", \"params\": \"EgIIBQ%3D%3D\"" else ""}
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()

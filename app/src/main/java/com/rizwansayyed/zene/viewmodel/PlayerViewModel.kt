@@ -17,6 +17,9 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
+import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
+import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
+import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -40,9 +43,21 @@ class PlayerViewModel @Inject constructor(
     var relatedSongs by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
+    var videoSongs by mutableStateOf<DataResponse<PlayerVideoDetailsData>>(DataResponse.Empty)
+        private set
+
+    var showMusicType by mutableStateOf(Utils.MusicViewType.MUSIC)
+
     fun init(data: MusicPlayerData) = viewModelScope.launch(Dispatchers.IO) {
+        showMusicType = Utils.MusicViewType.MUSIC
+        videoSongs = DataResponse.Empty
+
         val d = musicPlayerData.first()
         musicPlayerData = flowOf(d?.apply { songID = data.v?.songID ?: "" })
+    }
+
+    fun setMusicType(t: Utils.MusicViewType) {
+        showMusicType = t
     }
 
     fun searchLyrics(d: MusicPlayerData) = viewModelScope.launch(Dispatchers.IO) {
@@ -69,4 +84,41 @@ class PlayerViewModel @Inject constructor(
             relatedSongs = DataResponse.Success(list)
         }
     }
+
+    fun searchLyricsAndSongVideo(name: String?, artist: String?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            videoSongs = DataResponse.Loading
+
+            var searchQuery = "${name?.replace("(", "")?.replace(")", "")} - ${
+                artist?.substringBefore(",")?.substringBefore("&")
+            }"
+
+            val videoList = try {
+                youtubeAPI.youtubeVideoThisYearSearch(searchQuery).first()
+            } catch (e: Exception) {
+                null
+            }
+            var videoId: String? = null
+            videoList?.forEachIndexed { i, musicData ->
+                if (i == 0) if (areSongNamesEqual(musicData.name ?: "", searchQuery))
+                    videoId = musicData.pId
+            }
+
+            searchQuery += "Lyrics Video"
+
+            val lyricsList = try {
+                youtubeAPI.youtubeVideoSearch(searchQuery).first()
+            } catch (e: Exception) {
+                null
+            }
+
+            var lyricsVideoId: String? = null
+            lyricsList?.forEachIndexed { i, musicData ->
+                if (i <= 2 && lyricsVideoId == null)
+                    if (areSongNamesEqual(musicData.name ?: "", searchQuery))
+                        lyricsVideoId = musicData.pId
+            }
+
+            videoSongs = DataResponse.Success(PlayerVideoDetailsData(videoId, lyricsVideoId))
+        }
 }

@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +47,7 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
 @Composable
-fun MusicYoutubeWebView(modifier: Modifier) {
+fun MusicYoutubeWebView(modifier: Modifier, videoId: String) {
     val activity = LocalContext.current as Activity
     var playerWebView by remember { mutableStateOf<PlayerWebView?>(null) }
     val fullScreenView = remember { mutableStateOf<View?>(null) }
@@ -54,7 +55,7 @@ fun MusicYoutubeWebView(modifier: Modifier) {
     Box(modifier) {
         AndroidView(
             factory = {
-                playerWebView = PlayerWebView(activity, "UNo0TG9LwwI", fullScreenView) {
+                playerWebView = PlayerWebView(activity, videoId, fullScreenView) {
                     if (it) activity.requestedOrientation =
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                     else activity.requestedOrientation =
@@ -93,6 +94,12 @@ fun MusicYoutubeWebView(modifier: Modifier) {
                     playerWebView?.enterFullScreen()
                 }
             }
+    }
+
+    DisposableEffect(Unit){
+        onDispose {
+            playerWebView?.destroy()
+        }
     }
 
     if (fullScreenView.value != null) {

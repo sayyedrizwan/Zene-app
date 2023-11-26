@@ -28,4 +28,5 @@ interface YoutubeAPIImplInterface {
     suspend fun albumsSearch(id: String): Flow<PlaylistItemsData>
     suspend fun songDetail(songId: String): Flow<MusicData>
     suspend fun youtubeShortsThisYearSearch(q: String): Flow<MutableList<MusicData>>
+    suspend fun youtubeVideoSearch(q: String): Flow<MutableList<MusicData>>
 }

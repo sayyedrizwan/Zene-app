@@ -25,20 +25,26 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.playerwebview.MusicYoutubeWebView
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -49,7 +55,10 @@ import kotlin.math.absoluteValue
 fun ImageOfSongWithPlayIcon(
     item: MusicData?, pagerState: PagerState, page: Int, p: MusicPlayerData?
 ) {
+    val playerViewModel: PlayerViewModel = hiltViewModel()
     val width = LocalConfiguration.current.screenWidthDp.dp - 11.dp
+
+    val noVideoFound = stringResource(R.string.no_video_found_try_again)
 
     Box(
         Modifier
@@ -68,7 +77,46 @@ fun ImageOfSongWithPlayIcon(
             }
 
         if (item?.pId == p?.v?.songID)
-            MusicYoutubeWebView(modifier)
+            when (playerViewModel.showMusicType) {
+                Utils.MusicViewType.LYRICS -> {
+                    when (val v = playerViewModel.videoSongs) {
+                        DataResponse.Empty -> {}
+                        is DataResponse.Error -> {}
+                        DataResponse.Loading -> {
+                            Spacer(modifier.background(shimmerBrush()))
+                        }
+
+                        is DataResponse.Success -> {
+                            if (v.item.lyricsVideoID == null) {
+                                noVideoFound.toast()
+                                playerViewModel.setMusicType(Utils.MusicViewType.MUSIC)
+                                return
+                            }
+                            MusicYoutubeWebView(modifier, v.item.lyricsVideoID)
+                        }
+                    }
+                }
+
+                Utils.MusicViewType.VIDEO -> {
+                    when (val v = playerViewModel.videoSongs) {
+                        DataResponse.Empty -> {}
+                        is DataResponse.Error -> {}
+                        DataResponse.Loading -> {
+                            Spacer(modifier.background(shimmerBrush()))
+                        }
+
+                        is DataResponse.Success -> {
+                            if (v.item.videoID == null) {
+                                noVideoFound.toast()
+                                playerViewModel.setMusicType(Utils.MusicViewType.MUSIC)
+                                return
+                            }
+                            MusicYoutubeWebView(modifier, v.item.videoID)
+                        }
+                    }
+                }
+                else -> AsyncImage(item?.thumbnail, item?.name, modifier)
+            }
         else
             AsyncImage(item?.thumbnail, item?.name, modifier)
 

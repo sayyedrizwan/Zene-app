@@ -47,6 +47,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerDat
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
+import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerLyrics
@@ -106,8 +107,10 @@ fun MusicPlayerView(player: ExoPlayer) {
         if (p?.songID != player.currentMediaItem?.mediaId || playerViewModel.relatedSongs == DataResponse.Empty)
             p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }
 
-        if (p?.songID != player.currentMediaItem?.mediaId || playerViewModel.relatedSongs == DataResponse.Empty)
-            p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }
+        if (p?.songID != player.currentMediaItem?.mediaId || playerViewModel.videoSongs == DataResponse.Empty) {
+            playerViewModel.setMusicType(Utils.MusicViewType.MUSIC)
+            p?.let { playerViewModel.searchLyricsAndSongVideo(it.v?.songName, it.v?.artists) }
+        }
 
         p?.let { playerViewModel.searchLyrics(it) }
     }

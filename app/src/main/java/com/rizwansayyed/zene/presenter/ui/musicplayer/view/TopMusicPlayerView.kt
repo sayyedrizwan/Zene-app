@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,17 +13,25 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -61,6 +70,7 @@ fun TopPlayerHeader() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongsThumbnailsWithList(p: MusicPlayerData?) {
+    val playerViewModel: PlayerViewModel = hiltViewModel()
     Spacer(Modifier.height(20.dp))
 
     val pagerState = rememberPagerState(pageCount = { p?.songsLists?.size ?: 0 })
@@ -81,5 +91,8 @@ fun SongsThumbnailsWithList(p: MusicPlayerData?) {
         p?.songsLists?.forEachIndexed { i, musicData ->
             if (musicData?.pId == p.v?.songID) pagerState.scrollToPage(i)
         }
+    }
+    LaunchedEffect(pagerState.currentPage) {
+        playerViewModel.setMusicType(Utils.MusicViewType.MUSIC)
     }
 }

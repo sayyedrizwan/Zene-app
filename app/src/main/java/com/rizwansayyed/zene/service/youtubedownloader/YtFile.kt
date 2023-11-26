@@ -1,4 +1,4 @@
-package com.maxrave.kotlinyoutubeextractor
+package com.rizwansayyed.zene.service.youtubedownloader
 
 class YtFile internal constructor(
     /**

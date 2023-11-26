@@ -442,6 +442,29 @@ class YoutubeAPIImpl @Inject constructor(
         emit(list)
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun youtubeVideoSearch(q: String) = flow {
+        val list = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.yt ?: ""
+
+        val r = youtubeAPI.youtubeSearchResponse(ytLatestMusicSearch(ip, q, false), key)
+
+
+        r.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEach { c ->
+            val vId = c?.videoRenderer?.videoId
+            val thumbnail = c?.videoRenderer?.thumbnailURL()
+            val name = c?.videoRenderer?.title?.runs?.first()?.text
+
+            val m = MusicData(
+                thumbnail ?: "", name, "", vId, MusicType.VIDEO
+            )
+            list.add(m)
+        }
+
+        emit(list)
+    }.flowOn(Dispatchers.IO)
+
 
     override suspend fun youtubeShortsThisYearSearch(q: String) = flow {
         val list = mutableListOf<MusicData>()

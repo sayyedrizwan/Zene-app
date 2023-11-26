@@ -1,12 +1,10 @@
 package com.rizwansayyed.zene.data.onlinesongs.downloader.implementation
 
-import android.util.Log
-import com.maxrave.kotlinyoutubeextractor.State
-import com.maxrave.kotlinyoutubeextractor.YTExtractor
-import com.maxrave.kotlinyoutubeextractor.getAudioOnly
-import com.maxrave.kotlinyoutubeextractor.getVideoOnly
+import com.rizwansayyed.zene.service.youtubedownloader.State
+import com.rizwansayyed.zene.service.youtubedownloader.YTExtractor
+import com.rizwansayyed.zene.service.youtubedownloader.getAudioOnly
+import com.rizwansayyed.zene.service.youtubedownloader.getVideoOnly
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.SongDownloader.ytURL
 import com.rizwansayyed.zene.data.utils.VideoDownloaderAPI.SAVE_FROM_BASE_URL
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context

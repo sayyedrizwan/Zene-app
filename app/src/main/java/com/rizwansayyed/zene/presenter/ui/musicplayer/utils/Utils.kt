@@ -35,4 +35,8 @@ object Utils {
         if (commonWords.size >= 3) return true
         return false
     }
+
+    enum class MusicViewType {
+        MUSIC, VIDEO, LYRICS
+    }
 }

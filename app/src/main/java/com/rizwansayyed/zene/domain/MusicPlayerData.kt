@@ -11,7 +11,8 @@ data class MusicPlayerData(
     var shortsID: String = "",
     val songsLyrics: String = "",
     var songsLists: List<MusicData?> = emptyList(),
-    var playType: MusicType?
+    var playType: MusicType?,
+    var temp: Int?,
 )
 
 data class MusicPlayerList(

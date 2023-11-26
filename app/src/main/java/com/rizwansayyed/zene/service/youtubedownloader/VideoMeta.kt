@@ -1,4 +1,4 @@
-package com.maxrave.kotlinyoutubeextractor
+package com.rizwansayyed.zene.service.youtubedownloader
 
 /**
  * VideoMeta contains all the information available for a YouTube video such as title, author, thumbnail, view count, etc.
