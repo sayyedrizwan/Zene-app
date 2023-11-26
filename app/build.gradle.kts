@@ -123,6 +123,7 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:${DependenciesVersion.WORK_MANAGER.version}")
     implementation("androidx.hilt:hilt-work:${DependenciesVersion.HILT_COMPOSE.version}")
+    kapt("androidx.hilt:hilt-compiler:${DependenciesVersion.HILT_COMPOSE.version}")
 
     implementation(platform("com.google.firebase:firebase-bom:${DependenciesVersion.FIREBASE.version}"))
     implementation("com.google.firebase:firebase-config-ktx")

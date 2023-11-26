@@ -1,12 +1,13 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap
 
-import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.utils.USER_AGENT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.File
+import java.io.FileOutputStream
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
@@ -83,6 +84,49 @@ suspend fun retryWithCookieResponseData(url: String, headers: List<String>): Str
     }
 }
 
+suspend fun downloadAFileFromURL(url: String, file: File, percentage: (Int) -> Unit): Boolean? {
+    return withContext(Dispatchers.IO) {
+        val client = OkHttpClient.Builder().build()
+        val request = Request.Builder().url(url).build()
+
+        fun updateProgress(bytesRead: Long, contentLength: Long) {
+            val progress = (bytesRead.toDouble() / contentLength.toDouble()) * 100
+            percentage(progress.toInt())
+        }
+
+        try {
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+
+                val body = response.body!!
+                val contentLength = body.contentLength()
+                val fileOutputStream = FileOutputStream(file)
+
+                val buffer = ByteArray(8192)
+                var bytesRead = 0L
+
+                while (bytesRead < contentLength) {
+                    val read = body.byteStream().read(buffer)
+                    if (read == -1) {
+                        break
+                    }
+
+                    fileOutputStream.write(buffer, 0, read)
+                    bytesRead += read.toLong()
+
+                    updateProgress(bytesRead, contentLength)
+                }
+
+                fileOutputStream.flush()
+                fileOutputStream.close()
+                true
+            } else
+                false
+        } catch (e: Exception) {
+            false
+        }
+    }
+}
 
 fun getMainDomain(url: String): String? {
     return try {

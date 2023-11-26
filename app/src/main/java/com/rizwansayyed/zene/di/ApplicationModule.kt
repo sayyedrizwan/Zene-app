@@ -3,6 +3,8 @@ package com.rizwansayyed.zene.di
 import android.app.Application
 import android.content.Intent
 import android.util.Log
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
@@ -28,11 +30,14 @@ import kotlin.time.Duration.Companion.seconds
 
 
 @HiltAndroidApp
-class ApplicationModule : Application() {
+class ApplicationModule : Application(), Configuration.Provider {
     companion object {
         @Volatile
         lateinit var context: ApplicationModule
     }
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     override fun onCreate() {
         super.onCreate()
@@ -81,5 +86,8 @@ class ApplicationModule : Application() {
 
 //        FirebaseApp.initializeApp(this)
     }
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder().setWorkerFactory(workerFactory).build()
 
 }
