@@ -129,7 +129,9 @@
     <string name="switch_to_video">Switch to Video</string>
     <string name="switch_to_music">Switch to Music</string>
     <string name="switch_to_lyrics_video">Switch to Lyrics Video</string>
-    <string name="enable_loop">Enable Loop</string>
-    <string name="enable_autoplay">Enable Autoplay</string>
+    <string name="playing_in_loop">Playing in Loop</string>
+    <string name="play_in_loop">Play in Loop</string>
+    <string name="autoplay_on">Turn Autoplay On</string>
+    <string name="autoplay_is_on">Autoplay is On</string>
     <string name="no_video_found_try_again">No video found. Please try again later.</string>
 </resources>

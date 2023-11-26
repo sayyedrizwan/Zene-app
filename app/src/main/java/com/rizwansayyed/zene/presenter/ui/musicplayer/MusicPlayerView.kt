@@ -1,9 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
-import android.view.View
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,10 +29,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -87,7 +81,7 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         Spacer(Modifier.height(20.dp))
 
-        MusicActionButtons()
+        MusicActionButtons(p)
 
         Spacer(Modifier.height(30.dp))
 

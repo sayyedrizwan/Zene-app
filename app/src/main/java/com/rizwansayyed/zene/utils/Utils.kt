@@ -5,6 +5,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
+import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
@@ -22,6 +23,7 @@ import androidx.core.graphics.red
 import androidx.core.net.toUri
 import coil.imageLoader
 import coil.request.ImageRequest
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.service.PlayerService
@@ -50,7 +52,7 @@ object Utils {
         private const val APP_URL = "https://zene.vercel.app"
 
         fun appUrlSongShare(id: String): String {
-            val changeIdToOurs = id.lowercase().trim()
+            val changeIdToOurs = id.trim()
             return "$APP_URL/s/$changeIdToOurs"
         }
 
@@ -195,6 +197,15 @@ object Utils {
         CustomTabsIntent.Builder().build().apply {
             intent.flags = FLAG_ACTIVITY_NEW_TASK
         }.launchUrl(context, this@customBrowser)
+    }
+
+    fun shareTxt(txt: String) {
+        Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            flags = FLAG_ACTIVITY_NEW_TASK
+            putExtra(Intent.EXTRA_TEXT, txt)
+            context.startActivity(this)
+        }
     }
 
 }
