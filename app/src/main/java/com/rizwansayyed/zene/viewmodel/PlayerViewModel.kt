@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -44,6 +45,9 @@ class PlayerViewModel @Inject constructor(
         private set
 
     var videoSongs by mutableStateOf<DataResponse<PlayerVideoDetailsData>>(DataResponse.Empty)
+        private set
+
+    var offlineSongStatus by mutableStateOf<Flow<OfflineDownloadedEntity?>>(flowOf(null))
         private set
 
     var showMusicType by mutableStateOf(Utils.MusicViewType.MUSIC)
@@ -124,6 +128,8 @@ class PlayerViewModel @Inject constructor(
 
 
     fun addOfflineSong(player: MusicPlayerList) = viewModelScope.launch(Dispatchers.IO) {
+        if (roomDb.offlineSongInfo(player.songID ?: "").first() != null) return@launch
+
         val offline = OfflineDownloadedEntity(
             player.songID ?: "",
             player.songName ?: "",
@@ -133,6 +139,13 @@ class PlayerViewModel @Inject constructor(
         )
 
         roomDb.addOfflineSongDownload(offline).collect()
+    }
+
+
+    fun offlineSongDetails(songId: String) = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.offlineSongInfoFlow(songId).catch { }.collectLatest {
+            offlineSongStatus = it
+        }
     }
 
 }

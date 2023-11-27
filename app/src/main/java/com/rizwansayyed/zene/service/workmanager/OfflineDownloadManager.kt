@@ -46,15 +46,16 @@ class OfflineDownloadManager @AssistedInject constructor(
                 val hdSong =
                     songDownloader.download(songId).first() ?: return@withContext Result.failure()
                 val download = downloadAFileFromURL(hdSong, file) {
-                    info.progress = it
+                    info?.progress = it
                     CoroutineScope(Dispatchers.IO).launch {
-                        roomDb.insert(info).collect()
+                        info?.let { r -> roomDb.insert(r).collect() }
                         if (isActive) cancel()
                     }
                 }
                 CoroutineScope(Dispatchers.IO).launch {
-                    info.progress = if (download == true) 100 else 0
-                    roomDb.insert(info).collect()
+                    info?.progress = if (download == true) 100 else 0
+                    info?.songPath = if (download == true) file.path else ""
+                    info?.let { roomDb.insert(it).collect() }
                     if (isActive) cancel()
                 }
                 return@withContext Result.success()

@@ -15,8 +15,10 @@ interface OfflineDownloadedDao {
     fun recentList(): Flow<List<OfflineDownloadedEntity>>
 
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE songId = :songId LIMIT 1")
-    suspend fun songDetails(songId: String): OfflineDownloadedEntity
+    suspend fun songDetails(songId: String): OfflineDownloadedEntity?
 
+    @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE songId = :songId LIMIT 1")
+    fun songDetailsFlow(songId: String): Flow<OfflineDownloadedEntity?>
 
     @Upsert
     suspend fun insertOrUpdate(v: OfflineDownloadedEntity)

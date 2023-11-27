@@ -48,6 +48,10 @@ class RoomDBImpl @Inject constructor(
         emit(offlineDownloaded.songDetails(songId))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun offlineSongInfoFlow(songId: String) = flow {
+        emit(offlineDownloaded.songDetailsFlow(songId))
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun insert(v: SavedPlaylistEntity) = flow {
         emit(savedPlaylistDao.insert(v))
     }.flowOn(Dispatchers.IO)

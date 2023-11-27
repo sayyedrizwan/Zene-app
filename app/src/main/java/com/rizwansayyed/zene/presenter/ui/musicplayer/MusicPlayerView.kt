@@ -106,6 +106,7 @@ fun MusicPlayerView(player: ExoPlayer) {
             p?.let { playerViewModel.searchLyricsAndSongVideo(it.v?.songName, it.v?.artists) }
         }
 
+        p?.songID?.let { playerViewModel.offlineSongDetails(it) }
         p?.let { playerViewModel.searchLyrics(it) }
     }
 }

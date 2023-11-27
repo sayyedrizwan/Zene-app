@@ -21,6 +21,8 @@ interface RoomDBInterface {
 
     suspend fun readRecentPlay(set: Int): Flow<List<RecentPlayedEntity>>
 
-    suspend fun offlineSongInfo(songId: String): Flow<OfflineDownloadedEntity>
+    suspend fun offlineSongInfo(songId: String): Flow<OfflineDownloadedEntity?>
+
     suspend fun addOfflineSongDownload(v: OfflineDownloadedEntity): Flow<Unit>
+    suspend fun offlineSongInfoFlow(songId: String): Flow<Flow<OfflineDownloadedEntity?>>
 }
