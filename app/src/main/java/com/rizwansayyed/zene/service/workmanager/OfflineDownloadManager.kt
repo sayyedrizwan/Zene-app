@@ -7,6 +7,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -62,10 +64,13 @@ class OfflineDownloadManager @AssistedInject constructor(
             val data = Data.Builder().apply {
                 putString(Intent.EXTRA_TEXT, id)
             }
+
             val uploadWorkRequest =
                 OneTimeWorkRequestBuilder<OfflineDownloadManager>().setInputData(data.build())
                     .setInputData(data.build()).setConstraints(builder.build()).build()
-            WorkManager.getInstance(context).enqueue(uploadWorkRequest)
+
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork("${id}_download", ExistingWorkPolicy.KEEP, uploadWorkRequest)
         }
     }
 
