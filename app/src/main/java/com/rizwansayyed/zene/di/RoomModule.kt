@@ -49,18 +49,7 @@ object RoomModule {
         @ApplicationContext context: Context
     ): OfflineDownloadedDao =
         Room.databaseBuilder(context, OfflineDownloadedDB::class.java, OFFLINE_DOWNLOADED_SONGS_DB)
-            .addMigrations(MIGRATION_1_2_OFFLINE_DOWNLOADED).build().dao()
-
-    private val MIGRATION_1_2_OFFLINE_DOWNLOADED = object : Migration(1, 2) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            try {
-                db.execSQL("ALTER TABLE $OFFLINE_DOWNLOADED_SONGS_DB RENAME COLUMN img TO thumbnail")
-                db.execSQL("ALTER TABLE $OFFLINE_DOWNLOADED_SONGS_DB ADD COLUMN viewed INTEGER NOT NULL DEFAULT 0")
-            } catch (e: Exception) {
-                e.message
-            }
-        }
-    }
+            .fallbackToDestructiveMigration().build().dao()
 
 
     @Provides

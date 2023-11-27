@@ -11,11 +11,13 @@ interface OfflineDownloadedDao {
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB ORDER BY timestamp DESC")
     suspend fun list(): List<OfflineDownloadedEntity>
 
-
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB ORDER BY timestamp DESC")
     fun recentList(): Flow<List<OfflineDownloadedEntity>>
 
+    @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE songId = :songId LIMIT 1")
+    suspend fun songDetails(songId: String): OfflineDownloadedEntity
+
 
     @Upsert
-    suspend fun insert(v: OfflineDownloadedEntity)
+    suspend fun insertOrUpdate(v: OfflineDownloadedEntity)
 }

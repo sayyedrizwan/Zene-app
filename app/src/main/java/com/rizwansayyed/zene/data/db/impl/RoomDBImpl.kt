@@ -37,16 +37,25 @@ class RoomDBImpl @Inject constructor(
 
 
     override suspend fun insert(v: OfflineDownloadedEntity) = flow {
-        emit(offlineDownloaded.insert(v))
+        emit(offlineDownloaded.insertOrUpdate(v))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun savedPlaylists() = flow {
         emit(savedPlaylistDao.list())
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun offlineSongInfo(songId: String) = flow {
+        emit(offlineDownloaded.songDetails(songId))
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun insert(v: SavedPlaylistEntity) = flow {
         emit(savedPlaylistDao.insert(v))
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun addOfflineSongDownload(v: OfflineDownloadedEntity) = flow {
+        emit(offlineDownloaded.insertOrUpdate(v))
+    }.flowOn(Dispatchers.IO)
+
 
 }

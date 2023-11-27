@@ -1,7 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
-import android.view.View
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,13 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
+import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapsImpl
-import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
-import com.rizwansayyed.zene.domain.SongsSuggestionsData
+import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
 import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
@@ -23,6 +21,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEq
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -34,7 +33,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val subtitlesScraps: SubtitlesScrapsImplInterface,
-    private val youtubeAPI: YoutubeAPIImplInterface
+    private val youtubeAPI: YoutubeAPIImplInterface,
+    private val roomDb: RoomDBInterface
 ) : ViewModel() {
 
     var lyricsInfo by mutableStateOf<GeniusLyricsWithInfo?>(null)
@@ -121,4 +121,18 @@ class PlayerViewModel @Inject constructor(
 
             videoSongs = DataResponse.Success(PlayerVideoDetailsData(videoId, lyricsVideoId))
         }
+
+
+    fun addOfflineSong(player: MusicPlayerList) = viewModelScope.launch(Dispatchers.IO) {
+        val offline = OfflineDownloadedEntity(
+            player.songID ?: "",
+            player.songName ?: "",
+            player.artists ?: "",
+            player.thumbnail ?: "",
+            "", System.currentTimeMillis(), 0
+        )
+
+        roomDb.addOfflineSongDownload(offline).collect()
+    }
+
 }

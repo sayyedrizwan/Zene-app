@@ -97,7 +97,10 @@ fun MusicActionButtons(p: MusicPlayerData?) {
         }
         MusicActionButton(R.drawable.ic_playlist, R.string.add_to_playlist) {}
         MusicActionButton(R.drawable.ic_download, R.string.offline_download) {
-            p?.songID?.let { startOfflineDownloadWorkManager(it) }
+            p?.v?.let {
+                playerViewModel.addOfflineSong(it)
+                startOfflineDownloadWorkManager(it.songID)
+            }
         }
 
     }

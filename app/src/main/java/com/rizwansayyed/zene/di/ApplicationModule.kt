@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -81,8 +82,9 @@ class ApplicationModule : Application(), Configuration.Provider {
 
                 addAllPlayerNotPlay(playerData?.songsLists?.toTypedArray(), songPosition)
             }
-            if (isActive) cancel()
+            File(context.filesDir, "offline_songs").deleteRecursively()
         }
+
 
 //        FirebaseApp.initializeApp(this)
     }

@@ -20,4 +20,7 @@ interface RoomDBInterface {
     suspend fun insert(v: SavedPlaylistEntity): Flow<Unit>
 
     suspend fun readRecentPlay(set: Int): Flow<List<RecentPlayedEntity>>
+
+    suspend fun offlineSongInfo(songId: String): Flow<OfflineDownloadedEntity>
+    suspend fun addOfflineSongDownload(v: OfflineDownloadedEntity): Flow<Unit>
 }

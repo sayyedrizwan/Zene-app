@@ -52,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -100,41 +101,43 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun musicInfoSearch(q: String, ip: IpJsonResponse?, key: String): MusicData? {
-        val n = q.trim().lowercase().replace("teaser", "")
+        return withContext(Dispatchers.IO) {
+            val n = q.trim().lowercase().replace("teaser", "")
 
-        if (n.isEmpty()) return null
+            if (n.isEmpty()) return@withContext null
 
-        var m: MusicData? = null
+            var m: MusicData? = null
 
-        try {
-            if (n.isEmpty()) return null
-            val searchResponse =
-                youtubeMusicAPI.youtubeSearchResponse(ytMusicMainSearchJsonBody(ip, n), key)
+            try {
+                if (n.isEmpty()) return@withContext null
+                val searchResponse =
+                    youtubeMusicAPI.youtubeSearchResponse(ytMusicMainSearchJsonBody(ip, n), key)
 
-            searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
-                if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "songs") {
-                    val thumbnail =
-                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
-                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { s ->
+                    if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "songs") {
+                        val thumbnail =
+                            s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
+                                ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
-                    val name =
-                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.first
+                        val name =
+                            s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.first
 
-                    val songsId =
-                        s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.second
+                        val songsId =
+                            s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.names()?.second
 
-                    val artists = s.musicShelfRenderer.getArtists()
+                        val artists = s.musicShelfRenderer.getArtists()
 
-                    m = MusicData(
-                        thumbnail ?: "", name, artists, songsId, MusicType.MUSIC
-                    )
+                        m = MusicData(
+                            thumbnail ?: "", name, artists, songsId, MusicType.MUSIC
+                        )
+                    }
                 }
+            } catch (e: Exception) {
+                m = null
             }
-        } catch (e: Exception) {
-            m = null
-        }
 
-        return m
+            m
+        }
     }
 
     override suspend fun artistsInfo(artists: List<MusicData>) = flow {
