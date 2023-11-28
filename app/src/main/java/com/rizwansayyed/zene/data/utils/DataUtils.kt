@@ -10,6 +10,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 
+const val PAGINATION_PAGE_SIZE = 50
+
 object DBNAME {
     const val RECENT_PLAYED_DB = "recent_played_db"
     const val OFFLINE_DOWNLOADED_SONGS_DB = "offline_songs_db"

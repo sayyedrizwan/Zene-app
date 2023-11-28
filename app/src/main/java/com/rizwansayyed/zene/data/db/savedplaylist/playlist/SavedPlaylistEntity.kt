@@ -9,10 +9,8 @@ import com.rizwansayyed.zene.data.utils.DBNAME.SAVED_PLAYLIST_DB
 data class SavedPlaylistEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     var name: String,
-    var artists: String,
     val timestamp: Long = System.currentTimeMillis(),
     var thumbnail: String = "",
     var items: Int = 0,
-    var isSuggested: Boolean = false,
-    var totalDuration: Long = 0
+    var playlistId: String? = null
 )

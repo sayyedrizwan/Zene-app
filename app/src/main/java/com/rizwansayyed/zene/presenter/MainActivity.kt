@@ -74,6 +74,8 @@ import kotlin.time.Duration.Companion.seconds
 // make playlist save and all options.
 // start search song after voice command
 // some songs lyrics not in sync. and make look lyrics more better
+// play all in albums list
+// pin playlists
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -88,6 +90,7 @@ class MainActivity : ComponentActivity() {
     private val roomViewModel: RoomDbViewModel by viewModels()
     private val homeApiViewModel: HomeApiViewModel by viewModels()
     private val jsoupScrapViewModel: JsoupScrapViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

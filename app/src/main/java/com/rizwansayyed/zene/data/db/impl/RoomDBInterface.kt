@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.data.db.impl
 
+import androidx.paging.DataSource
+import androidx.paging.PagingConfig
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
@@ -24,6 +26,11 @@ interface RoomDBInterface {
     suspend fun offlineSongInfo(songId: String): Flow<OfflineDownloadedEntity?>
 
     suspend fun addOfflineSongDownload(v: OfflineDownloadedEntity): Flow<Unit>
+
     suspend fun offlineSongInfoFlow(songId: String): Flow<Flow<OfflineDownloadedEntity?>>
+
     suspend fun removeSong(songId: String): Flow<Int>
+
+    suspend fun playlistWithName(name: String): Flow<List<SavedPlaylistEntity>>
+    suspend fun allPlaylists(limit: Int): List<SavedPlaylistEntity>
 }

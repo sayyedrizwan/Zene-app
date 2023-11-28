@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.data.db.impl
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDao
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedDao
@@ -65,6 +67,14 @@ class RoomDBImpl @Inject constructor(
     override suspend fun removeSong(songId: String) = flow {
         emit(offlineDownloaded.removeSong(songId))
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun playlistWithName(name: String) = flow {
+        emit(savedPlaylistDao.searchWithName(name))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun allPlaylists(limit: Int) = savedPlaylistDao.pagingPlaylist(limit)
 
 
 }

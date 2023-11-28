@@ -135,6 +135,9 @@ dependencies {
     implementation("androidx.media3:media3-session:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.media3:media3-exoplayer-hls:${DependenciesVersion.MEDIA3.version}")
     implementation("androidx.legacy:legacy-support-v4:${DependenciesVersion.V.version}")
+
+    implementation("androidx.paging:paging-runtime-ktx:${DependenciesVersion.PAGING.version}")
+    implementation("androidx.paging:paging-compose:3.3.0-alpha02")
 }
 
 enum class CompileSDK(val version: Int) {
@@ -147,11 +150,11 @@ enum class AndroidVersion(val version: String) {
 }
 
 enum class DependenciesVersion(val version: String) {
-    KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.8.0"), COMPOSE("2023.09.00"),
+    KOTLIN_VERSION("1.12.0"), RUNTIME_KTX("2.6.2"), ACTIVITY_COMPOSE("1.8.1"), COMPOSE("2023.09.00"),
     HILT("2.48.1"), HILT_COMPOSE("1.1.0"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.0"),
     RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1"),
     MEDIA3("1.2.0"), COMPOSE_UI_UTILS("1.5.4"), JS_EVALUATOR("v6.0.0"), BROWSER("1.7.0"), WEBKIT("1.8.0"),
-    WORK_MANAGER("2.8.1")
+    WORK_MANAGER("2.8.1"), PAGING("3.2.1")
 }
 
 enum class TestingDependenciesVersion(val version: String) {
