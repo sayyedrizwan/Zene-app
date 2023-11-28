@@ -47,6 +47,7 @@
     <string name="home">Home</string>
     <string name="search">Search</string>
     <string name="my_music">My Music</string>
+    <string name="no_playlist_found">No playlist found</string>
     <string name="feed">Feed</string>
     <string name="search_music_artists_album">Search music, artist or album</string>
     <string name="search_radio">Search radio</string>
@@ -62,6 +63,10 @@
     <string name="add_to_playlist">Add to playlist</string>
     <string name="play">Play</string>
     <string name="playlists">Playlists</string>
+    <string name="create_new_playlist">Create new playlist</string>
+    <string name="playlist_title">Playlist title</string>
+    <string name="enter_a_valid_playlist_name">Enter a valid playlist name</string>
+    <string name="enter_playlist_name">Enter playlist name to create one</string>
     <string name="play_next">Play Next</string>
     <string name="add_in_queue">Add in queue</string>
     <string name="offline_download">Offline download</string>

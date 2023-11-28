@@ -21,10 +21,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -40,10 +43,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -342,7 +348,7 @@ fun MenuIcon(modifier: Modifier = Modifier, click: () -> Unit) {
 
 @Composable
 fun SearchEditTextView(
-    p: String,
+    placeholder: String,
     text: String,
     listener: ManagedActivityResultLauncher<Intent, ActivityResult>?,
     onChange: (String) -> Unit,
@@ -353,6 +359,8 @@ fun SearchEditTextView(
         onValueChange = { onChange(it) },
         modifier = Modifier
             .fillMaxWidth()
+            .wrapContentHeight()
+            .navigationBarsPadding().imePadding()
             .background(BlackColor, CircleShape),
         keyboardOptions = KeyboardOptions(
             autoCorrect = false,
@@ -361,7 +369,7 @@ fun SearchEditTextView(
         ),
         shape = CircleShape,
         placeholder = {
-            TextThin(p, color = Color.LightGray)
+            TextThin(placeholder, color = Color.LightGray)
         },
         maxLines = 1,
         singleLine = true,
@@ -383,6 +391,44 @@ fun SearchEditTextView(
                     listener.launch(startSpeech())
                 }
         }
+    )
+}
+
+@Composable
+fun TransparentEditTextView(
+    placeholder: String,
+    text: String,
+    onChange: (String) -> Unit,
+    onDone: () -> Unit
+) {
+    OutlinedTextField(
+        value = text,
+        onValueChange = { onChange(it) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Transparent),
+        keyboardOptions = KeyboardOptions(
+            autoCorrect = false,
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
+        placeholder = {
+            TextThin(placeholder, color = Color.LightGray)
+        },
+        maxLines = 1,
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent
+        ),
+        keyboardActions = KeyboardActions(onSearch = {
+            onDone()
+        }),
+        textStyle = TextStyle(
+            fontSize = 17.sp,
+            fontFamily = urbanistFamily,
+            fontWeight = FontWeight.SemiBold,
+        )
     )
 }
 
@@ -478,3 +524,29 @@ fun Modifier.backgroundPalette(): Modifier = composed {
         )
     )
 }
+
+
+fun Modifier.dashedBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp) = composed(
+    factory = {
+        val density = LocalDensity.current
+        val strokeWidthPx = density.run { strokeWidth.toPx() }
+        val cornerRadiusPx = density.run { cornerRadiusDp.toPx() }
+
+        this.then(
+            Modifier.drawWithCache {
+                onDrawBehind {
+                    val stroke = Stroke(
+                        width = strokeWidthPx,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                    )
+
+                    drawRoundRect(
+                        color = color,
+                        style = stroke,
+                        cornerRadius = CornerRadius(cornerRadiusPx)
+                    )
+                }
+            }
+        )
+    }
+)
