@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.downloadAFileFromURL
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.utils.Utils.copyFileAndDelete
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -39,7 +40,7 @@ class OfflineDownloadManager @AssistedInject constructor(
         return withContext(Dispatchers.IO) {
             val songId =
                 inputData.getString(Intent.EXTRA_TEXT) ?: return@withContext Result.success()
-            val file = File(songDownloadPath, "$songId.mp3")
+            val file = File(songDownloadPathTemp, "$songId.mp3")
             val info = roomDb.offlineSongInfo(songId).first()
 
             try {
@@ -53,8 +54,11 @@ class OfflineDownloadManager @AssistedInject constructor(
                     }
                 }
                 CoroutineScope(Dispatchers.IO).launch {
+                    val defaultFolder = File(songDownloadPath, "$songId.mp3")
+                    if (download == true) copyFileAndDelete(file, defaultFolder)
+
                     info?.progress = if (download == true) 100 else 0
-                    info?.songPath = if (download == true) file.path else ""
+                    info?.songPath = if (download == true) defaultFolder.path else ""
                     info?.let { roomDb.insert(it).collect() }
                     if (isActive) cancel()
                 }
@@ -69,6 +73,10 @@ class OfflineDownloadManager @AssistedInject constructor(
     companion object {
 
         val songDownloadPath = File(context.filesDir, "download_songs").apply {
+            mkdirs()
+        }
+
+        val songDownloadPathTemp = File(context.filesDir, "download_songs_temp").apply {
             mkdirs()
         }
 

@@ -58,6 +58,6 @@ object RoomModule {
         @ApplicationContext context: Context
     ): SavedPlaylistDao =
         Room.databaseBuilder(context, SavedPlaylistDB::class.java, SAVED_PLAYLIST_DB)
-            .build().dao()
+            .fallbackToDestructiveMigration().build().dao()
 
 }

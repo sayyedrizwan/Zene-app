@@ -34,6 +34,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.net.InetAddress
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -206,6 +209,26 @@ object Utils {
             putExtra(Intent.EXTRA_TEXT, txt)
             context.startActivity(this)
         }
+    }
+
+    fun copyFileAndDelete(sourceFile: File, destinationFile: File) {
+        try {
+            if (!sourceFile.exists()) return
+            val inputStream = FileInputStream(sourceFile)
+            val outputStream = FileOutputStream(destinationFile)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (inputStream.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
+            }
+            inputStream.close()
+            outputStream.close()
+
+            sourceFile.delete()
+        } catch (e: Exception) {
+            e.message
+        }
+
     }
 
 }

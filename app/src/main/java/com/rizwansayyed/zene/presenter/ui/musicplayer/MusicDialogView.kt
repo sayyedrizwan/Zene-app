@@ -18,8 +18,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,13 +42,17 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.DeleteOfflineDialog
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButton
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.addToEndPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playNextPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playRadioOnPlayer
+import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -60,88 +68,125 @@ fun MusicDialogSheet() {
         { homeNavModel.setSongDetailsDialog(null) }, Modifier.fillMaxWidth(), sheetState,
         containerColor = MainColor, contentColor = BlackColor
     ) {
-        MusicDialogView(homeNavModel)
+        Column(Modifier.fillMaxWidth()) {
+            MusicDialogView(homeNavModel)
+        }
     }
 }
 
 @Composable
 fun MusicDialogView(homeNavModel: HomeNavViewModel) {
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val offlineDownload by playerViewModel.offlineSongStatus.collectAsState(initial = null)
+
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()
 
+    var rmDialog by remember { mutableStateOf(false) }
+
+    val downloading = stringResource(R.string.downloading__)
     val addInQueue = stringResource(R.string.add_in_queue)
-    val offlineDownload = stringResource(R.string.offline_download)
+    val offlineDownloadString = stringResource(R.string.offline_download)
     val songInfo = stringResource(R.string.song_info)
     val makeFavourite = stringResource(R.string.mark_as_favourite)
     val removeFavourite = stringResource(R.string.rm_as_favourite)
 
-    Column(Modifier.fillMaxWidth()) {
-        TextAndImageSideBySide(
-            homeNavModel.songDetailDialog?.name ?: "",
-            homeNavModel.songDetailDialog?.artists ?: "",
-            homeNavModel.songDetailDialog?.thumbnail ?: ""
-        )
+    fun startDownloading() {
+        homeNavModel.songDetailDialog?.let {
+            playerViewModel.addOfflineSong(it)
+            OfflineDownloadManager.startOfflineDownloadWorkManager(it.pId)
+        }
+    }
 
-        Spacer(Modifier.height(30.dp))
 
-        if (homeNavModel.songDetailDialog?.type == MusicType.RADIO) {
-            val radioList by favouriteRadioList.collectAsState(runBlocking(Dispatchers.IO) { favouriteRadioList.first() })
-            MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
-                playRadioOnPlayer(homeNavModel.onlineRadioTemps!!)
-                homeNavModel.setSongDetailsDialog(null)
-            }
+    TextAndImageSideBySide(
+        homeNavModel.songDetailDialog?.name ?: "",
+        homeNavModel.songDetailDialog?.artists ?: "",
+        homeNavModel.songDetailDialog?.thumbnail ?: ""
+    )
 
-            if (radioList?.any { it == homeNavModel.songDetailDialog?.pId } == true)
-                MusicDialogListItems(R.drawable.ic_favourite_circle, removeFavourite) {
-                    val list = ArrayList<String>().apply { addAll(radioList!!) }
-                    list.remove(homeNavModel.songDetailDialog?.pId)
-                    favouriteRadioList = flowOf(list.toTypedArray())
-                    homeApiViewModel.favouriteRadios(true)
-                }
-            else
-                MusicDialogListItems(R.drawable.ic_favourite, makeFavourite) {
-                    val list = ArrayList<String>().apply { addAll(radioList!!) }
-                    homeNavModel.songDetailDialog?.pId?.let { list.add(0, it) }
-                    favouriteRadioList = flowOf(list.toTypedArray())
-                    homeApiViewModel.favouriteRadios(true)
-                }
-        } else {
-            MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
-                addAllPlayer(listOf(homeNavModel.songDetailDialog).toTypedArray(), 0)
-                homeNavModel.setSongDetailsDialog(null)
-            }
-            MusicDialogListItems(R.drawable.ic_play_next, stringResource(R.string.play_next)) {
-                playNextPlayer(homeNavModel.songDetailDialog)
-                homeNavModel.setSongDetailsDialog(null)
-            }
-            MusicDialogListItems(R.drawable.ic_play_in_queue, addInQueue) {
-                addToEndPlayer(homeNavModel.songDetailDialog)
-                homeNavModel.setSongDetailsDialog(null)
-            }
-            MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
+    Spacer(Modifier.height(30.dp))
 
-            }
-            MusicDialogListItems(R.drawable.ic_download, offlineDownload) {
-
-            }
-            MusicDialogListItems(R.drawable.ic_information_circle, songInfo) {
-
-            }
+    if (homeNavModel.songDetailDialog?.type == MusicType.RADIO) {
+        val radioList by favouriteRadioList.collectAsState(runBlocking(Dispatchers.IO) { favouriteRadioList.first() })
+        MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
+            playRadioOnPlayer(homeNavModel.onlineRadioTemps!!)
+            homeNavModel.setSongDetailsDialog(null)
         }
 
-        TextSemiBold(
-            stringResource(R.string.close),
-            Modifier
-                .clickable {
-                    homeNavModel.setSongDetailsDialog(null)
-                }
-                .padding(vertical = 50.dp)
-                .fillMaxWidth(),
-            true,
-            Color.LightGray,
-            size = 17
-        )
+        if (radioList?.any { it == homeNavModel.songDetailDialog?.pId } == true)
+            MusicDialogListItems(R.drawable.ic_favourite_circle, removeFavourite) {
+                val list = ArrayList<String>().apply { addAll(radioList!!) }
+                list.remove(homeNavModel.songDetailDialog?.pId)
+                favouriteRadioList = flowOf(list.toTypedArray())
+                homeApiViewModel.favouriteRadios(true)
+            }
+        else
+            MusicDialogListItems(R.drawable.ic_favourite, makeFavourite) {
+                val list = ArrayList<String>().apply { addAll(radioList!!) }
+                homeNavModel.songDetailDialog?.pId?.let { list.add(0, it) }
+                favouriteRadioList = flowOf(list.toTypedArray())
+                homeApiViewModel.favouriteRadios(true)
+            }
+    } else {
+        MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
+            addAllPlayer(listOf(homeNavModel.songDetailDialog).toTypedArray(), 0)
+            homeNavModel.setSongDetailsDialog(null)
+        }
+        MusicDialogListItems(R.drawable.ic_play_next, stringResource(R.string.play_next)) {
+            playNextPlayer(homeNavModel.songDetailDialog)
+            homeNavModel.setSongDetailsDialog(null)
+        }
+        MusicDialogListItems(R.drawable.ic_play_in_queue, addInQueue) {
+            addToEndPlayer(homeNavModel.songDetailDialog)
+            homeNavModel.setSongDetailsDialog(null)
+        }
+        MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
 
-        Spacer(Modifier.height(130.dp))
+        }
+        if (offlineDownload == null)
+            MusicDialogListItems(R.drawable.ic_download, offlineDownloadString) {
+                startDownloading()
+            }
+        else if (offlineDownload!!.progress < 100)
+            MusicDialogListItems(
+                R.drawable.ic_download, "$downloading (${offlineDownload!!.progress}%)"
+            ) {
+                startDownloading()
+            }
+        else if (offlineDownload!!.progress == 100)
+            MusicDialogListItems(R.drawable.ic_tick, stringResource(R.string.offline_downloaded)) {
+                rmDialog = true
+            }
+
+        MusicDialogListItems(R.drawable.ic_information_circle, songInfo) {
+
+        }
+    }
+
+    TextSemiBold(
+        stringResource(R.string.close),
+        Modifier
+            .clickable {
+                homeNavModel.setSongDetailsDialog(null)
+            }
+            .padding(vertical = 50.dp)
+            .fillMaxWidth(),
+        true,
+        Color.LightGray,
+        size = 17
+    )
+
+    Spacer(Modifier.height(130.dp))
+
+    if (rmDialog) DeleteOfflineDialog({
+        playerViewModel.rmDownloadSongs(homeNavModel.songDetailDialog?.pId ?: "")
+        rmDialog = false
+    }, {
+        rmDialog = false
+    })
+
+    LaunchedEffect(Unit) {
+        homeNavModel.songDetailDialog?.pId?.let { playerViewModel.offlineSongDetails(it) }
     }
 }
 

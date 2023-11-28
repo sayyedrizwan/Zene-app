@@ -32,11 +32,11 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autopl
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSettings
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.domain.MusicPlayerData
+import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
@@ -53,6 +53,7 @@ fun MusicActionButtons(p: MusicPlayerData?) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val coroutine = rememberCoroutineScope()
 
+    var playlistDialog by remember { mutableStateOf<MusicPlayerList?>(null) }
     val offlineDownload by playerViewModel.offlineSongStatus.collectAsState(initial = null)
 
     val loop by loopSettings.collectAsState(initial = false)
@@ -106,10 +107,14 @@ fun MusicActionButtons(p: MusicPlayerData?) {
         MusicActionButton(R.drawable.ic_share, R.string.share) {
             p?.songID?.let { shareTxt(appUrlSongShare(it)) }
         }
-        MusicActionButton(R.drawable.ic_playlist, R.string.add_to_playlist) {}
+        MusicActionButton(R.drawable.ic_playlist, R.string.add_to_playlist) {
+            playlistDialog = p?.v
+        }
 
         OfflineSongDownloadButton(offlineDownload, p, playerViewModel)
     }
+
+    playlistDialog?.let { MusicPlaylistDialog(it) { playlistDialog = null } }
 }
 
 @Composable
@@ -118,6 +123,7 @@ fun OfflineSongDownloadButton(
 ) {
     val downloading = stringResource(R.string.downloading__)
     var rmDialog by remember { mutableStateOf(false) }
+
 
     fun startDownloading() {
         p?.v?.let {
@@ -145,6 +151,7 @@ fun OfflineSongDownloadButton(
     }, {
         rmDialog = false
     })
+
 }
 
 

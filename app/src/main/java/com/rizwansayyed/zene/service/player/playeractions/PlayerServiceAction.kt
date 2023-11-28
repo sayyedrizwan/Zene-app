@@ -16,11 +16,13 @@ import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
+import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class PlayerServiceAction @Inject constructor(
@@ -83,7 +85,10 @@ class PlayerServiceAction @Inject constructor(
 
         val url = withContext(Dispatchers.IO) {
             try {
-                songDownloader.download(music?.pId!!).first()
+                if (File(songDownloadPath, "${music?.pId}.mp3").exists())
+                    File(songDownloadPath, "${music?.pId}.mp3").path
+                else
+                    songDownloader.download(music?.pId!!).first()
             } catch (e: Exception) {
                 null
             }
