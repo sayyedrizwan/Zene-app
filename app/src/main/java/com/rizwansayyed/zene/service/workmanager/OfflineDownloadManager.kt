@@ -68,7 +68,7 @@ class OfflineDownloadManager @AssistedInject constructor(
 
     companion object {
 
-        private val songDownloadPath = File(context.filesDir, "download_songs").apply {
+        val songDownloadPath = File(context.filesDir, "download_songs").apply {
             mkdirs()
         }
 

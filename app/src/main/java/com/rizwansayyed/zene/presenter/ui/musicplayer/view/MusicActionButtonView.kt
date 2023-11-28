@@ -140,7 +140,7 @@ fun OfflineSongDownloadButton(
         }
 
     if (rmDialog) DeleteOfflineDialog({
-
+        playerViewModel.rmDownloadSongs(p?.songID ?: "")
         rmDialog = false
     }, {
         rmDialog = false

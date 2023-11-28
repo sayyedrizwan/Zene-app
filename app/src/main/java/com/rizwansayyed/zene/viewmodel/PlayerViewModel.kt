@@ -18,6 +18,8 @@ import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
 import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
+import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager
+import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 
@@ -145,6 +148,13 @@ class PlayerViewModel @Inject constructor(
     fun offlineSongDetails(songId: String) = viewModelScope.launch(Dispatchers.IO) {
         roomDb.offlineSongInfoFlow(songId).catch { }.collectLatest {
             offlineSongStatus = it
+        }
+    }
+
+    fun rmDownloadSongs(songId: String) = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.removeSong(songId).catch { }.collectLatest {
+            File(songDownloadPath, "$songId.mp3").deleteRecursively()
+            offlineSongDetails(songId)
         }
     }
 

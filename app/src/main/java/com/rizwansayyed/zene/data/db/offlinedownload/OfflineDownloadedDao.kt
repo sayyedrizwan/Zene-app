@@ -17,6 +17,9 @@ interface OfflineDownloadedDao {
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE songId = :songId LIMIT 1")
     suspend fun songDetails(songId: String): OfflineDownloadedEntity?
 
+    @Query("DELETE FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE songId = :songId")
+    suspend fun removeSong(songId: String): Int
+
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE songId = :songId LIMIT 1")
     fun songDetailsFlow(songId: String): Flow<OfflineDownloadedEntity?>
 
