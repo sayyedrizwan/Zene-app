@@ -10,7 +10,7 @@ data class SavedPlaylistEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     var name: String,
     val timestamp: Long = System.currentTimeMillis(),
-    var thumbnail: String = "",
+    var thumbnail: String? = null,
     var items: Int = 0,
     var playlistId: String? = null
 )

@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +44,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.DEFAULT_PLAYLIST_ITEMS
 import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
@@ -86,13 +88,13 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                 TextSemiBold(stringResource(R.string.playlists), Modifier.weight(1f), size = 36)
 
-                if (songInfo?.addedPlaylistIds == "-1,")
+                if (songInfo?.addedPlaylistIds?.contains(DEFAULT_PLAYLIST_ITEMS) == true)
                     SmallIcons(R.drawable.ic_tick, 26, 0) {
-                        playerViewModel.addRmSongToPlaylist(v, true)
+                        playerViewModel.addRmSongToPlaylist(v, true, DEFAULT_PLAYLIST_ITEMS)
                     }
                 else
                     SmallIcons(R.drawable.ic_layer_add, 26, 0) {
-                        playerViewModel.addRmSongToPlaylist(v, false)
+                        playerViewModel.addRmSongToPlaylist(v, false, DEFAULT_PLAYLIST_ITEMS)
                     }
 
                 Spacer(Modifier.width(5.dp))
@@ -115,10 +117,10 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
                 Spacer(Modifier.height(100.dp))
             }
-            itemsIndexed(
-                playerViewModel.playlistLists,
-                span = { _, _ -> GridItemSpan(TWO_ITEMS_GRID) }) { i, it ->
-                PlaylistMusicItems(it, i)
+            items(playerViewModel.playlistLists, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+                PlaylistMusicItems(it, songInfo?.addedPlaylistIds?.contains("${it.id},") == true) {
+                    playerViewModel.addRmSongToPlaylist(v, false, "${it.id},")
+                }
             }
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
                 Spacer(Modifier.height(100.dp))
@@ -148,7 +150,7 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
 }
 
 @Composable
-fun PlaylistMusicItems(playlist: SavedPlaylistEntity, i: Int) {
+fun PlaylistMusicItems(playlist: SavedPlaylistEntity, isAdded: Boolean, onClick: () -> Unit) {
     val width = LocalConfiguration.current.screenWidthDp / 2
     Box(
         Modifier
@@ -157,12 +159,12 @@ fun PlaylistMusicItems(playlist: SavedPlaylistEntity, i: Int) {
             .clip(RoundedCornerShape(12.dp))
             .background(BlackColor)
     ) {
-        if (i % 4 == 0)
+        if (playlist.thumbnail == null)
             SmallIcons(R.drawable.ic_playlist, 20, 5)
         else
             AsyncImage(
-                "https://lh3.googleusercontent.com/OhxDTHQOQzSrcdgH9hzqzp1v22GYDE-QKnkryvCeq4ddx-3K3_c8oDXN0E6NvHlMn1q4XV59aHr0oL4f=w544-h544-l90-rj",
-                playlist.name, Modifier.fillMaxSize(), contentScale = ContentScale.Crop
+                playlist.thumbnail, playlist.name,
+                Modifier.fillMaxSize(), contentScale = ContentScale.Crop
             )
 
         Spacer(
@@ -176,10 +178,14 @@ fun PlaylistMusicItems(playlist: SavedPlaylistEntity, i: Int) {
                 .align(Alignment.Center)
                 .padding(5.dp)
                 .clip(RoundedCornerShape(100))
+                .clickable { onClick() }
                 .background(BlackColor)
                 .padding(6.dp)
         ) {
-            SmallIcons(R.drawable.ic_plus_sign_square)
+            if (isAdded)
+                SmallIcons(R.drawable.ic_tick)
+            else
+                SmallIcons(R.drawable.ic_plus_sign_square)
         }
 
         TextSemiBold(

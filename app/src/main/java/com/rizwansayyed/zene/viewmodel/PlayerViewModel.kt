@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +12,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerDat
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.DEFAULT_PLAYLIST_ITEMS
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
@@ -186,12 +188,15 @@ class PlayerViewModel @Inject constructor(
     fun allPlaylists(doReset: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         if (doReset) {
             pageNumber = 0
-            delay(1.seconds)
             playlistLists.clear()
+            delay(1.seconds)
         }
         roomDb.allPlaylists(pageNumber * 50).catch { }.collectLatest {
             pageNumber += 1
-            playlistLists.addAll(it)
+            it.forEach { i ->
+                playlistLists.add(i)
+            }
+
         }
     }
 
@@ -221,14 +226,16 @@ class PlayerViewModel @Inject constructor(
     }
 
 
-    fun addRmSongToPlaylist(v: MusicPlayerList, doRemove: Boolean) =
+    fun addRmSongToPlaylist(v: MusicPlayerList, doRemove: Boolean, playlistId: String) =
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 var info = roomDb.songInfo(v.songID ?: "").first()
 
                 if (doRemove) {
-                    info?.songId = info?.songId?.replace("-1,", "")?.trim() ?: ""
-                    if (info?.songId?.trim()?.isEmpty() == true)
+                    info?.addedPlaylistIds =
+                        info?.addedPlaylistIds?.replace(playlistId, "")?.trim() ?: ""
+
+                    if (info?.addedPlaylistIds?.trim()?.isEmpty() == true)
                         roomDb.rmSongs(v.songID ?: "").collect()
                     else
                         info?.let { roomDb.insert(it).collect() }
@@ -236,12 +243,12 @@ class PlayerViewModel @Inject constructor(
                 } else {
                     if (info == null) {
                         info = PlaylistSongsEntity(
-                            v.songID ?: "", "-1,", v.songName, v.artists,
+                            v.songID ?: "", playlistId, v.songName, v.artists,
                             v.thumbnail, System.currentTimeMillis()
                         )
                         roomDb.insert(info).collect()
                     } else {
-                        info.songId = "${info.songId} -1,"
+                        info.addedPlaylistIds = "${info.addedPlaylistIds} $playlistId"
                         roomDb.insert(info).collect()
                     }
                 }
