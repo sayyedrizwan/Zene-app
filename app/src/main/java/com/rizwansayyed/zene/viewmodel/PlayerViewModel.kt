@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +11,6 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerDat
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
-import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.DEFAULT_PLAYLIST_ITEMS
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
@@ -226,7 +224,12 @@ class PlayerViewModel @Inject constructor(
     }
 
 
-    fun addRmSongToPlaylist(v: MusicPlayerList, doRemove: Boolean, playlistId: String) =
+    fun addRmSongToPlaylist(
+        v: MusicPlayerList,
+        doRemove: Boolean,
+        playlistId: String,
+        savedPlaylist: SavedPlaylistEntity?
+    ) =
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 var info = roomDb.songInfo(v.songID ?: "").first()
@@ -251,6 +254,8 @@ class PlayerViewModel @Inject constructor(
                         info.addedPlaylistIds = "${info.addedPlaylistIds} $playlistId"
                         roomDb.insert(info).collect()
                     }
+                    savedPlaylist?.thumbnail = v.thumbnail
+                    savedPlaylist?.let { roomDb.insert(it).collect() }
                 }
             } catch (e: Exception) {
                 e.message

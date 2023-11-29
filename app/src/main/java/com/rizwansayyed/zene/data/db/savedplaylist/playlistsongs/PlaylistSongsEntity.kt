@@ -13,6 +13,6 @@ data class PlaylistSongsEntity(
     var addedPlaylistIds: String,
     val name: String?,
     val artists: String?,
-    val thumbnail: String?,
+    var thumbnail: String?,
     val timestamp: Long,
 )

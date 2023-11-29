@@ -90,11 +90,11 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
 
                 if (songInfo?.addedPlaylistIds?.contains(DEFAULT_PLAYLIST_ITEMS) == true)
                     SmallIcons(R.drawable.ic_tick, 26, 0) {
-                        playerViewModel.addRmSongToPlaylist(v, true, DEFAULT_PLAYLIST_ITEMS)
+                        playerViewModel.addRmSongToPlaylist(v, true, DEFAULT_PLAYLIST_ITEMS, null)
                     }
                 else
                     SmallIcons(R.drawable.ic_layer_add, 26, 0) {
-                        playerViewModel.addRmSongToPlaylist(v, false, DEFAULT_PLAYLIST_ITEMS)
+                        playerViewModel.addRmSongToPlaylist(v, false, DEFAULT_PLAYLIST_ITEMS, null)
                     }
 
                 Spacer(Modifier.width(5.dp))
@@ -118,8 +118,10 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
                 Spacer(Modifier.height(100.dp))
             }
             items(playerViewModel.playlistLists, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
-                PlaylistMusicItems(it, songInfo?.addedPlaylistIds?.contains("${it.id},") == true) {
-                    playerViewModel.addRmSongToPlaylist(v, false, "${it.id},")
+                val isAdded = songInfo?.addedPlaylistIds?.contains("${it.id},") == true
+                PlaylistMusicItems(it, isAdded) {
+                    playerViewModel
+                        .addRmSongToPlaylist(v, isAdded, "${it.id},", it)
                 }
             }
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
@@ -152,6 +154,7 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
 @Composable
 fun PlaylistMusicItems(playlist: SavedPlaylistEntity, isAdded: Boolean, onClick: () -> Unit) {
     val width = LocalConfiguration.current.screenWidthDp / 2
+
     Box(
         Modifier
             .size(width.dp)
@@ -189,8 +192,7 @@ fun PlaylistMusicItems(playlist: SavedPlaylistEntity, isAdded: Boolean, onClick:
         }
 
         TextSemiBold(
-            playlist.name,
-            Modifier
+            playlist.name, Modifier
                 .align(Alignment.BottomCenter)
                 .padding(5.dp)
                 .fillMaxWidth(), singleLine = true
