@@ -74,7 +74,9 @@ class RoomDBImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun allPlaylists(limit: Int) = savedPlaylistDao.pagingPlaylist(limit)
+    override suspend fun allPlaylists(limit: Int) = flow {
+        emit(savedPlaylistDao.pagingPlaylist(limit))
+    }.flowOn(Dispatchers.IO)
 
 
 }

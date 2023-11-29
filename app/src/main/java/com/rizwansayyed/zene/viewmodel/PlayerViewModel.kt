@@ -1,16 +1,15 @@
 package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
-import com.rizwansayyed.zene.data.db.impl.PlaylistPagingMediator
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
@@ -45,8 +44,7 @@ import kotlin.time.Duration.Companion.seconds
 class PlayerViewModel @Inject constructor(
     private val subtitlesScraps: SubtitlesScrapsImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
-    private val roomDb: RoomDBInterface,
-    private val playlistPaging: PlaylistPagingMediator
+    private val roomDb: RoomDBInterface
 ) : ViewModel() {
 
     var lyricsInfo by mutableStateOf<GeniusLyricsWithInfo?>(null)
@@ -64,9 +62,7 @@ class PlayerViewModel @Inject constructor(
     var addingPlaylist by mutableStateOf<DataResponse<Boolean>>(DataResponse.Empty)
         private set
 
-    val playlistLists = Pager(PagingConfig(pageSize = PAGINATION_PAGE_SIZE)) {
-        playlistPaging
-    }.flow
+    val playlistLists = mutableStateListOf<SavedPlaylistEntity>()
 
     var showMusicType by mutableStateOf(Utils.MusicViewType.MUSIC)
 
@@ -187,12 +183,18 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-
-//    fun allPlaylists() = viewModelScope.launch(Dispatchers.IO) {
-//        roomDb.allPlaylists(pagingConfig).catch { }.collectLatest {
-//
-//        }
-//    }
+    private var pageNumber = 0
+    fun allPlaylists(doReset: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        if (doReset) {
+            pageNumber = 0
+            delay(1.seconds)
+            playlistLists.clear()
+        }
+        roomDb.allPlaylists(pageNumber * 50).catch { }.collectLatest {
+            pageNumber += 1
+            playlistLists.addAll(it)
+        }
+    }
 
     fun addPlaylist(name: String) = viewModelScope.launch(Dispatchers.IO) {
         if (roomDb.playlistWithName(name.trim().lowercase()).first().isNotEmpty()) {

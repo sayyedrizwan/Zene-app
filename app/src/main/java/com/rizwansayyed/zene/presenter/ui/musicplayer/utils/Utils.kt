@@ -4,6 +4,7 @@ import android.util.Log
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
+import kotlin.time.Duration.Companion.seconds
 
 object Utils {
 
@@ -20,8 +21,8 @@ object Utils {
 
 
     private var lastTimestamp = System.currentTimeMillis() - 4000
-    fun onClickOn3SecDelay(run: () -> Unit) {
-        if (abs(System.currentTimeMillis() - lastTimestamp) <= 3000) return
+    fun onClickOn3SecDelay(duration: Int = 3, run: () -> Unit) {
+        if (abs(System.currentTimeMillis() - lastTimestamp) <= duration.seconds.inWholeMilliseconds) return
         lastTimestamp = System.currentTimeMillis()
         run()
     }

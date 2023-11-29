@@ -1,28 +1,29 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,23 +32,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.presenter.theme.BlackColor
+import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TransparentEditTextView
 import com.rizwansayyed.zene.presenter.ui.dashedBorder
-import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.THREE_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
+import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
@@ -70,7 +77,6 @@ fun MusicPlaylistDialog(v: MusicPlayerList, close: () -> Unit) {
 fun MusicPlaylistSheetView() {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val listState = rememberLazyGridState()
-    val list = playerViewModel.playlistLists.collectAsLazyPagingItems()
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_ITEMS_GRID), Modifier.padding(horizontal = 5.dp), listState
@@ -97,32 +103,90 @@ fun MusicPlaylistSheetView() {
             AddPlaylistItems(playerViewModel)
         }
 
-        if (list.itemCount == 0)
+        if (playerViewModel.playlistLists.size == 0)
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
                 NoPlaylistFound()
             }
-        else
-            items(list.itemSnapshotList, span = { GridItemSpan(THREE_ITEMS_GRID) }) {
-                TextSemiBold("${it?.id} ---- ${it?.name}")
+        else {
+            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                Spacer(Modifier.height(100.dp))
             }
+            itemsIndexed(
+                playerViewModel.playlistLists,
+                span = { _, _ -> GridItemSpan(TWO_ITEMS_GRID) }) { i, it ->
+                PlaylistMusicItems(it, i)
+            }
+            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                Spacer(Modifier.height(100.dp))
+            }
+        }
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(80.dp))
         }
     }
 
-    LaunchedEffect(listState.isScrollInProgress){
+    LaunchedEffect(listState.isScrollInProgress) {
         val layoutInfo = listState.layoutInfo
         val visibleItemsInfo = layoutInfo.visibleItemsInfo
         val lastVisibleItemIndex = visibleItemsInfo.lastOrNull()?.index ?: -1
 
-        if (lastVisibleItemIndex + visibleItemsInfo.size >= list.itemCount) {
-           "user is going to reach".toast()
+        if (lastVisibleItemIndex + visibleItemsInfo.size >= playerViewModel.playlistLists.size) {
+            playerViewModel.allPlaylists(false)
         }
+    }
 
-        if (!listState.canScrollForward) "at end".toast()
+
+    LaunchedEffect(Unit) {
+        playerViewModel.allPlaylists(true)
     }
 }
+
+@Composable
+fun PlaylistMusicItems(playlist: SavedPlaylistEntity, i: Int) {
+    val width = LocalConfiguration.current.screenWidthDp / 2
+    Box(
+        Modifier
+            .size(width.dp)
+            .padding(5.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(BlackColor)
+    ) {
+        if (i % 4 == 0)
+            SmallIcons(R.drawable.ic_playlist, 20, 5)
+        else
+            AsyncImage(
+                "https://lh3.googleusercontent.com/OhxDTHQOQzSrcdgH9hzqzp1v22GYDE-QKnkryvCeq4ddx-3K3_c8oDXN0E6NvHlMn1q4XV59aHr0oL4f=w544-h544-l90-rj",
+                playlist.name, Modifier.fillMaxSize(), contentScale = ContentScale.Crop
+            )
+
+        Spacer(
+            Modifier
+                .fillMaxSize()
+                .background(MainColor.copy(0.4f))
+        )
+
+        Box(
+            Modifier
+                .align(Alignment.Center)
+                .padding(5.dp)
+                .clip(RoundedCornerShape(100))
+                .background(BlackColor)
+                .padding(6.dp)
+        ) {
+            SmallIcons(R.drawable.ic_plus_sign_square)
+        }
+
+        TextSemiBold(
+            playlist.name,
+            Modifier
+                .align(Alignment.BottomCenter)
+                .padding(5.dp)
+                .fillMaxWidth(), singleLine = true
+        )
+    }
+}
+
 
 @Composable
 fun NoPlaylistFound() {
@@ -178,6 +242,7 @@ fun AddPlaylistItems(playerViewModel: PlayerViewModel) {
                 return@SmallIcons
             }
             playerViewModel.addPlaylist(text)
+            playerViewModel.allPlaylists(true)
             keyboard?.hide()
         }
         Spacer(Modifier.width(9.dp))
