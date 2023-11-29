@@ -10,7 +10,10 @@ import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedDao
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayerDB
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDB
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDao
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsDB
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsDao
 import com.rizwansayyed.zene.data.utils.DBNAME.OFFLINE_DOWNLOADED_SONGS_DB
+import com.rizwansayyed.zene.data.utils.DBNAME.PLAYLIST_SONGS_DB
 import com.rizwansayyed.zene.data.utils.DBNAME.RECENT_PLAYED_DB
 import com.rizwansayyed.zene.data.utils.DBNAME.SAVED_PLAYLIST_DB
 import dagger.Module
@@ -58,6 +61,15 @@ object RoomModule {
         @ApplicationContext context: Context
     ): SavedPlaylistDao =
         Room.databaseBuilder(context, SavedPlaylistDB::class.java, SAVED_PLAYLIST_DB)
+            .fallbackToDestructiveMigration().build().dao()
+
+
+    @Provides
+    @Singleton
+    fun playlistSongsDao(
+        @ApplicationContext context: Context
+    ): PlaylistSongsDao =
+        Room.databaseBuilder(context, PlaylistSongsDB::class.java, PLAYLIST_SONGS_DB)
             .fallbackToDestructiveMigration().build().dao()
 
 }

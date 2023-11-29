@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import kotlinx.coroutines.flow.Flow
 
 interface RoomDBInterface {
@@ -33,4 +34,8 @@ interface RoomDBInterface {
 
     suspend fun playlistWithName(name: String): Flow<List<SavedPlaylistEntity>>
     suspend fun allPlaylists(limit: Int): Flow<List<SavedPlaylistEntity>>
+    suspend fun playlistSongInfo(songId: String): Flow<Flow<PlaylistSongsEntity?>>
+    suspend fun songInfo(songId: String): Flow<PlaylistSongsEntity?>
+    suspend fun rmSongs(songId: String): Flow<Int>
+    suspend fun insert(v: PlaylistSongsEntity): Flow<Unit>
 }

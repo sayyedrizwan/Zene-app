@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +23,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,12 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,7 +45,6 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.presenter.theme.BlackColor
-import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
@@ -67,16 +64,16 @@ fun MusicPlaylistDialog(v: MusicPlayerList, close: () -> Unit) {
         close, Modifier.fillMaxWidth(), sheetState,
         containerColor = MainColor, contentColor = BlackColor
     ) {
-
-        MusicPlaylistSheetView()
+        MusicPlaylistSheetView(v)
     }
 }
 
 
 @Composable
-fun MusicPlaylistSheetView() {
+fun MusicPlaylistSheetView(v: MusicPlayerList) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val listState = rememberLazyGridState()
+    val songInfo by playerViewModel.playlistSongsInfo.collectAsState(null)
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_ITEMS_GRID), Modifier.padding(horizontal = 5.dp), listState
@@ -89,8 +86,15 @@ fun MusicPlaylistSheetView() {
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                 TextSemiBold(stringResource(R.string.playlists), Modifier.weight(1f), size = 36)
 
-                SmallIcons(R.drawable.ic_layer_add, 26, 0) {
-                }
+                if (songInfo?.addedPlaylistIds == "-1,")
+                    SmallIcons(R.drawable.ic_tick, 26, 0) {
+                        playerViewModel.addRmSongToPlaylist(v, true)
+                    }
+                else
+                    SmallIcons(R.drawable.ic_layer_add, 26, 0) {
+                        playerViewModel.addRmSongToPlaylist(v, false)
+                    }
+
                 Spacer(Modifier.width(5.dp))
             }
         }
@@ -139,6 +143,7 @@ fun MusicPlaylistSheetView() {
 
     LaunchedEffect(Unit) {
         playerViewModel.allPlaylists(true)
+        playerViewModel.playlistSongsInfo(v.songID ?: "")
     }
 }
 

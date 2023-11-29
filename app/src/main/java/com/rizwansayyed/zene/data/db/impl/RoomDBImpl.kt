@@ -8,6 +8,8 @@ import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedDao
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDao
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsDao
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -16,7 +18,8 @@ import javax.inject.Inject
 class RoomDBImpl @Inject constructor(
     private val recentPlayed: RecentPlayedDao,
     private val offlineDownloaded: OfflineDownloadedDao,
-    private val savedPlaylistDao: SavedPlaylistDao
+    private val savedPlaylistDao: SavedPlaylistDao,
+    private val playlistSongsDao: PlaylistSongsDao
 ) : RoomDBInterface {
 
     override suspend fun recentSixPlayed() = flow {
@@ -76,6 +79,25 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun allPlaylists(limit: Int) = flow {
         emit(savedPlaylistDao.pagingPlaylist(limit))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun playlistSongInfo(songId: String) = flow {
+        emit(playlistSongsDao.info(songId))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun songInfo(songId: String) = flow {
+        emit(playlistSongsDao.songInfo(songId))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun rmSongs(songId: String) = flow {
+        emit(playlistSongsDao.rmSongs(songId))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun insert(v: PlaylistSongsEntity) = flow {
+        emit(playlistSongsDao.insert(v))
     }.flowOn(Dispatchers.IO)
 
 

@@ -1,7 +1,5 @@
 package com.rizwansayyed.zene.data.db.savedplaylist.playlist
 
-import androidx.paging.DataSource
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert

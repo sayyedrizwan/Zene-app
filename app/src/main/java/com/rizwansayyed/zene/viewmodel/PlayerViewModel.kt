@@ -6,16 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.data.utils.PAGINATION_PAGE_SIZE
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
@@ -63,6 +61,7 @@ class PlayerViewModel @Inject constructor(
         private set
 
     val playlistLists = mutableStateListOf<SavedPlaylistEntity>()
+    var playlistSongsInfo by mutableStateOf<Flow<PlaylistSongsEntity?>>(flowOf(null))
 
     var showMusicType by mutableStateOf(Utils.MusicViewType.MUSIC)
 
@@ -210,5 +209,47 @@ class PlayerViewModel @Inject constructor(
             addingPlaylist = DataResponse.Empty
         }
     }
+
+    fun playlistSongsInfo(songId: String) = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.playlistSongInfo(songId).onStart {
+            playlistSongsInfo = flowOf(null)
+        }.catch {
+            playlistSongsInfo = flowOf(null)
+        }.collectLatest {
+            playlistSongsInfo = it
+        }
+    }
+
+
+    fun addRmSongToPlaylist(v: MusicPlayerList, doRemove: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                var info = roomDb.songInfo(v.songID ?: "").first()
+
+                if (doRemove) {
+                    info?.songId = info?.songId?.replace("-1,", "")?.trim() ?: ""
+                    if (info?.songId?.trim()?.isEmpty() == true)
+                        roomDb.rmSongs(v.songID ?: "").collect()
+                    else
+                        info?.let { roomDb.insert(it).collect() }
+
+                } else {
+                    if (info == null) {
+                        info = PlaylistSongsEntity(
+                            v.songID ?: "", "-1,", v.songName, v.artists,
+                            v.thumbnail, System.currentTimeMillis()
+                        )
+                        roomDb.insert(info).collect()
+                    } else {
+                        info.songId = "${info.songId} -1,"
+                        roomDb.insert(info).collect()
+                    }
+                }
+            } catch (e: Exception) {
+                e.message
+            }
+            delay(1.seconds)
+            playlistSongsInfo(v.songID ?: "")
+        }
 
 }
