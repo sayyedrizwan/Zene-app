@@ -78,6 +78,13 @@ data class YoutubeMusicMainSearchResponse(
                                                 }
                                             }
                                         }
+
+                                        if (list.size == 0) {
+                                            contents?.first()?.musicResponsiveListItemRenderer?.flexColumns?.forEachIndexed { index, flexColumn ->
+                                                if (index == 1) flexColumn?.musicResponsiveListItemFlexColumnRenderer
+                                                    ?.text?.runs?.first()?.text?.let { list.add(it) }
+                                            }
+                                        }
                                         return artistsListToString(list)
                                     }
 

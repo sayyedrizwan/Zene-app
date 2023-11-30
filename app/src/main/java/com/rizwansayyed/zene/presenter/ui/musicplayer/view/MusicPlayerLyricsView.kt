@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -63,7 +65,6 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
     val coroutine = rememberCoroutineScope()
-    val coroutineAlong = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
     val text = remember { mutableStateListOf("") }
     var currentTextPosition by remember { mutableIntStateOf(0) }
@@ -74,7 +75,7 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
     if (playerViewModel.lyricsInfo != null) {
         if (text.size == 0) {
             Spacer(Modifier.height(50.dp))
-            TextThin(stringResource(R.string.no_lyrics_found))
+            TextThin(stringResource(R.string.no_lyrics_found), Modifier.fillMaxWidth(), doCenter = true)
             Spacer(Modifier.height(50.dp))
         } else {
             Spacer(Modifier.height(50.dp))
@@ -131,12 +132,12 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
 
                     text.forEach {
                         TextSemiBold(
-                            it,
-                            Modifier
+                            it, Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 7.dp), size = 20
                         )
                     }
+
                 }
             Spacer(Modifier.height(50.dp))
         }
@@ -173,8 +174,10 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
                     }
 
                     for (i in v.lyrics.split("[")) {
-                        tempList.add(i.substringAfter("]").trim())
-                        if (!v.subtitles) tempList.add("\n")
+                        if (i.trim().isNotEmpty()) {
+                            tempList.add(i.substringAfter("]").trim())
+                            if (!v.subtitles) tempList.add("\n")
+                        }
                     }
                     if (text != tempList) {
                         text.clear()
