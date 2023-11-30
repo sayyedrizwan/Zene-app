@@ -88,8 +88,6 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         MusicPlayerLyrics(playerViewModel, player)
 
-        Spacer(Modifier.height(30.dp))
-
         MusicPlayerArtists()
 
         MusicPlayerRelatedSongs(playerViewModel)

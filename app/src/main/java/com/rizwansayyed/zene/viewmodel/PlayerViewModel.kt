@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEq
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -110,20 +112,19 @@ class PlayerViewModel @Inject constructor(
                 artistsInfo.add(tempList.first { it.name.lowercase() == a.lowercase() })
                 return@forEach
             }
-
-            try {
-                val info = lastFMImpl.artistsUsername(a).first() ?: return@forEach
-                val desc = lastFMImpl.artistsDescription(info).first()
-//                val followers = soundCloud.artistsSmallInfo(a).first()?.followers_count
-                val topSongs = lastFMImpl.artistsTopSongs(info).first()
-                val data = ArtistsShortInfo(a.lowercase(), info, desc, topSongs, 0)
-                artistsInfo.add(data)
-            } catch (e: Exception) {
-                e.message
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    val info = lastFMImpl.artistsUsername(a).first() ?: return@launch
+                    val desc = lastFMImpl.artistsDescription(info).first()
+                    val topSongs = lastFMImpl.artistsTopSongs(info).first()
+                    val data = ArtistsShortInfo(a.lowercase(), info, desc, topSongs)
+                    artistsInfo.add(data)
+                } catch (e: Exception) {
+                    e.message
+                }
+                if (isActive) cancel()
             }
         }
-
-        Log.d("TAG", "songArtistsInfo: data ${artistsInfo.toList()}")
     }
 
     fun similarSongsArtists(id: String) = viewModelScope.launch(Dispatchers.IO) {

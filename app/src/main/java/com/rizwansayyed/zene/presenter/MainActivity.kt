@@ -90,7 +90,6 @@ class MainActivity : ComponentActivity() {
     private val roomViewModel: RoomDbViewModel by viewModels()
     private val homeApiViewModel: HomeApiViewModel by viewModels()
     private val jsoupScrapViewModel: JsoupScrapViewModel by viewModels()
-    private val playerViewModel: PlayerViewModel by viewModels()
 
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

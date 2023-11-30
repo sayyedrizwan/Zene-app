@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.domain.yt
 
+import android.util.Log
+import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 
 data class YoutubeMusicAllSongsResponse(
@@ -136,6 +138,13 @@ data class MusicShelfRendererSongs(
                     }
                 }
             }
+            if (list.size == 0) {
+                musicResponsiveListItemRenderer?.flexColumns?.forEachIndexed { index, flexColumn ->
+                    if (index == 1) flexColumn?.musicResponsiveListItemFlexColumnRenderer
+                        ?.text?.runs?.first()?.text?.let { list.add(it) }
+                }
+            }
+
             return artistsListToString(list)
         }
 

@@ -108,6 +108,5 @@ data class ArtistsShortInfo(
     val name: String,
     val info: LastFMArtist,
     val desc: String,
-    val topSongs: List<MusicData>,
-    val followers: Int,
+    val topSongs: List<MusicData>
 )
