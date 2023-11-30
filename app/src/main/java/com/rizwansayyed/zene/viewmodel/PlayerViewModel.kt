@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.lastfm.ArtistsShortInfo
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
+import com.rizwansayyed.zene.domain.yt.MerchandiseItems
 import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
@@ -58,6 +59,9 @@ class PlayerViewModel @Inject constructor(
         private set
 
     var relatedSongs by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
+        private set
+
+    var artistsMerchandise by mutableStateOf<DataResponse<List<MerchandiseItems>>>(DataResponse.Empty)
         private set
 
     var videoSongs by mutableStateOf<DataResponse<PlayerVideoDetailsData>>(DataResponse.Empty)
@@ -138,6 +142,17 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    private fun artistsMerchandise(vId: String?) = viewModelScope.launch(Dispatchers.IO) {
+        vId ?: return@launch
+        youtubeAPI.artistsShopMerchandise(vId).onStart {
+            artistsMerchandise = DataResponse.Loading
+        }.catch {
+            artistsMerchandise = DataResponse.Error(it)
+        }.collectLatest {
+            artistsMerchandise = DataResponse.Success(it)
+        }
+    }
+
     fun searchLyricsAndSongVideo(name: String?, artist: String?) =
         viewModelScope.launch(Dispatchers.IO) {
             videoSongs = DataResponse.Loading
@@ -147,7 +162,7 @@ class PlayerViewModel @Inject constructor(
             }"
 
             val videoList = try {
-                youtubeAPI.youtubeVideoThisYearSearch(searchQuery).first()
+                youtubeAPI.youtubeVideoSearch(searchQuery).first()
             } catch (e: Exception) {
                 null
             }
@@ -156,6 +171,7 @@ class PlayerViewModel @Inject constructor(
                 if (i == 0) if (areSongNamesEqual(musicData.name ?: "", searchQuery))
                     videoId = musicData.pId
             }
+            artistsMerchandise(videoId)
 
             searchQuery += "Lyrics Video"
 

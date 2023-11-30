@@ -130,6 +130,8 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
                         size = 20
                     )
 
+                    Spacer(Modifier.height(30.dp))
+
                     text.forEach {
                         TextSemiBold(
                             it, Modifier

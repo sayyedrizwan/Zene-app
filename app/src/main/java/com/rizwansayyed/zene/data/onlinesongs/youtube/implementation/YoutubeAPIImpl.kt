@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.suggestionYouMayLikeCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytArtistsPlaylistJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytLatestMusicSearch
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMerchandiseInfoJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumsDetailsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
@@ -42,6 +43,7 @@ import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.SongsSuggestionsData
 import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
+import com.rizwansayyed.zene.domain.yt.MerchandiseItems
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
 import com.rizwansayyed.zene.domain.yt.YoutubeLatestYearResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
@@ -838,6 +840,33 @@ class YoutubeAPIImpl @Inject constructor(
         emit(MusicData(thumbnail, name, artists, vId, MusicType.MUSIC))
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun artistsShopMerchandise(vId: String) = flow {
+        val items = mutableListOf<MerchandiseItems>()
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.yt ?: ""
+
+        val r = youtubeAPI
+            .youtubeArtistsMerchandiseResponse(ytMerchandiseInfoJsonBody(ip, vId), key)
+
+        r.contents?.twoColumnWatchNextResults?.results?.results?.contents?.forEach {
+            if (it?.merchandiseShelfRenderer != null)
+                it.merchandiseShelfRenderer.items?.forEach { m ->
+                    val i = MerchandiseItems(
+                        m?.merchandiseItemRenderer?.description,
+                        m?.merchandiseItemRenderer?.title,
+                        m?.merchandiseItemRenderer?.thumbnail?.thumbnails?.maxBy { t ->
+                            t?.height ?: 0
+                        }?.url,
+                        m?.merchandiseItemRenderer?.price,
+                        m?.merchandiseItemRenderer?.buttonCommand?.urlEndpoint?.url,
+                    )
+                    items.add(i)
+                }
+        }
+
+        emit(items)
+    }
 
     override suspend fun searchData(q: String) = flow {
         val albums = mutableListOf<MusicData>()

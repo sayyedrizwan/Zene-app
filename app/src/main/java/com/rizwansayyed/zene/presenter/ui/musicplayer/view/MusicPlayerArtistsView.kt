@@ -42,8 +42,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun MusicPlayerArtists() {
-    val playerViewModel: PlayerViewModel = hiltViewModel()
+fun MusicPlayerArtists(playerViewModel: PlayerViewModel) {
     val homeNav: HomeNavViewModel = hiltViewModel()
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
