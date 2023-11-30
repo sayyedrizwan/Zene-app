@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.domain.lastfm
 
+import com.rizwansayyed.zene.domain.MusicData
+
 data class ArtistsSearchResponse(
     val results: Results?
 ) {
@@ -101,3 +103,11 @@ data class LastFMArtist(
         val w2: Int?
     )
 }
+
+data class ArtistsShortInfo(
+    val name: String,
+    val info: LastFMArtist,
+    val desc: String,
+    val topSongs: List<MusicData>,
+    val followers: Int,
+)

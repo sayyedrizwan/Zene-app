@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -47,8 +49,12 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.formatExoplayerDuration
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -57,13 +63,13 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
     val coroutine = rememberCoroutineScope()
+    val coroutineAlong = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
     val text = remember { mutableStateListOf("") }
     var currentTextPosition by remember { mutableIntStateOf(0) }
 
-
     var isSubtitles by remember { mutableStateOf(false) }
-    var pagerState = rememberPagerState(pageCount = { 0 })
+
 
     if (playerViewModel.lyricsInfo != null) {
         if (text.size == 0) {
@@ -74,7 +80,7 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
             Spacer(Modifier.height(50.dp))
 
             if (isSubtitles) {
-                pagerState = rememberPagerState(pageCount = { text.size })
+                val pagerState = rememberPagerState(pageCount = { text.size })
 
                 VerticalPager(
                     pagerState,
@@ -84,7 +90,7 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
                         .height(350.dp)
                         .clip(RoundedCornerShape(15.dp))
                         .background(Purple40),
-                    contentPadding = PaddingValues(vertical = 120.dp),
+                    contentPadding = PaddingValues(bottom = 100.dp, top = 150.dp),
                 ) { page ->
                     if (page == 0)
                         TextSemiBold(
@@ -95,8 +101,13 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
 
                     TextSemiBold(
                         text[page], Modifier.padding(horizontal = 7.dp), size = 20,
-                        color = if (page < currentTextPosition) Color.White else Color.Gray
+                        color = if (page <= currentTextPosition) Color.White else Color.Gray,
+                        doCenter = true
                     )
+                }
+
+                LaunchedEffect(currentTextPosition) {
+                    pagerState.animateScrollToPage(currentTextPosition)
                 }
 
             } else
@@ -147,53 +158,30 @@ fun MusicPlayerLyrics(playerViewModel: PlayerViewModel, player: ExoPlayer) {
         job = coroutine.launch {
             while (true) {
                 val v = playerViewModel.lyricsInfo
-                val currentTime = formatExoplayerDuration(player.currentPosition)
-
                 if (v != null) {
                     val tempList = mutableListOf<String>()
+                    val currentTime = formatExoplayerDuration(player.currentPosition)
 
                     if (v.subtitles) {
                         v.lyrics.split("[").forEachIndexed { i, s ->
                             if (s.contains(currentTime)) {
                                 if (i != currentTextPosition) {
                                     currentTextPosition = i
-//                                    pagerState.scrollToPage(i)
                                 }
                             }
                         }
                     }
 
-                    v.lyrics.split("[").forEach {
-                        tempList.add(it.substringAfter("]").trim())
+                    for (i in v.lyrics.split("[")) {
+                        tempList.add(i.substringAfter("]").trim())
                         if (!v.subtitles) tempList.add("\n")
                     }
-
                     if (text != tempList) {
                         text.clear()
                         text.addAll(tempList.toList())
                         isSubtitles = v.subtitles
                     }
                 }
-//                val srt = parseSrt(v?.lyrics ?: "")
-//                Log.d("TAG", "MusicPlayerLyrics: data $srt")
-//                srt.forEach { data ->
-//                    Log.d("TAG", "MusicPlayerLyrics: data $data")
-//                }
-
-//
-//                if (v?.lyrics?.isNotEmpty() == true && v.subtitles) {
-//                    text = " "
-//                    val currentTime = formatExoplayerDuration(player.currentPosition)
-//                    if (!v.lyrics.substringAfter("[$currentTime").substringAfter("[")
-//                            .substringBefore("]").contains("00:00")
-//                    ) {
-//                        text = v.lyrics.substringAfter("[$currentTime").substringAfter("]")
-//                            .substringBefore("[")
-//                    }
-//                } else if (v?.lyrics?.isNotEmpty() == true){
-//                    text = v.lyrics.replace("[", "\n[")
-//                }
-
                 delay(1.seconds)
             }
         }

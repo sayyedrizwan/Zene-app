@@ -43,6 +43,7 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButtons
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerArtists
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerLyrics
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerRelatedSongs
@@ -86,6 +87,10 @@ fun MusicPlayerView(player: ExoPlayer) {
         Spacer(Modifier.height(30.dp))
 
         MusicPlayerLyrics(playerViewModel, player)
+
+        Spacer(Modifier.height(30.dp))
+
+        MusicPlayerArtists()
 
         MusicPlayerRelatedSongs(playerViewModel)
 

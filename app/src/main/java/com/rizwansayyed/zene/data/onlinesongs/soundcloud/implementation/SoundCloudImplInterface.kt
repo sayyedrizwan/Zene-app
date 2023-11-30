@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.utils.RadioOnlineAPI.searchRadioNameAPI
 import com.rizwansayyed.zene.domain.OnlineRadioCacheResponse
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponse
+import com.rizwansayyed.zene.domain.soundcloud.SoundCloudSearchResponse
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import kotlinx.coroutines.CoroutineScope
@@ -34,4 +35,5 @@ import javax.inject.Inject
 interface SoundCloudImplInterface {
 
     suspend fun artistsProfileDetails(q: String): Flow<SoundCloudProfileInfo>
+    suspend fun artistsSmallInfo(q: String): Flow<SoundCloudSearchResponse.Collection?>
 }

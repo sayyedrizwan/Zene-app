@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,10 +14,14 @@ import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImpl
+import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
+import com.rizwansayyed.zene.domain.lastfm.ArtistsShortInfo
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
 import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
@@ -42,7 +47,9 @@ import kotlin.time.Duration.Companion.seconds
 class PlayerViewModel @Inject constructor(
     private val subtitlesScraps: SubtitlesScrapsImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
-    private val roomDb: RoomDBInterface
+    private val roomDb: RoomDBInterface,
+    private val lastFMImpl: LastFMImplInterface,
+    private val soundCloud: SoundCloudImplInterface
 ) : ViewModel() {
 
     var lyricsInfo by mutableStateOf<GeniusLyricsWithInfo?>(null)
@@ -60,12 +67,16 @@ class PlayerViewModel @Inject constructor(
     var addingPlaylist by mutableStateOf<DataResponse<Boolean>>(DataResponse.Empty)
         private set
 
+    var artistsInfo = mutableStateListOf<ArtistsShortInfo>()
+        private set
+
     val playlistLists = mutableStateListOf<SavedPlaylistEntity>()
     var playlistSongsInfo by mutableStateOf<Flow<PlaylistSongsEntity?>>(flowOf(null))
 
     var showMusicType by mutableStateOf(Utils.MusicViewType.MUSIC)
 
     fun init(data: MusicPlayerData) = viewModelScope.launch(Dispatchers.IO) {
+        songArtistsInfo(data.v?.artists?.split(",", "&") ?: emptyList())
         showMusicType = Utils.MusicViewType.MUSIC
         videoSongs = DataResponse.Empty
 
@@ -88,6 +99,31 @@ class PlayerViewModel @Inject constructor(
                 lyricsInfo = it
             }
         }
+    }
+
+    private fun songArtistsInfo(artists: List<String>) = viewModelScope.launch(Dispatchers.IO) {
+        val tempList = artistsInfo.toList()
+        artistsInfo.clear()
+
+        artists.forEach { a ->
+            if (tempList.any { it.name == a.lowercase() }) {
+                artistsInfo.add(tempList.first { it.name.lowercase() == a.lowercase() })
+                return@forEach
+            }
+
+            try {
+                val info = lastFMImpl.artistsUsername(a).first() ?: return@forEach
+                val desc = lastFMImpl.artistsDescription(info).first()
+//                val followers = soundCloud.artistsSmallInfo(a).first()?.followers_count
+                val topSongs = lastFMImpl.artistsTopSongs(info).first()
+                val data = ArtistsShortInfo(a.lowercase(), info, desc, topSongs, 0)
+                artistsInfo.add(data)
+            } catch (e: Exception) {
+                e.message
+            }
+        }
+
+        Log.d("TAG", "songArtistsInfo: data ${artistsInfo.toList()}")
     }
 
     fun similarSongsArtists(id: String) = viewModelScope.launch(Dispatchers.IO) {

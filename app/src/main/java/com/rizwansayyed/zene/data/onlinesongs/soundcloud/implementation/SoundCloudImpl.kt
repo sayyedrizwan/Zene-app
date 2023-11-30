@@ -24,4 +24,10 @@ class SoundCloudImpl @Inject constructor(
 
         emit(SoundCloudProfileInfo(socialProfile, profileInfo.collection?.first()))
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun artistsSmallInfo(q: String) = flow {
+        val key = remoteConfig.allApiKeys()?.soundcloud ?: ""
+        emit(soundcloudApi.search(q, key).collection?.first())
+    }.flowOn(Dispatchers.IO)
 }

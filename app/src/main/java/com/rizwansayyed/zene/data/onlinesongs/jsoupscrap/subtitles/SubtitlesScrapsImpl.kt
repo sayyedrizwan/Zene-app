@@ -37,6 +37,7 @@ class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
                 ?.html().toString().substringAfter("</h3>").replace("\"", "")
                 .replace("<br>", "\n")
                 .replace("By RentAnAdviser.com", "\uD83C\uDFB5 \uD834\uDD1E")
+                .replace("www.RentAnAdviser.com", "\uD83C\uDFB5 \uD834\uDD1E")
                 .replace("by RentAnAdviser.com", "\uD83C\uDFB5 \uD834\uDD1E")
 
             emit(GeniusLyricsWithInfo(data.songID ?: "", subtitleJsoup, "", true))
