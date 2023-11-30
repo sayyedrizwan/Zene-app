@@ -47,6 +47,7 @@
     <string name="home">Home</string>
     <string name="search">Search</string>
     <string name="my_music">My Music</string>
+    <string name="no_lyrics_found">No Lyrics Found</string>
     <string name="no_playlist_found">No playlist found</string>
     <string name="feed">Feed</string>
     <string name="search_music_artists_album">Search music, artist or album</string>

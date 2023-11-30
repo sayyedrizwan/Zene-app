@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles
 
+import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.GeniusURL.GENIUS_BASE_URL
 import com.rizwansayyed.zene.data.utils.GeniusURL.geniusMusicSearch
@@ -29,14 +30,16 @@ class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
         val subtitleLink = "$RENT_ADVISER_BASE_URL${link?.attr("href")}"
 
         if (areSongNamesEqual("${data.artists} - ${data.songName}", link?.text() ?: "")) {
+
             val subtitleResponse = jsoupResponseData(subtitleLink)
             val subtitleJsoup = Jsoup.parse(subtitleResponse!!)
                 .selectFirst("span#ctl00_ContentPlaceHolder1_lbllyrics_simple")
-            val text = "[00:00.00]  \uD83C\uDFB6" +
-                    (subtitleJsoup?.select("br")?.mapNotNull { it.nextSibling() }
-                        ?.joinToString("\n")
-                        ?.replace("by RentAnAdviser.com", " \uD83C\uDFB6") ?: "")
-            emit(GeniusLyricsWithInfo(data.songID ?: "", text, "", true))
+                ?.html().toString().substringAfter("</h3>").replace("\"", "")
+                .replace("<br>", "\n")
+                .replace("By RentAnAdviser.com", "\uD83C\uDFB5 \uD834\uDD1E")
+                .replace("by RentAnAdviser.com", "\uD83C\uDFB5 \uD834\uDD1E")
+
+            emit(GeniusLyricsWithInfo(data.songID ?: "", subtitleJsoup, "", true))
 
             return@flow
         }
@@ -75,9 +78,9 @@ class SubtitlesScrapsImpl @Inject constructor() : SubtitlesScrapsImplInterface {
             }
 
         var lyrics = ""
-            lyricsJsoup.select("div.Lyrics__Container-sc-1ynbvzw-1.kUgSbL").forEach {
-                lyrics += it.text()
-            }
+        lyricsJsoup.select("div.Lyrics__Container-sc-1ynbvzw-1.kUgSbL").forEach {
+            lyrics += it.text()
+        }
         emit(GeniusLyricsWithInfo(data.songID ?: "", lyrics, songInfo, false))
     }.flowOn(Dispatchers.IO)
 }

@@ -56,6 +56,8 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,8 +148,9 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
 
 
     LaunchedEffect(Unit) {
-        playerViewModel.allPlaylists(true)
         playerViewModel.playlistSongsInfo(v.songID ?: "")
+        delay(1.seconds)
+        playerViewModel.allPlaylists(true)
     }
 }
 
