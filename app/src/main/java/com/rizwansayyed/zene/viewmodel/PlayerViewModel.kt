@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.domain.yt.MerchandiseItems
 import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -137,8 +138,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun artistsMerchandise(vId: String?) = viewModelScope.launch(Dispatchers.IO) {
-        vId ?: return@launch
-        youtubeAPI.artistsShopMerchandise(vId).onStart {
+        youtubeAPI.artistsShopMerchandise(vId ?: "").onStart {
             artistsMerchandise = DataResponse.Loading
         }.catch {
             artistsMerchandise = DataResponse.Error(it)
@@ -150,6 +150,7 @@ class PlayerViewModel @Inject constructor(
     fun searchLyricsAndSongVideo(name: String?, artist: String?) =
         viewModelScope.launch(Dispatchers.IO) {
             videoSongs = DataResponse.Loading
+            artistsMerchandise = DataResponse.Loading
 
             var searchQuery = "${name?.replace("(", "")?.replace(")", "")} - ${
                 artist?.substringBefore(",")?.substringBefore("&")

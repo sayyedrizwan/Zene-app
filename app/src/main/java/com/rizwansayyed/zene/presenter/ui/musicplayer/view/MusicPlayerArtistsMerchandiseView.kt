@@ -9,13 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
 @Composable
 fun MusicPlayerArtistsMerchandise(playerViewModel: PlayerViewModel) {
     when (val v = playerViewModel.artistsMerchandise) {
         DataResponse.Empty -> {}
-        is DataResponse.Error -> {}
+        is DataResponse.Error -> {
+            TextThin(v = v.throwable.message ?: "Error")
+        }
         DataResponse.Loading -> {}
         is DataResponse.Success -> {
             LazyRow(Modifier.fillMaxWidth()) {

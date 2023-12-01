@@ -89,9 +89,9 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         MusicPlayerLyrics(playerViewModel, player)
 
-        MusicPlayerArtists(playerViewModel)
-
         MusicPlayerArtistsMerchandise(playerViewModel)
+
+        MusicPlayerArtists(playerViewModel)
 
         MusicPlayerRelatedSongs(playerViewModel)
 

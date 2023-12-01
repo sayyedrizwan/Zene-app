@@ -455,7 +455,6 @@ class YoutubeAPIImpl @Inject constructor(
 
         val r = youtubeAPI.youtubeSearchResponse(ytLatestMusicSearch(ip, q, false), key)
 
-
         r.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEach { c ->
             val vId = c?.videoRenderer?.videoId
             val thumbnail = c?.videoRenderer?.thumbnailURL()
@@ -852,7 +851,7 @@ class YoutubeAPIImpl @Inject constructor(
         r.contents?.twoColumnWatchNextResults?.results?.results?.contents?.forEach {
             if (it?.merchandiseShelfRenderer != null)
                 it.merchandiseShelfRenderer.items?.forEach { m ->
-                    val i = MerchandiseItems(
+                   val i = MerchandiseItems(
                         m?.merchandiseItemRenderer?.description,
                         m?.merchandiseItemRenderer?.title,
                         m?.merchandiseItemRenderer?.thumbnail?.thumbnails?.maxBy { t ->
