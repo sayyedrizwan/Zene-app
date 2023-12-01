@@ -16,9 +16,7 @@ import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 fun MusicPlayerArtistsMerchandise(playerViewModel: PlayerViewModel) {
     when (val v = playerViewModel.artistsMerchandise) {
         DataResponse.Empty -> {}
-        is DataResponse.Error -> {
-            TextThin(v = v.throwable.message ?: "Error")
-        }
+        is DataResponse.Error -> {}
         DataResponse.Loading -> {}
         is DataResponse.Success -> {
             LazyRow(Modifier.fillMaxWidth()) {

@@ -76,6 +76,7 @@ import kotlin.time.Duration.Companion.seconds
 // some songs lyrics not in sync. and make look lyrics more better
 // play all in albums list
 // pin playlists
+// add insta shop items on artists page.
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

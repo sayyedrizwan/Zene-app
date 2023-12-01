@@ -848,20 +848,21 @@ class YoutubeAPIImpl @Inject constructor(
         val r = youtubeAPI
             .youtubeArtistsMerchandiseResponse(ytMerchandiseInfoJsonBody(ip, vId), key)
 
-        r.contents?.twoColumnWatchNextResults?.results?.results?.contents?.forEach {
-            if (it?.merchandiseShelfRenderer != null)
-                it.merchandiseShelfRenderer.items?.forEach { m ->
-                   val i = MerchandiseItems(
-                        m?.merchandiseItemRenderer?.description,
-                        m?.merchandiseItemRenderer?.title,
-                        m?.merchandiseItemRenderer?.thumbnail?.thumbnails?.maxBy { t ->
-                            t?.height ?: 0
-                        }?.url,
-                        m?.merchandiseItemRenderer?.price,
-                        m?.merchandiseItemRenderer?.buttonCommand?.urlEndpoint?.url,
-                    )
-                    items.add(i)
-                }
+        r.contents?.twoColumnWatchNextResults?.results?.results?.contents?.forEachIndexed { i, it ->
+            if (it?.merchandiseShelfRenderer?.title?.lowercase()?.contains("shop") == true &&
+                it.merchandiseShelfRenderer.title.lowercase().contains("store")
+            ) it.merchandiseShelfRenderer.items?.forEach { m ->
+                val i = MerchandiseItems(
+                    m?.merchandiseItemRenderer?.description,
+                    m?.merchandiseItemRenderer?.title,
+                    m?.merchandiseItemRenderer?.thumbnail?.thumbnails?.maxBy { t ->
+                        t?.height ?: 0
+                    }?.url,
+                    m?.merchandiseItemRenderer?.price,
+                    m?.merchandiseItemRenderer?.buttonCommand?.urlEndpoint?.url,
+                )
+                items.add(i)
+            }
         }
 
         emit(items)
