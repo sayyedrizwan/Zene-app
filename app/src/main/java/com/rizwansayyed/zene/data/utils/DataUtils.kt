@@ -55,6 +55,18 @@ object InstagramAPI {
     const val INSTAGRAM_PROFILE_API = "web_profile_info"
 }
 
+object PinterestAPI {
+    const val PINTEREST_BASE_URL = "https://www.pinterest.com/resource/"
+    const val PINTEREST_SEARCH_API = "BaseSearchResource/get/"
+
+    const val PINTEREST_DATA_QUERY =
+        """{"options":{"article":"","appliedProductFilters":"---","price_max":null,"price_min":null,"query":"from the vault - taylor swift","scope":"pins","auto_correction_disabled":"","top_pin_id":"","filters":""},"context":{}}"""
+
+    fun pinterestSearch(s:String): String {
+        return "?q=${s.replace(" ", "%20")}&rs=typed"
+    }
+}
+
 object SpotifyAPI {
     const val ACCOUNT_SPOTIFY_API = "https://accounts.spotify.com/api/token"
     const val ACCOUNT_SPOTIFY_C_ID = "07cca9af3ee4411baaf2355a8ea61d3f"

@@ -158,7 +158,6 @@ class PlayerViewModel @Inject constructor(
         artistsMerchandise(vId)
     }
 
-
     fun searchLyricsAndSongVideo(name: String?, artist: String?) =
         viewModelScope.launch(Dispatchers.IO) {
             videoSongs = DataResponse.Loading
