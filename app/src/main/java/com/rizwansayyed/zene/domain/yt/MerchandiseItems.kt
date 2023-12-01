@@ -8,3 +8,10 @@ data class MerchandiseItems(
     val price: String?,
     val link: String?,
 )
+
+
+data class RetryItems(
+    var extra: String?,
+    var retry: Int?,
+)
+

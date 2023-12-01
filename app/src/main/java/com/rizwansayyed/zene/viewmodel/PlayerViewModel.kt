@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.domain.lastfm.ArtistsShortInfo
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
 import com.rizwansayyed.zene.domain.yt.MerchandiseItems
 import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
+import com.rizwansayyed.zene.domain.yt.RetryItems
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -137,15 +138,26 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+
+    private var artistsRetry = RetryItems("", 0)
     private fun artistsMerchandise(vId: String?) = viewModelScope.launch(Dispatchers.IO) {
         youtubeAPI.artistsShopMerchandise(vId ?: "").onStart {
             artistsMerchandise = DataResponse.Loading
         }.catch {
             artistsMerchandise = DataResponse.Error(it)
         }.collectLatest {
+            if (it.isEmpty() && artistsRetry.retry!! <= 2 && artistsRetry.extra == vId) {
+                reArtistsMerchandise(vId)
+            }
             artistsMerchandise = DataResponse.Success(it)
         }
     }
+
+    private fun reArtistsMerchandise(vId: String?) {
+        artistsRetry = artistsRetry.apply { artistsRetry.retry = artistsRetry.retry?.plus(1) }
+        artistsMerchandise(vId)
+    }
+
 
     fun searchLyricsAndSongVideo(name: String?, artist: String?) =
         viewModelScope.launch(Dispatchers.IO) {
@@ -166,6 +178,7 @@ class PlayerViewModel @Inject constructor(
                 if (i == 0) if (areSongNamesEqual(musicData.name ?: "", searchQuery))
                     videoId = musicData.pId
             }
+            artistsRetry = RetryItems(videoId, 0)
             artistsMerchandise(videoId)
 
             searchQuery += "Lyrics Video"
