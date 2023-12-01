@@ -51,8 +51,7 @@ class PlayerViewModel @Inject constructor(
     private val subtitlesScraps: SubtitlesScrapsImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val roomDb: RoomDBInterface,
-    private val lastFMImpl: LastFMImplInterface,
-    private val soundCloud: SoundCloudImplInterface
+    private val lastFMImpl: LastFMImplInterface
 ) : ViewModel() {
 
     var lyricsInfo by mutableStateOf<GeniusLyricsWithInfo?>(null)
@@ -108,14 +107,9 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun songArtistsInfo(artists: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        val tempList = artistsInfo.toList()
         artistsInfo.clear()
 
         artists.forEach { a ->
-            if (tempList.any { it.name == a.lowercase() }) {
-                artistsInfo.add(tempList.first { it.name.lowercase() == a.lowercase() })
-                return@forEach
-            }
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val info = lastFMImpl.artistsUsername(a).first() ?: return@launch

@@ -2,12 +2,12 @@ package com.rizwansayyed.zene.domain.yt
 
 data class YoutubeLatestYearResponse(
     val contents: Contents?,
-    val estimatedResults: String?,
-    val header: Header?,
-    val responseContext: ResponseContext?,
-    val targetId: String?,
-    val topbar: Topbar?,
-    val trackingParams: String?
+//    val estimatedResults: String?,
+//    val header: Header?,
+//    val responseContext: ResponseContext?,
+//    val targetId: String?,
+//    val topbar: Topbar?,
+//    val trackingParams: String?
 ) {
     data class Contents(
         val twoColumnSearchResultsRenderer: TwoColumnSearchResultsRenderer?
