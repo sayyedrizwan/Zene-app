@@ -99,7 +99,7 @@ fun MusicActionButtons(p: MusicPlayerData?) {
         }
 
         MusicActionButton(
-            R.drawable.ic_autoplay, if (autoplay) R.string.autoplay_on else R.string.autoplay_is_on
+            R.drawable.ic_autoplay, if (autoplay)  R.string.autoplay_is_on else R.string.autoplay_off
         ) {
             autoplaySettings = flowOf(!autoplay)
         }

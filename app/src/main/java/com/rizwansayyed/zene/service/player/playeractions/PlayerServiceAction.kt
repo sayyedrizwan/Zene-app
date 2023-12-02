@@ -7,6 +7,8 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
@@ -101,6 +103,7 @@ class PlayerServiceAction @Inject constructor(
             player.playWhenReady = doPlay
 
             player.prepare()
+
             if (doPlay) player.play()
             else player.pause()
         }

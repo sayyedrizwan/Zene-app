@@ -146,7 +146,7 @@
     <string name="switch_to_lyrics_video">Switch to Lyrics Video</string>
     <string name="playing_in_loop">Playing in Loop</string>
     <string name="play_in_loop">Play in Loop</string>
-    <string name="autoplay_on">Turn Autoplay On</string>
+    <string name="autoplay_off">Autoplay next song is Off</string>
     <string name="autoplay_is_on">Autoplay is On</string>
     <string name="no_video_found_try_again">No video found. Please try again later.</string>
     <string name="are_you_sure_want_to_rm_downloaded_song">Are you sure want to remove the downloaded song?</string>

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.service
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,31 +13,40 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSettings
 import com.rizwansayyed.zene.data.utils.moshi
+import com.rizwansayyed.zene.di.ExoPlayerModule_ExoPlayerFactory.exoPlayer
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
-import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
-import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
-import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
-import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
-import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import com.rizwansayyed.zene.service.player.notificationservice.PlayerServiceNotificationInterface
 import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceActionInterface
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_ALL_PLAYER_ITEM_NO_PLAY
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_AT_END_ITEM
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.ADD_PLAY_NEXT_ITEM
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_ACTION
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAYER_SERVICE_TYPE
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_LIVE_RADIO
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_PAUSE_MEDIA
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
+import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
+
 
 @AndroidEntryPoint
 class PlayerService : MediaSessionService() {
@@ -45,6 +55,8 @@ class PlayerService : MediaSessionService() {
         var retry = 0
         var currentPlayingMusic: String = ""
     }
+
+    private var timeJob: Job? = null
 
     @Inject
     lateinit var player: ExoPlayer
@@ -72,6 +84,29 @@ class PlayerService : MediaSessionService() {
                 this@PlayerService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
             )
         }
+
+        timeJob = CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                val doLoop = loopSettings.first()
+                val autoPlay = autoplaySettings.first()
+
+                if (doLoop) withContext(Dispatchers.Main) {
+                    if (player.duration - player.currentPosition <= 1000)
+                        player.seekTo(0)
+                }
+
+                if (!autoPlay) withContext(Dispatchers.Main) {
+                    if (player.duration - player.currentPosition <= 2000) {
+                        player.pause()
+                        player.seekTo(player.duration)
+                        PlayServiceListener.getInstance().isBuffering(false)
+                    }
+                }
+
+                delay(1.seconds)
+            }
+        }
+
         return START_STICKY
     }
 
@@ -107,15 +142,27 @@ class PlayerService : MediaSessionService() {
             playerError(error)
         }
 
+        @SuppressLint("SwitchIntDef")
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
-           PlayServiceListener.getInstance()
+            PlayServiceListener.getInstance()
                 .isBuffering(playbackState == Player.STATE_BUFFERING)
 
-            if (playbackState == Player.STATE_READY) {
-                retry = 0
-            } else if (playbackState == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
-                retry = 0
+            when (playbackState) {
+                Player.STATE_READY -> {
+                    retry = 0
+                }
+
+                Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {
+                    retry = 0
+                }
+
+                Player.STATE_ENDED -> {
+                    retry = 0
+                }
+
+                Player.STATE_BUFFERING -> {}
+                Player.STATE_IDLE -> {}
             }
         }
 
@@ -128,6 +175,7 @@ class PlayerService : MediaSessionService() {
                     if (currentPlayingMusic != mediaItem?.mediaId)
                         playerServiceAction.updatePlaying(mediaItem)
                 }
+
                 if (isActive) cancel()
             }
         }
@@ -197,6 +245,7 @@ class PlayerService : MediaSessionService() {
         player.release()
         mediaSession.release()
         unregisterReceiver(receiver)
+        timeJob?.cancel()
         super.onDestroy()
     }
 }
