@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -16,7 +15,6 @@ import androidx.media3.session.MediaSessionService
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSettings
 import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.di.ExoPlayerModule_ExoPlayerFactory.exoPlayer
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
@@ -34,7 +32,6 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

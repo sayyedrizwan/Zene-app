@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -15,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
@@ -32,22 +32,18 @@ import com.rizwansayyed.zene.data.db.datastore.SeekButton
 import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.db.datastore.SongsQualityInfo
-import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
-import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextBold
-import com.rizwansayyed.zene.presenter.ui.TextRegular
-import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItems
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsCard
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsLayout
-import com.rizwansayyed.zene.presenter.util.UiUtils
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
+import com.rizwansayyed.zene.utils.Utils.cacheSize
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun SettingsView() {
+fun SettingsView(player: ExoPlayer) {
     Column(
         Modifier
             .fillMaxSize()
@@ -73,7 +69,7 @@ fun SettingsView() {
         SongOnLockScreenSettings()
         SetWallpaperSettings()
         PlaySongWhenAlarmSettings()
-        PauseMusicOnHeadphoneDetachSettings()
+        PauseMusicOnHeadphoneDetachSettings(player)
 
         Spacer(Modifier.height(20.dp))
 
@@ -81,7 +77,7 @@ fun SettingsView() {
             openEqualizer()
         }
 
-        SettingsItemsCard(R.string.clear_cache, "2.38 MB") {
+        SettingsItemsCard(R.string.clear_cache, cacheSize()) {
 
         }
 
@@ -271,13 +267,15 @@ fun PlaySongWhenAlarmSettings() {
 }
 
 @Composable
-fun PauseMusicOnHeadphoneDetachSettings() {
+fun PauseMusicOnHeadphoneDetachSettings(player: ExoPlayer) {
     val v by pauseMusicOnHeadphoneDetachSettings.collectAsState(initial = false)
     SettingsLayout(R.string.pause_on_headphone_detach) {
         SettingsItems(R.string.enable, v) {
+            player.setHandleAudioBecomingNoisy(true)
             pauseMusicOnHeadphoneDetachSettings = flowOf(true)
         }
         SettingsItems(R.string.disable, !v) {
+            player.setHandleAudioBecomingNoisy(false)
             pauseMusicOnHeadphoneDetachSettings = flowOf(false)
         }
     }

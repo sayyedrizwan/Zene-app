@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.di
 
 import android.content.Context
+import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
@@ -45,8 +46,9 @@ object ExoPlayerModule {
     fun mediaSession(@ApplicationContext c: Context, e: ExoPlayer): MediaSession =
         MediaSession.Builder(c, e).build()
 
+    @OptIn(UnstableApi::class)
     @Provides
     @Singleton
-    fun androidExoPlayer(@ApplicationContext c: Context): ArtistsThumbnailVideoPlayer = ArtistsThumbnailVideoPlayer(c)
+    fun androidExoPlayer(@ApplicationContext c: Context) = ArtistsThumbnailVideoPlayer(c)
 
 }

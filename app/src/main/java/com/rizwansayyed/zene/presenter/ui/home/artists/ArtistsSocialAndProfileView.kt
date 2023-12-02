@@ -120,7 +120,7 @@ fun ArtistsSocialMedia() {
 
     when (val v = artists.artistSocialProfile) {
         DataResponse.Empty -> {}
-        is DataResponse.Error -> {}
+        is DataResponse.Error -> { TextThin(v.throwable.message ?: "Nooo")}
         DataResponse.Loading -> ArtistsSocialMediaLoading()
         is DataResponse.Success -> FlowRow {
             v.item.social.forEachIndexed { index, social ->
@@ -252,8 +252,8 @@ fun ArtistsProfilePin() {
         is DataResponse.Error -> {}
         DataResponse.Loading -> {}
         is DataResponse.Success -> {
-            if ((v.item.profile?.user?.followers_count ?: 0) > 0) {
-                val s = formatNumberToFollowers(v.item.profile?.user?.followers_count ?: 0)
+            if ((v.item.followersCount ?: 0) > 0) {
+                val s = formatNumberToFollowers(v.item.followersCount ?: 0)
                 TextBold(
                     String.format(stringResource(R.string.pinned_by_users), s),
                     Modifier.fillMaxWidth(), doCenter = true

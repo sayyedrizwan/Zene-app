@@ -18,11 +18,9 @@ class SoundCloudImpl @Inject constructor(
     override suspend fun artistsProfileDetails(q: String) = flow {
         val key = remoteConfig.allApiKeys()?.soundcloud ?: ""
         val s = soundcloudApi.search(q, key).collection?.first()
-
         val socialProfile = soundcloudApi.profile(s?.urn, key)
-        val profileInfo = soundcloudApi.profileDetail(s?.id, key)
 
-        emit(SoundCloudProfileInfo(socialProfile, profileInfo.collection?.first()))
+        emit(SoundCloudProfileInfo(socialProfile, s?.followers_count))
     }.flowOn(Dispatchers.IO)
 
 

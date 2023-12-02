@@ -11,5 +11,5 @@ data class SoundCloudProfileResponseItem(
 
 data class SoundCloudProfileInfo(
     val social: SoundCloudProfileResponse,
-    val profile: SoundCloudProfileInfoResponse.Collection?,
+    val followersCount: Int?,
 )

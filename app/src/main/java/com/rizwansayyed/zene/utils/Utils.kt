@@ -15,17 +15,11 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.ui.graphics.Color
-import androidx.core.graphics.blue
 import androidx.core.graphics.drawable.toBitmapOrNull
-import androidx.core.graphics.green
-import androidx.core.graphics.red
 import androidx.core.net.toUri
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
 import kotlinx.coroutines.CoroutineScope
@@ -38,11 +32,10 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.InetAddress
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.text.DecimalFormat
 import java.util.Calendar
-import java.util.Locale
+import kotlin.math.log10
+import kotlin.math.pow
 import kotlin.system.exitProcess
 
 
@@ -228,7 +221,25 @@ object Utils {
         } catch (e: Exception) {
             e.message
         }
+    }
 
+
+    fun cacheSize(): String {
+        var size: Long = 0
+        val files = context.cacheDir.listFiles()
+        for (f in files!!) {
+            size += f.length()
+        }
+        return readableFileSize(size)
+    }
+
+    fun readableFileSize(size: Long): String {
+        if (size <= 0) return "0 Bytes"
+        val units = arrayOf("Bytes", "kB", "MB", "GB", "TB")
+        val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
+        return DecimalFormat("#,##0.#").format(
+            size / 1024.0.pow(digitGroups.toDouble())
+        ) + " " + units[digitGroups]
     }
 
 }
