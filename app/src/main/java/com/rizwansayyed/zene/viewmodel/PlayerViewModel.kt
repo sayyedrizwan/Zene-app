@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,8 +14,7 @@ import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
-import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImpl
-import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.pinterest.implementation.PinterestAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
@@ -28,7 +26,6 @@ import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.domain.yt.RetryItems
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +50,8 @@ class PlayerViewModel @Inject constructor(
     private val subtitlesScraps: SubtitlesScrapsImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val roomDb: RoomDBInterface,
-    private val lastFMImpl: LastFMImplInterface
+    private val lastFMImpl: LastFMImplInterface,
+    private val pinterestAPI: PinterestAPIImplInterface
 ) : ViewModel() {
 
     var lyricsInfo by mutableStateOf<GeniusLyricsWithInfo?>(null)
@@ -66,6 +64,9 @@ class PlayerViewModel @Inject constructor(
         private set
 
     var videoSongs by mutableStateOf<DataResponse<PlayerVideoDetailsData>>(DataResponse.Empty)
+        private set
+
+    var musicImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
         private set
 
     var offlineSongStatus by mutableStateOf<Flow<OfflineDownloadedEntity?>>(flowOf(null))
@@ -84,6 +85,7 @@ class PlayerViewModel @Inject constructor(
 
     fun init(data: MusicPlayerData) = viewModelScope.launch(Dispatchers.IO) {
         songArtistsInfo(data.v?.artists?.split(",", "&") ?: emptyList())
+        songsImages(data.v)
         showMusicType = Utils.MusicViewType.MUSIC
         videoSongs = DataResponse.Empty
 
@@ -283,45 +285,52 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    private fun songsImages(v: MusicPlayerList?) = viewModelScope.launch(Dispatchers.IO) {
+        pinterestAPI.search(v?.songName ?: "", v?.artists ?: "").onStart {
+            musicImages = DataResponse.Loading
+        }.catch {
+            musicImages = DataResponse.Error(it)
+        }.collectLatest {
+            musicImages = DataResponse.Success(it)
+        }
+    }
+
 
     fun addRmSongToPlaylist(
-        v: MusicPlayerList,
-        doRemove: Boolean,
-        playlistId: String,
-        savedPlaylist: SavedPlaylistEntity?
-    ) =
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                var info = roomDb.songInfo(v.songID ?: "").first()
+        v: MusicPlayerList, doRemove: Boolean,
+        playlistId: String, savedPlaylist: SavedPlaylistEntity?
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            var info = roomDb.songInfo(v.songID ?: "").first()
 
-                if (doRemove) {
-                    info?.addedPlaylistIds =
-                        info?.addedPlaylistIds?.replace(playlistId, "")?.trim() ?: ""
+            if (doRemove) {
+                info?.addedPlaylistIds =
+                    info?.addedPlaylistIds?.replace(playlistId, "")?.trim() ?: ""
 
-                    if (info?.addedPlaylistIds?.trim()?.isEmpty() == true)
-                        roomDb.rmSongs(v.songID ?: "").collect()
-                    else
-                        info?.let { roomDb.insert(it).collect() }
+                if (info?.addedPlaylistIds?.trim()?.isEmpty() == true)
+                    roomDb.rmSongs(v.songID ?: "").collect()
+                else
+                    info?.let { roomDb.insert(it).collect() }
 
+            } else {
+                if (info == null) {
+                    info = PlaylistSongsEntity(
+                        v.songID ?: "", playlistId, v.songName, v.artists,
+                        v.thumbnail, System.currentTimeMillis()
+                    )
+                    roomDb.insert(info).collect()
                 } else {
-                    if (info == null) {
-                        info = PlaylistSongsEntity(
-                            v.songID ?: "", playlistId, v.songName, v.artists,
-                            v.thumbnail, System.currentTimeMillis()
-                        )
-                        roomDb.insert(info).collect()
-                    } else {
-                        info.addedPlaylistIds = "${info.addedPlaylistIds} $playlistId"
-                        roomDb.insert(info).collect()
-                    }
-                    savedPlaylist?.thumbnail = v.thumbnail
-                    savedPlaylist?.let { roomDb.insert(it).collect() }
+                    info.addedPlaylistIds = "${info.addedPlaylistIds} $playlistId"
+                    roomDb.insert(info).collect()
                 }
-            } catch (e: Exception) {
-                e.message
+                savedPlaylist?.thumbnail = v.thumbnail
+                savedPlaylist?.let { roomDb.insert(it).collect() }
             }
-            delay(1.seconds)
-            playlistSongsInfo(v.songID ?: "")
+        } catch (e: Exception) {
+            e.message
         }
+        delay(1.seconds)
+        playlistSongsInfo(v.songID ?: "")
+    }
 
 }
