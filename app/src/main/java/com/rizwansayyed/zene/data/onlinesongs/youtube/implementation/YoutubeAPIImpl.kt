@@ -852,6 +852,11 @@ class YoutubeAPIImpl @Inject constructor(
             if (it?.merchandiseShelfRenderer?.title?.lowercase()?.contains("shop") == true &&
                 it.merchandiseShelfRenderer.title.lowercase().contains("store")
             ) it.merchandiseShelfRenderer.items?.forEach { m ->
+                var url = ""
+                m?.merchandiseItemRenderer?.buttonCommand?.commandExecutorCommand?.commands?.forEach {
+                    if (it?.commandMetadata?.webCommandMetadata?.url != null && url.isEmpty())
+                        url = it.commandMetadata.webCommandMetadata.url
+                }
                 val i = MerchandiseItems(
                     m?.merchandiseItemRenderer?.description,
                     m?.merchandiseItemRenderer?.title,
@@ -859,7 +864,7 @@ class YoutubeAPIImpl @Inject constructor(
                         t?.height ?: 0
                     }?.url,
                     m?.merchandiseItemRenderer?.price,
-                    m?.merchandiseItemRenderer?.buttonCommand?.urlEndpoint?.url,
+                    url,
                 )
                 items.add(i)
             }

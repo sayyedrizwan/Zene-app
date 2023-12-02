@@ -54,6 +54,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.view.SongsThumbnailsWithLi
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
+import com.rizwansayyed.zene.utils.Utils.littleVibrate
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -117,6 +118,13 @@ fun MusicPlayerView(player: ExoPlayer) {
 
         p?.songID?.let { playerViewModel.offlineSongDetails(it) }
         p?.let { playerViewModel.searchLyrics(it) }
+    }
+
+    DisposableEffect(Unit){
+        littleVibrate()
+        onDispose {
+            littleVibrate()
+        }
     }
 }
 

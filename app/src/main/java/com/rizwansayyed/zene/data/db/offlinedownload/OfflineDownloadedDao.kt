@@ -14,6 +14,9 @@ interface OfflineDownloadedDao {
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB ORDER BY timestamp DESC")
     fun recentList(): Flow<List<OfflineDownloadedEntity>>
 
+    @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE progress < 100 ORDER BY timestamp DESC")
+    suspend fun nonDownloadedSongs(): List<OfflineDownloadedEntity>
+
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE songId = :songId LIMIT 1")
     suspend fun songDetails(songId: String): OfflineDownloadedEntity?
 

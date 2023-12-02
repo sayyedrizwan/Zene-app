@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPII
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -43,9 +44,6 @@ class RoomDbViewModel @Inject constructor(
             savedPlaylist()
             init()
             albumsYouMayLike(null)
-
-            delay(1500)
-//            tempInsert()
         }
     }
 
@@ -59,6 +57,8 @@ class RoomDbViewModel @Inject constructor(
         }
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
+        downloadIfNotDownloaded()
+
         if (roomDBImpl.readRecentPlay(2).first().isNotEmpty()) {
             topTwentySongsRecords()
             artistsFansRead()
@@ -108,23 +108,6 @@ class RoomDbViewModel @Inject constructor(
         }.collectLatest {
             recentSongPlayed = it
         }
-    }
-
-    fun tempInsert(musicData: MusicData) = viewModelScope.launch(Dispatchers.IO) {
-        return@launch
-        val insert = RecentPlayedEntity(
-            null,
-            musicData.name ?: "",
-            musicData.artists ?: "",
-            (4..10).random(),
-            musicData.pId ?: "",
-            musicData.thumbnail ?: "",
-            System.currentTimeMillis(),
-            0,
-            0
-        )
-
-        roomDBImpl.insert(insert).collect()
     }
 
     private fun savedPlaylist() = viewModelScope.launch(Dispatchers.IO) {
@@ -232,6 +215,14 @@ class RoomDbViewModel @Inject constructor(
             artistsFans = DataResponse.Error(it)
         }.collectLatest {
             artistsFans = DataResponse.Success(it)
+        }
+    }
+
+    private fun downloadIfNotDownloaded() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.nonDownloadedSongs().catch { }.collectLatest {
+            it.forEach { song ->
+                startOfflineDownloadWorkManager(song.songId)
+            }
         }
     }
 }
