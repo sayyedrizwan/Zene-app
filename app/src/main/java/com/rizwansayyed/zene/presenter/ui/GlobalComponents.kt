@@ -137,18 +137,21 @@ fun TextThin(
 
 @Composable
 fun TextThinArtistsDesc(
-    v: String, showFull: Boolean = false
+    v: String, showFull: Boolean = false, doZeroPadding: Boolean = false
 ) {
     Text(
         v,
-        modifier = Modifier
-            .padding(top = 20.dp)
-            .padding(end = 10.dp, start = 14.dp)
-            .animateContentSize(spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)),
+        modifier = if (doZeroPadding) Modifier
+            .animateContentSize(spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow))
+        else
+            Modifier
+                .padding(top = 20.dp)
+                .padding(end = 10.dp, start = 14.dp)
+                .animateContentSize(spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)),
         color = Color.White,
         fontFamily = urbanistFamily,
         fontWeight = FontWeight.Thin,
-        maxLines = if (showFull) Int.MAX_VALUE else 2,
+        maxLines = if (showFull) Int.MAX_VALUE else 3,
         fontSize = 14.scaledSp(),
         textAlign = TextAlign.Start,
         overflow = TextOverflow.Ellipsis
@@ -360,7 +363,8 @@ fun SearchEditTextView(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .navigationBarsPadding().imePadding()
+            .navigationBarsPadding()
+            .imePadding()
             .background(BlackColor, CircleShape),
         keyboardOptions = KeyboardOptions(
             autoCorrect = false,

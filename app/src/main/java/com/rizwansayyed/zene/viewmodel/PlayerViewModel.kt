@@ -118,8 +118,7 @@ class PlayerViewModel @Inject constructor(
                 try {
                     val info = lastFMImpl.artistsUsername(a).first() ?: return@launch
                     val desc = lastFMImpl.artistsDescription(info).first()
-                    val topSongs = lastFMImpl.artistsTopSongs(info).first()
-                    val data = ArtistsShortInfo(a.lowercase(), info, desc, topSongs)
+                    val data = ArtistsShortInfo(a.lowercase(), info, desc)
                     artistsInfo.add(data)
                 } catch (e: Exception) {
                     e.message

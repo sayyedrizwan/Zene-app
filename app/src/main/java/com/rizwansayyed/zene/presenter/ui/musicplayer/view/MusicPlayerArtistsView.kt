@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -30,6 +32,7 @@ import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeItems
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
@@ -44,48 +47,23 @@ import kotlinx.coroutines.launch
 @Composable
 fun MusicPlayerArtists(playerViewModel: PlayerViewModel) {
     val homeNav: HomeNavViewModel = hiltViewModel()
-    val screenWidth = LocalConfiguration.current.screenWidthDp
 
     if (playerViewModel.artistsInfo.toList().isNotEmpty()) {
         Spacer(Modifier.height(30.dp))
         TopInfoWithSeeMore(stringResource(id = R.string.artist_info), null) {}
 
         playerViewModel.artistsInfo.toList().forEach {
-            LazyRow(Modifier.fillMaxWidth()) {
-                item {
-                    ArtistsMainCards(it, screenWidth, homeNav)
-                }
-
-                item {
-                    Box(
-                        Modifier
-                            .padding(4.dp)
-                            .size((screenWidth / 2).dp, (screenWidth / 1.9).dp)
-                    ) {
-                        TextRegular(
-                            stringResource(R.string.artist_top_songs__),
-                            Modifier
-                                .align(Alignment.Center)
-                                .fillMaxWidth(),
-                            doCenter = true
-                        )
-                    }
-                }
-
-                itemsIndexed(it.topSongs) { i, song ->
-                    SongsYouMayLikeItems(song, screenWidth, homeNav) {
-                        addAllPlayer(it.topSongs.toTypedArray(), i)
-                    }
-                }
-            }
+            ArtistsMainCards(it, homeNav)
         }
     }
 }
 
 
 @Composable
-fun ArtistsMainCards(artists: ArtistsShortInfo, screenWidth: Int, homeNav: HomeNavViewModel) {
+fun ArtistsMainCards(artists: ArtistsShortInfo, homeNav: HomeNavViewModel) {
     val coroutine = rememberCoroutineScope()
+    val width = LocalConfiguration.current.screenWidthDp
+    val height = LocalConfiguration.current.screenHeightDp
     val listeners = stringResource(R.string.listeners)
     val s = try {
         formatNumberToFollowers(artists.info.listeners?.toInt() ?: 0)
@@ -95,24 +73,21 @@ fun ArtistsMainCards(artists: ArtistsShortInfo, screenWidth: Int, homeNav: HomeN
     Box(
         Modifier
             .padding(4.dp)
-            .size((screenWidth / 2).dp, (screenWidth / 1.9).dp)
+            .size(width.dp, (height / 1.4).dp)
             .clickable {
                 coroutine.launch {
-                    val m = musicPlayerData.first()?.apply { show = false }
+                    val m = musicPlayerData
+                        .first()
+                        ?.apply { show = false }
                     musicPlayerData = flowOf(m)
                 }
                 artists.info.name?.let { homeNav.setArtists(it) }
             }
+            .clip(RoundedCornerShape(13.dp))
     ) {
         AsyncImage(
             artists.info.image, artists.info.name,
             Modifier.fillMaxSize(), contentScale = ContentScale.Crop
-        )
-
-        TextThin(
-            stringResource(R.string.artist_info), Modifier
-                .align(Alignment.TopStart)
-                .padding(6.dp), size = 15
         )
 
         Column(
@@ -120,11 +95,14 @@ fun ArtistsMainCards(artists: ArtistsShortInfo, screenWidth: Int, homeNav: HomeN
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .background(BlackColor)
-                .padding(5.dp), Arrangement.Center
+                .padding(8.dp).padding(horizontal = 4.dp), Arrangement.Center
         ) {
-            TextSemiBold(artists.info.name ?: "")
-            Spacer(Modifier.height(4.dp))
+            TextSemiBold(artists.info.name ?: "", size = 20)
+            Spacer(Modifier.height(8.dp))
             TextRegular("$s $listeners", size = 12)
+            Spacer(Modifier.height(8.dp))
+            TextThinArtistsDesc(artists.desc.trim(), false, doZeroPadding = true)
+            Spacer(Modifier.height(8.dp))
         }
     }
 }

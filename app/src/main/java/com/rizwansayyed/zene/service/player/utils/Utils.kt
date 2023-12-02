@@ -14,6 +14,8 @@ import androidx.media3.common.MediaMetadata
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
@@ -33,6 +35,8 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -80,6 +84,10 @@ object Utils {
     }
 
     fun addAllPlayer(l: Array<MusicData?>?, p: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val mpd = musicPlayerData.first()?.apply { show = true }
+            musicPlayerData = flowOf(mpd)
+        }
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_ALL_PLAYER_ITEM)
             putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData?>::class.java).toJson(l))
