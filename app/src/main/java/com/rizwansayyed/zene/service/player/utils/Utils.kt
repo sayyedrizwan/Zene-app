@@ -35,11 +35,13 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.seconds
 
 
 object Utils {
@@ -85,6 +87,7 @@ object Utils {
 
     fun addAllPlayer(l: Array<MusicData?>?, p: Int) {
         CoroutineScope(Dispatchers.IO).launch {
+            delay(1.5.seconds)
             val mpd = musicPlayerData.first()?.apply { show = true }
             musicPlayerData = flowOf(mpd)
         }
@@ -176,14 +179,5 @@ object Utils {
         intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionID)
         intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
         context.startActivity(intent)
-    }
-
-
-    object PlayerActionService {
-        val PLAYER_SERVICE_ACTION = "${context.packageName}_player_service_action"
-
-        fun playerActionIntentFilter() {
-
-        }
     }
 }

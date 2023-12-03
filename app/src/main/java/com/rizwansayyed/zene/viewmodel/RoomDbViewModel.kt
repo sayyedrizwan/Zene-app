@@ -141,7 +141,7 @@ class RoomDbViewModel @Inject constructor(
 
     private fun songYouMayLike(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
-            youtubeAPIImpl.topThreeSongsSuggestionOnHistory(list.map { i -> i.pid }).onStart {
+            youtubeAPIImpl.topThreeSongsSuggestionOnHistory(list.map { i -> i.songId }).onStart {
                 songsYouMayLike = DataResponse.Loading
             }.catch { e ->
                 songsYouMayLike = DataResponse.Error(e)
@@ -171,7 +171,7 @@ class RoomDbViewModel @Inject constructor(
 
     private fun songsSuggestions(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
-            youtubeAPIImpl.songsSuggestionsForUsers(list.map { i -> i.pid }).onStart {
+            youtubeAPIImpl.songsSuggestionsForUsers(list.map { i -> i.songId }).onStart {
                 artistsSuggestionForUsers = DataResponse.Loading
                 songsSuggestionForUsersTop = DataResponse.Loading
                 songsSuggestionForUsers = DataResponse.Loading
@@ -199,7 +199,7 @@ class RoomDbViewModel @Inject constructor(
         roomDBImpl.readRecentPlay(14).catch { }.collectLatest {
             val l = mutableListOf<String>()
             it.forEach { a ->
-                a.artists.split(",", "&").forEach { n ->
+                a.artists?.split(",", "&")?.forEach { n ->
                     l.add(n.trim())
                 }
             }

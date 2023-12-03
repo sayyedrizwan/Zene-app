@@ -9,14 +9,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecentPlayedDao {
-    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC")
-    suspend fun list(): List<RecentPlayedEntity>
+    @Query("SELECT * FROM $RECENT_PLAYED_DB WHERE songId = :songId ORDER BY timestamp DESC LIMIT 1")
+    suspend fun search(songId: String): RecentPlayedEntity?
 
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT 6")
     fun recentList(): Flow<List<RecentPlayedEntity>>
 
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT :offset")
     suspend fun read(offset: Int): List<RecentPlayedEntity>
+
+    @Query("UPDATE $RECENT_PLAYED_DB SET lastListenDuration = :duration WHERE songId = :songId")
+    suspend fun updateTime(songId: String, duration: Long): Int
 
 
     @Upsert

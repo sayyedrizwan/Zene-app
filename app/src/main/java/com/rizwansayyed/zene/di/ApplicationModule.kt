@@ -4,10 +4,12 @@ import android.app.Application
 import android.content.Intent
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.work.Configuration
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.pauseMusicOnHeadphoneDetachSettings
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
@@ -40,6 +42,9 @@ class ApplicationModule : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    @Inject
+    lateinit var player: ExoPlayer
+
     override fun onCreate() {
         super.onCreate()
         context = this
@@ -71,6 +76,8 @@ class ApplicationModule : Application(), Configuration.Provider {
                 songID = ""
             }
             musicPlayerData = flowOf(playerData)
+//
+//            player.setHandleAudioBecomingNoisy(pauseMusicOnHeadphoneDetachSettings.first())
 
             delay(3.seconds)
 

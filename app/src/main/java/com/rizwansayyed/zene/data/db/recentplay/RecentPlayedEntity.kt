@@ -7,12 +7,11 @@ import com.rizwansayyed.zene.data.utils.DBNAME.RECENT_PLAYED_DB
 
 @Entity(tableName = RECENT_PLAYED_DB)
 data class RecentPlayedEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int?,
-    val name: String,
-    val artists: String,
+    @PrimaryKey val songId: String,
+    val name: String?,
+    val artists: String?,
     var playTimes: Int,
-    val pid: String,
-    val thumbnail: String,
+    val thumbnail: String?,
     var timestamp: Long,
     var playerDuration: Long,
     var lastListenDuration: Long

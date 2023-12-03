@@ -533,11 +533,6 @@ object ScrapURL {
     }
 }
 
-
-fun getInstagramUsername(i: String): String {
-    return i.substringAfter("instagram.com/").replace("/", "")
-}
-
 const val USER_AGENT =
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36,gzip(gfe)"
 

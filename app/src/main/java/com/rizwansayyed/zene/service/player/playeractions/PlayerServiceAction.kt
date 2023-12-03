@@ -21,11 +21,14 @@ import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.log
+import kotlin.time.Duration.Companion.seconds
 
 class PlayerServiceAction @Inject constructor(
     private val player: ExoPlayer,
@@ -99,10 +102,10 @@ class PlayerServiceAction @Inject constructor(
         withContext(Dispatchers.Main) {
             player.replaceMediaItem(position, music!!.toMediaItem(url))
             player.seekTo(position, 0)
-
-            player.playWhenReady = doPlay
-
+            if (doPlay) player.playWhenReady = true
             player.prepare()
+
+            delay(1.seconds)
 
             if (doPlay) player.play()
             else player.pause()

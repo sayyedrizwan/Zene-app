@@ -233,7 +233,7 @@ object Utils {
         return readableFileSize(size)
     }
 
-    fun readableFileSize(size: Long): String {
+    private fun readableFileSize(size: Long): String {
         if (size <= 0) return "0 Bytes"
         val units = arrayOf("Bytes", "kB", "MB", "GB", "TB")
         val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
@@ -241,5 +241,4 @@ object Utils {
             size / 1024.0.pow(digitGroups.toDouble())
         ) + " " + units[digitGroups]
     }
-
 }

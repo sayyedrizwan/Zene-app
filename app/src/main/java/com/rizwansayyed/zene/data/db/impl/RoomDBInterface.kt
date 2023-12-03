@@ -33,10 +33,16 @@ interface RoomDBInterface {
     suspend fun removeSong(songId: String): Flow<Int>
 
     suspend fun playlistWithName(name: String): Flow<List<SavedPlaylistEntity>>
+
     suspend fun allPlaylists(limit: Int): Flow<List<SavedPlaylistEntity>>
+
     suspend fun playlistSongInfo(songId: String): Flow<Flow<PlaylistSongsEntity?>>
+
     suspend fun songInfo(songId: String): Flow<PlaylistSongsEntity?>
+
     suspend fun rmSongs(songId: String): Flow<Int>
+
     suspend fun insert(v: PlaylistSongsEntity): Flow<Unit>
+
     suspend fun nonDownloadedSongs(): Flow<List<OfflineDownloadedEntity>>
 }

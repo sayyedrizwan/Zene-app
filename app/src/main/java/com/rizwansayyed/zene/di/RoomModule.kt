@@ -32,17 +32,9 @@ object RoomModule {
     @Singleton
     fun recentPlayedDao(
         @ApplicationContext context: Context
-    ): RecentPlayedDao = Room.databaseBuilder(context, RecentPlayerDB::class.java, RECENT_PLAYED_DB)
-        .addMigrations(MIGRATION_2_3_RECENT_PLAYED).build().dao()
-
-    private val MIGRATION_2_3_RECENT_PLAYED = object : Migration(2, 3) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            try {
-                db.execSQL("ALTER TABLE $RECENT_PLAYED_DB RENAME COLUMN img TO thumbnail")
-            } catch (e: Exception) {
-                e.message
-            }
-        }
+    ): RecentPlayedDao = synchronized(Unit) {
+        Room.databaseBuilder(context, RecentPlayerDB::class.java, RECENT_PLAYED_DB)
+            .fallbackToDestructiveMigration().build().dao()
     }
 
 

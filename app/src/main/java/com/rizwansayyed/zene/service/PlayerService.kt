@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSe
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.service.implementation.recentplay.RecentPlayingSongInterface
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.notificationservice.PlayerServiceNotificationInterface
 import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceActionInterface
@@ -37,6 +38,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -57,6 +60,9 @@ class PlayerService : MediaSessionService() {
 
     @Inject
     lateinit var player: ExoPlayer
+
+    @Inject
+    lateinit var recentPlaying: RecentPlayingSongInterface
 
     @Inject
     lateinit var mediaSession: MediaSession
@@ -99,6 +105,9 @@ class PlayerService : MediaSessionService() {
                         PlayServiceListener.getInstance().isBuffering(false)
                     }
                 }
+
+                recentPlaying.updateRecentPlayingSongInfo().catch {  }.collect()
+                recentPlaying.updateLatestListenTiming().catch {  }.collect()
 
                 delay(1.seconds)
             }
