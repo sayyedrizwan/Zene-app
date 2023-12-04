@@ -2,6 +2,12 @@ package com.rizwansayyed.zene.presenter.ui.home.views
 
 import android.Manifest
 import android.content.Intent
+import android.content.Intent.ACTION_SEND
+import android.content.Intent.ACTION_SENDTO
+import android.content.Intent.EXTRA_EMAIL
+import android.content.Intent.EXTRA_SUBJECT
+import android.content.Intent.EXTRA_TEXT
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,6 +51,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ShareCompat
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.exoplayer.ExoPlayer
@@ -66,6 +75,7 @@ import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.db.datastore.SongsQualityInfo
 import com.rizwansayyed.zene.data.db.datastore.TIME_ALARM
+import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
@@ -73,6 +83,7 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
+import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsExploreItems
@@ -80,12 +91,15 @@ import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItems
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsCard
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsText
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsLayout
+import com.rizwansayyed.zene.presenter.util.UiUtils.formatSingleTimeToView
 import com.rizwansayyed.zene.presenter.util.UiUtils.otherPermissionIntent
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
+import com.rizwansayyed.zene.utils.Utils.OFFICIAL_EMAIL
 import com.rizwansayyed.zene.utils.Utils.cacheSize
 import com.rizwansayyed.zene.utils.Utils.isPermission
+import com.rizwansayyed.zene.utils.Utils.restartApp
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -96,8 +110,12 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+
 @Composable
 fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySong) {
+    val context = LocalContext.current.applicationContext
+    var cacheDialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -133,10 +151,22 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
         }
 
         SettingsItemsCard(R.string.clear_cache, cacheSize()) {
-
+            cacheDialog = true
         }
 
         SettingsItemsCard(R.string.feedback) {
+            val selectorIntent = Intent(ACTION_SENDTO)
+                .setData("mailto:$OFFICIAL_EMAIL".toUri())
+
+            val emailIntent = Intent(ACTION_SEND).apply {
+                putExtra(EXTRA_EMAIL, arrayOf(OFFICIAL_EMAIL))
+                putExtra(EXTRA_SUBJECT, "Zene Feedback")
+                putExtra(EXTRA_TEXT, "<<<<<< Please write feedback >>>>>>")
+                selector = selectorIntent
+            }
+            context.startActivity(Intent.createChooser(emailIntent, "Send feedback from").apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            })
         }
 
         SettingsItemsCard(R.string.privacy_policy) {
@@ -148,6 +178,18 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
 
         Spacer(Modifier.height(150.dp))
     }
+
+    if (cacheDialog)
+        ClearCacheDialog {
+            if (it) CoroutineScope(Dispatchers.IO).launch {
+                context.cacheDir.deleteRecursively()
+
+                delay(2.seconds)
+                restartApp()
+            }
+
+            cacheDialog = false
+        }
 }
 
 @Composable
@@ -342,7 +384,7 @@ fun PlaySongWhenAlarmSettings(alarmManagerToPlaySong: AlarmManagerToPlaySong) {
         SettingsItems(R.string.disable, v == TIME_ALARM) {
             alarmTimeSettings = flowOf(TIME_ALARM)
         }
-        SettingsItemsText(R.string.select_alarm_time, v) {
+        SettingsItemsText(R.string.select_alarm_time, formatSingleTimeToView(v)) {
             showDialog = true
         }
         SettingsItemsText(R.string.alarm_song, name) {
@@ -380,6 +422,41 @@ fun PlaySongWhenAlarmSettings(alarmManagerToPlaySong: AlarmManagerToPlaySong) {
                 alarmTimeSettings = flowOf(TIME_ALARM)
 
     }
+}
+
+
+@Composable
+fun ClearCacheDialog(run: (Boolean) -> Unit) {
+    AlertDialog(
+        title = {
+            TextRegular(stringResource(R.string.clear_cache))
+        },
+        text = {
+            TextThin(stringResource(R.string.clear_cache_sure))
+        },
+        onDismissRequest = {
+            run(false)
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    run(true)
+                }
+            ) {
+                TextSemiBold(stringResource(R.string.clear))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    run(false)
+                }
+            ) {
+                TextSemiBold(stringResource(R.string.cancel))
+            }
+        },
+        containerColor = MainColor
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

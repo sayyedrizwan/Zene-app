@@ -21,6 +21,9 @@ import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.utils.DateFormatter.DateStyle.SIMPLE_TIME
+import com.rizwansayyed.zene.utils.DateFormatter.DateStyle.SIMPLE_TIME_SINGLE
+import com.rizwansayyed.zene.utils.DateFormatter.toDate
 import com.rizwansayyed.zene.utils.NotificationViewManager
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.ALARM_CHANNEL_ID
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.ALARM_DEFAULT_CHANNEL
@@ -87,10 +90,15 @@ class AlarmReceiverSong : BroadcastReceiver() {
     @Inject
     lateinit var youtubeAPIImplInterface: YoutubeAPIImplInterface
 
-    val audioManager by lazy { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+    private val audioManager by lazy { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         CoroutineScope(Dispatchers.IO).launch {
+            if (alarmTimeSettings.first().trim() != toDate(SIMPLE_TIME_SINGLE)) {
+                if (isActive) cancel()
+                return@launch
+            }
+
             if (alarmSongData.first()?.pId != null) {
                 val songDetails =
                     youtubeAPIImplInterface.songDetail(alarmSongData.first()!!.pId!!).first()
@@ -144,6 +152,8 @@ class AlarmReceiverSong : BroadcastReceiver() {
                         .body(playingAlarm).generate()
                 }
             }
+
+            delay(1.seconds)
 
             audioManager.setStreamVolume(
                 AudioManager.STREAM_MUSIC,

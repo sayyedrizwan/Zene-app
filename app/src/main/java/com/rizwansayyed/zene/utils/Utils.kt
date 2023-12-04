@@ -1,8 +1,9 @@
 package com.rizwansayyed.zene.utils
 
-import android.Manifest
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
@@ -23,6 +24,7 @@ import androidx.core.graphics.drawable.toBitmapOrNull
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +44,8 @@ import kotlin.system.exitProcess
 
 
 object Utils {
+
+    const val OFFICIAL_EMAIL = "contactcreator@protonmail.com"
 
     val tempEmptyList =
         listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")
@@ -256,6 +260,18 @@ object Utils {
     fun isPermission(permission: String): Boolean {
         return ContextCompat
             .checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun restartApp() {
+        val intent = Intent(context, MainActivity::class.java)
+        val mPendingIntent = PendingIntent.getActivity(
+            context, 1234, intent,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val mgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent)
+
+        exitProcess(0)
     }
 
 }

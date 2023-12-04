@@ -2,13 +2,9 @@ package com.rizwansayyed.zene.presenter.util
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BlurMaskFilter
-import android.graphics.Paint
 import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.compose.ui.graphics.Canvas
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.CoroutineScope
@@ -101,29 +97,20 @@ object UiUtils {
         }
     }
 
-    fun generateCanvas(screenWidth: Int, screenHeight: Int, middleImage: Bitmap): Bitmap {
-        // Create a blank bitmap with the screen size
-        val canvasBitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888)
-        val canvas = android.graphics.Canvas(canvasBitmap)
+    fun formatSingleTimeToView(time: String): String {
+        var timeMain = ""
+        timeMain += if (time.substringBefore(":").trim().length == 1)
+            "0${time.substringBefore(":").trim()}"
+        else {
+            time.substringBefore(":").trim()
+        }
+        timeMain += " : "
+        timeMain += if (time.substringAfter(":").trim().length == 1)
+            "0${time.substringAfter(":").trim()}"
+        else {
+            time.substringAfter(":").trim()
+        }
 
-        // Draw a blurred background on the canvas
-        drawBlurredBackground(canvas, screenWidth, screenHeight)
-
-        // Calculate the position for the middle image
-        val middleImageX = (screenWidth - middleImage.width) / 2
-        val middleImageY = (screenHeight - middleImage.height) / 2
-
-        // Draw the middle image on the canvas
-        canvas.drawBitmap(middleImage, middleImageX.toFloat(), middleImageY.toFloat(), Paint())
-        return canvasBitmap
-    }
-
-    private fun drawBlurredBackground(canvas: android.graphics.Canvas, width: Int, height: Int) {
-        // Create a paint object with a blur mask filter
-        val paint = Paint()
-        paint.maskFilter = BlurMaskFilter(25f, BlurMaskFilter.Blur.NORMAL)
-
-        // Draw a rectangle with a blurred background
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        return timeMain
     }
 }

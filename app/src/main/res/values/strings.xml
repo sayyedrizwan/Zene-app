@@ -152,6 +152,7 @@
     <string name="only_connect_to_wifi">Only when connected to WiFi</string>
     <string name="none">None</string>
     <string name="clear_cache">Clear Cache</string>
+    <string name="clear">Clear</string>
     <string name="feedback">Feedback</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="lyrics">Lyrics</string>
@@ -168,4 +169,5 @@
     <string name="are_you_sure_want_to_download_from_mobile_data">Are you sure want to download song offline via mobile data?</string>
     <string name="download_from_mobile_data_desc">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
     <string name="enable_">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
+    <string name="clear_cache_sure">Are you sure want to clear the cache? Not any personal saved data will be eared.</string>
 </resources>
