@@ -37,7 +37,9 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
@@ -99,7 +101,7 @@ fun MusicActionButtons(p: MusicPlayerData?) {
         }
 
         MusicActionButton(
-            R.drawable.ic_autoplay, if (autoplay)  R.string.autoplay_is_on else R.string.autoplay_off
+            R.drawable.ic_autoplay, if (autoplay) R.string.autoplay_is_on else R.string.autoplay_off
         ) {
             autoplaySettings = flowOf(!autoplay)
         }
@@ -123,18 +125,23 @@ fun OfflineSongDownloadButton(
 ) {
     val downloading = stringResource(R.string.downloading__)
     var rmDialog by remember { mutableStateOf(false) }
+    var forceDownloadDialog by remember { mutableStateOf(false) }
 
 
     fun startDownloading() {
         p?.v?.let {
             playerViewModel.addOfflineSong(it)
-            startOfflineDownloadWorkManager(it.songID)
+            startOfflineDownloadWorkManager(it.songID, forceDownloadDialog)
         }
     }
 
     if (offlineDownload == null)
         MusicActionButton(R.drawable.ic_download, R.string.offline_download) {
             startDownloading()
+        }
+    else if (offlineDownload.progress == -1)
+        MusicActionButton(R.drawable.ic_download, R.string.waiting_for_wifi) {
+            forceDownloadDialog = true
         }
     else if (offlineDownload.progress < 100)
         MusicActionButton(R.drawable.ic_download, "$downloading (${offlineDownload.progress}%)") {
@@ -152,8 +159,51 @@ fun OfflineSongDownloadButton(
         rmDialog = false
     })
 
+    if (forceDownloadDialog) ForceOfflineDialog({
+        startDownloading()
+        forceDownloadDialog = false
+    }, {
+        forceDownloadDialog = false
+    })
+
 }
 
+
+@Composable
+fun ForceOfflineDialog(
+    onConfirmation: () -> Unit, onDismissRequest: () -> Unit
+) {
+    AlertDialog(
+        title = {
+            TextRegular(stringResource(R.string.are_you_sure_want_to_download_from_mobile_data))
+        },
+        text = {
+            TextThin(stringResource(R.string.download_from_mobile_data_desc))
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                TextSemiBold(stringResource(R.string.download))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                TextSemiBold(stringResource(R.string.cancel))
+            }
+        },
+        containerColor = MainColor
+    )
+}
 
 @Composable
 fun DeleteOfflineDialog(

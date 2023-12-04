@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
@@ -44,6 +45,10 @@ object Utils {
     val tempEmptyList =
         listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")
 
+    object ExtraUtils {
+        const val DOWNLOAD_SONG_WORKER = "download_song_worker"
+    }
+
     object AppUrl {
         private const val APP_URL = "https://zene.vercel.app"
 
@@ -57,6 +62,15 @@ object Utils {
     fun isInternetConnected(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
+    }
+
+    fun isConnectedToWifi(): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+        return networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
     }
 
     fun daysOldTimestamp(days: Int = -2): Long {

@@ -106,8 +106,8 @@ class PlayerService : MediaSessionService() {
                     }
                 }
 
-                recentPlaying.updateRecentPlayingSongInfo().catch {  }.collect()
-                recentPlaying.updateLatestListenTiming().catch {  }.collect()
+                recentPlaying.updateRecentPlayingSongInfo().catch { }.collect()
+                recentPlaying.updateLatestListenTiming().catch { }.collect()
 
                 delay(1.seconds)
             }
@@ -155,8 +155,10 @@ class PlayerService : MediaSessionService() {
                 .isBuffering(playbackState == Player.STATE_BUFFERING)
 
             when (playbackState) {
-                Player.STATE_READY -> {
+                Player.STATE_READY -> CoroutineScope(Dispatchers.IO).launch {
                     retry = 0
+                    playerServiceAction.updatePlaybackSpeed()
+                    if (isActive) cancel()
                 }
 
                 Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {

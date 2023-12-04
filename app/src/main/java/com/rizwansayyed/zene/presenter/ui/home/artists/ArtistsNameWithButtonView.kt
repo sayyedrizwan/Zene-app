@@ -78,16 +78,17 @@ fun ArtistsNameWithDescription() {
             TextThinArtistsDesc(v.item.trim(), showFullDesc)
             Spacer(Modifier.height(5.dp))
 
-            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                if (showFullDesc) Box(Modifier.rotate(180f)) {
-                    SmallIcons(R.drawable.ic_arrow_down_sharp) {
+            if (v.item.trim().length > 10)
+                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                    if (showFullDesc) Box(Modifier.rotate(180f)) {
+                        SmallIcons(R.drawable.ic_arrow_down_sharp) {
+                            showFullDesc = !showFullDesc
+                        }
+                    }
+                    else SmallIcons(R.drawable.ic_arrow_down_sharp) {
                         showFullDesc = !showFullDesc
                     }
                 }
-                else SmallIcons(R.drawable.ic_arrow_down_sharp) {
-                    showFullDesc = !showFullDesc
-                }
-            }
         }
     }
 }

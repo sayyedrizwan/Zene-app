@@ -14,6 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
@@ -21,14 +23,11 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autopl
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.doOfflineDownloadWifiSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.offlineSongsSettings
-import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.pauseMusicOnHeadphoneDetachSettings
-import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.seekButtonSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.setWallpaperSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.showPlayingSongOnLockScreenSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songQualitySettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songSpeedSettings
 import com.rizwansayyed.zene.data.db.datastore.OfflineSongsInfo
-import com.rizwansayyed.zene.data.db.datastore.SeekButton
 import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.db.datastore.SongsQualityInfo
@@ -40,6 +39,7 @@ import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsCard
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsLayout
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
 import com.rizwansayyed.zene.utils.Utils.cacheSize
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -61,15 +61,13 @@ fun SettingsView(player: ExoPlayer) {
         OfflineModesSettings()
         SongQualitySettings()
 
-        SeekButtonSettings()
-        SongSpeedSettings()
+        SongSpeedSettings(player)
         LoopSettings()
         AutoPlaySettings()
         OfflineDownloadSettings()
         SongOnLockScreenSettings()
         SetWallpaperSettings()
         PlaySongWhenAlarmSettings()
-        PauseMusicOnHeadphoneDetachSettings(player)
 
         Spacer(Modifier.height(20.dp))
 
@@ -114,51 +112,40 @@ fun OfflineModesSettings() {
 }
 
 @Composable
-fun SeekButtonSettings() {
-    val v by seekButtonSettings.collectAsState(initial = SeekButton.FIVE.v)
-    SettingsLayout(R.string.seek_button_timer) {
-        SettingsItems(R.string.hide_seek_button, v == SeekButton.HIDE.v) {
-            seekButtonSettings = flowOf(SeekButton.HIDE.v)
-        }
-        SettingsItems(R.string.five_s_seek_button, v == SeekButton.FIVE.v) {
-            seekButtonSettings = flowOf(SeekButton.FIVE.v)
-        }
-        SettingsItems(R.string.ten_s_seek_button, v == SeekButton.TEN.v) {
-            seekButtonSettings = flowOf(SeekButton.TEN.v)
-        }
-        SettingsItems(R.string.ten_fifteen_seek_button, v == SeekButton.FIFTEEN.v) {
-            seekButtonSettings = flowOf(SeekButton.FIFTEEN.v)
-        }
-    }
-}
-
-@Composable
-fun SongSpeedSettings() {
+fun SongSpeedSettings(player: ExoPlayer) {
     val v by songSpeedSettings.collectAsState(initial = SongSpeed.ONE.v)
     SettingsLayout(R.string.song_playback_speed) {
         SettingsItems(R.string.zero_two_five, v == SongSpeed.ZERO_TWO_FIVE.v) {
             songSpeedSettings = flowOf(SongSpeed.ZERO_TWO_FIVE.v)
+            player.playbackParameters = PlaybackParameters(0.25f)
         }
         SettingsItems(R.string.zero_five, v == SongSpeed.ZERO_FIVE.v) {
             songSpeedSettings = flowOf(SongSpeed.ZERO_FIVE.v)
+            player.playbackParameters = PlaybackParameters(0.5f)
         }
         SettingsItems(R.string.zero_seven_five, v == SongSpeed.ZERO_SEVEN_FIVE.v) {
             songSpeedSettings = flowOf(SongSpeed.ZERO_SEVEN_FIVE.v)
+            player.playbackParameters = PlaybackParameters(0.75f)
         }
         SettingsItems(R.string.one_zero, v == SongSpeed.ONE.v) {
             songSpeedSettings = flowOf(SongSpeed.ONE.v)
+            player.playbackParameters = PlaybackParameters(1f)
         }
         SettingsItems(R.string.one_two_five, v == SongSpeed.ONE_TWO_FIVE.v) {
             songSpeedSettings = flowOf(SongSpeed.ONE_TWO_FIVE.v)
+            player.playbackParameters = PlaybackParameters(1.25f)
         }
         SettingsItems(R.string.one_five, v == SongSpeed.ONE_FIVE.v) {
             songSpeedSettings = flowOf(SongSpeed.ONE_FIVE.v)
+            player.playbackParameters = PlaybackParameters(1.5f)
         }
         SettingsItems(R.string.one_seven_five, v == SongSpeed.ONE_SEVEN_FIVE.v) {
             songSpeedSettings = flowOf(SongSpeed.ONE_SEVEN_FIVE.v)
+            player.playbackParameters = PlaybackParameters(1.75f)
         }
         SettingsItems(R.string.two_zero, v == SongSpeed.TWO.v) {
             songSpeedSettings = flowOf(SongSpeed.TWO.v)
+            player.playbackParameters = PlaybackParameters(2.0f)
         }
     }
 }
@@ -209,13 +196,16 @@ fun AutoPlaySettings() {
 
 @Composable
 fun OfflineDownloadSettings() {
+    val roomDb: RoomDbViewModel = hiltViewModel()
     val v by doOfflineDownloadWifiSettings.collectAsState(initial = false)
     SettingsLayout(R.string.offline_download) {
         SettingsItems(R.string.wifi_mobile_data, !v) {
             doOfflineDownloadWifiSettings = flowOf(false)
+            roomDb.downloadIfNotDownloaded()
         }
         SettingsItems(R.string.only_connect_to_wifi, v) {
             doOfflineDownloadWifiSettings = flowOf(true)
+            roomDb.downloadIfNotDownloaded()
         }
     }
 }
@@ -265,20 +255,3 @@ fun PlaySongWhenAlarmSettings() {
         }
     }
 }
-
-@Composable
-fun PauseMusicOnHeadphoneDetachSettings(player: ExoPlayer) {
-    val v by pauseMusicOnHeadphoneDetachSettings.collectAsState(initial = false)
-    SettingsLayout(R.string.pause_on_headphone_detach) {
-        SettingsItems(R.string.enable, v) {
-            player.setHandleAudioBecomingNoisy(true)
-            pauseMusicOnHeadphoneDetachSettings = flowOf(true)
-        }
-        SettingsItems(R.string.disable, !v) {
-            player.setHandleAudioBecomingNoisy(false)
-            pauseMusicOnHeadphoneDetachSettings = flowOf(false)
-        }
-    }
-}
-
-//create a video that superman is drinking coffie in a cafe, then he comes out any fly in the sky and 3 seconds his phone ring and he get an alert 'Dolphin tracker: You forgot you wallet' on his phone. The he fly back in that cafe and pick up his wallet.

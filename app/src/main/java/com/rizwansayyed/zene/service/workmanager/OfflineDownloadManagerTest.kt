@@ -18,7 +18,6 @@ import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDown
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.downloadAFileFromURL
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
-import com.rizwansayyed.zene.utils.Utils.ExtraUtils.DOWNLOAD_SONG_WORKER
 import com.rizwansayyed.zene.utils.Utils.copyFileAndDelete
 import com.rizwansayyed.zene.utils.Utils.isConnectedToWifi
 import dagger.assisted.Assisted
@@ -26,17 +25,15 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.time.Duration.Companion.seconds
 
 @HiltWorker
-class OfflineDownloadManager @AssistedInject constructor(
+class OfflineDownloadManagerTest @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val songDownloader: SongDownloaderInterface,
@@ -45,29 +42,32 @@ class OfflineDownloadManager @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
+            "songid".toast()
             val songId =
                 inputData.getString(Intent.EXTRA_TEXT) ?: return@withContext Result.success()
-            val force = inputData.getBoolean(DOWNLOAD_SONG_WORKER, false)
-
+            val forceDownload = inputData.getBoolean(Intent.EXTRA_TEXT, false)
             val file = File(songDownloadPathTemp, "$songId.mp3")
             val info = roomDb.offlineSongInfo(songId).first()
 
-            if (!isConnectedToWifi() && doOfflineDownloadWifiSettings.first() && !force) {
-                info?.progress = -1
-                info?.let { r -> roomDb.insert(r).collect() }
-                return@withContext Result.failure()
-            }
+
+//            if (!isConnectedToWifi() && doOfflineDownloadWifiSettings.first() && !forceDownload) {
+//                info?.progress = -1
+//                info?.let { r -> roomDb.insert(r).collect() }
+//                return@withContext Result.failure()
+//            }
 
             try {
                 val hdSong =
                     songDownloader.download(songId).first() ?: return@withContext Result.failure()
                 val download = downloadAFileFromURL(hdSong, file) {
+                    "progress".toast()
                     info?.progress = it
                     CoroutineScope(Dispatchers.IO).launch {
                         info?.let { r -> roomDb.insert(r).collect() }
                         if (isActive) cancel()
                     }
                 }
+
                 CoroutineScope(Dispatchers.IO).launch {
                     val defaultFolder = File(songDownloadPath, "$songId.mp3")
                     if (download == true) copyFileAndDelete(file, defaultFolder)
@@ -95,27 +95,23 @@ class OfflineDownloadManager @AssistedInject constructor(
             mkdirs()
         }
 
-        fun startOfflineDownloadWorkManager(id: String?, force: Boolean = false) =
-            CoroutineScope(Dispatchers.IO).launch {
-                if (force) {
-                    WorkManager.getInstance(context).cancelAllWorkByTag("${id}_download")
-                    delay(2.seconds)
-                }
-                val builder = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+        fun startOfflineDownloadWorkManagersss(id: String?, force: Boolean = false) {
+            val builder = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
 
-                val data = Data.Builder().apply {
-                    putString(Intent.EXTRA_TEXT, id)
-                    putBoolean(DOWNLOAD_SONG_WORKER, force)
-                }
 
-                val uploadWorkRequest =
-                    OneTimeWorkRequestBuilder<OfflineDownloadManager>().setInputData(data.build())
-                        .addTag("${id}_download")
-                        .setInputData(data.build()).setConstraints(builder.build()).build()
-
-                WorkManager.getInstance(context)
-                    .enqueueUniqueWork("${id}_download", ExistingWorkPolicy.KEEP, uploadWorkRequest)
+            val data = Data.Builder().apply {
+                putString(Intent.EXTRA_TEXT, id)
+                putBoolean(Intent.EXTRA_TEXT, force)
             }
+
+
+            val uploadWorkRequest =
+                OneTimeWorkRequestBuilder<OfflineDownloadManagerTest>().setInputData(data.build())
+                    .setInputData(data.build()).setConstraints(builder.build()).build()
+
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork("${id}_download", ExistingWorkPolicy.KEEP, uploadWorkRequest)
+        }
     }
 
 }

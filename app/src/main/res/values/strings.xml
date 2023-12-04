@@ -76,7 +76,9 @@
     <string name="play_next">Play Next</string>
     <string name="add_in_queue">Add in queue</string>
     <string name="offline_download">Offline download</string>
+    <string name="waiting_for_wifi">Waiting for Wifi</string>
     <string name="downloading__">Downloading…</string>
+    <string name="download">Download</string>
     <string name="offline_downloaded">Offline Downloaded</string>
     <string name="show_playing_song_on_lock_screen">Show App Playing Song on Lockscreen</string>
     <string name="set_wallpaper_on_song_playing">Set Wallpaper on Song Playing</string>
@@ -150,4 +152,6 @@
     <string name="autoplay_is_on">Autoplay is On</string>
     <string name="no_video_found_try_again">No video found. Please try again later.</string>
     <string name="are_you_sure_want_to_rm_downloaded_song">Are you sure want to remove the downloaded song?</string>
+    <string name="are_you_sure_want_to_download_from_mobile_data">Are you sure want to download song offline via mobile data?</string>
+    <string name="download_from_mobile_data_desc">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
 </resources>

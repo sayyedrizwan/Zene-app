@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -218,7 +219,7 @@ class RoomDbViewModel @Inject constructor(
         }
     }
 
-    private fun downloadIfNotDownloaded() = viewModelScope.launch(Dispatchers.IO) {
+    fun downloadIfNotDownloaded() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.nonDownloadedSongs().catch { }.collectLatest {
             it.forEach { song ->
                 startOfflineDownloadWorkManager(song.songId)

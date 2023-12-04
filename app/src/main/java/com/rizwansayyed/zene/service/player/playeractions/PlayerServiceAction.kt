@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service.player.playeractions
 
 import android.util.Log
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -9,6 +10,8 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songSpeedSettings
+import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
@@ -213,6 +216,24 @@ class PlayerServiceAction @Inject constructor(
     override suspend fun seekTo(ts: Long) {
         withContext(Dispatchers.Main) {
             player.seekTo(ts)
+        }
+    }
+
+    override suspend fun updatePlaybackSpeed() {
+        val songSpeedSettings = withContext(Dispatchers.IO) { songSpeedSettings.first() }
+        withContext(Dispatchers.Main) {
+            val speed = when (songSpeedSettings) {
+                SongSpeed.ZERO_TWO_FIVE.v -> 0.25f
+                SongSpeed.ZERO_FIVE.v -> 0.5f
+                SongSpeed.ZERO_SEVEN_FIVE.v -> 0.75f
+                SongSpeed.ONE_TWO_FIVE.v -> 1.25f
+                SongSpeed.ONE_FIVE.v -> 1.5f
+                SongSpeed.ONE_SEVEN_FIVE.v -> 1.75f
+                SongSpeed.TWO.v -> 2.0f
+                else -> 1.0f
+            }
+
+            player.playbackParameters = PlaybackParameters(speed)
         }
     }
 

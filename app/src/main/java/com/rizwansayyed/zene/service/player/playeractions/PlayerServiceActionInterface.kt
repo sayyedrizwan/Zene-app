@@ -16,4 +16,6 @@ interface PlayerServiceActionInterface {
     suspend fun startPlaying(
         music: MusicData?, list: Array<MusicData?>?, position: Int, doPlay: Boolean
     )
+
+    suspend fun updatePlaybackSpeed()
 }

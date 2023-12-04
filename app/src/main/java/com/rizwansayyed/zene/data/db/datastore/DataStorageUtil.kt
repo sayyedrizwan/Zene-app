@@ -33,10 +33,8 @@ object DataStorageUtil {
         val DO_OFFLINE_DOWNLOAD_WIFI_SETTINGS = booleanPreferencesKey("do_offline_download_wifi_settings")
         val SHOW_PLAYING_SONG_ON_LOCK_SCREEN_SETTINGS = booleanPreferencesKey("show_pLaying_song_on_lock_screen_settings")
         val SET_WALLPAPER_SETTINGS = intPreferencesKey("set_wallpaper_settings")
-        val PAUSE_MUSIC_ON_HEADPHONE_DETACH_SETTINGS = booleanPreferencesKey("pause_music_on_headphone_detach_settings")
     }
 }
-//630755
 
 enum class OfflineSongsInfo(val v: Int) {
     LOCAL_SONGS(0), SUGGESTED_SONGS(1), OFFLINE_DOWNLOAD(2)
@@ -50,11 +48,7 @@ enum class SongsQualityInfo(val v: Int) {
     HIGH_QUALITY(0), LOW_QUALITY(1), HIGH_QUALITY_WIFI(2)
 }
 
-enum class SeekButton(val v: Int) {
-    HIDE(0), FIVE(1), TEN(2), FIFTEEN(3)
-}
-
 enum class SongSpeed(val v: Int) {
-    ZERO_TWO_FIVE(0), ZERO_FIVE(0), ZERO_SEVEN_FIVE(1), ONE(2),
-    ONE_TWO_FIVE(3), ONE_FIVE(3), ONE_SEVEN_FIVE(3), TWO(3)
+    ZERO_TWO_FIVE(0), ZERO_FIVE(1), ZERO_SEVEN_FIVE(2), ONE(3),
+    ONE_TWO_FIVE(4), ONE_FIVE(5), ONE_SEVEN_FIVE(6), TWO(7)
 }

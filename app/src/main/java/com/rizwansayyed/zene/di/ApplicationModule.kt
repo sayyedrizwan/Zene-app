@@ -6,10 +6,10 @@ import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
-import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.pauseMusicOnHeadphoneDetachSettings
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -76,8 +77,6 @@ class ApplicationModule : Application(), Configuration.Provider {
                 songID = ""
             }
             musicPlayerData = flowOf(playerData)
-//
-//            player.setHandleAudioBecomingNoisy(pauseMusicOnHeadphoneDetachSettings.first())
 
             delay(3.seconds)
 
@@ -96,7 +95,7 @@ class ApplicationModule : Application(), Configuration.Provider {
 //        FirebaseApp.initializeApp(this)
     }
 
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder().setWorkerFactory(workerFactory).build()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
 }

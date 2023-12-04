@@ -3,8 +3,13 @@ package com.rizwansayyed.zene.presenter
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.LinkProperties
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,10 +35,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.work.WorkManager
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.HomeNavigation.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
@@ -48,10 +55,13 @@ import com.rizwansayyed.zene.presenter.ui.home.views.SettingsView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.ExtraUtils.DOWNLOAD_SONG_WORKER
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -59,6 +69,7 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -76,6 +87,7 @@ import kotlin.time.Duration.Companion.seconds
 // play all in albums list
 // pin playlists
 // add insta shop items on artists page.
+// make smooth music player view opener
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -85,6 +97,8 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var player: ExoPlayer
+
+    val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java) }
 
     private val navViewModel: HomeNavViewModel by viewModels()
     private val roomViewModel: RoomDbViewModel by viewModels()
@@ -192,11 +206,17 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        navViewModel.checkAndSetOnlineStatus()
-        navViewModel.resetConfig()
-
         doOpenMusicPlayer(intent)
-        apis()
+
+        connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
+    }
+
+    private val networkChangeListener = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            navViewModel.checkAndSetOnlineStatus()
+            navViewModel.resetConfig()
+            apis()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -214,6 +234,11 @@ class MainActivity : ComponentActivity() {
             delay(1.seconds)
             if (timestampDifference(lastAPISyncTime.first()) >= 20) apis()
         }
+    }
+
+    override fun onDestroy() {
+        connectivityManager.unregisterNetworkCallback(networkChangeListener)
+        super.onDestroy()
     }
 
     private fun apis() {
