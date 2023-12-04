@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
 object DataStorageManager {
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATA_STORE_DB)
     private const val ARRAY_LIST = "[]"
-    private const val JSON_LIST = "{}"
+    const val JSON_LIST = "{}"
 
     var userIpDetails: Flow<IpJsonResponse?>
         get() = context.dataStore.data.map {

@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.service.player.playeractions
 
-import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
@@ -8,25 +7,22 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
-import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager
-import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.setWallpaperSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songSpeedSettings
 import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
+import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.toMusicData
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.presenter.util.UtilsWallpaperImage
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -36,12 +32,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
-import kotlin.math.log
 import kotlin.time.Duration.Companion.seconds
+
 
 class PlayerServiceAction @Inject constructor(
     private val player: ExoPlayer,
-    private val songDownloader: SongDownloaderInterface
+    private val songDownloader: SongDownloaderInterface,
+    private val lastFM: LastFMImplInterface
 ) : PlayerServiceActionInterface {
 
     override suspend fun addMultipleItemsAndPlay(list: Array<MusicData?>?, position: Int) {
@@ -246,11 +243,16 @@ class PlayerServiceAction @Inject constructor(
     override suspend fun updateSongsWallpaper() = CoroutineScope(Dispatchers.IO).launch {
         delay(1.seconds)
         when (setWallpaperSettings.first()) {
-            SetWallpaperInfo.SONG_THUMBNAIL.v -> {
-                val song = musicPlayerData.first()?.v?.thumbnail
+            SetWallpaperInfo.SONG_THUMBNAIL.v ->
+                UtilsWallpaperImage(musicPlayerData.first()?.v?.thumbnail).startSettingWallpaper()
+
+            SetWallpaperInfo.ARTIST_IMAGE.v -> {
+                val userName =
+                    lastFM.artistsUsername(musicPlayerData.first()?.v?.artists ?: "").first()
+                val artistImage = lastFM.artistsImages(userName, 20).first().random()
+                UtilsWallpaperImage(artistImage).startSettingWallpaper()
             }
 
-            SetWallpaperInfo.ARTIST_IMAGE.v -> {}
         }
 
         if (isActive) cancel()

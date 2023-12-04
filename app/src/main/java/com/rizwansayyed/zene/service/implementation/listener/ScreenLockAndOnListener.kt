@@ -15,6 +15,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class ScreenLockAndOnListener(player: ExoPlayer) {
@@ -22,8 +23,11 @@ class ScreenLockAndOnListener(player: ExoPlayer) {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent ?: return
+
             if (intent.action.equals(Intent.ACTION_SCREEN_OFF)) CoroutineScope(Dispatchers.IO).launch {
-                if (showPlayingSongOnLockScreenSettings.first() && player.isPlaying)
+                val isPlaying = withContext(Dispatchers.Main) { player.isPlaying }
+
+                if (showPlayingSongOnLockScreenSettings.first() && isPlaying)
                     Intent(context, LockScreenActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         context?.startActivity(this)

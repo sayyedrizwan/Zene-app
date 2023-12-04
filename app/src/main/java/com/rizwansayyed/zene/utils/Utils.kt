@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.utils
 
+import android.Manifest
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
@@ -7,6 +8,7 @@ import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -16,13 +18,12 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmapOrNull
-import androidx.core.net.toUri
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.service.PlayerService
-import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -181,12 +182,6 @@ object Utils {
             vibrator.vibrate(100)
     }
 
-    fun homeSetWallpaper(url: String) {
-        downloadImageAsBitmap(url.toUri()) {
-
-        }
-    }
-
     fun formatNumberToFollowers(number: Int): String {
         val suffixes = listOf("K", "M", "B", "T", "P", "E")
         var num = number
@@ -256,6 +251,11 @@ object Utils {
         return DecimalFormat("#,##0.#").format(
             size / 1024.0.pow(digitGroups.toDouble())
         ) + " " + units[digitGroups]
+    }
+
+    fun isPermission(permission: String): Boolean {
+        return ContextCompat
+            .checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     }
 
 }

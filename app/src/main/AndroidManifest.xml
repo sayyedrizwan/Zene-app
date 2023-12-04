@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-permission android:name="android.media.action.DISPLAY_AUDIO_EFFECT_CONTROL_PANEL" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
         android:name=".di.ApplicationModule"
@@ -67,6 +68,8 @@
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".service.alarm.AlarmReceiverSong" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

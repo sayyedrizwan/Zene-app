@@ -2,16 +2,20 @@ package com.rizwansayyed.zene.data.db.datastore
 
 import androidx.datastore.preferences.core.edit
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.dataStore
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.ALARM_SONG_SETTINGS
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.ALARM_TIME_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.AUTOPLAY_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.DO_OFFLINE_DOWNLOAD_WIFI_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.LOOP_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.OFFLINE_SONGS_SETTINGS
-import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SEEK_BUTTON_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SET_WALLPAPER_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SHOW_PLAYING_SONG_ON_LOCK_SCREEN_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SONGS_QUALITY_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SONG_SPEED_SETTINGS
+import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicPlayerData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -71,6 +75,22 @@ object DataStorageSettingsManager {
         get() = context.dataStore.data.map { it[SET_WALLPAPER_SETTINGS] ?: SetWallpaperInfo.NONE.v }
         set(v) = runBlocking {
             context.dataStore.edit { it[SET_WALLPAPER_SETTINGS] = v.first() }
+        }
+
+    var alarmTimeSettings: Flow<String>
+        get() = context.dataStore.data.map { it[ALARM_TIME_SETTINGS] ?: TIME_ALARM }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[ALARM_TIME_SETTINGS] = v.first() }
+        }
+
+    var alarmSongData: Flow<MusicData?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(MusicData::class.java)
+                .fromJson(it[ALARM_SONG_SETTINGS] ?: DataStorageManager.JSON_LIST)
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(MusicData::class.java).toJson(v.first())
+            context.dataStore.edit { it[ALARM_SONG_SETTINGS] = moshi }
         }
 
 }

@@ -24,6 +24,10 @@ class NotificationViewManager(private val context: Context) {
         const val CRASH_CHANNEL = "crash_channel_notification"
 
 
+        const val ALARM_CHANNEL_ID = "alarm_channel_notification_id"
+        const val ALARM_DEFAULT_CHANNEL = "alarm_channel_notification"
+
+
         const val flags = PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
     }
 

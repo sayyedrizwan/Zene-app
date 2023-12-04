@@ -2,16 +2,11 @@ package com.rizwansayyed.zene.presenter
 
 import android.Manifest
 import android.app.Activity
-import android.app.AppOpsManager
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.LinkProperties
 import android.net.Network
-import android.net.NetworkCapabilities
-import android.os.Binder
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -37,12 +32,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.work.WorkManager
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
-import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.HomeNavigation.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
@@ -57,13 +50,11 @@ import com.rizwansayyed.zene.presenter.ui.home.views.SettingsView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
-import com.rizwansayyed.zene.utils.Utils
-import com.rizwansayyed.zene.utils.Utils.ExtraUtils.DOWNLOAD_SONG_WORKER
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -71,7 +62,6 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -99,6 +89,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var player: ExoPlayer
+
+    @Inject
+    lateinit var alarmManagerToPlaySong: AlarmManagerToPlaySong
 
     private val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java) }
 
@@ -136,7 +129,7 @@ class MainActivity : ComponentActivity() {
                         FEED -> TextBold(v = "feed")
                         SEARCH -> SearchView()
                         MY_MUSIC -> TextBold(v = "music")
-                        SETTINGS -> SettingsView(player)
+                        SETTINGS -> SettingsView(player, alarmManagerToPlaySong)
                     }
 
                     AnimatedVisibility(navViewModel.selectedArtists.isNotEmpty()) {
@@ -236,6 +229,11 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             delay(1.seconds)
             if (timestampDifference(lastAPISyncTime.first()) >= 20) apis()
+        }
+
+        lifecycleScope.launch {
+            delay(2.seconds)
+            alarmManagerToPlaySong.startAlarmIfThere()
         }
     }
 

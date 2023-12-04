@@ -22,6 +22,8 @@
     <string name="similar_artists">Similar Artists</string>
     <string name="artists">Artists</string>
     <string name="artist_image">Artist Image</string>
+    <string name="select_alarm_time">Select Alarm Time</string>
+    <string name="alarm_song">Alarm Song</string>
     <string name="song_thumbnail">Song Thumbnail</string>
     <string name="albums">Albums</string>
     <string name="songs">Songs</string>
@@ -64,6 +66,7 @@
     <string name="no_radio_in_c">No radio found in your country</string>
     <string name="no_radio_found_search_else">No radio found, Try to search something else</string>
     <string name="no_search_history">No search history, the history of requests will appear here</string>
+    <string name="no_song_found">No song found</string>
     <string name="error_searching_try_again">Error searching. Please try again</string>
     <string name="error_loading_data_try_again">Error loading data. Please try again.</string>
     <string name="add_to_playlist">Add to playlist</string>
@@ -88,6 +91,14 @@
     <string name="pause_on_headphone_detach">Pause on headphone detach</string>
     <string name="song_info">Song info</string>
     <string name="close">Close</string>
+    <string name="morning_song_alarm">Morning Song Alarm</string>
+    <string name="playing_as_morning_alarm_song">Playing %s as morning alarm song.</string>
+    <string name="no_song_found_to_play_as_morning_alarm">No song found to play as morning alarm song.</string>
+    <string name="remove_current_song">Remove current song</string>
+    <string name="confirm">Confirm</string>
+    <string name="search_the_song_you_want_to_play">Search the song you want to play</string>
+    <string name="song_is_already_set_as_alarm">Song \'%s\' is already set as alarm. Removing current song will play the most recent song you listened.</string>
+    <string name="no_alarm_is_set_alarm">No song is set as alarm. The most recent song you listened will be played.</string>
     <string name="mark_as_favourite">Mark as favourite</string>
     <string name="rm_as_favourite">Remove as favourite</string>
     <string name="cancel">Cancel</string>

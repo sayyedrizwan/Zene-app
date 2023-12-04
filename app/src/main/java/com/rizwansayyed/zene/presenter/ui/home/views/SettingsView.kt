@@ -1,24 +1,48 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
+import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +50,9 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.alarmSongData
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.alarmTimeSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.doOfflineDownloadWifiSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSettings
@@ -38,26 +65,39 @@ import com.rizwansayyed.zene.data.db.datastore.OfflineSongsInfo
 import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.db.datastore.SongsQualityInfo
+import com.rizwansayyed.zene.data.db.datastore.TIME_ALARM
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextBold
+import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
+import com.rizwansayyed.zene.presenter.ui.home.online.SongsExploreItems
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItems
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsCard
+import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsText
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsLayout
 import com.rizwansayyed.zene.presenter.util.UiUtils.otherPermissionIntent
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
 import com.rizwansayyed.zene.utils.Utils.cacheSize
+import com.rizwansayyed.zene.utils.Utils.isPermission
+import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun SettingsView(player: ExoPlayer) {
+fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySong) {
     Column(
         Modifier
             .fillMaxSize()
@@ -77,11 +117,14 @@ fun SettingsView(player: ExoPlayer) {
 
         SongSpeedSettings(player)
         LoopSettings()
+
         AutoPlaySettings()
         OfflineDownloadSettings()
+
         SongOnLockScreenSettings()
         SetWallpaperSettings()
-        PlaySongWhenAlarmSettings()
+
+        PlaySongWhenAlarmSettings(alarmManagerToPlaySong)
 
         Spacer(Modifier.height(20.dp))
 
@@ -280,17 +323,192 @@ fun SetWallpaperSettings() {
 }
 
 @Composable
-fun PlaySongWhenAlarmSettings() {
-    val v by setWallpaperSettings.collectAsState(initial = SetWallpaperInfo.NONE.v)
+fun PlaySongWhenAlarmSettings(alarmManagerToPlaySong: AlarmManagerToPlaySong) {
+    var showDialog by remember { mutableStateOf(false) }
+    var songSelectDialog by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    val noneText = stringResource(id = R.string.none)
+    val currentSongInfo by alarmSongData.collectAsState(initial = null)
+
+    val permission =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                alarmManagerToPlaySong.startAlarmIfThere()
+            }
+        }
+
+    val v by alarmTimeSettings.collectAsState(initial = TIME_ALARM)
     SettingsLayout(R.string.set_alarm_to_play_song) {
-        SettingsItems(R.string.none, v == SetWallpaperInfo.NONE.v) {
-            setWallpaperSettings = flowOf(SetWallpaperInfo.NONE.v)
+        SettingsItems(R.string.disable, v == TIME_ALARM) {
+            alarmTimeSettings = flowOf(TIME_ALARM)
         }
-        SettingsItems(R.string.artist_image, v == SetWallpaperInfo.ARTIST_IMAGE.v) {
-            setWallpaperSettings = flowOf(SetWallpaperInfo.ARTIST_IMAGE.v)
+        SettingsItemsText(R.string.select_alarm_time, v) {
+            showDialog = true
         }
-        SettingsItems(R.string.song_thumbnail, v == SetWallpaperInfo.SONG_THUMBNAIL.v) {
-            setWallpaperSettings = flowOf(SetWallpaperInfo.SONG_THUMBNAIL.v)
+        SettingsItemsText(R.string.alarm_song, name) {
+            songSelectDialog = true
+        }
+    }
+
+    if (showDialog) TimePickerDialog {
+        showDialog = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            if (!isPermission(Manifest.permission.SCHEDULE_EXACT_ALARM))
+                permission.launch(Manifest.permission.SCHEDULE_EXACT_ALARM)
+            else
+                alarmManagerToPlaySong.startAlarmIfThere()
+        else
+            alarmManagerToPlaySong.startAlarmIfThere()
+    }
+
+    if (songSelectDialog)
+        SearchSongBottomSheet(currentSongInfo) {
+            songSelectDialog = false
+        }
+
+    LaunchedEffect(currentSongInfo?.name) {
+        name = if ((currentSongInfo?.name?.trim()?.length ?: 0) > 2)
+            if ((currentSongInfo?.name?.trim()?.length ?: 0) > 12)
+                currentSongInfo?.name?.substring(0, 12) ?: "" else currentSongInfo?.name ?: ""
+        else
+            noneText
+    }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            if (isPermission(Manifest.permission.SCHEDULE_EXACT_ALARM))
+                alarmTimeSettings = flowOf(TIME_ALARM)
+
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerDialog(close: () -> Unit) {
+    val selectedHour by remember { mutableIntStateOf(0) }
+    val selectedMinute by remember { mutableIntStateOf(0) }
+    val timePickerState =
+        rememberTimePickerState(selectedHour, selectedMinute, true)
+
+    AlertDialog(
+        close, Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(size = 12.dp))
+    ) {
+        Column(
+            Modifier
+                .background(androidx.compose.ui.graphics.Color.LightGray.copy(alpha = 0.3f))
+                .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
+            Arrangement.Center, Alignment.CenterHorizontally
+        ) {
+            TimePicker(timePickerState)
+
+            Row(
+                Modifier
+                    .padding(top = 12.dp)
+                    .fillMaxWidth(), Arrangement.End
+            ) {
+                TextButton(onClick = close) {
+                    TextRegular(stringResource(R.string.close))
+                }
+
+                TextButton({
+                    alarmTimeSettings =
+                        flowOf("${timePickerState.hour} : ${timePickerState.minute}")
+                    close()
+                }) {
+                    TextRegular(stringResource(R.string.confirm))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@Composable
+fun SearchSongBottomSheet(currentSongInfo: MusicData?, close: () -> Unit) {
+    val homeApiViewModel: HomeApiViewModel = hiltViewModel()
+    val sheetState = rememberModalBottomSheetState(true)
+    val searchSong = stringResource(id = R.string.search_the_song_you_want_to_play)
+    val currentSongSetDesc = stringResource(id = R.string.song_is_already_set_as_alarm)
+    var text by remember { mutableStateOf("") }
+    var searchJob by remember { mutableStateOf<Job?>(null) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+
+    ModalBottomSheet(
+        close, Modifier, sheetState,
+        containerColor = MainColor, contentColor = BlackColor
+    ) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            SearchEditTextView(searchSong, text, null, {
+                text = it
+                searchJob?.cancel()
+                if (it.length <= 3) return@SearchEditTextView
+
+                searchJob = CoroutineScope(Dispatchers.IO).launch {
+                    delay(1.seconds)
+                    homeApiViewModel.searchData(text)
+                }
+            }, {
+                keyboardController?.hide()
+            })
+
+            Spacer(Modifier.height(40.dp))
+
+            if (text.trim().isEmpty()) {
+                Spacer(Modifier.height(80.dp))
+
+                if ((currentSongInfo?.name?.trim()?.length ?: 0) > 2) {
+                    TextRegular(
+                        v = String.format(currentSongSetDesc, currentSongInfo?.name),
+                        doCenter = true
+                    )
+
+                    Spacer(Modifier.height(20.dp))
+
+                    Button(onClick = {
+                        alarmSongData = flowOf(null)
+                        close()
+                    }, colors = ButtonDefaults.buttonColors(BlackColor)) {
+                        TextThin(v = stringResource(R.string.remove_current_song))
+                    }
+
+                } else
+                    TextRegular(v = stringResource(R.string.no_alarm_is_set_alarm), doCenter = true)
+
+                Spacer(Modifier.height(100.dp))
+            }
+
+            LazyRow(Modifier.fillMaxWidth()) {
+                when (val v = homeApiViewModel.searchData) {
+                    DataResponse.Empty -> {}
+                    is DataResponse.Error -> {}
+                    DataResponse.Loading -> items(30) {
+                        LoadingAlbumsCards()
+                    }
+
+                    is DataResponse.Success ->
+                        if ((v.item?.songs ?: emptyList()).isEmpty())
+                            item {
+                                TextRegular(v = stringResource(id = R.string.no_song_found))
+                            }
+                        else
+                            items(v.item?.songs ?: emptyList()) {
+                                SongsExploreItems(it) {
+                                    alarmSongData = flowOf(it)
+                                    close()
+                                }
+                            }
+                }
+            }
+
+            Spacer(Modifier.height(80.dp))
         }
     }
 }
