@@ -10,7 +10,9 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.setWallpaperSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songSpeedSettings
+import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.domain.MusicData
@@ -22,11 +24,15 @@ import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
@@ -235,6 +241,19 @@ class PlayerServiceAction @Inject constructor(
 
             player.playbackParameters = PlaybackParameters(speed)
         }
+    }
+
+    override suspend fun updateSongsWallpaper() = CoroutineScope(Dispatchers.IO).launch {
+        delay(1.seconds)
+        when (setWallpaperSettings.first()) {
+            SetWallpaperInfo.SONG_THUMBNAIL.v -> {
+                val song = musicPlayerData.first()?.v?.thumbnail
+            }
+
+            SetWallpaperInfo.ARTIST_IMAGE.v -> {}
+        }
+
+        if (isActive) cancel()
     }
 
 }

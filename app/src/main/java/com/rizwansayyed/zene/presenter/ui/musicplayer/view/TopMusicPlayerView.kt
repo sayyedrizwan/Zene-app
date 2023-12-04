@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,8 +40,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @Composable
-fun TopPlayerHeader() {
+fun TopPlayerHeader(showedOnLockScreen: Boolean) {
     val coroutine = rememberCoroutineScope()
+    val activity = LocalContext.current as Activity
 
     Row(
         Modifier
@@ -47,11 +50,17 @@ fun TopPlayerHeader() {
             .fillMaxWidth(),
         Arrangement.Center, Alignment.CenterVertically
     ) {
-        SmallIcons(R.drawable.ic_arrow_down_sharp, 25, 10) {
-            coroutine.launch(Dispatchers.IO) {
-                val m = musicPlayerData.first()?.apply { show = false }
-                musicPlayerData = flowOf(m)
-            }
+        SmallIcons(
+            if (showedOnLockScreen) R.drawable.ic_arrow_left else R.drawable.ic_arrow_down_sharp,
+            25, 10
+        ) {
+            if (showedOnLockScreen)
+                activity.finish()
+            else
+                coroutine.launch(Dispatchers.IO) {
+                    val m = musicPlayerData.first()?.apply { show = false }
+                    musicPlayerData = flowOf(m)
+                }
         }
 
         TextSemiBold(

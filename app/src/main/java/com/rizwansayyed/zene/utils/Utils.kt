@@ -155,6 +155,7 @@ object Utils {
         return bitmap
     }
 
+    @Suppress("DEPRECATION")
     fun ifPlayerServiceNotRunning(): Boolean {
         return (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
             .getRunningServices(Integer.MAX_VALUE)
@@ -171,6 +172,7 @@ object Utils {
         context.getSystemService(VIBRATOR_SERVICE) as Vibrator
     }
 
+    @Suppress("DEPRECATION")
     fun littleVibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val vibe = VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
@@ -255,4 +257,5 @@ object Utils {
             size / 1024.0.pow(digitGroups.toDouble())
         ) + " " + units[digitGroups]
     }
+
 }

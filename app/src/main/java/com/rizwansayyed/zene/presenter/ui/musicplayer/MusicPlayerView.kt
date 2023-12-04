@@ -64,7 +64,7 @@ import kotlinx.coroutines.runBlocking
 
 
 @Composable
-fun MusicPlayerView(player: ExoPlayer) {
+fun MusicPlayerView(player: ExoPlayer, showedOnLockScreen: Boolean) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val p by musicPlayerData.collectAsState(initial = runBlocking(Dispatchers.IO) { musicPlayerData.first() })
 
@@ -75,7 +75,7 @@ fun MusicPlayerView(player: ExoPlayer) {
             .backgroundPalette()
             .verticalScroll(rememberScrollState())
     ) {
-        TopPlayerHeader()
+        TopPlayerHeader(showedOnLockScreen)
 
         SongsThumbnailsWithList(p)
 

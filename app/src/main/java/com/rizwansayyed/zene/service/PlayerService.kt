@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSe
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.service.implementation.listener.ScreenLockAndOnListener
 import com.rizwansayyed.zene.service.implementation.recentplay.RecentPlayingSongInterface
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.notificationservice.PlayerServiceNotificationInterface
@@ -73,6 +74,8 @@ class PlayerService : MediaSessionService() {
     @Inject
     lateinit var playerServiceAction: PlayerServiceActionInterface
 
+    private val screenLockListener by lazy { ScreenLockAndOnListener(player) }
+
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -81,6 +84,7 @@ class PlayerService : MediaSessionService() {
         playerNotification.buildNotification(this@PlayerService)
 
         player.addListener(playerListener)
+        screenLockListener.register()
 
         IntentFilter(PLAYER_SERVICE_ACTION).apply {
             ContextCompat.registerReceiver(
@@ -158,6 +162,7 @@ class PlayerService : MediaSessionService() {
                 Player.STATE_READY -> CoroutineScope(Dispatchers.IO).launch {
                     retry = 0
                     playerServiceAction.updatePlaybackSpeed()
+                    playerServiceAction.updateSongsWallpaper()
                     if (isActive) cancel()
                 }
 
@@ -254,6 +259,7 @@ class PlayerService : MediaSessionService() {
         mediaSession.release()
         unregisterReceiver(receiver)
         timeJob?.cancel()
+        screenLockListener.unregister()
         super.onDestroy()
     }
 }

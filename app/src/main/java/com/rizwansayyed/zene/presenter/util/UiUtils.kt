@@ -1,9 +1,14 @@
 package com.rizwansayyed.zene.presenter.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AppOpsManager
+import android.content.Intent
+import android.os.Binder
 import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.CoroutineScope
@@ -79,5 +84,19 @@ object UiUtils {
             }
         }
         return capitalizedWords.joinToString(", ")
+    }
+    fun otherPermissionIntent() {
+        if (Build.MANUFACTURER.equals("Xiaomi", true)) {
+            val intent = Intent("miui.intent.action.APP_PERM_EDITOR")
+            intent.setClassName(
+                "com.miui.securitycenter",
+                "com.miui.permcenter.permissions.PermissionsEditorActivity"
+            )
+            intent.putExtra("extra_pkgname", context.packageName)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+
+            context.resources.getString(R.string.enable_lock_screen_to_show).toast()
+        }
     }
 }

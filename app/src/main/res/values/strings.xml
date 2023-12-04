@@ -15,6 +15,8 @@
     <string name="trending_artists_in_country">Trending Artists in %s</string>
     <string name="zene_mostly_most_played">Discover the Currently \nMost Playing Songs on Zene</string>
     <string name="listeners">Listeners</string>
+    <string name="enable_lock_screen_to_show">Please also enable \'Show on lock screen\' and \'Display pop-up window while running in background\' to show the music view.</string>
+    <string name="lock_screen_permission_to_show">Enable permission to show on lock screen to show the music view.</string>
     <string name="songs_you_may_like_to_listen">Songs you may like to listen</string>
     <string name="speak_music_artists_album">Speak music, artist or album name to search</string>
     <string name="similar_artists">Similar Artists</string>
@@ -154,4 +156,5 @@
     <string name="are_you_sure_want_to_rm_downloaded_song">Are you sure want to remove the downloaded song?</string>
     <string name="are_you_sure_want_to_download_from_mobile_data">Are you sure want to download song offline via mobile data?</string>
     <string name="download_from_mobile_data_desc">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
+    <string name="enable_">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
 </resources>

@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.player.playeractions
 import androidx.media3.common.MediaItem
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import kotlinx.coroutines.Job
 
 interface PlayerServiceActionInterface {
     suspend fun addMultipleItemsAndPlay(list: Array<MusicData?>?, position: Int)
@@ -18,4 +19,5 @@ interface PlayerServiceActionInterface {
     )
 
     suspend fun updatePlaybackSpeed()
+    suspend fun updateSongsWallpaper(): Job
 }

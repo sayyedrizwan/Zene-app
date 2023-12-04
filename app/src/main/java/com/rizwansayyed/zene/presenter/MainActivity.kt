@@ -2,11 +2,13 @@ package com.rizwansayyed.zene.presenter
 
 import android.Manifest
 import android.app.Activity
+import android.app.AppOpsManager
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -98,7 +100,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var player: ExoPlayer
 
-    val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java) }
+    private val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java) }
 
     private val navViewModel: HomeNavViewModel by viewModels()
     private val roomViewModel: RoomDbViewModel by viewModels()
@@ -153,7 +155,7 @@ class MainActivity : ComponentActivity() {
                     slideInVertically(initialOffsetY = { it / 2 }),
                     slideOutVertically(targetOffsetY = { it / 2 }),
                 ) {
-                    MusicPlayerView(player)
+                    MusicPlayerView(player, false)
                 }
 
                 AnimatedVisibility(navViewModel.songDetailDialog != null) {
@@ -190,6 +192,7 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
                     keyboard?.hide()
+
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
                     navViewModel.setArtists("")

@@ -1,5 +1,10 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,9 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,10 +44,17 @@ import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItems
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsCard
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsLayout
+import com.rizwansayyed.zene.presenter.util.UiUtils.otherPermissionIntent
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
 import com.rizwansayyed.zene.utils.Utils.cacheSize
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun SettingsView(player: ExoPlayer) {
@@ -212,14 +226,39 @@ fun OfflineDownloadSettings() {
 
 @Composable
 fun SongOnLockScreenSettings() {
+    val context = LocalContext.current.applicationContext
+
+    val permissionString = stringResource(R.string.lock_screen_permission_to_show)
+
+    val permission =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (Settings.canDrawOverlays(context)) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(1.seconds)
+                    otherPermissionIntent()
+                }
+                showPlayingSongOnLockScreenSettings = flowOf(true)
+            }
+        }
+
     val v by showPlayingSongOnLockScreenSettings.collectAsState(initial = false)
     SettingsLayout(R.string.show_playing_song_on_lock_screen) {
         SettingsItems(R.string.enable, v) {
-            showPlayingSongOnLockScreenSettings = flowOf(true)
+            if (Settings.canDrawOverlays(context))
+                showPlayingSongOnLockScreenSettings = flowOf(true)
+            else {
+                permissionString.toast()
+                permission.launch(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+            }
         }
         SettingsItems(R.string.disable, !v) {
             showPlayingSongOnLockScreenSettings = flowOf(false)
         }
+    }
+
+    LaunchedEffect(Unit) {
+        if (!Settings.canDrawOverlays(context))
+            showPlayingSongOnLockScreenSettings = flowOf(false)
     }
 }
 
