@@ -83,6 +83,8 @@ import kotlin.time.Duration.Companion.seconds
 // pin playlists
 // add insta shop items on artists page.
 // make smooth music player view opener
+// privacy policy viewer
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
