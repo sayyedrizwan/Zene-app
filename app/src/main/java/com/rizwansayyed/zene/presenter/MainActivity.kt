@@ -44,7 +44,9 @@ import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllVi
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
 import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
+import com.rizwansayyed.zene.presenter.ui.home.views.HomeOfflineView
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
+import com.rizwansayyed.zene.presenter.ui.home.views.MyMusicView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.home.views.SettingsView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
@@ -129,11 +131,11 @@ class MainActivity : ComponentActivity() {
                         .background(DarkGreyColor)
                 ) {
                     when (navViewModel.homeNavV) {
-                        HOME -> HomeView()
+                        HOME -> if (navViewModel.isOnline) HomeView() else HomeOfflineView()
                         ALL_RADIO -> OnlineRadioViewAllView()
                         FEED -> TextBold(v = "feed")
                         SEARCH -> SearchView()
-                        MY_MUSIC -> TextBold(v = "music")
+                        MY_MUSIC -> MyMusicView()
                         SETTINGS -> SettingsView(player, alarmManagerToPlaySong)
                     }
 

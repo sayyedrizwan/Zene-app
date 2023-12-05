@@ -34,6 +34,7 @@ object DataStorageUtil {
         val SET_WALLPAPER_SETTINGS = intPreferencesKey("set_wallpaper_settings")
         val ALARM_TIME_SETTINGS = stringPreferencesKey("alarm_time_settings")
         val ALARM_SONG_SETTINGS = stringPreferencesKey("alarm_song_settings")
+        val USER_AUTH_DATA = stringPreferencesKey("user_auth_data")
     }
 }
 

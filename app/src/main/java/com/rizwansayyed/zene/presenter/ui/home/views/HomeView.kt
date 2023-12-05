@@ -69,6 +69,26 @@ import kotlinx.coroutines.flow.debounce
 
 @OptIn(FlowPreview::class)
 @Composable
+fun HomeOfflineView() {
+    val homeNavModel: HomeNavViewModel = hiltViewModel()
+    val homeViewModel: HomeApiViewModel = hiltViewModel()
+    val roomDbViewModel: RoomDbViewModel = hiltViewModel()
+
+    LazyVerticalGrid(
+        GridCells.Fixed(TOTAL_ITEMS_GRID),
+        Modifier
+            .fillMaxSize()
+            .background(DarkGreyColor)
+    ) {
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            HomepageTopView(homeNavModel)
+        }
+    }
+
+}
+
+@OptIn(FlowPreview::class)
+@Composable
 fun HomeView() {
     val homeNavModel: HomeNavViewModel = hiltViewModel()
     val homeViewModel: HomeApiViewModel = hiltViewModel()

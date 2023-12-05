@@ -12,10 +12,12 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettin
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SHOW_PLAYING_SONG_ON_LOCK_SCREEN_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SONGS_QUALITY_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SONG_SPEED_SETTINGS
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.USER_AUTH_DATA
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
+import com.rizwansayyed.zene.domain.UserAuthData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -91,6 +93,16 @@ object DataStorageSettingsManager {
         set(v) = runBlocking {
             val moshi = moshi.adapter(MusicData::class.java).toJson(v.first())
             context.dataStore.edit { it[ALARM_SONG_SETTINGS] = moshi }
+        }
+
+    var userAuthData: Flow<UserAuthData?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(UserAuthData::class.java)
+                .fromJson(it[USER_AUTH_DATA] ?: DataStorageManager.JSON_LIST)
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(UserAuthData::class.java).toJson(v.first())
+            context.dataStore.edit { it[USER_AUTH_DATA] = moshi }
         }
 
 }

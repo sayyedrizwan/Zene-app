@@ -27,7 +27,7 @@ import kotlin.time.Duration.Companion.seconds
 class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfigInterface) :
     ViewModel() {
 
-    var isOnline = mutableStateOf(true)
+    var isOnline by mutableStateOf(true)
         private set
 
     var homeNavV by mutableStateOf(HomeNavigation.HOME)
@@ -83,7 +83,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     }
 
     fun checkAndSetOnlineStatus() = viewModelScope.launch(Dispatchers.IO) {
-        isOnline.value = isInternetConnected()
+        isOnline = isInternetConnected()
     }
 
     fun resetConfig() = viewModelScope.launch(Dispatchers.IO) {
