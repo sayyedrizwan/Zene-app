@@ -3,7 +3,9 @@ package com.rizwansayyed.zene.presenter.ui.home.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -15,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.userAuthData
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +37,16 @@ fun MyMusicView() {
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column(Modifier.padding(horizontal = 9.dp), Arrangement.Center) {
                 TopMyMusicHeader(userAuth)
+
+                Spacer(Modifier.height(22.dp))
             }
+        }
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            LinkedToBrowser(userAuth)
+        }
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            HistoryItemsList()
         }
     }
 }

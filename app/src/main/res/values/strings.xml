@@ -171,4 +171,5 @@
     <string name="download_from_mobile_data_desc">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
     <string name="enable_">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
     <string name="clear_cache_sure">Are you sure want to clear the cache? Not any personal saved data will be eared.</string>
+    <string name="history">History</string>
 </resources>
