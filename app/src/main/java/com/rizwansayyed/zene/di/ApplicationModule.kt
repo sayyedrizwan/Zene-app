@@ -79,7 +79,8 @@ class ApplicationModule : Application(), Configuration.Provider {
                 songID = ""
             }
 
-            if (playerData?.playType == MusicType.RADIO){
+            if (playerData?.playType == MusicType.RADIO) {
+                delay(1.seconds)
                 musicPlayerData = flowOf(MusicPlayerData())
             } else {
                 musicPlayerData = flowOf(playerData)

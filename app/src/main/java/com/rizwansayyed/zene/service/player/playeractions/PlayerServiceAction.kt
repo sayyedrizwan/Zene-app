@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
@@ -130,7 +131,7 @@ class PlayerServiceAction @Inject constructor(
         withContext(Dispatchers.IO) {
             val i =
                 radio.favicon?.ifEmpty { "https://cdn-icons-png.flaticon.com/512/7999/7999266.png" }
-            val currentPlayer = MusicPlayerList(radio.name, radio.language, radio.serveruuid, i)
+            val currentPlayer = MusicPlayerList(radio.name, RADIO_NAME, radio.serveruuid, i)
             val musicData = MusicData(i, radio.name, RADIO_NAME, radio.serveruuid, MusicType.RADIO, "")
 
             val d = musicPlayerData.first()?.apply {
@@ -249,7 +250,7 @@ class PlayerServiceAction @Inject constructor(
 
             SetWallpaperInfo.ARTIST_IMAGE.v -> {
                 val userName =
-                    lastFM.artistsUsername(musicPlayerData.first()?.v?.artists ?: "").first()
+                    lastFM.artistsUsername(musicPlayerData.first()?.v?.artists ?: "").catch {  }.first()
                 val artistImage = lastFM.artistsImages(userName, 20).first().random()
                 UtilsWallpaperImage(artistImage).startSettingWallpaper()
             }

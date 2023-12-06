@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -128,6 +129,8 @@ class PlayerService : MediaSessionService() {
     }
 
     fun playerError(error: PlaybackException) = CoroutineScope(Dispatchers.IO).launch {
+        if (player.currentMediaItem?.mediaMetadata?.artist == RADIO_NAME) return@launch
+
         if (retry >= 1) return@launch
 
         if (error.message?.lowercase()?.trim()?.contains("source error") == true) {
@@ -174,6 +177,7 @@ class PlayerService : MediaSessionService() {
 
                     playerServiceAction.updatePlaybackSpeed()
                     playerServiceAction.updateSongsWallpaper()
+
                     if (isActive) cancel()
                 }
 
