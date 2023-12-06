@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,14 +31,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.presenter.theme.GreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.formatExoplayerDuration
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.onClickOn3SecDelay
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
@@ -45,6 +49,8 @@ import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
 import com.rizwansayyed.zene.service.player.utils.Utils.seekToTimestamp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -168,5 +174,12 @@ fun MusicPlayerButtons(player: ExoPlayer) {
         onDispose {
             PlayServiceListener.getInstance().rmListener(playerListener)
         }
+    }
+}
+
+@Composable
+fun LiveBroadcastText() {
+    Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+        TextThin(stringResource(R.string.live_broadcast), size = 15)
     }
 }

@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.toMusicData
+import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.RADIO_NAME
 import com.rizwansayyed.zene.presenter.util.UtilsWallpaperImage
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
@@ -130,15 +131,15 @@ class PlayerServiceAction @Inject constructor(
             val i =
                 radio.favicon?.ifEmpty { "https://cdn-icons-png.flaticon.com/512/7999/7999266.png" }
             val currentPlayer = MusicPlayerList(radio.name, radio.language, radio.serveruuid, i)
+            val musicData = MusicData(i, radio.name, RADIO_NAME, radio.serveruuid, MusicType.RADIO, "")
 
             val d = musicPlayerData.first()?.apply {
                 v = currentPlayer
                 playType = MusicType.RADIO
-                songsLists = emptyList()
+                songsLists = listOf(musicData)
             }
             musicPlayerData = flowOf(d)
         }
-
         withContext(Dispatchers.Main) {
             val item = radio.toMusicData().toMediaItem(radio.url_resolved!!)
             if (radio.url_resolved.contains(".m3u8")) {

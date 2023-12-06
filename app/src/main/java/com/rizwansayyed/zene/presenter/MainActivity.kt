@@ -87,6 +87,11 @@ import kotlin.time.Duration.Companion.seconds
 // make smooth music player view opener
 // privacy policy viewer
 
+// search radio too in search view
+
+
+// options menu - set ringtone, set wallpaper,
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

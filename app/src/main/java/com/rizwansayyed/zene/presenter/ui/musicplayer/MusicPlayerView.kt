@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.LiveBroadcastText
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerArtists
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerArtistsMerchandise
@@ -50,6 +51,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerImages
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerLyrics
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerRelatedSongs
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlayerSliders
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.RadioActionButtons
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.SongsThumbnailsWithList
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
@@ -79,25 +81,32 @@ fun MusicPlayerView(player: ExoPlayer, showedOnLockScreen: Boolean) {
 
         SongsThumbnailsWithList(p)
 
-        MusicPlayerSliders(player)
+        if (p?.playType == MusicType.RADIO)
+            LiveBroadcastText()
+        else
+            MusicPlayerSliders(player)
 
-        MusicPlayerButtons(player)
+        if (p?.playType == MusicType.RADIO) {
+            RadioActionButtons(player)
+        } else {
+            MusicPlayerButtons(player)
 
-        Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))
 
-        MusicActionButtons(p)
+            MusicActionButtons(p)
 
-        Spacer(Modifier.height(30.dp))
+            Spacer(Modifier.height(30.dp))
 
-        MusicPlayerLyrics(playerViewModel, player)
+            MusicPlayerLyrics(playerViewModel, player)
 
-        MusicPlayerArtistsMerchandise(playerViewModel)
+            MusicPlayerArtistsMerchandise(playerViewModel)
 
-        MusicPlayerArtists(playerViewModel)
+            MusicPlayerArtists(playerViewModel)
 
-        MusicPlayerImages(playerViewModel)
+            MusicPlayerImages(playerViewModel)
 
-        MusicPlayerRelatedSongs(playerViewModel)
+            MusicPlayerRelatedSongs(playerViewModel)
+        }
 
         Spacer(Modifier.height(90.dp))
     }
@@ -120,7 +129,7 @@ fun MusicPlayerView(player: ExoPlayer, showedOnLockScreen: Boolean) {
         p?.let { playerViewModel.searchLyrics(it) }
     }
 
-    DisposableEffect(Unit){
+    DisposableEffect(Unit) {
         littleVibrate()
         onDispose {
             littleVibrate()

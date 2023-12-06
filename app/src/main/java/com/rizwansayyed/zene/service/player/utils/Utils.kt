@@ -133,6 +133,11 @@ object Utils {
     }
 
     fun playRadioOnPlayer(radio: OnlineRadioResponseItem) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            delay(1.5.seconds)
+//            val mpd = musicPlayerData.first()?.apply { show = true }
+//            musicPlayerData = flowOf(mpd)
+//        }
         val mediaData = moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio)
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, PLAY_LIVE_RADIO)

@@ -6,14 +6,17 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.autoplaySettings
@@ -39,7 +44,9 @@ import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.onClickOn3SecDelay
+import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
+import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
@@ -49,6 +56,65 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
+
+@Composable
+fun RadioActionButtons(player: ExoPlayer) {
+    var isLoading by remember { mutableStateOf(false) }
+    var isPlaying by remember { mutableStateOf(false) }
+
+    Row(
+        Modifier
+            .padding(top = 11.dp)
+            .padding(horizontal = 30.dp)
+            .fillMaxSize(),
+        Arrangement.SpaceBetween, Alignment.CenterVertically
+    ) {
+
+        Spacer(Modifier.weight(1f))
+
+        if (isLoading)
+            CircularProgressIndicator(
+                modifier = Modifier.width(30.dp),
+                color = Color.White,
+                trackColor = MainColor,
+            )
+        else
+            if (isPlaying)
+                SmallIcons(R.drawable.ic_pause, 38) {
+                    player.pause()
+                }
+            else
+                SmallIcons(R.drawable.ic_play, 38) {
+                    player.play()
+                }
+
+        Spacer(Modifier.weight(1f))
+    }
+
+    DisposableEffect(Unit) {
+        val playerListener = object : PlayerServiceInterface {
+            override fun songBuffering(b: Boolean) {
+                isLoading = b
+            }
+
+            override fun mediaItemUpdate(mediaItem: MediaItem) {
+                isLoading = !mediaItem.requestMetadata.mediaUri.toString().contains("https://")
+            }
+
+            override fun playingStateChange() {
+                super.playingStateChange()
+                isPlaying = player.isPlaying
+            }
+
+        }
+        PlayServiceListener.getInstance().addListener(playerListener)
+        isPlaying = player.isPlaying
+
+        onDispose {
+            PlayServiceListener.getInstance().rmListener(playerListener)
+        }
+    }
+}
 
 @Composable
 fun MusicActionButtons(p: MusicPlayerData?) {

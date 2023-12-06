@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.loopSe
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.RADIO_NAME
 import com.rizwansayyed.zene.service.implementation.listener.ScreenLockAndOnListener
 import com.rizwansayyed.zene.service.implementation.recentplay.RecentPlayingSongInterface
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
@@ -94,6 +95,12 @@ class PlayerService : MediaSessionService() {
 
         timeJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
+                val checkRadio =
+                    withContext(Dispatchers.Main) { player.currentMediaItem?.mediaMetadata?.artist }
+                if (checkRadio == RADIO_NAME) {
+                    delay(1.seconds)
+                    return@launch
+                }
                 val doLoop = loopSettings.first()
                 val autoPlay = autoplaySettings.first()
 
@@ -161,6 +168,10 @@ class PlayerService : MediaSessionService() {
             when (playbackState) {
                 Player.STATE_READY -> CoroutineScope(Dispatchers.IO).launch {
                     retry = 0
+                    val checkRadio =
+                        withContext(Dispatchers.Main) { player.currentMediaItem?.mediaMetadata?.artist }
+                    if (checkRadio == RADIO_NAME) return@launch
+
                     playerServiceAction.updatePlaybackSpeed()
                     playerServiceAction.updateSongsWallpaper()
                     if (isActive) cancel()

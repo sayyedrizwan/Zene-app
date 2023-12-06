@@ -32,17 +32,20 @@ suspend fun jsoupResponseData(url: String): String? {
             .addHeader("Cookie", DataStorageManager.cookiesData(getMainDomain(url) ?: ""))
             .build()
 
-        val response = client.newCall(request).execute()
+        try {
+            val response = client.newCall(request).execute()
 
-        if (response.isSuccessful) {
-            val cookieList = response.headers("Set-Cookie")
-            if (cookieList.size >= 2 && (cookieRetry[getMainDomain(url) ?: ""] ?: 0) <= 2) {
-                return@withContext retryWithCookieResponseData(url, response.headers("Set-Cookie"))
+            if (response.isSuccessful) {
+                val cookieList = response.headers("Set-Cookie")
+                if (cookieList.size >= 2 && (cookieRetry[getMainDomain(url) ?: ""] ?: 0) <= 2) {
+                    retryWithCookieResponseData(url, response.headers("Set-Cookie"))
+                } else
+                    response.body?.string()
+            } else {
+                null
             }
-
-            return@withContext response.body?.string()
-        } else {
-            return@withContext null
+        } catch (e: Exception) {
+            null
         }
     }
 }
@@ -71,15 +74,18 @@ suspend fun retryWithCookieResponseData(url: String, headers: List<String>): Str
             .addHeader("user-agent", USER_AGENT)
             .addHeader("Cookie", cookies)
             .build()
+        try {
+            val response = client.newCall(request).execute()
 
-        val response = client.newCall(request).execute()
-
-        if (response.isSuccessful) {
-            cookieRetry[getMainDomain(url) ?: ""] = 0
-            DataStorageManager.cookiesData(getMainDomain(url) ?: "", cookies)
-            return@withContext response.body?.string()
-        } else {
-            return@withContext null
+            if (response.isSuccessful) {
+                cookieRetry[getMainDomain(url) ?: ""] = 0
+                DataStorageManager.cookiesData(getMainDomain(url) ?: "", cookies)
+                response.body?.string()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 }

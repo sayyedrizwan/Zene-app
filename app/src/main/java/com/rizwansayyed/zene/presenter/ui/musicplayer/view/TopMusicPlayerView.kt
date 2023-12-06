@@ -94,7 +94,8 @@ fun SongsThumbnailsWithList(p: MusicPlayerData?) {
 
     Spacer(Modifier.height(7.dp))
 
-    MusicTitleAndBodyText(p, pagerState)
+    if ((p?.songsLists?.size ?: 0) > 0)
+        MusicTitleAndBodyText(p, pagerState)
 
     LaunchedEffect(p) {
         p?.songsLists?.forEachIndexed { i, musicData ->

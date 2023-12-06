@@ -28,6 +28,7 @@ object UiUtils {
 
     object ContentTypes {
         const val THE_ARTISTS = "songs_artists"
+        const val RADIO_NAME = "Live Radio"
     }
 
     private const val FLAG_NO_LIMIT = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS

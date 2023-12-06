@@ -58,13 +58,6 @@ class SongDownloaderImpl @Inject constructor(private val saveFromDownloader: Sav
             emit(url?.url)
             return@flow
         }
-
-//        val res = Jsoup
-//            .connect(SAVE_FROM_BASE_URL).method(Connection.Method.GET).execute()
-//        val jsoup = Jsoup.connect(SAVE_FROM_BASE_URL).cookies(res.cookies()).get()
-//        val token = jsoup.select("#token").attr("value")
-//
-//        emit(saveFromDownloader.download(ytURL(vId), token))
     }.flowOn(Dispatchers.IO)
 
 
