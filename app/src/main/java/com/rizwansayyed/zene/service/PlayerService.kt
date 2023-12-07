@@ -198,7 +198,7 @@ class PlayerService : MediaSessionService() {
             super.onMediaItemTransition(mediaItem, reason)
             mediaItem?.let { PlayServiceListener.getInstance().mediaItemUpdate(it) }
 
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
                     if (currentPlayingMusic != mediaItem?.mediaId)
                         playerServiceAction.updatePlaying(mediaItem)

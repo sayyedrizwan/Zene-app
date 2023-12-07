@@ -55,15 +55,18 @@ class PlayerServiceAction @Inject constructor(
 
     override suspend fun updatePlaying(mediaItem: MediaItem?) {
         mediaItem ?: return
-        val musicPlayerDataLocal = musicPlayerData.first()
+        val mediaId = mediaItem.mediaId
+        withContext(Dispatchers.IO) {
+            val musicPlayerDataLocal = musicPlayerData.first()
 
-        val music = musicPlayerDataLocal?.songsLists?.first { it?.pId == mediaItem.mediaId }
-            ?: return
+            val music = musicPlayerDataLocal?.songsLists?.first { it?.pId == mediaId }
+                ?: return@withContext
 
-        val position =
-            musicPlayerDataLocal.songsLists.indexOfFirst { it?.pId == mediaItem.mediaId }
+            val position =
+                musicPlayerDataLocal.songsLists.indexOfFirst { it?.pId == mediaId }
 
-        startPlaying(music, emptyArray(), position, true)
+            startPlaying(music, emptyArray(), position, true)
+        }
     }
 
     override suspend fun startPlaying(
@@ -132,7 +135,8 @@ class PlayerServiceAction @Inject constructor(
             val i =
                 radio.favicon?.ifEmpty { "https://cdn-icons-png.flaticon.com/512/7999/7999266.png" }
             val currentPlayer = MusicPlayerList(radio.name, RADIO_NAME, radio.serveruuid, i)
-            val musicData = MusicData(i, radio.name, RADIO_NAME, radio.serveruuid, MusicType.RADIO, "")
+            val musicData =
+                MusicData(i, radio.name, RADIO_NAME, radio.serveruuid, MusicType.RADIO, "")
 
             val d = musicPlayerData.first()?.apply {
                 v = currentPlayer
@@ -245,14 +249,20 @@ class PlayerServiceAction @Inject constructor(
     override suspend fun updateSongsWallpaper() = CoroutineScope(Dispatchers.IO).launch {
         delay(1.seconds)
         when (setWallpaperSettings.first()) {
-            SetWallpaperInfo.SONG_THUMBNAIL.v ->
+            SetWallpaperInfo.SONG_THUMBNAIL.v -> try {
                 UtilsWallpaperImage(musicPlayerData.first()?.v?.thumbnail).startSettingWallpaper()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
-            SetWallpaperInfo.ARTIST_IMAGE.v -> {
+
+            SetWallpaperInfo.ARTIST_IMAGE.v -> try {
                 val userName =
-                    lastFM.artistsUsername(musicPlayerData.first()?.v?.artists ?: "").catch {  }.first()
+                    lastFM.artistsUsername(musicPlayerData.first()?.v?.artists ?: "").first()
                 val artistImage = lastFM.artistsImages(userName, 20).first().random()
                 UtilsWallpaperImage(artistImage).startSettingWallpaper()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
 
         }
