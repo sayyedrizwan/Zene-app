@@ -255,7 +255,6 @@ class PlayerServiceAction @Inject constructor(
                 e.printStackTrace()
             }
 
-
             SetWallpaperInfo.ARTIST_IMAGE.v -> try {
                 val userName =
                     lastFM.artistsUsername(musicPlayerData.first()?.v?.artists ?: "").first()

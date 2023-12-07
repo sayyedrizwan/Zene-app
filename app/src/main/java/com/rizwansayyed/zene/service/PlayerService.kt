@@ -129,8 +129,9 @@ class PlayerService : MediaSessionService() {
     }
 
     fun playerError(error: PlaybackException) = CoroutineScope(Dispatchers.IO).launch {
-        if (player.currentMediaItem?.mediaMetadata?.artist == RADIO_NAME) return@launch
-
+        val artist =
+            withContext(Dispatchers.Main) { player.currentMediaItem?.mediaMetadata?.artist }
+        if (artist == RADIO_NAME) return@launch
         if (retry >= 1) return@launch
 
         if (error.message?.lowercase()?.trim()?.contains("source error") == true) {
