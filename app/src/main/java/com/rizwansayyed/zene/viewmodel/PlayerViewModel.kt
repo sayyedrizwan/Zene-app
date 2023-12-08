@@ -84,6 +84,7 @@ class PlayerViewModel @Inject constructor(
     var showMusicType by mutableStateOf(Utils.MusicViewType.MUSIC)
 
     fun init(data: MusicPlayerData) = viewModelScope.launch(Dispatchers.IO) {
+        relatedSongs = DataResponse.Empty
         songArtistsInfo(data.v?.artists?.split(",", "&") ?: emptyList())
         songsImages(data.v)
         showMusicType = Utils.MusicViewType.MUSIC

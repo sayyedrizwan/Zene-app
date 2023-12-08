@@ -14,8 +14,10 @@ import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 @Composable
 fun HistoryItemsList() {
     Column(Modifier.padding(horizontal = 9.dp), Arrangement.Center) {
-        TopInfoWithSeeMore(R.string.history, R.string.view_all) {
+        TopInfoWithSeeMore(R.string.history, R.string.view_all, 50) {
 
         }
+
+        Lazy
     }
 }

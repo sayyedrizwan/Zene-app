@@ -472,8 +472,8 @@ fun SmallIcons(icon: Int, size: Int = 23, p: Int = 5) {
 }
 
 @Composable
-fun TopInfoWithSeeMore(v: Int, s: Int?, click: () -> Unit) {
-    Spacer(Modifier.height(80.dp))
+fun TopInfoWithSeeMore(v: Int, s: Int?, h: Int = 80, click: () -> Unit) {
+    Spacer(Modifier.height(h.dp))
 
     Row(
         Modifier

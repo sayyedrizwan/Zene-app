@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager
@@ -21,6 +22,7 @@ import android.os.VibratorManager
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmapOrNull
+import androidx.fragment.app.FragmentActivity
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
@@ -55,7 +57,7 @@ object Utils {
     }
 
     object AppUrl {
-        private const val APP_URL = "https://zene.vercel.app"
+        const val APP_URL = "https://zene.vercel.app"
 
         fun appUrlSongShare(id: String): String {
             val changeIdToOurs = id.trim()

@@ -137,7 +137,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:${DependenciesVersion.V.version}")
 
     implementation("androidx.paging:paging-runtime-ktx:${DependenciesVersion.PAGING.version}")
-    implementation("androidx.paging:paging-compose:3.3.0-alpha02")
+    implementation("androidx.paging:paging-compose:${DependenciesVersion.PAGING_COMPOSE.version}")
 }
 
 enum class CompileSDK(val version: Int) {
@@ -154,7 +154,7 @@ enum class DependenciesVersion(val version: String) {
     HILT("2.48.1"), HILT_COMPOSE("1.1.0"), V("1.0.0"), COIL("2.4.0"), COROUTINES("1.7.3"), ROOM("2.6.1"),
     RETROFIT("2.9.0"), MOSHI("1.14.0"), JSOUP("1.16.1"), OK_HTTP("4.10.0"), FIREBASE("32.3.1"),
     MEDIA3("1.2.0"), COMPOSE_UI_UTILS("1.5.4"), JS_EVALUATOR("v6.0.0"), BROWSER("1.7.0"), WEBKIT("1.9.0"),
-    WORK_MANAGER("2.9.0"), PAGING("3.2.1")
+    WORK_MANAGER("2.9.0"), PAGING("3.2.1"), PAGING_COMPOSE("3.3.0-alpha02")
 }
 
 enum class TestingDependenciesVersion(val version: String) {

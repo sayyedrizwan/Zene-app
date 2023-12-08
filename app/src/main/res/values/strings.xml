@@ -103,6 +103,7 @@
     <string name="mark_as_favourite">Mark as favourite</string>
     <string name="rm_as_favourite">Remove as favourite</string>
     <string name="cancel">Cancel</string>
+    <string name="zene_web">Zene Web</string>
     <string name="rm_radio_from_fav">Remove radio from favourites</string>
     <string name="remove">Remove</string>
     <string name="need_notification_p">Need notification permission to show notification of playing music</string>
@@ -172,4 +173,6 @@
     <string name="enable_">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
     <string name="clear_cache_sure">Are you sure want to clear the cache? Not any personal saved data will be eared.</string>
     <string name="history">History</string>
+    <string name="sign_in_on_zene_web">Sign-in on Zene Web</string>
+    <string name="scan_qr_at_enjoy_sign_in">You can enjoy Zene free music on Web, IOS, Windows, iPad, etc. Just visit %s and enjoy the music and scan the qr to sync your suggestions, playlist, history, song suggestion on the Zene Website.</string>
 </resources>

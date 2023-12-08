@@ -141,7 +141,6 @@ class PlayerService : MediaSessionService() {
                 playerServiceAction.updatePlaying(player.currentMediaItem)
             }
         }
-
         if (isActive) cancel()
     }
 
