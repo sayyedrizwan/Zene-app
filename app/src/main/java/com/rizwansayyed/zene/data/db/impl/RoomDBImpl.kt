@@ -85,6 +85,10 @@ class RoomDBImpl @Inject constructor(
         emit(playlistSongsDao.info(songId))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun defaultPlaylistSongsCount() = flow {
+        emit(playlistSongsDao.defaultPlaylistSongsCount())
+    }.flowOn(Dispatchers.IO)
+
 
     override suspend fun songInfo(songId: String) = flow {
         emit(playlistSongsDao.songInfo(songId))

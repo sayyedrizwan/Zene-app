@@ -516,8 +516,6 @@ fun TopInfoWithSeeMore(v: String, s: Int?, click: () -> Unit) {
 fun Modifier.backgroundPalette(): Modifier = composed {
     this.background(
         brush = Brush.linearGradient(
-//            start = Offset(0f, 0f),
-//            end = Offset(100f, 100f),
             colors = listOf(
                 MainColor.copy(0.2f),
                 MainColor.copy(0.4f),

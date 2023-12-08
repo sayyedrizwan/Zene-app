@@ -1,4 +1,142 @@
 package com.rizwansayyed.zene.presenter.ui.home.mymusic
 
-class PlaylistsListView {
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.presenter.ui.SmallIcons
+import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
+
+@Composable
+fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
+    val playlists by myMusic.savePlaylists.collectAsState(emptyList())
+    val defaultPlaylistSongsCount = myMusic.defaultPlaylistSongs
+
+    Column(Modifier, Arrangement.Center) {
+        Column(Modifier.padding(horizontal = 9.dp)) {
+            TopInfoWithSeeMore(R.string.playlists, null, 50) {
+
+            }
+        }
+
+        LazyRow(Modifier.fillMaxSize()) {
+            item {
+                AddNewPlaylist()
+            }
+            item {
+                DefaultPlaylistsItem()
+            }
+
+            items(playlists) {
+                MyMusicPlaylistsItems(it)
+            }
+        }
+    }
+}
+
+@Composable
+fun MyMusicPlaylistsItems(playlists: SavedPlaylistEntity) {
+    val mod = Modifier
+        .fillMaxWidth()
+        .height(75.dp)
+        .clip(RoundedCornerShape(14.dp))
+        .background(Color.White)
+
+    Column(
+        Modifier
+            .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
+            .width(140.dp)
+    ) {
+        if (playlists.thumbnail == null)
+            Column(mod, Arrangement.Center, Alignment.CenterHorizontally) {
+                Image(
+                    painterResource(R.drawable.ic_playlist), "",
+                    Modifier.size(25.dp),
+                    colorFilter = ColorFilter.tint(Color.Black)
+                )
+            }
+        else
+            AsyncImage(playlists.thumbnail, playlists.name, mod, contentScale = ContentScale.Crop)
+
+        Spacer(Modifier.height(5.dp))
+        TextThin(playlists.name, Modifier.padding(horizontal = 4.dp), singleLine = true, size = 14)
+    }
+}
+
+@Composable
+fun DefaultPlaylistsItem() {
+    Column(
+        Modifier
+            .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
+            .width(140.dp)
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .height(75.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color.White), Arrangement.Center, Alignment.CenterHorizontally
+        ) {
+            Image(painterResource(R.mipmap.logo), "", Modifier.size(50.dp))
+        }
+
+        Spacer(Modifier.height(5.dp))
+        TextThin(stringResource(R.string.playlists), singleLine = true, size = 14)
+    }
+}
+
+
+@Composable
+fun AddNewPlaylist() {
+    Column(
+        Modifier
+            .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
+            .width(140.dp)
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .height(75.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color.White), Arrangement.Center, Alignment.CenterHorizontally
+        ) {
+            Image(
+                painterResource(R.drawable.ic_plus_sign_square), "",
+                Modifier.size(25.dp), colorFilter = ColorFilter.tint(Color.Black)
+            )
+        }
+
+        Spacer(Modifier.height(5.dp))
+        TextThin(
+            stringResource(R.string.new_playlist), Modifier.fillMaxWidth(), true,
+            singleLine = true, size = 14
+        )
+    }
 }

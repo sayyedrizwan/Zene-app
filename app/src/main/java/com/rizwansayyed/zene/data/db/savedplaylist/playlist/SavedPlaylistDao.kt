@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SavedPlaylistDao {
+
     @Query("SELECT * FROM $SAVED_PLAYLIST_DB ORDER BY timestamp DESC")
     fun list(): Flow<List<SavedPlaylistEntity>>
 

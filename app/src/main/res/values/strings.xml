@@ -73,6 +73,7 @@
     <string name="add_to_playlist">Add to playlist</string>
     <string name="play">Play</string>
     <string name="playlists">Playlists</string>
+    <string name="new_playlist">New Playlist</string>
     <string name="create_new_playlist">Create new playlist</string>
     <string name="error_creating_playlist">Error creating playlist, try again later.</string>
     <string name="playlist_name_already_in_use">Playlist name already in use</string>

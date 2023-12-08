@@ -1,12 +1,14 @@
 package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.pinterest.implementation.PinterestAPIImplInterface
@@ -31,17 +33,20 @@ class MyMusicViewModel @Inject constructor(
     private val pinterestAPI: PinterestAPIImplInterface
 ) : ViewModel() {
 
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(500)
-            recentPlayedSongs()
-        }
-    }
-
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
         private set
 
+    var savePlaylists by mutableStateOf<Flow<List<SavedPlaylistEntity>>>(flowOf(emptyList()))
+        private set
+
+    var defaultPlaylistSongs by mutableIntStateOf(0)
+        private set
+
+    fun init(){
+        recentPlayedSongs()
+        savedPlaylist()
+        defaultPlaylistSongs()
+    }
 
     private fun recentPlayedSongs() = viewModelScope.launch(Dispatchers.IO) {
         roomDb.recentMainPlayed().onStart {
@@ -50,6 +55,27 @@ class MyMusicViewModel @Inject constructor(
             recentSongPlayed = flowOf(emptyList())
         }.collectLatest {
             recentSongPlayed = it
+        }
+    }
+
+    private fun savedPlaylist() = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.savedPlaylists().onStart {
+            savePlaylists = flowOf(emptyList())
+        }.catch {
+            savePlaylists = flowOf(emptyList())
+        }.collectLatest {
+            savePlaylists = it
+        }
+    }
+
+
+    private fun defaultPlaylistSongs() = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.defaultPlaylistSongsCount().onStart {
+            defaultPlaylistSongs = 0
+        }.catch {
+            defaultPlaylistSongs = 0
+        }.collectLatest {
+            defaultPlaylistSongs = it
         }
     }
 }
