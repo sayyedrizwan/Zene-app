@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.domain.yt.RetryItems
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -251,7 +252,7 @@ class PlayerViewModel @Inject constructor(
             playlistLists.clear()
             delay(1.seconds)
         }
-        roomDb.allPlaylists(pageNumber * 50).catch { }.collectLatest {
+        roomDb.allCreatedPlaylists(pageNumber * 50).catch { }.collectLatest {
             pageNumber += 1
             it.forEach { i ->
                 playlistLists.add(i)
@@ -307,10 +308,15 @@ class PlayerViewModel @Inject constructor(
                 info?.addedPlaylistIds =
                     info?.addedPlaylistIds?.replace(playlistId, "")?.trim() ?: ""
 
+                savedPlaylist?.items =
+                    if ((savedPlaylist?.items ?: 0) < 0) 0 else savedPlaylist?.items?.plus(1) ?: 0
                 if (info?.addedPlaylistIds?.trim()?.isEmpty() == true)
                     roomDb.rmSongs(v.songID ?: "").collect()
                 else
                     info?.let { roomDb.insert(it).collect() }
+
+                savedPlaylist?.items = savedPlaylist?.items?.minus(2) ?: 0
+                savedPlaylist?.let { roomDb.insert(it).collect() }
 
             } else {
                 if (info == null) {
@@ -323,6 +329,7 @@ class PlayerViewModel @Inject constructor(
                     info.addedPlaylistIds = "${info.addedPlaylistIds} $playlistId"
                     roomDb.insert(info).collect()
                 }
+                savedPlaylist?.items = savedPlaylist?.items?.plus(1) ?: 0
                 savedPlaylist?.thumbnail = v.thumbnail
                 savedPlaylist?.let { roomDb.insert(it).collect() }
             }

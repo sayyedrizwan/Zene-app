@@ -24,12 +24,13 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsYouMayLikeList
+import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 @Composable
 fun HistoryItemsList() {
-    val roomDb: RoomDbViewModel = hiltViewModel()
-    val historyList by roomDb.recentSongPlayed.collectAsState(emptyList())
+    val myMusic: MyMusicViewModel = hiltViewModel()
+    val historyList by myMusic.recentSongPlayed.collectAsState(emptyList())
 
     Column(Modifier, Arrangement.Center) {
         Column(Modifier.padding(horizontal = 9.dp)) {

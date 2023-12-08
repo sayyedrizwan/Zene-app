@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.rizwansayyed.zene.data.utils.DBNAME
 import com.rizwansayyed.zene.data.utils.DBNAME.PLAYLIST_SONGS_DB
 
-const val DEFAULT_PLAYLIST_ITEMS = "-1,"
+const val DEFAULT_PLAYLIST_ITEMS = "-0,"
 
 @Entity(tableName = PLAYLIST_SONGS_DB)
 data class PlaylistSongsEntity(

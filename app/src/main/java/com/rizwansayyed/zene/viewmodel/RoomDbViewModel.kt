@@ -41,7 +41,6 @@ class RoomDbViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             delay(500)
-            recentSixPlayedSongs()
             savedPlaylist()
             init()
             albumsYouMayLike(null)
@@ -74,9 +73,6 @@ class RoomDbViewModel @Inject constructor(
             }
     }
 
-    var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
-        private set
-
     var savePlaylists by mutableStateOf<Flow<List<SavedPlaylistEntity>>>(flowOf(emptyList()))
         private set
 
@@ -100,16 +96,6 @@ class RoomDbViewModel @Inject constructor(
     var albumsYouMayLike by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set
 
-
-    private fun recentSixPlayedSongs() = viewModelScope.launch(Dispatchers.IO) {
-        roomDBImpl.recentMainPlayed().onStart {
-            recentSongPlayed = flowOf(emptyList())
-        }.catch {
-            recentSongPlayed = flowOf(emptyList())
-        }.collectLatest {
-            recentSongPlayed = it
-        }
-    }
 
     private fun savedPlaylist() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.savedPlaylists().onStart {

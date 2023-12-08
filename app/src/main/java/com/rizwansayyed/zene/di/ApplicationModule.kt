@@ -65,7 +65,7 @@ class ApplicationModule : Application(), Configuration.Provider {
                     .body(e.message ?: "No Crash Registered")
                     .nIds(CRASH_CHANNEL_ID, CRASH_CHANNEL).generate()
 
-            Log.d(packageName, "App Crash Log: ${e.printStackTrace()}")
+            Log.d(packageName, "App Crash Log: ${e.message}")
 
             Intent(this, MainActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
