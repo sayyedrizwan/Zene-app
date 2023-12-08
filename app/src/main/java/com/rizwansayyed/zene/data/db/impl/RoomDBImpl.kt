@@ -22,8 +22,8 @@ class RoomDBImpl @Inject constructor(
     private val playlistSongsDao: PlaylistSongsDao
 ) : RoomDBInterface {
 
-    override suspend fun recentSixPlayed() = flow {
-        emit(recentPlayed.recentList())
+    override suspend fun recentMainPlayed() = flow {
+        emit(recentPlayed.recentList(50))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun readRecentPlay(set: Int) = flow {

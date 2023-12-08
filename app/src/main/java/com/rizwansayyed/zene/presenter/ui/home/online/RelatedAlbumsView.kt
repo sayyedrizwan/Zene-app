@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -82,9 +83,12 @@ fun AlbumsItems(albums: MusicData, click: () -> Unit) {
             Modifier
                 .padding(5.dp)
                 .fillMaxWidth()
+                .height(size)
+                .background(shimmerBrush())
                 .clickable {
                     click()
-                }
+                },
+            contentScale = ContentScale.Crop
         )
 
         Spacer(Modifier.height(6.dp))

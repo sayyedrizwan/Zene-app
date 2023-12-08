@@ -12,8 +12,8 @@ interface RecentPlayedDao {
     @Query("SELECT * FROM $RECENT_PLAYED_DB WHERE songId = :songId ORDER BY timestamp DESC LIMIT 1")
     suspend fun search(songId: String): RecentPlayedEntity?
 
-    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT 6")
-    fun recentList(): Flow<List<RecentPlayedEntity>>
+    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT :offset")
+    fun recentList(offset: Int): Flow<List<RecentPlayedEntity>>
 
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT :offset")
     suspend fun read(offset: Int): List<RecentPlayedEntity>

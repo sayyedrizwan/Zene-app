@@ -102,7 +102,7 @@ class RoomDbViewModel @Inject constructor(
 
 
     private fun recentSixPlayedSongs() = viewModelScope.launch(Dispatchers.IO) {
-        roomDBImpl.recentSixPlayed().onStart {
+        roomDBImpl.recentMainPlayed().onStart {
             recentSongPlayed = flowOf(emptyList())
         }.catch {
             recentSongPlayed = flowOf(emptyList())

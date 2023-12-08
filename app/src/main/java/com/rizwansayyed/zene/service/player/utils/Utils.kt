@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
@@ -85,16 +86,43 @@ object Utils {
             .build()
     }
 
+    private fun shortListForPlayer(l: Array<MusicData?>?, p: Int): Array<MusicData?> {
+        if ((l?.size ?: 0) <= 20) return l ?: emptyArray()
+
+        val beforeList = l?.toList()?.subList(0, p)
+        val afterList = l?.toList()?.subList(p, l.size)
+
+        val lists = mutableListOf<MusicData?>()
+
+        if ((beforeList?.size ?: 0) > 20)
+            lists.addAll(beforeList?.subList(0, 20)?.toTypedArray() ?: emptyArray())
+        else
+            lists.addAll(beforeList?.toTypedArray() ?: emptyArray())
+
+        lists.add(l?.get(p))
+
+        if ((afterList?.size ?: 0) > 20)
+            lists.addAll(afterList?.subList(0, 20)?.toTypedArray() ?: emptyArray())
+        else
+            lists.addAll(afterList?.toTypedArray() ?: emptyArray())
+
+        return lists.distinctBy { it?.pId }.toTypedArray()
+    }
+
     fun addAllPlayer(l: Array<MusicData?>?, p: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             delay(1.5.seconds)
             val mpd = musicPlayerData.first()?.apply { show = true }
             musicPlayerData = flowOf(mpd)
         }
+
+        val newList = shortListForPlayer(l, p)
+        val newPosition = newList.lastIndexOf(l?.get(p))
+//
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_ALL_PLAYER_ITEM)
-            putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData?>::class.java).toJson(l))
-            putExtra(SONG_MEDIA_POSITION, p)
+            putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData?>::class.java).toJson(newList))
+            putExtra(SONG_MEDIA_POSITION, newPosition)
             context.sendBroadcast(this)
         }
     }
