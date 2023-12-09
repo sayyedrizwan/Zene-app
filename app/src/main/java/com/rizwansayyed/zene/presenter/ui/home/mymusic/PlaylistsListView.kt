@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
-import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
@@ -56,7 +55,7 @@ fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
                 AddNewPlaylist()
             }
             item {
-                DefaultPlaylistsItem()
+                DefaultPlaylistsItem(defaultPlaylistSongsCount)
             }
 
             items(playlists) {
@@ -92,11 +91,18 @@ fun MyMusicPlaylistsItems(playlists: SavedPlaylistEntity) {
 
         Spacer(Modifier.height(5.dp))
         TextThin(playlists.name, Modifier.padding(horizontal = 4.dp), singleLine = true, size = 14)
+        Spacer(Modifier.height(2.dp))
+        TextThin(
+            "${playlists.items} ${stringResource(R.string.tracks).lowercase()}",
+            Modifier.padding(horizontal = 4.dp),
+            singleLine = true,
+            size = 13
+        )
     }
 }
 
 @Composable
-fun DefaultPlaylistsItem() {
+fun DefaultPlaylistsItem(count: Int) {
     Column(
         Modifier
             .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
@@ -113,7 +119,19 @@ fun DefaultPlaylistsItem() {
         }
 
         Spacer(Modifier.height(5.dp))
-        TextThin(stringResource(R.string.playlists), singleLine = true, size = 14)
+        TextThin(
+            stringResource(R.string.playlists),
+            Modifier.padding(horizontal = 4.dp),
+            singleLine = true,
+            size = 14
+        )
+        Spacer(Modifier.height(2.dp))
+        TextThin(
+            "$count ${stringResource(R.string.tracks).lowercase()}",
+            Modifier.padding(horizontal = 4.dp),
+            singleLine = true,
+            size = 13
+        )
     }
 }
 
