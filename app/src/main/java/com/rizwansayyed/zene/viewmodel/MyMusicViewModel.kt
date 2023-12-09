@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
+import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
@@ -39,6 +40,9 @@ class MyMusicViewModel @Inject constructor(
     var savePlaylists by mutableStateOf<Flow<List<SavedPlaylistEntity>>>(flowOf(emptyList()))
         private set
 
+    var offlineSongsLists by mutableStateOf<Flow<List<OfflineDownloadedEntity>>>(flowOf(emptyList()))
+        private set
+
     var defaultPlaylistSongs by mutableIntStateOf(0)
         private set
 
@@ -46,6 +50,7 @@ class MyMusicViewModel @Inject constructor(
         recentPlayedSongs()
         savedPlaylist()
         defaultPlaylistSongs()
+        offlineDownloadSongs()
     }
 
     private fun recentPlayedSongs() = viewModelScope.launch(Dispatchers.IO) {
@@ -76,6 +81,16 @@ class MyMusicViewModel @Inject constructor(
             defaultPlaylistSongs = 0
         }.collectLatest {
             defaultPlaylistSongs = it
+        }
+    }
+
+    private fun offlineDownloadSongs() = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.offlineDownloadedSongs().onStart {
+            offlineSongsLists = flowOf(emptyList())
+        }.catch {
+            offlineSongsLists = flowOf(emptyList())
+        }.collectLatest {
+            offlineSongsLists = it
         }
     }
 }

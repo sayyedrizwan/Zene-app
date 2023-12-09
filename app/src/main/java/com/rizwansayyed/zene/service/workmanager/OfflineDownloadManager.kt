@@ -115,6 +115,7 @@ class OfflineDownloadManager @AssistedInject constructor(
         }
 
         val songDownloadPathTemp = File(context.filesDir, "download_songs_temp").apply {
+            if (exists()) deleteRecursively()
             mkdirs()
         }
 

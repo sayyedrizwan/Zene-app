@@ -177,6 +177,7 @@
     <string name="clear_cache_sure">Are you sure want to clear the cache? Not any personal saved data will be eared.</string>
     <string name="history">History</string>
     <string name="no_song_in_your_history">No Song in your History</string>
+    <string name="no_offline_downloaded_song_available">No offline downloaded song available</string>
     <string name="sign_in_on_zene_web">Sign-in on Zene Web</string>
     <string name="scan_qr_at_enjoy_sign_in">You can enjoy Zene free music on Web, IOS, Windows, iPad, etc. Just visit %s and enjoy the music and scan the qr to sync your suggestions, playlist, history, song suggestion on the Zene Website.</string>
 </resources>

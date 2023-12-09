@@ -22,6 +22,9 @@
 
     <uses-permission android:name="android.media.action.DISPLAY_AUDIO_EFFECT_CONTROL_PANEL" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
 
     <application
         android:name=".di.ApplicationModule"
@@ -44,10 +47,10 @@
             android:name=".presenter.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Zene">
+            android:theme="@style/Theme.Zene"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -73,7 +76,20 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".service.alarm.AlarmReceiverSong" />
+        <receiver android:name=".receivers.AlarmReceiverSong" />
+
+        <receiver
+            android:name=".receivers.RebootDeviceReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1">
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.intent.action.REBOOT"/>
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
