@@ -59,10 +59,11 @@ import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun MusicPlaylistDialog(v: MusicPlayerList, close: () -> Unit) {
+fun MusicPlaylistDialog(v: MusicPlayerList?, close: () -> Unit) {
     val sheetState = rememberModalBottomSheetState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     ModalBottomSheet(
         close, Modifier.fillMaxWidth(), sheetState,
@@ -74,7 +75,7 @@ fun MusicPlaylistDialog(v: MusicPlayerList, close: () -> Unit) {
 
 
 @Composable
-fun MusicPlaylistSheetView(v: MusicPlayerList) {
+fun MusicPlaylistSheetView(v: MusicPlayerList?) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val listState = rememberLazyGridState()
     val songInfo by playerViewModel.playlistSongsInfo.collectAsState(null)
@@ -90,14 +91,18 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                 TextSemiBold(stringResource(R.string.playlists), Modifier.weight(1f), size = 36)
 
-                if (songInfo?.addedPlaylistIds?.contains(DEFAULT_PLAYLIST_ITEMS) == true)
-                    SmallIcons(R.drawable.ic_tick, 26, 0) {
-                        playerViewModel.addRmSongToPlaylist(v, true, DEFAULT_PLAYLIST_ITEMS, null)
-                    }
-                else
-                    SmallIcons(R.drawable.ic_layer_add, 26, 0) {
-                        playerViewModel.addRmSongToPlaylist(v, false, DEFAULT_PLAYLIST_ITEMS, null)
-                    }
+                if (v != null) {
+                    if (songInfo?.addedPlaylistIds?.contains(DEFAULT_PLAYLIST_ITEMS) == true)
+                        SmallIcons(R.drawable.ic_tick, 26, 0) {
+                            playerViewModel
+                                .addRmSongToPlaylist(v, true, DEFAULT_PLAYLIST_ITEMS, null)
+                        }
+                    else
+                        SmallIcons(R.drawable.ic_layer_add, 26, 0) {
+                            playerViewModel
+                                .addRmSongToPlaylist(v, false, DEFAULT_PLAYLIST_ITEMS, null)
+                        }
+                }
 
                 Spacer(Modifier.width(5.dp))
             }
@@ -111,25 +116,30 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
             AddPlaylistItems(playerViewModel)
         }
 
-        if (playerViewModel.playlistLists.size == 0)
-            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-                NoPlaylistFound()
-            }
-        else {
-            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-                Spacer(Modifier.height(100.dp))
-            }
-            items(playerViewModel.playlistLists, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
-                val isAdded = songInfo?.addedPlaylistIds?.contains("${it.id},") == true
-                PlaylistMusicItems(it, isAdded) {
-                    playerViewModel
-                        .addRmSongToPlaylist(v, isAdded, "${it.id},", it)
+        if (v != null) {
+            if (playerViewModel.playlistLists.size == 0)
+                item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                    NoPlaylistFound()
+                }
+            else {
+                item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                    Spacer(Modifier.height(100.dp))
+                }
+                items(playerViewModel.playlistLists, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+                    val isAdded = songInfo?.addedPlaylistIds?.contains("${it.id},") == true
+                    PlaylistMusicItems(it, isAdded) {
+                        playerViewModel
+                            .addRmSongToPlaylist(v, isAdded, "${it.id},", it)
+                    }
+                }
+                item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                    Spacer(Modifier.height(100.dp))
                 }
             }
+        } else
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
                 Spacer(Modifier.height(100.dp))
             }
-        }
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(80.dp))
@@ -137,20 +147,24 @@ fun MusicPlaylistSheetView(v: MusicPlayerList) {
     }
 
     LaunchedEffect(listState.isScrollInProgress) {
-        val layoutInfo = listState.layoutInfo
-        val visibleItemsInfo = layoutInfo.visibleItemsInfo
-        val lastVisibleItemIndex = visibleItemsInfo.lastOrNull()?.index ?: -1
+        if (v != null) {
+            val layoutInfo = listState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+            val lastVisibleItemIndex = visibleItemsInfo.lastOrNull()?.index ?: -1
 
-        if (lastVisibleItemIndex + visibleItemsInfo.size >= playerViewModel.playlistLists.size) {
-            playerViewModel.allPlaylists(false)
+            if (lastVisibleItemIndex + visibleItemsInfo.size >= playerViewModel.playlistLists.size) {
+                playerViewModel.allPlaylists(false)
+            }
         }
     }
 
 
     LaunchedEffect(Unit) {
-        playerViewModel.playlistSongsInfo(v.songID ?: "")
-        delay(1.seconds)
-        playerViewModel.allPlaylists(true)
+        if (v != null) {
+            playerViewModel.playlistSongsInfo(v.songID ?: "")
+            delay(1.seconds)
+            playerViewModel.allPlaylists(true)
+        }
     }
 }
 
@@ -226,6 +240,7 @@ fun AddPlaylistItems(playerViewModel: PlayerViewModel) {
     val keyboard = LocalSoftwareKeyboardController.current
 
     val error = stringResource(R.string.error_creating_playlist)
+    val playlistCreated = stringResource(R.string.playlist_created_successfully)
     val nameAlreadyUsed = stringResource(R.string.playlist_name_already_in_use)
 
     Row(
@@ -270,6 +285,7 @@ fun AddPlaylistItems(playerViewModel: PlayerViewModel) {
             is DataResponse.Error -> error.toast()
             DataResponse.Loading -> {}
             is DataResponse.Success -> if (v.item) {
+                playlistCreated.toast()
                 text = ""
                 keyboard?.hide()
             } else

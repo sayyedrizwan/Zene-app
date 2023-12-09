@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.presenter.ui.home.mymusic
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +36,7 @@ import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 
 @Composable
@@ -115,9 +120,12 @@ fun DefaultPlaylistsItem() {
 
 @Composable
 fun AddNewPlaylist() {
+    var playlistAddDialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
+            .clickable { playlistAddDialog = true }
             .width(140.dp)
     ) {
         Column(
@@ -138,5 +146,10 @@ fun AddNewPlaylist() {
             stringResource(R.string.new_playlist), Modifier.fillMaxWidth(), true,
             singleLine = true, size = 14
         )
+    }
+
+
+    if (playlistAddDialog) MusicPlaylistDialog(null) {
+        playlistAddDialog = false
     }
 }

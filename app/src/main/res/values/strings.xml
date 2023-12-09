@@ -76,6 +76,7 @@
     <string name="new_playlist">New Playlist</string>
     <string name="create_new_playlist">Create new playlist</string>
     <string name="error_creating_playlist">Error creating playlist, try again later.</string>
+    <string name="playlist_created_successfully">Playlist created successfully.</string>
     <string name="playlist_name_already_in_use">Playlist name already in use</string>
     <string name="playlist_title">Playlist title</string>
     <string name="enter_a_valid_playlist_name">Enter a valid playlist name</string>

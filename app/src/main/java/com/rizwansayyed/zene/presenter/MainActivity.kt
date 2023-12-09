@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -87,6 +89,7 @@ import kotlin.time.Duration.Companion.seconds
 // add insta shop items on artists page.
 // make smooth music player view opener
 // privacy policy viewer
+// all edittext are hiding behind keyboard
 
 // search radio too in search view
 

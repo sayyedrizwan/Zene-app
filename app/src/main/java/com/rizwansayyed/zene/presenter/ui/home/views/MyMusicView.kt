@@ -14,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +26,7 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicPlaylistsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +36,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun MyMusicView() {
     val myMusic: MyMusicViewModel = hiltViewModel()
+
     val userAuth by userAuthData.collectAsState(initial = runBlocking(Dispatchers.IO) { userAuthData.first() })
 
     LazyVerticalGrid(
@@ -57,9 +62,10 @@ fun MyMusicView() {
             MyMusicPlaylistsList(myMusic)
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            Spacer(Modifier.height(150.dp))
+            Spacer(Modifier.height(200.dp))
         }
     }
+
 
     LaunchedEffect(Unit) {
         myMusic.init()
