@@ -14,8 +14,10 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.doOfflineDownloadWifiSettings
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
+import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.downloadAFileFromURL
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImpl
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.Utils.ExtraUtils.DOWNLOAD_SONG_WORKER
@@ -40,6 +42,7 @@ class OfflineDownloadManager @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val songDownloader: SongDownloaderInterface,
+    private val youtubeAPIImpl: YoutubeAPIImpl,
     private val roomDb: RoomDBInterface
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -47,6 +50,26 @@ class OfflineDownloadManager @AssistedInject constructor(
         return withContext(Dispatchers.IO) {
             val songId =
                 inputData.getString(Intent.EXTRA_TEXT) ?: return@withContext Result.success()
+            var offlineEntity = roomDb.offlineSongInfo(songId).first()
+            val songInfo = youtubeAPIImpl.songDetail(songId).first()
+
+            if (offlineEntity == null)
+                offlineEntity = OfflineDownloadedEntity(
+                    songInfo.pId ?: "",
+                    songInfo.name ?: "",
+                    songInfo.artists ?: "",
+                    songInfo.thumbnail ?: "",
+                    "", System.currentTimeMillis(), 0
+                )
+            else {
+                offlineEntity.songName = songInfo.name ?: ""
+                offlineEntity.songArtists = songInfo.artists ?: ""
+                offlineEntity.thumbnail = songInfo.thumbnail ?: ""
+                offlineEntity.timestamp = System.currentTimeMillis()
+            }
+
+            roomDb.insert(offlineEntity)
+
             val force = inputData.getBoolean(DOWNLOAD_SONG_WORKER, false)
 
             val file = File(songDownloadPathTemp, "$songId.mp3")

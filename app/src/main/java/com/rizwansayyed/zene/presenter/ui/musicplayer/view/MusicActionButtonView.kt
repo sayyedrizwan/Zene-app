@@ -196,7 +196,6 @@ fun OfflineSongDownloadButton(
 
     fun startDownloading() {
         p?.v?.let {
-            playerViewModel.addOfflineSong(it)
             startOfflineDownloadWorkManager(it.songID, forceDownloadDialog)
         }
     }

@@ -7,10 +7,10 @@ import com.rizwansayyed.zene.data.utils.DBNAME.OFFLINE_DOWNLOADED_SONGS_DB
 @Entity(tableName = OFFLINE_DOWNLOADED_SONGS_DB)
 data class OfflineDownloadedEntity(
     @PrimaryKey(autoGenerate = false) val songId: String,
-    val songName: String,
-    val songArtists: String,
+    var songName: String,
+    var songArtists: String,
     var thumbnail: String,
     var songPath: String,
-    val timestamp: Long,
+    var timestamp: Long,
     var progress: Int,
 )

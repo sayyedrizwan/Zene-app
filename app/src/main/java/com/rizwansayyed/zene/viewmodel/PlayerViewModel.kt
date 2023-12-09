@@ -202,21 +202,6 @@ class PlayerViewModel @Inject constructor(
         }
 
 
-    fun addOfflineSong(player: MusicPlayerList) = viewModelScope.launch(Dispatchers.IO) {
-        if (roomDb.offlineSongInfo(player.songID ?: "").first() != null) return@launch
-
-        val offline = OfflineDownloadedEntity(
-            player.songID ?: "",
-            player.songName ?: "",
-            player.artists ?: "",
-            player.thumbnail ?: "",
-            "", System.currentTimeMillis(), 0
-        )
-
-        roomDb.addOfflineSongDownload(offline).collect()
-    }
-
-
     fun addOfflineSong(player: MusicData) = viewModelScope.launch(Dispatchers.IO) {
         if (roomDb.offlineSongInfo(player.pId ?: "").first() != null) return@launch
 
