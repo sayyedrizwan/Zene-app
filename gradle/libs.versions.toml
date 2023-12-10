@@ -20,6 +20,22 @@ js-evaluator = "v6.0.0"
 webkit-version = "1.9.0"
 jsoup-version = "1.16.1"
 ok-http-version = "4.10.0"
+work-manager-version = "2.9.0"
+firebase-bom-version = "32.6.0"
+paging-version = "3.2.1"
+media3-version = "1.2.0"
+
+#plugins
+plugin-android-app-version = "8.1.4"
+plugin-kotlin-android = "1.9.21"
+plugin-hilt = "2.48"
+plugin-ksp = "1.9.21-1.0.15"
+plugin-google-services = "4.4.0"
+
+
+
+
+
 
 
 
@@ -48,10 +64,13 @@ ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
 
-#hilt
+#hilt/workmanager
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt-version" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt-version" }
-hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose-version" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt-version" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose-version" }
+work-manager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work-manager-version" }
+hilt-work-manager = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-compose-version" }
+hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-compose-version" }
 
 
 #single-dep
@@ -86,3 +105,43 @@ moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "mo
 #okhttp
 okttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "ok-http-version" }
 okttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+
+
+#firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom-version" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config-ktx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+
+
+#paging
+paging-runtime = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging-version" }
+
+
+
+#exoplayer
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3-version" }
+media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3-version" }
+media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3-version" }
+media3-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3-version" }
+media3-legacy = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "v1" }
+
+
+
+
+
+
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "plugin-android-app-version" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "plugin-kotlin-android" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "plugin-hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "plugin-ksp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "plugin-google-services" }
+
+
+
+
+
+
+
