@@ -72,6 +72,75 @@ android {
 }
 
 dependencies {
+
+//    implementation(libs.kotlin.core)
+//    implementation(libs.lifecycle.runtime)
+//    implementation(libs.activity.compose)
+//
+//    testImplementation(libs.junit)
+//    androidTestImplementation(libs.ext.junit)
+//    androidTestImplementation(libs.expresso)
+//    androidTestImplementation(platform(libs.android.compose))
+//    androidTestImplementation(libs.ui.test)
+//    androidTestImplementation(libs.ui.tooling)
+//    androidTestImplementation(libs.ui.manifest)
+//
+//
+//    implementation(platform(libs.android.compose))
+//
+//    implementation(libs.compose.ui)
+//    implementation(libs.compose.ui.util)
+//    implementation(libs.compose.ui.graphics)
+//    implementation(libs.compose.ui.tooling.preview)
+//    implementation(libs.material3)
+//
+//
+//
+//
+//    implementation(libs.hilt)
+//    implementation(libs.hilt.compose)
+//    kapt(libs.hilt.compiler)
+//
+//
+//
+//    implementation(libs.coil)
+//    implementation(libs.datastore)
+//
+//
+//
+//    implementation(libs.coroutines.android)
+//    implementation(libs.coroutines.core)
+//
+//
+//
+//    implementation(libs.room)
+//    implementation(libs.room.compiler)
+//
+//
+//
+//    implementation(libs.retrofit)
+//    implementation(libs.retrofit.moshi)
+//    implementation(libs.retrofit.gson)
+//    implementation(libs.retrofit.scalars)
+//    implementation(libs.retrofit.simplexml)
+//    ksp(libs.moshi.codegen)
+//    implementation(libs.moshi)
+//
+//
+//    implementation(libs.browser)
+//    implementation(libs.js.evaluator)
+//
+//
+//
+//    implementation(libs.web)
+//    implementation(libs.jsoup)
+//
+//
+//
+//    implementation(platform(libs.okttp.bom))
+//    implementation(libs.okttp)
+
+
     implementation("androidx.core:core-ktx:${DependenciesVersion.KOTLIN_VERSION.version}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${DependenciesVersion.RUNTIME_KTX.version}")
     implementation("androidx.activity:activity-compose:${DependenciesVersion.ACTIVITY_COMPOSE.version}")
@@ -138,14 +207,15 @@ dependencies {
 
     implementation("androidx.paging:paging-runtime-ktx:${DependenciesVersion.PAGING.version}")
     implementation("androidx.paging:paging-compose:${DependenciesVersion.PAGING_COMPOSE.version}")
+
 }
 
 enum class CompileSDK(val version: Int) {
-    MAX_SDK(34), MIN_SDK(24), VERSION_CODE(23)
+    MAX_SDK(34), MIN_SDK(24), VERSION_CODE(24)
 }
 
 enum class AndroidVersion(val version: String) {
-    PACKAGE_NAME("com.rizwansayyed.zene"), APP_VERSION("1.0.000352"), KOTLIN_COMPILE("1.5.3"),
+    PACKAGE_NAME("com.rizwansayyed.zene"), APP_VERSION("1.0.000354"), KOTLIN_COMPILE("1.5.3"),
     ANDROID_VERSION("8.1.1")
 }
 

@@ -1,0 +1,88 @@
+[versions]
+v1 = "1.0.0"
+kotlin-version = "1.12.0"
+runtime-version = "2.6.2"
+activity-compose-version = "1.8.1"
+compose-version = "2023.10.01"
+compose-ui-util-version = "1.5.4"
+junit-version = "4.13.2"
+ext-junit-version = "1.1.5"
+espresso-version = "3.5.1"
+hilt-version = "2.48.1"
+hilt-compose-version = "1.1.0"
+coil-compose-version = "2.4.0"
+coroutines-version = "1.7.3"
+room-version = "2.6.1"
+retrofit-version = "2.9.0"
+moshi-version = "1.14.0"
+browser-version = "1.7.0"
+js-evaluator = "v6.0.0"
+webkit-version = "1.9.0"
+jsoup-version = "1.16.1"
+ok-http-version = "4.10.0"
+
+
+
+[libraries]
+#core
+kotlin-core = { group = "androidx.core", name = "core-ktx", version.ref = "kotlin-version" }
+lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "runtime-version" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose-version" }
+
+
+#compose ui
+android-compose = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-version" }
+compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose-ui-util-version" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+material3 = { group = "androidx.compose.material3", name = "material3" }
+
+
+#testing
+junit = { group = "junit", name = "junit", version.ref = "junit-version" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "ext-junit-version" }
+expresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-version" }
+ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+ui-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+
+#hilt
+hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt-version" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt-version" }
+hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose-version" }
+
+
+#single-dep
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil-compose-version" }
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "v1" }
+browser = { group = "androidx.browser", name = "browser", version.ref = "browser-version" }
+js-evaluator = { group = "com.github.evgenyneu", name = "js-evaluator-for-android", version.ref = "js-evaluator" }
+web = { group = "androidx.webkit", name = "webkit", version.ref = "webkit-version" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup-version" }
+
+
+#coroutines
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines-version" }
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines-version" }
+
+
+#room
+room = { group = "androidx.room", name = "room-ktx", version.ref = "room-version" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room-version" }
+
+
+#retrofit
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit-version" }
+retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit-version" }
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit-version" }
+retrofit-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit-version" }
+retrofit-simplexml = { group = "com.squareup.retrofit2", name = "converter-simplexml", version.ref = "retrofit-version" }
+moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi-version" }
+moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi-version" }
+
+
+#okhttp
+okttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "ok-http-version" }
+okttp = { group = "com.squareup.okhttp3", name = "okhttp" }
