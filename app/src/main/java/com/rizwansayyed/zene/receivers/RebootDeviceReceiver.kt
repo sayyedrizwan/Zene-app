@@ -31,15 +31,5 @@ class RebootDeviceReceiver : BroadcastReceiver() {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
         }
-
-        context ?: return
-
-        NotificationViewManager(context)
-            .title("Opnedd reboottt")
-            .body("Opnedd reboottt")
-            .nIds(
-                NotificationViewManager.DEFAULT_CHANNEL_ID,
-                NotificationViewManager.DEFAULT_CHANNEL
-            ).generate()
     }
 }

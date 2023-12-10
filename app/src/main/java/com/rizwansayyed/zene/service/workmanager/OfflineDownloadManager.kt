@@ -68,7 +68,7 @@ class OfflineDownloadManager @AssistedInject constructor(
                 offlineEntity.timestamp = System.currentTimeMillis()
             }
 
-            roomDb.insert(offlineEntity)
+            roomDb.insert(offlineEntity).first()
 
             val force = inputData.getBoolean(DOWNLOAD_SONG_WORKER, false)
 
