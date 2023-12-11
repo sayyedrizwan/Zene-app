@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,66 +68,69 @@ fun SongsSuggestionsForYou() {
 }
 
 @Composable
-fun SongsYouMayLikeList(itemList: List<List<MusicData>>) {
+fun SongYouMayLikeItems(i: Int, item: MusicData, itemList: List<MusicData>) {
     val width = LocalConfiguration.current.screenWidthDp
     val homeNavModel: HomeNavViewModel = hiltViewModel()
+    Column(
+        Modifier
+            .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
+            .width((width / 3 + 25).dp)
+            .clickable {
+                addAllPlayer(itemList.toTypedArray(), i)
+            }
+    ) {
+        Box(
+            Modifier
+                .clip(RoundedCornerShape(2))
+                .size((width / 3 + 20).dp)
+        ) {
+            AsyncImage(
+                item.thumbnail,
+                "",
+                Modifier
+                    .clip(RoundedCornerShape(2))
+                    .fillMaxSize()
+            )
 
+            Spacer(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.linearGradient(
+                            listOf(Color.Transparent, Color.Transparent, MainColor),
+                            start = Offset(0f, Float.POSITIVE_INFINITY),
+                            end = Offset(Float.POSITIVE_INFINITY, 0f)
+                        )
+                    )
+            )
+
+            MenuIcon(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(5.dp)
+            ) {
+                homeNavModel.setSongDetailsDialog(item)
+            }
+        }
+
+        Spacer(Modifier.height(7.dp))
+
+        TextSemiBold(item.name ?: "", singleLine = true, size = 15)
+
+        Spacer(Modifier.height(7.dp))
+
+        TextThin(item.artists ?: "", singleLine = true, size = 13)
+
+        Spacer(Modifier.height(10.dp))
+    }
+}
+
+@Composable
+fun SongsYouMayLikeList(itemList: List<List<MusicData>>) {
     itemList.forEach { d ->
         LazyRow(Modifier.fillMaxWidth()) {
             itemsIndexed(d) { i, item ->
-                Column(
-                    Modifier
-                        .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
-                        .width((width / 3 + 25).dp)
-                        .clickable {
-                            val list = itemList.flatten()
-                            addAllPlayer(list.toTypedArray(), i)
-                        }
-                ) {
-                    Box(
-                        Modifier
-                            .clip(RoundedCornerShape(2))
-                            .size((width / 3 + 20).dp)
-                    ) {
-                        AsyncImage(
-                            item.thumbnail,
-                            "",
-                            Modifier
-                                .clip(RoundedCornerShape(2))
-                                .fillMaxSize()
-                        )
-
-                        Spacer(
-                            Modifier
-                                .fillMaxSize()
-                                .background(
-                                    brush = Brush.linearGradient(
-                                        listOf(Color.Transparent, Color.Transparent, MainColor),
-                                        start = Offset(0f, Float.POSITIVE_INFINITY),
-                                        end = Offset(Float.POSITIVE_INFINITY, 0f)
-                                    )
-                                )
-                        )
-
-                        MenuIcon(
-                            Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(5.dp)
-                        ) {
-                            homeNavModel.setSongDetailsDialog(item)
-                        }
-                    }
-
-                    Spacer(Modifier.height(7.dp))
-
-                    TextSemiBold(item.name ?: "", singleLine = true, size = 15)
-
-                    Spacer(Modifier.height(7.dp))
-
-                    TextThin(item.artists ?: "", singleLine = true, size = 13)
-
-                    Spacer(Modifier.height(10.dp))
-                }
+                SongYouMayLikeItems(i, item, itemList.flatten())
             }
         }
     }

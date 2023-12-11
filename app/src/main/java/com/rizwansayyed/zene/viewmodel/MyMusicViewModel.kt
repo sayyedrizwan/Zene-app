@@ -37,6 +37,9 @@ class MyMusicViewModel @Inject constructor(
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
         private set
 
+    var recentSongPlayedLoadMore by mutableStateOf(true)
+        private set
+
     var savePlaylists by mutableStateOf<Flow<List<SavedPlaylistEntity>>>(flowOf(emptyList()))
         private set
 
@@ -46,7 +49,8 @@ class MyMusicViewModel @Inject constructor(
     var defaultPlaylistSongs by mutableIntStateOf(0)
         private set
 
-    fun init(){
+    fun init() {
+        recentSongPlayedLoadMore = true
         recentPlayedSongs()
         savedPlaylist()
         defaultPlaylistSongs()
