@@ -92,6 +92,7 @@ import kotlin.time.Duration.Companion.seconds
 // all edittext are hiding behind keyboard
 
 // search radio too in search view
+// long press options for all views
 
 // progressbar on history songs
 // options menu - set ringtone, set wallpaper,
@@ -243,7 +244,7 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         checkAndClearCache()
-
+        roomViewModel.downloadIfNotDownloaded()
         lifecycleScope.launch(Dispatchers.IO) {
             delay(1.seconds)
             if (timestampDifference(lastAPISyncTime.first()) >= 20) apis()
