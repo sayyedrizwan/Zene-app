@@ -88,6 +88,7 @@
     <string name="waiting_for_wifi">Waiting for Wifi</string>
     <string name="downloading__">Downloading…</string>
     <string name="download">Download</string>
+    <string name="downloading_please_wait">Downloading… Please wait…</string>
     <string name="offline_downloaded">Offline Downloaded</string>
     <string name="show_playing_song_on_lock_screen">Show App Playing Song on Lockscreen</string>
     <string name="set_wallpaper_on_song_playing">Set Wallpaper on Song Playing</string>
@@ -181,4 +182,5 @@
     <string name="no_offline_downloaded_song_available">No offline downloaded song available</string>
     <string name="sign_in_on_zene_web">Sign-in on Zene Web</string>
     <string name="scan_qr_at_enjoy_sign_in">You can enjoy Zene free music on Web, IOS, Windows, iPad, etc. Just visit %s and enjoy the music and scan the qr to sync your suggestions, playlist, history, song suggestion on the Zene Website.</string>
+    <string name="menu">Menu</string>
 </resources>

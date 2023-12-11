@@ -58,14 +58,24 @@ class MyMusicViewModel @Inject constructor(
     var offlineSongsLists by mutableStateOf<Flow<List<OfflineDownloadedEntity>>>(flowOf(emptyList()))
         private set
 
+
+    var offlineSongsLoadList = mutableStateListOf<OfflineDownloadedEntity>()
+        private set
+
+    var offlineSongsLoadMore by mutableStateOf(true)
+        private set
+
+
     var defaultPlaylistSongs by mutableIntStateOf(0)
         private set
 
     fun init() {
+        offlineSongsLoadList.clear()
         savePlaylistsLoadList.clear()
         recentSongPlayedLoadList.clear()
         recentSongPlayedLoadMore = true
         savePlaylistsLoadMore = true
+        offlineSongsLoadMore = true
         recentPlayedSongs()
         savedPlaylist()
         defaultPlaylistSongs()
@@ -101,7 +111,7 @@ class MyMusicViewModel @Inject constructor(
     }
 
     fun savedPlaylistLoadList(offset: Int) = viewModelScope.launch(Dispatchers.IO) {
-        roomDb.allCreatedPlaylists(offset).catch {}.collectLatest {
+        roomDb.allPlaylists(offset).catch {}.collectLatest {
             savePlaylistsLoadMore = it.size >= OFFSET_LIMIT
 
             savePlaylistsLoadList.addAll(it)
@@ -126,6 +136,15 @@ class MyMusicViewModel @Inject constructor(
             offlineSongsLists = flowOf(emptyList())
         }.collectLatest {
             offlineSongsLists = it
+        }
+    }
+
+
+    fun offlineDownloadSongs(int: Int) = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.offlineDownloadedSongs(int).catch {}.collectLatest {
+            offlineSongsLoadMore = it.size >= OFFSET_LIMIT
+
+            offlineSongsLoadList.addAll(it)
         }
     }
 }

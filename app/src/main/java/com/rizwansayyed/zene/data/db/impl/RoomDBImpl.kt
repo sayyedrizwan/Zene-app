@@ -41,11 +41,6 @@ class RoomDBImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun offlineDownloadedSongs() = flow {
-        emit(offlineDownloaded.recentList())
-    }.flowOn(Dispatchers.IO)
-
-
     override suspend fun insert(v: OfflineDownloadedEntity) = flow {
         emit(offlineDownloaded.insertOrUpdate(v))
     }.flowOn(Dispatchers.IO)
@@ -86,6 +81,11 @@ class RoomDBImpl @Inject constructor(
         emit(savedPlaylistDao.pagingCreatedPlaylist(limit))
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun allPlaylists(limit: Int) = flow {
+        emit(savedPlaylistDao.pagingPlaylist(limit))
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun playlistSongInfo(songId: String) = flow {
         emit(playlistSongsDao.info(songId))
     }.flowOn(Dispatchers.IO)
@@ -112,6 +112,15 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun nonDownloadedSongs() = flow {
         emit(offlineDownloaded.nonDownloadedSongs())
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun offlineDownloadedSongs() = flow {
+        emit(offlineDownloaded.recentList())
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun offlineDownloadedSongs(offset: Int) = flow {
+        emit(offlineDownloaded.recentList(offset))
     }.flowOn(Dispatchers.IO)
 
 

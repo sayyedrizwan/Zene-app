@@ -227,7 +227,9 @@ class MainActivity : ComponentActivity() {
         override fun onAvailable(network: Network) {
             navViewModel.checkAndSetOnlineStatus()
             navViewModel.resetConfig()
-            apis()
+            lifecycleScope.launch(Dispatchers.IO) {
+                apis()
+            }
         }
     }
 
@@ -242,7 +244,7 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         checkAndClearCache()
 
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             delay(1.seconds)
             if (timestampDifference(lastAPISyncTime.first()) >= 20) apis()
         }
@@ -258,7 +260,8 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-    private fun apis() {
+    private suspend fun apis() {
+        delay(2.seconds)
         homeApiViewModel.init()
         jsoupScrapViewModel.init()
         roomViewModel.init()

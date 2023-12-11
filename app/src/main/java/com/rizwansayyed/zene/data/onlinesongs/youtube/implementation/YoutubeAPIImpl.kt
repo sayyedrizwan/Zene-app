@@ -848,7 +848,7 @@ class YoutubeAPIImpl @Inject constructor(
         val r = youtubeAPI
             .youtubeArtistsMerchandiseResponse(ytMerchandiseInfoJsonBody(ip, vId), key)
 
-        r.contents?.twoColumnWatchNextResults?.results?.results?.contents?.forEachIndexed { i, it ->
+        r.contents?.twoColumnWatchNextResults?.results?.results?.contents?.forEach {
             if (it?.merchandiseShelfRenderer?.title?.lowercase()?.contains("shop") == true &&
                 it.merchandiseShelfRenderer.title.lowercase().contains("store")
             ) it.merchandiseShelfRenderer.items?.forEach { m ->

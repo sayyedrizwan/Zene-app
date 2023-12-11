@@ -52,8 +52,12 @@ class ApplicationModule : Application(), Configuration.Provider {
         super.onCreate()
         context = this
 
-        if (!ifPlayerServiceNotRunning()) {
-            context.startService(Intent(context, PlayerService::class.java))
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2.seconds)
+            if (!ifPlayerServiceNotRunning()) {
+                context.startService(Intent(context, PlayerService::class.java))
+            }
+            if (isActive) cancel()
         }
 
         Thread.setDefaultUncaughtExceptionHandler { thread, e ->
@@ -74,6 +78,7 @@ class ApplicationModule : Application(), Configuration.Provider {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
+            delay(2.seconds)
             val playerData = musicPlayerData.first()?.apply {
                 show = false
                 songID = ""
@@ -85,7 +90,7 @@ class ApplicationModule : Application(), Configuration.Provider {
             } else {
                 musicPlayerData = flowOf(playerData)
 
-                delay(3.seconds)
+                delay(6.seconds)
 
                 if ((playerData?.songsLists?.size ?: 0) > 0) {
                     var songPosition = 0

@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.extra
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -41,6 +42,7 @@ class LockScreenActivity : ComponentActivity() {
     lateinit var player: ExoPlayer
     private val navViewModel: HomeNavViewModel by viewModels()
 
+    @Suppress("DEPRECATION")
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
@@ -48,6 +50,8 @@ class LockScreenActivity : ComponentActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
         window.addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) setShowWhenLocked(true)
+
 
         setContent {
             ZeneTheme {

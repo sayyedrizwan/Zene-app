@@ -40,7 +40,7 @@ class RoomDbViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            delay(500)
+            delay(2.seconds)
             init()
             albumsYouMayLike(null)
         }
