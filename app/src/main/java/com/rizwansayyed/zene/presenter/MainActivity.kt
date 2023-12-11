@@ -93,7 +93,7 @@ import kotlin.time.Duration.Companion.seconds
 
 // search radio too in search view
 
-
+// progressbar on history songs
 // options menu - set ringtone, set wallpaper,
 
 

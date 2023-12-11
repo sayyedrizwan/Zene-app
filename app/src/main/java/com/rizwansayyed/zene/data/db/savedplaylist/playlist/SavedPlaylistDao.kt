@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.rizwansayyed.zene.data.utils.DBNAME.SAVED_PLAYLIST_DB
-import com.rizwansayyed.zene.data.utils.PAGINATION_PAGE_SIZE
+import com.rizwansayyed.zene.utils.Utils.OFFSET_LIMIT
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,8 +13,7 @@ interface SavedPlaylistDao {
     @Query("SELECT * FROM $SAVED_PLAYLIST_DB ORDER BY timestamp DESC")
     fun list(): Flow<List<SavedPlaylistEntity>>
 
-
-    @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE playlistId is NULL ORDER BY timestamp DESC LIMIT :limit, $PAGINATION_PAGE_SIZE")
+    @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE playlistId is NULL ORDER BY timestamp DESC LIMIT :limit, $OFFSET_LIMIT")
     suspend fun pagingCreatedPlaylist(limit: Int): List<SavedPlaylistEntity>
 
     @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE LOWER(name) = :n")

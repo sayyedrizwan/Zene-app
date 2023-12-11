@@ -168,12 +168,3 @@ dependencies {
     implementation(libs.media3.legacy)
 
 }
-
-//enum class CompileSDK(val version: Int) {
-//    MAX_SDK(34), MIN_SDK(24), VERSION_CODE(24)
-//}
-//
-//enum class AndroidVersion(val version: String) {
-//    PACKAGE_NAME(), APP_VERSION("1.0.000354"), KOTLIN_COMPILE("1.5.3"),
-//    ANDROID_VERSION("8.1.1")
-//}

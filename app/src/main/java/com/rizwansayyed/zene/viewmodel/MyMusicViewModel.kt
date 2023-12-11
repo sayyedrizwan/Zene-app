@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScra
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.pinterest.implementation.PinterestAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.utils.Utils.OFFSET_LIMIT
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -37,11 +39,21 @@ class MyMusicViewModel @Inject constructor(
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
         private set
 
+    var recentSongPlayedLoadList = mutableStateListOf<RecentPlayedEntity>()
+        private set
+
     var recentSongPlayedLoadMore by mutableStateOf(true)
         private set
 
     var savePlaylists by mutableStateOf<Flow<List<SavedPlaylistEntity>>>(flowOf(emptyList()))
         private set
+
+    var savePlaylistsLoadList = mutableStateListOf<SavedPlaylistEntity>()
+        private set
+
+    var savePlaylistsLoadMore by mutableStateOf(true)
+        private set
+
 
     var offlineSongsLists by mutableStateOf<Flow<List<OfflineDownloadedEntity>>>(flowOf(emptyList()))
         private set
@@ -50,7 +62,10 @@ class MyMusicViewModel @Inject constructor(
         private set
 
     fun init() {
+        savePlaylistsLoadList.clear()
+        recentSongPlayedLoadList.clear()
         recentSongPlayedLoadMore = true
+        savePlaylistsLoadMore = true
         recentPlayedSongs()
         savedPlaylist()
         defaultPlaylistSongs()
@@ -67,6 +82,14 @@ class MyMusicViewModel @Inject constructor(
         }
     }
 
+    fun recentPlayedLoadMore(offset: Int) = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.recentPlayedList(offset).catch { }.collectLatest {
+            recentSongPlayedLoadMore = it.size >= OFFSET_LIMIT
+
+            recentSongPlayedLoadList.addAll(it)
+        }
+    }
+
     private fun savedPlaylist() = viewModelScope.launch(Dispatchers.IO) {
         roomDb.savedPlaylists().onStart {
             savePlaylists = flowOf(emptyList())
@@ -74,6 +97,14 @@ class MyMusicViewModel @Inject constructor(
             savePlaylists = flowOf(emptyList())
         }.collectLatest {
             savePlaylists = it
+        }
+    }
+
+    fun savedPlaylistLoadList(offset: Int) = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.allCreatedPlaylists(offset).catch {}.collectLatest {
+            savePlaylistsLoadMore = it.size >= OFFSET_LIMIT
+
+            savePlaylistsLoadList.addAll(it)
         }
     }
 

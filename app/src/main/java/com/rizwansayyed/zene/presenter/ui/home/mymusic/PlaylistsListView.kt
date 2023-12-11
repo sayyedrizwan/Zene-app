@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,18 +37,18 @@ import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
+import com.rizwansayyed.zene.utils.Utils.OFFSET_LIMIT
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 
 @Composable
 fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
     val playlists by myMusic.savePlaylists.collectAsState(emptyList())
     val defaultPlaylistSongsCount = myMusic.defaultPlaylistSongs
+    var page by remember { mutableIntStateOf(0) }
 
     Column(Modifier, Arrangement.Center) {
         Column(Modifier.padding(horizontal = 9.dp)) {
-            TopInfoWithSeeMore(R.string.playlists, null, 50) {
-
-            }
+            TopInfoWithSeeMore(R.string.playlists, null, 50) {}
         }
 
         LazyRow(Modifier.fillMaxSize()) {
@@ -60,6 +61,13 @@ fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
 
             items(playlists) {
                 MyMusicPlaylistsItems(it)
+            }
+
+            if (playlists.size >= OFFSET_LIMIT && myMusic.savePlaylistsLoadMore) item {
+                LoadMoreCircleButtonForHistory {
+                    page += 1
+                    myMusic.savedPlaylistLoadList(page * 50)
+                }
             }
         }
     }

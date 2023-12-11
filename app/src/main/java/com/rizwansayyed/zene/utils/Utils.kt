@@ -47,6 +47,8 @@ import kotlin.system.exitProcess
 
 object Utils {
 
+    const val OFFSET_LIMIT = 50
+
     const val OFFICIAL_EMAIL = "contactcreator@protonmail.com"
 
     val tempEmptyList =

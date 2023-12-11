@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.rizwansayyed.zene.data.utils.DBNAME.RECENT_PLAYED_DB
+import com.rizwansayyed.zene.utils.Utils.OFFSET_LIMIT
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,7 +14,10 @@ interface RecentPlayedDao {
     suspend fun search(songId: String): RecentPlayedEntity?
 
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT :offset")
-    fun recentList(offset: Int): Flow<List<RecentPlayedEntity>>
+    fun recentListLive(offset: Int): Flow<List<RecentPlayedEntity>>
+
+    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT :offset, $OFFSET_LIMIT")
+    suspend fun recentList(offset: Int): List<RecentPlayedEntity>
 
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT :offset")
     suspend fun read(offset: Int): List<RecentPlayedEntity>

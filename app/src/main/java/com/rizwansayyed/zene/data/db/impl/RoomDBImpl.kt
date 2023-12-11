@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDao
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsDao
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
+import com.rizwansayyed.zene.utils.Utils.OFFSET_LIMIT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -23,7 +24,11 @@ class RoomDBImpl @Inject constructor(
 ) : RoomDBInterface {
 
     override suspend fun recentMainPlayed() = flow {
-        emit(recentPlayed.recentList(50))
+        emit(recentPlayed.recentListLive(OFFSET_LIMIT))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun recentPlayedList(offset: Int) = flow {
+        emit(recentPlayed.recentList(offset))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun readRecentPlay(set: Int) = flow {
