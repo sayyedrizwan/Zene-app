@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,28 +22,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.pinnedArtists
+import com.rizwansayyed.zene.domain.PinnedArtistsData
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.theme.Purple80
-import com.rizwansayyed.zene.presenter.theme.urbanistFamily
 import com.rizwansayyed.zene.presenter.ui.LoadingCircle
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
-import com.rizwansayyed.zene.presenter.ui.scaledSp
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
+import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 @Composable
 fun ArtistsNameWithDescription() {
@@ -97,23 +100,42 @@ fun ArtistsNameWithDescription() {
 fun ArtistsButtonView() {
     val artists: ArtistsViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
+    val artistsList by pinnedArtists.collectAsState(emptyArray())
 
     Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
         Row(
             Modifier
                 .padding(10.dp)
-                .clickable {}
+                .clickable {
+                    when (val v = artists.artistsImage) {
+                        is DataResponse.Success -> {
+                            if (artistsList.any { it.artistName.lowercase().trim() == homeNav.selectedArtists.lowercase().trim() }) {
+                                val a = PinnedArtistsData(homeNav.selectedArtists, v.item)
+                                artistsPin(false, a)
+                            }else{
+                                val a = PinnedArtistsData(homeNav.selectedArtists, v.item)
+                                artistsPin(true, a)
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
                 .weight(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MainColor)
                 .padding(vertical = 10.dp, horizontal = 22.dp),
             Arrangement.Center, Alignment.CenterVertically
         ) {
-            SmallIcons(R.drawable.ic_pin, 22, 5)
+            SmallIcons(if (artistsList.any {
+                    it.artistName.lowercase().trim() == homeNav.selectedArtists.lowercase().trim()
+                }) R.drawable.ic_pin_off else R.drawable.ic_pin, 22, 5)
 
             Spacer(Modifier.width(6.dp))
 
-            TextRegular(stringResource(R.string.pin), size = 16)
+            TextRegular(stringResource(if (artistsList.any {
+                    it.artistName.lowercase().trim() == homeNav.selectedArtists.lowercase().trim()
+                }) R.string.unpin else R.string.pin), size = 16)
         }
 
         Row(
@@ -142,7 +164,9 @@ fun ArtistsButtonView() {
     Row(
         Modifier
             .padding(10.dp)
-            .clickable {}
+            .clickable {
+                shareTxt(appUrlSongShare(homeNav.selectedArtists))
+            }
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MainColor)
@@ -155,4 +179,17 @@ fun ArtistsButtonView() {
 
         TextRegular(stringResource(R.string.share), size = 16)
     }
+}
+
+fun artistsPin(add: Boolean, name: PinnedArtistsData) = CoroutineScope(Dispatchers.IO).launch {
+    val arrayList = ArrayList<PinnedArtistsData>()
+    arrayList.addAll(pinnedArtists.first())
+
+    val onPosition = arrayList.lastIndexOf(name)
+    if (onPosition >= 0) arrayList.removeAt(onPosition)
+
+    if (add) arrayList.add(0, name)
+
+    pinnedArtists = flowOf(arrayList.toTypedArray())
+    if (isActive) cancel()
 }

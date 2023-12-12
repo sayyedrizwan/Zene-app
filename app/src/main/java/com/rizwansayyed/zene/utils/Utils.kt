@@ -28,6 +28,7 @@ import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -64,6 +65,11 @@ object Utils {
         fun appUrlSongShare(id: String): String {
             val changeIdToOurs = id.trim()
             return "$APP_URL/s/$changeIdToOurs"
+        }
+
+        fun appUrlArtistsShare(name: String): String {
+            val changeNameToOurs = encryptData(name.trim())
+            return "$APP_URL/a/$changeNameToOurs"
         }
 
     }

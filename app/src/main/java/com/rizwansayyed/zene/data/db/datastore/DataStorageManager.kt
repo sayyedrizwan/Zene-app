@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.FAVOURITE_RADIO_L
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IP_JSON
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LAST_SYNC_TIME
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.MUSIC_PLAYER_DATA
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.PINNED_ARTISTS_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SEARCH_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SELECTED_FAVOURITE_ARTISTS_SONGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.cookiesName
@@ -18,6 +19,7 @@ import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicPlayerData
+import com.rizwansayyed.zene.domain.PinnedArtistsData
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import kotlinx.coroutines.flow.Flow
@@ -95,6 +97,16 @@ object DataStorageManager {
         get() = context.dataStore.data.map { it[LAST_SYNC_TIME] ?: daysOldTimestamp() }
         set(v) = runBlocking {
             context.dataStore.edit { it[LAST_SYNC_TIME] = v.first() }
+        }
+
+    var pinnedArtists: Flow<Array<PinnedArtistsData>>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<PinnedArtistsData>::class.java)
+                .fromJson(it[PINNED_ARTISTS_LIST] ?: ARRAY_LIST) ?: emptyArray()
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(Array<PinnedArtistsData>::class.java).toJson(v.first())
+            context.dataStore.edit { it[PINNED_ARTISTS_LIST] = moshi }
         }
 
 
