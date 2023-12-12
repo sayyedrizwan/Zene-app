@@ -1,80 +1,10 @@
 package com.rizwansayyed.zene.domain.pinterest
 
 data class PinterestSearchResponse(
-    val client_context: ClientContext?,
     val request_identifier: String?,
     val resource: Resource?,
     val resource_response: ResourceResponse?
 ) {
-    data class ClientContext(
-        val analysis_ua: AnalysisUa?,
-        val app_type_detailed: Int?,
-        val app_version: String?,
-        val batch_exp: Boolean?,
-        val browser_locale: String?,
-        val browser_name: String?,
-        val browser_type: Int?,
-        val browser_version: String?,
-        val country: String?,
-        val country_from_hostname: String?,
-        val country_from_ip: String?,
-        val csp_nonce: String?,
-        val current_url: String?,
-        val debug: Boolean?,
-        val deep_link: String?,
-        val enabled_advertiser_countries: List<String?>?,
-        val facebook_token: Any?,
-        val full_path: String?,
-        val http_referrer: String?,
-        val impersonator_user_id: Any?,
-        val invite_code: String?,
-        val invite_sender_id: String?,
-        val is_authenticated: Boolean?,
-        val is_bot: String?,
-        val is_full_page: Boolean?,
-        val is_internal_ip: Boolean?,
-        val is_mobile_agent: Boolean?,
-        val is_sterling_on_steroids: Boolean?,
-        val is_tablet_agent: Boolean?,
-        val language: String?,
-        val locale: String?,
-        val origin: String?,
-        val path: String?,
-        val placed_experiences: Any?,
-        val referrer: Any?,
-        val region_from_ip: String?,
-        val request_host: String?,
-        val request_identifier: String?,
-        val seo_debug: Boolean?,
-        val social_bot: String?,
-        val stage: String?,
-        val sterling_on_steroids_ldap: Any?,
-        val sterling_on_steroids_user_type: Any?,
-        val unauth_id: String?,
-        val user: User?,
-        val user_agent: String?,
-        val user_agent_can_use_native_app: Boolean?,
-        val user_agent_platform: String?,
-        val user_agent_platform_version: Any?,
-        val utm_campaign: Any?,
-        val visible_url: String?
-    ) {
-        data class AnalysisUa(
-            val app_type: Int?,
-            val browser_name: String?,
-            val browser_version: String?,
-            val device: String?,
-            val device_type: Any?,
-            val os_name: String?,
-            val os_version: String?
-        )
-
-        data class User(
-            val ip_country: String?,
-            val ip_region: String?,
-            val unauth_id: String?
-        )
-    }
 
     data class Resource(
         val name: String?,
@@ -98,37 +28,30 @@ data class PinterestSearchResponse(
         val bookmark: String?,
         val code: Int?,
         val `data`: Data?,
+        val display_shoptab: Boolean?,
         val endpoint_name: String?,
         val http_status: Int?,
         val message: String?,
-        val metadata: Metadata?,
         val query_l1_vertical_ids: List<Long?>?,
-        val search_nag: SearchNag?,
-        val searchfeed_tabs: SearchfeedTabs?,
         val status: String?,
         val x_pinterest_sli_endpoint_name: String?
     ) {
         data class Data(
-            val nag: Nag?,
-            val no_gift_wrap: Boolean?,
-            val query_l1_vertical_ids: List<Long?>?,
             val results: List<Result?>?,
-            val sensitivity: Sensitivity?,
-            val should_append_global_search: Boolean?,
-            val tabs: List<Tab?>?
         ) {
-            class Nag
-
             data class Result(
-                val access: List<Any?>?,
                 val ad_match_reason: Int?,
-                val aggregated_pin_data: AggregatedPinData?,
-                val alt_text: Any?,
+                val alt_text: String?,
                 val attribution: Any?,
-                val board: Board?,
+                val background_colour: Any?,
+                val bookmarks_for_objects: Any?,
+                val button_text: Any?,
                 val call_to_action_text: Any?,
                 val campaign_id: Any?,
                 val carousel_data: Any?,
+                val closeup_id: String?,
+                val container_type: Int?,
+                val content_ids: List<String?>?,
                 val created_at: String?,
                 val debug_info_html: Any?,
                 val description: String?,
@@ -136,10 +59,11 @@ data class PinterestSearchResponse(
                 val domain: String?,
                 val dominant_color: String?,
                 val embed: Any?,
+                val expanded_viewport_objects: List<Any?>?,
+                val experience: Any?,
                 val grid_title: String?,
                 val has_required_attribution_provider: Boolean?,
                 val id: String?,
-                val image_crop: ImageCrop?,
                 val image_signature: String?,
                 val images: Images?,
                 val insertion_id: Any?,
@@ -153,93 +77,25 @@ data class PinterestSearchResponse(
                 val is_promoted: Boolean?,
                 val is_stale_product: Boolean?,
                 val is_uploaded: Boolean?,
+                val item_actions: List<Any?>?,
                 val link: String?,
-                val link_domain: LinkDomain?,
-                val pinner: Pinner?,
                 val promoted_is_lead_ad: Boolean?,
                 val promoted_is_removable: Boolean?,
                 val promoted_lead_form: Any?,
                 val promoter: Any?,
-                val reaction_counts: ReactionCounts?,
-                val rich_summary: RichSummary?,
-                val shopping_flags: List<Int?>?,
-                val sponsorship: Any?,
                 val story_pin_data: StoryPinData?,
-                val story_pin_data_id: String?,
-                val title: String?,
-                val tracking_params: String?,
-                val type: String?,
-                val videos: Any?
             ) {
-                data class AggregatedPinData(
-                    val has_xy_tags: Boolean?
-                )
-
-                data class Board(
-                    val name: String?,
-                    val url: String?
-                )
-
-                data class ImageCrop(
-                    val max_y: Double?,
-                    val min_y: Int?
-                )
-
                 data class Images(
-                    val `170x`: ImageX?,
-                    val `236x`: ImageX?,
-                    val `474x`: ImageX?,
-                    val `736x`: ImageX?,
-                    val orig: ImageX?
+                    val `170x`: Orig?,
+                    val `236x`: Orig?,
+                    val `474x`: Orig?,
+                    val `736x`: Orig?,
+                    val orig: Orig?
                 ) {
-                    data class ImageX(
+                    data class Orig(
                         val height: Int?,
                         val url: String?,
                         val width: Int?
-                    )
-                }
-
-                data class LinkDomain(
-                    val official_user: Any?
-                )
-
-                data class Pinner(
-                    val ads_only_profile_site: Any?,
-                    val follower_count: Int?,
-                    val full_name: String?,
-                    val id: String?,
-                    val image_large_url: String?,
-                    val image_medium_url: String?,
-                    val image_small_url: String?,
-                    val is_ads_only_profile: Boolean?,
-                    val is_verified_merchant: Boolean?,
-                    val username: String?,
-                    val verified_identity: VerifiedIdentity?
-                ) {
-                    class VerifiedIdentity
-                }
-
-                data class ReactionCounts(
-                    val `1`: Int?
-                )
-
-                data class RichSummary(
-                    val actions: List<Any?>?,
-                    val apple_touch_icon_images: Any?,
-                    val apple_touch_icon_link: Any?,
-                    val display_description: String?,
-                    val display_name: String?,
-                    val favicon_images: FaviconImages?,
-                    val favicon_link: String?,
-                    val id: String?,
-                    val products: List<Any?>?,
-                    val site_name: String?,
-                    val type: String?,
-                    val type_name: String?,
-                    val url: String?
-                ) {
-                    data class FaviconImages(
-                        val orig: String?
                     )
                 }
 
@@ -354,54 +210,9 @@ data class PinterestSearchResponse(
                         )
                     }
                 }
-            }
 
-            class Sensitivity
-
-            data class Tab(
-                val id: String?,
-                val name: String?,
-                val tab_type: String?,
-                val type: String?
-            )
-        }
-
-        data class Metadata(
-            val query_l1_vertical_ids: List<Long?>?,
-            val searchfeed_tabs: SearchfeedTabs?
-        ) {
-            data class SearchfeedTabs(
-                val id: String?,
-                val tabs: List<Tab?>?,
-                val type: String?
-            ) {
-                data class Tab(
-                    val id: String?,
-                    val name: String?,
-                    val tab_type: String?,
-                    val type: String?
-                )
             }
         }
 
-        data class SearchNag(
-            val nag: Nag?,
-            val theme: Any?
-        ) {
-            class Nag
-        }
-
-        data class SearchfeedTabs(
-            val id: String?,
-            val tabs: List<Tab?>?,
-            val type: String?
-        ) {
-            data class Tab(
-                val id: String?,
-                val name: String?,
-                val tab_type: String?,
-                val type: String?
-            )
-        }
     }
 }

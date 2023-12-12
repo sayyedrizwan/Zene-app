@@ -43,8 +43,6 @@ fun AlbumView() {
     val homeNav: HomeNavViewModel = hiltViewModel()
     val listState = rememberLazyGridState()
 
-    val height = LocalConfiguration.current.screenHeightDp.dp / 2
-
     Box(
         Modifier
             .fillMaxSize()

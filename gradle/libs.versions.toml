@@ -26,7 +26,7 @@ paging-version = "3.2.1"
 media3-version = "1.2.0"
 
 #plugins
-plugin-android-app-version = "8.1.4"
+plugin-android-app-version = "8.2.0"
 plugin-kotlin-android = "1.9.21"
 plugin-hilt = "2.48"
 plugin-ksp = "1.9.21-1.0.15"

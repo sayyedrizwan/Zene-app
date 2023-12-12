@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -21,6 +22,7 @@ import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.news.GoogleNewsResponse
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +46,7 @@ class ArtistsViewModel @Inject constructor(
     private val pinterestAPI: PinterestAPIImplInterface
 ) : ViewModel() {
 
-    var artistsImages = mutableListOf<String>()
+    var artistsImages = mutableStateListOf("loading")
         private set
 
     var radioStatus by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
@@ -113,20 +115,38 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun searchImg(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
-        artistsImages.clear()
-        lastFMImpl.artistsImages(a, 60).catch { }.collectLatest {
+        if (artistsImages.size > 1) artistsImages.clear()
+
+        fun clearIfOne() {
+            if (artistsImages.size == 1) artistsImages.clear()
+        }
+
+        lastFMImpl.artistsImages(a, 60).catch {
+            clearIfOne()
+        }.collectLatest {
+            clearIfOne()
             artistsImages.addAll(it)
         }
 
-        pinterestAPI.search("", a.name ?: "").catch {}.collectLatest {
+        pinterestAPI.search(a.name ?: "").catch {
+            clearIfOne()
+        }.collectLatest {
+            clearIfOne()
+            artistsImages.addAll(it)
+
+        }
+
+        pinterestAPI.search("${a.name} photoshoot").catch {
+            clearIfOne()
+        }.collectLatest {
+            clearIfOne()
             artistsImages.addAll(it)
         }
 
-        pinterestAPI.search("", "${a.name} photoshoot").catch {}.collectLatest {
-            artistsImages.addAll(it)
-        }
-
-        pinterestAPI.search("", "${a.name} latest images").catch {}.collectLatest {
+        pinterestAPI.search("${a.name} latest images").catch {
+            clearIfOne()
+        }.collectLatest {
+            clearIfOne()
             artistsImages.addAll(it)
         }
     }

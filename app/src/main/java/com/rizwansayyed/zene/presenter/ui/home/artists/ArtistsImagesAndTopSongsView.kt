@@ -1,70 +1,88 @@
 package com.rizwansayyed.zene.presenter.ui.home.artists
 
+import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.BlackColor
-import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
-import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
-import com.rizwansayyed.zene.utils.Utils
-import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.utils.Utils.tempEmptyList
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import java.io.File
 import kotlin.math.absoluteValue
+
 
 @Composable
 fun ArtistsImagesView() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
-    if (artistsViewModel.artistsImages.distinct().isNotEmpty()) {
+    var isLoading by remember { mutableStateOf(false) }
+
+    if (isLoading) {
+        TopInfoWithSeeMore(R.string.artist_photos, null) {}
+
+        ArtistPhotoAlbum(tempEmptyList, true)
+    }
+
+    if (artistsViewModel.artistsImages.distinct().size >= 2) {
         TopInfoWithSeeMore(R.string.artist_photos, null) {}
 
         ArtistPhotoAlbum(artistsViewModel.artistsImages.distinct(), false)
+    }
+
+    LaunchedEffect(artistsViewModel.artistsImages.toList()) {
+        isLoading = try {
+            artistsViewModel.artistsImages.first() == "loading"
+        } catch (e: Exception) {
+            false
+        }
+
     }
 }
 
@@ -106,7 +124,7 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
         }
     }
 
-    showDialog?.let { ImageActionDialog(it) { showDialog = null } }
+    if (!isLoading) showDialog?.let { ImageActionDialog(it) { showDialog = null } }
 
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(item.size / 2)
@@ -115,12 +133,18 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
 
 @Composable
 fun ImageActionDialog(s: String, close: () -> Unit) {
+    val homeNav: HomeNavViewModel = hiltViewModel()
     val width = LocalConfiguration.current.screenHeightDp / 1.4
 
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
-        Surface(Modifier.fillMaxSize(), RoundedCornerShape(16.dp), Color.Black) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(BlackColor)
+        ) {
             Column(
                 Modifier
+                    .align(Alignment.Center)
                     .fillMaxSize()
                     .background(BlackColor),
                 Arrangement.Center, Alignment.CenterHorizontally
@@ -132,6 +156,31 @@ fun ImageActionDialog(s: String, close: () -> Unit) {
                         .height(width.dp)
                 )
             }
+
+            Row(
+                Modifier
+                    .align(Alignment.TopStart)
+                    .padding(10.dp)
+            ) {
+                SmallIcons(R.drawable.ic_arrow_left) {
+                    close()
+                }
+            }
+
+            Row(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                Button(onClick = {
+                    close()
+                    homeNav.setImageAsWallpaper(s)
+                }) {
+                    TextRegular(v = "set waaalll")
+                }
+            }
+
         }
     }
 }

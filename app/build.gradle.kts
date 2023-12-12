@@ -166,5 +166,4 @@ dependencies {
     implementation(libs.media3.session)
     implementation(libs.media3.hls)
     implementation(libs.media3.legacy)
-
 }

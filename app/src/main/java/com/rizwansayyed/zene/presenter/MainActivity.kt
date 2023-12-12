@@ -5,10 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -31,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -52,6 +49,7 @@ import com.rizwansayyed.zene.presenter.ui.home.views.HomeView
 import com.rizwansayyed.zene.presenter.ui.home.views.MyMusicView
 import com.rizwansayyed.zene.presenter.ui.home.views.SearchView
 import com.rizwansayyed.zene.presenter.ui.home.views.SettingsView
+import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
@@ -60,8 +58,6 @@ import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
-import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
-import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -75,7 +71,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.reflect.jvm.internal.impl.serialization.deserialization.FlexibleTypeDeserializer.ThrowException
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -83,14 +78,13 @@ import kotlin.time.Duration.Companion.seconds
 // work on artists share and pin and artists photos
 // make playlist save and all options.
 // start search song after voice command
-// some songs lyrics not in sync. and make look lyrics more better
 // play all in albums list
 // pin playlists
 // add insta shop items on artists page.
 // make smooth music player view opener
 // privacy policy viewer
 // all edittext are hiding behind keyboard
-
+// fix cache
 // search radio too in search view
 // long press options for all views
 
@@ -160,6 +154,10 @@ class MainActivity : ComponentActivity() {
                 }
 
 
+                AnimatedVisibility(navViewModel.setImageAsWallpaper.isNotEmpty()) {
+                    WallpaperSetView(navViewModel.setImageAsWallpaper)
+                }
+
                 AnimatedVisibility(
                     songPlayerView?.show == true, Modifier,
                     slideInVertically(initialOffsetY = { it / 2 }),
@@ -182,6 +180,10 @@ class MainActivity : ComponentActivity() {
                                 flowOf(musicPlayerData.first()?.apply { show = false })
                             return@launch
                         }
+                        if (navViewModel.setImageAsWallpaper.isNotEmpty()) {
+                            navViewModel.setImageAsWallpaper("")
+                            return@launch
+                        }
                         if (navViewModel.selectedArtists.isNotEmpty()) {
                             navViewModel.setArtists("")
                             return@launch
@@ -202,7 +204,8 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
                     keyboard?.hide()
-
+                    delay(1.seconds)
+                    navViewModel.setImageAsWallpaper("https://lastfm.freetls.fastly.net/i/u/770x0/1cb384ef9a9e09e39d98bf4efd316ed3.jpg#1cb384ef9a9e09e39d98bf4efd316ed3")
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
                     navViewModel.setArtists("")

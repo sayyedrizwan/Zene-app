@@ -14,14 +14,25 @@ class PinterestAPIImpl @Inject constructor(private val pinterest: PinterestAPISe
         val lists = mutableListOf<String>()
         artist.split("&", ",").forEach { a ->
             val response = pinterest.searchPosts(pinterestSearch("$name $a").trim())
-
             response.resource_response?.data?.results?.forEach {
-                if (it?.title?.lowercase()?.contains(name.trim().lowercase().substringBefore("(")) == true ||
-                    it?.title?.lowercase()?.contains(artist.trim().lowercase()) == true
+                if (it?.grid_title?.lowercase()
+                        ?.contains(name.trim().lowercase().substringBefore("(")) == true ||
+                    it?.grid_title?.lowercase()?.contains(artist.trim().lowercase()) == true
                 ) if (!lists.any { i -> i == it.images?.orig?.url })
                     it.images?.orig?.url?.let { it1 ->
                         lists.add(it1)
                     }
+            }
+        }
+        emit(lists)
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun search(name: String) = flow {
+        val lists = mutableListOf<String>()
+        val response = pinterest.searchPosts(pinterestSearch(name).trim())
+        response.resource_response?.data?.results?.forEach {
+            it?.images?.orig?.url?.let { it1 ->
+                lists.add(it1)
             }
         }
         emit(lists)

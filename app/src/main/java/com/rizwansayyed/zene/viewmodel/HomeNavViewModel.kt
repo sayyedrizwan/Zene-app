@@ -42,6 +42,9 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var selectedArtists by mutableStateOf("")
         private set
 
+    var setImageAsWallpaper by mutableStateOf("")
+        private set
+
     var selectedAlbum by mutableStateOf("")
         private set
 
@@ -59,6 +62,10 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     fun setHomeScrollPosition(v: Int) {
         homeScrollPosition.intValue = v
+    }
+
+    fun setImageAsWallpaper(v: String) {
+        setImageAsWallpaper = v
     }
 
     fun setHomeNav(h: HomeNavigation) {
