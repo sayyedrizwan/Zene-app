@@ -12,17 +12,26 @@ import com.rizwansayyed.zene.data.utils.SongDownloader.ytURL
 import com.rizwansayyed.zene.data.utils.VideoDownloaderAPI.SAVE_FROM_BASE_URL
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.utils.Utils.isConnectedToWifi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 class SongDownloaderImpl @Inject constructor(private val saveFromDownloader: SaveFromDownloaderService) :
     SongDownloaderInterface {
 
+    override var downloadJob: Job? = null
     override suspend fun download(songId: String) = flow {
         val yt = YTExtractor(context, true, LOGGING = false, retryCount = 2).apply {
             extract(songId)
@@ -31,7 +40,10 @@ class SongDownloaderImpl @Inject constructor(private val saveFromDownloader: Sav
         if (yt.state == State.SUCCESS) {
             val ytData = yt.getYTFiles()?.getAudioOnly()
             val url = when (songQualitySettings.first()) {
-                SongsQualityInfo.LOW_QUALITY.v -> ytData?.minBy { it.meta?.audioBitrate ?: 0 }?.url
+                SongsQualityInfo.LOW_QUALITY.v -> ytData?.minBy {
+                    it.meta?.audioBitrate ?: 0
+                }?.url
+
                 SongsQualityInfo.HIGH_QUALITY_WIFI.v -> if (isConnectedToWifi())
                     ytData?.maxBy { it.meta?.audioBitrate ?: 0 }?.url
                 else
@@ -41,10 +53,8 @@ class SongDownloaderImpl @Inject constructor(private val saveFromDownloader: Sav
 
             }
             emit(url)
-            return@flow
-        }
-
-        emit("")
+        } else
+            emit("")
     }.flowOn(Dispatchers.IO)
 
 

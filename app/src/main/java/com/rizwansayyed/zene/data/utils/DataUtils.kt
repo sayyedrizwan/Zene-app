@@ -132,6 +132,8 @@ object SoundCloudAPI {
     const val SOUND_CLOUD_SEARCH = "search"
     const val SOUND_WEB_PROFILE = "users/{username}/web-profiles"
 
+    const val SOUND_CLOUD_CLIENT_ID = "https://a-v2.sndcdn.com/assets/50-412e863f.js"
+
 }
 
 

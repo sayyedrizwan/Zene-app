@@ -249,7 +249,8 @@ fun ArtistsProfilePin() {
 
     when (val v = artists.artistSocialProfile) {
         DataResponse.Empty -> {}
-        is DataResponse.Error -> {}
+        is DataResponse.Error -> {
+            TextThin(v = v.throwable.message ?: "Noooo")}
         DataResponse.Loading -> {}
         is DataResponse.Success -> {
             if ((v.item.followersCount ?: 0) > 0) {
