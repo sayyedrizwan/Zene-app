@@ -51,4 +51,5 @@ interface RoomDBInterface {
     suspend fun allPlaylists(limit: Int): Flow<List<SavedPlaylistEntity>>
 
     suspend fun offlineDownloadedSongs(offset: Int): Flow<List<OfflineDownloadedEntity>>
+    suspend fun topSongsListenThisWeekOrMonth(): Flow<Pair<Boolean, List<RecentPlayedEntity>>>
 }

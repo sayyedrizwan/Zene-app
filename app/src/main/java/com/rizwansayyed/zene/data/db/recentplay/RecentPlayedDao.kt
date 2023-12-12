@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.data.db.recentplay
 
-import androidx.compose.ui.geometry.Offset
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -21,6 +20,9 @@ interface RecentPlayedDao {
 
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT :offset")
     suspend fun read(offset: Int): List<RecentPlayedEntity>
+
+    @Query("SELECT * FROM $RECENT_PLAYED_DB WHERE timestamp >= :timestamp ORDER BY playTimes DESC LIMIT :offset")
+    suspend fun readWithTimestamp(offset: Int, timestamp: Long): List<RecentPlayedEntity>
 
     @Query("UPDATE $RECENT_PLAYED_DB SET lastListenDuration = :duration WHERE songId = :songId")
     suspend fun updateTime(songId: String, duration: Long): Int

@@ -29,11 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyMusicViewModel @Inject constructor(
-    private val subtitlesScraps: SubtitlesScrapsImplInterface,
-    private val youtubeAPI: YoutubeAPIImplInterface,
-    private val roomDb: RoomDBInterface,
-    private val lastFMImpl: LastFMImplInterface,
-    private val pinterestAPI: PinterestAPIImplInterface
+    private val roomDb: RoomDBInterface
 ) : ViewModel() {
 
     var recentSongPlayed by mutableStateOf<Flow<List<RecentPlayedEntity>>>(flowOf(emptyList()))
@@ -69,6 +65,12 @@ class MyMusicViewModel @Inject constructor(
     var defaultPlaylistSongs by mutableIntStateOf(0)
         private set
 
+    var isTopListenSongThisWeek by mutableStateOf(true)
+        private set
+
+    var isTopListenSongThisWeekList = mutableStateListOf<RecentPlayedEntity>()
+        private set
+
     fun init() {
         offlineSongsLoadList.clear()
         savePlaylistsLoadList.clear()
@@ -80,6 +82,7 @@ class MyMusicViewModel @Inject constructor(
         savedPlaylist()
         defaultPlaylistSongs()
         offlineDownloadSongs()
+        topSongsListened()
     }
 
     private fun recentPlayedSongs() = viewModelScope.launch(Dispatchers.IO) {
@@ -145,6 +148,14 @@ class MyMusicViewModel @Inject constructor(
             offlineSongsLoadMore = it.size >= OFFSET_LIMIT
 
             offlineSongsLoadList.addAll(it)
+        }
+    }
+
+    private fun topSongsListened() = viewModelScope.launch(Dispatchers.IO) {
+        roomDb.topSongsListenThisWeekOrMonth().catch { }.collectLatest {
+            isTopListenSongThisWeekList.clear()
+            isTopListenSongThisWeek = it.first
+            isTopListenSongThisWeekList.addAll(it.second)
         }
     }
 }

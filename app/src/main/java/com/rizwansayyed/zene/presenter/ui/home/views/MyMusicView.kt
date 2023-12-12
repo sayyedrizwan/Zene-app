@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicOfflineDownload
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicPlaylistsList
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopListenedSong
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
@@ -60,6 +61,9 @@ fun MyMusicView() {
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicOfflineDownload(myMusic)
+        }
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            TopListenedSong(myMusic)
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(200.dp))

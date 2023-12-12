@@ -1,7 +1,5 @@
 package com.rizwansayyed.zene.data.db.impl
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDao
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedDao
@@ -11,6 +9,7 @@ import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsDao
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import com.rizwansayyed.zene.utils.Utils.OFFSET_LIMIT
+import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -121,6 +120,17 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun offlineDownloadedSongs(offset: Int) = flow {
         emit(offlineDownloaded.recentList(offset))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun topSongsListenThisWeekOrMonth() = flow {
+        var isThisWeek = true
+        var songs = recentPlayed.readWithTimestamp(10, daysOldTimestamp(8))
+        if (songs.size <= 2) {
+            isThisWeek = false
+            songs = recentPlayed.readWithTimestamp(10, daysOldTimestamp(31))
+        }
+        emit(Pair(isThisWeek, songs))
     }.flowOn(Dispatchers.IO)
 
 
