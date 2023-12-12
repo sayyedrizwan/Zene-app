@@ -13,7 +13,7 @@ class PinterestAPIImpl @Inject constructor(private val pinterest: PinterestAPISe
     override suspend fun search(name: String, artist: String) = flow {
         val lists = mutableListOf<String>()
         artist.split("&", ",").forEach { a ->
-            val response = pinterest.searchPosts(pinterestSearch("$name $a"))
+            val response = pinterest.searchPosts(pinterestSearch("$name $a").trim())
 
             response.resource_response?.data?.results?.forEach {
                 if (it?.title?.lowercase()?.contains(name.trim().lowercase().substringBefore("(")) == true ||

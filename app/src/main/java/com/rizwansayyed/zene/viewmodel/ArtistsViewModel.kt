@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterfac
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.news.implementation.GoogleNewsInterface
+import com.rizwansayyed.zene.data.onlinesongs.pinterest.implementation.PinterestAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.ArtistsEvents
@@ -39,10 +40,11 @@ class ArtistsViewModel @Inject constructor(
     private val soundCloud: SoundCloudImplInterface,
     private val songKick: SongKickScrapsImplInterface,
     private val songDownloader: SongDownloaderInterface,
-    private val googleNews: GoogleNewsInterface
+    private val googleNews: GoogleNewsInterface,
+    private val pinterestAPI: PinterestAPIImplInterface
 ) : ViewModel() {
 
-    var artistsImages by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
+    var artistsImages = mutableListOf<String>()
         private set
 
     var radioStatus by mutableStateOf<DataResponse<List<String>>>(DataResponse.Empty)
@@ -111,12 +113,21 @@ class ArtistsViewModel @Inject constructor(
     }
 
     private fun searchImg(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
-        lastFMImpl.artistsImages(a, 100).onStart {
-            artistsImages = DataResponse.Loading
-        }.catch {
-            artistsImages = DataResponse.Error(it)
-        }.collectLatest {
-            artistsImages = DataResponse.Success(it)
+        artistsImages.clear()
+        lastFMImpl.artistsImages(a, 60).catch { }.collectLatest {
+            artistsImages.addAll(it)
+        }
+
+        pinterestAPI.search("", a.name ?: "").catch {}.collectLatest {
+            artistsImages.addAll(it)
+        }
+
+        pinterestAPI.search("", "${a.name} photoshoot").catch {}.collectLatest {
+            artistsImages.addAll(it)
+        }
+
+        pinterestAPI.search("", "${a.name} latest images").catch {}.collectLatest {
+            artistsImages.addAll(it)
         }
     }
 

@@ -114,6 +114,7 @@
     <string name="remove">Remove</string>
     <string name="need_notification_p">Need notification permission to show notification of playing music</string>
     <string name="are_you_sure_rm_radio_from_fav">Are you sure want to remove this radio from your favourites list</string>
+    <string name="max_artists_you_can_add_is_40">For now you can only pin maximum 40 artists at a time.</string>
     <string name="pin">Pin</string>
     <string name="unpin">Unpin</string>
     <string name="share">Share</string>

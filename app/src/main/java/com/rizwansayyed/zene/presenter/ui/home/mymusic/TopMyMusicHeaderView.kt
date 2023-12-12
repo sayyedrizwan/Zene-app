@@ -153,7 +153,6 @@ fun LinkedToBrowserItem(icon: Int, text: String, click: () -> Unit) {
 
 @Composable
 fun ScanLoginDialog(close: () -> Unit) {
-
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         Surface(Modifier.fillMaxSize(), RoundedCornerShape(16.dp), Color.Black) {
             Box(
