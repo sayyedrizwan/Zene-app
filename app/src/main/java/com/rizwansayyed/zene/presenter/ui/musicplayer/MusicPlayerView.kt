@@ -57,6 +57,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
 import com.rizwansayyed.zene.utils.Utils.littleVibrate
+import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -114,8 +115,7 @@ fun MusicPlayerView(player: ExoPlayer, showedOnLockScreen: Boolean) {
     LaunchedEffect(p) {
         if (p?.playType == MusicType.RADIO) return@LaunchedEffect
 
-        if (p?.songID != player.currentMediaItem?.mediaId)
-            p?.let { playerViewModel.init(it) }
+        if (p?.songID != player.currentMediaItem?.mediaId) p?.let { playerViewModel.init(it) }
 
         if (p?.songID != player.currentMediaItem?.mediaId || playerViewModel.relatedSongs == DataResponse.Empty)
             p?.let { playerViewModel.similarSongsArtists(it.v?.songID ?: "") }

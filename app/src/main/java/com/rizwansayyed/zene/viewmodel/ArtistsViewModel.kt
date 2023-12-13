@@ -95,13 +95,14 @@ class ArtistsViewModel @Inject constructor(
         }.collectLatest {
             artistsImage = DataResponse.Success(it?.image ?: "")
             it?.let { i ->
-                searchImg(i)
+                searchImg(i, true)
                 artistsDesc(i)
                 artistsEvents(i)
                 topSongs(i)
             }
         }
     }
+
 
     fun startArtistsRadioPlaylist(artistsName: String) = viewModelScope.launch(Dispatchers.IO) {
         if (radioStatus == DataResponse.Loading) return@launch
@@ -116,8 +117,17 @@ class ArtistsViewModel @Inject constructor(
         }
     }
 
-    private fun searchImg(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
-        if (artistsImages.size > 1) artistsImages.clear()
+    fun searchUsers(a: List<String>) = viewModelScope.launch(Dispatchers.IO) {
+        artistsImages.clear()
+        a.forEach {
+            lastFMImpl.artistsUsername(it).onStart {}.catch {}.collectLatest { i ->
+                i?.let { img -> searchImg(img, false) }
+            }
+        }
+    }
+
+    private fun searchImg(a: LastFMArtist, clear: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        if (artistsImages.size > 1 && clear) artistsImages.clear()
 
         fun clearIfOne() {
             if (artistsImages.size == 1) artistsImages.clear()

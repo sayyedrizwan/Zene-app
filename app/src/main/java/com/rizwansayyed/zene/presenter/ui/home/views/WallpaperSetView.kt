@@ -75,6 +75,8 @@ import coil.compose.AsyncImage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
@@ -90,9 +92,11 @@ import com.rizwansayyed.zene.presenter.util.UtilsWallpaperImage
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
@@ -190,6 +194,8 @@ fun ManipulateImage(
 
 @Composable
 fun WallpaperSetView(s: String) {
+    val artistsViewModel: ArtistsViewModel = hiltViewModel()
+
     val coroutine = rememberCoroutineScope()
     val composableBounds = remember { mutableStateOf<Rect?>(null) }
     var settingsVisible by remember { mutableStateOf(false) }
@@ -268,7 +274,13 @@ fun WallpaperSetView(s: String) {
                 setBitmap(it)
             })
         }
+    }
 
+    LaunchedEffect(Unit) {
+        if (artistsViewModel.artistsImages.size <= 2)
+            artistsViewModel.searchUsers(
+                musicPlayerData.first()?.v?.artists?.split(",", "&") ?: emptyList()
+            )
     }
 
     if (addMoreImageDialog) ImageSearchDialog {

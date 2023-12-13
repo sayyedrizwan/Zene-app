@@ -113,6 +113,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+
     private fun songArtistsInfo(artists: List<String>) = viewModelScope.launch(Dispatchers.IO) {
         artistsInfo.clear()
 
