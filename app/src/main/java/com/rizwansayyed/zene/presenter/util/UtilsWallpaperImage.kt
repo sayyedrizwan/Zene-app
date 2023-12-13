@@ -32,7 +32,7 @@ class UtilsWallpaperImage(private val image: String?) {
         image ?: return@launch
 
         downloadImageAsBitmap(image.toUri()) {
-            makeWallpaper(it)
+            makeLockScreenWallpaper(it)
         }
     }
 

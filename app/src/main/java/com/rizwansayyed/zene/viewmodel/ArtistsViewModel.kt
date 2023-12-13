@@ -79,6 +79,8 @@ class ArtistsViewModel @Inject constructor(
         private set
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
+        artistsImages.clear()
+        artistsImages.add("loading")
         latestVideo(a)
         artistsNews(a)
         socialProfile(a)
