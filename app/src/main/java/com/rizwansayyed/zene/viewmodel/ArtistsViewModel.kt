@@ -85,6 +85,7 @@ class ArtistsViewModel @Inject constructor(
         artistsNews(a)
         socialProfile(a)
         searchData(a)
+        searchImg(a, true)
         radioStatus = DataResponse.Empty
         lastFMImpl.artistsUsername(a).onStart {
             artistsDesc = DataResponse.Loading
@@ -120,6 +121,7 @@ class ArtistsViewModel @Inject constructor(
     fun searchUsers(a: List<String>) = viewModelScope.launch(Dispatchers.IO) {
         artistsImages.clear()
         a.forEach {
+            searchImg(it, false)
             lastFMImpl.artistsUsername(it).onStart {}.catch {}.collectLatest { i ->
                 i?.let { img -> searchImg(img, false) }
             }
@@ -139,8 +141,18 @@ class ArtistsViewModel @Inject constructor(
             clearIfOne()
             artistsImages.addAll(it)
         }
+    }
 
-        pinterestAPI.search(a.name ?: "").catch {
+
+    private fun searchImg(a: String, clear: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        if (artistsImages.size > 1 && clear) artistsImages.clear()
+
+        fun clearIfOne() {
+            if (artistsImages.size == 1) artistsImages.clear()
+        }
+
+
+        pinterestAPI.search(a).catch {
             clearIfOne()
         }.collectLatest {
             clearIfOne()
@@ -148,26 +160,27 @@ class ArtistsViewModel @Inject constructor(
 
         }
 
-        pinterestAPI.search("${a.name} photoshoot").catch {
+        pinterestAPI.search("$a photoshoot").catch {
             clearIfOne()
         }.collectLatest {
             clearIfOne()
             artistsImages.addAll(it)
         }
 
-        pinterestAPI.search("${a.name} latest images").catch {
+        pinterestAPI.search("$a latest images").catch {
             clearIfOne()
         }.collectLatest {
             clearIfOne()
             artistsImages.addAll(it)
         }
-        pinterestAPI.search("${a.name} lyrics").catch {
+        pinterestAPI.search("$a lyrics").catch {
             clearIfOne()
         }.collectLatest {
             clearIfOne()
             artistsImages.addAll(it)
         }
     }
+
 
     private fun artistsDesc(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
         lastFMImpl.artistsDescription(a).onStart {
