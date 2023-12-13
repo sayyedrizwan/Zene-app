@@ -10,14 +10,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SavedPlaylistDao {
 
-    @Query("SELECT * FROM $SAVED_PLAYLIST_DB ORDER BY timestamp DESC")
+    @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE playlistId is NULL ORDER BY timestamp DESC")
     fun list(): Flow<List<SavedPlaylistEntity>>
 
     @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE playlistId is NULL ORDER BY timestamp DESC LIMIT :limit, $OFFSET_LIMIT")
     suspend fun pagingCreatedPlaylist(limit: Int): List<SavedPlaylistEntity>
-
-    @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE playlistId is NULL ORDER BY timestamp DESC LIMIT :limit, $OFFSET_LIMIT")
-    suspend fun pagingPlaylist(limit: Int): List<SavedPlaylistEntity>
 
     @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE LOWER(name) = :n")
     suspend fun searchWithName(n: String): List<SavedPlaylistEntity>

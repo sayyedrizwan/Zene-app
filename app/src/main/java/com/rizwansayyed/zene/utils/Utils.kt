@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.simpleEncode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -63,13 +64,18 @@ object Utils {
         const val APP_URL = "https://zene.vercel.app"
 
         fun appUrlSongShare(id: String): String {
-            val changeIdToOurs = id.trim()
-            return "$APP_URL/s/$changeIdToOurs"
+            val changeIdToOurs = simpleEncode(id.trim())
+            return "$APP_URL/s/$changeIdToOurs".trim()
         }
 
         fun appUrlArtistsShare(name: String): String {
             val changeNameToOurs = encryptData(name.trim())
-            return "$APP_URL/a/$changeNameToOurs"
+            return "$APP_URL/a/$changeNameToOurs".trim()
+        }
+
+        fun appUrlAlbums(id: String): String {
+            val changeIdToOurs = simpleEncode(id.trim())
+            return "$APP_URL/album/$changeIdToOurs".trim()
         }
 
     }

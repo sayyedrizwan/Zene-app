@@ -8,22 +8,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
-import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScrapsImplInterface
-import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
-import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.PlaylistItemsData
-import com.rizwansayyed.zene.domain.SearchData
-import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
-import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileInfo
-import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -59,29 +48,30 @@ class PlaylistAlbumViewModel @Inject constructor(
         }.collectLatest {
             playlistAlbum = DataResponse.Success(it)
             searchSimilarAlbums("${it.name} - ${it.artistsName}")
-            addSongsToPlaylist(it.list)
+            addSongsToPlaylist(it.list, it.artistsName)
         }
     }
 
-    private fun addSongsToPlaylist(list: List<MusicData>) = viewModelScope.launch(Dispatchers.IO) {
-        playlistSongsItem.clear()
-        val ip = userIpDetails.first()
-        val key = remoteConfig.allApiKeys()?.music ?: ""
+    private fun addSongsToPlaylist(list: List<MusicData>, artists: String?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistSongsItem.clear()
+            val ip = userIpDetails.first()
+            val key = remoteConfig.allApiKeys()?.music ?: ""
 
-        list.forEach { m ->
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    try {
-                        val name = "${m.name} - ${m.artists}"
-                        val s = youtubeAPI.musicInfoSearch(name, ip, key)
-                        s?.let { playlistSongsItem.add(it) }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+            list.forEach { m ->
+                viewModelScope.launch {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            val name = "${m.name} - $artists"
+                            val s = youtubeAPI.musicInfoSearch(name, ip, key)
+                            s?.let { playlistSongsItem.add(it) }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }
         }
-    }
 
     private fun searchSimilarAlbums(search: String) = viewModelScope.launch(Dispatchers.IO) {
         youtubeAPI.searchData(search).onStart {

@@ -75,7 +75,6 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // if going ahead or back on song multiple time on via via notification is causing problem. fix it....
-// work on artists share and pin and artists photos
 // make playlist save and all options.
 // start search song after voice command
 // play all in albums list
@@ -88,9 +87,12 @@ import kotlin.time.Duration.Companion.seconds
 // search radio too in search view
 // long press options for all views
 
+
+// show albums list in mymusic
 // progressbar on history songs
 // options menu - set ringtone, set wallpaper,
 // can you replicate blue as in-build
+// show feeds
 
 
 @AndroidEntryPoint

@@ -19,17 +19,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlArtistsShare
+import com.rizwansayyed.zene.utils.Utils.shareTxt
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
 @Composable
 fun AlbumsShortcutButton() {
     val playlistAlbum: PlaylistAlbumViewModel = hiltViewModel()
+    val homeNav: HomeNavViewModel = hiltViewModel()
 
     when (val v = playlistAlbum.playlistAlbum) {
         DataResponse.Loading -> {}
@@ -40,7 +46,9 @@ fun AlbumsShortcutButton() {
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
         ) {
-            AlbumsButtonsView("Share") {}
+            AlbumsButtonsView(stringResource(id = R.string.share)) {
+                shareTxt(appUrlArtistsShare(homeNav.selectedAlbum))
+            }
             AlbumsButtonsView("Save Playlist") {}
             AlbumsButtonsView("Download") {}
         }

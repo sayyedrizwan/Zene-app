@@ -45,23 +45,6 @@ object UiUtils {
         if (isActive) cancel()
     }
 
-    fun String.toMoneyFormat(): String {
-        val amount = this.toDoubleOrNull() ?: return "137,196"
-        return NumberFormat.getNumberInstance().format(amount)
-    }
-
-    suspend fun isImagePresent(url: String): Boolean {
-        return try {
-            val connection = withContext(Dispatchers.IO) {
-                URL(url).openConnection()
-            }
-            val contentType = connection.getHeaderField("Content-Type")
-            contentType.startsWith("image/")
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     fun String.convertMoney(): String {
         return try {
             val format = NumberFormat.getNumberInstance(

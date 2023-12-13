@@ -129,9 +129,7 @@ class YoutubeAPIImpl @Inject constructor(
 
                         val artists = s.musicShelfRenderer.getArtists()
 
-                        m = MusicData(
-                            thumbnail ?: "", name, artists, songsId, MusicType.MUSIC
-                        )
+                        m = MusicData(thumbnail ?: "", name, artists, songsId, MusicType.MUSIC)
                     }
                 }
             } catch (e: Exception) {

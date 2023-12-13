@@ -147,9 +147,7 @@ data class MusicResponsiveListItemRendererMainSearch(
                     if (nameMain.isEmpty())
                         nameMain = name.text ?: ""
                     if (videoMain.isEmpty())
-                        videoMain =
-                            name.navigationEndpoint.watchEndpoint.videoId
-                                ?: ""
+                        videoMain = name.navigationEndpoint.watchEndpoint.videoId ?: ""
                 }
             }
         }

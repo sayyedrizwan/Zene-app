@@ -114,7 +114,7 @@ class MyMusicViewModel @Inject constructor(
     }
 
     fun savedPlaylistLoadList(offset: Int) = viewModelScope.launch(Dispatchers.IO) {
-        roomDb.allPlaylists(offset).catch {}.collectLatest {
+        roomDb.allCreatedPlaylists(offset).catch {}.collectLatest {
             savePlaylistsLoadMore = it.size >= OFFSET_LIMIT
 
             savePlaylistsLoadList.addAll(it)

@@ -8,7 +8,6 @@ import javax.crypto.spec.SecretKeySpec
 
 object EncodeDecodeGlobal {
 
-    private const val inputText = "abcdefghigklmnopqrstuvwxyz0123456789"
     private const val algorithm = "AES/CBC/PKCS5Padding"
     val key = SecretKeySpec("zene_rizwan_app0".toByteArray(), "AES")
     private val iv = IvParameterSpec(ByteArray(16))
@@ -32,7 +31,13 @@ object EncodeDecodeGlobal {
         return Base64.encodeToString(cipherText, Base64.DEFAULT)
     }
 
-//    val cipherText = encrypt(inputText)
-//    val plainText = decrypt(algorithm, cipherText, key, iv)
+    fun simpleEncode(txt: String): String? {
+        return Base64.encodeToString(txt.toByteArray(), Base64.DEFAULT)
+    }
+
+    fun simpleDecode(txt: String): String {
+        return String(Base64.decode(txt.toByteArray(), Base64.DEFAULT))
+    }
+
 
 }

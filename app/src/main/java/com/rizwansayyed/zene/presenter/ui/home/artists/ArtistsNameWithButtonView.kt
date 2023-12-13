@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlArtistsShare
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
@@ -173,7 +174,7 @@ fun ArtistsButtonView() {
         Modifier
             .padding(10.dp)
             .clickable {
-                shareTxt(appUrlSongShare(homeNav.selectedArtists))
+                shareTxt(appUrlArtistsShare(homeNav.selectedArtists))
             }
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))

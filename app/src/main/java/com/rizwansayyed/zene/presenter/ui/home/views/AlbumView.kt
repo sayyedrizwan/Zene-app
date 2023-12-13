@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -87,37 +88,6 @@ fun AlbumView() {
             }
 
         }
-//            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-//                Column {
-//                    AlbumTopInfoDetails()
-//                }
-//            }
-//
-//            itemsIndexed(
-//                playlistAlbumViewModel.playlistSongsItem,
-//                span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
-//                AlbumsSongsList(item, {
-//                    homeNav.setSongDetailsDialog(item)
-//                }, {
-//                    addAllPlayer(playlistAlbumViewModel.playlistSongsItem.toTypedArray(), i)
-//                })
-//            }
-//
-//            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-//                Column {
-//                    Spacer(Modifier.height(50.dp))
-//                    ArtistsDesc()
-//                    Spacer(Modifier.height(50.dp))
-//                }
-//            }
-//
-//            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-//                SimilarArtistsAlbums()
-//            }
-//
-//            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-//                Spacer(Modifier.height(150.dp))
-//            }
     }
 
     Column {
