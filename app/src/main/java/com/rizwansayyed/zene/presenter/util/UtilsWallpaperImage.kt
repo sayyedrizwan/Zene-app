@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class UtilsWallpaperImage(private val image: String?) {
-    fun startSettingWallpaper() = CoroutineScope(Dispatchers.IO).launch {
+    fun homeScreenWallpaper() = CoroutineScope(Dispatchers.IO).launch {
         image ?: return@launch
 
         downloadImageAsBitmap(image.toUri()) {
@@ -28,12 +28,32 @@ class UtilsWallpaperImage(private val image: String?) {
         }
     }
 
-    private fun makeWallpaper(bitmap: Bitmap) {
+    fun lockScreenWallpaper() = CoroutineScope(Dispatchers.IO).launch {
+        image ?: return@launch
+
+        downloadImageAsBitmap(image.toUri()) {
+            makeWallpaper(it)
+        }
+    }
+
+    fun makeWallpaper(bitmap: Bitmap) {
         try {
             val wallpaperManager = WallpaperManager.getInstance(context)
 
             wallpaperManager.setBitmap(
                 bitmap, null, true, WallpaperManager.FLAG_SYSTEM
+            )
+        } catch (e: Exception) {
+            e.message
+        }
+    }
+
+    fun makeLockScreenWallpaper(bitmap: Bitmap) {
+        try {
+            val wallpaperManager = WallpaperManager.getInstance(context)
+
+            wallpaperManager.setBitmap(
+                bitmap, null, true, WallpaperManager.FLAG_LOCK
             )
         } catch (e: Exception) {
             e.message

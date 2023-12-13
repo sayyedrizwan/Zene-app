@@ -250,7 +250,7 @@ class PlayerServiceAction @Inject constructor(
         delay(1.seconds)
         when (setWallpaperSettings.first()) {
             SetWallpaperInfo.SONG_THUMBNAIL.v -> try {
-                UtilsWallpaperImage(musicPlayerData.first()?.v?.thumbnail).startSettingWallpaper()
+                UtilsWallpaperImage(musicPlayerData.first()?.v?.thumbnail).homeScreenWallpaper()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -259,7 +259,7 @@ class PlayerServiceAction @Inject constructor(
                 val userName =
                     lastFM.artistsUsername(musicPlayerData.first()?.v?.artists ?: "").first()
                 val artistImage = lastFM.artistsImages(userName, 20).first().random()
-                UtilsWallpaperImage(artistImage).startSettingWallpaper()
+                UtilsWallpaperImage(artistImage).homeScreenWallpaper()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

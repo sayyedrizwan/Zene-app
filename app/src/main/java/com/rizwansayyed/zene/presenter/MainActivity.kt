@@ -154,11 +154,6 @@ class MainActivity : ComponentActivity() {
                     BottomNavBar(Modifier.align(Alignment.BottomCenter), player)
                 }
 
-
-                AnimatedVisibility(navViewModel.setImageAsWallpaper.isNotEmpty()) {
-                    WallpaperSetView(navViewModel.setImageAsWallpaper)
-                }
-
                 AnimatedVisibility(
                     songPlayerView?.show == true, Modifier,
                     slideInVertically(initialOffsetY = { it / 2 }),
@@ -170,6 +165,12 @@ class MainActivity : ComponentActivity() {
                 AnimatedVisibility(navViewModel.songDetailDialog != null) {
                     MusicDialogSheet()
                 }
+
+
+                AnimatedVisibility(navViewModel.setImageAsWallpaper.isNotEmpty()) {
+                    WallpaperSetView(navViewModel.setImageAsWallpaper)
+                }
+
 
                 if (doSplashScreen) MainSplashView()
 
@@ -205,8 +206,6 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
                     keyboard?.hide()
-                    delay(1.seconds)
-                    navViewModel.setImageAsWallpaper("https://lastfm.freetls.fastly.net/i/u/770x0/1cb384ef9a9e09e39d98bf4efd316ed3.jpg#1cb384ef9a9e09e39d98bf4efd316ed3")
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
                     navViewModel.setArtists("")

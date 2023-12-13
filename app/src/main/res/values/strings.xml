@@ -111,6 +111,7 @@
     <string name="rm_as_favourite">Remove as favourite</string>
     <string name="cancel">Cancel</string>
     <string name="zene_web">Zene Web</string>
+    <string name="suggested_image">Suggested image</string>
     <string name="rm_radio_from_fav">Remove radio from favourites</string>
     <string name="remove">Remove</string>
     <string name="need_notification_p">Need notification permission to show notification of playing music</string>
@@ -188,4 +189,11 @@
     <string name="sign_in_on_zene_web">Sign-in on Zene Web</string>
     <string name="scan_qr_at_enjoy_sign_in">You can enjoy Zene free music on Web, IOS, Windows, iPad, etc. Just visit %s and enjoy the music and scan the qr to sync your suggestions, playlist, history, song suggestion on the Zene Website.</string>
     <string name="menu">Menu</string>
+    <string name="set_whole_image_as_home_screen_wallpaper">Set Whole Image as\nHome-screen wallpaper</string>
+    <string name="set_edited_image_as_home_screen_wallpaper">Set Edited Image as\nHome-screen wallpaper</string>
+    <string name="set_whole_image_as_lock_screen_wallpaper">Set Whole Image as\nLock-screen wallpaper</string>
+    <string name="set_edited_image_as_lock_screen_wallpaper">Set Edited Image as\nLock-screen wallpaper</string>
+    <string name="add_more_images">Add More Images</string>
+    <string name="please_wait_setting_wallpaper">Please wait. Setting Wallpaper..</string>
+    <string name="wallpaper_set_successfully">Wallpaper set successfully</string>
 </resources>

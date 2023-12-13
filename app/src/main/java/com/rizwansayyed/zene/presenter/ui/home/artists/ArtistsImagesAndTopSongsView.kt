@@ -89,17 +89,17 @@ fun ArtistsImagesView() {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
+    val homeNavViewModel: HomeNavViewModel = hiltViewModel()
     val height = LocalConfiguration.current.screenHeightDp.dp / 2
     val width = (LocalConfiguration.current.screenWidthDp.absoluteValue / 1.3).toInt()
     val paddingReminder = (LocalConfiguration.current.screenWidthDp.absoluteValue - width) / 2
     val pagerState = rememberPagerState(pageCount = { item.size })
-    var showDialog by remember { mutableStateOf<String?>(null) }
 
 
     HorizontalPager(
         pagerState, Modifier.fillMaxWidth(), PaddingValues(horizontal = paddingReminder.dp)
     ) { page ->
-        Card({ showDialog = item[page] },
+        Card({ if (!isLoading) homeNavViewModel.setImageAsWallpaper(item[page]) },
             Modifier
                 .padding(top = if (page == pagerState.currentPage) 0.dp else 60.dp)
                 .padding(7.dp)
@@ -124,63 +124,7 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
         }
     }
 
-    if (!isLoading) showDialog?.let { ImageActionDialog(it) { showDialog = null } }
-
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(item.size / 2)
-    }
-}
-
-@Composable
-fun ImageActionDialog(s: String, close: () -> Unit) {
-    val homeNav: HomeNavViewModel = hiltViewModel()
-    val width = LocalConfiguration.current.screenHeightDp / 1.4
-
-    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(BlackColor)
-        ) {
-            Column(
-                Modifier
-                    .align(Alignment.Center)
-                    .fillMaxSize()
-                    .background(BlackColor),
-                Arrangement.Center, Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    s, "",
-                    Modifier
-                        .fillMaxWidth()
-                        .height(width.dp)
-                )
-            }
-
-            Row(
-                Modifier
-                    .align(Alignment.TopStart)
-                    .padding(10.dp)
-            ) {
-                SmallIcons(R.drawable.ic_arrow_left) {
-                    close()
-                }
-            }
-
-            Row(
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                Button(onClick = {
-                    close()
-                    homeNav.setImageAsWallpaper(s)
-                }) {
-                    TextRegular(v = "set waaalll")
-                }
-            }
-
-        }
     }
 }

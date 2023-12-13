@@ -149,6 +149,12 @@ class ArtistsViewModel @Inject constructor(
             clearIfOne()
             artistsImages.addAll(it)
         }
+        pinterestAPI.search("${a.name} lyrics").catch {
+            clearIfOne()
+        }.collectLatest {
+            clearIfOne()
+            artistsImages.addAll(it)
+        }
     }
 
     private fun artistsDesc(a: LastFMArtist) = viewModelScope.launch(Dispatchers.IO) {
