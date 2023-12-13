@@ -70,7 +70,7 @@ fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
             if (playlists.size >= OFFSET_LIMIT && myMusic.savePlaylistsLoadMore) item {
                 LoadMoreCircleButtonForHistory {
                     page += 1
-                    myMusic.savedPlaylistLoadList(page * 50)
+                    myMusic.savedAlbumsLoadList(page * 50)
                 }
             }
         }

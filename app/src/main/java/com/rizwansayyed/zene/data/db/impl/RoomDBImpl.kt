@@ -48,6 +48,22 @@ class RoomDBImpl @Inject constructor(
         emit(savedPlaylistDao.list())
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun albumsList() = flow {
+        emit(savedPlaylistDao.albumsList())
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun isAlbums(id: String) = flow {
+        emit(savedPlaylistDao.isAlbums(id))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun deleteAlbums(id: String) = flow {
+        emit(savedPlaylistDao.deleteAlbums(id))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun pagingAlbums(offset: Int) = flow {
+        emit(savedPlaylistDao.pagingAlbums(offset))
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun offlineSongInfo(songId: String) = flow {
         emit(offlineDownloaded.songDetails(songId))
     }.flowOn(Dispatchers.IO)

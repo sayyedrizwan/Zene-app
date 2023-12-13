@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.userAu
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicAlbumList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicOfflineDownload
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicPlaylistsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopListenedSong
@@ -58,6 +59,9 @@ fun MyMusicView() {
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicPlaylistsList(myMusic)
+        }
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            MyMusicAlbumList(myMusic)
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicOfflineDownload(myMusic)

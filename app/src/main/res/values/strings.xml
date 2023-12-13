@@ -120,6 +120,8 @@
     <string name="pin">Pin</string>
     <string name="unpin">Unpin</string>
     <string name="share">Share</string>
+    <string name="save_album">Save Album</string>
+    <string name="remove_from_saved_List">Remove from saved list</string>
     <string name="website">Website</string>
     <string name="instagram">Instagram</string>
     <string name="facebook">Facebook</string>

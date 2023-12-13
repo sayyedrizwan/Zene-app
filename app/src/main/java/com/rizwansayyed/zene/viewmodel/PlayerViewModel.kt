@@ -277,7 +277,6 @@ class PlayerViewModel @Inject constructor(
         pinterestAPI.search(v?.songName ?: "", v?.artists ?: "").onStart {
             musicImages = DataResponse.Loading
         }.catch {
-            Log.d("TAG", "songsImages: data ${it.message}")
             musicImages = DataResponse.Error(it)
         }.collectLatest {
             musicImages = DataResponse.Success(it)

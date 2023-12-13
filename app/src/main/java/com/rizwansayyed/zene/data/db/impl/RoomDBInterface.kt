@@ -50,4 +50,9 @@ interface RoomDBInterface {
 
     suspend fun offlineDownloadedSongs(offset: Int): Flow<List<OfflineDownloadedEntity>>
     suspend fun topSongsListenThisWeekOrMonth(): Flow<Pair<Boolean, List<RecentPlayedEntity>>>
+    suspend fun albumsList(): Flow<Flow<List<SavedPlaylistEntity>>>
+    suspend fun pagingAlbums(offset: Int): Flow<List<SavedPlaylistEntity>>
+    suspend fun isAlbums(id: String): Flow<Flow<Int>>
+
+    suspend fun deleteAlbums(id: String): Flow<Unit>
 }
