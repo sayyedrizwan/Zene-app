@@ -90,6 +90,7 @@ import kotlin.time.Duration.Companion.seconds
 
 // progressbar on history songs
 // options menu - set ringtone, set wallpaper,
+// can you replicate blue as in-build
 
 
 @AndroidEntryPoint

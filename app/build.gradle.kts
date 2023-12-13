@@ -166,4 +166,7 @@ dependencies {
     implementation(libs.media3.session)
     implementation(libs.media3.hls)
     implementation(libs.media3.legacy)
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
 }

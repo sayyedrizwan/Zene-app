@@ -21,7 +21,7 @@ webkit-version = "1.9.0"
 jsoup-version = "1.16.1"
 ok-http-version = "4.10.0"
 work-manager-version = "2.9.0"
-firebase-bom-version = "32.6.0"
+firebase-bom-version = "32.7.0"
 paging-version = "3.2.1"
 media3-version = "1.2.0"
 

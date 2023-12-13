@@ -157,19 +157,6 @@ object Utils {
         if (isActive) cancel()
     }
 
-    suspend fun bitmapFromURL(url: String): Bitmap? {
-        var bitmap: Bitmap? = null
-        withContext(Dispatchers.IO) {
-            val request = ImageRequest.Builder(context)
-                .data(url)
-                .target(onSuccess = { result ->
-                    bitmap = result.toBitmapOrNull()
-                }).build()
-            context.imageLoader.execute(request)
-        }
-        return bitmap
-    }
-
     @Suppress("DEPRECATION")
     fun ifPlayerServiceNotRunning(): Boolean {
         return (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
