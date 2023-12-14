@@ -95,9 +95,12 @@ fun SearchView() {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                 val result = it.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 text = ""
+               var txt = ""
                 result?.forEach { n ->
-                    text += n
+                    txt += n
                 }
+                searchInfoText = txt
+                homeApiViewModel.searchTextSuggestions(searchInfoText)
             }
         }
 

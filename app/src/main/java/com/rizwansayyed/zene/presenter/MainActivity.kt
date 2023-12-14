@@ -75,24 +75,16 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // if going ahead or back on song multiple time on via via notification is causing problem. fix it....
-// make playlist save and all options.
-// start search song after voice command
-// play all in albums list
-// pin playlists
 // add insta shop items on artists page.
 // make smooth music player view opener
 // privacy policy viewer
 // all edittext are hiding behind keyboard
-// fix cache
-// search radio too in search view
 // long press options for all views
 
-
-// show albums list in mymusic
-// progressbar on history songs
 // options menu - set ringtone, set wallpaper,
 // can you replicate blue as in-build
 // show feeds
+// my music playlists
 
 
 @AndroidEntryPoint

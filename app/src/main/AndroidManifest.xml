@@ -42,7 +42,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zene"
         android:usesCleartextTraffic="true"
-        android:windowSoftInputMode="adjustResize"
+        android:windowSoftInputMode="adjustPan"
         tools:targetApi="31">
         <activity
             android:name=".presenter.MainActivity"
@@ -51,7 +51,7 @@
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Zene"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

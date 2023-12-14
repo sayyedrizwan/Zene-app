@@ -243,21 +243,18 @@ object Utils {
 
 
     fun cacheSize(): String {
-        var size: Long = 0
-        val files = context.cacheDir.listFiles()
-        for (f in files!!) {
-            size += f.length()
-        }
-        return readableFileSize(size)
-    }
+        val totalSize =
+            context.cacheDir.listFiles()?.fold(0L) { sum, file -> sum + file.length() } ?: 0L
 
-    private fun readableFileSize(size: Long): String {
-        if (size <= 0) return "0 Bytes"
-        val units = arrayOf("Bytes", "kB", "MB", "GB", "TB")
-        val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
-        return DecimalFormat("#,##0.#").format(
-            size / 1024.0.pow(digitGroups.toDouble())
-        ) + " " + units[digitGroups]
+        val sizeInKb = totalSize / 1024
+        val sizeInMb = totalSize / (1024 * 1024)
+        val sizeInGb = totalSize / (1024 * 1024 * 1024)
+
+        return when {
+            sizeInGb > 0 -> "$sizeInGb GB"
+            sizeInMb > 0 -> "$sizeInMb MB"
+            else -> "$sizeInKb KB"
+        }
     }
 
     fun isPermission(permission: String): Boolean {
