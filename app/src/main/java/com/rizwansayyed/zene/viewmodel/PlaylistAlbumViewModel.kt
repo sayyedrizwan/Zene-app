@@ -42,7 +42,7 @@ class PlaylistAlbumViewModel @Inject constructor(
     var isAlbumPresent by mutableStateOf(flowOf(0))
         private set
 
-    private var playlistSongsListSize by mutableIntStateOf(0)
+    var playlistSongsListSize by mutableIntStateOf(0)
 
     var similarAlbumPlaylistAlbum by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set

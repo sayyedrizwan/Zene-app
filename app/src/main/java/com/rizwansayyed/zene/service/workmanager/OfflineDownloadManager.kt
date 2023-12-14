@@ -50,7 +50,13 @@ class OfflineDownloadManager @AssistedInject constructor(
         return withContext(Dispatchers.IO) {
             val songId =
                 inputData.getString(Intent.EXTRA_TEXT) ?: return@withContext Result.success()
+
+            val defaultFolder = File(songDownloadPath, "$songId.mp3")
+
             var offlineEntity = roomDb.offlineSongInfo(songId).first()
+            if (offlineEntity != null)
+                if (offlineEntity.progress == 100 && defaultFolder.exists()) return@withContext Result.success()
+
             val songInfo = youtubeAPIImpl.songDetail(songId).first()
 
             if (offlineEntity == null)
@@ -92,7 +98,6 @@ class OfflineDownloadManager @AssistedInject constructor(
                     }
                 }
                 CoroutineScope(Dispatchers.IO).launch {
-                    val defaultFolder = File(songDownloadPath, "$songId.mp3")
                     if (download == true) copyFileAndDelete(file, defaultFolder)
 
                     info?.progress = if (download == true) 100 else 0

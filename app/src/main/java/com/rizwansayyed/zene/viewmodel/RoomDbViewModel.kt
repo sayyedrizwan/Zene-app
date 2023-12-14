@@ -115,7 +115,7 @@ class RoomDbViewModel @Inject constructor(
 
     private fun songYouMayLike(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
-            youtubeAPIImpl.topThreeSongsSuggestionOnHistory(list.map { i -> i.songId }).onStart {
+            youtubeAPIImpl.topFourSongsSuggestionOnHistory(list.map { i -> i.songId }).onStart {
                 songsYouMayLike = DataResponse.Loading
             }.catch { e ->
                 songsYouMayLike = DataResponse.Error(e)

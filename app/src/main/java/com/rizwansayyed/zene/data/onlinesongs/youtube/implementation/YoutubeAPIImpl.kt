@@ -241,7 +241,7 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun topThreeSongsSuggestionOnHistory(pIds: List<String>) = flow {
+    override suspend fun topFourSongsSuggestionOnHistory(pIds: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
         if (cache != null) if (cache.pList == pIds) {
             emit(cache.list)
@@ -266,7 +266,7 @@ class YoutubeAPIImpl @Inject constructor(
             songsList.contents?.sectionListRenderer?.contents?.forEach { c ->
                 if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.accessibilityData?.accessibilityData?.label?.lowercase() == "you might also like") {
                     c.musicCarouselShelfRenderer.contents?.forEachIndexed { index, content ->
-                        if (index > 3) return@forEachIndexed
+                        if (index > 4) return@forEachIndexed
 
                         val thumbnail =
                             content?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()

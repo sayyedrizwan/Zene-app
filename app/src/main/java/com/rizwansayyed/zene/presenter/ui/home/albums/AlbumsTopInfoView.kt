@@ -37,6 +37,8 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
@@ -101,6 +103,9 @@ fun AlbumNameWithPlayAllButton() {
                         .padding(5.dp)
                         .clip(RoundedCornerShape(100))
                         .background(MainColor)
+                        .clickable {
+                            addAllPlayer(playlistAlbum.playlistSongsItem.toTypedArray(), 0)
+                        }
                         .padding(vertical = 15.dp)
                         .padding(start = 18.dp, end = 15.dp),
                     colorFilter = ColorFilter.tint(Color.White)
