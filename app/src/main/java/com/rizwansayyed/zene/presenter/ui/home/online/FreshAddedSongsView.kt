@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -103,6 +104,7 @@ fun FreshAddedSongsList() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FreshAddedItems(music: MusicData, click: () -> Unit) {
     val homeNavViewModel: HomeNavViewModel = hiltViewModel()
@@ -111,9 +113,9 @@ fun FreshAddedItems(music: MusicData, click: () -> Unit) {
         Modifier
             .padding(horizontal = 5.dp)
             .fillMaxWidth()
-            .clickable {
-                click()
-            }
+            .combinedClickable(onClick = click, onLongClick = {
+                homeNavViewModel.setSongDetailsDialog(music)
+            })
     ) {
         Column(
             Modifier

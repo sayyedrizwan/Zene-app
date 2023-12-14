@@ -202,17 +202,27 @@ fun RadioFavList(homeApi: HomeApiViewModel) {
         { rmDialog = null })
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RadiosItems(
     page: Int, radioPagerState: PagerState?,
     radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel
 ) {
-    Card(
-        { playRadioOnPlayer(radio) },
+    val m = MusicData(
+        radio.favicon, radio.name, radio.language, radio.stationuuid, MusicType.RADIO
+    )
+
+    Column(
         Modifier
             .padding(horizontal = 8.dp)
             .fillMaxWidth()
+            .combinedClickable(
+                onClick = { playRadioOnPlayer(radio) },
+                onLongClick = {
+                    homeNav.setRadioTemp(radio)
+                    homeNav.setSongDetailsDialog(m)
+                },
+            )
             .height((LocalConfiguration.current.screenWidthDp).dp)
             .graphicsLayer {
                 if (radioPagerState != null) {
@@ -220,8 +230,9 @@ fun RadiosItems(
                         ((radioPagerState.currentPage - page) + radioPagerState.currentPageOffsetFraction).absoluteValue
                     alpha = lerp(0.5f, 1f, 0.8f - pageOffset.coerceIn(0f, 1f))
                 }
-            },
-        shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(MainColor)
+            }
+            .clip(RoundedCornerShape(12.dp))
+            .background(MainColor)
     ) {
         Box(
             Modifier
@@ -229,9 +240,6 @@ fun RadiosItems(
                 .fillMaxSize()
         ) {
             MenuIcon(Modifier.align(Alignment.TopStart)) {
-                val m = MusicData(
-                    radio.favicon, radio.name, radio.language, radio.stationuuid, MusicType.RADIO
-                )
                 homeNav.setRadioTemp(radio)
                 homeNav.setSongDetailsDialog(m)
             }

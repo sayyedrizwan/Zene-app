@@ -5,6 +5,7 @@ import android.app.Activity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -79,15 +80,10 @@ fun CurrentMostPlayingSong() {
 
                 LazyRow(Modifier.fillMaxWidth()) {
                     itemsIndexed(v.item ?: emptyList()) { i, m ->
-                        MostPlayedSongView(
-                            m,
-                            Modifier
-                                .animateItemPlacement()
-                                .clickable {
-                                    val l = v.item?.toMusicDataList()
-                                    addAllPlayer(l?.toTypedArray(), i)
-                                }, homeNavModel
-                        )
+                        MostPlayedSongView(m, Modifier.animateItemPlacement(), homeNavModel) {
+                            val l = v.item?.toMusicDataList()
+                            addAllPlayer(l?.toTypedArray(), i)
+                        }
                     }
                 }
             }
@@ -115,14 +111,23 @@ fun MostPlayedSongsLoading() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MostPlayedSongView(music: MusicDataWithArtists, modifier: Modifier, homeNav: HomeNavViewModel) {
+fun MostPlayedSongView(
+    music: MusicDataWithArtists, modifier: Modifier, homeNav: HomeNavViewModel, click: () -> Unit
+) {
     Box(
         modifier
             .padding(horizontal = 12.dp)
             .width((LocalConfiguration.current.screenWidthDp / 1.7).dp)
             .height((LocalConfiguration.current.screenWidthDp / 1.2).dp)
             .clip(RoundedCornerShape(12.dp))
+            .combinedClickable(onLongClick = {
+                val m = MusicData(
+                    music.thumbnail, music.name, music.artistsName, music.pId, MusicType.MUSIC
+                )
+                homeNav.setSongDetailsDialog(m)
+            }, onClick = click)
     ) {
         AsyncImage(
             music.artistsImg,

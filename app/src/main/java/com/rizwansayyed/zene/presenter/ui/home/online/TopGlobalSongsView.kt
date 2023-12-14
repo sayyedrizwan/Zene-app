@@ -4,6 +4,7 @@ package com.rizwansayyed.zene.presenter.ui.home.online
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -74,6 +75,7 @@ fun PageWithHorizontal(item: List<List<MusicData?>>) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean, click: () -> Unit) {
     val homeNavViewModel: HomeNavViewModel = hiltViewModel()
@@ -93,9 +95,9 @@ fun GlobalTrendingPagerItems(i: MusicData?, horizontal: Boolean, click: () -> Un
             .clip(RoundedCornerShape(12.dp))
             .background(gradient)
             .padding(5.dp)
-            .clickable {
-                click()
-            },
+            .combinedClickable(onClick = click, onLongClick = {
+                homeNavViewModel.setSongDetailsDialog(i)
+            }),
         verticalAlignment = CenterVertically
     ) {
         AsyncImage(
