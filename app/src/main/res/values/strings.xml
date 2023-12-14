@@ -89,6 +89,9 @@
     <string name="waiting_for_wifi">Waiting for Wifi</string>
     <string name="downloading__">Downloading…</string>
     <string name="download">Download</string>
+    <string name="set_as_ringtone">Set as Ringtone</string>
+    <string name="set_home_screen_wallpaper">Set Home-Screen Wallpaper</string>
+    <string name="set_lock_screen_wallpaper">Set Lock-Screen Wallpaper</string>
     <string name="downloading_please_wait">Downloading… Please wait…</string>
     <string name="offline_downloaded">Offline Downloaded</string>
     <string name="most_listened_songs_this_week">Most listened songs this Week</string>

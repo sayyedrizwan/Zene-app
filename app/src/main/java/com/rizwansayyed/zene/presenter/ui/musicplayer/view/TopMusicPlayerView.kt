@@ -4,14 +4,19 @@ import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +48,12 @@ import kotlinx.coroutines.launch
 fun TopPlayerHeader(showedOnLockScreen: Boolean) {
     val coroutine = rememberCoroutineScope()
     val activity = LocalContext.current as Activity
+    var dropDownMenu by remember { mutableStateOf(false) }
+
+
+    val ringtone = stringResource(R.string.set_as_ringtone)
+    val homeScreenWallpaper = stringResource(R.string.set_home_screen_wallpaper)
+    val lockScreenWallpaper = stringResource(R.string.set_lock_screen_wallpaper)
 
     Row(
         Modifier
@@ -70,9 +81,27 @@ fun TopPlayerHeader(showedOnLockScreen: Boolean) {
                 .fillMaxWidth(), true
         )
 
-        SmallIcons(R.drawable.ic_more_menu, 25, 10) {
 
+        Box {
+            SmallIcons(R.drawable.ic_more_menu, 25, 10) {
+                dropDownMenu = !dropDownMenu
+            }
+
+            Column(Modifier.offset(x = (-200).dp, y = 0.dp)) {
+                DropdownMenu(dropDownMenu, { dropDownMenu = false }) {
+                    DropdownMenuItem({ TextSemiBold(ringtone) }, onClick = {
+
+                    })
+                    DropdownMenuItem({ TextSemiBold(homeScreenWallpaper) }, onClick = {
+
+                    })
+                    DropdownMenuItem({ TextSemiBold(lockScreenWallpaper) }, onClick = {
+
+                    })
+                }
+            }
         }
+
     }
 }
 
