@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +34,7 @@ import com.rizwansayyed.zene.presenter.ui.MenuIcon
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
@@ -52,6 +55,7 @@ fun SongsForYouToExplore() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongsExploreItems(music: MusicData, click: () -> Unit) {
     val width = (LocalConfiguration.current.screenWidthDp / 2).dp
@@ -63,9 +67,9 @@ fun SongsExploreItems(music: MusicData, click: () -> Unit) {
                 .padding(5.dp)
                 .clip(RoundedCornerShape(2))
                 .fillMaxWidth()
-                .clickable {
-                    click()
-                }
+                .combinedClickable(onClick = click, onLongClick = {
+                    homeNav.setSongDetailsDialog(music)
+                })
         ) {
             AsyncImage(
                 music.thumbnail,

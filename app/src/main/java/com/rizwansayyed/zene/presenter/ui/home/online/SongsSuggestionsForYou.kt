@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +69,7 @@ fun SongsSuggestionsForYou() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongYouMayLikeItems(i: Int, item: MusicData, itemList: List<MusicData>) {
     val width = LocalConfiguration.current.screenWidthDp
@@ -75,9 +78,11 @@ fun SongYouMayLikeItems(i: Int, item: MusicData, itemList: List<MusicData>) {
         Modifier
             .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
             .width((width / 3 + 25).dp)
-            .clickable {
+            .combinedClickable(onClick = {
                 addAllPlayer(itemList.toTypedArray(), i)
-            }
+            }, onLongClick = {
+                homeNavModel.setSongDetailsDialog(item)
+            })
     ) {
         Box(
             Modifier

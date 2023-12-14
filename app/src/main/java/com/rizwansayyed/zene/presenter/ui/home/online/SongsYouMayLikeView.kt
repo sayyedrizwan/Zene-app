@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.presenter.ui.home.online
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -74,6 +76,7 @@ fun SongsYouMayLikeView() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongsYouMayLikeItems(
     music: MusicData?, screenWidth: Int, homeNav: HomeNavViewModel, click: () -> Unit
@@ -84,9 +87,9 @@ fun SongsYouMayLikeItems(
             .size((screenWidth / 2).dp, (screenWidth / 1.9).dp)
             .clip(RoundedCornerShape(18.dp))
             .background(BlackColor)
-            .clickable {
-                click()
-            }
+            .combinedClickable(onClick = click, onLongClick = {
+                homeNav.setSongDetailsDialog(music)
+            })
     ) {
         AsyncImage(
             music?.thumbnail, music?.name, Modifier.fillMaxSize(),
