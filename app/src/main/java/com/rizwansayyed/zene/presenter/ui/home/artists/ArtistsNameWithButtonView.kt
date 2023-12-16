@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.pinnedArtists
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.PinnedArtistsData
 import com.rizwansayyed.zene.presenter.theme.MainColor
@@ -43,6 +42,7 @@ import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
+import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -102,33 +102,23 @@ fun ArtistsNameWithDescription() {
 @Composable
 fun ArtistsButtonView() {
     val artists: ArtistsViewModel = hiltViewModel()
+    val roomDb: RoomDbViewModel = hiltViewModel()
     val homeNav: HomeNavViewModel = hiltViewModel()
-    val artistsList by pinnedArtists.collectAsState(emptyArray())
+
+    val artistsList by roomDb.pinnedArtists.collectAsState(emptyList())
+
+    val maxArtists = stringResource(R.string.max_artists_you_can_add_is_30)
 
     Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
         Row(
             Modifier
                 .padding(10.dp)
                 .clickable {
-                    when (val v = artists.artistsImage) {
-                        is DataResponse.Success -> {
-                            if (artistsList.any {
-                                    it.artistName
-                                        .lowercase()
-                                        .trim() == homeNav.selectedArtists
-                                        .lowercase()
-                                        .trim()
-                                }) {
-                                val a = PinnedArtistsData(homeNav.selectedArtists, v.item)
-                                artistsPin(false, a)
-                            } else {
-                                val a = PinnedArtistsData(homeNav.selectedArtists, v.item)
-                                artistsPin(true, a)
-                            }
-                        }
-
-                        else -> {}
+                    if (artistsList.size > 30) {
+                        maxArtists.toast()
+                        return@clickable
                     }
+                    roomDb.addOrRemoveArtists(homeNav.selectedArtists.trim())
                 }
                 .weight(1f)
                 .clip(RoundedCornerShape(12.dp))
@@ -137,13 +127,13 @@ fun ArtistsButtonView() {
             Arrangement.Center, Alignment.CenterVertically
         ) {
             SmallIcons(if (artistsList.any {
-                    it.artistName.lowercase().trim() == homeNav.selectedArtists.lowercase().trim()
+                    it.name.lowercase().trim() == homeNav.selectedArtists.lowercase().trim()
                 }) R.drawable.ic_pin_off else R.drawable.ic_pin, 22, 5)
 
             Spacer(Modifier.width(6.dp))
 
             TextRegular(stringResource(if (artistsList.any {
-                    it.artistName.lowercase().trim() == homeNav.selectedArtists.lowercase().trim()
+                    it.name.lowercase().trim() == homeNav.selectedArtists.lowercase().trim()
                 }) R.string.unpin else R.string.pin), size = 16)
         }
 
@@ -188,22 +178,4 @@ fun ArtistsButtonView() {
 
         TextRegular(stringResource(R.string.share), size = 16)
     }
-}
-
-fun artistsPin(add: Boolean, name: PinnedArtistsData) = CoroutineScope(Dispatchers.IO).launch {
-    val arrayList = ArrayList<PinnedArtistsData>()
-    arrayList.addAll(pinnedArtists.first())
-
-    val onPosition = arrayList.lastIndexOf(name)
-    if (onPosition >= 0) arrayList.removeAt(onPosition)
-
-    if (add) arrayList.add(0, name)
-
-    if (arrayList.size > 40){
-        context.resources.getString(R.string.max_artists_you_can_add_is_40).toast()
-        return@launch
-    }
-
-    pinnedArtists = flowOf(arrayList.toTypedArray())
-    if (isActive) cancel()
 }

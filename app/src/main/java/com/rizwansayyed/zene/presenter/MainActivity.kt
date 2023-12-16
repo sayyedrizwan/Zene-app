@@ -79,14 +79,16 @@ import kotlin.time.Duration.Companion.seconds
 // make smooth music player view opener
 // privacy policy viewer
 // all edittext are hiding behind keyboard
-// long press options for all views
 
 // options menu - set ringtone, set wallpaper,
-// can you replicate blue as in-build
+// can you replicate blur image as in-build
 // show feeds
 // my music playlists
 // make app stanbymode
 // group music listeners via wifi and bluetooth
+// song recognization
+// import songs from spotify and youtube music.
+
 
 
 @AndroidEntryPoint

@@ -9,6 +9,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
@@ -57,6 +58,7 @@ class RoomDbViewModel @Inject constructor(
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         downloadIfNotDownloaded()
+        allPinnedUserLists()
 
         if (roomDBImpl.readRecentPlay(2).first().isNotEmpty()) {
             topTwentySongsRecords()
@@ -91,6 +93,9 @@ class RoomDbViewModel @Inject constructor(
         private set
 
     var albumsYouMayLike by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
+        private set
+
+    var pinnedArtists by mutableStateOf<Flow<List<PinnedArtistsEntity>>>(flowOf(emptyList()))
         private set
 
 
@@ -198,5 +203,17 @@ class RoomDbViewModel @Inject constructor(
                 startOfflineDownloadWorkManager(song.songId)
             }
         }
+    }
+
+    private fun allPinnedUserLists() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.pinnedArtistsList().catch { }.collectLatest {
+            pinnedArtists = it
+        }
+    }
+
+    fun addOrRemoveArtists(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        val isPresent = roomDBImpl.doContainPinnedArtist(name.trim().lowercase()).first() > 0
+        if (isPresent) roomDBImpl.deletePinnedArtists(name.trim().lowercase()).collect()
+        else roomDBImpl.insert(PinnedArtistsEntity(null, name)).collect()
     }
 }

@@ -17,7 +17,6 @@ object DataStorageUtil {
     val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
     val FAVOURITE_RADIO_LIST = stringPreferencesKey("favourite_radio_list")
     val MUSIC_PLAYER_DATA = stringPreferencesKey("music_player_data")
-    val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
 
     fun cookiesName(domain: String): Preferences.Key<String> {
         return stringPreferencesKey("${domain}_cookie")
