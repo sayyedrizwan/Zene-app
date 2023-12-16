@@ -85,6 +85,8 @@ import kotlin.time.Duration.Companion.seconds
 // can you replicate blue as in-build
 // show feeds
 // my music playlists
+// make app stanbymode
+// group music listeners via wifi and bluetooth
 
 
 @AndroidEntryPoint
