@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PinnedArtistsDao {
     @Query("SELECT * FROM $ARTISTS_PIN_DB ORDER BY addedTime DESC")
-    fun list(): Flow<List<PinnedArtistsEntity>>
+    fun flowList(): Flow<List<PinnedArtistsEntity>>
+
+    @Query("SELECT * FROM $ARTISTS_PIN_DB ORDER BY addedTime DESC")
+   suspend fun list(): List<PinnedArtistsEntity>
 
     @Query("SELECT COUNT(*) FROM $ARTISTS_PIN_DB WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(:name, ' ', ''))")
     suspend fun doContain(name: String): Int

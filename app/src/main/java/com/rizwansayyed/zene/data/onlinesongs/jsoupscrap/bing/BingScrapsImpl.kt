@@ -1,13 +1,19 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing
 
-
 import android.util.Log
+import androidx.paging.log
+import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
+import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
-import com.rizwansayyed.zene.data.utils.ScrapURL.BING_SEARCH
+import com.rizwansayyed.zene.data.utils.BingURL.BING_SEARCH
+import com.rizwansayyed.zene.data.utils.BingURL.bingAccountSearch
+import com.rizwansayyed.zene.data.utils.BingURL.bingOfficialAccountSearch
+import com.rizwansayyed.zene.di.ApplicationModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
+import java.io.File
 import javax.inject.Inject
 
 class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
@@ -30,6 +36,88 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
         }
 
         emit(id.substringAfter("?v="))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun bingOfficialAccounts(a: String) = flow {
+        val response = jsoupResponseData(bingOfficialAccountSearch(a))
+        val jsoup = Jsoup.parse(response!!)
+        val info = PinnedArtistsEntity(null, a)
+
+        jsoup.selectFirst("div.l_ecrd_webicons")?.select("a")?.forEach {
+            val url = it.attr("href")
+            if (url.contains("instagram.com/"))
+                info.instagramUsername = url.substringAfter("instagram.com/").replace("/", "")
+            else if (url.contains("twitter.com/"))
+                info.xChannel = url.substringAfter("twitter.com/").replace("/", "")
+            else if (url.contains("facebook.com/"))
+                info.facebookPage = url.substringAfter("facebook.com/").replace("/", "")
+            else if (url.contains("tiktok.com/"))
+                info.tiktokPage = url.substringAfter("tiktok.com/").replace("/", "")
+            else if (url.contains("youtube.com/"))
+                info.youtubeChannel = url.substringAfter("youtube.com/").replace("/", "")
+        }
+
+
+        if (info.instagramUsername.length <= 3 || !info.instagramUsername.contains("none")) {
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a instagram"))!!)
+                .selectFirst("li.b_algo")?.selectFirst("a")
+                ?.attr("href")
+
+            if (iResponse?.contains("instagram.com/") == true)
+                info.instagramUsername = iResponse.substringAfter("instagram.com/").replace("/", "")
+            else
+                info.instagramUsername = "none"
+        }
+
+        if (info.xChannel.length <= 3 || !info.xChannel.contains("none")) {
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a twitter"))!!)
+                .selectFirst("li.b_algo")?.selectFirst("a")
+                ?.attr("href")
+
+            if (iResponse?.contains("twitter.com/") == true)
+                info.xChannel = iResponse.substringAfter("twitter.com/").replace("/", "")
+            else
+                info.xChannel = "none"
+        }
+
+
+        if (info.facebookPage.length <= 3 || !info.facebookPage.contains("none")) {
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a facebook"))!!)
+                .selectFirst("li.b_algo")?.selectFirst("a")
+                ?.attr("href")
+
+            if (iResponse?.contains("facebook.com/") == true)
+                info.xChannel = iResponse.substringAfter("facebook.com/").replace("/", "")
+            else
+                info.xChannel = "none"
+        }
+
+
+        if (info.tiktokPage.length <= 3 || !info.tiktokPage.contains("none")) {
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a tiktok"))!!)
+                .selectFirst("li.b_algo")?.selectFirst("a")
+                ?.attr("href")
+
+            if (iResponse?.contains("tiktok.com/") == true)
+                info.tiktokPage = iResponse.substringAfter("tiktok.com/").replace("/", "")
+            else
+                info.tiktokPage = "none"
+        }
+
+        if (info.youtubeChannel.length <= 3 || !info.youtubeChannel.contains("none")) {
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a tiktok"))!!)
+                .selectFirst("li.b_algo")?.selectFirst("a")
+                ?.attr("href")
+
+            if (iResponse?.contains("youtube.com/") == true)
+                info.youtubeChannel = iResponse.substringAfter("youtube.com/").replace("/", "")
+            else
+                info.youtubeChannel = "none"
+        }
+
+
+        emit(info)
     }.flowOn(Dispatchers.IO)
 
 }

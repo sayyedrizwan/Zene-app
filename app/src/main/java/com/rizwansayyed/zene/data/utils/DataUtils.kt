@@ -58,7 +58,7 @@ object PinterestAPI {
     const val PINTEREST_BASE_URL = "https://www.pinterest.com/"
     const val PINTEREST_SEARCH_API = "resource/BaseSearchResource/get/"
 
-    fun pinterestSearch(s:String): String {
+    fun pinterestSearch(s: String): String {
         return """{"options":{"article":"","appliedProductFilters":"---","price_max":null,"price_min":null,"query":"${s.lowercase()}","scope":"pins","auto_correction_disabled":"","top_pin_id":"","filters":""},"context":{}}"""
     }
 }
@@ -513,16 +513,28 @@ object GeniusURL {
     }
 }
 
+object BingURL {
+    const val BING_SEARCH = "https://www.bing.com/videos/search?q="
+
+    fun bingOfficialAccountSearch(artists: String): String {
+        val a = artists.trim().lowercase().replace(" ", "+")
+        return "https://www.bing.com/search?q=${a}+official+social+account"
+    }
+
+    fun bingAccountSearch(artists: String): String {
+        val a = artists.trim().lowercase().replace(" ", "+")
+        return "https://www.bing.com/search?q=${a}+official+account"
+    }
+}
+
 
 object ScrapURL {
     const val TOP_ARTISTS = "https://www.billboard.com/charts/artist-100/"
 
-    const val BING_SEARCH = "https://www.bing.com/videos/search?q="
 
     fun songKickArtistsSearch(artists: String): String {
-        return "https://www.songkick.com/search?page=1&per_page=10&query=${
-            artists.trim().lowercase().replace(" ", "+")
-        }&type=artists"
+        val a = artists.trim().lowercase().replace(" ", "+")
+        return "https://www.songkick.com/search?page=1&per_page=10&query=${a}&type=artists"
     }
 
     fun songKickArtistsCalendar(path: String): String {

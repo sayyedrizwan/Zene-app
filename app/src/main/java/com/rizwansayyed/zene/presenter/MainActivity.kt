@@ -36,6 +36,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsImpl
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.domain.HomeNavigation.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
@@ -58,6 +60,7 @@ import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
+import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -67,6 +70,7 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -88,6 +92,7 @@ import kotlin.time.Duration.Companion.seconds
 // group music listeners via wifi and bluetooth
 // song recognization
 // import songs from spotify and youtube music.
+// make artists info cache
 
 
 
@@ -99,6 +104,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var player: ExoPlayer
+
+    @Inject
+    lateinit var bingScrapsImpl : BingScrapsInterface
 
     @Inject
     lateinit var alarmManagerToPlaySong: AlarmManagerToPlaySong
@@ -255,6 +263,10 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
         }
+
+        lifecycleScope.launch {
+            bingScrapsImpl.bingOfficialAccounts("taylor swift").collect()
+        }
     }
 
     override fun onDestroy() {
@@ -268,6 +280,7 @@ class MainActivity : ComponentActivity() {
         jsoupScrapViewModel.init()
         roomViewModel.init()
         lastAPISyncTime = flowOf(System.currentTimeMillis())
+        startArtistsInfoWorkManager()
     }
 
     private fun doOpenMusicPlayer(i: Intent) = lifecycleScope.launch(Dispatchers.IO) {

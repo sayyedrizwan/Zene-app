@@ -149,6 +149,10 @@ class RoomDBImpl @Inject constructor(
 
 
     override suspend fun pinnedArtistsList() = flow {
+        emit(pinnedArtists.flowList())
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun pinnedArtists() = flow {
         emit(pinnedArtists.list())
     }.flowOn(Dispatchers.IO)
 

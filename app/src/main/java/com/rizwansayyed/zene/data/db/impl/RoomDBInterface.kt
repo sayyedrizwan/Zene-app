@@ -60,4 +60,5 @@ interface RoomDBInterface {
     suspend fun doContainPinnedArtist(name: String): Flow<Int>
     suspend fun insert(v: PinnedArtistsEntity): Flow<Unit>
     suspend fun deletePinnedArtists(v: String): Flow<Int>
+    suspend fun pinnedArtists(): Flow<List<PinnedArtistsEntity>>
 }
