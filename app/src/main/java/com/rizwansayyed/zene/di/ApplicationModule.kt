@@ -8,6 +8,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerData
@@ -19,7 +20,9 @@ import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayerNotPlay
 import com.rizwansayyed.zene.utils.NotificationViewManager
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL_ID
+import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
+import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
+import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -48,12 +52,17 @@ class ApplicationModule : Application(), Configuration.Provider {
     @Inject
     lateinit var player: ExoPlayer
 
+    private var lastCrashTime: Long = 0L
+
     override fun onCreate() {
         super.onCreate()
         context = this
 
+        lastCrashTime = daysOldTimestamp(-2)
+
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)
+
             if (!ifPlayerServiceNotRunning()) {
                 context.startService(Intent(context, PlayerService::class.java))
             }
@@ -71,9 +80,19 @@ class ApplicationModule : Application(), Configuration.Provider {
 
             Log.d(packageName, "App Crash Log: ${e.message}")
 
-            Intent(this, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(this)
+
+            if (timestampDifference(lastCrashTime) > 15)
+                Intent(this, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(this)
+                }
+            else {
+                NotificationViewManager(this)
+                    .title(context.resources.getString(R.string.app_crashed))
+                    .body(context.resources.getString(R.string.app_crashed))
+                    .nIds(CRASH_CHANNEL_ID, CRASH_CHANNEL).generate()
+
+                exitProcess(0)
             }
         }
 

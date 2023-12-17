@@ -201,5 +201,6 @@
     <string name="add_more_images">Add More Images</string>
     <string name="please_wait_setting_wallpaper">Please wait. Setting Wallpaper..</string>
     <string name="wallpaper_set_successfully">Wallpaper set successfully</string>
+    <string name="app_crashed">App crashed, Please try again or clear the app cache</string>
     <string name="all_songs_album_download_desc">All Songs of this albums will be downloaded and will be available offline. If the songs are already downloaded they will not be re-downloaded.</string>
 </resources>

@@ -1,9 +1,14 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social
 
-import com.rizwansayyed.zene.domain.ArtistsEvents
-import kotlinx.coroutines.flow.Flow
+import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
 
 interface SocialMediaScrapsImplInterface {
-    suspend fun getAllArtistsData(a: String): Flow<String>
+
+    val job: CoroutineScope get() = CoroutineScope(Dispatchers.IO)
+
+    suspend fun getAllArtistsData(a: PinnedArtistsEntity): Job
 }
