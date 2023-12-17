@@ -263,10 +263,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
         }
-
-        lifecycleScope.launch {
-            bingScrapsImpl.bingOfficialAccounts("taylor swift").collect()
-        }
     }
 
     override fun onDestroy() {

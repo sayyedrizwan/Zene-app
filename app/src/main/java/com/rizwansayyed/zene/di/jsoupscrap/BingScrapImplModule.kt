@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class BingScrapImplementation {
+abstract class BingScrapImplModule {
 
     @Binds
     @Singleton

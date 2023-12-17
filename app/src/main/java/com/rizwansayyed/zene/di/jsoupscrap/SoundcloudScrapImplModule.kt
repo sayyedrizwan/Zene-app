@@ -15,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class SoundcloudScrapImplementation {
+abstract class SoundcloudScrapImplModule {
 
     @Binds
     @Singleton

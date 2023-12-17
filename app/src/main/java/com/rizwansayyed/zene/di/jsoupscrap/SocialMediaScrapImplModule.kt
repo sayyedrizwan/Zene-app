@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.di.jsoupscrap
 
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social.SocialMediaScrapsImpl
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social.SocialMediaScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsImpl
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.topartistsplaylists.TopArtistsPlaylistsScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
@@ -13,10 +15,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class YoutubeScrapImplModule {
+abstract class SocialMediaScrapImplModule {
 
     @Binds
     @Singleton
-    abstract fun youtubeScrapImpl(youtubeScrapsImpl: YoutubeScrapsImpl): YoutubeScrapInterface
+    abstract fun socialMediaScrapImpl(socialMediaScrapsImpl: SocialMediaScrapsImpl): SocialMediaScrapsImplInterface
 
 }

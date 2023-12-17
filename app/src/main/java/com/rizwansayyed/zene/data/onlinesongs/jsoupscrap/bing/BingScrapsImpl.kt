@@ -1,19 +1,14 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing
 
-import android.util.Log
-import androidx.paging.log
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
-import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.BingURL.BING_SEARCH
 import com.rizwansayyed.zene.data.utils.BingURL.bingAccountSearch
 import com.rizwansayyed.zene.data.utils.BingURL.bingOfficialAccountSearch
-import com.rizwansayyed.zene.di.ApplicationModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
-import java.io.File
 import javax.inject.Inject
 
 class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
@@ -39,10 +34,9 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun bingOfficialAccounts(a: String) = flow {
-        val response = jsoupResponseData(bingOfficialAccountSearch(a))
+    override suspend fun bingOfficialAccounts(info: PinnedArtistsEntity) = flow {
+        val response = jsoupResponseData(bingOfficialAccountSearch(info.name))
         val jsoup = Jsoup.parse(response!!)
-        val info = PinnedArtistsEntity(null, a)
 
         jsoup.selectFirst("div.l_ecrd_webicons")?.select("a")?.forEach {
             val url = it.attr("href")
@@ -60,7 +54,7 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
 
         if (info.instagramUsername.length <= 3 || !info.instagramUsername.contains("none")) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a instagram"))!!)
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} instagram"))!!)
                 .selectFirst("li.b_algo")?.selectFirst("a")
                 ?.attr("href")
 
@@ -71,7 +65,7 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
         }
 
         if (info.xChannel.length <= 3 || !info.xChannel.contains("none")) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a twitter"))!!)
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} twitter"))!!)
                 .selectFirst("li.b_algo")?.selectFirst("a")
                 ?.attr("href")
 
@@ -83,7 +77,7 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
 
         if (info.facebookPage.length <= 3 || !info.facebookPage.contains("none")) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a facebook"))!!)
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} facebook"))!!)
                 .selectFirst("li.b_algo")?.selectFirst("a")
                 ?.attr("href")
 
@@ -95,7 +89,7 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
 
         if (info.tiktokPage.length <= 3 || !info.tiktokPage.contains("none")) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a tiktok"))!!)
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} tiktok"))!!)
                 .selectFirst("li.b_algo")?.selectFirst("a")
                 ?.attr("href")
 
@@ -106,7 +100,7 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
         }
 
         if (info.youtubeChannel.length <= 3 || !info.youtubeChannel.contains("none")) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("$a tiktok"))!!)
+            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} tiktok"))!!)
                 .selectFirst("li.b_algo")?.selectFirst("a")
                 ?.attr("href")
 
@@ -115,7 +109,6 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
             else
                 info.youtubeChannel = "none"
         }
-
 
         emit(info)
     }.flowOn(Dispatchers.IO)

@@ -18,6 +18,9 @@ interface PinnedArtistsDao {
     @Query("SELECT COUNT(*) FROM $ARTISTS_PIN_DB WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(:name, ' ', ''))")
     suspend fun doContain(name: String): Int
 
+    @Query("SELECT * FROM $ARTISTS_PIN_DB WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(:name, ' ', '')) LIMIT 1")
+    suspend fun artistsData(name: String): PinnedArtistsEntity
+
     @Query("DELETE FROM $ARTISTS_PIN_DB WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(:name, ' ', ''))")
     suspend fun delete(name: String): Int
 

@@ -160,6 +160,10 @@ class RoomDBImpl @Inject constructor(
         emit(pinnedArtists.doContain(name))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun artistsData(name: String) = flow {
+        emit(pinnedArtists.artistsData(name))
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun insert(v: PinnedArtistsEntity) = flow {
         emit(pinnedArtists.insertOrUpdate(v))
     }.flowOn(Dispatchers.IO)
