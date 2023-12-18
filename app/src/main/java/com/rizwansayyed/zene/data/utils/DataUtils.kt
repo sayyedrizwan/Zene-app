@@ -14,6 +14,7 @@ object DBNAME {
     const val RECENT_PLAYED_DB = "recent_played_db"
     const val OFFLINE_DOWNLOADED_SONGS_DB = "offline_songs_db"
     const val ARTISTS_PIN_DB = "artists_pin_db"
+    const val ARTISTS_FEED_DB = "artists_feed_db"
     const val SAVED_PLAYLIST_DB = "saved_playlist_db"
     const val PLAYLIST_SONGS_DB = "playlist_songs_db"
 }

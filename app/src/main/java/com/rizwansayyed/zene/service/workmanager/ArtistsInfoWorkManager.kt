@@ -14,7 +14,10 @@ import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social.SocialMediaScrapsImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +29,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.log
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 
 
 @HiltWorker
@@ -34,7 +39,8 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val bingScraps: BingScrapsInterface,
     private val roomDb: RoomDBInterface,
-    private val socialMediaScrap: SocialMediaScrapsImplInterface
+    private val socialMediaScrap: SocialMediaScrapsImplInterface,
+    private val lastFMImpl: LastFMImplInterface
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -43,9 +49,17 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
 
             artists.forEach { a ->
                 CoroutineScope(Dispatchers.IO).launch {
+                    if (timestampDifference(a.updatedTime) > 2.days.inWholeSeconds) {
+                        roomDb.artistsThumbnailUpdate(
+                            lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
+                        ).collect()
+                    }
+
                     if (isHaveAllSocialMedia(a)) {
-                        val info = roomDb.artistsData(a.name).first()
-                        socialMediaScrap.getAllArtistsData(info)
+                        if (timestampDifference(a.updatedTime) > 3.hours.inWholeSeconds) {
+                            val info = roomDb.artistsData(a.name).first()
+                            socialMediaScrap.getAllArtistsData(info)
+                        }
                     } else {
                         val info = bingScraps.bingOfficialAccounts(a).first()
                         roomDb.insert(info).collect()

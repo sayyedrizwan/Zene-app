@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.data.db.impl
 
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedDao
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsDao
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDao
@@ -22,7 +24,8 @@ class RoomDBImpl @Inject constructor(
     private val offlineDownloaded: OfflineDownloadedDao,
     private val savedPlaylistDao: SavedPlaylistDao,
     private val playlistSongsDao: PlaylistSongsDao,
-    private val pinnedArtists: PinnedArtistsDao
+    private val pinnedArtists: PinnedArtistsDao,
+    private val artistsFeedDao: ArtistsFeedDao
 ) : RoomDBInterface {
 
     override suspend fun recentMainPlayed() = flow {
@@ -164,12 +167,24 @@ class RoomDBImpl @Inject constructor(
         emit(pinnedArtists.artistsData(name))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun artistsThumbnailUpdate(url: String) = flow {
+        emit(pinnedArtists.artistsThumbnailUpdate(url))
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun insert(v: PinnedArtistsEntity) = flow {
         emit(pinnedArtists.insertOrUpdate(v))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun deletePinnedArtists(v: String) = flow {
         emit(pinnedArtists.delete(v))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun deleteArtistsFeeds(v: String) = flow {
+        emit(artistsFeedDao.delete(v))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun insert(v: ArtistsFeedEntity) = flow {
+        emit(artistsFeedDao.insertOrUpdate(v))
     }.flowOn(Dispatchers.IO)
 
 }

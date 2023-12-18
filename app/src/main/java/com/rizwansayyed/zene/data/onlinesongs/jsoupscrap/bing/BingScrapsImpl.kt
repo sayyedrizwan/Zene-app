@@ -3,10 +3,12 @@ package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing
 import android.util.Log
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
+import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.utils.BingURL.BING_SEARCH
 import com.rizwansayyed.zene.data.utils.BingURL.bingAccountSearch
 import com.rizwansayyed.zene.data.utils.BingURL.bingOfficialAccountSearch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
@@ -55,9 +57,10 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
 
         if (info.instagramUsername.length <= 3) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} instagram"))!!)
-                .selectFirst("li.b_algo")?.selectFirst("a")
-                ?.attr("href")
+            val iResponse =
+                Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} instagram"))!!)
+                    .selectFirst("li.b_algo")?.selectFirst("a")
+                    ?.attr("href")
 
             if (iResponse?.contains("instagram.com/") == true)
                 info.instagramUsername = iResponse.substringAfter("instagram.com/").replace("/", "")
@@ -66,9 +69,10 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
         }
 
         if (info.xChannel.length <= 3) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} twitter"))!!)
-                .selectFirst("li.b_algo")?.selectFirst("a")
-                ?.attr("href")
+            val iResponse =
+                Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} twitter"))!!)
+                    .selectFirst("li.b_algo")?.selectFirst("a")
+                    ?.attr("href")
 
             if (iResponse?.contains("twitter.com/") == true)
                 info.xChannel = iResponse.substringAfter("twitter.com/").replace("/", "")
@@ -78,9 +82,10 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
 
         if (info.facebookPage.length <= 3) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} facebook page"))!!)
-                .selectFirst("li.b_algo")?.selectFirst("a")
-                ?.attr("href")
+            val iResponse =
+                Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} facebook page"))!!)
+                    .selectFirst("li.b_algo")?.selectFirst("a")
+                    ?.attr("href")
 
             if (iResponse?.contains("facebook.com/") == true)
                 info.xChannel = iResponse.substringAfter("facebook.com/").replace("/", "")
@@ -90,9 +95,10 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
 
         if (info.tiktokPage.length <= 3) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} tiktok"))!!)
-                .selectFirst("li.b_algo")?.selectFirst("a")
-                ?.attr("href")
+            val iResponse =
+                Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} tiktok"))!!)
+                    .selectFirst("li.b_algo")?.selectFirst("a")
+                    ?.attr("href")
 
             if (iResponse?.contains("tiktok.com/") == true)
                 info.tiktokPage = iResponse.substringAfter("tiktok.com/").replace("/", "")
@@ -101,17 +107,16 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
         }
 
         if (info.youtubeChannel.length <= 3) {
-            val iResponse = Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} youtube"))!!)
-                .selectFirst("li.b_algo")?.selectFirst("a")
-                ?.attr("href")
+            val iResponse =
+                Jsoup.parse(jsoupResponseData(bingAccountSearch("${info.name} youtube"))!!)
+                    .selectFirst("li.b_algo")?.selectFirst("a")
+                    ?.attr("href")
 
             if (iResponse?.contains("youtube.com/") == true)
                 info.youtubeChannel = iResponse.substringAfter("youtube.com/").replace("/", "")
             else
                 info.youtubeChannel = "none"
         }
-
-
         emit(info)
     }.flowOn(Dispatchers.IO)
 

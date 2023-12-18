@@ -106,6 +106,14 @@ object Utils {
         return time / 1000
     }
 
+    fun String.toLongWithPlaceHolder(): Long {
+        return try {
+            this.toLong()
+        } catch (e: Exception) {
+            0
+        }
+    }
+
     fun artistsListToString(list: MutableList<String>): String {
         val artistName = buildString {
             for (i in 0 until list.size) {

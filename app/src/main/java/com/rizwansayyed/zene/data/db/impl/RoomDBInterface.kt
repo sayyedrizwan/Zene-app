@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.db.impl
 
 import androidx.paging.DataSource
 import androidx.paging.PagingConfig
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
@@ -62,4 +63,7 @@ interface RoomDBInterface {
     suspend fun deletePinnedArtists(v: String): Flow<Int>
     suspend fun pinnedArtists(): Flow<List<PinnedArtistsEntity>>
     suspend fun artistsData(name: String): Flow<PinnedArtistsEntity>
+    suspend fun deleteArtistsFeeds(v: String): Flow<Int>
+    suspend fun insert(v: ArtistsFeedEntity): Flow<Unit>
+    suspend fun artistsThumbnailUpdate(url: String): Flow<PinnedArtistsEntity>
 }

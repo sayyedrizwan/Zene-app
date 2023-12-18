@@ -21,6 +21,9 @@ interface PinnedArtistsDao {
     @Query("SELECT * FROM $ARTISTS_PIN_DB WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(:name, ' ', '')) LIMIT 1")
     suspend fun artistsData(name: String): PinnedArtistsEntity
 
+    @Query("UPDATE $ARTISTS_PIN_DB SET thumbnail = :url WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(:url, ' ', ''))")
+    suspend fun artistsThumbnailUpdate(url: String): PinnedArtistsEntity
+
     @Query("DELETE FROM $ARTISTS_PIN_DB WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(:name, ' ', ''))")
     suspend fun delete(name: String): Int
 
