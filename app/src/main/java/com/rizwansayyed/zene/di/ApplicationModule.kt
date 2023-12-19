@@ -6,15 +6,12 @@ import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.work.Configuration
-import androidx.work.WorkManager
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.MainActivity
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayerNotPlay
 import com.rizwansayyed.zene.utils.NotificationViewManager
@@ -32,7 +29,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.system.exitProcess
@@ -79,6 +75,17 @@ class ApplicationModule : Application(), Configuration.Provider {
                     .nIds(CRASH_CHANNEL_ID, CRASH_CHANNEL).generate()
 
             Log.d(packageName, "App Crash Log: ${e.message}")
+            val stackTrace: Array<StackTraceElement> = e.stackTrace
+            if (stackTrace.isNotEmpty()) {
+                val element = stackTrace[0]
+                val fileName = element.fileName
+                val lineNumber = element.lineNumber
+                val methodName = element.methodName
+
+                Log.e(packageName, "App Crash Log: Crash in ${element.toString()}")
+            } else {
+                Log.e(packageName, "App Crash Log: Unknown error occurred")
+            }
 
 
             if (timestampDifference(lastCrashTime) > 15)
@@ -94,6 +101,8 @@ class ApplicationModule : Application(), Configuration.Provider {
 
                 exitProcess(0)
             }
+
+            lastCrashTime = System.currentTimeMillis()
         }
 
         CoroutineScope(Dispatchers.IO).launch {

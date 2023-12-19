@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedDB
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedDao
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsDB
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsDao
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDB
@@ -14,6 +16,7 @@ import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDB
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistDao
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsDB
 import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsDao
+import com.rizwansayyed.zene.data.utils.DBNAME.ARTISTS_FEED_DB
 import com.rizwansayyed.zene.data.utils.DBNAME.ARTISTS_PIN_DB
 import com.rizwansayyed.zene.data.utils.DBNAME.OFFLINE_DOWNLOADED_SONGS_DB
 import com.rizwansayyed.zene.data.utils.DBNAME.PLAYLIST_SONGS_DB
@@ -65,6 +68,13 @@ object RoomModule {
     @Singleton
     fun pinnedArtistsDao(@ApplicationContext context: Context): PinnedArtistsDao =
         Room.databaseBuilder(context, PinnedArtistsDB::class.java, ARTISTS_PIN_DB)
+            .fallbackToDestructiveMigration().build().dao()
+
+
+    @Provides
+    @Singleton
+    fun artistsFeedDao(@ApplicationContext context: Context): ArtistsFeedDao =
+        Room.databaseBuilder(context, ArtistsFeedDB::class.java, ARTISTS_FEED_DB)
             .fallbackToDestructiveMigration().build().dao()
 
 }

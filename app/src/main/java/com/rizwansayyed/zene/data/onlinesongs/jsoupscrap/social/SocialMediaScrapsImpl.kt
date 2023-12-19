@@ -1,17 +1,21 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social
 
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.facebook.FacebookScrapsImplInterface
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.utils.Utils.toLongWithPlaceHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,6 +49,12 @@ class SocialMediaScrapsImpl @Inject constructor(
             } catch (e: Exception) {
                 e.message
             }
+
+            if (isActive) cancel()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+
         }
 
     }

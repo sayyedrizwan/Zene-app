@@ -102,7 +102,7 @@ object Utils {
     }
 
     fun timestampDifference(ts: Long): Long {
-        val time = ts - System.currentTimeMillis()
+        val time = System.currentTimeMillis() - ts
         return time / 1000
     }
 

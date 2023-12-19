@@ -29,7 +29,10 @@ suspend fun jsoupResponseData(url: String): String? {
             .addHeader("Referer", getMainDomain(url) ?: "")
             .addHeader("referer", getMainDomain(url) ?: "")
             .addHeader("user-agent", USER_AGENT)
+            .addHeader("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+            .addHeader("sec-fetch-site", "none")
             .addHeader("Cookie", DataStorageManager.cookiesData(getMainDomain(url) ?: ""))
+            .addHeader("Cookies", DataStorageManager.cookiesData(getMainDomain(url) ?: ""))
             .build()
 
         try {
@@ -72,7 +75,10 @@ suspend fun retryWithCookieResponseData(url: String, headers: List<String>): Str
             .addHeader("authority", getMainDomain(url) ?: "")
             .addHeader("Referer", getMainDomain(url) ?: "")
             .addHeader("user-agent", USER_AGENT)
+            .addHeader("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+            .addHeader("sec-fetch-site", "none")
             .addHeader("Cookie", cookies)
+            .addHeader("Cookies", cookies)
             .build()
         try {
             val response = client.newCall(request).execute()

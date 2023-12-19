@@ -514,6 +514,12 @@ object GeniusURL {
     }
 }
 
+object FacebookURL {
+    fun facebookPage(username: String): String {
+        return "https://www.facebook.com/$username"
+    }
+}
+
 object BingURL {
     const val BING_SEARCH = "https://www.bing.com/videos/search?q="
 

@@ -75,6 +75,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -94,6 +95,7 @@ import kotlin.time.Duration.Companion.seconds
 // import songs from spotify and youtube music.
 // make artists info cache
 
+// in view all radio is not saving
 
 
 @AndroidEntryPoint
@@ -256,7 +258,7 @@ class MainActivity : ComponentActivity() {
         roomViewModel.downloadIfNotDownloaded()
         lifecycleScope.launch(Dispatchers.IO) {
             delay(1.seconds)
-            if (timestampDifference(lastAPISyncTime.first()) >= 20) apis()
+            if (timestampDifference(lastAPISyncTime.first()) >= 10.minutes.inWholeSeconds) apis()
         }
 
         lifecycleScope.launch {
