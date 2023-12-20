@@ -120,7 +120,7 @@ fun ArtistsSocialMedia() {
 
     when (val v = artists.artistSocialProfile) {
         DataResponse.Empty -> {}
-        is DataResponse.Error -> { TextThin(v.throwable.message ?: "Nooo")}
+        is DataResponse.Error -> {}
         DataResponse.Loading -> ArtistsSocialMediaLoading()
         is DataResponse.Success -> FlowRow {
             v.item.social.forEachIndexed { index, social ->
@@ -249,8 +249,7 @@ fun ArtistsProfilePin() {
 
     when (val v = artists.artistSocialProfile) {
         DataResponse.Empty -> {}
-        is DataResponse.Error -> {
-            TextThin(v = v.throwable.message ?: "Noooo")}
+        is DataResponse.Error -> {}
         DataResponse.Loading -> {}
         is DataResponse.Success -> {
             if ((v.item.followersCount ?: 0) > 0) {

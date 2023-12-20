@@ -2,19 +2,15 @@ package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing
 
 import android.util.Log
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
-import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
-import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.utils.BingURL.BING_SEARCH
 import com.rizwansayyed.zene.data.utils.BingURL.bingAccountSearch
+import com.rizwansayyed.zene.data.utils.BingURL.bingNewsSearch
 import com.rizwansayyed.zene.data.utils.BingURL.bingOfficialAccountSearch
-import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
-import java.io.File
 import javax.inject.Inject
 
 class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
@@ -39,6 +35,40 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
         emit(id.substringAfter("?v="))
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun bingNews(artists: String) = flow {
+        val response = jsoupResponseData(bingNewsSearch(artists))
+        val jsoup = Jsoup.parse(response!!)
+
+
+        jsoup.selectFirst("div.b_slidebar")?.select("a.news_fbcard.wimg")?.forEach {
+            val url = it.attr("href")
+            val img = it.selectFirst("img")?.attr("data-src-hq")?.replace("//", "")
+            val title = it.selectFirst("div.na_t.news_title")?.text()
+            val desc = it.selectFirst("div.news_snpt")?.text()
+            val time = it.selectFirst("cite")?.selectFirst("span.b_secondaryText")?.text()?.trim()
+                ?.substringAfter(" ")
+        }
+
+        jsoup.select("div.news-card-body.card-with-cluster").forEach {
+            val url = it.selectFirst("a.title")?.attr("href")
+            val img = "https://th.bing.com/" + it.selectFirst("div.image.right")?.selectFirst("a")
+                ?.selectFirst("img")?.attr("data-src")?.replace("//", "")
+            val title = it.selectFirst("a.title")?.text()
+            val desc = it.selectFirst("div.snippet")?.text()
+            val time =
+                it.selectFirst("source.biglogo.set_top")?.select("span")?.joinToString { " " }
+
+            Log.d("TAG", "bingNews: n $url")
+            Log.d("TAG", "bingNews: n ${img}")
+            Log.d("TAG", "bingNews: n $title")
+            Log.d("TAG", "bingNews: n $desc")
+            Log.d("TAG", "bingNews: n $time")
+            Log.d("TAG", "bingNews: n ==============")
+        }
+
+        emit("")
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun bingOfficialAccounts(info: PinnedArtistsEntity) = flow {
         val response = jsoupResponseData(bingOfficialAccountSearch(info.name))

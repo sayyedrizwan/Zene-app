@@ -16,7 +16,6 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterfac
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social.SocialMediaScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -28,7 +27,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.log
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 

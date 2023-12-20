@@ -7,4 +7,5 @@ interface BingScrapsInterface {
     suspend fun bingOfficialVideo(a: String): Flow<String>
 
     suspend fun bingOfficialAccounts(info: PinnedArtistsEntity): Flow<PinnedArtistsEntity>
+    suspend fun bingNews(artists: String): Flow<String>
 }

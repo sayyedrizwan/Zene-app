@@ -528,6 +528,11 @@ object BingURL {
         return "https://www.bing.com/search?q=${a}+official+social+account"
     }
 
+    fun bingNewsSearch(artists: String): String {
+        val a = artists.trim().lowercase().replace(" ", "+")
+        return "https://www.bing.com/news/search?q=$a&FORM=HDRSC7"
+    }
+
     fun bingAccountSearch(artists: String): String {
         val a = artists.trim().lowercase().replace(" ", "+")
         return "https://www.bing.com/search?q=${a}+official+account"
