@@ -84,8 +84,8 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
             else if (url.contains("tiktok.com/"))
                 info.tiktokPage = url.substringAfter("tiktok.com/").replace("/", "")
             else if (url.contains("youtube.com/"))
-                info.youtubeChannel =
-                    url.substringAfter("youtube.com/").replace("channel", "").replace("/", "")
+                info.youtubeChannel = url.substringAfter("youtube.com/").replace("/", "")
+                    .replace("channel", "channel/")
         }
 
         if (info.instagramUsername.length <= 3) {
@@ -145,7 +145,8 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
             if (iResponse?.contains("youtube.com/") == true)
                 info.youtubeChannel =
-                    iResponse.substringAfter("youtube.com/").replace("channel", "").replace("/", "")
+                    iResponse.substringAfter("youtube.com/").replace("/", "")
+                        .replace("channel", "channel/")
             else
                 info.youtubeChannel = "none"
         }

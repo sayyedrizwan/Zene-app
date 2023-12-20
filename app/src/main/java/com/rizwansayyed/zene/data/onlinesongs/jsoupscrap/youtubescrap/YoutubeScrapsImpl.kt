@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap
 import android.util.Log
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.generateYTMusicPlaylistURL
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.youtubeUsernameChannel
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.yt.YoutubePlaylistItemsResponse
 import com.rizwansayyed.zene.utils.Utils.forSearchTxt
@@ -45,5 +46,16 @@ class YoutubeScrapsImpl @Inject constructor() : YoutubeScrapInterface {
         }
 
         emit(list)
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun getChannelId(username: String) = flow {
+        val response = jsoupResponseData(youtubeUsernameChannel(username))
+        val jsoup = Jsoup.parse(response!!)
+
+        val metaTag = jsoup.selectFirst("meta[property=og:url]")?.attr("content")
+        Log.d("TAG", "getChannelId: data $metaTag")
+
+        emit("")
     }.flowOn(Dispatchers.IO)
 }

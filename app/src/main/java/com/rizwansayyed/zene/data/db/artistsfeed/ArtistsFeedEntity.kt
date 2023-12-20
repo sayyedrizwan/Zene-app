@@ -22,5 +22,5 @@ data class ArtistsFeedEntity(
 )
 
 enum class FeedPostType {
-    INSTAGRAM, FACEBOOK, TIKTOK, YOUTUBE, X, XFans, NEWS
+    INSTAGRAM, FACEBOOK, TIKTOK, YOUTUBE, SHORTS, X, XFans, NEWS
 }

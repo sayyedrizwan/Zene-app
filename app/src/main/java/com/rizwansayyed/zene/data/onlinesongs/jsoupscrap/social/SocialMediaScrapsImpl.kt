@@ -9,6 +9,8 @@ import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.facebook.FacebookScrapsImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapsImpl
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.utils.Utils.toLongWithPlaceHolder
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +28,7 @@ class SocialMediaScrapsImpl @Inject constructor(
     private val roomDb: RoomDBInterface,
     private val instagramService: InstagramInfoService,
     private val bingScrap: BingScrapsInterface,
+    private val youtubeScrap: YoutubeScrapsImpl,
     private val remoteConfig: RemoteConfigInterface
 ) : SocialMediaScrapsImplInterface {
     override suspend fun getAllArtistsData(a: PinnedArtistsEntity) = job.launch {
@@ -67,8 +70,21 @@ class SocialMediaScrapsImpl @Inject constructor(
                     roomDb.insert(v).collect()
                 }
             }
+
+            if (isActive) cancel()
         }
 
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val id =
+                if (a.youtubeChannel.contains("channel")) a.youtubeChannel.substringAfter("channel/")
+                else youtubeScrap.getChannelId(a.youtubeChannel).first()
+
+            Log.d("TAG", "getAllArtistsData: getdata $id")
+
+            if (isActive) cancel()
+        }
     }
 
 }

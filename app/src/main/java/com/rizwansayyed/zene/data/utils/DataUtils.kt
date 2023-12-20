@@ -160,6 +160,10 @@ object YoutubeAPI {
         return "https://music.youtube.com/playlist?list=$pid"
     }
 
+    fun youtubeUsernameChannel(username: String): String {
+        return "https://www.youtube.com/$username"
+    }
+
     fun ytMusicMainSearchJsonBody(ip: IpJsonResponse?, q: String): RequestBody {
         val json = """{
             "context": {
