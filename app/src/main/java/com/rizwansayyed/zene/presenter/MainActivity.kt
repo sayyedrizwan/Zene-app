@@ -265,12 +265,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
         }
-
-
-        lifecycleScope.launch {
-            delay(3.seconds)
-            startArtistsInfoWorkManager()
-        }
     }
 
     override fun onDestroy() {

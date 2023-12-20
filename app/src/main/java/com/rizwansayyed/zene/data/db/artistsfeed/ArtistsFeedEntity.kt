@@ -11,13 +11,13 @@ import java.util.Calendar
 @Entity(tableName = ARTISTS_FEED_DB)
 data class ArtistsFeedEntity(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    var artistsName: String,
-    var username: String,
-    var timeAdded: Long,
-    var feedType: FeedPostType,
+    var artistsName: String?,
+    var username: String?,
+    var timeAdded: Long?,
+    var feedType: FeedPostType?,
     var media: String?,
-    var isVideo: Boolean,
-    var title: String,
+    var isVideo: Boolean?,
+    var title: String?,
     var desc: String?,
     var postId: String?,
 )

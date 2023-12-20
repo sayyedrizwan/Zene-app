@@ -167,8 +167,12 @@ class RoomDBImpl @Inject constructor(
         emit(pinnedArtists.artistsData(name))
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun artistsThumbnailUpdate(url: String) = flow {
-        emit(pinnedArtists.artistsThumbnailUpdate(url))
+    override suspend fun artistsThumbnailUpdate(name: String, url: String) = flow {
+        emit(pinnedArtists.artistsThumbnailUpdate(name, url, System.currentTimeMillis()))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun artistsLastInfoSync(name: String) = flow {
+        emit(pinnedArtists.artistsLastInfoSync(name, System.currentTimeMillis()))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun insert(v: PinnedArtistsEntity) = flow {
@@ -189,6 +193,10 @@ class RoomDBImpl @Inject constructor(
 
     override suspend fun insert(v: ArtistsFeedEntity) = flow {
         emit(artistsFeedDao.insertOrUpdate(v))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun allArtistsByName() = flow {
+        emit(artistsFeedDao.singleArtistsName())
     }.flowOn(Dispatchers.IO)
 
 }

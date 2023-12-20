@@ -13,6 +13,9 @@ interface ArtistsFeedDao {
     @Query("SELECT * FROM $ARTISTS_FEED_DB ORDER BY timeAdded DESC")
     fun flowList(): Flow<List<ArtistsFeedEntity>>
 
+    @Query("SELECT DISTINCT artistsName FROM $ARTISTS_FEED_DB")
+    suspend fun singleArtistsName(): List<ArtistsFeedEntity>
+
     @Query("DELETE FROM $ARTISTS_FEED_DB WHERE LOWER(REPLACE(artistsName, ' ', '')) = LOWER(REPLACE(:name, ' ', ''))")
     suspend fun delete(name: String): Int
 

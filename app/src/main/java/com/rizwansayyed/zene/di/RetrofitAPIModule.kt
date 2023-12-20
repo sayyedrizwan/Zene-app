@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.di
 
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
+import com.rizwansayyed.zene.data.onlinesongs.instagram.SaveFromInstagramService
 import com.rizwansayyed.zene.data.onlinesongs.ip.AWSIpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.ip.IpJsonService
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.data.utils.LastFM
 import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
 import com.rizwansayyed.zene.data.utils.PinterestAPI.PINTEREST_BASE_URL
 import com.rizwansayyed.zene.data.utils.SaveFromInstagram.SAVE_FROM_INSTAGRAM_BASE_URL
+import com.rizwansayyed.zene.data.utils.SaveFromInstagram.SAVE_FROM_INSTAGRAM_ORIGIN
 import com.rizwansayyed.zene.data.utils.SoundCloudAPI.SOUND_CLOUD_BASE_URL
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_BASE_URL
 import com.rizwansayyed.zene.data.utils.USER_AGENT
@@ -215,8 +217,19 @@ object RetrofitAPIModule {
         .build().create(GoogleNewsService::class.java)
 
     @Provides
-    fun retrofitSaveFromInstagramService(): GoogleNewsService = Retrofit.Builder()
-        .baseUrl(SAVE_FROM_INSTAGRAM_BASE_URL).client(okHttpClient)
-        .addConverterFactory(SimpleXmlConverterFactory.create())
-        .build().create(GoogleNewsService::class.java)
+    fun retrofitSaveFromInstagramService(): SaveFromInstagramService {
+        val builder = OkHttpClient.Builder()
+        builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val chains = chain.request().newBuilder()
+                .addHeader("origin", SAVE_FROM_INSTAGRAM_ORIGIN)
+                .addHeader("referer", SAVE_FROM_INSTAGRAM_ORIGIN)
+                .addHeader("user-agent", USER_AGENT)
+            chain.proceed(chains.build())
+        })
+
+        return Retrofit.Builder()
+            .baseUrl(SAVE_FROM_INSTAGRAM_BASE_URL).client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(SaveFromInstagramService::class.java)
+    }
 }

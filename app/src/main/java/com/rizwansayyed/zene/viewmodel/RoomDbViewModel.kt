@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPII
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -213,7 +214,13 @@ class RoomDbViewModel @Inject constructor(
 
     fun addOrRemoveArtists(name: String) = viewModelScope.launch(Dispatchers.IO) {
         val isPresent = roomDBImpl.doContainPinnedArtist(name.trim().lowercase()).first() > 0
-        if (isPresent) roomDBImpl.deletePinnedArtists(name.trim().lowercase()).collect()
-        else roomDBImpl.insert(PinnedArtistsEntity(null, name)).collect()
+        if (isPresent) roomDBImpl.deletePinnedArtists(name.trim().lowercase()).collectLatest {
+            delay(2.seconds)
+            startArtistsInfoWorkManager()
+        }
+        else roomDBImpl.insert(PinnedArtistsEntity(null, name)).collectLatest {
+            delay(2.seconds)
+            startArtistsInfoWorkManager()
+        }
     }
 }

@@ -17,5 +17,6 @@ data class PinnedArtistsEntity(
     var youtubeChannel: String = "",
     var xChannel: String = "",
     var addedTime: Long = System.currentTimeMillis(),
-    var updatedTime: Long = daysOldTimestamp(10),
+    var lastProfilePicSync: Long = daysOldTimestamp(10),
+    var lastInfoSync: Long = daysOldTimestamp(10),
 )

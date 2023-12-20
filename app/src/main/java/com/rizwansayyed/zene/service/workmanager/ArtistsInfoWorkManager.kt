@@ -23,12 +23,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 
 @HiltWorker
@@ -45,19 +47,24 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
         return withContext(Dispatchers.IO) {
             roomDb.recentMainPlayed()
             val artists = roomDb.pinnedArtists().first()
+            val allArtistsInFeed = roomDb.allArtistsByName().first()
+
+            val extraArtists = allArtistsInFeed.map { it.artistsName?.lowercase()?.trim() ?: "" }
+                .toSet().subtract(artists.map { it.name.lowercase().trim() }.toSet())
+
+            extraArtists.forEach { i ->
+                roomDb.deleteArtistsFeeds(i).first()
+            }
 
             artists.forEach { a ->
                 CoroutineScope(Dispatchers.IO).launch {
-                    if (timestampDifference(a.updatedTime) > 2.days.inWholeSeconds) {
-                        roomDb.artistsThumbnailUpdate(
-                            lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
-                        ).collect()
+                    if (timestampDifference(a.lastProfilePicSync) > 2.days.inWholeSeconds || a.thumbnail.isEmpty()) {
+                        val img = lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
+                        roomDb.artistsThumbnailUpdate(a.name, img).collect()
                     }
 
-
-
                     if (isHaveAllSocialMedia(a)) {
-                        if (timestampDifference(a.updatedTime) > 3.hours.inWholeSeconds) {
+                        if (timestampDifference(a.lastInfoSync) > 10.minutes.inWholeSeconds) {
                             val info = roomDb.artistsData(a.name).first()
                             socialMediaScrap.getAllArtistsData(info)
                         }

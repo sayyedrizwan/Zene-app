@@ -80,6 +80,7 @@ object SpotifyAPI {
 }
 
 object SaveFromInstagram {
+    const val SAVE_FROM_INSTAGRAM_ORIGIN = "https://en.savefrom.net"
     const val SAVE_FROM_INSTAGRAM_BASE_URL = "https://igs.sf-converter.com/api/"
     const val SAVE_FROM_INSTAGRAM_INFO = "userInfoByUsername/{username}"
     const val SAVE_FROM_INSTAGRAM_STORIES = "stories/{user_id}"

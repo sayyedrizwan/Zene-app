@@ -36,7 +36,11 @@ class SocialMediaScrapsImpl @Inject constructor(
     private val saveFromStories: SaveFromStoriesImplInterface
 ) : SocialMediaScrapsImplInterface {
     override suspend fun getAllArtistsData(a: PinnedArtistsEntity) = job.launch {
-        roomDb.deleteAll().first()
+        roomDb.deleteArtistsFeeds(a.name).first()
+
+        suspend fun updateLatestSyncTime() {
+            roomDb.artistsLastInfoSync(a.name).collect()
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -57,6 +61,8 @@ class SocialMediaScrapsImpl @Inject constructor(
                     )
                     roomDb.insert(v).collect()
                 }
+
+                updateLatestSyncTime()
             } catch (e: Exception) {
                 e.message
             }
@@ -73,6 +79,8 @@ class SocialMediaScrapsImpl @Inject constructor(
                     )
                     roomDb.insert(v).collect()
                 }
+
+                updateLatestSyncTime()
             }
 
             if (isActive) cancel()
@@ -88,17 +96,19 @@ class SocialMediaScrapsImpl @Inject constructor(
             youtubeAPI.channelVideo(id).catch { }.collectLatest {
                 it.forEach { v ->
                     val feed = ArtistsFeedEntity(
-                        null, a.name, a.youtubeChannel, youtubeToTimestamp(v.username),
+                        null, a.name, a.youtubeChannel, youtubeToTimestamp(v.username ?: ""),
                         FeedPostType.YOUTUBE, v.media, false, v.title, v.desc, v.postId
                     )
                     roomDb.insert(feed).collect()
                 }
+
+                updateLatestSyncTime()
             }
             if (isActive) cancel()
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            saveFromStories.storiesList(a.instagramUsername).catch { }.collectLatest {
+            saveFromStories.storiesList(a.instagramUsername).catch {}.collectLatest {
                 it?.forEach { s ->
                     val media = if (s?.video_versions != null)
                         s.video_versions.maxBy { i -> i?.height ?: 0 }?.url
@@ -112,6 +122,7 @@ class SocialMediaScrapsImpl @Inject constructor(
                     )
                     roomDb.insert(feed).collect()
                 }
+                updateLatestSyncTime()
             }
             if (isActive) cancel()
         }
