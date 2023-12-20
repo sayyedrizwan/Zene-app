@@ -2,12 +2,10 @@ package com.rizwansayyed.zene.data.onlinesongs.instagram
 
 
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_PROFILE_API
-import com.rizwansayyed.zene.domain.InstagramDataResponse
-import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.instagram.InstagramDataResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 interface InstagramInfoService {
 

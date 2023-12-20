@@ -4,9 +4,11 @@ package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social
 import android.util.Log
 import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
+import com.rizwansayyed.zene.data.db.artistsfeed.youtubeToTimestamp
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
+import com.rizwansayyed.zene.data.onlinesongs.instagram.stories.SaveFromStoriesImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.facebook.FacebookScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapsImpl
@@ -29,7 +31,9 @@ class SocialMediaScrapsImpl @Inject constructor(
     private val instagramService: InstagramInfoService,
     private val bingScrap: BingScrapsInterface,
     private val youtubeScrap: YoutubeScrapsImpl,
-    private val remoteConfig: RemoteConfigInterface
+    private val youtubeAPI: YoutubeAPIImplInterface,
+    private val remoteConfig: RemoteConfigInterface,
+    private val saveFromStories: SaveFromStoriesImplInterface
 ) : SocialMediaScrapsImplInterface {
     override suspend fun getAllArtistsData(a: PinnedArtistsEntity) = job.launch {
         roomDb.deleteAll().first()
@@ -81,8 +85,34 @@ class SocialMediaScrapsImpl @Inject constructor(
                 if (a.youtubeChannel.contains("channel")) a.youtubeChannel.substringAfter("channel/")
                 else youtubeScrap.getChannelId(a.youtubeChannel).first()
 
-            Log.d("TAG", "getAllArtistsData: getdata $id")
+            youtubeAPI.channelVideo(id).catch { }.collectLatest {
+                it.forEach { v ->
+                    val feed = ArtistsFeedEntity(
+                        null, a.name, a.youtubeChannel, youtubeToTimestamp(v.username),
+                        FeedPostType.YOUTUBE, v.media, false, v.title, v.desc, v.postId
+                    )
+                    roomDb.insert(feed).collect()
+                }
+            }
+            if (isActive) cancel()
+        }
 
+        CoroutineScope(Dispatchers.IO).launch {
+            saveFromStories.storiesList(a.instagramUsername).catch { }.collectLatest {
+                it?.forEach { s ->
+                    val media = if (s?.video_versions != null)
+                        s.video_versions.maxBy { i -> i?.height ?: 0 }?.url
+                    else
+                        s?.image_versions2?.candidates?.maxBy { i -> i?.height ?: 0 }?.url
+
+                    val feed = ArtistsFeedEntity(
+                        null, a.name, a.instagramUsername,
+                        "${s?.taken_at}000".toLongWithPlaceHolder(), FeedPostType.INSTAGRAM_STORIES,
+                        media, s?.video_versions != null, "", "", a.instagramUsername
+                    )
+                    roomDb.insert(feed).collect()
+                }
+            }
             if (isActive) cancel()
         }
     }

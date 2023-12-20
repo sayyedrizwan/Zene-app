@@ -79,6 +79,12 @@ object SpotifyAPI {
     const val SPOTIFY_COUNTRY_SEARCH = "top+50+"
 }
 
+object SaveFromInstagram {
+    const val SAVE_FROM_INSTAGRAM_BASE_URL = "https://igs.sf-converter.com/api/"
+    const val SAVE_FROM_INSTAGRAM_INFO = "userInfoByUsername/{username}"
+    const val SAVE_FROM_INSTAGRAM_STORIES = "stories/{user_id}"
+}
+
 object GoogleNewsAPI {
     const val GOOGLE_NEWS_BASE_URL = "https://news.google.com/"
     const val GOOGLE_NEWS_API = "rss/search"
@@ -359,6 +365,25 @@ object YoutubeAPI {
                 }
             }, 
             "query": "${q.replace("\"", "\\\"")}", 
+            "params": "EgWKAQIYAWoSEAMQCRAOEAoQBBAFEBEQFRAQ"
+        }"""
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytChannelVideoJSON(ip: IpJsonResponse?, q: String): RequestBody {
+        val json = """{
+            "context": {
+                "client": {
+                    "remoteHost": "${ip?.query}",
+                    "userAgent": "$USER_AGENT",
+                    "clientName": "WEB",
+                    "clientVersion": "$ytLatestClientVersion",
+                    "timeZone": "${ip?.timezone}"
+                }
+            }, 
+            "query": "$q", 
             "params": "EgWKAQIYAWoSEAMQCRAOEAoQBBAFEBEQFRAQ"
         }"""
 

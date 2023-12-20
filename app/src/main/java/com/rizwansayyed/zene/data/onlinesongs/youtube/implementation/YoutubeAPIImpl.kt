@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
 import android.util.Log
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
+import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Days
@@ -17,6 +19,7 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.songsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.suggestionYouMayLikeCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytArtistsPlaylistJsonBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytChannelVideoJSON
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytLatestMusicSearch
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMerchandiseInfoJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumsDetailsJsonBody
@@ -934,5 +937,39 @@ class YoutubeAPIImpl @Inject constructor(
         }
 
         emit(SearchData(songs, albums, artists))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun channelVideo(id: String) = flow {
+        val feed = mutableListOf<ArtistsFeedEntity>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.music ?: ""
+
+        val response = youtubeMusicAPI
+            .youtubeChannelVideoResponse(ytChannelVideoJSON(ip, id), key)
+
+        response.contents?.twoColumnBrowseResultsRenderer?.tabs?.forEach {
+            if (it?.tabRenderer?.content?.richGridRenderer?.contents?.isNotEmpty() == true) {
+                it.tabRenderer.content.richGridRenderer.contents.forEach { c ->
+                    val vId = c?.richItemRenderer?.content?.videoRenderer?.videoId
+                    val thumbnail = c?.richItemRenderer?.content?.videoRenderer?.thumbnail
+                        ?.thumbnails?.maxBy { it?.height ?: 0 }?.url
+                    val title = c?.richItemRenderer?.content?.videoRenderer?.title
+                        ?.runs?.map { i -> i?.text }?.joinToString { " " }?.trim() ?: ""
+                    val desc = c?.richItemRenderer?.content?.videoRenderer?.descriptionSnippet
+                        ?.runs?.map { i -> i?.text }?.joinToString { " " }?.trim() ?: ""
+                    val time =
+                        c?.richItemRenderer?.content?.videoRenderer?.publishedTimeText?.simpleText
+
+                    val a = ArtistsFeedEntity(
+                        null, "", time ?: "", 0L, FeedPostType.YOUTUBE,
+                        thumbnail, false, title, desc, vId
+                    )
+                    feed.add(a)
+                }
+            }
+        }
+        emit(feed)
     }.flowOn(Dispatchers.IO)
 }

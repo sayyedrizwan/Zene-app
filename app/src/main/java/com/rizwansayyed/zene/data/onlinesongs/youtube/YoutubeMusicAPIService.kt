@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SEARCH_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SEARCH_SUGGESTION_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SUGGESTIONS_API
 import com.rizwansayyed.zene.domain.yt.BrowserIdYTResponse
+import com.rizwansayyed.zene.domain.yt.YoutubeChannelVideoResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicRelatedResponse
@@ -74,6 +75,13 @@ interface YoutubeMusicAPIService {
         @Query("key") key: String,
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeMusicRelatedResponse
+
+    @POST(YT_BROWSE_API)
+    suspend fun youtubeChannelVideoResponse(
+        @Body body: RequestBody,
+        @Query("key") key: String,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubeChannelVideoResponse
 
     @POST(YT_BROWSE_API)
     suspend fun youtubeReleaseResponse(

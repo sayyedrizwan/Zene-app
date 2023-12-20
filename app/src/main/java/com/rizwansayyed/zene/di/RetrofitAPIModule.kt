@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_BASE_URL
 import com.rizwansayyed.zene.data.utils.LastFM
 import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
 import com.rizwansayyed.zene.data.utils.PinterestAPI.PINTEREST_BASE_URL
+import com.rizwansayyed.zene.data.utils.SaveFromInstagram.SAVE_FROM_INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.SoundCloudAPI.SOUND_CLOUD_BASE_URL
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_BASE_URL
 import com.rizwansayyed.zene.data.utils.USER_AGENT
@@ -210,6 +211,12 @@ object RetrofitAPIModule {
     @Provides
     fun retrofitGoogleNewsService(): GoogleNewsService = Retrofit.Builder()
         .baseUrl(GOOGLE_NEWS_BASE_URL).client(okHttpClient)
+        .addConverterFactory(SimpleXmlConverterFactory.create())
+        .build().create(GoogleNewsService::class.java)
+
+    @Provides
+    fun retrofitSaveFromInstagramService(): GoogleNewsService = Retrofit.Builder()
+        .baseUrl(SAVE_FROM_INSTAGRAM_BASE_URL).client(okHttpClient)
         .addConverterFactory(SimpleXmlConverterFactory.create())
         .build().create(GoogleNewsService::class.java)
 }

@@ -52,10 +52,7 @@ class YoutubeScrapsImpl @Inject constructor() : YoutubeScrapInterface {
     override suspend fun getChannelId(username: String) = flow {
         val response = jsoupResponseData(youtubeUsernameChannel(username))
         val jsoup = Jsoup.parse(response!!)
-
         val metaTag = jsoup.selectFirst("meta[property=og:url]")?.attr("content")
-        Log.d("TAG", "getChannelId: data $metaTag")
-
-        emit("")
+        emit(metaTag!!.substringAfterLast("/"))
     }.flowOn(Dispatchers.IO)
 }

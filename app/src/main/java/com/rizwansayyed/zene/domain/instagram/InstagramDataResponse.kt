@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.domain
+package com.rizwansayyed.zene.domain.instagram
 
 data class InstagramDataResponse(
     val `data`: Data?,

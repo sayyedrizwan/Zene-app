@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicData
@@ -31,4 +32,5 @@ interface YoutubeAPIImplInterface {
     suspend fun youtubeShortsThisYearSearch(q: String): Flow<MutableList<MusicData>>
     suspend fun youtubeVideoSearch(q: String): Flow<MutableList<MusicData>>
     suspend fun artistsShopMerchandise(vId: String): Flow<MutableList<MerchandiseItems>>
+    suspend fun channelVideo(id: String): Flow<MutableList<ArtistsFeedEntity>>
 }
