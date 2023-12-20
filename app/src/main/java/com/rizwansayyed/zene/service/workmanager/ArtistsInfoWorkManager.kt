@@ -43,6 +43,7 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
+            roomDb.recentMainPlayed()
             val artists = roomDb.pinnedArtists().first()
 
             artists.forEach { a ->
@@ -52,6 +53,8 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
                             lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
                         ).collect()
                     }
+
+
 
                     if (isHaveAllSocialMedia(a)) {
                         if (timestampDifference(a.updatedTime) > 3.hours.inWholeSeconds) {

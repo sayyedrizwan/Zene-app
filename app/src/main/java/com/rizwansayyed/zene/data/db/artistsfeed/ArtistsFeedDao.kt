@@ -16,6 +16,9 @@ interface ArtistsFeedDao {
     @Query("DELETE FROM $ARTISTS_FEED_DB WHERE LOWER(REPLACE(artistsName, ' ', '')) = LOWER(REPLACE(:name, ' ', ''))")
     suspend fun delete(name: String): Int
 
+    @Query("DELETE FROM $ARTISTS_FEED_DB")
+    suspend fun deleteAll(): Int
+
     @Upsert
     suspend fun insertOrUpdate(v: ArtistsFeedEntity)
 }

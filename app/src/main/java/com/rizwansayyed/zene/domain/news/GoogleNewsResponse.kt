@@ -15,7 +15,7 @@ data class GoogleNewsResponse constructor(
 ) {
 
     @Root(name = "channel", strict = false)
-    data class Channel constructor(
+    data class Channel(
         @field:ElementList(name = "item", inline = true)
         var items: List<Item>? = null
     ) {

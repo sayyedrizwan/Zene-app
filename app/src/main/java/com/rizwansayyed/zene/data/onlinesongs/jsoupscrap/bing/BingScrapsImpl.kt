@@ -1,12 +1,14 @@
 package com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.utils.BingURL.BING_SEARCH
 import com.rizwansayyed.zene.data.utils.BingURL.bingAccountSearch
 import com.rizwansayyed.zene.data.utils.BingURL.bingNewsSearch
 import com.rizwansayyed.zene.data.utils.BingURL.bingOfficialAccountSearch
+import com.rizwansayyed.zene.domain.news.BingNews
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -39,6 +41,7 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
     override suspend fun bingNews(artists: String) = flow {
         val response = jsoupResponseData(bingNewsSearch(artists))
         val jsoup = Jsoup.parse(response!!)
+        val lists = mutableListOf<BingNews>()
 
 
         jsoup.selectFirst("div.b_slidebar")?.select("a.news_fbcard.wimg")?.forEach {
@@ -48,26 +51,21 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
             val desc = it.selectFirst("div.news_snpt")?.text()
             val time = it.selectFirst("cite")?.selectFirst("span.b_secondaryText")?.text()?.trim()
                 ?.substringAfter(" ")
+            lists.add(BingNews(url, img, title, desc, time))
         }
 
         jsoup.select("div.news-card-body.card-with-cluster").forEach {
             val url = it.selectFirst("a.title")?.attr("href")
-            val img = "https://th.bing.com/" + it.selectFirst("div.image.right")?.selectFirst("a")
+            val img = it.selectFirst("div.image.right")?.selectFirst("a")
                 ?.selectFirst("img")?.attr("data-src")?.replace("//", "")
             val title = it.selectFirst("a.title")?.text()
             val desc = it.selectFirst("div.snippet")?.text()
-            val time =
-                it.selectFirst("source.biglogo.set_top")?.select("span")?.joinToString { " " }
+            val time = it.selectFirst("div.source.biglogo.set_top")?.select("span")?.text()?.trim()
 
-            Log.d("TAG", "bingNews: n $url")
-            Log.d("TAG", "bingNews: n ${img}")
-            Log.d("TAG", "bingNews: n $title")
-            Log.d("TAG", "bingNews: n $desc")
-            Log.d("TAG", "bingNews: n $time")
-            Log.d("TAG", "bingNews: n ==============")
+            lists.add(BingNews(url, img, title, desc, time))
         }
 
-        emit("")
+        emit(lists)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun bingOfficialAccounts(info: PinnedArtistsEntity) = flow {

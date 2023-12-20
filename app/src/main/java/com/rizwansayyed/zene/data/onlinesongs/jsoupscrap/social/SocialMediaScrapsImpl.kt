@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ class SocialMediaScrapsImpl @Inject constructor(
     private val remoteConfig: RemoteConfigInterface
 ) : SocialMediaScrapsImplInterface {
     override suspend fun getAllArtistsData(a: PinnedArtistsEntity) = job.launch {
-        roomDb.deleteArtistsFeeds(a.name).first()
+        roomDb.deleteAll().first()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -45,7 +46,7 @@ class SocialMediaScrapsImpl @Inject constructor(
                         null, a.name, a.instagramUsername,
                         "${it?.node?.taken_at_timestamp}000".toLongWithPlaceHolder(),
                         FeedPostType.INSTAGRAM, media, it?.node?.is_video ?: false,
-                        caption ?: "", "", it?.node?.shortcode ?: ""
+                        caption ?: "", null, it?.node?.shortcode ?: ""
                     )
                     roomDb.insert(v).collect()
                 }
@@ -57,7 +58,15 @@ class SocialMediaScrapsImpl @Inject constructor(
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            bingScrap.bingNews(a.name).catch {  }.collect()
+            bingScrap.bingNews(a.name).catch { }.collectLatest {
+                it.forEach { news ->
+                    val v = ArtistsFeedEntity(
+                        null, a.name, a.name, news.timeStamp(), FeedPostType.NEWS,
+                        news.img, false, news.title ?: "", news.desc, news.url
+                    )
+                    roomDb.insert(v).collect()
+                }
+            }
         }
 
     }

@@ -183,6 +183,10 @@ class RoomDBImpl @Inject constructor(
         emit(artistsFeedDao.delete(v))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun deleteAll() = flow {
+        emit(artistsFeedDao.deleteAll())
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun insert(v: ArtistsFeedEntity) = flow {
         emit(artistsFeedDao.insertOrUpdate(v))
     }.flowOn(Dispatchers.IO)

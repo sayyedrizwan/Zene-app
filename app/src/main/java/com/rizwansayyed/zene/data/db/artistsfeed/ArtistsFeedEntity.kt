@@ -17,8 +17,8 @@ data class ArtistsFeedEntity(
     var media: String?,
     var isVideo: Boolean,
     var title: String,
-    var desc: String,
-    var postId: String,
+    var desc: String?,
+    var postId: String?,
 )
 
 enum class FeedPostType {

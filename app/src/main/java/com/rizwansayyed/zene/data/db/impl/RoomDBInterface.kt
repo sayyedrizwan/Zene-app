@@ -66,4 +66,5 @@ interface RoomDBInterface {
     suspend fun deleteArtistsFeeds(v: String): Flow<Int>
     suspend fun insert(v: ArtistsFeedEntity): Flow<Unit>
     suspend fun artistsThumbnailUpdate(url: String): Flow<Int>
+    suspend fun deleteAll(): Flow<Int>
 }

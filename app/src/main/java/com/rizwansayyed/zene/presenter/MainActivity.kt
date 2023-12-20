@@ -55,6 +55,7 @@ import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
@@ -229,7 +230,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
         doOpenMusicPlayer(intent)
 
         connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
