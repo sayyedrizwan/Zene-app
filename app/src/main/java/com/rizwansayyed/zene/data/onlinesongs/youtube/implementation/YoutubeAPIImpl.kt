@@ -951,16 +951,17 @@ class YoutubeAPIImpl @Inject constructor(
 
         response.contents?.twoColumnBrowseResultsRenderer?.tabs?.forEach {
             if (it?.tabRenderer?.content?.richGridRenderer?.contents?.isNotEmpty() == true) {
-                it.tabRenderer.content.richGridRenderer.contents.forEach { c ->
-                    val vId = c?.richItemRenderer?.content?.videoRenderer?.videoId
-                    val thumbnail = c?.richItemRenderer?.content?.videoRenderer?.thumbnail
-                        ?.thumbnails?.maxBy { it?.height ?: 0 }?.url
-                    val title = c?.richItemRenderer?.content?.videoRenderer?.title
-                        ?.runs?.map { i -> i?.text }?.joinToString { " " }?.trim() ?: ""
-                    val desc = c?.richItemRenderer?.content?.videoRenderer?.descriptionSnippet
-                        ?.runs?.map { i -> i?.text }?.joinToString { " " }?.trim() ?: ""
+                it.tabRenderer.content.richGridRenderer.contents.forEach content@ { c ->
+                    c?.richItemRenderer ?: return@content
+                    val vId = c.richItemRenderer.content?.videoRenderer?.videoId
+                    val thumbnail = c.richItemRenderer.content?.videoRenderer?.thumbnail
+                        ?.thumbnails?.maxBy { i -> i?.height ?: 0 }?.url
+                    val title = c.richItemRenderer.content?.videoRenderer?.title
+                        ?.runs?.map { i -> i?.text }?.joinToString("")
+                    val desc = c.richItemRenderer.content?.videoRenderer?.title
+                        ?.accessibility?.accessibilityData?.label ?: ""
                     val time =
-                        c?.richItemRenderer?.content?.videoRenderer?.publishedTimeText?.simpleText
+                        c.richItemRenderer.content?.videoRenderer?.publishedTimeText?.simpleText
 
                     val a = ArtistsFeedEntity(
                         null, "", time ?: "", 0L, FeedPostType.YOUTUBE,

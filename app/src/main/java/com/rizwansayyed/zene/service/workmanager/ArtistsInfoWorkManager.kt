@@ -60,8 +60,13 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
 
             artists.forEach { a ->
                 if (timestampDifference(a.lastProfilePicSync) > 2.days.inWholeSeconds || a.thumbnail.isEmpty()) {
-                    val img = lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
-                    roomDb.artistsThumbnailUpdate(a.name, img).collect()
+                    try {
+                        val img = lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
+                        a.thumbnail = img
+                        roomDb.artistsThumbnailUpdate(a.name, img).first()
+                    } catch (e: Exception) {
+                        e.message
+                    }
                 }
 
                 if (isHaveAllSocialMedia(a)) {

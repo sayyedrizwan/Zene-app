@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.FeedNewsItem
+import com.rizwansayyed.zene.presenter.ui.home.feed.view.FeedYoutubeItem
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.PinnedArtistsList
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
@@ -68,14 +69,11 @@ fun ArtistsFeedView() {
                 FeedPostType.INSTAGRAM -> {}
                 FeedPostType.INSTAGRAM_STORIES -> {}
                 FeedPostType.FACEBOOK -> {}
-                FeedPostType.YOUTUBE -> {}
+                FeedPostType.YOUTUBE -> FeedYoutubeItem(it)
                 FeedPostType.SHORTS -> {}
                 FeedPostType.NEWS -> FeedNewsItem(it)
                 null -> {}
             }
-//            val artists =
-//                artistsList.firstOrNull { i -> i.name.lowercase() == it.artistsName?.lowercase() }
-//            FeedItems(it, artists)
         }
     }
 

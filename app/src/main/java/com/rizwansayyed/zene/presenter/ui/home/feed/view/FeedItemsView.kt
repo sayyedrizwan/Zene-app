@@ -23,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
-import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
+import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.utils.DateFormatter.DateStyle.MONTH_YEAR_TIME
+import com.rizwansayyed.zene.utils.DateFormatter.toDate
 import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.utils.Utils.getTimeAgo
 
@@ -41,11 +43,14 @@ fun FeedNewsItem(feed: ArtistsFeedEntity) {
             .clip(RoundedCornerShape(12.dp))
             .background(Color.Black)
             .clickable {
-                Uri.parse(feed.postId).customBrowser()
+                Uri
+                    .parse(feed.postId)
+                    .customBrowser()
             }
             .padding(10.dp)
     ) {
         Spacer(Modifier.height(5.dp))
+
         Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
             TextThin(v = "${feed.artistsName} ${stringResource(id = R.string.news)}", size = 12)
 
@@ -53,6 +58,7 @@ fun FeedNewsItem(feed: ArtistsFeedEntity) {
 
             feed.timeAdded?.let { TextThin(v = getTimeAgo(it), size = 12) }
         }
+
         Spacer(Modifier.height(15.dp))
 
         Row(Modifier.fillMaxWidth()) {
@@ -78,4 +84,53 @@ fun FeedNewsItem(feed: ArtistsFeedEntity) {
         }
         Spacer(Modifier.height(10.dp))
     }
+}
+
+@Composable
+fun FeedYoutubeItem(feed: ArtistsFeedEntity) {
+    val width = LocalConfiguration.current.screenWidthDp / 1.5
+
+    Column(
+        Modifier
+            .padding(horizontal = 5.dp, vertical = 10.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.Black)
+            .clickable {
+                Uri
+                    .parse("https://www.youtube.com/watch?v=${feed.postId}")
+                    .customBrowser()
+            }
+            .padding(10.dp)
+    ) {
+        Spacer(Modifier.height(5.dp))
+
+        SmallIcons(icon = R.drawable.ic_youtube, 27, 5)
+
+        Spacer(Modifier.height(9.dp))
+
+        AsyncImage(
+            "https://img.youtube.com/vi/${feed.postId}/maxresdefault.jpg", feed.artistsName,
+            Modifier
+                .fillMaxWidth()
+                .height(width.dp)
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        TextSemiBold(v = feed.title ?: "", Modifier.fillMaxWidth(), doCenter = true, size = 13)
+
+        Spacer(Modifier.height(10.dp))
+
+        TextThin(
+            v = "${stringResource(R.string.by)}: ${feed.artistsName}",
+            Modifier.fillMaxWidth(), doCenter = true, size = 12
+        )
+
+        Spacer(Modifier.height(15.dp))
+    }
+
+
 }

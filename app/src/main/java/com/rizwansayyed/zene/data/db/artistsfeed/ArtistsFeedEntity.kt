@@ -31,7 +31,7 @@ fun youtubeToTimestamp(ts: String): Long {
         val field = if (duration.contains("second")) Calendar.SECOND
         else if (duration.contains("minute")) Calendar.MINUTE
         else if (duration.contains("hour")) Calendar.HOUR_OF_DAY
-        else if (duration.contains("year")) Calendar.DAY_OF_YEAR
+        else if (duration.contains("year")) Calendar.YEAR
         else if (duration.contains("week")) Calendar.WEEK_OF_YEAR
         else if (duration.contains("month")) Calendar.MONTH
         else Calendar.DAY_OF_YEAR

@@ -2,6 +2,7 @@
     <string name="app_name">Zene</string>
     <string name="view_all">view all</string>
     <string name="by_rs">by rizwan sayyed</string>
+    <string name="by">by</string>
     <string name="global_top_trending_artists">Global top trending artists</string>
     <string name="gt_trending_songs">Global top trending songs</string>
     <string name="radio_station_in_city">Radio Stations in your city</string>
@@ -59,6 +60,7 @@
     <string name="no_lyrics_found">No Lyrics Found</string>
     <string name="no_playlist_found">No playlist found</string>
     <string name="feed">Feed</string>
+    <string name="launched_in">Launched at</string>
     <string name="search_music_artists_album">Search music, artist or album</string>
     <string name="search_radio">Search radio</string>
     <string name="enter_more_then_3_char_to_search">Enter more then 3 character to search</string>

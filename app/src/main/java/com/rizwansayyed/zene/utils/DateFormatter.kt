@@ -10,14 +10,15 @@ object DateFormatter {
     object DateStyle {
         const val SIMPLE_TIME = "HH:mm"
         const val SIMPLE_TIME_SINGLE = "H : m"
+        const val MONTH_YEAR_TIME = "MMM yyy"
 
 
     }
 
 
-    fun toDate(format: String, timestamp: Long = System.currentTimeMillis()): String {
+    fun toDate(format: String, timestamp: Long? = System.currentTimeMillis()): String {
         val sdf = SimpleDateFormat(format, Locale.getDefault())
-        val date = Date(timestamp)
+        val date = Date(timestamp ?: System.currentTimeMillis())
 
         return sdf.format(date).trim()
     }

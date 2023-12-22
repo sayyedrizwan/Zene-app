@@ -110,11 +110,15 @@ class SocialMediaScrapsImpl @Inject constructor(
 
                 youtubeAPI.channelVideo(id).catch {}.collectLatest {
                     it.forEach { v ->
-                        val feed = ArtistsFeedEntity(
-                            null, a.name, a.youtubeChannel, youtubeToTimestamp(v.username ?: ""),
-                            FeedPostType.YOUTUBE, v.media, false, v.title, v.desc, v.postId
-                        )
-                        roomDb.insert(feed).collect()
+                        Log.d("TAG", "getAllArtistsData: data ${youtubeToTimestamp(v.username ?: "")} == ${v.username}")
+                        if (v.postId != null && v.title != null) {
+                            val feed = ArtistsFeedEntity(
+                                null, a.name, a.youtubeChannel,
+                                youtubeToTimestamp(v.username ?: ""), FeedPostType.YOUTUBE,
+                                v.media, false, v.title, v.desc, v.postId
+                            )
+                            roomDb.insert(feed).collect()
+                        }
                     }
 
                     updateLatestSyncTime()
