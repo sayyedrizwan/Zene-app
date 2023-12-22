@@ -36,12 +36,16 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsImpl
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
-import com.rizwansayyed.zene.domain.HomeNavigation.*
+import com.rizwansayyed.zene.domain.HomeNavigation.ALL_RADIO
+import com.rizwansayyed.zene.domain.HomeNavigation.FEED
+import com.rizwansayyed.zene.domain.HomeNavigation.HOME
+import com.rizwansayyed.zene.domain.HomeNavigation.MY_MUSIC
+import com.rizwansayyed.zene.domain.HomeNavigation.SEARCH
+import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
-import com.rizwansayyed.zene.presenter.ui.TextBold
+import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
@@ -55,7 +59,6 @@ import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
@@ -71,7 +74,6 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -97,6 +99,7 @@ import kotlin.time.Duration.Companion.seconds
 // make artists info cache
 
 // in view all radio is not saving
+// add stories, fb posts to show on feed
 
 
 @AndroidEntryPoint
@@ -147,7 +150,7 @@ class MainActivity : ComponentActivity() {
                     when (navViewModel.homeNavV) {
                         HOME -> if (navViewModel.isOnline) HomeView() else HomeOfflineView()
                         ALL_RADIO -> OnlineRadioViewAllView()
-                        FEED -> TextBold(v = "feed")
+                        FEED -> ArtistsFeedView()
                         SEARCH -> SearchView()
                         MY_MUSIC -> MyMusicView()
                         SETTINGS -> SettingsView(player, alarmManagerToPlaySong)

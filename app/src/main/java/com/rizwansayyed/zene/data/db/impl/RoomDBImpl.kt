@@ -199,4 +199,8 @@ class RoomDBImpl @Inject constructor(
         emit(artistsFeedDao.singleArtistsName())
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun artistsFeedFlow() = flow {
+        emit(artistsFeedDao.flowList())
+    }.flowOn(Dispatchers.IO)
+
 }

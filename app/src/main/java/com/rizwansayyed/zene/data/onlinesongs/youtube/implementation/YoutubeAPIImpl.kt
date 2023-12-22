@@ -944,9 +944,9 @@ class YoutubeAPIImpl @Inject constructor(
         val feed = mutableListOf<ArtistsFeedEntity>()
 
         val ip = userIpDetails.first()
-        val key = remoteConfig.allApiKeys()?.music ?: ""
+        val key = remoteConfig.allApiKeys()?.yt ?: ""
 
-        val response = youtubeMusicAPI
+        val response = youtubeAPI
             .youtubeChannelVideoResponse(ytChannelVideoJSON(ip, id), key)
 
         response.contents?.twoColumnBrowseResultsRenderer?.tabs?.forEach {

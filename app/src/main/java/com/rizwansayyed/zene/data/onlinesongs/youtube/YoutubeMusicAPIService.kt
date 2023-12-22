@@ -77,13 +77,6 @@ interface YoutubeMusicAPIService {
     ): YoutubeMusicRelatedResponse
 
     @POST(YT_BROWSE_API)
-    suspend fun youtubeChannelVideoResponse(
-        @Body body: RequestBody,
-        @Query("key") key: String,
-        @Query("prettyPrint") prettyPrint: Boolean = false,
-    ): YoutubeChannelVideoResponse
-
-    @POST(YT_BROWSE_API)
     suspend fun youtubeReleaseResponse(
         @Body body: RequestBody,
         @Query("key") key: String,

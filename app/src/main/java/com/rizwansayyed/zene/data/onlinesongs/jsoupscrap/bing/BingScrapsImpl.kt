@@ -145,8 +145,8 @@ class BingScrapsImpl @Inject constructor() : BingScrapsInterface {
 
             if (iResponse?.contains("youtube.com/") == true)
                 info.youtubeChannel =
-                    iResponse.substringAfter("youtube.com/").replace("/", "")
-                        .replace("channel", "channel/")
+                    iResponse.substringAfter("youtube.com/")
+                        .replace("channel", "channel/").substringBefore("/")
             else
                 info.youtubeChannel = "none"
         }

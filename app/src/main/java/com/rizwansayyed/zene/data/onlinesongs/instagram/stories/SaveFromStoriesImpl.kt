@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.toCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.jsoup.Jsoup
@@ -43,8 +44,9 @@ class SaveFromStoriesImpl @Inject constructor(
 
     override suspend fun storiesList(username: String) = flow {
         val id = saveFromAPI.userInfoByUsername(username).result?.user?.pk
+        Log.d("TAG", "storiesList: get data $id ")
         val stories = saveFromAPI.userStories(id)
-
+        Log.d("TAG", "storiesList: get data ${stories.result}")
         emit(stories.result)
     }.flowOn(Dispatchers.IO)
 }

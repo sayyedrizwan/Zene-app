@@ -22,6 +22,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -31,6 +32,7 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 
 @HiltWorker
@@ -57,24 +59,20 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
             }
 
             artists.forEach { a ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    if (timestampDifference(a.lastProfilePicSync) > 2.days.inWholeSeconds || a.thumbnail.isEmpty()) {
-                        val img = lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
-                        roomDb.artistsThumbnailUpdate(a.name, img).collect()
-                    }
+                if (timestampDifference(a.lastProfilePicSync) > 2.days.inWholeSeconds || a.thumbnail.isEmpty()) {
+                    val img = lastFMImpl.artistsUsername(a.name).first()?.image ?: ""
+                    roomDb.artistsThumbnailUpdate(a.name, img).collect()
+                }
 
-                    if (isHaveAllSocialMedia(a)) {
-                        if (timestampDifference(a.lastInfoSync) > 10.minutes.inWholeSeconds) {
-                            val info = roomDb.artistsData(a.name).first()
-                            socialMediaScrap.getAllArtistsData(info)
-                        }
-                    } else {
-                        val info = bingScraps.bingOfficialAccounts(a).first()
-                        roomDb.insert(info).collect()
+                if (isHaveAllSocialMedia(a)) {
+                    if (timestampDifference(a.lastInfoSync) > 15.minutes.inWholeSeconds) {
+                        val info = roomDb.artistsData(a.name).first()
                         socialMediaScrap.getAllArtistsData(info)
                     }
-
-                    if (isActive) cancel()
+                } else {
+                    val info = bingScraps.bingOfficialAccounts(a).first()
+                    roomDb.insert(info).collect()
+                    socialMediaScrap.getAllArtistsData(info)
                 }
             }
 

@@ -19,6 +19,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -41,10 +42,14 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.InetAddress
 import java.text.DecimalFormat
+import java.time.Instant
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.system.exitProcess
+import kotlin.time.Duration
 
 
 object Utils {
@@ -280,6 +285,28 @@ object Utils {
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent)
 
         exitProcess(0)
+    }
+
+    fun getTimeAgo(timestamp: Long): String {
+        val now = System.currentTimeMillis()
+        val diff = now - timestamp
+
+        val seconds = diff / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+        val days = hours / 24
+
+        return when {
+            seconds < 60 -> "${seconds}s ago"
+            minutes < 60 -> "${minutes}m ago"
+            hours < 24 -> "${hours}h ago"
+            days < 7 -> "${days}d ago"
+            else -> {
+                val dateFormat = java.text.SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                val date = Date(timestamp)
+                dateFormat.format(date)
+            }
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.data.utils
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.squareup.moshi.Moshi
@@ -52,7 +54,7 @@ object IpJsonAPI {
 
 object InstagramAPI {
     const val INSTAGRAM_BASE_URL = "https://www.instagram.com/api/v1/users/"
-    const val INSTAGRAM_PROFILE_API = "web_profile_info"
+    const val INSTAGRAM_PROFILE_API = "web_profile_info/"
 }
 
 object PinterestAPI {
@@ -147,7 +149,7 @@ object SoundCloudAPI {
 
 
 object YoutubeAPI {
-    private const val ytLatestClientVersion = "2.20231121.08.00"
+    private const val ytLatestClientVersion = "2.20231219.04.00"
     private const val ytMusicLatestClientVersion = "1.20231108.01.00"
 
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
@@ -384,8 +386,8 @@ object YoutubeAPI {
                     "timeZone": "${ip?.timezone}"
                 }
             }, 
-            "query": "$q", 
-            "params": "EgWKAQIYAWoSEAMQCRAOEAoQBBAFEBEQFRAQ"
+            "browseId": "$q", 
+            "params": "EgZ2aWRlb3PyBgQKAjoA"
         }"""
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -592,3 +594,5 @@ const val USER_AGENT =
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36,gzip(gfe)"
 
 val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+
+val gsonBuilder: Gson? = GsonBuilder().setLenient().create()

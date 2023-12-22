@@ -9,6 +9,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
@@ -97,6 +98,9 @@ class RoomDbViewModel @Inject constructor(
         private set
 
     var pinnedArtists by mutableStateOf<Flow<List<PinnedArtistsEntity>>>(flowOf(emptyList()))
+        private set
+
+    var artistsFeeds by mutableStateOf<Flow<List<ArtistsFeedEntity>>>(flowOf(emptyList()))
         private set
 
 
@@ -203,6 +207,12 @@ class RoomDbViewModel @Inject constructor(
             it.forEach { song ->
                 startOfflineDownloadWorkManager(song.songId)
             }
+        }
+    }
+
+    fun artistsFeeds() = viewModelScope.launch(Dispatchers.IO) {
+        roomDBImpl.artistsFeedFlow().catch { }.collectLatest {
+            artistsFeeds = it
         }
     }
 

@@ -69,4 +69,5 @@ interface RoomDBInterface {
     suspend fun deleteAll(): Flow<Int>
     suspend fun allArtistsByName(): Flow<List<ArtistsFeedEntity>>
     suspend fun artistsLastInfoSync(name: String): Flow<Int>
+    suspend fun artistsFeedFlow(): Flow<Flow<List<ArtistsFeedEntity>>>
 }

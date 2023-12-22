@@ -1,9 +1,12 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube
 
 
+import com.rizwansayyed.zene.data.utils.YoutubeAPI
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_BROWSE_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_MAIN_GUIDE
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_NEXT_API
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_SEARCH
+import com.rizwansayyed.zene.domain.yt.YoutubeChannelVideoResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeLatestYearResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMerchandiseResponse
 import com.rizwansayyed.zene.domain.yt.YoutubePageResponse
@@ -34,5 +37,14 @@ interface YoutubeAPIService {
         @Query("key") key: String,
         @Query("prettyPrint") prettyPrint: Boolean = false,
     ): YoutubeMerchandiseResponse
+
+
+    @POST(YT_BROWSE_API)
+    suspend fun youtubeChannelVideoResponse(
+        @Body body: RequestBody,
+        @Query("key") key: String,
+        @Query("prettyPrint") prettyPrint: Boolean = false,
+    ): YoutubeChannelVideoResponse
+
 
 }

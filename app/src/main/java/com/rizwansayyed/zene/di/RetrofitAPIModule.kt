@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.data.utils.USER_AGENT
 import com.rizwansayyed.zene.data.utils.VideoDownloaderAPI.SAVE_FROM_BASE_URL
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_BASE_URL
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_MUSIC_BASE_URL
+import com.rizwansayyed.zene.data.utils.gsonBuilder
 import com.rizwansayyed.zene.data.utils.moshi
 import dagger.Module
 import dagger.Provides
@@ -56,14 +57,14 @@ object RetrofitAPIModule {
     @Provides
     fun retrofitOnlineRadioService(): OnlineRadioService = Retrofit.Builder()
         .baseUrl("https://demo.com").client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
         .build().create(OnlineRadioService::class.java)
 
 
     @Provides
     fun retrofitIpJsonService(): IpJsonService = Retrofit.Builder()
         .baseUrl(IP_BASE_URL).client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
         .build().create(IpJsonService::class.java)
 
 
@@ -77,7 +78,7 @@ object RetrofitAPIModule {
     @Provides
     fun retrofitSpotifyApiService(): SpotifyAPIService = Retrofit.Builder()
         .baseUrl(SPOTIFY_API_BASE_URL).client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
         .build().create(SpotifyAPIService::class.java)
 
 
@@ -92,7 +93,7 @@ object RetrofitAPIModule {
         })
         return Retrofit.Builder()
             .baseUrl(INSTAGRAM_BASE_URL).client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(builder.build())
             .build().create(InstagramInfoService::class.java)
     }
@@ -113,7 +114,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(YT_BASE_URL).client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(YoutubeAPIService::class.java)
     }
 
@@ -152,7 +153,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(YT_MUSIC_BASE_URL).client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(YoutubeMusicAPIService::class.java)
     }
 
@@ -170,7 +171,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(LastFM.LFM_BASE_URL).client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(LastFMService::class.java)
     }
 
@@ -188,7 +189,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(SAVE_FROM_BASE_URL).client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(SaveFromDownloaderService::class.java)
     }
 
@@ -205,7 +206,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(PINTEREST_BASE_URL).client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(PinterestAPIService::class.java)
     }
 
@@ -229,7 +230,7 @@ object RetrofitAPIModule {
 
         return Retrofit.Builder()
             .baseUrl(SAVE_FROM_INSTAGRAM_BASE_URL).client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(SaveFromInstagramService::class.java)
     }
 }
