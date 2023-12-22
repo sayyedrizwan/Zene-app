@@ -68,6 +68,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Zene" />
 
+        <activity
+            android:name=".presenter.ui.ringtone.SetRingtoneActivity"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Zene" />
+
         <service
             android:name=".service.PlayerService"
             android:exported="false"

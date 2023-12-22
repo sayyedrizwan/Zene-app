@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 
 import android.app.Activity
-import android.util.Log
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +20,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,13 +30,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
+import com.rizwansayyed.zene.presenter.ui.ringtone.SetRingtoneActivity
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -45,15 +45,15 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @Composable
-fun TopPlayerHeader(showedOnLockScreen: Boolean) {
+fun TopPlayerHeader(showedOnLockScreen: Boolean, p: MusicPlayerData?) {
     val coroutine = rememberCoroutineScope()
+    val homeNavViewModel: HomeNavViewModel = hiltViewModel()
     val activity = LocalContext.current as Activity
     var dropDownMenu by remember { mutableStateOf(false) }
 
 
     val ringtone = stringResource(R.string.set_as_ringtone)
-    val homeScreenWallpaper = stringResource(R.string.set_home_screen_wallpaper)
-    val lockScreenWallpaper = stringResource(R.string.set_lock_screen_wallpaper)
+    val setAsWallpaper = stringResource(R.string.set_as_wallpaper)
 
     Row(
         Modifier
@@ -87,16 +87,17 @@ fun TopPlayerHeader(showedOnLockScreen: Boolean) {
                 dropDownMenu = !dropDownMenu
             }
 
-            Column(Modifier.offset(x = (-200).dp, y = 0.dp)) {
+            Column(Modifier.offset(x = (-120).dp, y = 0.dp)) {
                 DropdownMenu(dropDownMenu, { dropDownMenu = false }) {
                     DropdownMenuItem({ TextSemiBold(ringtone) }, onClick = {
-
+                        Intent(activity, SetRingtoneActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            activity.startActivity(this)
+                        }
                     })
-                    DropdownMenuItem({ TextSemiBold(homeScreenWallpaper) }, onClick = {
-
-                    })
-                    DropdownMenuItem({ TextSemiBold(lockScreenWallpaper) }, onClick = {
-
+                    DropdownMenuItem({ TextSemiBold(setAsWallpaper) }, onClick = {
+                        dropDownMenu = false
+                        homeNavViewModel.setImageAsWallpaper(p?.v?.thumbnail ?: "")
                     })
                 }
             }

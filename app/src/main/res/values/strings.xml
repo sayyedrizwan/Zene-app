@@ -92,8 +92,6 @@
     <string name="downloading__">Downloading…</string>
     <string name="download">Download</string>
     <string name="set_as_ringtone">Set as Ringtone</string>
-    <string name="set_home_screen_wallpaper">Set Home-Screen Wallpaper</string>
-    <string name="set_lock_screen_wallpaper">Set Lock-Screen Wallpaper</string>
     <string name="downloading_please_wait">Downloading… Please wait…</string>
     <string name="offline_downloaded">Offline Downloaded</string>
     <string name="most_listened_songs_this_week">Most listened songs this Week</string>
@@ -206,4 +204,9 @@
     <string name="app_crashed">App crashed, Please try again or clear the app cache</string>
     <string name="all_songs_album_download_desc">All Songs of this albums will be downloaded and will be available offline. If the songs are already downloaded they will not be re-downloaded.</string>
     <string name="news">News</string>
+    <string name="set_as_wallpaper">Set as Wallpaper</string>
+    <string name="no_pinned_artists_yet">No pinned artists yet! Pin artists by going to their profile to see their latest music, projects, and news in your feed.</string>
+    <string name="no_update_available_right_now">No update available. Right now…</string>
+    <string name="no_ringtone_found_try_again_later">No ringtone found. Try Again Later.</string>
+    <string name="playing_song_is_paused_for_ringtone">Playing song is currently pause. To set the ringtone.</string>
 </resources>

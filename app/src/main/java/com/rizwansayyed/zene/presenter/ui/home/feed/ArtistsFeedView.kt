@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.feed
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -24,6 +26,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.TextBold
+import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.FeedNewsItem
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.FeedYoutubeItem
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.PinnedArtistsList
@@ -39,7 +42,21 @@ fun ArtistsFeedView() {
     val artistsList by roomDb.pinnedArtists.collectAsState(emptyList())
     val feeds by roomDb.artistsFeeds.collectAsState(emptyList())
 
-    LazyVerticalGrid(
+
+    if (artistsList.isEmpty()) Box(
+        Modifier
+            .fillMaxSize()
+            .background(DarkGreyColor)
+    ) {
+        TextSemiBold(
+            v = stringResource(R.string.no_pinned_artists_yet),
+            Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(10.dp), true
+        )
+
+    } else LazyVerticalGrid(
         GridCells.Fixed(TOTAL_ITEMS_GRID), Modifier
             .fillMaxSize()
             .background(DarkGreyColor)
@@ -62,6 +79,15 @@ fun ArtistsFeedView() {
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(20.dp))
+        }
+
+        if (feeds.isEmpty()) item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            TextSemiBold(
+                v = stringResource(R.string.no_update_available_right_now),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp), true
+            )
         }
 
         items(feeds, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
