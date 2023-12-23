@@ -209,4 +209,5 @@
     <string name="no_update_available_right_now">No update available. Right now…</string>
     <string name="no_ringtone_found_try_again_later">No ringtone found. Try Again Later.</string>
     <string name="playing_song_is_paused_for_ringtone">Playing song is currently pause. To set the ringtone.</string>
+    <string name="song_downloading_please_wait_sometimes_it_takes_little_while">Song is downloading. Please wait.. Sometimes it takes a little while, depending on your internet connection</string>
 </resources>

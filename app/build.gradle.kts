@@ -167,6 +167,12 @@ dependencies {
     implementation(libs.media3.hls)
     implementation(libs.media3.legacy)
 
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("jp.wasabeef:glide-transformations:4.3.0")
+
+
+    implementation(libs.glide)
+    implementation(libs.glide.transformations)
+
+
+    implementation("com.github.lincollincol:Amplituda:v2.2.2")
+    implementation("com.github.lincollincol:compose-audiowaveform:v1.1.2")
 }

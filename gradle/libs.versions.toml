@@ -2,7 +2,7 @@
 v1 = "1.0.0"
 kotlin-version = "1.12.0"
 runtime-version = "2.6.2"
-activity-compose-version = "1.8.1"
+activity-compose-version = "1.8.2"
 compose-version = "2023.10.01"
 compose-ui-util-version = "1.5.4"
 junit-version = "4.13.2"
@@ -24,6 +24,9 @@ work-manager-version = "2.9.0"
 firebase-bom-version = "32.7.0"
 paging-version = "3.2.1"
 media3-version = "1.2.0"
+glide-version = "4.16.0"
+glide-transformations-version = "4.3.0"
+
 
 #plugins
 plugin-android-app-version = "8.2.0"
@@ -125,6 +128,11 @@ media3-session = { group = "androidx.media3", name = "media3-session", version.r
 media3-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3-version" }
 media3-legacy = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "v1" }
 
+
+
+#glide
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide-version" }
+glide-transformations = { group = "jp.wasabeef", name = "glide-transformations", version.ref = "glide-transformations-version" }
 
 
 

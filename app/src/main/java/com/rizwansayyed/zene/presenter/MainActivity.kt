@@ -58,6 +58,7 @@ import com.rizwansayyed.zene.presenter.ui.home.views.SettingsView
 import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
+import com.rizwansayyed.zene.presenter.ui.ringtone.SetRingtoneActivity
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
@@ -267,6 +268,11 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
+        }
+
+        Intent(this, SetRingtoneActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(this)
         }
     }
 
