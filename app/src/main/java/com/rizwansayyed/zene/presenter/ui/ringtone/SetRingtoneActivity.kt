@@ -12,20 +12,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
+import com.rizwansayyed.zene.presenter.ui.ringtone.view.RingtoneEditView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.utils.FileDownloaderInChunks
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -44,33 +45,46 @@ class SetRingtoneActivity : ComponentActivity() {
         setContent {
             ZeneTheme {
                 val p = runBlocking(Dispatchers.IO) { musicPlayerData.first() }
-                var url by remember { mutableStateOf("") }
-
-                val noRingtoneFound = stringResource(R.string.no_ringtone_found_try_again_later)
+                var isDownloaded by remember { mutableStateOf(false) }
 
                 Box(
                     Modifier
                         .fillMaxSize()
                         .background(DarkGreyColor)
                 ) {
-
+                    if (isDownloaded) RingtoneEditView(p)
+                    else LaunchedEffect(Unit) {
+                        finishActivity()
+                    }
                 }
 
                 LaunchedEffect(Unit) {
-                    fun finishActivity() {
-                        finish()
-                        noRingtoneFound.toast()
-                    }
+                    try {
+                        val link = songDownload.download(p?.v?.songID ?: "").first()
+                        if (link == null) {
+                            finishActivity()
+                            return@LaunchedEffect
+                        }
 
-                    songDownload.download(p?.v?.songID ?: "").catch {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            FileDownloaderInChunks(link) { progress, status ->
+                                if (status == false) finishActivity()
+
+                                isDownloaded = progress == 100
+                            }.startDownloadingRingtone()
+                        }
+
+                    } catch (e: Exception) {
                         finishActivity()
-                    }.collectLatest {
-                        if (it == null) finishActivity()
-                        else url = it
                     }
                 }
             }
         }
+    }
+
+    private fun finishActivity() {
+        finish()
+        resources.getString(R.string.no_ringtone_found_try_again_later).toast()
     }
 
     override fun onStart() {

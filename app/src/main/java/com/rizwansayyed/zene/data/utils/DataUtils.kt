@@ -528,6 +528,8 @@ object CacheFiles {
     val suggestionYouMayLikeCache by lazy {
         File(context.cacheDir, "suggestion-you-may-like-cache.json")
     }
+
+    val demoRingtonePath = File(context.cacheDir, "demo_ringtone.mp3")
 }
 
 object RentAdvisorSubtitles {
