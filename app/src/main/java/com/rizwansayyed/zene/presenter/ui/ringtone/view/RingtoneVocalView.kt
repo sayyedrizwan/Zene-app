@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.ringtone.view
 
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,11 +50,15 @@ import com.rizwansayyed.zene.presenter.theme.GreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.ifSongGoingOutOfSlider
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.isRingtoneSongPlaying
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.pauseRingtoneSong
+import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.playOrPauseRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.progressRingtoneSong
+import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.ringtonePlayer
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.setPlayerDurationDependOnSlider
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startPlayingRingtoneSong
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -66,6 +72,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun RingtoneVocalView() {
     val context = LocalContext.current.applicationContext
+    val coroutine = rememberCoroutineScope()
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
     val width = LocalConfiguration.current.screenWidthDp.dp
 
@@ -74,8 +81,9 @@ fun RingtoneVocalView() {
     val amplitudesList = remember { mutableStateListOf(0) }
     var progress by remember { mutableFloatStateOf(0F) }
     var isPlaying by remember { mutableStateOf(false) }
+    var isStartThumb by remember { mutableStateOf(false) }
 
-    var ringtoneSlider by remember { mutableStateOf(0f..0.30f) }
+    var ringtoneSlider by remember { mutableStateOf(0f..30f) }
 
     Box(
         Modifier
@@ -106,14 +114,33 @@ fun RingtoneVocalView() {
 
 
         RangeSlider(
-            ringtoneSlider, { range ->
-                if (range.endInclusive - range.start > 30) return@RangeSlider
+            ringtoneSlider,
+            { range ->
+                val startThumbActive = range.start != ringtoneSlider.start
+                val endThumbActive = range.endInclusive != ringtoneSlider.endInclusive
+                if (startThumbActive) {
+                    Log.d("TAG", "RingtoneVocalView: run startThumb")
+//                    if (range.endInclusive - range.start > 29) {
+//                        val newEndInclusive = range.endInclusive - 1f
+//                        ringtoneSlider = range.start..newEndInclusive
+//                    }
+                }
+
+                if (endThumbActive) {
+                    if (range.endInclusive - range.start > 29) {
+                        val newStartInclusive = range.start + 1f
+                        ringtoneSlider = newStartInclusive..range.endInclusive
+                    }
+                }
+                if (range.endInclusive - range.start >= 30 || range.endInclusive - range.start <= 10) return@RangeSlider
                 ringtoneSlider = range
-            }, Modifier
+            },
+            Modifier
                 .align(Alignment.Center)
-                .width(width), true, 0f..1f, {
+                .width(width),
+            true, 0f..100f,
+            {
                 setPlayerDurationDependOnSlider(ringtoneSlider)
-                val targetPositionMs = (ringtoneSlider * player.duration).toLong()
             },
             SliderDefaults.colors(Color.Black),
             startThumb = {
@@ -143,7 +170,7 @@ fun RingtoneVocalView() {
                         inactiveTrackColor = Color.Transparent
                     )
                 )
-            }
+            },
         )
     }
 
@@ -155,21 +182,23 @@ fun RingtoneVocalView() {
             .fillMaxWidth()
             .padding(horizontal = 15.dp, vertical = 9.dp)
     ) {
-        SmallIcons(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play)
+        SmallIcons(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play) {
+            playOrPauseRingtoneSong()
+        }
 
         Spacer(Modifier.weight(1f))
 
         SmallIcons(R.drawable.ic_tick)
     }
 
-
-    LaunchedEffect(Unit) {
-        val a = Amplituda(context).processAudio(demoRingtonePath).get()
-        amplitudesList.addAll(a.amplitudesAsList())
-        startPlayingRingtoneSong()
-    }
-
     DisposableEffect(Unit) {
+        coroutine.launch {
+            val a = Amplituda(context).processAudio(demoRingtonePath).get()
+            amplitudesList.addAll(a.amplitudesAsList())
+            delay(1.seconds)
+            startPlayingRingtoneSong()
+        }
+
         val lifecycleValue = lifecycleOwner.value.lifecycle
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
@@ -182,6 +211,7 @@ fun RingtoneVocalView() {
             while (true) {
                 progress = progressRingtoneSong()
                 isPlaying = isRingtoneSongPlaying()
+                ifSongGoingOutOfSlider(ringtoneSlider)
                 delay(1.seconds)
             }
         }
