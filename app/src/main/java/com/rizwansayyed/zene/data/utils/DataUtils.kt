@@ -529,7 +529,7 @@ object CacheFiles {
         File(context.cacheDir, "suggestion-you-may-like-cache.json")
     }
 
-    val demoRingtonePath = File(context.cacheDir, "demo_ringtone.mp3")
+    val demoRingtonePath = File(context.filesDir, "demo_ringtone.mp3")
 }
 
 object RentAdvisorSubtitles {

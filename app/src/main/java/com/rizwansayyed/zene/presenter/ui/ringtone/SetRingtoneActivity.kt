@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.presenter.ui.ringtone.view.RingtoneEditView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.utils.FileDownloaderInChunks
+import com.rizwansayyed.zene.utils.latestUrl
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,6 +52,7 @@ class SetRingtoneActivity : ComponentActivity() {
 
     @Inject
     lateinit var player: ExoPlayer
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
@@ -90,6 +92,8 @@ class SetRingtoneActivity : ComponentActivity() {
                             finishActivity()
                             return@LaunchedEffect
                         }
+
+                        latestUrl = link
 
                         CoroutineScope(Dispatchers.IO).launch {
                             FileDownloaderInChunks(link) { progress, status ->

@@ -236,8 +236,6 @@ fun RingtoneViewButton(
     ringtoneSlider: ClosedFloatingPointRange<Float>,
     infoDialog: () -> Unit
 ) {
-    val context = LocalContext.current.applicationContext
-
     Row(
         Modifier
             .fillMaxWidth()

@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.utils.CacheFiles.demoRingtonePath
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.cropAudio
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -21,8 +22,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
 
+
 object Utils {
-    val ringtonePlayer = ExoPlayer.Builder(context).build()
+    private val ringtonePlayer = ExoPlayer.Builder(context).build()
 
     fun startPlayingRingtoneSong() = CoroutineScope(Dispatchers.Main).launch {
         val mediaItem = MediaItem.fromUri(demoRingtonePath.toUri())
@@ -90,34 +92,79 @@ object Utils {
 
     }
 
-    fun startCroppingAndSaving(ringtoneSlider: ClosedFloatingPointRange<Float>) = CoroutineScope(Dispatchers.IO).launch {
-        val demoRingtonePathNew = File(context.cacheDir, "new_demo_ringtone.mp3")
-        val session =
-//            FFmpegKit.execute("ffmpeg -ss 50000 -i '/data/data/com.rizwansayyed.zene/cache/demo_ringtone.mp3' -to 15000 -c copy /data${demoRingtonePathNew.absolutePath}")
-            FFmpegKit.execute("ffmpeg -i '/data/data/com.rizwansayyed.zene/cache/demo_ringtone.mp3' -codec:a libmp3lame -b:a 128k /data${demoRingtonePathNew.absolutePath}")
+    fun startCroppingAndSaving(ringtoneSlider: ClosedFloatingPointRange<Float>) =
+        CoroutineScope(Dispatchers.IO).launch {
+            val demoRingtonePathNew = File(context.filesDir, "new_demo_ringtone.mp3")
+            val startTimeMs = 10000
+            val endTimeMs = 20000
 
-        val failStackTrace = session.failStackTrace
+            val command = arrayOf(
+                "-i", demoRingtonePath.path,
+                "-map", "0:a:0",
+                "-acodec", "mp3", // Set the audio codec to mp3
+                "-b:a", "192k",   // Set the bitrate (adjust as needed)
+                "-ar", "44100",
+                "-ss", (startTimeMs / 1000).toString(),
+                "-to", (endTimeMs / 1000).toString(),
+                demoRingtonePathNew.path
+            )
 
-        Log.d("TAG", "startCroppingAndSaving: runned faile $failStackTrace")
-        val logs = session.logs.forEach {
-            Log.d("TAG", "startCroppingAndSaving: runned session ${it.message}")
+            val session = FFmpegKit.execute(command.joinToString(" "))
+            session.logs.forEach {
+                Log.d("TAG", "startCroppingAndSaving: eeee $it")
+            }
+            if (ReturnCode.isSuccess(session.getReturnCode())) {
+
+                // SUCCESS
+
+            } else if (ReturnCode.isCancel(session.getReturnCode())) {
+
+                // CANCEL
+
+            } else {
+                String.format("Command failed with state %s and rc %s.%s", session.getState(), session.getReturnCode(), session.getFailStackTrace()).toast()
+
+            }
+//            cropAudio(demoRingtonePath, demoRingtonePathNew)
+
+//            val process = Runtime.getRuntime().exec(arrayOf(
+//                "ffmpeg", "-y",
+//                "-i", demoRingtonePath.absolutePath,
+//                "-ss", 5000.toString(),
+//                "-to", (10000).toString(), demoRingtonePathNew.absolutePath
+//            ))
+//
+//            process.waitFor()
+
+//            val command = arrayOf(
+//                "-ss", "5000",
+//                "-t", 10000.toString(),
+//                "-i", demoRingtonePath.absolutePath,
+//                "-acodec", "copy", demoRingtonePathNew.absolutePath
+//            )
+//
+//            val ffmpeg =
+//                FFmpeg.getInstance(context).execute(command, object : FFmpegExecuteResponseHandler {
+//                    override fun onStart() {
+//                        "started".toast()
+//                    }
+//
+//                    override fun onFinish() {
+//                        "finished".toast()
+//                    }
+//
+//                    override fun onSuccess(message: String?) {
+//                        "success = $message".toast()
+//                    }
+//
+//                    override fun onProgress(message: String?) {
+//                        "progress = $message".toast()
+//                    }
+//
+//                    override fun onFailure(message: String?) {
+//                        "failed = $message".toast()
+//                    }
+//
+//                })
         }
-
-
-        if (ReturnCode.isSuccess(session.returnCode)) {
-            "success".toast()
-        } else if (ReturnCode.isCancel(session.returnCode)) {
-
-            "canceled".toast()
-
-        } else {
-            String.format(
-                "Command failed with state %s and rc %s.%s",
-                session.getState(),
-                session.getReturnCode(),
-                session.getFailStackTrace()
-            ).toast()
-
-        }
-    }
 }
