@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.domain.MusicData
@@ -39,6 +40,9 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var songDetailDialog by mutableStateOf<MusicData?>(null)
         private set
 
+    var selectMyMusicPlaylists = mutableStateOf<SavedPlaylistEntity?>(null)
+        private set
+
     var selectedArtists by mutableStateOf("")
         private set
 
@@ -58,6 +62,10 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     fun setRadioTemp(v: OnlineRadioResponseItem?) {
         onlineRadioTemps = v
+    }
+
+    fun setSelectMyMusicPlaylists(v: SavedPlaylistEntity?) {
+        selectMyMusicPlaylists.value = v
     }
 
     fun setHomeScrollPosition(v: Int) {
@@ -90,7 +98,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     }
 
     fun checkAndSetOnlineStatus() = viewModelScope.launch(Dispatchers.IO) {
-        isOnline = isInternetConnected()
+//        isOnline = isInternetConnected()
     }
 
     fun resetConfig() = viewModelScope.launch(Dispatchers.IO) {

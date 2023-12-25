@@ -36,7 +36,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
+import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.asMusicPlayerList
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextRegular
@@ -44,6 +46,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.DeleteOfflineDialog
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButton
+import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.addToEndPlayer
@@ -81,6 +84,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
 
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()
 
+    var playlistDialog by remember { mutableStateOf<MusicPlayerList?>(null) }
     var rmDialog by remember { mutableStateOf(false) }
 
     val downloading = stringResource(R.string.downloading__)
@@ -141,7 +145,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
             homeNavModel.setSongDetailsDialog(null)
         }
         MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
-
+            playlistDialog = homeNavModel.songDetailDialog?.asMusicPlayerList()
         }
         if (offlineDownload == null)
             MusicDialogListItems(R.drawable.ic_download, offlineDownloadString) {
@@ -184,6 +188,9 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
     }, {
         rmDialog = false
     })
+
+
+    playlistDialog?.let { MusicPlaylistDialog(it) { playlistDialog = null } }
 
     LaunchedEffect(Unit) {
         homeNavModel.songDetailDialog?.pId?.let { playerViewModel.offlineSongDetails(it) }

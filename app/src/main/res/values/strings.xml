@@ -11,6 +11,7 @@
     <string name="upcoming_events">Upcoming Events</string>
     <string name="top_songs_in_c">Top songs in %s</string>
     <string name="fresh_added_songs">Fresh Added Songs</string>
+    <string name="zene_playlist">Zene Playlist</string>
     <string name="top_songs">Top Songs</string>
     <string name="mood">Mood</string>
     <string name="trending_artists_in_country">Trending Artists in %s</string>
@@ -27,6 +28,7 @@
     <string name="alarm_song">Alarm Song</string>
     <string name="song_thumbnail">Song Thumbnail</string>
     <string name="albums">Albums</string>
+    <string name="saved_albums">Saved Albums</string>
     <string name="songs">Songs</string>
     <string name="your_favourite_artists">Your favourite artists</string>
     <string name="song_for_you_to_explore">Song For You to Explore</string>

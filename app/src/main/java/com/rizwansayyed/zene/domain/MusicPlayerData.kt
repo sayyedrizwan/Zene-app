@@ -21,3 +21,7 @@ data class MusicPlayerList(
     val songID: String?,
     val thumbnail: String?,
 )
+
+fun MusicData.asMusicPlayerList(): MusicPlayerList {
+    return MusicPlayerList(name, artists, pId, thumbnail)
+}

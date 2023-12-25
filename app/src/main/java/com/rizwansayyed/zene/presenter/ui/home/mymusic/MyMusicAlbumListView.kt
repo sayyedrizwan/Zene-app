@@ -52,7 +52,7 @@ fun MyMusicAlbumList(myMusic: MyMusicViewModel) {
 
     if (albums.isNotEmpty()) Column(Modifier, Arrangement.Center) {
         Column(Modifier.padding(horizontal = 9.dp)) {
-            TopInfoWithSeeMore(R.string.albums, null, 50) {}
+            TopInfoWithSeeMore(R.string.saved_albums, null, 50) {}
         }
 
         LazyRow(Modifier.fillMaxSize()) {

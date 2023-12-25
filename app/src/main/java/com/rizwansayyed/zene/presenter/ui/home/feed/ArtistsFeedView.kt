@@ -101,6 +101,11 @@ fun ArtistsFeedView() {
                 null -> {}
             }
         }
+
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Spacer(Modifier.height(200.dp))
+        }
     }
 
     LaunchedEffect(Unit) {

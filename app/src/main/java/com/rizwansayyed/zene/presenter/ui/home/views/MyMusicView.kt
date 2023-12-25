@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,9 +25,11 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicAlbumList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicOfflineDownload
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicPlaylistsList
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.SelectedPlaylistView
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopListenedSong
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -35,6 +38,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun MyMusicView() {
     val myMusic: MyMusicViewModel = hiltViewModel()
+    val homeNavViewModel: HomeNavViewModel = hiltViewModel()
 
     val userAuth by userAuthData.collectAsState(initial = runBlocking(Dispatchers.IO) { userAuthData.first() })
 
@@ -58,7 +62,7 @@ fun MyMusicView() {
             HistoryItemsList(myMusic)
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            MyMusicPlaylistsList(myMusic)
+            MyMusicPlaylistsList(myMusic, homeNavViewModel)
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicAlbumList(myMusic)
@@ -74,6 +78,9 @@ fun MyMusicView() {
         }
     }
 
+    AnimatedVisibility(homeNavViewModel.selectMyMusicPlaylists.value != null) {
+        SelectedPlaylistView()
+    }
 
     LaunchedEffect(Unit) {
         myMusic.init()

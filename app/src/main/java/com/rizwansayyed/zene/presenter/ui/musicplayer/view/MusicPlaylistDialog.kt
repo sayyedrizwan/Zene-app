@@ -142,7 +142,7 @@ fun MusicPlaylistSheetView(v: MusicPlayerList?) {
             }
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            Spacer(Modifier.height(80.dp))
+            Spacer(Modifier.height(100.dp))
         }
     }
 

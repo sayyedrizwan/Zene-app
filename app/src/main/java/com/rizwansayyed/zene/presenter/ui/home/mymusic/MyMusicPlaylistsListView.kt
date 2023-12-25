@@ -31,20 +31,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.DEFAULT_PLAYLIST_ITEMS
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
 import com.rizwansayyed.zene.utils.Utils.OFFSET_LIMIT
+import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 
 @Composable
-fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
+fun MyMusicPlaylistsList(myMusic: MyMusicViewModel, homeNavViewModel: HomeNavViewModel) {
     val playlists by myMusic.savePlaylists.collectAsState(emptyList())
     val defaultPlaylistSongsCount = myMusic.defaultPlaylistSongs
     var page by remember { mutableIntStateOf(0) }
+
+    val appNamePlaylists = stringResource(id = R.string.zene_playlist)
 
     Column(Modifier, Arrangement.Center) {
         Column(Modifier.padding(horizontal = 9.dp)) {
@@ -56,15 +61,25 @@ fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
                 AddNewPlaylist()
             }
             item {
-                DefaultPlaylistsItem(defaultPlaylistSongsCount)
+                DefaultPlaylistsItem(defaultPlaylistSongsCount) {
+                    val p = SavedPlaylistEntity(
+                        -0, appNamePlaylists, items = defaultPlaylistSongsCount,
+                        playlistId = DEFAULT_PLAYLIST_ITEMS.replace(",", "")
+                    )
+                    homeNavViewModel.setSelectMyMusicPlaylists(p)
+                }
             }
 
             items(playlists) {
-                MyMusicPlaylistsItems(it)
+                MyMusicPlaylistsItems(it) {
+                    homeNavViewModel.setSelectMyMusicPlaylists(it)
+                }
             }
 
             items(myMusic.savePlaylistsLoadList) {
-                MyMusicPlaylistsItems(it)
+                MyMusicPlaylistsItems(it) {
+                    homeNavViewModel.setSelectMyMusicPlaylists(it)
+                }
             }
 
             if (playlists.size >= OFFSET_LIMIT && myMusic.savePlaylistsLoadMore) item {
@@ -78,12 +93,15 @@ fun MyMusicPlaylistsList(myMusic: MyMusicViewModel) {
 }
 
 @Composable
-fun MyMusicPlaylistsItems(playlists: SavedPlaylistEntity) {
+fun MyMusicPlaylistsItems(playlists: SavedPlaylistEntity, click: () -> Unit) {
     val mod = Modifier
         .fillMaxWidth()
         .height(75.dp)
         .clip(RoundedCornerShape(14.dp))
         .background(Color.White)
+        .clickable {
+            click()
+        }
 
     Column(
         Modifier
@@ -114,11 +132,12 @@ fun MyMusicPlaylistsItems(playlists: SavedPlaylistEntity) {
 }
 
 @Composable
-fun DefaultPlaylistsItem(count: Int) {
+fun DefaultPlaylistsItem(count: Int, click: () -> Unit) {
     Column(
         Modifier
             .padding(start = 10.dp, end = 20.dp, bottom = 20.dp)
             .width(140.dp)
+            .clickable { click() }
     ) {
         Column(
             Modifier

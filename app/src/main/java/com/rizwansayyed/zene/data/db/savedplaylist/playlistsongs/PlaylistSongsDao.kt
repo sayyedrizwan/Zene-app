@@ -20,6 +20,9 @@ interface PlaylistSongsDao {
     @Query("SELECT COUNT (*) FROM $PLAYLIST_SONGS_DB WHERE addedPlaylistIds LIKE '%$DEFAULT_PLAYLIST_ITEMS%'")
     suspend fun defaultPlaylistSongsCount(): Int
 
+    @Query("SELECT * FROM $PLAYLIST_SONGS_DB WHERE addedPlaylistIds LIKE '%' || :id || '%'")
+    suspend fun playlistSongs(id: String): List<PlaylistSongsEntity>
+
     @Query("DELETE FROM $PLAYLIST_SONGS_DB WHERE songId = :songId")
     suspend fun rmSongs(songId: String): Int
 

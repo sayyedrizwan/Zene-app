@@ -199,10 +199,9 @@ fun SearchView() {
             }
         }
 
+
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            Column {
-                Spacer(Modifier.height(180.dp))
-            }
+            Spacer(Modifier.height(200.dp))
         }
     }
 
@@ -402,6 +401,11 @@ fun SearchViewInfo(s: String, close: () -> Unit) {
                     Spacer(Modifier.height(160.dp))
                 }
             }
+        }
+
+
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Spacer(Modifier.height(200.dp))
         }
     }
 

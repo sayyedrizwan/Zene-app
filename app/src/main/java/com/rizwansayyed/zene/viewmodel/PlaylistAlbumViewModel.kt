@@ -11,10 +11,12 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.PlaylistItemsData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,6 +37,9 @@ class PlaylistAlbumViewModel @Inject constructor(
     private val roomDb: RoomDBInterface,
     private val remoteConfig: RemoteConfigInterface
 ) : ViewModel() {
+
+    var myMusicPlaylistSongsItem = mutableStateListOf<PlaylistSongsEntity>()
+        private set
 
     var playlistSongsItem = mutableStateListOf<MusicData>()
         private set
@@ -85,6 +90,13 @@ class PlaylistAlbumViewModel @Inject constructor(
                 }
             }
         }
+
+    fun getAllPlaylistSongs(id: Int?) = viewModelScope.launch(Dispatchers.IO) {
+        myMusicPlaylistSongsItem.clear()
+        roomDb.playlistSongs("${id},").catch {  }.collectLatest {
+            myMusicPlaylistSongsItem.addAll(it)
+        }
+    }
 
     private fun searchSimilarAlbums(search: String) = viewModelScope.launch(Dispatchers.IO) {
         youtubeAPI.searchData(search).onStart {

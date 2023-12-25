@@ -84,9 +84,8 @@ fun AlbumView() {
             }
 
             item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-                Spacer(Modifier.height(160.dp))
+                Spacer(Modifier.height(200.dp))
             }
-
         }
     }
 

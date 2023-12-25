@@ -89,7 +89,6 @@ import kotlin.time.Duration.Companion.seconds
 // privacy policy viewer
 // all edittext are hiding behind keyboard
 
-// options menu - set ringtone, set wallpaper,
 // can you replicate blur image as in-build
 // show feeds
 // my music playlists
@@ -101,6 +100,8 @@ import kotlin.time.Duration.Companion.seconds
 
 // in view all radio is not saving
 // add stories, fb posts to show on feed
+
+// add ads with ump sdk
 
 
 @AndroidEntryPoint
@@ -195,6 +196,10 @@ class MainActivity : ComponentActivity() {
                                 flowOf(musicPlayerData.first()?.apply { show = false })
                             return@launch
                         }
+                        if (navViewModel.selectMyMusicPlaylists.value != null) {
+                            navViewModel.setSelectMyMusicPlaylists(null)
+                            return@launch
+                        }
                         if (navViewModel.setImageAsWallpaper.isNotEmpty()) {
                             navViewModel.setImageAsWallpaper("")
                             return@launch
@@ -222,6 +227,7 @@ class MainActivity : ComponentActivity() {
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
                     navViewModel.setArtists("")
+                    navViewModel.setSelectMyMusicPlaylists(null)
                     navViewModel.setAlbum("")
                     navViewModel.setSongDetailsDialog(null)
 
