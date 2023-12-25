@@ -15,7 +15,7 @@ import com.rizwansayyed.zene.presenter.ui.TextThin
 
 @Composable
 fun SimpleTextDialog(
-    title: String, body: String, btn: String,
+    title: String, body: String, btn: String?,
     onConfirmation: () -> Unit, onDismissRequest: () -> Unit
 ) {
     AlertDialog(
@@ -29,7 +29,7 @@ fun SimpleTextDialog(
             onDismissRequest()
         },
         confirmButton = {
-            TextButton(
+            if (btn != null) TextButton(
                 onClick = {
                     onConfirmation()
                 }

@@ -7,11 +7,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -19,13 +18,8 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmapOrNull
-import androidx.fragment.app.FragmentActivity
-import coil.imageLoader
-import coil.request.ImageRequest
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
@@ -40,16 +34,13 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.InetAddress
-import java.text.DecimalFormat
-import java.time.Instant
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.math.log10
-import kotlin.math.pow
 import kotlin.system.exitProcess
-import kotlin.time.Duration
 
 
 object Utils {
@@ -309,4 +300,20 @@ object Utils {
         }
     }
 
+
+    fun File.copyFileTo(dest: File) {
+        val `in`: InputStream = FileInputStream(this)
+        val out: OutputStream = FileOutputStream(dest)
+
+        val buffer = ByteArray(1024)
+        var bytesRead: Int
+
+        while (`in`.read(buffer).also { bytesRead = it } > 0) {
+            out.write(buffer, 0, bytesRead)
+        }
+
+        `in`.close()
+        out.close()
+        MediaScannerConnection.scanFile(context, arrayOf(dest.toString()), null, null)
+    }
 }

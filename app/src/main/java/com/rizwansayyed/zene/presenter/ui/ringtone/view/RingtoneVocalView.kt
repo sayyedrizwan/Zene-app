@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.ringtone.view
 
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +16,6 @@ import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -38,8 +36,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle.Event.*
+import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.LifecycleEventObserver
 import com.linc.audiowaveform.AudioWaveform
 import com.linc.audiowaveform.model.AmplitudeType
@@ -49,16 +48,16 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.demoRingtonePath
 import com.rizwansayyed.zene.presenter.theme.GreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
-import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.ifSongGoingOutOfSlider
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.isRingtoneSongPlaying
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.pauseRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.playOrPauseRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.progressRingtoneSong
-import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.ringtonePlayer
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.setPlayerDurationDependOnSlider
+import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startCroppingAndSaving
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startPlayingRingtoneSong
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.writeRingtoneSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -68,6 +67,10 @@ import linc.com.amplituda.Amplituda
 import kotlin.time.Duration.Companion.seconds
 
 
+enum class RangeSliderThumbInfo {
+    START, END, NONE
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RingtoneVocalView() {
@@ -76,12 +79,13 @@ fun RingtoneVocalView() {
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
     val width = LocalConfiguration.current.screenWidthDp.dp
 
+    var infoDialog by remember { mutableStateOf(false) }
     var playbackDuration by remember { mutableStateOf<Job?>(null) }
 
     val amplitudesList = remember { mutableStateListOf(0) }
     var progress by remember { mutableFloatStateOf(0F) }
     var isPlaying by remember { mutableStateOf(false) }
-    var isStartThumb by remember { mutableStateOf(false) }
+    var isStartThumb by remember { mutableStateOf(RangeSliderThumbInfo.NONE) }
 
     var ringtoneSlider by remember { mutableStateOf(0f..30f) }
 
@@ -118,16 +122,18 @@ fun RingtoneVocalView() {
             { range ->
                 val startThumbActive = range.start != ringtoneSlider.start
                 val endThumbActive = range.endInclusive != ringtoneSlider.endInclusive
-                if (startThumbActive) {
-                    Log.d("TAG", "RingtoneVocalView: run startThumb")
-//                    if (range.endInclusive - range.start > 29) {
-//                        val newEndInclusive = range.endInclusive - 1f
-//                        ringtoneSlider = range.start..newEndInclusive
-//                    }
+
+                if (startThumbActive && (isStartThumb == RangeSliderThumbInfo.NONE || isStartThumb == RangeSliderThumbInfo.START)) {
+                    if (range.endInclusive - range.start > 29) {
+                        isStartThumb = RangeSliderThumbInfo.START
+                        val newEndInclusive = range.endInclusive - 1f
+                        ringtoneSlider = range.start..newEndInclusive
+                    }
                 }
 
-                if (endThumbActive) {
+                if (endThumbActive && (isStartThumb == RangeSliderThumbInfo.NONE || isStartThumb == RangeSliderThumbInfo.END)) {
                     if (range.endInclusive - range.start > 29) {
+                        isStartThumb = RangeSliderThumbInfo.END
                         val newStartInclusive = range.start + 1f
                         ringtoneSlider = newStartInclusive..range.endInclusive
                     }
@@ -140,6 +146,7 @@ fun RingtoneVocalView() {
                 .width(width),
             true, 0f..100f,
             {
+                isStartThumb = RangeSliderThumbInfo.NONE
                 setPlayerDurationDependOnSlider(ringtoneSlider)
             },
             SliderDefaults.colors(Color.Black),
@@ -174,22 +181,10 @@ fun RingtoneVocalView() {
         )
     }
 
-
-    TextThin(v = ringtoneSlider.toString())
-
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 15.dp, vertical = 9.dp)
-    ) {
-        SmallIcons(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play) {
-            playOrPauseRingtoneSong()
-        }
-
-        Spacer(Modifier.weight(1f))
-
-        SmallIcons(R.drawable.ic_tick)
+    RingtoneViewButton(isPlaying, ringtoneSlider) {
+        infoDialog = true
     }
+
 
     DisposableEffect(Unit) {
         coroutine.launch {
@@ -224,4 +219,75 @@ fun RingtoneVocalView() {
         }
 
     }
+
+    if (infoDialog) SimpleTextDialog(
+        stringResource(R.string.set_as_ringtone),
+        stringResource(R.string.set_as_ringtone_desc),
+        null,
+        {},
+        {
+            infoDialog = false
+        })
 }
+
+@Composable
+fun RingtoneViewButton(
+    isPlaying: Boolean,
+    ringtoneSlider: ClosedFloatingPointRange<Float>,
+    infoDialog: () -> Unit
+) {
+    val context = LocalContext.current.applicationContext
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp, vertical = 9.dp)
+    ) {
+        SmallIcons(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play) {
+            playOrPauseRingtoneSong()
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        SmallIcons(R.drawable.ic_information_circle) {
+            infoDialog()
+        }
+
+        SmallIcons(R.drawable.ic_tick) {
+            pauseRingtoneSong()
+            if (writeRingtoneSettings()) {
+                startCroppingAndSaving(ringtoneSlider)
+//
+//                val destination = File("/storage/emulated/0/Music/my_song.mp3")
+//                demoRingtonePath.copyFileTo(destination)
+//
+//                try {
+//                    val values = ContentValues().apply {
+//                        put(MediaStore.MediaColumns.DATA, destination.absolutePath)
+//                        put(MediaStore.MediaColumns.TITLE, "Zene App Ringtone")
+//                        put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+//                        put(MediaStore.MediaColumns.SIZE, destination.length())
+//                        put(MediaStore.Audio.Media.ARTIST, "cssounds ")
+//                        put(MediaStore.Audio.Media.IS_RINGTONE, true)
+//                        put(MediaStore.Audio.Media.IS_NOTIFICATION, false)
+//                        put(MediaStore.Audio.Media.IS_ALARM, false)
+//                        put(MediaStore.Audio.Media.IS_MUSIC, false)
+//                    }
+//
+//                    val uri =
+//                        MediaStore.Audio.Media.getContentUriForPath(destination.absolutePath)
+//                    val newUri =  context.contentResolver.insert(uri!!, values)
+//
+//                    RingtoneManager
+//                        .setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri)
+//                } catch (e: Exception) {
+//                    e.message?.toast()
+//                    e.printStackTrace()
+//                }
+            }
+        }
+    }
+
+}
+
+
