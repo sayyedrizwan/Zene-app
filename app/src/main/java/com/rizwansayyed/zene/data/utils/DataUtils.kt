@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.utils
 
+import android.os.Environment
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
@@ -530,6 +531,12 @@ object CacheFiles {
     }
 
     val demoRingtonePath = File(context.filesDir, "demo_ringtone.mp3")
+    val demoCropRingtonePath = File(context.filesDir, "demo_crop_ringtone.mp3")
+
+
+    private val musicDir =
+        File(Environment.getExternalStorageDirectory(), "Music").apply { mkdirs() }
+    val cropRingtoneInDevice = File(musicDir, "zene_ringtone.mp3")
 }
 
 object RentAdvisorSubtitles {

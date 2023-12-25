@@ -1,9 +1,14 @@
 package com.rizwansayyed.zene.presenter.ui.ringtone.util
 
+
+import android.content.ContentValues
 import android.content.Intent
+import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.Settings
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -11,16 +16,24 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.utils.CacheFiles.cropRingtoneInDevice
+import com.rizwansayyed.zene.data.utils.CacheFiles.demoCropRingtonePath
 import com.rizwansayyed.zene.data.utils.CacheFiles.demoRingtonePath
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
-import com.rizwansayyed.zene.utils.cropAudio
+import com.rizwansayyed.zene.utils.Utils.copyFileTo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.BufferedInputStream
 import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import kotlin.time.Duration.Companion.seconds
 
 
 object Utils {
@@ -92,79 +105,82 @@ object Utils {
 
     }
 
-    fun startCroppingAndSaving(ringtoneSlider: ClosedFloatingPointRange<Float>) =
+    fun startCroppingAndMakeRingtone(ringtoneSlider: ClosedFloatingPointRange<Float>) =
         CoroutineScope(Dispatchers.IO).launch {
-            val demoRingtonePathNew = File(context.filesDir, "new_demo_ringtone.mp3")
-            val startTimeMs = 10000
-            val endTimeMs = 20000
+            demoCropRingtonePath.deleteRecursively()
+            cropRingtoneInDevice.deleteRecursively()
+            val start =
+                withContext(Dispatchers.Main) { (ringtoneSlider.start * ringtonePlayer.duration) / 100 }
+            val end =
+                withContext(Dispatchers.Main) { (ringtoneSlider.endInclusive * ringtonePlayer.duration) / 100 }
 
             val command = arrayOf(
                 "-i", demoRingtonePath.path,
                 "-map", "0:a:0",
-                "-acodec", "mp3", // Set the audio codec to mp3
-                "-b:a", "192k",   // Set the bitrate (adjust as needed)
+                "-acodec", "mp3",
+                "-b:a", "192k",
                 "-ar", "44100",
-                "-ss", (startTimeMs / 1000).toString(),
-                "-to", (endTimeMs / 1000).toString(),
-                demoRingtonePathNew.path
+                "-ss", (start / 1000).toInt().toString(),
+                "-to", (end / 1000).toInt().toString(),
+                demoCropRingtonePath.path
             )
 
             val session = FFmpegKit.execute(command.joinToString(" "))
-            session.logs.forEach {
-                Log.d("TAG", "startCroppingAndSaving: eeee $it")
-            }
-            if (ReturnCode.isSuccess(session.getReturnCode())) {
 
-                // SUCCESS
+            if (ReturnCode.isSuccess(session.returnCode)) {
+                demoCropRingtonePath.copyFileTo(cropRingtoneInDevice)
+                setRingtoneFromFile(cropRingtoneInDevice)
 
-            } else if (ReturnCode.isCancel(session.getReturnCode())) {
-
-                // CANCEL
-
-            } else {
-                String.format("Command failed with state %s and rc %s.%s", session.getState(), session.getReturnCode(), session.getFailStackTrace()).toast()
-
-            }
-//            cropAudio(demoRingtonePath, demoRingtonePathNew)
-
-//            val process = Runtime.getRuntime().exec(arrayOf(
-//                "ffmpeg", "-y",
-//                "-i", demoRingtonePath.absolutePath,
-//                "-ss", 5000.toString(),
-//                "-to", (10000).toString(), demoRingtonePathNew.absolutePath
-//            ))
-//
-//            process.waitFor()
-
-//            val command = arrayOf(
-//                "-ss", "5000",
-//                "-t", 10000.toString(),
-//                "-i", demoRingtonePath.absolutePath,
-//                "-acodec", "copy", demoRingtonePathNew.absolutePath
-//            )
-//
-//            val ffmpeg =
-//                FFmpeg.getInstance(context).execute(command, object : FFmpegExecuteResponseHandler {
-//                    override fun onStart() {
-//                        "started".toast()
-//                    }
-//
-//                    override fun onFinish() {
-//                        "finished".toast()
-//                    }
-//
-//                    override fun onSuccess(message: String?) {
-//                        "success = $message".toast()
-//                    }
-//
-//                    override fun onProgress(message: String?) {
-//                        "progress = $message".toast()
-//                    }
-//
-//                    override fun onFailure(message: String?) {
-//                        "failed = $message".toast()
-//                    }
-//
-//                })
+                delay(2.seconds)
+                cropRingtoneInDevice.deleteRecursively()
+            } else
+                context.resources.getString(R.string.error_setting_ringtone).toast()
         }
+
+    private fun setRingtoneFromFile(path: File) {
+        val values = ContentValues()
+        values.put(MediaStore.MediaColumns.TITLE, path.name)
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+        values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val newUri = context.contentResolver
+                .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
+            try {
+                context.contentResolver.openOutputStream(newUri!!).use { os ->
+                    val size = path.length().toInt()
+                    val bytes = ByteArray(size)
+                    try {
+                        val buf = BufferedInputStream(FileInputStream(path))
+                        buf.read(bytes, 0, bytes.size)
+                        buf.close()
+                        os?.write(bytes)
+                        os?.close()
+                        os?.flush()
+                    } catch (e: Exception) {
+                        context.resources.getString(R.string.error_setting_ringtone).toast()
+                    }
+                }
+            } catch (e: Exception) {
+                context.resources.getString(R.string.error_setting_ringtone).toast()
+            }
+            RingtoneManager
+                .setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri)
+        } else {
+            values.put(MediaStore.MediaColumns.DATA, path.absolutePath)
+            val uri = MediaStore.Audio.Media.getContentUriForPath(path.absolutePath)
+            context.contentResolver.delete(
+                uri!!,
+                MediaStore.MediaColumns.DATA + "=\"" + path.absolutePath + "\"",
+                null
+            )
+            val newUri = context.contentResolver.insert(uri, values)
+            RingtoneManager
+                .setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri)
+            context.contentResolver.insert(
+                MediaStore.Audio.Media.getContentUriForPath(path.absolutePath)!!, values
+            )
+        }
+    }
 }

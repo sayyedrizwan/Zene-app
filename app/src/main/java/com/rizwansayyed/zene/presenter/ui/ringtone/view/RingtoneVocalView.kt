@@ -1,6 +1,10 @@
 package com.rizwansayyed.zene.presenter.ui.ringtone.view
 
 
+import android.Manifest
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -55,9 +59,10 @@ import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.pauseRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.playOrPauseRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.progressRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.setPlayerDurationDependOnSlider
-import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startCroppingAndSaving
+import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startCroppingAndMakeRingtone
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startPlayingRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.writeRingtoneSettings
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -236,6 +241,16 @@ fun RingtoneViewButton(
     ringtoneSlider: ClosedFloatingPointRange<Float>,
     infoDialog: () -> Unit
 ) {
+    val activity = LocalContext.current as Activity
+    val needStorage = stringResource(R.string.need_storage_permission_to_set_the_ringtone)
+    var setRingtoneDialog by remember { mutableStateOf(false) }
+
+    val storagePermission =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) setRingtoneDialog = true
+            else needStorage.toast()
+        }
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -254,37 +269,25 @@ fun RingtoneViewButton(
         SmallIcons(R.drawable.ic_tick) {
             pauseRingtoneSong()
             if (writeRingtoneSettings()) {
-                startCroppingAndSaving(ringtoneSlider)
-//
-//                val destination = File("/storage/emulated/0/Music/my_song.mp3")
-//                demoRingtonePath.copyFileTo(destination)
-//
-//                try {
-//                    val values = ContentValues().apply {
-//                        put(MediaStore.MediaColumns.DATA, destination.absolutePath)
-//                        put(MediaStore.MediaColumns.TITLE, "Zene App Ringtone")
-//                        put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
-//                        put(MediaStore.MediaColumns.SIZE, destination.length())
-//                        put(MediaStore.Audio.Media.ARTIST, "cssounds ")
-//                        put(MediaStore.Audio.Media.IS_RINGTONE, true)
-//                        put(MediaStore.Audio.Media.IS_NOTIFICATION, false)
-//                        put(MediaStore.Audio.Media.IS_ALARM, false)
-//                        put(MediaStore.Audio.Media.IS_MUSIC, false)
-//                    }
-//
-//                    val uri =
-//                        MediaStore.Audio.Media.getContentUriForPath(destination.absolutePath)
-//                    val newUri =  context.contentResolver.insert(uri!!, values)
-//
-//                    RingtoneManager
-//                        .setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri)
-//                } catch (e: Exception) {
-//                    e.message?.toast()
-//                    e.printStackTrace()
-//                }
+                storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                storagePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
     }
+
+
+    if (setRingtoneDialog) SimpleTextDialog(
+        stringResource(R.string.set_ringtone),
+        stringResource(R.string.set_ringtone_desc),
+        stringResource(R.string.set),
+        {
+            setRingtoneDialog = false
+            startCroppingAndMakeRingtone(ringtoneSlider)
+            activity.finish()
+        },
+        {
+            setRingtoneDialog = false
+        })
 
 }
 

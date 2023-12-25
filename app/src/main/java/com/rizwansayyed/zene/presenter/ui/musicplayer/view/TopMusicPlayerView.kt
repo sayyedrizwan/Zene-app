@@ -90,6 +90,7 @@ fun TopPlayerHeader(showedOnLockScreen: Boolean, p: MusicPlayerData?) {
             Column(Modifier.offset(x = (-120).dp, y = 0.dp)) {
                 DropdownMenu(dropDownMenu, { dropDownMenu = false }) {
                     DropdownMenuItem({ TextSemiBold(ringtone) }, onClick = {
+                        dropDownMenu = false
                         Intent(activity, SetRingtoneActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             activity.startActivity(this)

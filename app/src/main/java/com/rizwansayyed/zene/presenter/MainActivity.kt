@@ -269,11 +269,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
         }
-
-        Intent(this, SetRingtoneActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(this)
-        }
     }
 
     override fun onDestroy() {
