@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.domain.HomeNavigation.SEARCH
 import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
+import com.rizwansayyed.zene.presenter.ui.dialog.SongRecognitionDialog
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
@@ -58,7 +59,6 @@ import com.rizwansayyed.zene.presenter.ui.home.views.SettingsView
 import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
-import com.rizwansayyed.zene.presenter.ui.ringtone.SetRingtoneActivity
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
@@ -66,6 +66,7 @@ import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
+import com.rizwansayyed.zene.utils.RecordMicAudio
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -90,8 +91,6 @@ import kotlin.time.Duration.Companion.seconds
 // all edittext are hiding behind keyboard
 
 // can you replicate blur image as in-build
-// show feeds
-// my music playlists
 // make app stanbymode
 // group music listeners via wifi and bluetooth
 // song recognization
@@ -163,6 +162,9 @@ class MainActivity : ComponentActivity() {
                     }
                     AnimatedVisibility(navViewModel.selectedAlbum.length > 3) {
                         AlbumView()
+                    }
+                    AnimatedVisibility(navViewModel.songRecognitionDialog) {
+                        SongRecognitionDialog()
                     }
 
                     BottomNavBar(Modifier.align(Alignment.BottomCenter), player)

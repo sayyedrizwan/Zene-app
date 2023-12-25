@@ -537,6 +537,9 @@ object CacheFiles {
     private val musicDir =
         File(Environment.getExternalStorageDirectory(), "Music").apply { mkdirs() }
     val cropRingtoneInDevice = File(musicDir, "zene_ringtone.mp3")
+
+
+    val recordedMusicRecognitionFile = File(context.filesDir, "recorded_music_rec.mp3")
 }
 
 object RentAdvisorSubtitles {

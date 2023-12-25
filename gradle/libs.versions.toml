@@ -1,4 +1,13 @@
 [versions]
+appPackageName = "com.rizwansayyed.zene"
+targetSDK = "34"
+minSDK = "24"
+
+#app version start
+currentVersionCode = "29"
+currentVersionName = "1.0.000358"
+#app version end
+
 v1 = "1.0.0"
 kotlin-version = "1.12.0"
 runtime-version = "2.6.2"
@@ -8,18 +17,18 @@ compose-ui-util-version = "1.5.4"
 junit-version = "4.13.2"
 ext-junit-version = "1.1.5"
 espresso-version = "3.5.1"
-hilt-version = "2.48.1"
+hilt-version = "2.49"
 hilt-compose-version = "1.1.0"
-coil-compose-version = "2.4.0"
+coil-compose-version = "2.5.0"
 coroutines-version = "1.7.3"
 room-version = "2.6.1"
 retrofit-version = "2.9.0"
-moshi-version = "1.14.0"
+moshi-version = "1.15.0"
 browser-version = "1.7.0"
 js-evaluator = "v6.0.0"
 webkit-version = "1.9.0"
 jsoup-version = "1.16.1"
-ok-http-version = "4.10.0"
+ok-http-version = "4.12.0"
 work-manager-version = "2.9.0"
 firebase-bom-version = "32.7.0"
 paging-version = "3.2.1"
@@ -31,8 +40,8 @@ glide-transformations-version = "4.3.0"
 #plugins
 plugin-android-app-version = "8.2.0"
 plugin-kotlin-android = "1.9.21"
-plugin-hilt = "2.48"
-plugin-ksp = "1.9.21-1.0.15"
+plugin-hilt = "2.49"
+plugin-ksp = "1.9.21-1.0.16"
 plugin-google-services = "4.4.0"
 
 

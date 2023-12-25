@@ -41,6 +41,12 @@ fun HomepageTopView(homeNav: HomeNavViewModel) {
         }
 
         Row {
+            SmallIcons(R.drawable.ic_song_search) {
+                homeNav.songRecognitionDialog(true)
+            }
+
+            Spacer(Modifier.width(9.dp))
+
             SmallIcons(R.drawable.ic_notification) {
 
             }

@@ -10,15 +10,15 @@ plugins {
 }
 
 android {
-    namespace = "com.rizwansayyed.zene"
-    compileSdk = 34
+    namespace = libs.versions.appPackageName.get()
+    compileSdk = libs.versions.targetSDK.get().toInt()
 
     defaultConfig {
-        applicationId = "com.rizwansayyed.zene"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 28
-        versionName = "1.0.000358"
+        applicationId = libs.versions.appPackageName.get()
+        minSdk = libs.versions.minSDK.get().toInt()
+        targetSdk = libs.versions.targetSDK.get().toInt()
+        versionCode = libs.versions.currentVersionCode.get().toInt()
+        versionName = libs.versions.currentVersionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

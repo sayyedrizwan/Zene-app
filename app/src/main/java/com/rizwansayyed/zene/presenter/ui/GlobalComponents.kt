@@ -101,6 +101,7 @@ fun LoadingStateBar() {
     }
 }
 
+
 @Composable
 fun LoadingCircle(s: Int) {
     val strokeWidth = 5.dp

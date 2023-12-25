@@ -52,6 +52,9 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var selectedAlbum by mutableStateOf("")
         private set
 
+    var songRecognitionDialog by mutableStateOf(false)
+        private set
+
     var onlineRadioTemps by mutableStateOf<OnlineRadioResponseItem?>(null)
         private set
 
@@ -62,6 +65,10 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     fun setRadioTemp(v: OnlineRadioResponseItem?) {
         onlineRadioTemps = v
+    }
+
+    fun songRecognitionDialog(v: Boolean) {
+        songRecognitionDialog = v
     }
 
     fun setSelectMyMusicPlaylists(v: SavedPlaylistEntity?) {

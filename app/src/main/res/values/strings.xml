@@ -219,4 +219,8 @@
     <string name="need_storage_permission_to_set_the_ringtone">Need storage permission to set your ringtone</string>
     <string name="set">Set</string>
     <string name="error_setting_ringtone">Error setting ringtone in your device. Please try again later.....</string>
+    <string name="tap_to_discover_the_song">Tap to discover the song……</string>
+    <string name="listening_">Listening…</string>
+    <string name="processing_the_song_please_wait">Processing the song. Please wait.</string>
+    <string name="need_audio_permission_to_start_recognition_the_song">Need audio permission to start recognition the song</string>
 </resources>
