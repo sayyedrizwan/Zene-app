@@ -94,6 +94,7 @@
     <string name="downloading__">Downloading…</string>
     <string name="download">Download</string>
     <string name="set_as_ringtone">Set as Ringtone</string>
+    <string name="error_identifying_the_song">Error identifying the song. Try again later.</string>
     <string name="set_ringtone">Set Ringtone</string>
     <string name="set_ringtone_desc">Are you sure want to set the selected song as your ringtone.</string>
     <string name="set_as_ringtone_desc">Craft your ideal ringtone effortlessly with Zene Music App. You can choose 30 seconds to 1 minute portion of the song. To set your favourite part of the music as your phone\'s ringtone you need to choose the portion of the music ringtone that you like most by selecting the highlighted grey area.</string>
@@ -223,4 +224,6 @@
     <string name="listening_">Listening…</string>
     <string name="processing_the_song_please_wait">Processing the song. Please wait.</string>
     <string name="need_audio_permission_to_start_recognition_the_song">Need audio permission to start recognition the song</string>
+    <string name="unable_to_identify_the_music">Unable to identify the music</string>
+    <string name="try_again">Try Again</string>
 </resources>

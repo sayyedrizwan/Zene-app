@@ -22,6 +22,10 @@ object DBNAME {
     const val PLAYLIST_SONGS_DB = "playlist_songs_db"
 }
 
+object AuddRecognition {
+   const val AUDD_BASE_URL = "https://api.audd.io/"
+}
+
 object VideoDownloaderAPI {
     const val SAVE_FROM_BASE_URL = "https://www.savefrom.live/"
     const val SAVE_FROM_VIDEO_API = "wp-json/aio-dl/video-data/"

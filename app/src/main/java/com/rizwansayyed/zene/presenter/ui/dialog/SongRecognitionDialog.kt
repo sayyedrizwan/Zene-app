@@ -4,6 +4,7 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,12 +37,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.RecordMicAudio
+import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,12 +60,12 @@ fun SongRecognitionDialog() {
     val recordMicAudio = RecordMicAudio()
 
     val navViewModel: HomeNavViewModel = hiltViewModel()
+    val homeApiViewModel: HomeApiViewModel = hiltViewModel()
     val coroutines = rememberCoroutineScope()
     val width = LocalConfiguration.current.screenHeightDp.dp / 2
 
     var job by remember { mutableStateOf<Job?>(null) }
     var startRec by remember { mutableStateOf(false) }
-    var processing by remember { mutableStateOf(false) }
     var captureDuration by remember { mutableIntStateOf(0) }
 
     val needAudioPermission =
@@ -77,28 +81,43 @@ fun SongRecognitionDialog() {
             else needAudioPermission.toast()
         }
 
-    Dialog(onDismissRequest = { navViewModel.songRecognitionDialog(false) }) {
+    Dialog({ navViewModel.songRecognitionDialog(false) }) {
         Card(
             Modifier
                 .fillMaxWidth()
                 .height(width), RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
         ) {
             Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+
                 Spacer(Modifier.height(20.dp))
 
-                if (processing)
-                    TextSemiBold(v = stringResource(R.string.processing_the_song_please_wait))
-                else
-                    TextSemiBold(v = stringResource(if (startRec) R.string.listening_ else R.string.tap_to_discover_the_song))
-
-                Spacer(Modifier.height(50.dp))
-
-                if (processing)
-                    LoadingStateBar()
-                else
-                    SongRecButtonInfo(startRec, captureDuration) {
+                when (val v = homeApiViewModel.auddRecognitionData) {
+                    DataResponse.Empty -> StartingButtonInfo(false, startRec, captureDuration) {
                         recordPermission.launch(Manifest.permission.RECORD_AUDIO)
                     }
+
+                    is DataResponse.Error -> {
+                        stringResource(R.string.error_identifying_the_song).toast()
+                        StartingButtonInfo(false, startRec, captureDuration) {
+                            recordPermission.launch(Manifest.permission.RECORD_AUDIO)
+                        }
+                    }
+
+                    DataResponse.Loading -> StartingButtonInfo(true, startRec, captureDuration) {
+                        recordPermission.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+
+                    is DataResponse.Success -> {
+                        if (v.item == null)
+                            NoSongFoundTryAgain {
+                                startRec = false
+                                homeApiViewModel.clearSongRecognition()
+                            }
+                        else
+                            v.item.name?.toast()
+                    }
+                }
+
             }
         }
     }
@@ -112,26 +131,44 @@ fun SongRecognitionDialog() {
                     delay(1.seconds)
                 }
                 recordMicAudio.stopRecording()
-                processing = true
+                homeApiViewModel.startSongRecognition()
             }
         } else {
             job?.cancel()
             coroutines.launch {
                 recordMicAudio.stopRecording()
             }
+            homeApiViewModel.clearSongRecognition()
         }
     }
 
     DisposableEffect(Unit) {
+        homeApiViewModel.clearSongRecognition()
         onDispose {
             startRec = false
-            processing = false
             job?.cancel()
             coroutines.launch {
                 recordMicAudio.stopRecording()
             }
         }
     }
+}
+
+@Composable
+fun StartingButtonInfo(
+    processing: Boolean, startRec: Boolean, captureDuration: Int, p: () -> Unit
+) {
+    if (processing)
+        TextSemiBold(v = stringResource(R.string.processing_the_song_please_wait))
+    else
+        TextSemiBold(v = stringResource(if (startRec) R.string.listening_ else R.string.tap_to_discover_the_song))
+
+    Spacer(Modifier.height(50.dp))
+
+    if (processing)
+        LoadingStateBar()
+    else
+        SongRecButtonInfo(startRec, captureDuration, p)
 }
 
 @Composable
@@ -154,5 +191,23 @@ fun SongRecButtonInfo(startRec: Boolean, captureDuration: Int, p: () -> Unit) {
             )
         else
             SmallIcons(icon = R.drawable.ic_mic, 40, 40, p)
+    }
+}
+
+@Composable
+fun NoSongFoundTryAgain(tryAgain: () -> Unit) {
+    TextSemiBold(v = stringResource(R.string.unable_to_identify_the_music))
+
+    Spacer(Modifier.height(20.dp))
+
+    Column(
+        Modifier
+            .clip(RoundedCornerShape(50))
+            .background(Color.Black)
+            .clickable { tryAgain() }
+            .padding(vertical = 20.dp, horizontal = 40.dp),
+        Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+        TextThin(v = stringResource(R.string.try_again))
     }
 }

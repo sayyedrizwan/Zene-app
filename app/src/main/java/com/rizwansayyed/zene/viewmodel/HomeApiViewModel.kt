@@ -12,16 +12,19 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.searchHistoryList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
+import com.rizwansayyed.zene.data.onlinesongs.auddrecognition.implementation.AuddSongRecognitionInterface
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles
+import com.rizwansayyed.zene.data.utils.CacheFiles.recordedMusicRecognitionFile
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
 import com.rizwansayyed.zene.domain.SearchData
+import com.rizwansayyed.zene.domain.auddSongRecognition.AuddSongRecognitionResponse
 import com.rizwansayyed.zene.domain.lastfm.TopRecentPlaySongsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,6 +46,7 @@ class HomeApiViewModel @Inject constructor(
     private val spotifyAPI: SpotifyAPIImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val lastFMAPI: LastFMImplInterface,
+    private val auddRecognitionAPI: AuddSongRecognitionInterface,
 ) : ViewModel() {
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
@@ -111,6 +115,10 @@ class HomeApiViewModel @Inject constructor(
 
 
     var searchData by mutableStateOf<DataResponse<SearchData?>>(DataResponse.Empty)
+        private set
+
+
+    var auddRecognitionData by mutableStateOf<DataResponse<MusicData?>>(DataResponse.Empty)
         private set
 
 
@@ -265,6 +273,21 @@ class HomeApiViewModel @Inject constructor(
             searchData = DataResponse.Error(it)
         }.collectLatest {
             searchData = DataResponse.Success(it)
+        }
+    }
+
+
+    fun clearSongRecognition() = viewModelScope.launch(Dispatchers.IO) {
+        auddRecognitionData = DataResponse.Empty
+    }
+
+    fun startSongRecognition() = viewModelScope.launch(Dispatchers.IO) {
+        auddRecognitionAPI.sendSongToRecognition(recordedMusicRecognitionFile).onStart {
+            auddRecognitionData = DataResponse.Loading
+        }.catch {
+            auddRecognitionData = DataResponse.Error(it)
+        }.collectLatest {
+            auddRecognitionData = DataResponse.Success(it)
         }
     }
 
