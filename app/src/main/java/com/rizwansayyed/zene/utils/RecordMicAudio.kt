@@ -7,44 +7,42 @@ import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 class RecordMicAudio {
 
-    private lateinit var mediaRecorder: MediaRecorder
+    companion object {
+        private var mediaRecorderMic: MediaRecorder? = null
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            mediaRecorder =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaRecorder(context) else MediaRecorder()
-            mediaRecorder.apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC)
-            }
+    }
+
+    private fun makeMediaRecorder(): MediaRecorder {
+      return  (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaRecorder(context) else MediaRecorder()).apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setAudioSamplingRate(16000)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                setOutputFile(recordedMusicRecognitionFile)
+            else
+                setOutputFile(recordedMusicRecognitionFile.path)
         }
     }
 
     suspend fun startRecordingMusicSearch() = withContext(Dispatchers.IO) {
-        val mediaRecorder =
-            (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaRecorder(context) else MediaRecorder()).apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC)
-            }
+        stopRecording()
+
+        mediaRecorderMic = makeMediaRecorder()
 
         recordedMusicRecognitionFile.deleteRecursively()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            mediaRecorder.setOutputFile(recordedMusicRecognitionFile)
-        else
-            mediaRecorder.setOutputFile(recordedMusicRecognitionFile.path)
-
         try {
-            mediaRecorder.prepare()
-            mediaRecorder.start()
+            mediaRecorderMic?.prepare()
+            mediaRecorderMic?.start()
         } catch (e: Exception) {
             e.message
         }
@@ -52,12 +50,13 @@ class RecordMicAudio {
 
     suspend fun stopRecording() = withContext(Dispatchers.IO) {
         try {
-            mediaRecorder.stop()
-            mediaRecorder.release()
+            mediaRecorderMic?.pause()
+            mediaRecorderMic?.stop()
+            mediaRecorderMic?.reset()
         } catch (e: Exception) {
             e.message
         }
+
+        delay(1.seconds)
     }
-
-
 }

@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.dialog
 
 import android.Manifest
+import android.webkit.WebView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
@@ -43,6 +45,7 @@ import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.dialog.helper.ShazamSongWebView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.RecordMicAudio
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -85,40 +88,43 @@ fun SongRecognitionDialog() {
         Card(
             Modifier
                 .fillMaxWidth()
-                .height(width), RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
+//                .height(width)
+            , RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
         ) {
-            Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+            AndroidView({ ctx ->
+                ShazamSongWebView(ctx)
+            }, Modifier.fillMaxSize())
 
-                Spacer(Modifier.height(20.dp))
 
-                when (val v = homeApiViewModel.auddRecognitionData) {
-                    DataResponse.Empty -> StartingButtonInfo(false, startRec, captureDuration) {
-                        recordPermission.launch(Manifest.permission.RECORD_AUDIO)
-                    }
-
-                    is DataResponse.Error -> {
-                        stringResource(R.string.error_identifying_the_song).toast()
-                        StartingButtonInfo(false, startRec, captureDuration) {
-                            recordPermission.launch(Manifest.permission.RECORD_AUDIO)
-                        }
-                    }
-
-                    DataResponse.Loading -> StartingButtonInfo(true, startRec, captureDuration) {
-                        recordPermission.launch(Manifest.permission.RECORD_AUDIO)
-                    }
-
-                    is DataResponse.Success -> {
-                        if (v.item == null)
-                            NoSongFoundTryAgain {
-                                startRec = false
-                                homeApiViewModel.clearSongRecognition()
-                            }
-                        else
-                            v.item.name?.toast()
-                    }
-                }
-
-            }
+//            Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+//
+//                Spacer(Modifier.height(20.dp))
+//
+//                when (val v = homeApiViewModel.auddRecognitionData) {
+//                    DataResponse.Empty -> StartingButtonInfo(false, startRec, captureDuration) {
+//                        recordPermission.launch(Manifest.permission.RECORD_AUDIO)
+//                    }
+//
+//                    is DataResponse.Error -> NoSongFoundTryAgain {
+//                        startRec = false
+//                        homeApiViewModel.clearSongRecognition()
+//                    }
+//
+//                    DataResponse.Loading -> StartingButtonInfo(true, startRec, captureDuration) {
+//                        recordPermission.launch(Manifest.permission.RECORD_AUDIO)
+//                    }
+//
+//                    is DataResponse.Success -> {
+//                        if (v.item == null) NoSongFoundTryAgain {
+//                            startRec = false
+//                            homeApiViewModel.clearSongRecognition()
+//                        }
+//                        else
+//                            TextSemiBold(v = "${v.item.name} == ${v.item.artists}")
+//                    }
+//                }
+//
+//            }
         }
     }
 

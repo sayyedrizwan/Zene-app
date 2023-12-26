@@ -285,6 +285,7 @@ class HomeApiViewModel @Inject constructor(
         auddRecognitionAPI.sendSongToRecognition(recordedMusicRecognitionFile).onStart {
             auddRecognitionData = DataResponse.Loading
         }.catch {
+            Log.d("TAG", "startSongRecognition: rnned ${it.message}")
             auddRecognitionData = DataResponse.Error(it)
         }.collectLatest {
             auddRecognitionData = DataResponse.Success(it)
