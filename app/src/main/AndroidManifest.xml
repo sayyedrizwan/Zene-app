@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="LockedOrientationActivity">
 
-
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -76,6 +74,16 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.Zene" />
+
+        <activity
+            android:name=".presenter.ui.extra.StandByModeActivity"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.Zene" />
 
         <activity

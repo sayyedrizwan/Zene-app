@@ -19,6 +19,7 @@
     <string name="listeners">Listeners</string>
     <string name="enable_lock_screen_to_show">Please also enable \'Show on lock screen\' and \'Display pop-up window while running in background\' to show the music view.</string>
     <string name="lock_screen_permission_to_show">Enable permission to show on lock screen to show the music view.</string>
+    <string name="stand_by_permission_to_show">Enable permission to show stand-by mode on lock screen while charging.</string>
     <string name="songs_you_may_like_to_listen">Songs you may like to listen</string>
     <string name="speak_music_artists_album">Speak music, artist or album name to search</string>
     <string name="similar_artists">Similar Artists</string>
@@ -226,4 +227,5 @@
     <string name="need_audio_permission_to_start_recognition_the_song">Need audio permission to start recognition the song</string>
     <string name="unable_to_identify_the_music">Unable to identify the music</string>
     <string name="try_again">Try Again</string>
+    <string name="stand_by_mode_while_charging">Stand-by Mode while charging</string>
 </resources>

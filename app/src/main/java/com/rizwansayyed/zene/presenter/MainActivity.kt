@@ -45,7 +45,6 @@ import com.rizwansayyed.zene.domain.HomeNavigation.SEARCH
 import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
-import com.rizwansayyed.zene.presenter.ui.dialog.SongRecognitionDialog
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
@@ -66,7 +65,7 @@ import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
-import com.rizwansayyed.zene.utils.RecordMicAudio
+import com.rizwansayyed.zene.service.workmanager.StandByOnChargingWorkManager.Companion.startStandbyModeWorkManager
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -93,14 +92,14 @@ import kotlin.time.Duration.Companion.seconds
 // can you replicate blur image as in-build
 // make app stanbymode
 // group music listeners via wifi and bluetooth
-// song recognization
 // import songs from spotify and youtube music.
 // make artists info cache
 
 // in view all radio is not saving
 // add stories, fb posts to show on feed
-
+// song recognization
 // add ads with ump sdk
+
 
 
 @AndroidEntryPoint
@@ -162,9 +161,6 @@ class MainActivity : ComponentActivity() {
                     }
                     AnimatedVisibility(navViewModel.selectedAlbum.length > 3) {
                         AlbumView()
-                    }
-                    AnimatedVisibility(navViewModel.songRecognitionDialog) {
-                        SongRecognitionDialog()
                     }
 
                     BottomNavBar(Modifier.align(Alignment.BottomCenter), player)
@@ -267,6 +263,7 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         checkAndClearCache()
+        startStandbyModeWorkManager()
         roomViewModel.downloadIfNotDownloaded()
         lifecycleScope.launch(Dispatchers.IO) {
             delay(1.seconds)

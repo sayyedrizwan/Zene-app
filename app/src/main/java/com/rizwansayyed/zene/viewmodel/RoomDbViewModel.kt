@@ -193,7 +193,7 @@ class RoomDbViewModel @Inject constructor(
 
 
     private fun artistsFans(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPIImpl.artistsFansItemSearch(list).onStart {
+        youtubeAPIImpl.artistsFansItemSearch(list.distinct()).onStart {
             artistsFans = DataResponse.Loading
         }.catch {
             artistsFans = DataResponse.Error(it)

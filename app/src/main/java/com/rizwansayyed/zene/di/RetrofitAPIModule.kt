@@ -1,6 +1,6 @@
 package com.rizwansayyed.zene.di
 
-import com.rizwansayyed.zene.data.onlinesongs.auddrecognition.AuddSongRecognitionService
+
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.SaveFromInstagramService
@@ -236,25 +236,4 @@ object RetrofitAPIModule {
             .build().create(SaveFromInstagramService::class.java)
     }
 
-
-    @Provides
-    fun retrofitAuddSongRecognitionService(): AuddSongRecognitionService {
-        val builder = OkHttpClient.Builder()
-        builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
-            val chains = chain.request().newBuilder()
-                .addHeader("authority", "api.audd.io")
-                .addHeader("accept", "*/*")
-                .addHeader("accept-language", "en-US,en;q=0.9")
-                .addHeader("cache-control", "no-cache")
-                .addHeader("origin", "https://audd.io")
-                .addHeader("referer", "https://audd.io/")
-                .addHeader("user-agent", USER_AGENT)
-            chain.proceed(chains.build())
-        })
-
-        return Retrofit.Builder()
-            .baseUrl("https://demo.com").client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
-            .build().create(AuddSongRecognitionService::class.java)
-    }
 }

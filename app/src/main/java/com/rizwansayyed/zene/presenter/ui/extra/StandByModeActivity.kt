@@ -9,6 +9,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
@@ -36,7 +38,7 @@ import kotlin.time.Duration.Companion.seconds
 
 
 @AndroidEntryPoint
-class LockScreenActivity : ComponentActivity() {
+class StandByModeActivity : ComponentActivity() {
 
     @Inject
     lateinit var player: ExoPlayer
@@ -51,6 +53,7 @@ class LockScreenActivity : ComponentActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
         window.addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) setShowWhenLocked(true)
 
 
@@ -58,11 +61,7 @@ class LockScreenActivity : ComponentActivity() {
             ZeneTheme {
                 val keyboard = LocalSoftwareKeyboardController.current
 
-                MusicPlayerView(player, true)
-
-                AnimatedVisibility(navViewModel.songDetailDialog != null) {
-                    MusicDialogSheet()
-                }
+                StandByMainView()
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
@@ -70,5 +69,11 @@ class LockScreenActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    @Preview(showSystemUi = true, showBackground = true)
+    @Composable
+    fun StandByMainView() {
+        
     }
 }

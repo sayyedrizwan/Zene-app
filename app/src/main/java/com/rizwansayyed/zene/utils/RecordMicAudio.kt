@@ -48,7 +48,7 @@ class RecordMicAudio {
         }
     }
 
-    suspend fun stopRecording() = withContext(Dispatchers.IO) {
+    private suspend fun stopRecording() = withContext(Dispatchers.IO) {
         try {
             mediaRecorderMic?.pause()
             mediaRecorderMic?.stop()

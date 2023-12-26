@@ -90,9 +90,9 @@ fun TopMyMusicHeader(userAuth: UserAuthData?) {
                 .weight(1f),
             Arrangement.Center,
         ) {
-            TextBold("Rizwan Sayyed", size = 32)
+            TextBold(stringResource(id = R.string.app_name), size = 32)
             Spacer(Modifier.height(2.dp))
-            TextThin("sayyedrizwanahmed@gmail.com", Modifier.padding(start = 1.dp), size = 11)
+            TextThin("Ad free music experience", Modifier.padding(start = 1.dp), size = 11)
         }
     }
 

@@ -28,7 +28,12 @@ class FileDownloaderInChunks(
         downloadFile(url, demoRingtonePath)
     }
 
-    private suspend fun downloadFile(url: String, destinationPath: File, numChunks: Int = 15) =
+    fun startDownloadingOffline(file: File) = CoroutineScope(Dispatchers.IO).launch {
+        file.deleteRecursively()
+        downloadFile(url, file)
+    }
+
+    suspend fun downloadFile(url: String, destinationPath: File, numChunks: Int = 25) =
         runBlocking(Dispatchers.IO) {
             val request = Request.Builder().url(url).build()
             val response = client.newCall(request).execute()
@@ -67,7 +72,7 @@ class FileDownloaderInChunks(
 
     private fun updateProgressBar(destinationPath: File, totalFileSize: Long) {
         val progress = ((destinationPath.length().toFloat() / totalFileSize) * 100).toInt()
-        done(progress, null)
+        done(progress, true)
     }
 
     private fun downloadChunk(

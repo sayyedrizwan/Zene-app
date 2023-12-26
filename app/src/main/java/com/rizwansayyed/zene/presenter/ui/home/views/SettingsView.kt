@@ -70,6 +70,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.setWal
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.showPlayingSongOnLockScreenSettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songQualitySettings
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.songSpeedSettings
+import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.standByModeSettings
 import com.rizwansayyed.zene.data.db.datastore.OfflineSongsInfo
 import com.rizwansayyed.zene.data.db.datastore.SetWallpaperInfo
 import com.rizwansayyed.zene.data.db.datastore.SongSpeed
@@ -96,6 +97,7 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.otherPermissionIntent
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
+import com.rizwansayyed.zene.service.workmanager.StandByOnChargingWorkManager.Companion.startStandbyModeWorkManager
 import com.rizwansayyed.zene.utils.Utils.OFFICIAL_EMAIL
 import com.rizwansayyed.zene.utils.Utils.cacheSize
 import com.rizwansayyed.zene.utils.Utils.isPermission
@@ -141,6 +143,8 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
 
         SongOnLockScreenSettings()
         SetWallpaperSettings()
+
+        SetStandbySettings()
 
         PlaySongWhenAlarmSettings(alarmManagerToPlaySong)
 
@@ -361,6 +365,49 @@ fun SetWallpaperSettings() {
         SettingsItems(R.string.song_thumbnail, v == SetWallpaperInfo.SONG_THUMBNAIL.v) {
             setWallpaperSettings = flowOf(SetWallpaperInfo.SONG_THUMBNAIL.v)
         }
+    }
+}
+
+@Composable
+fun SetStandbySettings() {
+    val v by standByModeSettings.collectAsState(initial = false)
+
+    val context = LocalContext.current.applicationContext
+
+    val permissionString = stringResource(R.string.stand_by_permission_to_show)
+
+
+    val permission =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (Settings.canDrawOverlays(context)) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(1.seconds)
+                    otherPermissionIntent()
+                }
+
+                startStandbyModeWorkManager()
+                standByModeSettings = flowOf(true)
+            }
+        }
+
+    SettingsLayout(R.string.stand_by_mode_while_charging) {
+        SettingsItems(R.string.enable, v) {
+            if (Settings.canDrawOverlays(context))
+                standByModeSettings = flowOf(true)
+            else {
+                permissionString.toast()
+                permission.launch(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+            }
+        }
+        SettingsItems(R.string.disable, !v) {
+            standByModeSettings = flowOf(false)
+        }
+    }
+
+
+    LaunchedEffect(Unit) {
+        if (!Settings.canDrawOverlays(context))
+            standByModeSettings = flowOf(false)
     }
 }
 

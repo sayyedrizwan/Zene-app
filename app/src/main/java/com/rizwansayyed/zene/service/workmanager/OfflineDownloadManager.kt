@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPII
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.FileDownloaderInChunks
 import com.rizwansayyed.zene.utils.Utils.ExtraUtils.DOWNLOAD_SONG_WORKER
 import com.rizwansayyed.zene.utils.Utils.copyFileAndDelete
 import com.rizwansayyed.zene.utils.Utils.isConnectedToWifi
@@ -91,21 +92,22 @@ class OfflineDownloadManager @AssistedInject constructor(
             try {
                 val hdSong =
                     songDownloader.download(songId).first() ?: return@withContext Result.failure()
-                val download = downloadAFileFromURL(hdSong, file) {
-                    info?.progress = it
+
+                FileDownloaderInChunks(hdSong) { progress, status ->
+                    info?.progress = progress ?: 0
                     CoroutineScope(Dispatchers.IO).launch {
                         info?.let { r -> roomDb.insert(r).collect() }
                         if (isActive) cancel()
                     }
-                }
-                CoroutineScope(Dispatchers.IO).launch {
-                    if (download == true) copyFileAndDelete(file, defaultFolder)
+                    if (status == true && progress == 100)  CoroutineScope(Dispatchers.IO).launch {
+                        copyFileAndDelete(file, defaultFolder)
 
-                    info?.progress = if (download == true) 100 else 0
-                    info?.songPath = if (download == true) defaultFolder.path else ""
-                    info?.let { roomDb.insert(it).collect() }
-                    if (isActive) cancel()
-                }
+                        info?.progress = progress
+                        info?.songPath = defaultFolder.path
+                        info?.let { roomDb.insert(it).collect() }
+                        if (isActive) cancel()
+                    }
+                }.startDownloadingOffline(file)
                 return@withContext Result.success()
             } catch (e: Exception) {
                 return@withContext Result.failure()

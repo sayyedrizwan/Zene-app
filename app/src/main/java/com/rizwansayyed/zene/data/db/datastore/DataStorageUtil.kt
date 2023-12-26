@@ -31,6 +31,7 @@ object DataStorageUtil {
         val AUTOPLAY_SETTINGS = booleanPreferencesKey("autoplay_settings")
         val DO_OFFLINE_DOWNLOAD_WIFI_SETTINGS = booleanPreferencesKey("do_offline_download_wifi_settings")
         val SHOW_PLAYING_SONG_ON_LOCK_SCREEN_SETTINGS = booleanPreferencesKey("show_pLaying_song_on_lock_screen_settings")
+        val STAND_BY_MODE_SETTINGS = booleanPreferencesKey("stand_by_mode_settings")
         val SET_WALLPAPER_SETTINGS = intPreferencesKey("set_wallpaper_settings")
         val ALARM_TIME_SETTINGS = stringPreferencesKey("alarm_time_settings")
         val ALARM_SONG_SETTINGS = stringPreferencesKey("alarm_song_settings")

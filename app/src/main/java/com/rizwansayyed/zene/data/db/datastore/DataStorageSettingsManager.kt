@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettin
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SHOW_PLAYING_SONG_ON_LOCK_SCREEN_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SONGS_QUALITY_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.SONG_SPEED_SETTINGS
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.STAND_BY_MODE_SETTINGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DataStorageSettings.USER_AUTH_DATA
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
@@ -71,6 +72,14 @@ object DataStorageSettingsManager {
         }
         set(v) = runBlocking {
             context.dataStore.edit { it[SHOW_PLAYING_SONG_ON_LOCK_SCREEN_SETTINGS] = v.first() }
+        }
+
+    var standByModeSettings: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[STAND_BY_MODE_SETTINGS] ?: false
+        }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[STAND_BY_MODE_SETTINGS] = v.first() }
         }
 
     var setWallpaperSettings: Flow<Int>
