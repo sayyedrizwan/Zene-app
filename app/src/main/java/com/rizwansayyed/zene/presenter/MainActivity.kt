@@ -91,7 +91,6 @@ import kotlin.time.Duration.Companion.seconds
 // all edittext are hiding behind keyboard
 
 // can you replicate blur image as in-build
-// make app stanbymode
 // group music listeners via wifi and bluetooth
 // import songs from spotify and youtube music.
 // make artists info cache
