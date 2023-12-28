@@ -264,7 +264,6 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         checkAndClearCache()
-        startStandbyModeWorkManager()
         roomViewModel.downloadIfNotDownloaded()
         lifecycleScope.launch(Dispatchers.IO) {
             delay(1.seconds)
@@ -274,11 +273,6 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
-        }
-
-        Intent(this, StandByModeActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(this)
         }
     }
 

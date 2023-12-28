@@ -385,7 +385,6 @@ fun SetStandbySettings() {
                     otherPermissionIntent()
                 }
 
-                startStandbyModeWorkManager()
                 standByModeSettings = flowOf(true)
             }
         }

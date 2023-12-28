@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -39,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -92,6 +95,12 @@ fun StandbyViewTime() {
     var batteryLevel by remember { mutableIntStateOf(0) }
 
     Spacer(Modifier.height(30.dp))
+
+    Row(Modifier.padding(start = 14.dp), Arrangement.Center, Alignment.CenterVertically) {
+        Image(painterResource(R.mipmap.logo), "", Modifier.size(20.dp))
+        Spacer(Modifier.width(5.dp))
+        TextThin(v = stringResource(R.string.app_name))
+    }
 
     Row(Modifier.padding(start = 14.dp), Arrangement.Center, Alignment.CenterVertically) {
         TimeSliderAnimation(hourFirst, 120)

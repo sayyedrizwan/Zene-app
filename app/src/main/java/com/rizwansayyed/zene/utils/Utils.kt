@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.utils
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.AlarmManager
+import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
@@ -81,10 +82,13 @@ object Utils {
     }
 
     private var bm = context.getSystemService(BATTERY_SERVICE) as BatteryManager
+    var myKM = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 
 
     fun is24Hour() = DateFormat.is24HourFormat(context)
     fun phoneBatteryLevel() = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
+    fun isDeviceLocked() = myKM.isDeviceLocked
 
     fun isInternetConnected(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
