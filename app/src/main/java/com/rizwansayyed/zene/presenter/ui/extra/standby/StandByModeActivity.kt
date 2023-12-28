@@ -19,12 +19,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbySongInfoView
 import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbyViewTime
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -56,11 +58,11 @@ class StandByModeActivity : ComponentActivity(), StandByInterface {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) setShowWhenLocked(true)
 
+        screenBrightness(0.05f)
 
         setContent {
             ZeneTheme {
                 val keyboard = LocalSoftwareKeyboardController.current
-
 
                 Row(
                     Modifier
@@ -118,5 +120,11 @@ class StandByModeActivity : ComponentActivity(), StandByInterface {
 
     override fun close() {
         finishAffinity()
+    }
+
+    override fun screenBrightness(d: Float) {
+        val layout = window.attributes
+        layout.screenBrightness = d
+        window.attributes = layout
     }
 }
