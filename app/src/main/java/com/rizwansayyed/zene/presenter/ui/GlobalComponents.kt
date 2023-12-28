@@ -193,11 +193,11 @@ fun TextSemiBold(
 }
 
 @Composable
-fun TextPorkys(v: String, s: Int = 28) {
+fun TextPorkys(v: String, s: Int = 28, color: Color = Color.White) {
     Text(
         v,
         modifier = Modifier,
-        color = Color.White,
+        color = color,
         fontFamily = porkysFamily,
         fontWeight = FontWeight.Normal,
         maxLines = 1,

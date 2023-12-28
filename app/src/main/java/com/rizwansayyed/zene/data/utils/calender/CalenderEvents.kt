@@ -1,8 +1,11 @@
 package com.rizwansayyed.zene.data.utils.calender
 
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
 import android.provider.CalendarContract
+import android.text.format.DateUtils
+import android.util.Log
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import com.rizwansayyed.zene.domain.CalendarEvents
@@ -10,6 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.util.Calendar
 import javax.inject.Inject
 
 
@@ -19,38 +23,43 @@ class CalenderEvents @Inject constructor(@ApplicationContext private val context
         val data = mutableListOf<CalendarEvents>()
 
         val projection = arrayOf(
-            CalendarContract.Events._ID,
             CalendarContract.Events.TITLE,
             CalendarContract.Events.DTSTART,
             CalendarContract.Events.DTEND
         )
 
-        val now = System.currentTimeMillis()
-        val uri = CalendarContract.Events.CONTENT_URI
+
+        val currentDate = Calendar.getInstance()
+        val startOfDay = currentDate.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        val endOfDay = currentDate.apply {
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }.timeInMillis
+
         val selection =
-            CalendarContract.Events.DTSTART + " >= ? AND " + CalendarContract.Events.DTEND + " <= ?"
-        val selectionArgs = arrayOf(now.toString(), (now + 86400000).toString())
+            "((${CalendarContract.Events.DTSTART} >= $startOfDay) AND (${CalendarContract.Events.DTEND} <= $endOfDay))"
+        val sortOrder = "${CalendarContract.Events.DTSTART} ASC"
 
-        val contentResolver: ContentResolver = context.getContentResolver()
-        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, null)
+        val cursor = context.contentResolver.query(
+            CalendarContract.Events.CONTENT_URI, projection, selection, null, sortOrder
+        )
 
+        cursor?.use { c ->
+            while (c.moveToNext()) {
+                val title = c.getStringOrNull(c.getColumnIndex(CalendarContract.Events.TITLE))
+                val startTime = c.getLongOrNull(c.getColumnIndex(CalendarContract.Events.DTSTART))
+                val endTime = c.getLongOrNull(c.getColumnIndex(CalendarContract.Events.DTEND))
 
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                val eventId = cursor
-                    .getLongOrNull(cursor.getColumnIndex(CalendarContract.Events._ID))
-                val title = cursor
-                    .getStringOrNull(cursor.getColumnIndex(CalendarContract.Events.TITLE))
-                val startTime = cursor
-                    .getLongOrNull(cursor.getColumnIndex(CalendarContract.Events.DTSTART))
-                val endTime = cursor
-                    .getLongOrNull(cursor.getColumnIndex(CalendarContract.Events.DTEND))
-
-                data.add(CalendarEvents(eventId, title, startTime, endTime))
-
-            } while (cursor.moveToNext())
-
-            cursor.close()
+                data.add(CalendarEvents(title, startTime, endTime))
+            }
         }
 
         emit(data)

@@ -6,21 +6,25 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
-import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.extra.view.StandbyViewTime
+import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbySongInfoView
+import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbyViewTime
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -63,11 +67,43 @@ class StandByModeActivity : ComponentActivity(), StandByInterface {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    Column(Modifier.weight(7f)) {
-                        StandbyViewTime()
+                    Box(Modifier.weight(7f)) {
+                        Column(
+                            Modifier
+                                .align(Alignment.Center)
+                                .fillMaxSize()
+                        ) {
+                            StandbyViewTime()
+                        }
+
+                        Spacer(
+                            Modifier
+                                .align(Alignment.BottomEnd)
+                                .width(30.dp)
+                                .fillMaxHeight()
+                                .background(
+                                    Brush.horizontalGradient(listOf(Color.Transparent, Color.Black))
+                                )
+                        )
                     }
-                    Column(Modifier.weight(5f)) {
-                        Spacer(Modifier.fillMaxSize().background(Color.Green))
+                    Box(Modifier.weight(8f)) {
+                        Column(
+                            Modifier
+                                .align(Alignment.Center)
+                                .fillMaxSize()
+                        ) {
+                            StandbySongInfoView(player)
+                        }
+
+                        Spacer(
+                            Modifier
+                                .align(Alignment.BottomStart)
+                                .width(30.dp)
+                                .fillMaxHeight()
+                                .background(
+                                    Brush.horizontalGradient(listOf(Color.Black, Color.Transparent))
+                                )
+                        )
                     }
                 }
 

@@ -280,6 +280,7 @@ class HomeApiViewModel @Inject constructor(
             Log.d("TAG", "getTodayEvents: runed ${it.message}")
             calenderTodayEvents = emptyList()
         }.collectLatest {
+            Log.d("TAG", "getTodayEvents: runed ${it}")
             calenderTodayEvents = it
         }
     }

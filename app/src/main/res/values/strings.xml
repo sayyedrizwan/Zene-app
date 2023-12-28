@@ -229,4 +229,6 @@
     <string name="try_again">Try Again</string>
     <string name="stand_by_mode_while_charging">Stand-by Mode while charging</string>
     <string name="need_permission_to_show_events_from_calender">Need permission to \nshow events from calender</string>
+    <string name="no_events_today">No Events Today</string>
+    <string name="today_events">Today Events</string>
 </resources>
