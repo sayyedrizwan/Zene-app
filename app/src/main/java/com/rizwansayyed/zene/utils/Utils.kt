@@ -6,6 +6,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.Context.BATTERY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -14,6 +15,7 @@ import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.BatteryManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -78,7 +80,11 @@ object Utils {
 
     }
 
+    private var bm = context.getSystemService(BATTERY_SERVICE) as BatteryManager
+
+
     fun is24Hour() = DateFormat.is24HourFormat(context)
+    fun phoneBatteryLevel() = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
 
     fun isInternetConnected(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

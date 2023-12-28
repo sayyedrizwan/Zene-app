@@ -19,6 +19,8 @@ import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPII
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.recordedMusicRecognitionFile
+import com.rizwansayyed.zene.data.utils.calender.CalenderEventsInterface
+import com.rizwansayyed.zene.domain.CalendarEvents
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
@@ -42,6 +44,7 @@ class HomeApiViewModel @Inject constructor(
     private val spotifyAPI: SpotifyAPIImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val lastFMAPI: LastFMImplInterface,
+    private val calenderEvents: CalenderEventsInterface,
 ) : ViewModel() {
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
@@ -113,7 +116,7 @@ class HomeApiViewModel @Inject constructor(
         private set
 
 
-    var auddRecognitionData by mutableStateOf<DataResponse<MusicData?>>(DataResponse.Empty)
+    var calenderTodayEvents by mutableStateOf<List<CalendarEvents>>(emptyList())
         private set
 
 
@@ -272,8 +275,13 @@ class HomeApiViewModel @Inject constructor(
     }
 
 
-    fun clearSongRecognition() = viewModelScope.launch(Dispatchers.IO) {
-        auddRecognitionData = DataResponse.Empty
+    fun getTodayEvents() = viewModelScope.launch(Dispatchers.IO) {
+        calenderEvents.todayCalenderEvent().catch {
+            Log.d("TAG", "getTodayEvents: runed ${it.message}")
+            calenderTodayEvents = emptyList()
+        }.collectLatest {
+            calenderTodayEvents = it
+        }
     }
 
 }

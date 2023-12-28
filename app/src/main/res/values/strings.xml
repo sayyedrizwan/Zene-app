@@ -228,4 +228,5 @@
     <string name="unable_to_identify_the_music">Unable to identify the music</string>
     <string name="try_again">Try Again</string>
     <string name="stand_by_mode_while_charging">Stand-by Mode while charging</string>
+    <string name="need_permission_to_show_events_from_calender">Need permission to \nshow events from calender</string>
 </resources>
