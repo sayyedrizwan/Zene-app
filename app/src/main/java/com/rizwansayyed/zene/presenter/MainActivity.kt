@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.domain.HomeNavigation.SEARCH
 import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
+import com.rizwansayyed.zene.presenter.ui.extra.standby.StandByModeActivity
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
@@ -273,6 +274,11 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
+        }
+
+        Intent(this, StandByModeActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(this)
         }
     }
 

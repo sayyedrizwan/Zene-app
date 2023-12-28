@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
+import com.rizwansayyed.zene.utils.Utils.printStack
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -125,7 +126,7 @@ class PlayerViewModel @Inject constructor(
                     val data = ArtistsShortInfo(a.lowercase(), info, desc)
                     artistsInfo.add(data)
                 } catch (e: Exception) {
-                    e.message
+                    e.printStack()
                 }
                 if (isActive) cancel()
             }
@@ -321,7 +322,7 @@ class PlayerViewModel @Inject constructor(
                 savedPlaylist?.let { roomDb.insert(it).collect() }
             }
         } catch (e: Exception) {
-            e.message
+            e.printStack()
         }
         delay(1.seconds)
         playlistSongsInfo(v.songID ?: "")

@@ -11,7 +11,12 @@ object DateFormatter {
         const val SIMPLE_TIME = "HH:mm"
         const val SIMPLE_TIME_SINGLE = "H : m"
         const val MONTH_YEAR_TIME = "MMM yyy"
+        const val MONTH_DAY_TIME = "EEE, dd MMM"
 
+        const val HOUR_24 = "HH"
+        const val HOUR_12 = "hh"
+        const val SIMPLE_MINUTES = "mm"
+        const val SIMPLE_SECONDS = "ss"
 
     }
 

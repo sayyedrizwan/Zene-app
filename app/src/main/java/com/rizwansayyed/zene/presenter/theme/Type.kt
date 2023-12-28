@@ -47,3 +47,6 @@ val urbanistFamily = FontFamily(
 val antroFamily = FontFamily(
     Font(R.font.antro_vectra_bold, FontWeight.Normal),
 )
+val porkysFamily = FontFamily(
+    Font(R.font.porkys_regular, FontWeight.Normal),
+)

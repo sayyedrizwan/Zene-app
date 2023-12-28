@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
+import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -203,7 +204,7 @@ object Utils {
                     }).build()
                 ImageLoader.Builder(context).crossfade(true).build().enqueue(request)
             } catch (e: Exception) {
-                e.message
+                e.printStack()
             }
             if (isActive) cancel()
         }

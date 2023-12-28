@@ -79,6 +79,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.antroFamily
+import com.rizwansayyed.zene.presenter.theme.porkysFamily
 import com.rizwansayyed.zene.presenter.theme.urbanistFamily
 import com.rizwansayyed.zene.presenter.ui.home.views.startSpeech
 
@@ -189,6 +190,20 @@ fun TextSemiBold(
         textAlign = if (doCenter) TextAlign.Center else null,
         overflow = TextOverflow.Ellipsis,
         style = TextStyle(lineHeight = 29.sp)
+    )
+}
+
+@Composable
+fun TextPorkys(v: String, s: Int = 28) {
+    Text(
+        v,
+        modifier = Modifier,
+        color = Color.White,
+        fontFamily = porkysFamily,
+        fontWeight = FontWeight.Normal,
+        maxLines = 1,
+        fontSize = s.scaledSp(),
+        overflow = TextOverflow.Ellipsis
     )
 }
 

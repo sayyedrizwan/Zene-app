@@ -77,7 +77,7 @@
             android:theme="@style/Theme.Zene" />
 
         <activity
-            android:name=".presenter.ui.extra.StandByModeActivity"
+            android:name=".presenter.ui.extra.standby.StandByModeActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -106,6 +106,7 @@
         </service>
 
         <receiver android:name=".receivers.AlarmReceiverSong" />
+        <receiver android:name=".receivers.ChargingDeviceReceiver" />
 
         <receiver
             android:name=".receivers.RebootDeviceReceiver"

@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScr
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.Utils.printStack
 import com.rizwansayyed.zene.utils.Utils.toLongWithPlaceHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,7 +71,7 @@ class SocialMediaScrapsImpl @Inject constructor(
 
                     updateLatestSyncTime()
                 } catch (e: Exception) {
-                    e.message
+                    e.printStack()
                 }
 
                 if (isActive) cancel()

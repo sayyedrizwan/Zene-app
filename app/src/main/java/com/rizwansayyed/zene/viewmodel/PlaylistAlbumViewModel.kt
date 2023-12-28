@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.PlaylistItemsData
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.Utils.printStack
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -84,7 +85,7 @@ class PlaylistAlbumViewModel @Inject constructor(
                             val s = youtubeAPI.musicInfoSearch(name, ip, key)
                             s?.let { playlistSongsItem.add(it) }
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            e.printStack()
                         }
                     }
                 }

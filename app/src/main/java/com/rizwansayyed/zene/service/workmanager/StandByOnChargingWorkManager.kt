@@ -9,10 +9,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.presenter.ui.extra.StandByModeActivity
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.presenter.ui.extra.standby.StandByModeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

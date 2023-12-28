@@ -5,6 +5,7 @@ import android.os.Build
 import com.rizwansayyed.zene.data.utils.CacheFiles.recordedMusicRecognitionFile
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -44,7 +45,7 @@ class RecordMicAudio {
             mediaRecorderMic?.prepare()
             mediaRecorderMic?.start()
         } catch (e: Exception) {
-            e.message
+            e.printStack()
         }
     }
 
@@ -54,7 +55,7 @@ class RecordMicAudio {
             mediaRecorderMic?.stop()
             mediaRecorderMic?.reset()
         } catch (e: Exception) {
-            e.message
+            e.printStack()
         }
 
         delay(1.seconds)

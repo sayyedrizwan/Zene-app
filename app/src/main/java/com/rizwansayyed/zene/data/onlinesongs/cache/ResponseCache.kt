@@ -4,6 +4,7 @@ import androidx.core.net.toUri
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.Utils.printStack
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
@@ -26,7 +27,7 @@ fun writeToCacheFile(file: File, res: String) {
             s.write(res.toByteArray())
         }
     } catch (e: Exception) {
-        e.message
+        e.printStack()
     }
 }
 

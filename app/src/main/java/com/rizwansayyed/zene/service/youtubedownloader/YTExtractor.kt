@@ -7,6 +7,7 @@ import android.util.Log
 import android.util.SparseArray
 import com.evgenii.jsevaluator.JsEvaluator
 import com.evgenii.jsevaluator.interfaces.JsCallback
+import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -378,7 +379,7 @@ class YTExtractor(
                 return true
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.printStack()
         } finally {
             urlConnection?.disconnect()
         }
@@ -524,13 +525,13 @@ class YTExtractor(
                 decipherFunctionName = reader.readLine()
                 decipherFunctions = reader.readLine()
             } catch (e: java.lang.Exception) {
-                e.printStackTrace()
+                e.printStack()
             } finally {
                 if (reader != null) {
                     try {
                         reader.close()
                     } catch (e: IOException) {
-                        e.printStackTrace()
+                        e.printStack()
                     }
                 }
             }
@@ -599,13 +600,13 @@ class YTExtractor(
             )
             writer.write(decipherFunctions)
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.printStack()
         } finally {
             if (writer != null) {
                 try {
                     writer.close()
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    e.printStack()
                 }
             }
         }

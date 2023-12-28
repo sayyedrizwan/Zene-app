@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterfac
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.social.SocialMediaScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.utils.Utils.printStack
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -65,7 +66,7 @@ class ArtistsInfoWorkManager @AssistedInject constructor(
                         a.thumbnail = img
                         roomDb.artistsThumbnailUpdate(a.name, img).first()
                     } catch (e: Exception) {
-                        e.message
+                        e.printStack()
                     }
                 }
 

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -19,6 +18,7 @@ import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.RADIO_NAME
+import com.rizwansayyed.zene.receivers.ChargingDeviceReceiver
 import com.rizwansayyed.zene.service.implementation.listener.ScreenLockAndOnListener
 import com.rizwansayyed.zene.service.implementation.recentplay.RecentPlayingSongInterface
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
@@ -89,8 +89,18 @@ class PlayerService : MediaSessionService() {
         screenLockListener.register()
 
         IntentFilter(PLAYER_SERVICE_ACTION).apply {
+            priority = IntentFilter.SYSTEM_HIGH_PRIORITY
             ContextCompat.registerReceiver(
                 this@PlayerService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        }
+
+        IntentFilter().apply {
+            priority = IntentFilter.SYSTEM_HIGH_PRIORITY
+            addAction(Intent.ACTION_POWER_CONNECTED)
+            addAction(Intent.ACTION_POWER_DISCONNECTED)
+            ContextCompat.registerReceiver(
+                this@PlayerService, ChargingDeviceReceiver(), this, ContextCompat.RECEIVER_EXPORTED
             )
         }
 

@@ -18,6 +18,8 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.text.format.DateFormat
+import android.util.Log
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
@@ -76,9 +78,15 @@ object Utils {
 
     }
 
+    fun is24Hour() = DateFormat.is24HourFormat(context)
+
     fun isInternetConnected(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
+    }
+
+    fun Exception.printStack() {
+        Log.d(context.packageName, "Throwable Exception: $message")
     }
 
     fun isConnectedToWifi(): Boolean {
@@ -241,7 +249,7 @@ object Utils {
 
             sourceFile.delete()
         } catch (e: Exception) {
-            e.message
+            e.printStack()
         }
     }
 

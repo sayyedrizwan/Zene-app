@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
+import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,7 +45,7 @@ class UtilsWallpaperImage(private val image: String?) {
                 bitmap, null, true, WallpaperManager.FLAG_SYSTEM
             )
         } catch (e: Exception) {
-            e.message
+            e.printStack()
         }
     }
 
@@ -56,7 +57,7 @@ class UtilsWallpaperImage(private val image: String?) {
                 bitmap, null, true, WallpaperManager.FLAG_LOCK
             )
         } catch (e: Exception) {
-            e.message
+            e.printStack()
         }
     }
 }

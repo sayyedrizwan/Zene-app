@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.RADIO_NAME
 import com.rizwansayyed.zene.presenter.util.UtilsWallpaperImage
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
+import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -252,7 +253,7 @@ class PlayerServiceAction @Inject constructor(
             SetWallpaperInfo.SONG_THUMBNAIL.v -> try {
                 UtilsWallpaperImage(musicPlayerData.first()?.v?.thumbnail).homeScreenWallpaper()
             } catch (e: Exception) {
-                e.printStackTrace()
+                e.printStack()
             }
 
             SetWallpaperInfo.ARTIST_IMAGE.v -> try {
@@ -261,7 +262,7 @@ class PlayerServiceAction @Inject constructor(
                 val artistImage = lastFM.artistsImages(userName, 20).first().random()
                 UtilsWallpaperImage(artistImage).homeScreenWallpaper()
             } catch (e: Exception) {
-                e.printStackTrace()
+                e.printStack()
             }
 
         }

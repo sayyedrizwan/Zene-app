@@ -21,14 +21,8 @@ import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.receivers.AlarmReceiverSong
-import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
-import com.rizwansayyed.zene.utils.DateFormatter.DateStyle.SIMPLE_TIME
-import com.rizwansayyed.zene.utils.DateFormatter.DateStyle.SIMPLE_TIME_SINGLE
-import com.rizwansayyed.zene.utils.DateFormatter.toDate
-import com.rizwansayyed.zene.utils.NotificationViewManager
-import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.ALARM_CHANNEL_ID
-import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.ALARM_DEFAULT_CHANNEL
 import com.rizwansayyed.zene.utils.Utils.isPermission
+import com.rizwansayyed.zene.utils.Utils.printStack
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +73,7 @@ class AlarmManagerToPlaySong @Inject constructor() {
                 AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent
             )
         } catch (e: Exception) {
-            e.message
+            e.printStack()
         }
     }
 }

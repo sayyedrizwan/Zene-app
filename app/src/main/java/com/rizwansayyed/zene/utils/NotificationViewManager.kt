@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.MainActivity
+import com.rizwansayyed.zene.utils.Utils.printStack
 
 class NotificationViewManager(private val context: Context) {
 
@@ -81,7 +82,7 @@ class NotificationViewManager(private val context: Context) {
             try {
                 notify((4..999).random(), b.build())
             } catch (e: Exception) {
-                e.message
+                e.printStack()
             }
         }
     }

@@ -53,6 +53,7 @@ import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubePlaylistItemsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
+import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -535,7 +536,7 @@ class YoutubeAPIImpl @Inject constructor(
                 val l = allSongsSearch(it).first()
                 list.addAll(l)
             } catch (e: Exception) {
-                e.message
+                e.printStack()
             }
         }
         if (list.isNotEmpty()) {
@@ -790,7 +791,7 @@ class YoutubeAPIImpl @Inject constructor(
                 if (!list.any { it.artistsName.lowercase() == artist.first!!.lowercase() })
                     list.add(ArtistsFanData(artist.first!!, artist.second ?: "", songs))
             } catch (e: Exception) {
-                e.message
+                e.printStack()
             }
         }
 
