@@ -62,6 +62,7 @@ data class Content(
                 val playlistId: String?,
                 val trackingParams: String?
             ) {
+
                 data class Content(
                     val playlistPanelVideoRenderer: PlaylistPanelVideoRenderer?
                 ) {

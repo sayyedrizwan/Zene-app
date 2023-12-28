@@ -231,4 +231,6 @@
     <string name="need_permission_to_show_events_from_calender">Need permission to \nshow events from calender</string>
     <string name="no_events_today">No Events Today</string>
     <string name="today_events">Today Events</string>
+    <string name="import_playlist_from_spotify">Import playlist from \nSpotify</string>
+    <string name="import_playlist_from_youtube_music">Import playlist from \nYoutube Music</string>
 </resources>

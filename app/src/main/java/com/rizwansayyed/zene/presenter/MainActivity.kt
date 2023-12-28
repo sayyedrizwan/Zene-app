@@ -94,6 +94,7 @@ import kotlin.time.Duration.Companion.seconds
 // group music listeners via wifi and bluetooth
 // import songs from spotify and youtube music.
 // make artists info cache
+// too much atists name are coming in songs you may like
 
 // in view all radio is not saving
 // add stories, fb posts to show on feed

@@ -609,11 +609,11 @@ class YoutubeAPIImpl @Inject constructor(
 
 
     override suspend fun songsSuggestionsForUsers(sId: List<String>) = flow {
-        val cache = responseCache(suggestionYouMayLikeCache, SongsSuggestionsData::class.java)
-        if (cache != null) if (cache.cacheSId == sId) {
-            emit(cache)
-            return@flow
-        }
+//        val cache = responseCache(suggestionYouMayLikeCache, SongsSuggestionsData::class.java)
+//        if (cache != null) if (cache.cacheSId == sId) {
+//            emit(cache)
+//            return@flow
+//        }
 
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.music ?: ""

@@ -18,9 +18,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.userAuthData
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistButton
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistSpotify
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistYoutubeMusic
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicAlbumList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicOfflineDownload
@@ -29,6 +33,7 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.SelectedPlaylistView
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopListenedSong
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
+import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 import kotlinx.coroutines.Dispatchers
@@ -72,6 +77,15 @@ fun MyMusicView() {
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             TopListenedSong(myMusic)
+        }
+        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Spacer(Modifier.height(50.dp))
+        }
+        item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+            ImportPlaylistSpotify()
+        }
+        item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+            ImportPlaylistYoutubeMusic()
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(200.dp))
