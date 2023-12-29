@@ -233,4 +233,6 @@
     <string name="today_events">Today Events</string>
     <string name="import_playlist_from_spotify">Import playlists from \nSpotify</string>
     <string name="import_playlist_from_youtube_music">Import playlists from \nYoutube Music</string>
+    <string name="login_to_your_spotify_account">Login to your spotify account to get all the playlists</string>
+    <string name="login_to_your_yt_music_account">Login to your youtube music account to get all the playlists</string>
 </resources>

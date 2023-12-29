@@ -147,8 +147,6 @@ glide-transformations = { group = "jp.wasabeef", name = "glide-transformations",
 
 
 
-
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "plugin-android-app-version" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "plugin-kotlin-android" }

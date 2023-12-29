@@ -13,11 +13,14 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LAST_SYNC_TIME
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.MUSIC_PLAYER_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SEARCH_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SELECTED_FAVOURITE_ARTISTS_SONGS
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SPOTIFY_TOKEN_DATA
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.YT_MUSIC_TOKEN_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.cookiesName
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicPlayerData
+import com.rizwansayyed.zene.domain.YoutubeMusicTokens
 import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -93,6 +96,24 @@ object DataStorageManager {
         set(v) = runBlocking {
             context.dataStore.edit { it[LAST_SYNC_TIME] = v.first() }
         }
+
+
+    var spotifyToken: Flow<String>
+        get() = context.dataStore.data.map { it[SPOTIFY_TOKEN_DATA] ?: "" }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[SPOTIFY_TOKEN_DATA] = v.first() }
+        }
+
+
+    var ytMusicToken: Flow<YoutubeMusicTokens?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(YoutubeMusicTokens::class.java).fromJson(it[YT_MUSIC_TOKEN_DATA] ?: JSON_LIST)
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(YoutubeMusicTokens::class.java).toJson(v.first())
+            context.dataStore.edit { it[YT_MUSIC_TOKEN_DATA] = moshi }
+        }
+
 
     suspend fun cookiesData(domain: String): String {
         return context.dataStore.data.map { it[cookiesName(domain)] ?: "" }.first()

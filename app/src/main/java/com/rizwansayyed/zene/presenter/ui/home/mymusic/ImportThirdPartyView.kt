@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.mymusic
 
+import android.view.LayoutInflater
+import android.webkit.WebView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +36,7 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.SpotifyLoginWebView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 
 @Composable
 fun ImportPlaylistSpotify(open: () -> Unit) {
@@ -41,31 +45,71 @@ fun ImportPlaylistSpotify(open: () -> Unit) {
 
 @Composable
 fun SpotifyLoginDialog(close: () -> Unit) {
-    val width = LocalConfiguration.current.screenHeightDp / 2
+    val height = LocalConfiguration.current.screenHeightDp / 1.2
+    val login = stringResource(id = R.string.login_to_your_spotify_account)
 
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         Card(
             Modifier
+                .padding(5.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(), RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
+                .height(height.dp), RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
         ) {
             AndroidView(factory = { ctx ->
-                SpotifyLoginWebView(ctx)
+                val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
+                val webView: WebView = view.findViewById(R.id.web_view)
+                SpotifyLoginWebView {
+                    close()
+                }.init(webView).spotify()
+                view
             }, Modifier.fillMaxSize())
+
         }
+    }
+
+    LaunchedEffect(Unit) {
+        login.toast()
     }
 }
 
 
 @Composable
-fun ImportPlaylistYoutubeMusic() {
+fun ImportPlaylistYoutubeMusic(open: () -> Unit) {
     ImportPlaylistButton(
-        R.drawable.ic_youtube_music,
-        R.string.import_playlist_from_youtube_music
-    ) {
+        R.drawable.ic_youtube_music, R.string.import_playlist_from_youtube_music, open
+    )
+}
 
+
+@Composable
+fun YoutubeMusicLoginDialog(close: () -> Unit) {
+    val height = LocalConfiguration.current.screenHeightDp / 1.2
+    val login = stringResource(id = R.string.login_to_your_yt_music_account)
+
+    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        Card(
+            Modifier
+                .padding(5.dp)
+                .fillMaxWidth()
+                .height(height.dp), RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
+        ) {
+            AndroidView(factory = { ctx ->
+                val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
+                val webView: WebView = view.findViewById(R.id.web_view)
+                SpotifyLoginWebView {
+                    close()
+                }.init(webView).ytMusic()
+                view
+            }, Modifier.fillMaxSize())
+
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        login.toast()
     }
 }
+
 
 
 @Composable
