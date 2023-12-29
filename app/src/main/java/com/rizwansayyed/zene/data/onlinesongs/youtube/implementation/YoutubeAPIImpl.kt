@@ -609,11 +609,11 @@ class YoutubeAPIImpl @Inject constructor(
 
 
     override suspend fun songsSuggestionsForUsers(sId: List<String>) = flow {
-//        val cache = responseCache(suggestionYouMayLikeCache, SongsSuggestionsData::class.java)
-//        if (cache != null) if (cache.cacheSId == sId) {
-//            emit(cache)
-//            return@flow
-//        }
+        val cache = responseCache(suggestionYouMayLikeCache, SongsSuggestionsData::class.java)
+        if (cache != null) if (cache.cacheSId == sId) {
+            emit(cache)
+            return@flow
+        }
 
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.music ?: ""
@@ -646,11 +646,10 @@ class YoutubeAPIImpl @Inject constructor(
                                 })
                                 a.text?.let { artists.add(it) }
                     }
-
                     val thumbnail = content?.playlistPanelVideoRenderer?.thumbnailURL()
                     val pID = content?.playlistPanelVideoRenderer?.videoId ?: ""
 
-                    val music = MusicData(
+                    val music = if (artist.isEmpty()) songDetail(pID).first() else MusicData(
                         thumbnail, name, artistsListToString(artists), pID, MusicType.MUSIC
                     )
                     if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
@@ -663,11 +662,13 @@ class YoutubeAPIImpl @Inject constructor(
 
             related.contents?.sectionListRenderer?.contents?.forEach { c ->
                 if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.first()?.text?.lowercase() == "you might also like") {
-                    var name: String? = ""
-                    val artists = mutableListOf<String>()
 
                     c.musicCarouselShelfRenderer.contents?.forEach { content ->
                         content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { item ->
+                            var name: String? = ""
+                            val artists = mutableListOf<String>()
+
+
                             item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
                                 if (n?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV")
                                     name = n.text
@@ -687,10 +688,13 @@ class YoutubeAPIImpl @Inject constructor(
                                 content.musicResponsiveListItemRenderer.playlistItemData?.videoId
                                     ?: ""
 
+
                             name?.let { n ->
-                                val music = MusicData(
-                                    thumbnail, n, artistsListToString(artists), pID, MusicType.MUSIC
-                                )
+                                val music =
+                                    if (artist.isEmpty()) songDetail(pID).first() else MusicData(
+                                        thumbnail, n, artistsListToString(artists),
+                                        pID, MusicType.MUSIC
+                                    )
                                 if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
                                     relatedList.add(music)
                             }
@@ -837,7 +841,7 @@ class YoutubeAPIImpl @Inject constructor(
         val name = r.videoDetails?.title
         val artists = r.videoDetails?.author
         val thumbnail = r.videoDetails?.thumbnailURL()
-
+        
         emit(MusicData(thumbnail, name, artists, vId, MusicType.MUSIC))
     }.flowOn(Dispatchers.IO)
 
@@ -952,7 +956,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         response.contents?.twoColumnBrowseResultsRenderer?.tabs?.forEach {
             if (it?.tabRenderer?.content?.richGridRenderer?.contents?.isNotEmpty() == true) {
-                it.tabRenderer.content.richGridRenderer.contents.forEach content@ { c ->
+                it.tabRenderer.content.richGridRenderer.contents.forEach content@{ c ->
                     c?.richItemRenderer ?: return@content
                     val vId = c.richItemRenderer.content?.videoRenderer?.videoId
                     val thumbnail = c.richItemRenderer.content?.videoRenderer?.thumbnail

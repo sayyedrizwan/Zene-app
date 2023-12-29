@@ -15,8 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.userAuthData
@@ -30,8 +34,10 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicAlbumList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicOfflineDownload
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicPlaylistsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.SelectedPlaylistView
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.SpotifyLoginDialog
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopListenedSong
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.SpotifyLoginWebView
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -44,6 +50,8 @@ import kotlinx.coroutines.runBlocking
 fun MyMusicView() {
     val myMusic: MyMusicViewModel = hiltViewModel()
     val homeNavViewModel: HomeNavViewModel = hiltViewModel()
+
+    var spotifyLoginDialog by remember { mutableStateOf(false) }
 
     val userAuth by userAuthData.collectAsState(initial = runBlocking(Dispatchers.IO) { userAuthData.first() })
 
@@ -82,7 +90,9 @@ fun MyMusicView() {
             Spacer(Modifier.height(50.dp))
         }
         item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
-            ImportPlaylistSpotify()
+            ImportPlaylistSpotify {
+                spotifyLoginDialog = true
+            }
         }
         item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
             ImportPlaylistYoutubeMusic()
@@ -95,6 +105,10 @@ fun MyMusicView() {
     AnimatedVisibility(homeNavViewModel.selectMyMusicPlaylists.value != null) {
         SelectedPlaylistView()
     }
+
+    if (spotifyLoginDialog) AndroidView(factory = { ctx ->
+        SpotifyLoginWebView(ctx)
+    }, Modifier.fillMaxSize())
 
     LaunchedEffect(Unit) {
         myMusic.init()

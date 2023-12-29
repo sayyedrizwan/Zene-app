@@ -149,7 +149,7 @@ fun SelectArtistsView(musicData: MusicData, modifier: Modifier, click: (MusicDat
             .fillMaxWidth()
             .clickable {
                 click(musicData)
-            }) {
+            }, Arrangement.Center, Alignment.CenterHorizontally) {
         Spacer(Modifier.height(20.dp))
 
         AsyncImage(

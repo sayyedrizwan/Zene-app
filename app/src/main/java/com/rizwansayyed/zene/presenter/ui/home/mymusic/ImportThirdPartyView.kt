@@ -7,35 +7,62 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.SpotifyLoginWebView
 
 @Composable
-fun ImportPlaylistSpotify() {
-    ImportPlaylistButton(R.drawable.ic_spotify, R.string.import_playlist_from_spotify) {
+fun ImportPlaylistSpotify(open: () -> Unit) {
+    ImportPlaylistButton(R.drawable.ic_spotify, R.string.import_playlist_from_spotify, open)
+}
 
+@Composable
+fun SpotifyLoginDialog(close: () -> Unit) {
+    val width = LocalConfiguration.current.screenHeightDp / 2
+
+    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        Card(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(), RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
+        ) {
+            AndroidView(factory = { ctx ->
+                SpotifyLoginWebView(ctx)
+            }, Modifier.fillMaxSize())
+        }
     }
 }
 
 
 @Composable
 fun ImportPlaylistYoutubeMusic() {
-    ImportPlaylistButton(R.drawable.ic_youtube_music, R.string.import_playlist_from_youtube_music) {
+    ImportPlaylistButton(
+        R.drawable.ic_youtube_music,
+        R.string.import_playlist_from_youtube_music
+    ) {
 
     }
 }

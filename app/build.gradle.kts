@@ -174,4 +174,6 @@ dependencies {
     implementation("com.github.lincollincol:Amplituda:v2.2.2")
     implementation("com.github.lincollincol:compose-audiowaveform:v1.1.2")
     implementation("com.arthenica:ffmpeg-kit-full:6.0-2")
+
+    implementation("androidx.webkit:webkit:1.9.0")
 }
