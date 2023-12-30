@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,7 +34,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.SpotifyLoginWebView
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.MusicWebsitesLoginWebView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 
 @Composable
@@ -58,7 +57,7 @@ fun SpotifyLoginDialog(close: () -> Unit) {
             AndroidView(factory = { ctx ->
                 val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
                 val webView: WebView = view.findViewById(R.id.web_view)
-                SpotifyLoginWebView {
+                MusicWebsitesLoginWebView {
                     close()
                 }.init(webView).spotify()
                 view
@@ -96,7 +95,7 @@ fun YoutubeMusicLoginDialog(close: () -> Unit) {
             AndroidView(factory = { ctx ->
                 val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
                 val webView: WebView = view.findViewById(R.id.web_view)
-                SpotifyLoginWebView {
+                MusicWebsitesLoginWebView {
                     close()
                 }.init(webView).ytMusic()
                 view
@@ -110,6 +109,44 @@ fun YoutubeMusicLoginDialog(close: () -> Unit) {
     }
 }
 
+
+
+@Composable
+fun ImportPlaylistAppleMusic(open: () -> Unit) {
+    ImportPlaylistButton(
+        R.drawable.ic_apple_music, R.string.import_playlist_from_apple_music, open
+    )
+}
+
+
+@Composable
+fun AppleMusicLoginDialog(close: () -> Unit) {
+    val height = LocalConfiguration.current.screenHeightDp / 1.2
+    val login = stringResource(id = R.string.login_to_your_apple_music_account)
+
+    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        Card(
+            Modifier
+                .padding(5.dp)
+                .fillMaxWidth()
+                .height(height.dp), RoundedCornerShape(16.dp), CardDefaults.cardColors(MainColor)
+        ) {
+            AndroidView(factory = { ctx ->
+                val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
+                val webView: WebView = view.findViewById(R.id.web_view)
+                MusicWebsitesLoginWebView {
+                    close()
+                }.init(webView).appleMusicMusic()
+                view
+            }, Modifier.fillMaxSize())
+
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        login.toast()
+    }
+}
 
 
 @Composable

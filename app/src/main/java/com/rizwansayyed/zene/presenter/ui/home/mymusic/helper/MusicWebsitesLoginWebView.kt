@@ -9,21 +9,24 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.appleMusicToken
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.spotifyToken
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.ytMusicToken
-import com.rizwansayyed.zene.domain.YoutubeMusicTokens
+import com.rizwansayyed.zene.domain.WebMusicLoginTokens
 import kotlinx.coroutines.flow.flowOf
 
 
 @SuppressLint("ViewConstructor", "SetJavaScriptEnabled")
-class SpotifyLoginWebView(private val received: () -> Unit) {
+class MusicWebsitesLoginWebView(private val received: () -> Unit) {
 
     private val spotifyBaseURL = "spotify.com"
     private val googleBaseURL = "google.com"
     private val ytMusicBaseURL = "music.youtube.com"
+    private val appleMusicBaseURL = "music.apple.com"
 
     private val spotifyLoginBaseURL =
         "https://accounts.spotify.com/login?continue=https%3A%2F%2Fopen.spotify.com%2F"
+    private val appleMusicLoginBaseURL = "https://music.apple.com/login"
     private val googleLoginBaseURL =
         "https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fmusic.youtube.com%252F%26feature%3D__FEATURE__&hl=en&ltmpl=music&passive=true&service=youtube&uilel=3&flowName=GlifWebSignIn&theme=glif"
 
@@ -47,6 +50,10 @@ class SpotifyLoginWebView(private val received: () -> Unit) {
 
     fun ytMusic() {
         web?.loadUrl(googleLoginBaseURL)
+    }
+
+    fun appleMusicMusic() {
+        web?.loadUrl(appleMusicLoginBaseURL)
     }
 
     inner class WebChrome : WebChromeClient() {
@@ -88,9 +95,19 @@ class SpotifyLoginWebView(private val received: () -> Unit) {
             ) {
                 val auth = header.substringAfter("Authorization=").substringBefore(", ")
                 val cookies = getCookie("https://music.youtube.com")
-                ytMusicToken = flowOf(YoutubeMusicTokens(auth, cookies ?: ""))
+                ytMusicToken = flowOf(WebMusicLoginTokens(auth, cookies ?: ""))
                 received()
             }
+            if (r?.url.toString().contains(appleMusicBaseURL) &&
+                header.lowercase().contains("authorization=") &&
+                (getCookie("https://music.apple.com")?.count { it == ';' } ?: 0) > 5
+            ) {
+                val auth = header.substringAfter("Authorization=").substringBefore(", ")
+                val cookies = getCookie("https://music.apple.com")
+                appleMusicToken = flowOf(WebMusicLoginTokens(auth, cookies ?: ""))
+                received()
+            }
+
             return super.shouldInterceptRequest(v, r)
         }
     }

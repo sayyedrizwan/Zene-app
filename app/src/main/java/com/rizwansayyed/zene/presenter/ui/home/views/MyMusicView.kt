@@ -1,11 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.home.views
 
-import android.content.Intent
-import android.view.LayoutInflater
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,14 +19,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.userAuthData
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.AppleMusicLoginDialog
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistAppleMusic
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistSpotify
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistYoutubeMusic
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
@@ -44,7 +37,6 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.SpotifyLoginDialog
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopListenedSong
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.YoutubeMusicLoginDialog
-import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.SpotifyLoginWebView
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -60,6 +52,7 @@ fun MyMusicView() {
 
     var spotifyLoginDialog by remember { mutableStateOf(false) }
     var youtubeMusicLoginDialog by remember { mutableStateOf(false) }
+    var appleMusicLoginDialog by remember { mutableStateOf(false) }
 
     val userAuth by userAuthData.collectAsState(initial = runBlocking(Dispatchers.IO) { userAuthData.first() })
 
@@ -103,8 +96,13 @@ fun MyMusicView() {
             }
         }
         item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
-            ImportPlaylistYoutubeMusic{
+            ImportPlaylistYoutubeMusic {
                 youtubeMusicLoginDialog = true
+            }
+        }
+        item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+            ImportPlaylistAppleMusic {
+                appleMusicLoginDialog = true
             }
         }
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
@@ -122,6 +120,10 @@ fun MyMusicView() {
 
     if (youtubeMusicLoginDialog) YoutubeMusicLoginDialog {
         youtubeMusicLoginDialog = false
+    }
+
+    if (appleMusicLoginDialog) AppleMusicLoginDialog {
+        appleMusicLoginDialog = false
     }
 
     LaunchedEffect(Unit) {

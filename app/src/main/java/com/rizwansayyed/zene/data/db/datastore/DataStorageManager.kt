@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.APPLE_MUSIC_TOKEN_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DATA_STORE_DB
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DO_SHOW_SPLASH_SCREEN
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.FAVOURITE_RADIO_LIST
@@ -20,7 +21,7 @@ import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
 import com.rizwansayyed.zene.domain.MusicPlayerData
-import com.rizwansayyed.zene.domain.YoutubeMusicTokens
+import com.rizwansayyed.zene.domain.WebMusicLoginTokens
 import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -105,13 +106,23 @@ object DataStorageManager {
         }
 
 
-    var ytMusicToken: Flow<YoutubeMusicTokens?>
+    var ytMusicToken: Flow<WebMusicLoginTokens?>
         get() = context.dataStore.data.map {
-            moshi.adapter(YoutubeMusicTokens::class.java).fromJson(it[YT_MUSIC_TOKEN_DATA] ?: JSON_LIST)
+            moshi.adapter(WebMusicLoginTokens::class.java).fromJson(it[YT_MUSIC_TOKEN_DATA] ?: JSON_LIST)
         }
         set(v) = runBlocking {
-            val moshi = moshi.adapter(YoutubeMusicTokens::class.java).toJson(v.first())
+            val moshi = moshi.adapter(WebMusicLoginTokens::class.java).toJson(v.first())
             context.dataStore.edit { it[YT_MUSIC_TOKEN_DATA] = moshi }
+        }
+
+
+    var appleMusicToken: Flow<WebMusicLoginTokens?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(WebMusicLoginTokens::class.java).fromJson(it[APPLE_MUSIC_TOKEN_DATA] ?: JSON_LIST)
+        }
+        set(v) = runBlocking {
+            val moshi = moshi.adapter(WebMusicLoginTokens::class.java).toJson(v.first())
+            context.dataStore.edit { it[APPLE_MUSIC_TOKEN_DATA] = moshi }
         }
 
 
