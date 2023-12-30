@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.domain.spotify
+package com.rizwansayyed.zene.domain.spotify.music
 
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.utils.Utils.artistsListToString

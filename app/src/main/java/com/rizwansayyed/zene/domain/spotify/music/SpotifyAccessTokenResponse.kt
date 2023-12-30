@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.domain.spotify
+package com.rizwansayyed.zene.domain.spotify.music
 
 data class SpotifyAccessTokenResponse(
     val access_token: String?,

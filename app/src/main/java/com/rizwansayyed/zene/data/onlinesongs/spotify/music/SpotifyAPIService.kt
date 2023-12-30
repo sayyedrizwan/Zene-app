@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.data.onlinesongs.spotify
+package com.rizwansayyed.zene.data.onlinesongs.spotify.music
 
 
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.ACCOUNT_SPOTIFY_API
@@ -6,10 +6,9 @@ import com.rizwansayyed.zene.data.utils.SpotifyAPI.ACCOUNT_SPOTIFY_C_ID
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.ACCOUNT_SPOTIFY_C_SECRET
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_PLAYLIST
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_SEARCH
-import com.rizwansayyed.zene.domain.OnlineRadioResponse
-import com.rizwansayyed.zene.domain.spotify.SpotifyAccessTokenResponse
-import com.rizwansayyed.zene.domain.spotify.SpotifyPlaylistResponse
-import com.rizwansayyed.zene.domain.spotify.SpotifyPlaylistSongsResponse
+import com.rizwansayyed.zene.domain.spotify.music.SpotifyAccessTokenResponse
+import com.rizwansayyed.zene.domain.spotify.music.SpotifyPlaylistResponse
+import com.rizwansayyed.zene.domain.spotify.music.SpotifyPlaylistSongsResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET

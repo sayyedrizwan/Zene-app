@@ -15,7 +15,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
-import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.spotify.music.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.recordedMusicRecognitionFile

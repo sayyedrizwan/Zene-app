@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.domain.spotify
+package com.rizwansayyed.zene.domain.spotify.music
 
 data class SpotifyPlaylistResponse(
     val playlists: Playlists?

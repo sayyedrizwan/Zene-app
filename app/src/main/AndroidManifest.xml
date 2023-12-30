@@ -97,6 +97,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Zene" />
 
+        <activity
+            android:name=".presenter.ui.home.mymusic.playlistimport.PlaylistImportActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Zene" />
+
         <service
             android:name=".service.PlayerService"
             android:exported="false"

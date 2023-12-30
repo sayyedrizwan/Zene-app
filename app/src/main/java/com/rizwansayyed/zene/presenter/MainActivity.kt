@@ -90,6 +90,7 @@ import kotlin.time.Duration.Companion.seconds
 // privacy policy viewer
 // all edittext are hiding behind keyboard
 
+//move spotify key to local.pro
 // can you replicate blur image as in-build
 // group music listeners via wifi and bluetooth
 // import songs from spotify and youtube music.

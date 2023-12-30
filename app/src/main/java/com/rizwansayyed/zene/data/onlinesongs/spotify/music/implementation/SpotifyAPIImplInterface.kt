@@ -1,7 +1,6 @@
-package com.rizwansayyed.zene.data.onlinesongs.spotify.implementation
+package com.rizwansayyed.zene.data.onlinesongs.spotify.music.implementation
 
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.spotify.SpotifyItem
 import kotlinx.coroutines.flow.Flow
 
 interface SpotifyAPIImplInterface {

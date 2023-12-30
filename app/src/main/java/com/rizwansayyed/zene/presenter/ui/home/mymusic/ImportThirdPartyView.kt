@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.presenter.ui.home.mymusic
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.webkit.WebView
 import androidx.compose.foundation.Image
@@ -19,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,11 +33,24 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.MusicWebsitesLoginWebView
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportActivity
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+fun startPlaylistImportActivity(spotify: PlaylistImportersType) {
+    Intent(context, PlaylistImportActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        putExtra(Intent.EXTRA_TEXT, spotify)
+        context.startActivity(this)
+    }
+}
 
 @Composable
 fun ImportPlaylistSpotify(open: () -> Unit) {
@@ -44,6 +59,7 @@ fun ImportPlaylistSpotify(open: () -> Unit) {
 
 @Composable
 fun SpotifyLoginDialog(close: () -> Unit) {
+    val coroutine = rememberCoroutineScope()
     val height = LocalConfiguration.current.screenHeightDp / 1.2
     val login = stringResource(id = R.string.login_to_your_spotify_account)
 
@@ -59,6 +75,10 @@ fun SpotifyLoginDialog(close: () -> Unit) {
                 val webView: WebView = view.findViewById(R.id.web_view)
                 MusicWebsitesLoginWebView {
                     close()
+                    coroutine.launch {
+                        delay(500)
+                        startPlaylistImportActivity(PlaylistImportersType.SPOTIFY)
+                    }
                 }.init(webView).spotify()
                 view
             }, Modifier.fillMaxSize())
@@ -82,6 +102,7 @@ fun ImportPlaylistYoutubeMusic(open: () -> Unit) {
 
 @Composable
 fun YoutubeMusicLoginDialog(close: () -> Unit) {
+    val coroutine = rememberCoroutineScope()
     val height = LocalConfiguration.current.screenHeightDp / 1.2
     val login = stringResource(id = R.string.login_to_your_yt_music_account)
 
@@ -97,6 +118,10 @@ fun YoutubeMusicLoginDialog(close: () -> Unit) {
                 val webView: WebView = view.findViewById(R.id.web_view)
                 MusicWebsitesLoginWebView {
                     close()
+                    coroutine.launch {
+                        delay(500)
+                        startPlaylistImportActivity(PlaylistImportersType.YOUTUBE_MUSIC)
+                    }
                 }.init(webView).ytMusic()
                 view
             }, Modifier.fillMaxSize())
@@ -110,7 +135,6 @@ fun YoutubeMusicLoginDialog(close: () -> Unit) {
 }
 
 
-
 @Composable
 fun ImportPlaylistAppleMusic(open: () -> Unit) {
     ImportPlaylistButton(
@@ -121,6 +145,7 @@ fun ImportPlaylistAppleMusic(open: () -> Unit) {
 
 @Composable
 fun AppleMusicLoginDialog(close: () -> Unit) {
+    val coroutine = rememberCoroutineScope()
     val height = LocalConfiguration.current.screenHeightDp / 1.2
     val login = stringResource(id = R.string.login_to_your_apple_music_account)
 
@@ -136,6 +161,10 @@ fun AppleMusicLoginDialog(close: () -> Unit) {
                 val webView: WebView = view.findViewById(R.id.web_view)
                 MusicWebsitesLoginWebView {
                     close()
+                    coroutine.launch {
+                        delay(500)
+                        startPlaylistImportActivity(PlaylistImportersType.APPLE_MUSIC)
+                    }
                 }.init(webView).appleMusicMusic()
                 view
             }, Modifier.fillMaxSize())

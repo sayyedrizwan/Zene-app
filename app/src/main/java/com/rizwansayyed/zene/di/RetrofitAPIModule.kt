@@ -11,10 +11,10 @@ import com.rizwansayyed.zene.data.onlinesongs.news.GoogleNewsService
 import com.rizwansayyed.zene.data.onlinesongs.pinterest.PinterestAPIService
 import com.rizwansayyed.zene.data.onlinesongs.radio.OnlineRadioService
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.SoundCloudApiService
-import com.rizwansayyed.zene.data.onlinesongs.spotify.SpotifyAPIService
+import com.rizwansayyed.zene.data.onlinesongs.spotify.music.SpotifyAPIService
+import com.rizwansayyed.zene.data.onlinesongs.spotify.users.SpotifyUsersAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
-import com.rizwansayyed.zene.data.utils.AuddRecognition.AUDD_BASE_URL
 import com.rizwansayyed.zene.data.utils.GoogleNewsAPI.GOOGLE_NEWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_AWS_BASE_URL
@@ -82,6 +82,14 @@ object RetrofitAPIModule {
         .baseUrl(SPOTIFY_API_BASE_URL).client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
         .build().create(SpotifyAPIService::class.java)
+
+
+
+    @Provides
+    fun retrofitSpotifyUsersApiService(): SpotifyUsersAPIService = Retrofit.Builder()
+        .baseUrl(SPOTIFY_API_BASE_URL).client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
+        .build().create(SpotifyUsersAPIService::class.java)
 
 
     @Provides

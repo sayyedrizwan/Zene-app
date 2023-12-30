@@ -82,6 +82,9 @@ object SpotifyAPI {
     const val SPOTIFY_API_PLAYLIST = "playlists"
 
 
+    const val SPOTIFY_USER_API_PLAYLIST = "me/playlists"
+
+
     const val SPOTIFY_GLOBAL_SEARCH = "top+50+global"
     const val SPOTIFY_COUNTRY_SEARCH = "top+50+"
 }

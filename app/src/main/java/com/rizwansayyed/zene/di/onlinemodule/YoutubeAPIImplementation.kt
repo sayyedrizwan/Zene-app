@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.di.onlinemodule
 
-import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImpl
-import com.rizwansayyed.zene.data.onlinesongs.spotify.implementation.SpotifyAPIImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.spotify.music.implementation.SpotifyAPIImpl
+import com.rizwansayyed.zene.data.onlinesongs.spotify.music.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImpl
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import dagger.Binds
