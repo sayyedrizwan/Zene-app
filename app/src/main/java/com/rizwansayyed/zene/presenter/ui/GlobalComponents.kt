@@ -17,6 +17,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
@@ -86,6 +88,22 @@ import com.rizwansayyed.zene.presenter.ui.home.views.startSpeech
 
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
+
+
+@Composable
+fun RoundBorderButtonsView(text: String, click: () -> Unit) {
+    Row(
+        Modifier
+            .padding(5.dp)
+            .clickable {
+                click()
+            }
+            .border(1.dp, Color.Gray, RoundedCornerShape(100))
+            .padding(vertical = 9.dp, horizontal = 14.dp)
+    ) {
+        TextThin(text)
+    }
+}
 
 @Composable
 fun LoadingStateBar() {

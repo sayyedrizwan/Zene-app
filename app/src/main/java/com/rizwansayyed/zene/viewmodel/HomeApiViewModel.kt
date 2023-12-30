@@ -31,6 +31,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -67,14 +68,11 @@ class HomeApiViewModel @Inject constructor(
             }
         }
 
-        try {
-            if (userIpDetails.first()?.query?.trim() == ip.awsIp().first().trim())
-                runs()
-            else
-                runIp()
-        } catch (e: Exception) {
+        if (userIpDetails.firstOrNull()?.query?.trim() == ip.awsIp().firstOrNull()?.trim())
+            runs()
+        else
             runIp()
-        }
+
     }
 
     var onlineRadio by mutableStateOf<DataResponse<OnlineRadioResponse>>(DataResponse.Empty)
@@ -277,10 +275,8 @@ class HomeApiViewModel @Inject constructor(
 
     fun getTodayEvents() = viewModelScope.launch(Dispatchers.IO) {
         calenderEvents.todayCalenderEvent().catch {
-            Log.d("TAG", "getTodayEvents: runed ${it.message}")
             calenderTodayEvents = emptyList()
         }.collectLatest {
-            Log.d("TAG", "getTodayEvents: runed ${it}")
             calenderTodayEvents = it
         }
     }

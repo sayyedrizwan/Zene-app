@@ -106,6 +106,13 @@ class YoutubeAPIImpl @Inject constructor(
         emit(music)
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun musicInfoSearch(q: String) = flow {
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.music
+        emit(musicInfoSearch(q, ip, key ?: ""))
+    }.flowOn(Dispatchers.IO)
+
+
     override suspend fun musicInfoSearch(q: String, ip: IpJsonResponse?, key: String): MusicData? {
         return withContext(Dispatchers.IO) {
             val n = q.trim().lowercase().replace("teaser", "")
@@ -841,7 +848,7 @@ class YoutubeAPIImpl @Inject constructor(
         val name = r.videoDetails?.title
         val artists = r.videoDetails?.author
         val thumbnail = r.videoDetails?.thumbnailURL()
-        
+
         emit(MusicData(thumbnail, name, artists, vId, MusicType.MUSIC))
     }.flowOn(Dispatchers.IO)
 

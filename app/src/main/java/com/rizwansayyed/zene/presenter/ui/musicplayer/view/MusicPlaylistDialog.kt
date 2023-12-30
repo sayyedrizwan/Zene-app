@@ -59,11 +59,10 @@ import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicPlaylistDialog(v: MusicPlayerList?, close: () -> Unit) {
     val sheetState = rememberModalBottomSheetState()
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     ModalBottomSheet(
         close, Modifier.fillMaxWidth(), sheetState,

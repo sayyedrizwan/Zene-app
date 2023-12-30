@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
@@ -63,13 +64,13 @@ fun AlbumsShortcutButton() {
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 10.dp)
         ) {
-            AlbumsButtonsView(stringResource(id = R.string.share)) {
+            RoundBorderButtonsView(stringResource(id = R.string.share)) {
                 shareTxt(appUrlArtistsShare(homeNav.selectedAlbum))
             }
-            AlbumsButtonsView(stringResource(id = if (isAlbumPresent > 0) R.string.remove_from_saved_List else R.string.save_album)) {
+            RoundBorderButtonsView(stringResource(id = if (isAlbumPresent > 0) R.string.remove_from_saved_List else R.string.save_album)) {
                 playlistAlbum.saveAlbumsLocally(v.item, homeNav.selectedAlbum, isAlbumPresent > 0)
             }
-            AlbumsButtonsView(stringResource(R.string.offline_download)) {
+            RoundBorderButtonsView(stringResource(R.string.offline_download)) {
                 offlineDownloadDialog = true
             }
         }
@@ -105,20 +106,5 @@ fun AlbumsShortcutButton() {
         onDispose {
             job?.cancel()
         }
-    }
-}
-
-@Composable
-fun AlbumsButtonsView(text: String, click: () -> Unit) {
-    Row(
-        Modifier
-            .padding(5.dp)
-            .clickable {
-                click()
-            }
-            .border(1.dp, Color.Gray, RoundedCornerShape(100))
-            .padding(vertical = 9.dp, horizontal = 14.dp)
-    ) {
-        TextThin(text)
     }
 }

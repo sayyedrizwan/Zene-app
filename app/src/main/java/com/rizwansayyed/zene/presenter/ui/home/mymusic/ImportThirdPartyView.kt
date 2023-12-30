@@ -41,8 +41,13 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.helper.MusicWebsitesLogin
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportActivity
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 fun startPlaylistImportActivity(spotify: PlaylistImportersType) {
     Intent(context, PlaylistImportActivity::class.java).apply {
@@ -59,7 +64,6 @@ fun ImportPlaylistSpotify(open: () -> Unit) {
 
 @Composable
 fun SpotifyLoginDialog(close: () -> Unit) {
-    val coroutine = rememberCoroutineScope()
     val height = LocalConfiguration.current.screenHeightDp / 1.2
     val login = stringResource(id = R.string.login_to_your_spotify_account)
 
@@ -74,11 +78,12 @@ fun SpotifyLoginDialog(close: () -> Unit) {
                 val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
                 val webView: WebView = view.findViewById(R.id.web_view)
                 MusicWebsitesLoginWebView {
-                    close()
-                    coroutine.launch {
-                        delay(500)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(1.seconds)
                         startPlaylistImportActivity(PlaylistImportersType.SPOTIFY)
+                        if (isActive) cancel()
                     }
+                    close()
                 }.init(webView).spotify()
                 view
             }, Modifier.fillMaxSize())
@@ -117,11 +122,12 @@ fun YoutubeMusicLoginDialog(close: () -> Unit) {
                 val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
                 val webView: WebView = view.findViewById(R.id.web_view)
                 MusicWebsitesLoginWebView {
-                    close()
-                    coroutine.launch {
-                        delay(500)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(1.seconds)
                         startPlaylistImportActivity(PlaylistImportersType.YOUTUBE_MUSIC)
+                        if (isActive) cancel()
                     }
+                    close()
                 }.init(webView).ytMusic()
                 view
             }, Modifier.fillMaxSize())
@@ -145,7 +151,6 @@ fun ImportPlaylistAppleMusic(open: () -> Unit) {
 
 @Composable
 fun AppleMusicLoginDialog(close: () -> Unit) {
-    val coroutine = rememberCoroutineScope()
     val height = LocalConfiguration.current.screenHeightDp / 1.2
     val login = stringResource(id = R.string.login_to_your_apple_music_account)
 
@@ -160,11 +165,12 @@ fun AppleMusicLoginDialog(close: () -> Unit) {
                 val view = LayoutInflater.from(ctx).inflate(R.layout.web_view_ui, null, false)
                 val webView: WebView = view.findViewById(R.id.web_view)
                 MusicWebsitesLoginWebView {
-                    close()
-                    coroutine.launch {
-                        delay(500)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(1.seconds)
                         startPlaylistImportActivity(PlaylistImportersType.APPLE_MUSIC)
+                        if (isActive) cancel()
                     }
+                    close()
                 }.init(webView).appleMusicMusic()
                 view
             }, Modifier.fillMaxSize())

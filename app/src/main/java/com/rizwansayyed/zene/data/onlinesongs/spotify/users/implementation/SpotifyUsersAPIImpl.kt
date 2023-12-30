@@ -34,4 +34,9 @@ class SpotifyUsersAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
+    override suspend fun playlistTrack(playlistId :String, offset: Int) = flow {
+        emit(spotifyAPI.userPlaylistTrack(spotifyToken.first(), playlistId, offset))
+    }.flowOn(Dispatchers.IO)
+
+
 }

@@ -79,6 +79,7 @@
     <string name="add_to_playlist">Add to playlist</string>
     <string name="play">Play</string>
     <string name="playlists">Playlists</string>
+    <string name="error_loading_playlists">Error Loading Playlists, Could be expire login or internet not be working. Please try again later.</string>
     <string name="tracks">Tracks</string>
     <string name="new_playlist">New Playlist</string>
     <string name="create_new_playlist">Create new playlist</string>
@@ -237,4 +238,5 @@
     <string name="login_to_your_spotify_account">Login to your spotify account to get all the playlists</string>
     <string name="login_to_your_yt_music_account">Login to your youtube music account to get all the playlists</string>
     <string name="login_to_your_apple_music_account">Login to your apple music account to get all the playlists</string>
+    <string name="no_song_found_please_check_internet">No song found. Please check your internet connection or try after some times.</string>
 </resources>

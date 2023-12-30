@@ -47,6 +47,8 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.extra.standby.StandByModeActivity
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.startPlaylistImportActivity
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
@@ -90,6 +92,7 @@ import kotlin.time.Duration.Companion.seconds
 // privacy policy viewer
 // all edittext are hiding behind keyboard
 
+// song info in song menu
 //move spotify key to local.pro
 // can you replicate blur image as in-build
 // group music listeners via wifi and bluetooth
@@ -242,6 +245,8 @@ class MainActivity : ComponentActivity() {
         }
         doOpenMusicPlayer(intent)
 
+        startPlaylistImportActivity(PlaylistImportersType.SPOTIFY)
+
         connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
     }
 
@@ -264,8 +269,12 @@ class MainActivity : ComponentActivity() {
     @UnstableApi
     override fun onStart() {
         super.onStart()
-        checkAndClearCache()
-        roomViewModel.downloadIfNotDownloaded()
+        lifecycleScope.launch {
+            delay(2.seconds)
+            checkAndClearCache()
+            roomViewModel.downloadIfNotDownloaded()
+        }
+
         lifecycleScope.launch(Dispatchers.IO) {
             delay(1.seconds)
             if (timestampDifference(lastAPISyncTime.first()) >= 10.minutes.inWholeSeconds) apis()
