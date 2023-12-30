@@ -107,7 +107,6 @@ fun ImportPlaylistYoutubeMusic(open: () -> Unit) {
 
 @Composable
 fun YoutubeMusicLoginDialog(close: () -> Unit) {
-    val coroutine = rememberCoroutineScope()
     val height = LocalConfiguration.current.screenHeightDp / 1.2
     val login = stringResource(id = R.string.login_to_your_yt_music_account)
 

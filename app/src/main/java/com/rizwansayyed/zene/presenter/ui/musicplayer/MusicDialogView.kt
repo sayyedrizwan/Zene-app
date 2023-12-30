@@ -1,11 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.musicplayer
 
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,9 +41,7 @@ import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.DeleteOfflineDialog
-import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicActionButton
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.addToEndPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playNextPlayer
@@ -63,12 +57,11 @@ import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MusicDialogSheet() {
-    val homeNavModel: HomeNavViewModel = hiltViewModel()
+fun MusicDialogSheet(homeNavModel: HomeNavViewModel, close:() -> Unit) {
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
-        { homeNavModel.setSongDetailsDialog(null) }, Modifier.fillMaxWidth(), sheetState,
+        close, Modifier.fillMaxWidth(), sheetState,
         containerColor = MainColor, contentColor = BlackColor
     ) {
         Column(Modifier.fillMaxWidth()) {

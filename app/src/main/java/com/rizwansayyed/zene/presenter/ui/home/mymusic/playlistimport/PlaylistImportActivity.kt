@@ -22,8 +22,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,17 +29,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
@@ -51,8 +45,6 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.view.Impor
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.view.PlaylistListView
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.view.PlaylistTrackList
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
-import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogView
-import com.rizwansayyed.zene.presenter.ui.musicplayer.view.MusicPlaylistDialog
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -65,7 +57,7 @@ class PlaylistImportActivity : ComponentActivity() {
     private val playlistImportViewModel: PlaylistImportViewModel by viewModels()
     private val homeNavViewModel: HomeNavViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)
@@ -78,7 +70,7 @@ class PlaylistImportActivity : ComponentActivity() {
 
         setContent {
             ZeneTheme {
-                var offset by remember { mutableIntStateOf(0) }
+                var offset by remember { mutableIntStateOf(140) }
                 val noSongFound = stringResource(R.string.no_song_found_please_check_internet)
 
                 Box(Modifier.fillMaxSize()) {
@@ -94,13 +86,13 @@ class PlaylistImportActivity : ComponentActivity() {
                         if (playlistImportViewModel.playlistTrackers.size > 0)
                             itemsIndexed(playlistImportViewModel.playlistTrackers) { i, m ->
                                 PlaylistTrackList(m, i) {
-                                    val name = "${m.songName} - ${m.artistsName}"
-                                    playlistImportViewModel.searchSongForPlaylist(name, it)
+                                    val s = "${m.songName} - ${m.artistsName?.substringBefore(",")}"
+                                    playlistImportViewModel.searchSongForPlaylist(s, it)
                                 }
                             }
 
                         item {
-                            Spacer(Modifier.height(500.dp))
+                            Spacer(Modifier.height(300.dp))
                         }
                     }
 
@@ -138,7 +130,10 @@ class PlaylistImportActivity : ComponentActivity() {
 
 
                 AnimatedVisibility(homeNavViewModel.songDetailDialog != null) {
-                    MusicDialogSheet()
+                    MusicDialogSheet(homeNavViewModel) {
+                        homeNavViewModel.setSongDetailsDialog(null)
+                        playlistImportViewModel.clear()
+                    }
                 }
 
             }

@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.spotify.users.implementation.SpotifyUsersAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImpl
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
@@ -25,12 +27,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 @HiltViewModel
@@ -107,8 +112,17 @@ class PlaylistImportViewModel @Inject constructor(
         }.catch {
             songMenu = DataResponse.Error(it)
         }.collectLatest {
-            if (menu) songMenu = DataResponse.Success(it)
-            else addAllPlayer(listOf(it).toTypedArray(), 0)
+            songMenu = if (menu) DataResponse.Success(it)
+            else {
+                addAllPlayer(listOf(it).toTypedArray(), 0)
+                DataResponse.Empty
+            }
+            viewModelScope.launch(Dispatchers.IO) {
+                delay(3.seconds)
+                val mpd = musicPlayerData.first()?.apply { show = false }
+                musicPlayerData = flowOf(mpd)
+            }
+
         }
     }
 

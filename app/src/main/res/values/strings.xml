@@ -79,6 +79,8 @@
     <string name="add_to_playlist">Add to playlist</string>
     <string name="play">Play</string>
     <string name="playlists">Playlists</string>
+    <string name="are_you_sure_want_to_save_it_as_a_playlist">Are you sure want to save it as a playlist ?</string>
+    <string name="save_it_as_a_playlist_desc">This playlist will be uploaded to My Music\'s playlist section as a new playlist. NOTE!! Occasional playlist\'s songs mismatches occur because Zene relies on song and artist names for matching, which could be slightly difference in other song apps, which can lead to inaccuracies.</string>
     <string name="error_loading_playlists">Error Loading Playlists, Could be expire login or internet not be working. Please try again later.</string>
     <string name="tracks">Tracks</string>
     <string name="new_playlist">New Playlist</string>
@@ -133,6 +135,7 @@
     <string name="share">Share</string>
     <string name="save_album">Save Album</string>
     <string name="remove_from_saved_List">Remove from saved list</string>
+    <string name="save_as_playlist">Save as Playlist</string>
     <string name="website">Website</string>
     <string name="instagram">Instagram</string>
     <string name="facebook">Facebook</string>

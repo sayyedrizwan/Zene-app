@@ -45,7 +45,6 @@ import com.rizwansayyed.zene.domain.HomeNavigation.SEARCH
 import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
-import com.rizwansayyed.zene.presenter.ui.extra.standby.StandByModeActivity
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.startPlaylistImportActivity
@@ -68,7 +67,6 @@ import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
-import com.rizwansayyed.zene.service.workmanager.StandByOnChargingWorkManager.Companion.startStandbyModeWorkManager
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -180,7 +178,9 @@ class MainActivity : ComponentActivity() {
                 }
 
                 AnimatedVisibility(navViewModel.songDetailDialog != null) {
-                    MusicDialogSheet()
+                    MusicDialogSheet(navViewModel) {
+                        navViewModel.setSongDetailsDialog(null)
+                    }
                 }
 
 
