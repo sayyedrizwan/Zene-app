@@ -31,6 +31,9 @@ interface SavedPlaylistDao {
     @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE LOWER(name) = :n")
     suspend fun searchWithName(n: String): List<SavedPlaylistEntity>
 
+    @Query("SELECT * FROM $SAVED_PLAYLIST_DB WHERE LOWER(name) = :n LIMIT 1")
+    suspend fun searchName(n: String): SavedPlaylistEntity?
+
     @Upsert
     suspend fun insert(v: SavedPlaylistEntity)
 }

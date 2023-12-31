@@ -94,7 +94,11 @@ class RoomDBImpl @Inject constructor(
 
 
     override suspend fun playlistWithName(name: String) = flow {
-        emit(savedPlaylistDao.searchWithName(name))
+        emit(savedPlaylistDao.searchWithName(name.trim().lowercase()))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun searchName(name: String) = flow {
+        emit(savedPlaylistDao.searchName(name.trim().lowercase()))
     }.flowOn(Dispatchers.IO)
 
 

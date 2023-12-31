@@ -17,23 +17,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
-import androidx.media3.datasource.cache.NoOpCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.MediaSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.session.MediaSession
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
-import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -106,13 +95,6 @@ class ArtistsThumbnailVideoPlayer @Inject constructor(@ApplicationContext privat
                 lifecycleOwner.lifecycle.removeObserver(observer)
                 doLoop = false
             }
-        }
-    }
-
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        if (playbackState == Player.STATE_READY && type == TYPE.ARTISTS_THUMBNAIL) {
-            Log.d("TAG", "onPlaybackStateChanged: changed ")
         }
     }
 

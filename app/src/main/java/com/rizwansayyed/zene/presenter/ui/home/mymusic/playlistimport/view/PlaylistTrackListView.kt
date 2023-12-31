@@ -23,16 +23,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.domain.ImportPlaylistInfoData
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.ImportPlaylistTrackInfoData
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.MenuIcon
@@ -41,11 +44,12 @@ import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistImportViewModel
 
 
 @Composable
-fun ImportPlaylistView(viewModel: PlaylistImportViewModel) {
+fun ImportPlaylistView(viewModel: PlaylistImportViewModel, addToAll: (String) -> Unit) {
     val width = LocalConfiguration.current.screenWidthDp / 1.3
 
     var addPlaylistData by remember { mutableStateOf(false) }
@@ -76,18 +80,25 @@ fun ImportPlaylistView(viewModel: PlaylistImportViewModel) {
         Spacer(Modifier.height(25.dp))
     }
 
-    if (addPlaylistData) AddedPlaylistDialog(viewModel.selectedPlaylist) {
+    if (addPlaylistData) AddedPlaylistDialog(viewModel, addToAll) {
         addPlaylistData = false
     }
 }
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AddedPlaylistDialog(p: ImportPlaylistInfoData?, close: () -> Unit) {
+fun AddedPlaylistDialog(p: PlaylistImportViewModel, addToAll: (String) -> Unit, close: () -> Unit) {
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+
+    val keyboard = LocalSoftwareKeyboardController.current
+
     val height = LocalConfiguration.current.screenHeightDp / 1.5
+    var text by remember { mutableStateOf(p.selectedPlaylist?.name ?: "") }
 
-    val text by remember { mutableStateOf(p?.name ?: "") }
-
+    val error = stringResource(id = R.string.error_creating_playlist)
+    val name = stringResource(id = R.string.playlist_name_already_in_use)
+    val validPlaylistName = stringResource(id = R.string.enter_a_valid_playlist_name)
     val placeholder = stringResource(id = R.string.enter_playlist_name)
 
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
@@ -115,9 +126,9 @@ fun AddedPlaylistDialog(p: ImportPlaylistInfoData?, close: () -> Unit) {
 
                 Box(Modifier.padding(horizontal = 6.dp)) {
                     SearchEditTextView(placeholder, text, null, {
-
+                        text = it
                     }, {
-
+                        keyboard?.hide()
                     })
                 }
 
@@ -127,13 +138,33 @@ fun AddedPlaylistDialog(p: ImportPlaylistInfoData?, close: () -> Unit) {
                     RoundBorderButtonsView(stringResource(id = R.string.cancel), close)
 
                     RoundBorderButtonsView(stringResource(id = R.string.save_as_playlist)) {
-
+                        if (text.length <= 3) {
+                            validPlaylistName.toast()
+                            return@RoundBorderButtonsView
+                        }
+                        playerViewModel.addPlaylist(text)
                     }
 
                 }
 
             }
 
+        }
+    }
+
+
+    LaunchedEffect(playerViewModel.addingPlaylist) {
+        when (val v = playerViewModel.addingPlaylist) {
+            DataResponse.Empty -> {}
+            is DataResponse.Error -> error.toast()
+            DataResponse.Loading -> {}
+            is DataResponse.Success -> {
+                if (v.item) {
+                    addToAll(text)
+                    close()
+                } else
+                    name.toast()
+            }
         }
     }
 }

@@ -17,9 +17,11 @@ import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScra
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.pinterest.implementation.PinterestAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.domain.ImportPlaylistTrackInfoData
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerList
+import com.rizwansayyed.zene.domain.asMusicPlayerList
 import com.rizwansayyed.zene.domain.lastfm.ArtistsShortInfo
 import com.rizwansayyed.zene.domain.subtitles.GeniusLyricsWithInfo
 import com.rizwansayyed.zene.domain.yt.MerchandiseItems
@@ -27,7 +29,6 @@ import com.rizwansayyed.zene.domain.yt.PlayerVideoDetailsData
 import com.rizwansayyed.zene.domain.yt.RetryItems
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.areSongNamesEqual
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import com.rizwansayyed.zene.utils.Utils.printStack
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.isActive
@@ -250,7 +252,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun addPlaylist(name: String) = viewModelScope.launch(Dispatchers.IO) {
-        if (roomDb.playlistWithName(name.trim().lowercase()).first().isNotEmpty()) {
+        if (roomDb.playlistWithName(name).first().isNotEmpty()) {
             addingPlaylist = DataResponse.Success(false)
             return@launch
         }
@@ -284,6 +286,35 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+
+    fun addSongsToPlaylistWithInfo(v: Array<ImportPlaylistTrackInfoData>, playlist: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(1.seconds)
+            val saved = roomDb.searchName(playlist.lowercase()).firstOrNull()
+            if (saved != null) {
+                v.forEachIndexed { i, m ->
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val s = "${m.songName} - ${m.artistsName?.substringBefore(",")}"
+                        youtubeAPI.musicInfoSearch(s).catch { }.collectLatest {
+                            var info = roomDb.songInfo(it?.pId ?: "").first()
+                            if (info == null) {
+                                info = PlaylistSongsEntity(
+                                    it?.pId ?: "", "${saved.id},", it?.name, it?.artists,
+                                    it?.thumbnail, System.currentTimeMillis()
+                                )
+                                roomDb.insert(info).collect()
+                            } else {
+                                info.addedPlaylistIds = "${info.addedPlaylistIds} ${saved.id},"
+                                roomDb.insert(info).collect()
+                            }
+                            saved.items = saved.items.plus(1)
+                            saved.thumbnail = it?.thumbnail
+                            roomDb.insert(saved).collect()
+                        }
+                    }
+                }
+            }
+        }
 
     fun addRmSongToPlaylist(
         v: MusicPlayerList, doRemove: Boolean,

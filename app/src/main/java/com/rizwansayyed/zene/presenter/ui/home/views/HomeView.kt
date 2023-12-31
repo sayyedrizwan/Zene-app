@@ -262,7 +262,7 @@ fun BottomNavBar(modifier: Modifier, player: ExoPlayer) {
             Arrangement.SpaceEvenly,
             Alignment.CenterVertically
         ) {
-            HomeNavigation.entries.toTypedArray().forEach {
+            HomeNavigation.entries.forEach {
                 if (!it.doShow) return@forEach
 
                 Column(

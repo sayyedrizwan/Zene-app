@@ -22,7 +22,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -104,7 +107,6 @@ import kotlin.time.Duration.Companion.seconds
 // add ads with ump sdk
 
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -115,7 +117,7 @@ class MainActivity : ComponentActivity() {
     lateinit var player: ExoPlayer
 
     @Inject
-    lateinit var bingScrapsImpl : BingScrapsInterface
+    lateinit var bingScrapsImpl: BingScrapsInterface
 
     @Inject
     lateinit var alarmManagerToPlaySong: AlarmManagerToPlaySong
@@ -138,6 +140,8 @@ class MainActivity : ComponentActivity() {
                 val doSplashScreen by doShowSplashScreen.collectAsState(initial = false)
                 val songPlayerView by musicPlayerData.collectAsState(initial = null)
                 val coroutine = rememberCoroutineScope()
+
+                var showBottomNav by remember { mutableStateOf(false) }
 
                 val notificationValue = stringResource(id = R.string.need_notification_p)
                 val notificationP =
@@ -166,7 +170,7 @@ class MainActivity : ComponentActivity() {
                         AlbumView()
                     }
 
-                    BottomNavBar(Modifier.align(Alignment.BottomCenter), player)
+                    if (showBottomNav) BottomNavBar(Modifier.align(Alignment.BottomCenter), player)
                 }
 
                 AnimatedVisibility(
@@ -226,6 +230,7 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
+                    showBottomNav = true
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {
@@ -245,7 +250,7 @@ class MainActivity : ComponentActivity() {
         }
         doOpenMusicPlayer(intent)
 
-        startPlaylistImportActivity(PlaylistImportersType.SPOTIFY)
+        startPlaylistImportActivity(PlaylistImportersType.YOUTUBE_MUSIC)
 
         connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
     }

@@ -111,7 +111,6 @@ class SocialMediaScrapsImpl @Inject constructor(
 
                 youtubeAPI.channelVideo(id).catch {}.collectLatest {
                     it.forEach { v ->
-                        Log.d("TAG", "getAllArtistsData: data ${youtubeToTimestamp(v.username ?: "")} == ${v.username}")
                         if (v.postId != null && v.title != null) {
                             val feed = ArtistsFeedEntity(
                                 null, a.name, a.youtubeChannel,

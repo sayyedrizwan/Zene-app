@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -70,7 +71,8 @@ fun SelectedPlaylistView() {
                 homeViewModel.selectMyMusicPlaylists.value?.thumbnail?.let {
                     AsyncImage(
                         it, homeViewModel.selectMyMusicPlaylists.value?.name,
-                        Modifier.size(width.dp)
+                        Modifier.size(width.dp),
+                        contentScale = ContentScale.Crop
                     )
                 } ?: run {
                     Image(
