@@ -23,7 +23,7 @@ object DBNAME {
 }
 
 object AuddRecognition {
-   const val AUDD_BASE_URL = "https://api.audd.io/"
+    const val AUDD_BASE_URL = "https://api.audd.io/"
 }
 
 object VideoDownloaderAPI {
@@ -156,6 +156,11 @@ object SoundCloudAPI {
 
 }
 
+object AppleMusicAPI {
+    const val APPLE_MUSIC_BASE_URL = "https://amp-api.music.apple.com/v1/"
+    const val APPLE_MUSIC_PLAYLIST_URL = "me/library/playlist-folders/p.playlistsroot/children"
+    const val APPLE_MUSIC_PLAYLIST_TRACKS_URL = "me/library/playlists/{playlist_id}"
+}
 
 object YoutubeAPI {
     private const val ytLatestClientVersion = "2.20231219.04.00"

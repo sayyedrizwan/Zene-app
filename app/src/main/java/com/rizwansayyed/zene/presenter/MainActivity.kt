@@ -97,7 +97,6 @@ import kotlin.time.Duration.Companion.seconds
 //move spotify key to local.pro
 // can you replicate blur image as in-build
 // group music listeners via wifi and bluetooth
-// import songs from spotify and youtube music.
 // make artists info cache
 // too much atists name are coming in songs you may like
 
@@ -250,7 +249,7 @@ class MainActivity : ComponentActivity() {
         }
         doOpenMusicPlayer(intent)
 
-        startPlaylistImportActivity(PlaylistImportersType.YOUTUBE_MUSIC)
+        startPlaylistImportActivity(PlaylistImportersType.APPLE_MUSIC)
 
         connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
     }

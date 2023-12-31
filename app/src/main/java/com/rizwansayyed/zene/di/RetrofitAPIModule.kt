@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.di
 
 
+import com.rizwansayyed.zene.data.onlinesongs.applemusic.AppleMusicAPIService
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.SaveFromInstagramService
@@ -16,6 +17,7 @@ import com.rizwansayyed.zene.data.onlinesongs.spotify.users.SpotifyUsersAPIServi
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicPlaylistService
+import com.rizwansayyed.zene.data.utils.AppleMusicAPI.APPLE_MUSIC_BASE_URL
 import com.rizwansayyed.zene.data.utils.GoogleNewsAPI.GOOGLE_NEWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_AWS_BASE_URL
@@ -187,10 +189,6 @@ object RetrofitAPIModule {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
 
-        val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-
-        builder.addInterceptor(logging)
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("authority", "www.music.youtube.com")
@@ -205,6 +203,31 @@ object RetrofitAPIModule {
             .baseUrl(YT_MUSIC_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(YoutubeMusicPlaylistService::class.java)
+    }
+
+
+    @Provides
+    fun retrofitAppleMusicApiService(): AppleMusicAPIService {
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
+
+        builder.addInterceptor(logging)
+        builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val chains = chain.request().newBuilder()
+                .addHeader("authority", "amp-api.music.apple.com")
+                .addHeader("origin", "https://music.apple.com")
+                .addHeader("referer", "https://music.apple.com/")
+                .addHeader("user-agent", USER_AGENT)
+            chain.proceed(chains.build())
+        })
+
+        return Retrofit.Builder()
+            .baseUrl(APPLE_MUSIC_BASE_URL).client(builder.build())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
+            .build().create(AppleMusicAPIService::class.java)
     }
 
 

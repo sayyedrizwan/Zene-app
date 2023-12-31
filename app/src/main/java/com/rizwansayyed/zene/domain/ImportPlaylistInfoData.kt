@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.domain
 
+import com.rizwansayyed.zene.domain.applemusic.AppleMusicPlaylistItemResponse
 import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistResponse
 import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistTrackResponse
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
@@ -19,10 +20,17 @@ data class ImportPlaylistTrackInfoData(
     val songName: String?,
 )
 
-fun MusicData.toMusicPlaylistData(): ImportPlaylistTrackInfoData {
-    return ImportPlaylistTrackInfoData(thumbnail, artists, name)
-}
 
+fun AppleMusicPlaylistItemResponse.toPlaylists(): List<ImportPlaylistInfoData> {
+    return data?.map {
+        ImportPlaylistInfoData(
+            it?.attributes?.artwork?.url,
+            it?.attributes?.name,
+            it?.attributes?.description?.standard,
+            it?.id, PlaylistImportersType.APPLE_MUSIC
+        )
+    } ?: emptyList()
+}
 
 fun SpotifyUserPlaylistTrackResponse.Item.toTrack(): ImportPlaylistTrackInfoData {
     return ImportPlaylistTrackInfoData(

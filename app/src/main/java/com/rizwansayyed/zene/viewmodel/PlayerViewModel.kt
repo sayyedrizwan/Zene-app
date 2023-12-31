@@ -286,36 +286,6 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-
-    fun addSongsToPlaylistWithInfo(v: Array<ImportPlaylistTrackInfoData>, playlist: String) =
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(1.seconds)
-            val saved = roomDb.searchName(playlist.lowercase()).firstOrNull()
-            if (saved != null) {
-                v.forEachIndexed { i, m ->
-                    viewModelScope.launch(Dispatchers.IO) {
-                        val s = "${m.songName} - ${m.artistsName?.substringBefore(",")}"
-                        youtubeAPI.musicInfoSearch(s).catch { }.collectLatest {
-                            var info = roomDb.songInfo(it?.pId ?: "").first()
-                            if (info == null) {
-                                info = PlaylistSongsEntity(
-                                    it?.pId ?: "", "${saved.id},", it?.name, it?.artists,
-                                    it?.thumbnail, System.currentTimeMillis()
-                                )
-                                roomDb.insert(info).collect()
-                            } else {
-                                info.addedPlaylistIds = "${info.addedPlaylistIds} ${saved.id},"
-                                roomDb.insert(info).collect()
-                            }
-                            saved.items = saved.items.plus(1)
-                            saved.thumbnail = it?.thumbnail
-                            roomDb.insert(saved).collect()
-                        }
-                    }
-                }
-            }
-        }
-
     fun addRmSongToPlaylist(
         v: MusicPlayerList, doRemove: Boolean,
         playlistId: String, savedPlaylist: SavedPlaylistEntity?

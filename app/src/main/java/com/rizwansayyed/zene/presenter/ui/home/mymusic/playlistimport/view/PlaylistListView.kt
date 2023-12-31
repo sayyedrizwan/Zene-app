@@ -89,7 +89,7 @@ fun PlaylistListView(
                             when(type){
                                 SPOTIFY ->  viewModel.spotifyPlaylistTrack(p)
                                 YOUTUBE_MUSIC -> viewModel.youtubeMusicPlaylistTracks(p)
-                                APPLE_MUSIC -> {}
+                                APPLE_MUSIC -> viewModel.appleMusicPlaylistTracks(p)
                             }
                         }
                     }

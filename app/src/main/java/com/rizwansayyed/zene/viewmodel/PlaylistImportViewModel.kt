@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,28 +10,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
+import com.rizwansayyed.zene.data.db.savedplaylist.playlistsongs.PlaylistSongsEntity
+import com.rizwansayyed.zene.data.onlinesongs.applemusic.implementation.AppleMusicAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.users.implementation.SpotifyUsersAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.userplaylist.YoutubeMusicPlaylistImplInterface
 import com.rizwansayyed.zene.domain.ImportPlaylistInfoData
 import com.rizwansayyed.zene.domain.ImportPlaylistTrackInfoData
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.toMusicData
-import com.rizwansayyed.zene.domain.toMusicPlaylistData
 import com.rizwansayyed.zene.domain.toPlaylistInfo
+import com.rizwansayyed.zene.domain.toPlaylists
 import com.rizwansayyed.zene.domain.toTrack
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
-import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -42,7 +46,9 @@ import kotlin.time.Duration.Companion.seconds
 class PlaylistImportViewModel @Inject constructor(
     private val spotifyUserAPI: SpotifyUsersAPIImplInterface,
     private val youtubeAPIImpl: YoutubeAPIImplInterface,
-    private val youtubeAPI: YoutubeMusicPlaylistImplInterface
+    private val youtubeAPI: YoutubeMusicPlaylistImplInterface,
+    private val appleMusicAPI: AppleMusicAPIImplInterface,
+    private val roomDb: RoomDBInterface
 ) : ViewModel() {
 
     private var playlistTrackJob: Job? = null
@@ -90,6 +96,34 @@ class PlaylistImportViewModel @Inject constructor(
             }
         }
     }
+
+    fun appleMusicPlaylistInfo() = viewModelScope.launch(Dispatchers.IO) {
+        appleMusicAPI.userPlaylists().onStart {
+            usersPlaylists = DataResponse.Loading
+        }.catch {
+            usersPlaylists = DataResponse.Error(it)
+        }.collectLatest {
+            val list = it?.toPlaylists() ?: emptyList()
+            usersPlaylists = DataResponse.Success(list)
+
+            list.forEachIndexed { i, item ->
+                if (i == 0) {
+                    appleMusicPlaylistTracks(item)
+                }
+            }
+        }
+    }
+
+    fun appleMusicPlaylistTracks(item: ImportPlaylistInfoData) =
+        viewModelScope.launch(Dispatchers.IO) {
+            if (selectedPlaylist == item) return@launch
+            selectedPlaylist = item
+
+            playlistTrackers.clear()
+            appleMusicAPI.playlistsTracks(item.id ?: "").catch {}.collectLatest {
+                playlistTrackers.addAll(it)
+            }
+        }
 
     fun youtubeMusicPlaylistTracks(item: ImportPlaylistInfoData) =
         viewModelScope.launch(Dispatchers.IO) {
@@ -157,5 +191,52 @@ class PlaylistImportViewModel @Inject constructor(
     fun clear() = viewModelScope.launch(Dispatchers.IO) {
         songMenu = DataResponse.Empty
     }
+
+
+    fun addSongsToPlaylistWithInfo(v: Array<ImportPlaylistTrackInfoData>, playlist: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            songMenu = DataResponse.Loading
+            delay(1.seconds)
+            var done = 0
+            val saved = roomDb.searchName(playlist.lowercase()).firstOrNull()
+            if (saved != null) {
+                v.forEachIndexed { i, m ->
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val s = "${m.songName} - ${m.artistsName?.substringBefore(",")}"
+                        youtubeAPIImpl.musicInfoSearch(s).catch {
+                            done += 1
+                            songMenu = if (done == v.size)
+                                DataResponse.Empty
+                            else
+                                DataResponse.Loading
+
+                        }.collectLatest {
+
+                            var info = roomDb.songInfo(it?.pId ?: "").first()
+                            if (info == null) {
+                                info = PlaylistSongsEntity(
+                                    it?.pId ?: "", "${saved.id},", it?.name, it?.artists,
+                                    it?.thumbnail, System.currentTimeMillis()
+                                )
+                                roomDb.insert(info).collect()
+                            } else {
+                                info.addedPlaylistIds = "${info.addedPlaylistIds} ${saved.id},"
+                                roomDb.insert(info).collect()
+                            }
+                            saved.items = saved.items.plus(1)
+                            saved.thumbnail = it?.thumbnail
+                            roomDb.insert(saved).collect()
+
+                            done += 1
+                            songMenu = if (done == v.size)
+                                DataResponse.Empty
+                            else
+                                DataResponse.Loading
+                        }
+                    }
+                }
+            }
+        }
+
 
 }

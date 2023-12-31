@@ -130,7 +130,7 @@ class PlaylistImportActivity : ComponentActivity() {
                         when (type) {
                             SPOTIFY -> playlistImportViewModel.spotifyPlaylistInfo()
                             YOUTUBE_MUSIC -> playlistImportViewModel.youtubeMusicPlaylistInfo()
-                            APPLE_MUSIC -> {}
+                            APPLE_MUSIC -> playlistImportViewModel.appleMusicPlaylistInfo()
                         }
                     }
                 }
@@ -154,7 +154,7 @@ class PlaylistImportActivity : ComponentActivity() {
 
                 LaunchedEffect(startAddingSongToPlaylist) {
                     if (startAddingSongToPlaylist.length > 3 && playlistImportViewModel.playlistTrackers.size > 0) {
-                        playerViewModel.addSongsToPlaylistWithInfo(
+                        playlistImportViewModel.addSongsToPlaylistWithInfo(
                             playlistImportViewModel.playlistTrackers.toTypedArray(),
                             startAddingSongToPlaylist
                         )
