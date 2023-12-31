@@ -159,7 +159,7 @@ object SoundCloudAPI {
 
 object YoutubeAPI {
     private const val ytLatestClientVersion = "2.20231219.04.00"
-    private const val ytMusicLatestClientVersion = "1.20231108.01.00"
+    private const val ytMusicLatestClientVersion = "1.20231214.00.00"
 
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
     const val YT_MAIN_GUIDE = "guide"
@@ -515,6 +515,25 @@ object YoutubeAPI {
             },
             "browseId": "FEmusic_new_releases"
         }"""
+        val mediaType = "application/json".toMediaTypeOrNull()
+        return json.toRequestBody(mediaType)
+    }
+
+    fun ytMusicUserPlaylistJsonBody(ip: IpJsonResponse?): RequestBody {
+        val json = """
+            {
+                "context": {
+                    "client": {
+                        "remoteHost": "${ip?.query}",
+                        "userAgent": "$USER_AGENT", 
+                        "clientName": "WEB_REMIX",
+                        "clientVersion": "$ytMusicLatestClientVersion",
+                        "timeZone": "${ip?.timezone}"
+                    }
+                },
+                "browseId": "FEmusic_liked_playlists"
+            }
+        """
         val mediaType = "application/json".toMediaTypeOrNull()
         return json.toRequestBody(mediaType)
     }

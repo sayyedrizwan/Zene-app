@@ -8,21 +8,21 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.spotify.users.implementation.SpotifyUsersAPIImplInterface
-import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImpl
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.userplaylist.YoutubeMusicPlaylistImplInterface
 import com.rizwansayyed.zene.domain.ImportPlaylistInfoData
 import com.rizwansayyed.zene.domain.ImportPlaylistTrackInfoData
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.MusicPlayerList
-import com.rizwansayyed.zene.domain.asMusicPlayerList
+import com.rizwansayyed.zene.domain.toMusicData
+import com.rizwansayyed.zene.domain.toMusicPlaylistData
 import com.rizwansayyed.zene.domain.toPlaylistInfo
 import com.rizwansayyed.zene.domain.toTrack
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
-import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +42,7 @@ import kotlin.time.Duration.Companion.seconds
 class PlaylistImportViewModel @Inject constructor(
     private val spotifyUserAPI: SpotifyUsersAPIImplInterface,
     private val youtubeAPIImpl: YoutubeAPIImplInterface,
+    private val youtubeAPI: YoutubeMusicPlaylistImplInterface
 ) : ViewModel() {
 
     private var playlistTrackJob: Job? = null
@@ -74,11 +75,38 @@ class PlaylistImportViewModel @Inject constructor(
         }
     }
 
+    fun youtubeMusicPlaylistInfo() = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.usersPlaylists().onStart {
+            usersPlaylists = DataResponse.Loading
+        }.catch {
+            usersPlaylists = DataResponse.Error(it)
+        }.collectLatest {
+            usersPlaylists = DataResponse.Success(it)
+
+            it.forEachIndexed { i, item ->
+                if (i == 0) {
+                    youtubeMusicPlaylistTracks(item)
+                }
+            }
+        }
+    }
+
+    fun youtubeMusicPlaylistTracks(item: ImportPlaylistInfoData) =
+        viewModelScope.launch(Dispatchers.IO) {
+            if (selectedPlaylist == item) return@launch
+            selectedPlaylist = item
+
+            playlistTrackers.clear()
+            youtubeAPI.playlistsTracker(item.id ?: "").catch {}.collectLatest {
+                playlistTrackers.addAll(it)
+            }
+        }
+
     fun spotifyPlaylistTrack(item: ImportPlaylistInfoData) = viewModelScope.launch(Dispatchers.IO) {
         if (selectedPlaylist == item) return@launch
         selectedPlaylist = item
         playlistTrackJob?.cancel()
-        playlistTrackJob = CoroutineScope(Dispatchers.IO).launch {
+        playlistTrackJob = viewModelScope.launch(Dispatchers.IO) {
             playlistTrackers.clear()
 
             try {

@@ -16,14 +16,18 @@ data class ImportPlaylistInfoData(
 data class ImportPlaylistTrackInfoData(
     val thumbnail: String?,
     val artistsName: String?,
-    val songName: String?
+    val songName: String?,
 )
+
+fun MusicData.toMusicPlaylistData(): ImportPlaylistTrackInfoData {
+    return ImportPlaylistTrackInfoData(thumbnail, artists, name)
+}
 
 
 fun SpotifyUserPlaylistTrackResponse.Item.toTrack(): ImportPlaylistTrackInfoData {
     return ImportPlaylistTrackInfoData(
         track?.album?.images?.maxBy { i -> i?.height ?: 2 }?.url,
-        track?.album?.artists?.map { it?.name }?.joinToString(", "), track?.name,
+        track?.album?.artists?.map { it?.name }?.joinToString(", "), track?.name
     )
 }
 

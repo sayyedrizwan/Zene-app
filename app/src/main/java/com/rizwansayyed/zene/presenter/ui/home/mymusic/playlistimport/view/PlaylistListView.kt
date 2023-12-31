@@ -33,11 +33,15 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType.*
 import com.rizwansayyed.zene.presenter.ui.home.online.MostPlayedSongsLoading
 import com.rizwansayyed.zene.viewmodel.PlaylistImportViewModel
 
 @Composable
-fun PlaylistListView(viewModel: PlaylistImportViewModel, offset: Int, click: () -> Unit) {
+fun PlaylistListView(
+    viewModel: PlaylistImportViewModel, offset: Int, type: PlaylistImportersType, click: () -> Unit
+) {
     when (val v = viewModel.usersPlaylists) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {
@@ -81,7 +85,13 @@ fun PlaylistListView(viewModel: PlaylistImportViewModel, offset: Int, click: () 
 
                 items(v.item) {
                     PlaylistImportItems(it, viewModel.selectedPlaylist?.id == it.id) {
-                        it.let { it1 -> viewModel.spotifyPlaylistTrack(it1) }
+                        it.let { p ->
+                            when(type){
+                                SPOTIFY ->  viewModel.spotifyPlaylistTrack(p)
+                                YOUTUBE_MUSIC -> viewModel.youtubeMusicPlaylistTracks(p)
+                                APPLE_MUSIC -> {}
+                            }
+                        }
                     }
                 }
 

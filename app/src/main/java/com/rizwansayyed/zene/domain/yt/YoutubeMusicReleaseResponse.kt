@@ -48,6 +48,7 @@ data class MusicTwoRowItemRendererRelease(
     val aspectRatio: String?,
     val menu: Menu?,
     val thumbnailOverlay: ThumbnailOverlay?,
+    val musicThumbnailRenderer: YoutubeSearchSuggestionResponse.Content.SearchSuggestionsSectionRenderer.Content.MusicResponsiveListItemRenderer.Thumbnail.MusicThumbnailRenderer?,
     val trackingParams: String?
 ) {
     data class Menu(
@@ -247,7 +248,7 @@ data class MusicTwoRowItemRendererRelease(
     }
 
     data class ThumbnailOverlay(
-        val musicItemThumbnailOverlayRenderer: MusicItemThumbnailOverlayRenderer?
+        val musicItemThumbnailOverlayRenderer: MusicItemThumbnailOverlayRenderer?,
     ) {
         data class MusicItemThumbnailOverlayRenderer(
             val background: Background?,

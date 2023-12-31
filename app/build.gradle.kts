@@ -170,6 +170,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.glide.transformations)
 
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation("com.github.lincollincol:Amplituda:v2.2.2")
     implementation("com.github.lincollincol:compose-audiowaveform:v1.1.2")

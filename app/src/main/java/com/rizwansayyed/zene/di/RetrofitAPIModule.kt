@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.onlinesongs.spotify.music.SpotifyAPIService
 import com.rizwansayyed.zene.data.onlinesongs.spotify.users.SpotifyUsersAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
+import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicPlaylistService
 import com.rizwansayyed.zene.data.utils.GoogleNewsAPI.GOOGLE_NEWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_AWS_BASE_URL
@@ -38,6 +39,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -84,7 +86,6 @@ object RetrofitAPIModule {
         .build().create(SpotifyAPIService::class.java)
 
 
-
     @Provides
     fun retrofitSpotifyUsersApiService(): SpotifyUsersAPIService = Retrofit.Builder()
         .baseUrl(SPOTIFY_API_BASE_URL).client(okHttpClient)
@@ -94,7 +95,10 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitInstagramService(): InstagramInfoService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("authority", "www.instagram.com")
@@ -102,7 +106,7 @@ object RetrofitAPIModule {
             chain.proceed(chains.build())
         })
         return Retrofit.Builder()
-            .baseUrl(INSTAGRAM_BASE_URL).client(okHttpClient)
+            .baseUrl(INSTAGRAM_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(builder.build())
             .build().create(InstagramInfoService::class.java)
@@ -111,7 +115,10 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitYoutubeApiService(): YoutubeAPIService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("authority", "www.youtube.com")
@@ -123,7 +130,7 @@ object RetrofitAPIModule {
         })
 
         return Retrofit.Builder()
-            .baseUrl(YT_BASE_URL).client(okHttpClient)
+            .baseUrl(YT_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(YoutubeAPIService::class.java)
     }
@@ -131,7 +138,10 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitSoundCloudService(): SoundCloudApiService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("Origin", "https://soundcloud.com")
@@ -141,7 +151,7 @@ object RetrofitAPIModule {
         })
 
         return Retrofit.Builder()
-            .baseUrl(SOUND_CLOUD_BASE_URL).client(okHttpClient)
+            .baseUrl(SOUND_CLOUD_BASE_URL).client(builder.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build().create(SoundCloudApiService::class.java)
     }
@@ -149,7 +159,11 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitYoutubeMusicApiService(): YoutubeMusicAPIService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("authority", "www.music.youtube.com")
@@ -162,15 +176,44 @@ object RetrofitAPIModule {
         })
 
         return Retrofit.Builder()
-            .baseUrl(YT_MUSIC_BASE_URL).client(okHttpClient)
+            .baseUrl(YT_MUSIC_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(YoutubeMusicAPIService::class.java)
+    }
+
+    @Provides
+    fun retrofitUserYoutubeMusicPlaylistApiService(): YoutubeMusicPlaylistService {
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        builder.addInterceptor(logging)
+        builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val chains = chain.request().newBuilder()
+                .addHeader("authority", "www.music.youtube.com")
+                .addHeader("content-type", "application/json")
+                .addHeader("origin", "https://music.youtube.com")
+                .addHeader("x-origin", "https://music.youtube.com")
+                .addHeader("user-agent", USER_AGENT)
+            chain.proceed(chains.build())
+        })
+
+        return Retrofit.Builder()
+            .baseUrl(YT_MUSIC_BASE_URL).client(builder.build())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
+            .build().create(YoutubeMusicPlaylistService::class.java)
     }
 
 
     @Provides
     fun retrofitLastFMApiService(): LastFMService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("referer", LAST_FM_BASE_URL)
@@ -180,7 +223,7 @@ object RetrofitAPIModule {
         })
 
         return Retrofit.Builder()
-            .baseUrl(LastFM.LFM_BASE_URL).client(okHttpClient)
+            .baseUrl(LastFM.LFM_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(LastFMService::class.java)
     }
@@ -188,7 +231,10 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitSaveFromDownloaderService(): SaveFromDownloaderService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("referer", SAVE_FROM_BASE_URL)
@@ -198,7 +244,7 @@ object RetrofitAPIModule {
         })
 
         return Retrofit.Builder()
-            .baseUrl(SAVE_FROM_BASE_URL).client(okHttpClient)
+            .baseUrl(SAVE_FROM_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(SaveFromDownloaderService::class.java)
     }
@@ -206,7 +252,10 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitPinterestService(): PinterestAPIService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("origin", PINTEREST_BASE_URL)
@@ -215,7 +264,7 @@ object RetrofitAPIModule {
         })
 
         return Retrofit.Builder()
-            .baseUrl(PINTEREST_BASE_URL).client(okHttpClient)
+            .baseUrl(PINTEREST_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(PinterestAPIService::class.java)
     }
@@ -229,7 +278,10 @@ object RetrofitAPIModule {
 
     @Provides
     fun retrofitSaveFromInstagramService(): SaveFromInstagramService {
-        val builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("origin", SAVE_FROM_INSTAGRAM_ORIGIN)
@@ -239,7 +291,7 @@ object RetrofitAPIModule {
         })
 
         return Retrofit.Builder()
-            .baseUrl(SAVE_FROM_INSTAGRAM_BASE_URL).client(okHttpClient)
+            .baseUrl(SAVE_FROM_INSTAGRAM_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(SaveFromInstagramService::class.java)
     }

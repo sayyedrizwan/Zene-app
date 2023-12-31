@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -28,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.domain.asMusicPlayerList
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
@@ -49,10 +50,16 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.view.Playl
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistImportViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class PlaylistImportActivity : ComponentActivity() {
@@ -74,6 +81,7 @@ class PlaylistImportActivity : ComponentActivity() {
 
         setContent {
             ZeneTheme {
+                val coroutine = rememberCoroutineScope()
                 var offset by remember { mutableIntStateOf(140) }
                 var startAddingSongToPlaylist by remember { mutableStateOf("") }
                 val noSongFound = stringResource(R.string.no_song_found_please_check_internet)
@@ -93,7 +101,8 @@ class PlaylistImportActivity : ComponentActivity() {
                         if (playlistImportViewModel.playlistTrackers.size > 0)
                             itemsIndexed(playlistImportViewModel.playlistTrackers) { i, m ->
                                 PlaylistTrackList(m, i) {
-                                    val s = "${m.songName} - ${m.artistsName?.substringBefore(",")}"
+                                    val s =
+                                        "${m.songName} - ${m.artistsName?.substringBefore(",")}"
                                     playlistImportViewModel.searchSongForPlaylist(s, it)
                                 }
                             }
@@ -112,7 +121,7 @@ class PlaylistImportActivity : ComponentActivity() {
                             .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                             .background(MainColor), Arrangement.Center, Alignment.CenterHorizontally
                     ) {
-                        PlaylistListView(playlistImportViewModel, offset) {
+                        PlaylistListView(playlistImportViewModel, offset, type) {
                             offset = if (offset == 0) 140 else 0
                         }
                     }
@@ -120,7 +129,7 @@ class PlaylistImportActivity : ComponentActivity() {
                     LaunchedEffect(Unit) {
                         when (type) {
                             SPOTIFY -> playlistImportViewModel.spotifyPlaylistInfo()
-                            YOUTUBE_MUSIC -> {}
+                            YOUTUBE_MUSIC -> playlistImportViewModel.youtubeMusicPlaylistInfo()
                             APPLE_MUSIC -> {}
                         }
                     }
