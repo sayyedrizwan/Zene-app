@@ -166,6 +166,10 @@ dependencies {
     implementation(libs.firebase.config)
 
 
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.messaging.directboot)
+
+
 
     implementation(libs.paging.runtime)
 

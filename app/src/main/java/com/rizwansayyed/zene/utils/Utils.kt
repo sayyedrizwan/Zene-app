@@ -58,10 +58,17 @@ object Utils {
     val tempEmptyList =
         listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")
 
+    object FCMTopics {
+        const val allUsers = "all_users"
+    }
+
     object AdsId {
-        val OPEN_ADS_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9257395921" else "ca-app-pub-2941808068005217/7650500204"
-        val NATIVE_ADS_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/2247696110" else "ca-app-pub-2941808068005217/4139593004"
-        val BANNER_ADS_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/6300978111" else "ca-app-pub-2941808068005217/1624020934"
+        val OPEN_ADS_ID =
+            if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9257395921" else "ca-app-pub-2941808068005217/7650500204"
+        val NATIVE_ADS_ID =
+            if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/2247696110" else "ca-app-pub-2941808068005217/4139593004"
+        val BANNER_ADS_ID =
+            if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/6300978111" else "ca-app-pub-2941808068005217/1624020934"
     }
 
     object ExtraUtils {

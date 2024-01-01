@@ -53,7 +53,7 @@ class ApplicationModule : Application(), Configuration.Provider {
         super.onCreate()
         context = this
         FirebaseApp.initializeApp(this)
-        Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(this))
+        AppCrashHandler(this)
 
 
         CoroutineScope(Dispatchers.IO).launch {

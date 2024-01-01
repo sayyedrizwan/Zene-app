@@ -4,9 +4,11 @@ targetSDK = "34"
 minSDK = "24"
 
 #app version start
-currentVersionCode = "29"
-currentVersionName = "1.0.000358"
+currentVersionCode = "31"
+currentVersionName = "3.1.025"
 #app version end
+
+
 
 v1 = "1.0.0"
 kotlin-version = "1.12.0"
@@ -31,6 +33,7 @@ jsoup-version = "1.16.1"
 ok-http-version = "4.12.0"
 work-manager-version = "2.9.0"
 firebase-bom-version = "32.7.0"
+fcm-directboot-version = "23.4.0"
 paging-version = "3.2.1"
 media3-version = "1.2.0"
 glide-version = "4.16.0"
@@ -138,6 +141,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-config = { group = "com.google.firebase", name = "firebase-config-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-messaging-directboot = { group = "com.google.firebase", name = "firebase-messaging-directboot", version.ref = "fcm-directboot-version"  }
 
 
 #paging

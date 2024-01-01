@@ -6,13 +6,24 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.presenter.MainActivity
+import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.service.player.utils.Utils.downloadImageAsBitmap
 import com.rizwansayyed.zene.utils.Utils.printStack
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NotificationViewManager(private val context: Context) {
 
@@ -23,6 +34,10 @@ class NotificationViewManager(private val context: Context) {
 
         const val CRASH_CHANNEL_ID = "crash_channel_notification_id"
         const val CRASH_CHANNEL = "crash_channel_notification"
+
+
+        const val OFFERS_CHANNEL_ID = "offers_channel_notification_id"
+        const val OFFERS_CHANNEL = "offers_channel_notification"
 
 
         const val ALARM_CHANNEL_ID = "alarm_channel_notification_id"
@@ -39,6 +54,7 @@ class NotificationViewManager(private val context: Context) {
     private var intentInternal: Intent = Intent(context, MainActivity::class.java)
     private var titleInternal: String? = null
     private var bodyInternal: String? = null
+    private var image: String? = null
     private var channelId: String = DEFAULT_CHANNEL_ID
     private var channelName: String? = DEFAULT_CHANNEL
 
@@ -51,6 +67,10 @@ class NotificationViewManager(private val context: Context) {
         channelName = name
     }
 
+    fun image(path: String?) = apply {
+        image = path
+    }
+
     fun title(s: String) = apply {
         titleInternal = s
     }
@@ -61,7 +81,16 @@ class NotificationViewManager(private val context: Context) {
 
 
     @SuppressLint("MissingPermission")
-    fun generate() {
+    fun generate() = CoroutineScope(Dispatchers.IO).launch {
+        var bitmap: Bitmap? = null
+        if (image != null) {
+            val request = ImageRequest.Builder(ApplicationModule.context).data(image)
+                .target(onSuccess = { result ->
+                    bitmap = (result as BitmapDrawable).bitmap
+                }).build()
+            ImageLoader.Builder(ApplicationModule.context).crossfade(true).build().enqueue(request)
+        }
+
         val p =
             PendingIntent.getActivity(context, 1, intentInternal, flags)
 
@@ -70,6 +99,7 @@ class NotificationViewManager(private val context: Context) {
             setContentTitle(titleInternal)
             setContentText(bodyInternal)
             setAutoCancel(false)
+            bitmap?.let { setLargeIcon(it) }
             setStyle(NotificationCompat.BigTextStyle().bigText(bodyInternal))
             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
             setContentIntent(p)

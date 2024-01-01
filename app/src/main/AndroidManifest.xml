@@ -132,6 +132,24 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".service.fcm.FirebaseMessagingReceiver"
+            android:exported="false"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/logo_color" />
+
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/main_color" />
+
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="qrcode" />

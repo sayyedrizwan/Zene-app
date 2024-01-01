@@ -17,6 +17,10 @@ class AppCrashHandler(private val context: Context) : Thread.UncaughtExceptionHa
 
     private var lastCrashTime = daysOldTimestamp(-2)
 
+    init {
+        Thread.setDefaultUncaughtExceptionHandler(this)
+    }
+
     override fun uncaughtException(t: Thread, e: Throwable) {
         context.cacheDir.deleteRecursively()
 
