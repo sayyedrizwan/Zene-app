@@ -95,13 +95,11 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // can you replicate blur image as in-build
-// in view all radio is not saving
 // add ads with ump sdk
 
 
 //in future
 // add insta shop items on artists page.
-// make artists info cache
 // group music listeners via wifi and bluetooth
 // song info in song menu
 // song recognization
@@ -249,10 +247,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
         doOpenMusicPlayer(intent)
-
-        startPlaylistImportActivity(PlaylistImportersType.APPLE_MUSIC)
-
         connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
     }
 

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,8 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
+import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
@@ -167,8 +170,13 @@ fun OnlineRadioViewAllView() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RadioSearchCard(radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel) {
+    val m = MusicData(
+        radio.favicon, radio.name, radio.language, radio.stationuuid, MusicType.RADIO
+    )
+
     Column(
         Modifier
             .padding(5.dp)
@@ -176,9 +184,13 @@ fun RadioSearchCard(radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel) {
             .clip(RoundedCornerShape(12.dp))
             .background(MainColor)
             .aspectRatio(1f)
-            .clickable {
-                playRadioOnPlayer(radio)
-            },
+            .combinedClickable(
+                onClick = { playRadioOnPlayer(radio) },
+                onLongClick = {
+                    homeNav.setRadioTemp(radio)
+                    homeNav.setSongDetailsDialog(m)
+                },
+            ),
         Arrangement.Center, Alignment.CenterHorizontally
     ) {
         Box(

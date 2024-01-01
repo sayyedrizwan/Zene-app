@@ -6,6 +6,8 @@ import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import kotlinx.coroutines.Job
 
 interface PlayerServiceActionInterface {
+
+
     suspend fun addMultipleItemsAndPlay(list: Array<MusicData?>?, position: Int)
     suspend fun updatePlaying(mediaItem: MediaItem?)
     suspend fun playLiveRadio(radio: OnlineRadioResponseItem)

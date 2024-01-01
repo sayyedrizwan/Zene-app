@@ -41,7 +41,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -211,10 +210,7 @@ object RetrofitAPIModule {
         val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
-        val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
 
-        builder.addInterceptor(logging)
         builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val chains = chain.request().newBuilder()
                 .addHeader("authority", "amp-api.music.apple.com")

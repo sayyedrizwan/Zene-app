@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companio
 import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -37,6 +38,7 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+var playerSongSearchJob: Job? = null
 
 class PlayerServiceAction @Inject constructor(
     private val player: ExoPlayer,
@@ -73,54 +75,57 @@ class PlayerServiceAction @Inject constructor(
     override suspend fun startPlaying(
         music: MusicData?, list: Array<MusicData?>?, position: Int, doPlay: Boolean
     ) {
-        withContext(Dispatchers.Main) {
-            player.pause()
-            player.stop()
+        playerSongSearchJob?.cancel()
+        playerSongSearchJob = CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.Main) {
+                player.pause()
+                player.stop()
 
-            if (list?.isNotEmpty() == true) player.clearMediaItems()
-        }
-        withContext(Dispatchers.IO) {
-            val currentPlayer =
-                MusicPlayerList(music?.name, music?.artists, music?.pId, music?.thumbnail)
+                if (list?.isNotEmpty() == true) player.clearMediaItems()
+            }
+            withContext(Dispatchers.IO) {
+                val currentPlayer =
+                    MusicPlayerList(music?.name, music?.artists, music?.pId, music?.thumbnail)
 
-            val d = musicPlayerData.first()?.apply {
-                v = currentPlayer
-                playType = MusicType.MUSIC
-                if (list?.isNotEmpty() == true) songsLists = list.toList()
+                val d = musicPlayerData.first()?.apply {
+                    v = currentPlayer
+                    playType = MusicType.MUSIC
+                    if (list?.isNotEmpty() == true) songsLists = list.toList()
+                }
+
+                musicPlayerData = flowOf(d)
             }
 
-            musicPlayerData = flowOf(d)
-        }
+            withContext(Dispatchers.Main) {
+                if (list?.isNotEmpty() == true) list.forEach { m ->
+                    m?.toMediaItem(m.pId ?: "")?.let { player.addMediaItem(it) }
+                }
 
-        withContext(Dispatchers.Main) {
-            if (list?.isNotEmpty() == true) list.forEach { m ->
-                m?.toMediaItem(m.pId ?: "")?.let { player.addMediaItem(it) }
+                player.seekTo(position, 0)
             }
 
-            player.seekTo(position, 0)
-        }
+            val url = withContext(Dispatchers.IO) {
+                try {
+                    if (File(songDownloadPath, "${music?.pId}.mp3").exists())
+                        File(songDownloadPath, "${music?.pId}.mp3").path
+                    else
+                        songDownloader.download(music?.pId!!).first()
+                } catch (e: Exception) {
+                    null
+                }
+            } ?: return@launch
 
-        val url = withContext(Dispatchers.IO) {
-            try {
-                if (File(songDownloadPath, "${music?.pId}.mp3").exists())
-                    File(songDownloadPath, "${music?.pId}.mp3").path
-                else
-                    songDownloader.download(music?.pId!!).first()
-            } catch (e: Exception) {
-                null
+            withContext(Dispatchers.Main) {
+                player.replaceMediaItem(position, music!!.toMediaItem(url))
+                player.seekTo(position, 0)
+                if (doPlay) player.playWhenReady = true
+                player.prepare()
+
+                delay(1.seconds)
+
+                if (doPlay) player.play()
+                else player.pause()
             }
-        } ?: return
-
-        withContext(Dispatchers.Main) {
-            player.replaceMediaItem(position, music!!.toMediaItem(url))
-            player.seekTo(position, 0)
-            if (doPlay) player.playWhenReady = true
-            player.prepare()
-
-            delay(1.seconds)
-
-            if (doPlay) player.play()
-            else player.pause()
         }
     }
 

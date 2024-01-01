@@ -116,6 +116,7 @@ dependencies {
 
 
 
+
     implementation(libs.coroutines.android)
     implementation(libs.coroutines.core)
 
@@ -142,6 +143,13 @@ dependencies {
 
     implementation(libs.web)
     implementation(libs.jsoup)
+    implementation(libs.ffmpeg)
+
+
+
+    implementation(libs.amplituda)
+    implementation(libs.amplituda.compose)
+
 
 
     implementation(platform(libs.okttp.bom))
@@ -169,14 +177,4 @@ dependencies {
 
     implementation(libs.glide)
     implementation(libs.glide.transformations)
-
-
-
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
-    implementation("com.github.lincollincol:Amplituda:v2.2.2")
-    implementation("com.github.lincollincol:compose-audiowaveform:v1.1.2")
-    implementation("com.arthenica:ffmpeg-kit-full:6.0-2")
-
-    implementation("androidx.webkit:webkit:1.9.0")
 }

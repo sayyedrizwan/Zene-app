@@ -35,6 +35,9 @@ paging-version = "3.2.1"
 media3-version = "1.2.0"
 glide-version = "4.16.0"
 glide-transformations-version = "4.3.0"
+amplituda-version = "v2.2.2"
+amplituda-compose-version = "v1.1.2"
+ffmpeg-version = "6.0-2"
 
 
 #plugins
@@ -92,6 +95,13 @@ browser = { group = "androidx.browser", name = "browser", version.ref = "browser
 js-evaluator = { group = "com.github.evgenyneu", name = "js-evaluator-for-android", version.ref = "js-evaluator" }
 web = { group = "androidx.webkit", name = "webkit", version.ref = "webkit-version" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup-version" }
+ffmpeg = { group = "com.arthenica", name = "ffmpeg-kit-full", version.ref = "ffmpeg-version" }
+
+
+
+#amplituda
+amplituda = { group = "com.github.lincollincol", name = "Amplituda", version.ref = "amplituda-version" }
+amplituda-compose = { group = "com.github.lincollincol", name = "compose-audiowaveform", version.ref = "amplituda-compose-version" }
 
 
 #coroutines
