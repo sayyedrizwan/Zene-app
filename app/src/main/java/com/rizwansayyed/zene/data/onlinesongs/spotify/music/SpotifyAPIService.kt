@@ -2,8 +2,6 @@ package com.rizwansayyed.zene.data.onlinesongs.spotify.music
 
 
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.ACCOUNT_SPOTIFY_API
-import com.rizwansayyed.zene.data.utils.SpotifyAPI.ACCOUNT_SPOTIFY_C_ID
-import com.rizwansayyed.zene.data.utils.SpotifyAPI.ACCOUNT_SPOTIFY_C_SECRET
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_PLAYLIST
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_API_SEARCH
 import com.rizwansayyed.zene.domain.spotify.music.SpotifyAccessTokenResponse
@@ -25,8 +23,8 @@ interface SpotifyAPIService {
     suspend fun spotifyAccessToken(
         @Url url: String = ACCOUNT_SPOTIFY_API,
         @Field("grant_type") type: String = "client_credentials",
-        @Field("client_id") clientId: String = ACCOUNT_SPOTIFY_C_ID,
-        @Field("client_secret") clientSecret: String = ACCOUNT_SPOTIFY_C_SECRET
+        @Field("client_id") clientId: String?,
+        @Field("client_secret") clientSecret: String?
     ): SpotifyAccessTokenResponse
 
 

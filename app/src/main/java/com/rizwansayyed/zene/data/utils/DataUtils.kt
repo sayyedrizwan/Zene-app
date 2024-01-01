@@ -73,8 +73,6 @@ object PinterestAPI {
 
 object SpotifyAPI {
     const val ACCOUNT_SPOTIFY_API = "https://accounts.spotify.com/api/token"
-    const val ACCOUNT_SPOTIFY_C_ID = "07cca9af3ee4411baaf2355a8ea61d3f"
-    const val ACCOUNT_SPOTIFY_C_SECRET = "120327dd093345f6aaab5fb943f1ceb1"
 
 
     const val SPOTIFY_API_BASE_URL = "https://api.spotify.com/v1/"

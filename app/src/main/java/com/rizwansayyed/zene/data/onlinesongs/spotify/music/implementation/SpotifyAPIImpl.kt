@@ -40,7 +40,10 @@ class SpotifyAPIImpl @Inject constructor(
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()
 
-        val token = spotifyAPI.spotifyAccessToken()
+        val token = spotifyAPI.spotifyAccessToken(
+            clientId = key?.spotifyClientID, clientSecret = key?.spotifySecretID
+        )
+
         val bearer = "${token.token_type} ${token.access_token}"
         val pid = spotifyAPI
             .spotifyPlaylistSearch(bearer, SPOTIFY_GLOBAL_SEARCH).playlists?.items?.first()?.id
@@ -91,7 +94,11 @@ class SpotifyAPIImpl @Inject constructor(
         val key = remoteConfig.allApiKeys()
         val ipDetails = userIpDetails.first()
 
-        val token = spotifyAPI.spotifyAccessToken()
+        val token = spotifyAPI.spotifyAccessToken(
+            clientId = key?.spotifyClientID, clientSecret = key?.spotifySecretID
+        )
+
+
         val bearer = "${token.token_type} ${token.access_token}"
         val pid = spotifyAPI.spotifyPlaylistSearch(
             bearer, "$SPOTIFY_COUNTRY_SEARCH${ipDetails?.country}"

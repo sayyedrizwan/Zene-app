@@ -93,17 +93,21 @@ import kotlin.time.Duration.Companion.seconds
 // privacy policy viewer
 // all edittext are hiding behind keyboard
 
-// song info in song menu
+
 //move spotify key to local.pro
 // can you replicate blur image as in-build
 // group music listeners via wifi and bluetooth
 // make artists info cache
-// too much atists name are coming in songs you may like
 
 // in view all radio is not saving
-// add stories, fb posts to show on feed
-// song recognization
+
 // add ads with ump sdk
+
+
+//in future
+// song info in song menu
+// song recognization
+// add stories, fb posts to show on feed
 
 
 @AndroidEntryPoint
