@@ -88,23 +88,21 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // if going ahead or back on song multiple time on via via notification is causing problem. fix it....
-// add insta shop items on artists page.
+
 // make smooth music player view opener
 // privacy policy viewer
 // all edittext are hiding behind keyboard
 
 
-//move spotify key to local.pro
 // can you replicate blur image as in-build
-// group music listeners via wifi and bluetooth
-// make artists info cache
-
 // in view all radio is not saving
-
 // add ads with ump sdk
 
 
 //in future
+// add insta shop items on artists page.
+// make artists info cache
+// group music listeners via wifi and bluetooth
 // song info in song menu
 // song recognization
 // add stories, fb posts to show on feed
