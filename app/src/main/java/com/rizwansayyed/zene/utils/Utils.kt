@@ -25,6 +25,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
@@ -56,6 +57,12 @@ object Utils {
 
     val tempEmptyList =
         listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")
+
+    object AdsId {
+        val OPEN_ADS_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9257395921" else "ca-app-pub-2941808068005217/7650500204"
+        val NATIVE_ADS_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/2247696110" else "ca-app-pub-2941808068005217/4139593004"
+        val BANNER_ADS_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/6300978111" else "ca-app-pub-2941808068005217/1624020934"
+    }
 
     object ExtraUtils {
         const val DOWNLOAD_SONG_WORKER = "download_song_worker"

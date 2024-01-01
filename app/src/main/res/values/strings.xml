@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Zene</string>
+    <string name="zene_ads">Zene Ads</string>
     <string name="view_all">view all</string>
     <string name="by_rs">by rizwan sayyed</string>
     <string name="by">by</string>

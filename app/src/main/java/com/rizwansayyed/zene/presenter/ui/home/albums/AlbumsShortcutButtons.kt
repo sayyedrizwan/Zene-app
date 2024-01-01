@@ -25,11 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
-import com.rizwansayyed.zene.presenter.ui.TextRegular
-import com.rizwansayyed.zene.presenter.ui.TextSemiBold
-import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlArtistsShare
@@ -54,6 +51,8 @@ fun AlbumsShortcutButton() {
     val title = stringResource(id = R.string.offline_download)
     val desc = stringResource(id = R.string.all_songs_album_download_desc)
     val btn = stringResource(id = R.string.download)
+
+    GlobalHiddenNativeAds()
 
     when (val v = playlistAlbum.playlistAlbum) {
         DataResponse.Loading -> {}

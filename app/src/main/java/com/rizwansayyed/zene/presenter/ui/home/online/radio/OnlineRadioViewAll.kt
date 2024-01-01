@@ -200,7 +200,7 @@ fun RadioSearchCard(radio: OnlineRadioResponseItem, homeNav: HomeNavViewModel) {
         ) {
             MenuIcon(Modifier.align(Alignment.CenterEnd)) {
                 homeNav.setRadioTemp(radio)
-                homeNav.setSongDetailsDialog(radio.toMusicData())
+                homeNav.setSongDetailsDialog(m)
             }
         }
 

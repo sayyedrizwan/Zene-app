@@ -1,8 +1,5 @@
 package com.rizwansayyed.zene.presenter.ui.home.albums
 
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +26,7 @@ fun SimilarAlbums() {
     Spacer(Modifier.height(30.dp))
 
     when (val v = playlistAlbum.similarAlbumPlaylistAlbum) {
-        DataResponse.Loading ->LazyRow(Modifier.fillMaxWidth()) {
+        DataResponse.Loading -> LazyRow(Modifier.fillMaxWidth()) {
             items(9) {
                 LoadingAlbumsCards()
             }
@@ -42,6 +39,7 @@ fun SimilarAlbums() {
                 }
             }
         }
+
         else -> {}
     }
 }

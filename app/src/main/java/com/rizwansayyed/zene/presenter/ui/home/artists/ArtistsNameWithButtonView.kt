@@ -27,9 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.domain.PinnedArtistsData
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.LoadingCircle
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
@@ -38,7 +37,6 @@ import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlArtistsShare
-import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -65,6 +63,8 @@ fun ArtistsNameWithDescription() {
             .offset(y = (-45).dp),
         size = 34
     )
+
+    GlobalHiddenNativeAds()
 
     when (val v = artists.artistsDesc) {
         DataResponse.Empty -> {}

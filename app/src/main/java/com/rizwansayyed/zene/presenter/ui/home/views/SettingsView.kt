@@ -81,6 +81,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
@@ -133,31 +134,35 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
         Spacer(Modifier.height(70.dp))
 
         OfflineModesSettings()
+        GlobalHiddenNativeAds()
         SongQualitySettings()
 
         SongSpeedSettings(player)
+        GlobalHiddenNativeAds()
         LoopSettings()
 
         AutoPlaySettings()
+        GlobalHiddenNativeAds()
         OfflineDownloadSettings()
 
         SongOnLockScreenSettings()
+        GlobalHiddenNativeAds()
         SetWallpaperSettings()
 
         SetStandbySettings()
-
+        GlobalHiddenNativeAds()
         PlaySongWhenAlarmSettings(alarmManagerToPlaySong)
 
         Spacer(Modifier.height(20.dp))
-
+        GlobalHiddenNativeAds()
         SettingsItemsCard(R.string.equalizer) {
             openEqualizer()
         }
-
+        GlobalHiddenNativeAds()
         SettingsItemsCard(R.string.clear_cache, cacheSize()) {
             cacheDialog = true
         }
-
+        GlobalHiddenNativeAds()
         SettingsItemsCard(R.string.feedback) {
             val selectorIntent = Intent(ACTION_SENDTO)
                 .setData("mailto:$OFFICIAL_EMAIL".toUri())
@@ -173,6 +178,8 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
             })
         }
 
+        GlobalHiddenNativeAds()
+        GlobalHiddenNativeAds()
         SettingsItemsCard(R.string.privacy_policy) {
         }
 
@@ -180,6 +187,7 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
 
         TextThin("Version ${BuildConfig.VERSION_NAME}", Modifier.padding(horizontal = 24.dp))
 
+        GlobalHiddenNativeAds()
         Spacer(Modifier.height(150.dp))
     }
 

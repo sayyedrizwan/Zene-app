@@ -48,6 +48,7 @@ fun AlbumsTopThumbnail() {
     val playlistAlbum: PlaylistAlbumViewModel = hiltViewModel()
     val height = LocalConfiguration.current.screenHeightDp.dp / 2
 
+
     when (val v = playlistAlbum.playlistAlbum) {
         DataResponse.Loading -> Spacer(
             Modifier

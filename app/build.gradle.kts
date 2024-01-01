@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.kotlin.core)
     implementation(libs.lifecycle.runtime)
     implementation(libs.activity.compose)
+    implementation(libs.lifecycle.process)
+    implementation(libs.play.services.ads.lite)
 
 
 
@@ -176,5 +178,9 @@ dependencies {
 
 
     implementation(libs.glide)
+    implementation(libs.glide.transformations)
+
+
+
     implementation(libs.glide.transformations)
 }

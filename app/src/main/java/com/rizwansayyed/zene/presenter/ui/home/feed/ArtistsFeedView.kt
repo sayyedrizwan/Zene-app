@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.FeedNewsItem
@@ -61,7 +62,8 @@ fun ArtistsFeedView() {
             .fillMaxSize()
             .background(DarkGreyColor)
     ) {
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
             FeedText()
         }
 
@@ -71,7 +73,7 @@ fun ArtistsFeedView() {
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             LazyRow(Modifier.fillMaxWidth()) {
-                items(artistsList) {
+                items(artistsList, key = { m -> m.id ?: "" }) {
                     PinnedArtistsList(it)
                 }
             }
@@ -90,7 +92,7 @@ fun ArtistsFeedView() {
             )
         }
 
-        items(feeds, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        items(feeds, key = { f -> f.id ?: 0 }, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             when (it.feedType) {
                 FeedPostType.INSTAGRAM -> {}
                 FeedPostType.INSTAGRAM_STORIES -> {}

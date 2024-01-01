@@ -26,11 +26,9 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.getFavIcon
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.getMainDomain
 import com.rizwansayyed.zene.domain.news.GoogleNewsResponse
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.TextRegularNews
-import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
@@ -76,6 +74,7 @@ fun ArtistsNews() {
             ArtistsNewsLists(v.item)
         }
     }
+
 }
 
 @Composable

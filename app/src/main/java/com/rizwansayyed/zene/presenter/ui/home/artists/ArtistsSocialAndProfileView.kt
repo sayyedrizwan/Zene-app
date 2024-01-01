@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.di.ApplicationModule
-import com.rizwansayyed.zene.domain.soundcloud.SocialMediaAccounts
 import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponseItem
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
@@ -43,48 +41,6 @@ import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import java.net.URL
 
 
-private val socialMedia = listOf(
-    SocialMediaAccounts(
-        R.drawable.ic_internet,
-        ApplicationModule.context.resources.getString(R.string.website),
-        "website"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_instagram,
-        ApplicationModule.context.resources.getString(R.string.instagram),
-        "instagram"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_facebook,
-        ApplicationModule.context.resources.getString(R.string.facebook),
-        "facebook"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_twitter,
-        ApplicationModule.context.resources.getString(R.string.facebook),
-        "twitter"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_youtube,
-        ApplicationModule.context.resources.getString(R.string.facebook),
-        "youtube"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_snapchat,
-        ApplicationModule.context.resources.getString(R.string.facebook),
-        "snapchat"
-    ),
-    SocialMediaAccounts(
-        R.drawable.store_with_bag,
-        ApplicationModule.context.resources.getString(R.string.facebook),
-        "merch store"
-    ),
-    SocialMediaAccounts(
-        R.drawable.ic_atomic,
-        ApplicationModule.context.resources.getString(R.string.facebook),
-        "bandpage"
-    )
-)
 
 private fun getDomain(url: String): String {
     return try {
@@ -188,6 +144,7 @@ fun ArtistsSocialMediaList(social: SoundCloudProfileResponseItem) {
 
 @Composable
 fun ArtistsSocialMediaLoading() {
+
     Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
         Spacer(
             Modifier

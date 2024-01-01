@@ -35,6 +35,8 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
+import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItems
@@ -65,14 +67,12 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import java.util.UUID
 
 
-@OptIn(FlowPreview::class)
 @Composable
 fun HomeOfflineView() {
     val homeNavModel: HomeNavViewModel = hiltViewModel()
-    val homeViewModel: HomeApiViewModel = hiltViewModel()
-    val roomDbViewModel: RoomDbViewModel = hiltViewModel()
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_ITEMS_GRID),
@@ -102,45 +102,57 @@ fun HomeView() {
             .fillMaxSize()
             .background(DarkGreyColor), listState
     ) {
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             HomepageTopView(homeNavModel)
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
+
+        item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 CurrentMostPlayingSong()
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 4, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 CityRadioViewList()
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+        item(key = 6, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TopArtistsList()
+                GlobalNativeFullAds()
             }
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+        item(key = 8, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 MoodTopics()
             }
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+        item(key = 10, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 FreshAddedSongsList()
             }
         }
+        item(key = 11, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 12, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TopGlobalSongsList()
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+        item(key = 14, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TrendingSongsCountryList()
             }
@@ -148,7 +160,9 @@ fun HomeView() {
         when (val v = homeViewModel.topCountryTrendingSongs) {
             is DataResponse.Success ->
                 itemsIndexed(
-                    v.item, span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
+                    v.item,
+                    key = { _, m -> m?.pId ?: "" },
+                    span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
                     GlobalTrendingPagerItems(item, false) {
                         addAllPlayer(v.item.toTypedArray(), i)
                     }
@@ -157,82 +171,128 @@ fun HomeView() {
             else -> {}
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 15, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
+
+
+        item(key = 16, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
+                GlobalNativeFullAds()
                 SongsYouMayLikeView()
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+
+        item(key = 18, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 TopArtistsCountryList()
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+        item(key = 19, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
+
+        item(key = 20, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 RelatedAlbums()
             }
         }
 
         when (val v = roomDbViewModel.albumsYouMayLike) {
-            is DataResponse.Success -> items(v.item, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+            is DataResponse.Success -> items(
+                v.item,
+                key = { m -> m.pId ?: "" },
+                span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 AlbumsItems(it) {
                     homeNavModel.setAlbum(it.pId ?: "")
                 }
             }
 
-            DataResponse.Loading -> items(6, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+            DataResponse.Loading -> items(
+                6,
+                key = { UUID.randomUUID() },
+                span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 LoadingAlbumsCards()
             }
 
             else -> {}
         }
 
+        item(key = 22, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+        item(key = 23, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 SongsSuggestionsForYou()
             }
         }
 
+        item(key = 25, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+
+        item(key = 26, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 SimilarArtists()
             }
         }
 
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 27, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 ArtistsYouMayLikeWithSongs()
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 29, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
+
+        item(key = 30, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
+                GlobalNativeFullAds()
                 SongsForYouToExplore()
             }
         }
 
+        item(key = 32, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
+
         when (val v = roomDbViewModel.songsSuggestionForUsers) {
             is DataResponse.Success -> itemsIndexed(
-                v.item, span = { _, _ -> GridItemSpan(TWO_ITEMS_GRID) }) { i, m ->
+                v.item,
+                key = { _, m -> m.pId ?: "" },
+                span = { _, _ -> GridItemSpan(TWO_ITEMS_GRID) }) { i, m ->
                 SongsExploreItems(m) {
                     addAllPlayer(v.item.toTypedArray(), i)
                 }
             }
 
-            DataResponse.Loading -> items(20, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+            DataResponse.Loading -> items(20, key = { UUID.randomUUID() }, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 LoadingAlbumsCards()
             }
 
             else -> {}
         }
 
+        item(key = 33, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 34, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
+        }
+
+
+        item(key = 35, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(230.dp))
         }
     }

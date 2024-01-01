@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.userAuthData
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.AppleMusicLoginDialog
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistAppleMusic
@@ -62,51 +63,54 @@ fun MyMusicView() {
             .fillMaxSize()
             .background(DarkGreyColor)
     ) {
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column(Modifier.padding(horizontal = 9.dp), Arrangement.Center) {
+                GlobalHiddenNativeAds()
                 TopMyMusicHeader(userAuth)
 
                 Spacer(Modifier.height(22.dp))
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             LinkedToBrowser(userAuth)
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             HistoryItemsList(myMusic)
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 4, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicPlaylistsList(myMusic, homeNavViewModel)
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 5, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
             MyMusicAlbumList(myMusic)
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 6, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicOfflineDownload(myMusic)
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 7, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             TopListenedSong(myMusic)
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 8, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(50.dp))
         }
-        item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+        item(key = 9, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
             ImportPlaylistSpotify {
                 spotifyLoginDialog = true
             }
         }
-        item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+        item(key = 10, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
             ImportPlaylistYoutubeMusic {
                 youtubeMusicLoginDialog = true
             }
         }
-        item(span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+        item(key = 11, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
             ImportPlaylistAppleMusic {
                 appleMusicLoginDialog = true
             }
         }
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 12, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalHiddenNativeAds()
             Spacer(Modifier.height(200.dp))
         }
     }

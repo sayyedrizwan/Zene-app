@@ -136,6 +136,10 @@
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="qrcode" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2941808068005217~5659881245"/>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

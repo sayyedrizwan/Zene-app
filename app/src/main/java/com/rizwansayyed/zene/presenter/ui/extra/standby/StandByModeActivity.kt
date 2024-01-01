@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbySongInfoView
 import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbyViewTime
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -75,7 +76,9 @@ class StandByModeActivity : ComponentActivity(), StandByInterface {
                                 .align(Alignment.Center)
                                 .fillMaxSize()
                         ) {
+                            GlobalHiddenNativeAds()
                             StandbyViewTime()
+                            GlobalHiddenNativeAds()
                         }
 
                         Spacer(
@@ -94,7 +97,9 @@ class StandByModeActivity : ComponentActivity(), StandByInterface {
                                 .align(Alignment.Center)
                                 .fillMaxSize()
                         ) {
+                            GlobalHiddenNativeAds()
                             StandbySongInfoView(player)
+                            GlobalHiddenNativeAds()
                         }
 
                         Spacer(

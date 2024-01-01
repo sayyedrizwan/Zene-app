@@ -47,9 +47,7 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.presenter.theme.BlackColor
-import com.rizwansayyed.zene.presenter.ui.SmallIcons
-import com.rizwansayyed.zene.presenter.ui.TextRegular
+import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.utils.Utils.tempEmptyList
@@ -63,6 +61,8 @@ import kotlin.math.absoluteValue
 fun ArtistsImagesView() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
     var isLoading by remember { mutableStateOf(false) }
+
+    GlobalHiddenNativeAds()
 
     if (isLoading) {
         TopInfoWithSeeMore(R.string.artist_photos, null) {}
@@ -94,7 +94,6 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
     val width = (LocalConfiguration.current.screenWidthDp.absoluteValue / 1.3).toInt()
     val paddingReminder = (LocalConfiguration.current.screenWidthDp.absoluteValue - width) / 2
     val pagerState = rememberPagerState(pageCount = { item.size })
-
 
     HorizontalPager(
         pagerState, Modifier.fillMaxWidth(), PaddingValues(horizontal = paddingReminder.dp)

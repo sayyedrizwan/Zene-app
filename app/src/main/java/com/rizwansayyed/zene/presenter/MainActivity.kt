@@ -35,11 +35,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.appopen.AppOpenAd
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
+import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.HomeNavigation.ALL_RADIO
 import com.rizwansayyed.zene.domain.HomeNavigation.FEED
 import com.rizwansayyed.zene.domain.HomeNavigation.HOME
@@ -49,8 +54,6 @@ import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
-import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
-import com.rizwansayyed.zene.presenter.ui.home.mymusic.startPlaylistImportActivity
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
@@ -70,6 +73,8 @@ import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.AdsId.OPEN_ADS_ID
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -95,14 +100,17 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // can you replicate blur image as in-build
-// add ads with ump sdk
+// songs info on the mood
 
+
+// add events
 
 //in future
 // add insta shop items on artists page.
 // group music listeners via wifi and bluetooth
 // song info in song menu
 // song recognization
+// backup and sync
 // add stories, fb posts to show on feed
 
 
@@ -132,6 +140,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(this) { }
+        MobileAds.setAppMuted(true)
+
         setContent {
             ZeneTheme {
                 val activity = LocalContext.current as Activity
@@ -267,6 +278,12 @@ class MainActivity : ComponentActivity() {
         intent?.let { doOpenMusicPlayer(it) }
     }
 
+    private val adLoadedCallback = object : AppOpenAd.AppOpenAdLoadCallback() {
+        override fun onAdLoaded(app: AppOpenAd) {
+            super.onAdLoaded(app)
+            app.show(this@MainActivity)
+        }
+    }
 
     @UnstableApi
     override fun onStart() {
@@ -285,6 +302,13 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
+        }
+        lifecycleScope.launch {
+            delay(2.seconds)
+            if (!BuildConfig.DEBUG) {
+                val request = AdRequest.Builder().build()
+                AppOpenAd.load(this@MainActivity, OPEN_ADS_ID, request, adLoadedCallback)
+            }
         }
     }
 
