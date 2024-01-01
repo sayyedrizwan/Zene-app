@@ -155,9 +155,9 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
                 rmDialog = true
             }
 
-        MusicDialogListItems(R.drawable.ic_information_circle, songInfo) {
-
-        }
+//        MusicDialogListItems(R.drawable.ic_information_circle, songInfo) {
+//
+//        }
     }
 
     TextSemiBold(

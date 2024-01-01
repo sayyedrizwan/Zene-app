@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.work.Configuration
+import com.google.firebase.FirebaseApp
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
@@ -14,10 +15,10 @@ import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayerNotPlay
+import com.rizwansayyed.zene.utils.AppCrashHandler
 import com.rizwansayyed.zene.utils.NotificationViewManager
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL_ID
-import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
 import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import dagger.hilt.android.HiltAndroidApp
@@ -48,13 +49,12 @@ class ApplicationModule : Application(), Configuration.Provider {
     @Inject
     lateinit var player: ExoPlayer
 
-    private var lastCrashTime: Long = 0L
-
     override fun onCreate() {
         super.onCreate()
         context = this
+        FirebaseApp.initializeApp(this)
+        Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(this))
 
-        lastCrashTime = daysOldTimestamp(-2)
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)
@@ -63,46 +63,6 @@ class ApplicationModule : Application(), Configuration.Provider {
                 context.startService(Intent(context, PlayerService::class.java))
             }
             if (isActive) cancel()
-        }
-
-        Thread.setDefaultUncaughtExceptionHandler { thread, e ->
-            context.cacheDir.deleteRecursively()
-
-            if (BuildConfig.DEBUG)
-                NotificationViewManager(this)
-                    .title("The App crash on ${thread.name} thread")
-                    .body(e.message ?: "No Crash Registered")
-                    .nIds(CRASH_CHANNEL_ID, CRASH_CHANNEL).generate()
-
-            Log.d(packageName, "App Crash Log: ${e.message}")
-            val stackTrace: Array<StackTraceElement> = e.stackTrace
-            if (stackTrace.isNotEmpty()) {
-                val element = stackTrace[0]
-                val fileName = element.fileName
-                val lineNumber = element.lineNumber
-                val methodName = element.methodName
-
-                Log.e(packageName, "App Crash Log: Crash in ${element.toString()}")
-            } else {
-                Log.e(packageName, "App Crash Log: Unknown error occurred")
-            }
-
-
-            if (timestampDifference(lastCrashTime) > 15)
-                Intent(this, MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(this)
-                }
-            else {
-                NotificationViewManager(this)
-                    .title(context.resources.getString(R.string.app_crashed))
-                    .body(context.resources.getString(R.string.app_crashed))
-                    .nIds(CRASH_CHANNEL_ID, CRASH_CHANNEL).generate()
-
-                exitProcess(0)
-            }
-
-            lastCrashTime = System.currentTimeMillis()
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -132,8 +92,6 @@ class ApplicationModule : Application(), Configuration.Provider {
             File(context.filesDir, "offline_songs").deleteRecursively()
         }
 
-
-//        FirebaseApp.initializeApp(this)
     }
 
     override val workManagerConfiguration: Configuration

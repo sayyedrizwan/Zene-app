@@ -104,6 +104,8 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // add events
+// make fcm better
+
 
 //in future
 // add insta shop items on artists page.

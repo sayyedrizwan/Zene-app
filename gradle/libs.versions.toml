@@ -47,6 +47,7 @@ plugin-kotlin-android = "1.9.21"
 plugin-hilt = "2.49"
 plugin-ksp = "1.9.21-1.0.16"
 plugin-google-services = "4.4.0"
+firebase-crashlytics-services = "2.9.9"
 lifecycleProcess = "2.6.2"
 
 
@@ -135,6 +136,7 @@ okttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 #firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom-version" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 
 
@@ -171,6 +173,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "plugin-ko
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "plugin-hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "plugin-ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "plugin-google-services" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-services" }
 
 
 
