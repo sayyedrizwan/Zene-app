@@ -28,7 +28,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.LoadingCircle
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextRegular
@@ -63,8 +62,6 @@ fun ArtistsNameWithDescription() {
             .offset(y = (-45).dp),
         size = 34
     )
-
-    GlobalHiddenNativeAds()
 
     when (val v = artists.artistsDesc) {
         DataResponse.Empty -> {}

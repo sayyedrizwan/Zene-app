@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItems
 import com.rizwansayyed.zene.presenter.ui.home.online.ArtistsLoadingCards
@@ -38,8 +37,6 @@ import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 fun ArtistsAlbumsList() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
     val homeNavViewModel: HomeNavViewModel = hiltViewModel()
-
-    GlobalHiddenNativeAds()
 
     when (val v = artistsViewModel.searchData) {
         DataResponse.Empty -> {}

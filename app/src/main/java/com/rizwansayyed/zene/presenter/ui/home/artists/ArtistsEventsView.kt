@@ -35,7 +35,6 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
@@ -51,7 +50,7 @@ import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 fun ArtistsEvents() {
     val artistsViewModel: ArtistsViewModel = hiltViewModel()
 
-    GlobalHiddenNativeAds()
+
     when (val v = artistsViewModel.artistsEvents) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}

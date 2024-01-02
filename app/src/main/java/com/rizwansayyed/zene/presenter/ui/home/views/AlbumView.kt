@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
@@ -70,6 +71,10 @@ fun AlbumView() {
                     SimilarAlbums()
                     Spacer(Modifier.height(80.dp))
                 }
+            }
+
+            item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+                GlobalNativeFullAds()
             }
 
             itemsIndexed(

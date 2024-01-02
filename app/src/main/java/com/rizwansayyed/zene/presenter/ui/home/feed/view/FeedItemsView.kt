@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin

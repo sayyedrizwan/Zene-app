@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.presenter.ui.home.feed
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +14,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
+import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.FeedNewsItem
@@ -63,7 +67,6 @@ fun ArtistsFeedView() {
             .background(DarkGreyColor)
     ) {
         item(key = 1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
             FeedText()
         }
 
@@ -73,8 +76,8 @@ fun ArtistsFeedView() {
 
         item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             LazyRow(Modifier.fillMaxWidth()) {
-                items(artistsList, key = { m -> m.id ?: "" }) {
-                    PinnedArtistsList(it)
+                items(artistsList, key = { m -> m.id ?: "" }) { a ->
+                    PinnedArtistsList(a)
                 }
             }
         }
@@ -92,14 +95,25 @@ fun ArtistsFeedView() {
             )
         }
 
-        items(feeds, key = { f -> f.id ?: 0 }, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            when (it.feedType) {
+        itemsIndexed(
+            feeds,
+            key = { _, f -> f.id ?: 0 },
+            span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, f ->
+            when (f.feedType) {
                 FeedPostType.INSTAGRAM -> {}
                 FeedPostType.INSTAGRAM_STORIES -> {}
                 FeedPostType.FACEBOOK -> {}
-                FeedPostType.YOUTUBE -> FeedYoutubeItem(it)
+                FeedPostType.YOUTUBE -> Column {
+                    FeedYoutubeItem(f)
+                    if (i % 3 == 0) GlobalNativeFullAds()
+                }
+
                 FeedPostType.SHORTS -> {}
-                FeedPostType.NEWS -> FeedNewsItem(it)
+                FeedPostType.NEWS -> Column {
+                    FeedNewsItem(f)
+                    if (i % 3 == 0) GlobalNativeFullAds()
+                }
+
                 null -> {}
             }
         }

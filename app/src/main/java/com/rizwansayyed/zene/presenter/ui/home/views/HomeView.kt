@@ -35,7 +35,6 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
@@ -106,10 +105,6 @@ fun HomeView() {
             HomepageTopView(homeNavModel)
         }
 
-        item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
-        }
-
         item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 CurrentMostPlayingSong()
@@ -142,7 +137,7 @@ fun HomeView() {
             }
         }
         item(key = 11, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
+            GlobalNativeFullAds()
         }
 
         item(key = 12, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
@@ -172,17 +167,15 @@ fun HomeView() {
         }
 
         item(key = 15, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
+            GlobalNativeFullAds()
         }
 
 
         item(key = 16, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
-                GlobalNativeFullAds()
                 SongsYouMayLikeView()
             }
         }
-
 
 
         item(key = 18, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
@@ -191,14 +184,14 @@ fun HomeView() {
             }
         }
 
-
         item(key = 19, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
-        }
-
-        item(key = 20, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 RelatedAlbums()
+            }
+        }
+        item(key = 20, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
+                GlobalNativeFullAds()
             }
         }
 
@@ -214,18 +207,13 @@ fun HomeView() {
 
             DataResponse.Loading -> items(
                 6,
-                key = { UUID.randomUUID() },
+                key = { _ -> UUID.randomUUID() },
                 span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 LoadingAlbumsCards()
             }
 
             else -> {}
         }
-
-        item(key = 22, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
-        }
-
 
         item(key = 23, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
@@ -234,7 +222,7 @@ fun HomeView() {
         }
 
         item(key = 25, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
+            GlobalNativeFullAds()
         }
 
 
@@ -251,19 +239,14 @@ fun HomeView() {
             }
         }
 
-        item(key = 29, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
+        item(key = 28, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            GlobalNativeFullAds()
         }
 
         item(key = 30, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
-                GlobalNativeFullAds()
                 SongsForYouToExplore()
             }
-        }
-
-        item(key = 32, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
         }
 
         when (val v = roomDbViewModel.songsSuggestionForUsers) {
@@ -276,7 +259,10 @@ fun HomeView() {
                 }
             }
 
-            DataResponse.Loading -> items(20, key = { UUID.randomUUID() }, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
+            DataResponse.Loading -> items(
+                20,
+                key = { UUID.randomUUID() },
+                span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 LoadingAlbumsCards()
             }
 
@@ -284,13 +270,8 @@ fun HomeView() {
         }
 
         item(key = 33, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
+            GlobalNativeFullAds()
         }
-
-        item(key = 34, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            GlobalHiddenNativeAds()
-        }
-
 
         item(key = 35, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(230.dp))

@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,7 +82,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
+import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
@@ -93,6 +94,7 @@ import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItems
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsCard
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsItemsText
 import com.rizwansayyed.zene.presenter.ui.home.settings.SettingsLayout
+import com.rizwansayyed.zene.presenter.util.UiUtils
 import com.rizwansayyed.zene.presenter.util.UiUtils.formatSingleTimeToView
 import com.rizwansayyed.zene.presenter.util.UiUtils.otherPermissionIntent
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -134,35 +136,37 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
         Spacer(Modifier.height(70.dp))
 
         OfflineModesSettings()
-        GlobalHiddenNativeAds()
+
         SongQualitySettings()
 
         SongSpeedSettings(player)
-        GlobalHiddenNativeAds()
+
         LoopSettings()
 
         AutoPlaySettings()
-        GlobalHiddenNativeAds()
+
         OfflineDownloadSettings()
 
         SongOnLockScreenSettings()
-        GlobalHiddenNativeAds()
+
         SetWallpaperSettings()
 
+        GlobalNativeFullAds()
+
         SetStandbySettings()
-        GlobalHiddenNativeAds()
+
         PlaySongWhenAlarmSettings(alarmManagerToPlaySong)
 
         Spacer(Modifier.height(20.dp))
-        GlobalHiddenNativeAds()
+
         SettingsItemsCard(R.string.equalizer) {
             openEqualizer()
         }
-        GlobalHiddenNativeAds()
+
         SettingsItemsCard(R.string.clear_cache, cacheSize()) {
             cacheDialog = true
         }
-        GlobalHiddenNativeAds()
+
         SettingsItemsCard(R.string.feedback) {
             val selectorIntent = Intent(ACTION_SENDTO)
                 .setData("mailto:$OFFICIAL_EMAIL".toUri())
@@ -178,8 +182,6 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
             })
         }
 
-        GlobalHiddenNativeAds()
-        GlobalHiddenNativeAds()
         SettingsItemsCard(R.string.privacy_policy) {
         }
 
@@ -187,7 +189,8 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
 
         TextThin("Version ${BuildConfig.VERSION_NAME}", Modifier.padding(horizontal = 24.dp))
 
-        GlobalHiddenNativeAds()
+        GlobalNativeFullAds()
+
         Spacer(Modifier.height(150.dp))
     }
 

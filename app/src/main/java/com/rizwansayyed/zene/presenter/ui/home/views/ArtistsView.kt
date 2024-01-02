@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsAlbumsList
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsButtonView
@@ -76,6 +77,9 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             ArtistsSocialMedia()
             Spacer(Modifier.height(40.dp))
 
+            GlobalNativeFullAds()
+            Spacer(Modifier.height(20.dp))
+
             ArtistsImagesView()
             Spacer(Modifier.height(40.dp))
 
@@ -88,8 +92,15 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
             ArtistsAlbumsList()
             Spacer(Modifier.height(40.dp))
 
+            GlobalNativeFullAds()
+
+            Spacer(Modifier.height(20.dp))
+
             ArtistsLatestSongs()
             Spacer(Modifier.height(40.dp))
+
+            GlobalNativeFullAds()
+            Spacer(Modifier.height(20.dp))
 
             ArtistsNews()
             Spacer(Modifier.height(40.dp))

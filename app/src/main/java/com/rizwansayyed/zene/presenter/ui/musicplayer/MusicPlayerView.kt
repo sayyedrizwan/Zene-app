@@ -40,7 +40,6 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.ui.GlobalHiddenNativeAds
 import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.backgroundPalette
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
@@ -80,9 +79,9 @@ fun MusicPlayerView(player: ExoPlayer, showedOnLockScreen: Boolean) {
             .verticalScroll(rememberScrollState())
     ) {
         TopPlayerHeader(showedOnLockScreen, p)
-        GlobalHiddenNativeAds(MainColor.copy(0.2f))
+
         SongsThumbnailsWithList(p)
-        GlobalHiddenNativeAds(MainColor.copy(0.2f))
+
 
         if (p?.playType == MusicType.RADIO)
             LiveBroadcastText()
@@ -91,34 +90,34 @@ fun MusicPlayerView(player: ExoPlayer, showedOnLockScreen: Boolean) {
 
         if (p?.playType == MusicType.RADIO) {
             RadioActionButtons(player)
-            GlobalHiddenNativeAds(MainColor.copy(0.2f))
-        } else {
-            MusicPlayerButtons(player)
-            GlobalHiddenNativeAds(MainColor.copy(0.2f))
+
             Spacer(Modifier.height(20.dp))
 
-            GlobalHiddenNativeAds(MainColor.copy(0.2f))
+            GlobalNativeFullAds()
+        } else {
+            MusicPlayerButtons(player)
+
+            Spacer(Modifier.height(20.dp))
+
             MusicActionButtons(p)
 
             Spacer(Modifier.height(30.dp))
 
             MusicPlayerLyrics(playerViewModel, player)
 
-            GlobalHiddenNativeAds(MainColor.copy(0.2f))
-
-            MusicPlayerArtistsMerchandise(playerViewModel)
             GlobalNativeFullAds()
 
+            MusicPlayerArtistsMerchandise(playerViewModel)
 
             MusicPlayerArtists(playerViewModel)
 
-            GlobalHiddenNativeAds(MainColor.copy(0.2f))
-
             MusicPlayerImages(playerViewModel)
 
-            GlobalHiddenNativeAds(MainColor.copy(0.2f))
+            GlobalNativeFullAds()
 
             MusicPlayerRelatedSongs(playerViewModel)
+
+            GlobalNativeFullAds()
         }
 
         Spacer(Modifier.height(90.dp))
