@@ -127,6 +127,13 @@ fun FeedYoutubeItem(feed: ArtistsFeedEntity) {
             Modifier.fillMaxWidth(), doCenter = true, size = 12
         )
 
+        Spacer(Modifier.height(10.dp))
+
+        TextThin(
+            v = "${stringResource(R.string.uploaded_on)}: ${getTimeAgo(feed.timeAdded ?: 0L)}",
+            Modifier.fillMaxWidth(), doCenter = true, size = 12
+        )
+
         Spacer(Modifier.height(15.dp))
     }
 

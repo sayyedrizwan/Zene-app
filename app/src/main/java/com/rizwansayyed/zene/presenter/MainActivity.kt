@@ -106,6 +106,8 @@ import kotlin.time.Duration.Companion.seconds
 // add events
 // make fcm better
 
+// change track base on volume button key press
+
 
 //in future
 // add insta shop items on artists page.
