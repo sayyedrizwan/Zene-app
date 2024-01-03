@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DO_SHOW_SPLASH_SC
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.FAVOURITE_RADIO_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IP_JSON
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LAST_SYNC_TIME
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LOGIN_USER_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.MUSIC_PLAYER_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SEARCH_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SELECTED_FAVOURITE_ARTISTS_SONGS
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.cookiesName
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.IpJsonResponse
+import com.rizwansayyed.zene.domain.LoginUserData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.WebMusicLoginTokens
 import com.rizwansayyed.zene.utils.Utils.daysOldTimestamp
@@ -81,6 +83,17 @@ object DataStorageManager {
             runBlocking {
                 val moshi = moshi.adapter(MusicPlayerData::class.java).toJson(v.first())
                 context.dataStore.edit { it[MUSIC_PLAYER_DATA] = moshi }
+            }
+        }
+
+    var loginUser: Flow<LoginUserData?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(LoginUserData::class.java).fromJson(it[LOGIN_USER_DATA] ?: JSON_LIST)
+        }
+        set(v) = synchronized(this) {
+            runBlocking {
+                val moshi = moshi.adapter(LoginUserData::class.java).toJson(v.first())
+                context.dataStore.edit { it[LOGIN_USER_DATA] = moshi }
             }
         }
 

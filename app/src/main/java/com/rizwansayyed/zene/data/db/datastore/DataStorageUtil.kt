@@ -20,6 +20,7 @@ object DataStorageUtil {
     val SPOTIFY_TOKEN_DATA = stringPreferencesKey("spotify_token_data")
     val YT_MUSIC_TOKEN_DATA = stringPreferencesKey("yt_music_token_data")
     val APPLE_MUSIC_TOKEN_DATA = stringPreferencesKey("apple_music_token_data")
+    val LOGIN_USER_DATA = stringPreferencesKey("login_user_data")
 
     fun cookiesName(domain: String): Preferences.Key<String> {
         return stringPreferencesKey("${domain}_cookie")

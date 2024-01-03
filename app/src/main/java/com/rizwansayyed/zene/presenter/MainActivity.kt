@@ -103,12 +103,7 @@ import kotlin.time.Duration.Companion.seconds
 
 // can you replicate blur image as in-build
 // songs info on the mood
-
-
-// add events
 // make fcm better
-
-// change track base on volume button key press
 
 
 //in future
@@ -119,6 +114,8 @@ import kotlin.time.Duration.Companion.seconds
 // backup and sync
 // add stories, fb posts to show on feed
 // group playing
+
+// do something like rewind -> https://play.google.com/store/apps/details?id=com.zh.musictimetravel
 
 
 @AndroidEntryPoint

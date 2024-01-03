@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistSpotify
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistYoutubeMusic
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicAlbumList
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicMusicGroupView
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicOfflineDownload
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicPlaylistsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.SelectedPlaylistView
@@ -125,7 +126,11 @@ fun MyMusicView() {
         item(key = 14, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             GlobalNativeFullAds()
         }
+
         item(key = 15, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            MyMusicMusicGroupView()
+        }
+        item(key = 16, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(200.dp))
         }
     }
