@@ -116,6 +116,7 @@ import kotlin.time.Duration.Companion.seconds
 // song recognization
 // backup and sync
 // add stories, fb posts to show on feed
+// group playing
 
 
 @AndroidEntryPoint
