@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 
@@ -107,6 +108,7 @@ fun EventsItems(events: ArtistsEvents, artist: ArtistsViewModel) {
             .clip(RoundedCornerShape(6))
             .background(Color.Black)
             .clickable {
+                FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_EVENTS)
                 Uri
                     .parse(events.link)
                     .customBrowser()

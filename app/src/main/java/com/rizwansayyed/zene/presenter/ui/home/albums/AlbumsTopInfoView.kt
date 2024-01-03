@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
@@ -105,6 +106,7 @@ fun AlbumNameWithPlayAllButton() {
                         .clip(RoundedCornerShape(100))
                         .background(MainColor)
                         .clickable {
+                            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.PLAY_ALL_ALBUMS_SONG)
                             addAllPlayer(playlistAlbum.playlistSongsItem.toTypedArray(), 0)
                         }
                         .padding(vertical = 15.dp)

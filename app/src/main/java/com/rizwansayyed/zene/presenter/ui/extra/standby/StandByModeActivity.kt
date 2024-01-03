@@ -28,6 +28,8 @@ import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbySongInfoView
 import com.rizwansayyed.zene.presenter.ui.extra.standby.view.StandbyViewTime
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -116,6 +118,11 @@ class StandByModeActivity : ComponentActivity(), StandByInterface {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerEvent(FirebaseEvents.FirebaseEvent.STAND_BY_MODE)
     }
 
     override fun close() {

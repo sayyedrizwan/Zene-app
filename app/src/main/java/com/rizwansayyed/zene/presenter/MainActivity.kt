@@ -73,6 +73,8 @@ import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.AdsId.OPEN_ADS_ID
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
@@ -293,6 +295,8 @@ class MainActivity : ComponentActivity() {
     @UnstableApi
     override fun onStart() {
         super.onStart()
+
+        registerEvent(FirebaseEvents.FirebaseEvent.OPEN_APP)
         lifecycleScope.launch {
             delay(2.seconds)
             checkAndClearCache()

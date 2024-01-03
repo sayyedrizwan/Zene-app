@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -60,5 +61,10 @@ class LockScreenActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.MUSIC_ON_LOCK_SCREEN)
     }
 }

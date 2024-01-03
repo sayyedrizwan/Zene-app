@@ -29,6 +29,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.tempEmptyList
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -75,18 +76,21 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
     HorizontalPager(
         pagerState, Modifier.fillMaxWidth(), PaddingValues(horizontal = paddingReminder.dp)
     ) { page ->
-        Card({ if (!isLoading) homeNavViewModel.setImageAsWallpaper(item[page]) },
-            Modifier
-                .padding(top = if (page == pagerState.currentPage) 0.dp else 60.dp)
-                .padding(7.dp)
-                .size(width.dp, height)
-                .graphicsLayer {
-                    val pageOffset = (
-                            (pagerState.currentPage - page) + pagerState
-                                .currentPageOffsetFraction
-                            ).absoluteValue
-                    alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
-                }
+        Card({
+            if (!isLoading)
+                FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.TAP_ARTISTS_IMAGE_TO_SET_AS_WALLPAPER)
+            homeNavViewModel.setImageAsWallpaper(item[page])
+        }, Modifier
+            .padding(top = if (page == pagerState.currentPage) 0.dp else 60.dp)
+            .padding(7.dp)
+            .size(width.dp, height)
+            .graphicsLayer {
+                val pageOffset = (
+                        (pagerState.currentPage - page) + pagerState
+                            .currentPageOffsetFraction
+                        ).absoluteValue
+                alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+            }
         ) {
             AsyncImage(
                 item[page],

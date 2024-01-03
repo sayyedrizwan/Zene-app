@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
 import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlArtistsShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -56,9 +57,11 @@ fun AlbumsShortcutButton() {
                 .padding(horizontal = 10.dp)
         ) {
             RoundBorderButtonsView(stringResource(id = R.string.share)) {
+                FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.ALBUM_URL_SHARE)
                 shareTxt(appUrlArtistsShare(homeNav.selectedAlbum))
             }
             RoundBorderButtonsView(stringResource(id = if (isAlbumPresent > 0) R.string.remove_from_saved_List else R.string.save_album)) {
+                if (isAlbumPresent == 0) FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.ALBUM_SAVE_SHARE)
                 playlistAlbum.saveAlbumsLocally(v.item, homeNav.selectedAlbum, isAlbumPresent > 0)
             }
             RoundBorderButtonsView(stringResource(R.string.offline_download)) {
@@ -70,6 +73,7 @@ fun AlbumsShortcutButton() {
     }
 
     fun startDownload() {
+        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.DOWNLOAD_OFFLINE_ALBUMS_SONG)
         playlistAlbum.playlistSongsItem.forEach {
             startOfflineDownloadWorkManager(it.pId)
         }

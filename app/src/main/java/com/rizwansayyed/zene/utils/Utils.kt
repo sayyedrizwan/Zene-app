@@ -245,6 +245,7 @@ object Utils {
 
     fun Uri.customBrowser() = CoroutineScope(Dispatchers.Main).launch {
         CustomTabsIntent.Builder().build().apply {
+            intent.setPackage("com.android.chrome")
             intent.flags = FLAG_ACTIVITY_NEW_TASK
         }.launchUrl(context, this@customBrowser)
     }
