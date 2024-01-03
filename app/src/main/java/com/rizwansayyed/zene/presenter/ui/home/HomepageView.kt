@@ -45,11 +45,11 @@ fun HomepageTopView(homeNav: HomeNavViewModel) {
 //                homeNav.songRecognitionDialog(true)
 //            }
 
-            Spacer(Modifier.width(9.dp))
-
-            SmallIcons(R.drawable.ic_notification) {
-
-            }
+//            Spacer(Modifier.width(9.dp))
+//
+//            SmallIcons(R.drawable.ic_notification) {
+//
+//            }
 
             Spacer(Modifier.width(9.dp))
 

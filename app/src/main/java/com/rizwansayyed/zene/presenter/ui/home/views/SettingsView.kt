@@ -100,7 +100,7 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.otherPermissionIntent
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
-import com.rizwansayyed.zene.service.workmanager.StandByOnChargingWorkManager.Companion.startStandbyModeWorkManager
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.OFFICIAL_EMAIL
 import com.rizwansayyed.zene.utils.Utils.cacheSize
 import com.rizwansayyed.zene.utils.Utils.isPermission
@@ -205,6 +205,10 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
 
             cacheDialog = false
         }
+
+    LaunchedEffect(Unit){
+        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_SETTINGS)
+    }
 }
 
 @Composable

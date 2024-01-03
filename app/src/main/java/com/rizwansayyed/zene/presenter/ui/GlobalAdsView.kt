@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils.AdsId.BANNER_ADS_ID
 import com.rizwansayyed.zene.utils.Utils.AdsId.NATIVE_ADS_ID
 import kotlinx.coroutines.Dispatchers
@@ -97,6 +100,10 @@ fun GlobalNativeFullAds() {
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.Black)
         )
+
+        LaunchedEffect(Unit){
+            registerEvent(FirebaseEvents.FirebaseEvent.LOADED_AD)
+        }
     }
 
     DisposableEffect(Unit) {
@@ -106,7 +113,7 @@ fun GlobalNativeFullAds() {
             }.withAdListener(object : AdListener() {
                 override fun onAdClicked() {
                     super.onAdClicked()
-                    Log.d("TAG", "onAdClicked: ")
+                    registerEvent(FirebaseEvents.FirebaseEvent.CLICK_AD)
                 }
             }).build()
             adLoader.loadAd(AdRequest.Builder().build())

@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThinArtistsDesc
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlArtistsShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
@@ -106,6 +107,16 @@ fun ArtistsButtonView() {
 
     val maxArtists = stringResource(R.string.max_artists_you_can_add_is_30)
 
+    fun addRmEvent() {
+        if (artistsList.any {
+                it.name.lowercase().trim() == homeNav.selectedArtists.lowercase().trim()
+            })
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.PIN_ARTISTS)
+        else
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.UNPINNED_ARTISTS)
+
+    }
+
     Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
         Row(
             Modifier
@@ -115,6 +126,7 @@ fun ArtistsButtonView() {
                         maxArtists.toast()
                         return@clickable
                     }
+                    addRmEvent()
                     roomDb.addOrRemoveArtists(homeNav.selectedArtists.trim())
                 }
                 .weight(1f)

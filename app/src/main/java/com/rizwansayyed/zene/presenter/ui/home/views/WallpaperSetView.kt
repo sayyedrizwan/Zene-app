@@ -89,6 +89,8 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.THREE_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UtilsWallpaperImage
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
@@ -185,6 +187,7 @@ fun ManipulateImage(
 
     LaunchedEffect(Unit) {
         scale = 2.5f
+        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPENED_WALLPAPER_SET)
     }
 
     LaunchedEffect(state.isTransformInProgress) {
@@ -381,23 +384,28 @@ fun ImageViewSettingsBar(s: String, doMore: () -> Unit, set: (forLockScreen: Boo
         ) {
 
             ListOfActionButton(R.drawable.ic_wallpaper_1, editedHomeScreen) {
+                registerEvent(FirebaseEvents.FirebaseEvent.SET_IMAGE_AS_WALLPAPER_HOME)
                 set(false)
             }
 
             ListOfActionButton(R.drawable.ic_screen_lock, editedLockScreen) {
+                registerEvent(FirebaseEvents.FirebaseEvent.SET_IMAGE_AS_WALLPAPER_LOCK)
                 set(true)
             }
 
             ListOfActionButton(R.drawable.ic_layer_add, stringResource(R.string.add_more_images)) {
+                registerEvent(FirebaseEvents.FirebaseEvent.ADDING_MORE_IMAGE_ON_WALLPAPER)
                 doMore()
             }
 
             ListOfActionButton(R.drawable.ic_wallpaper_1, wholeHomeScreen) {
+                registerEvent(FirebaseEvents.FirebaseEvent.SET_CUSTOM_IMAGE_AS_WALLPAPER_HOME)
                 wallpaperSet.toast()
                 UtilsWallpaperImage(s).homeScreenWallpaper()
             }
 
             ListOfActionButton(R.drawable.ic_screen_lock, wholeLockScreen) {
+                registerEvent(FirebaseEvents.FirebaseEvent.SET_CUSTOM_IMAGE_AS_WALLPAPER_LOCK)
                 wallpaperSet.toast()
                 UtilsWallpaperImage(s).lockScreenWallpaper()
             }

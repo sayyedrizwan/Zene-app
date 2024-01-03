@@ -14,6 +14,8 @@ import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.utils.DateFormatter
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.NotificationViewManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -45,6 +47,8 @@ class AlarmReceiverSong : BroadcastReceiver() {
                 if (isActive) cancel()
                 return@launch
             }
+
+            registerEvent(FirebaseEvents.FirebaseEvent.PLAYING_SONG_ALARM)
 
             if (DataStorageSettingsManager.alarmSongData.first()?.pId != null) {
                 val songDetails =

@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.presenter.ui.home.feed.view.FeedYoutubeItem
 import com.rizwansayyed.zene.presenter.ui.home.feed.view.PinnedArtistsList
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 
 
@@ -127,6 +128,7 @@ fun ArtistsFeedView() {
     LaunchedEffect(Unit) {
         roomDb.artistsFeeds()
         startArtistsInfoWorkManager()
+        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_FEED)
     }
 }
 

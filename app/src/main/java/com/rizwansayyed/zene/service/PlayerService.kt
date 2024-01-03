@@ -35,6 +35,8 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,6 +84,8 @@ class PlayerService : MediaSessionService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+
+        registerEvent(FirebaseEvents.FirebaseEvent.STARTED_PLAYER_SERVICE)
 
         playerNotification.buildNotification(this@PlayerService)
 
@@ -145,6 +149,7 @@ class PlayerService : MediaSessionService() {
         if (retry >= 1) return@launch
 
         if (error.message?.lowercase()?.trim()?.contains("source error") == true) {
+            registerEvent(FirebaseEvents.FirebaseEvent.DOWNLOADING_SONG_URL)
             retry += 1
             withContext(Dispatchers.Main) {
                 currentPlayingMusic = player.currentMediaItem?.mediaId ?: ""
@@ -207,6 +212,8 @@ class PlayerService : MediaSessionService() {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             super.onMediaItemTransition(mediaItem, reason)
             mediaItem?.let { PlayServiceListener.getInstance().mediaItemUpdate(it) }
+
+            registerEvent(FirebaseEvents.FirebaseEvent.CHANGE_SONG_TRACK_ITEM)
 
             CoroutineScope(Dispatchers.Main).launch {
                 if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {

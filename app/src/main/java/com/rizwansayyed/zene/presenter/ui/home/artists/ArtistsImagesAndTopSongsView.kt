@@ -77,9 +77,10 @@ fun ArtistPhotoAlbum(item: List<String>, isLoading: Boolean) {
         pagerState, Modifier.fillMaxWidth(), PaddingValues(horizontal = paddingReminder.dp)
     ) { page ->
         Card({
-            if (!isLoading)
+            if (!isLoading) {
                 FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.TAP_ARTISTS_IMAGE_TO_SET_AS_WALLPAPER)
-            homeNavViewModel.setImageAsWallpaper(item[page])
+                homeNavViewModel.setImageAsWallpaper(item[page])
+            }
         }, Modifier
             .padding(top = if (page == pagerState.currentPage) 0.dp else 60.dp)
             .padding(7.dp)

@@ -60,6 +60,8 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.BottomNavImage
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
@@ -284,6 +286,10 @@ fun HomeView() {
         }.debounce(500L).collectLatest {
             homeNavModel.setHomeScrollPosition(it)
         }
+    }
+
+    LaunchedEffect(Unit) {
+        registerEvent(FirebaseEvents.FirebaseEvent.OPEN_HOME)
     }
 }
 

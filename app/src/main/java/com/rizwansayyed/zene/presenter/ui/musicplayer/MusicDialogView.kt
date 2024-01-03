@@ -47,6 +47,8 @@ import com.rizwansayyed.zene.service.player.utils.Utils.addToEndPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playNextPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playRadioOnPlayer
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
@@ -124,6 +126,11 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
                 favouriteRadioList = flowOf(list.toTypedArray())
                 homeApiViewModel.favouriteRadios(true)
             }
+
+
+        LaunchedEffect(Unit){
+            registerEvent(FirebaseEvents.FirebaseEvent.SONG_MENU_SHEET)
+        }
     } else {
         MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
             addAllPlayer(listOf(homeNavModel.songDetailDialog).toTypedArray(), 0)
@@ -158,6 +165,11 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
 //        MusicDialogListItems(R.drawable.ic_information_circle, songInfo) {
 //
 //        }
+
+
+        LaunchedEffect(Unit){
+            registerEvent(FirebaseEvents.FirebaseEvent.RADIO_MENU_SHEET)
+        }
     }
 
     TextSemiBold(

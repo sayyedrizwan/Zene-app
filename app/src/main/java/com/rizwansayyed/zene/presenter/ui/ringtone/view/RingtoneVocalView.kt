@@ -63,6 +63,8 @@ import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startCroppingAndMa
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.startPlayingRingtoneSong
 import com.rizwansayyed.zene.presenter.ui.ringtone.util.Utils.writeRingtoneSettings
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -281,6 +283,7 @@ fun RingtoneViewButton(
         stringResource(R.string.set_ringtone_desc),
         stringResource(R.string.set),
         {
+            registerEvent(FirebaseEvents.FirebaseEvent.SETTING_MUSIC_AS_RINGTONE)
             setRingtoneDialog = false
             startCroppingAndMakeRingtone(ringtoneSlider)
             activity.finish()

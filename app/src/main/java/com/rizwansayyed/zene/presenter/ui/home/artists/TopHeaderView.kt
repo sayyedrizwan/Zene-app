@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
+import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 
 @Composable

@@ -63,6 +63,8 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -214,6 +216,7 @@ fun SearchView() {
 
     LaunchedEffect(Unit) {
         homeApiViewModel.emptySearchText()
+        registerEvent(FirebaseEvents.FirebaseEvent.OPEN_SEARCH)
     }
 }
 

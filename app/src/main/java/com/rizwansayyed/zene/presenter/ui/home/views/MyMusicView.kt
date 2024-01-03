@@ -40,6 +40,8 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.TopMyMusicHeader
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.YoutubeMusicLoginDialog
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.MyMusicViewModel
 import kotlinx.coroutines.Dispatchers
@@ -104,16 +106,19 @@ fun MyMusicView() {
         }
         item(key = 11, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
             ImportPlaylistSpotify {
+                registerEvent(FirebaseEvents.FirebaseEvent.OPEN_IMPORT_SPOTIFY)
                 spotifyLoginDialog = true
             }
         }
         item(key = 12, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
             ImportPlaylistYoutubeMusic {
+                registerEvent(FirebaseEvents.FirebaseEvent.OPEN_IMPORT_YOUTUBE_MUSIC)
                 youtubeMusicLoginDialog = true
             }
         }
         item(key = 13, span = { GridItemSpan(TWO_ITEMS_GRID) }) {
             ImportPlaylistAppleMusic {
+                registerEvent(FirebaseEvents.FirebaseEvent.OPEN_IMPORT_APPLE_MUSIC)
                 appleMusicLoginDialog = true
             }
         }
@@ -143,5 +148,6 @@ fun MyMusicView() {
 
     LaunchedEffect(Unit) {
         myMusic.init()
+        registerEvent(FirebaseEvents.FirebaseEvent.OPEN_MY_MUSIC)
     }
 }

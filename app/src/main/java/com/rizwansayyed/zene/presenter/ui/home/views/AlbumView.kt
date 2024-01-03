@@ -36,6 +36,8 @@ import com.rizwansayyed.zene.presenter.ui.home.albums.SimilarAlbums
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlaylistAlbumViewModel
 
@@ -106,6 +108,7 @@ fun AlbumView() {
         if (homeNav.selectedAlbum.isNotEmpty()) {
             playlistAlbum.playlistAlbum(homeNav.selectedAlbum)
             listState.scrollToItem(0)
+            registerEvent(FirebaseEvents.FirebaseEvent.OPEN_A_ALBUM)
         }
     }
 }

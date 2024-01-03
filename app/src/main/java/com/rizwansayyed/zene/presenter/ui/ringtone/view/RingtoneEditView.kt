@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 
 @Composable
 fun RingtoneEditView(p: MusicPlayerData?) {
@@ -44,5 +47,9 @@ fun RingtoneEditView(p: MusicPlayerData?) {
         Column(Modifier.weight(2f), Arrangement.Center, Alignment.CenterHorizontally) {
             RingtoneVocalView()
         }
+    }
+
+    LaunchedEffect(Unit) {
+        registerEvent(FirebaseEvents.FirebaseEvent.OPEN_RINGTONE_EDIT_VIEW)
     }
 }

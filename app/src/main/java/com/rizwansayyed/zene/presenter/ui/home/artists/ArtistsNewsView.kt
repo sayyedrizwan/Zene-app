@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.presenter.ui.TextRegularNews
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.utils.Utils.tempEmptyList
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
@@ -105,6 +106,7 @@ fun ArtistsNewsItems(n: GoogleNewsResponse.Channel.Item) {
             .clip(RoundedCornerShape(12))
             .background(MainColor)
             .clickable {
+                FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_NEWS)
                 Uri
                     .parse(n.link)
                     .customBrowser()

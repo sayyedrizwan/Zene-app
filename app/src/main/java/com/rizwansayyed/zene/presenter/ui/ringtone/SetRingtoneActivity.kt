@@ -35,6 +35,8 @@ import com.rizwansayyed.zene.presenter.ui.ringtone.view.RingtoneEditView
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.utils.FileDownloaderInChunks
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +53,6 @@ class SetRingtoneActivity : ComponentActivity() {
 
     @Inject
     lateinit var player: ExoPlayer
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
@@ -85,6 +86,7 @@ class SetRingtoneActivity : ComponentActivity() {
                 }
 
                 LaunchedEffect(Unit) {
+                    registerEvent(FirebaseEvents.FirebaseEvent.OPEN_RINGTONE_VIEW)
                     try {
                         val link = songDownload.download(p?.v?.songID ?: "").first()
                         if (link == null) {

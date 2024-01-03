@@ -57,6 +57,8 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.view.SongsThumbnailsWithLi
 import com.rizwansayyed.zene.presenter.ui.musicplayer.view.TopPlayerHeader
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils.littleVibrate
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
@@ -138,9 +140,12 @@ fun MusicPlayerView(player: ExoPlayer, showedOnLockScreen: Boolean) {
 
         p?.songID?.let { playerViewModel.offlineSongDetails(it) }
         p?.let { playerViewModel.searchLyrics(it) }
+
+        registerEvent(FirebaseEvents.FirebaseEvent.SONG_CHANGE_FROM_MUSIC_PLAYER)
     }
 
     DisposableEffect(Unit) {
+        registerEvent(FirebaseEvents.FirebaseEvent.OPEN_MUSIC_PLAYER)
         littleVibrate()
         onDispose {
             littleVibrate()

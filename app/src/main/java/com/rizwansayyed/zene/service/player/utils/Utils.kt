@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -117,6 +118,8 @@ object Utils {
             musicPlayerData = flowOf(mpd)
         }
 
+        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.PLAY_SONGS_LIST)
+
         val newList = shortListForPlayer(l, p)
         val newPosition = newList.lastIndexOf(l?.get(p))
 
@@ -168,6 +171,7 @@ object Utils {
             musicPlayerData = flowOf(mpd)
         }
 
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.PLAY_RADIO)
 
         val mediaData = moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio)
         Intent(PLAYER_SERVICE_ACTION).apply {

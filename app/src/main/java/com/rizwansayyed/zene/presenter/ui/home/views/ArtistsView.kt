@@ -43,6 +43,8 @@ import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsSongURL
 import com.rizwansayyed.zene.presenter.ui.home.artists.ArtistsTopSongs
 import com.rizwansayyed.zene.presenter.ui.home.artists.TopArtistsImageView
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
@@ -123,6 +125,8 @@ fun ArtistsView(artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer) {
         if (homeNav.selectedArtists.isNotEmpty()) {
             artistsViewModel.init(homeNav.selectedArtists)
             scrollState.scrollTo(0)
+
+            registerEvent(FirebaseEvents.FirebaseEvent.OPEN_A_ARTISTS)
         }
     }
 }

@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.domain.soundcloud.SoundCloudProfileResponseItem
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.shimmerBrush
+import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.utils.Utils.formatNumberToFollowers
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
@@ -85,6 +86,7 @@ fun ArtistsSocialMedia() {
                     ArtistsSocialMediaButton(
                         R.drawable.ic_internet, d, stringResource(R.string.website)
                     ) {
+                        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_WEBSITE)
                         Uri.parse(social.url).customBrowser()
                     }
                     return@forEachIndexed
@@ -101,42 +103,49 @@ fun ArtistsSocialMediaList(social: SoundCloudProfileResponseItem) {
         social.url?.lowercase()?.contains("facebook.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_facebook, "@${social.url.slash()}", stringResource(R.string.facebook)
         ) {
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_FACEBOOK)
             Uri.parse(social.url).customBrowser()
         }
 
         social.url?.lowercase()?.contains("twitter.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_twitter, "@${social.url.slash()}", stringResource(R.string.twitter)
         ) {
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_TWITTER)
             Uri.parse(social.url).customBrowser()
         }
 
         social.url?.lowercase()?.contains("instagram.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_instagram, "@${social.url.slash()}", stringResource(R.string.instagram)
         ) {
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_INSTAGRAM)
             Uri.parse(social.url).customBrowser()
         }
 
         social.url?.lowercase()?.contains("youtube.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_youtube, "/${social.url.slash()}", stringResource(R.string.youtube)
         ) {
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_YOUTUBE)
             Uri.parse(social.url).customBrowser()
         }
 
         social.url?.lowercase()?.contains("snapchat.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_snapchat, "@${social.url.slash()}", stringResource(R.string.snapchat)
         ) {
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_SNAPCHAT)
             Uri.parse(social.url).customBrowser()
         }
 
         social.url?.lowercase()?.contains("tiktok.com") == true -> ArtistsSocialMediaButton(
             R.drawable.ic_tiktok, social.url.slash(), stringResource(R.string.tiktok)
         ) {
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_TIKTOK)
             Uri.parse(social.url).customBrowser()
         }
 
         social.url?.lowercase()?.contains("/store") == true -> ArtistsSocialMediaButton(
             R.drawable.store_with_bag, getDomain(social.url), stringResource(R.string.store)
         ) {
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.OPEN_ARTISTS_STORE)
             Uri.parse(social.url).customBrowser()
         }
     }

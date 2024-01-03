@@ -7,6 +7,8 @@ import android.content.Intent
 import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.NotificationViewManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +28,8 @@ class RebootDeviceReceiver : BroadcastReceiver() {
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context?, intent: Intent?) {
         ApplicationModule.context.onCreate()
+
+        registerEvent(FirebaseEvents.FirebaseEvent.REBOOT_DEVICE)
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)
