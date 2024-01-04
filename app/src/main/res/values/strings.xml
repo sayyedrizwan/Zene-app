@@ -234,6 +234,8 @@
     <string name="unable_to_identify_the_music">Unable to identify the music</string>
     <string name="try_again">Try Again</string>
     <string name="song_group_party">Song Group Party</string>
+    <string name="sign_in_for_song_group_party">You first need to login to start the song group party and become a host.</string>
+    <string name="continue_with_google">Continue with google</string>
     <string name="song_group_party_desc">Create an unforgettable music experience with your friends! Start a sync-enabled song party, where everyone can seamlessly join, enjoy, and watch music videos together in perfect harmony.</string>
     <string name="stand_by_mode_while_charging">Stand-by Mode while charging</string>
     <string name="need_permission_to_show_events_from_calender">Need permission to \nshow events from calender</string>

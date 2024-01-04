@@ -72,6 +72,7 @@ import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
+import com.rizwansayyed.zene.service.songparty.SongPartyService
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
@@ -267,6 +268,12 @@ class MainActivity : ComponentActivity() {
 
         doOpenMusicPlayer(intent)
         connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
+        lifecycleScope.launch {
+            delay(3.seconds)
+            Intent(this@MainActivity, SongPartyService::class.java).apply {
+                startService(this)
+            }
+        }
     }
 
     private val networkChangeListener = object : ConnectivityManager.NetworkCallback() {

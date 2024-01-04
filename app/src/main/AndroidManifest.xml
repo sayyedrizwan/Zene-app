@@ -134,12 +134,17 @@
 
         <service
             android:name=".service.fcm.FirebaseMessagingReceiver"
-            android:exported="false"
-            android:directBootAware="true">
+            android:directBootAware="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".service.songparty.SongPartyService"
+            android:enabled="true"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -156,7 +161,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2941808068005217~5659881245"/>
+            android:value="ca-app-pub-2941808068005217~5659881245" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

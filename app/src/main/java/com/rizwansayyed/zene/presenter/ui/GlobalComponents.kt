@@ -105,6 +105,7 @@ fun RoundBorderButtonsView(text: String, click: () -> Unit) {
     }
 }
 
+
 @Composable
 fun LoadingStateBar() {
     Row(
