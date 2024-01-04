@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -44,13 +45,14 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashSc
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
-import com.rizwansayyed.zene.di.ApplicationModule
 import com.rizwansayyed.zene.domain.HomeNavigation.ALL_RADIO
 import com.rizwansayyed.zene.domain.HomeNavigation.FEED
 import com.rizwansayyed.zene.domain.HomeNavigation.HOME
 import com.rizwansayyed.zene.domain.HomeNavigation.MY_MUSIC
 import com.rizwansayyed.zene.domain.HomeNavigation.SEARCH
 import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
+import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.domain.MusicType.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
@@ -67,17 +69,22 @@ import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.songparty.SongPartyService
+import com.rizwansayyed.zene.service.songparty.Utils.generateTheRoom
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.AdsId.OPEN_ADS_ID
+import com.rizwansayyed.zene.utils.Utils.AppUrl.urlUriType
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -86,6 +93,7 @@ import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -267,13 +275,9 @@ class MainActivity : ComponentActivity() {
         }
 
         doOpenMusicPlayer(intent)
+        captureUrlInfo(intent)
         connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
-        lifecycleScope.launch {
-            delay(3.seconds)
-            Intent(this@MainActivity, SongPartyService::class.java).apply {
-                startService(this)
-            }
-        }
+
     }
 
     private val networkChangeListener = object : ConnectivityManager.NetworkCallback() {
@@ -289,6 +293,7 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let { doOpenMusicPlayer(it) }
+        captureUrlInfo(intent)
     }
 
     private val adLoadedCallback = object : AppOpenAd.AppOpenAdLoadCallback() {
@@ -318,12 +323,10 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
         }
+
         lifecycleScope.launch {
             delay(2.seconds)
-            if (!BuildConfig.DEBUG) {
-                val request = AdRequest.Builder().build()
-                AppOpenAd.load(this@MainActivity, OPEN_ADS_ID, request, adLoadedCallback)
-            }
+            alarmManagerToPlaySong.startAlarmIfThere()
         }
     }
 
@@ -333,12 +336,34 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun apis() {
-        delay(2.seconds)
+        delay(1.seconds)
         homeApiViewModel.init()
         jsoupScrapViewModel.init()
         roomViewModel.init()
         lastAPISyncTime = flowOf(System.currentTimeMillis())
         startArtistsInfoWorkManager()
+    }
+
+    private fun captureUrlInfo(i: Intent?) = lifecycleScope.launch(Dispatchers.IO) {
+        val data = i?.data.toString()
+        when (urlUriType(data)) {
+            MUSIC -> {}
+            ALBUMS -> {}
+            ARTISTS -> {}
+            PARTY -> {
+                val d = data.substringAfter("/party/").trim()
+                Intent(this@MainActivity, SongPartyService::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(Intent.EXTRA_TEXT, d)
+                    startService(this)
+                }
+            }
+
+            TEXT -> {}
+            RADIO -> {}
+            VIDEO -> {}
+            null -> {}
+        }
     }
 
     private fun doOpenMusicPlayer(i: Intent) = lifecycleScope.launch(Dispatchers.IO) {

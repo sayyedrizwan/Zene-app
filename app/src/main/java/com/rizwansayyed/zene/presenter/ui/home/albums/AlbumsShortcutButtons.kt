@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
 import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlAlbums
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlArtistsShare
 import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -58,7 +59,7 @@ fun AlbumsShortcutButton() {
         ) {
             RoundBorderButtonsView(stringResource(id = R.string.share)) {
                 FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.ALBUM_URL_SHARE)
-                shareTxt(appUrlArtistsShare(homeNav.selectedAlbum))
+                shareTxt(appUrlAlbums(homeNav.selectedAlbum))
             }
             RoundBorderButtonsView(stringResource(id = if (isAlbumPresent > 0) R.string.remove_from_saved_List else R.string.save_album)) {
                 if (isAlbumPresent == 0) FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.ALBUM_SAVE_SHARE)

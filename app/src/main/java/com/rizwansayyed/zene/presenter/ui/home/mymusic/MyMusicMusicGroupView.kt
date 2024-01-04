@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.mymusic
 
 import android.app.Activity
+import android.content.Intent
 import android.provider.Settings.Global.getString
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +41,13 @@ import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
+import com.rizwansayyed.zene.service.songparty.SongPartyService
+import com.rizwansayyed.zene.service.songparty.Utils.getRoomId
 import com.rizwansayyed.zene.utils.GoogleSignInUtils
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appPartyJoinUrl
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlAlbums
+import com.rizwansayyed.zene.utils.Utils.shareTxt
 import kotlinx.coroutines.launch
 
 @Composable
@@ -97,6 +104,7 @@ fun MusicSyncDialog(close: () -> Unit) {
     val context = LocalContext.current as Activity
     val googleSignIn = GoogleSignInUtils(context)
     val coroutines = rememberCoroutineScope()
+    val noRoomIdFound = stringResource(R.string.no_room_found_to_share)
 
     val height = LocalConfiguration.current.screenHeightDp / 2
     val sheetState = rememberModalBottomSheetState()
@@ -112,16 +120,14 @@ fun MusicSyncDialog(close: () -> Unit) {
             Spacer(Modifier.height(30.dp))
 
             if (userInfo?.isLogin() == true) {
-                TextSemiBold(
-                    v = stringResource(R.string.sign_in_for_song_group_party),
-                    Modifier.fillMaxWidth(), true
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                RoundBorderButtonsView(text = stringResource(R.string.continue_with_google)) {
+                RoundBorderButtonsView(text = "share the code") {
                     coroutines.launch {
-                        googleSignIn.startLogin()
+                        Intent(context, SongPartyService::class.java).apply {
+                            context.startService(this)
+                        }
+                        getRoomId()?.let { shareTxt(appPartyJoinUrl(it)) }
+                            ?.run { noRoomIdFound.toast() }
+                        close()
                     }
                 }
             } else {

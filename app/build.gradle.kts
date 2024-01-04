@@ -186,8 +186,6 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.glide.transformations)
 
-    implementation("com.google.firebase:firebase-auth")
-
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
     implementation("androidx.credentials:credentials:1.3.0-alpha01")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha01")

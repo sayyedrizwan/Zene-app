@@ -8,8 +8,6 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
 import com.rizwansayyed.zene.domain.LoginUserData
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
@@ -17,8 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlin.jvm.Throws
 
 class GoogleSignInUtils(val c: Context) {
     private val serverId =
@@ -35,37 +33,25 @@ class GoogleSignInUtils(val c: Context) {
     val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption)
         .build()
 
-    private val auth = FirebaseAuth.getInstance()
 
-    private suspend fun login(idToken: String) {
-        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-        val task = auth.signInWithCredential(firebaseCredential).await()
-        if (task.user != null) {
-            val l = LoginUserData(
-                task.user!!.displayName, task.user!!.email, task.user!!.photoUrl.toString()
-            )
-            loginUser = flowOf(l)
-
-            auth.signOut()
-        } else {
-            "error".toast()
-        }
-    }
-
+    @Throws(Exception::class)
     private suspend fun startStartSignIn(result: GetCredentialResponse) {
-        when (val r = result.credential) {
-            is CustomCredential -> {
-                if (r.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                    try {
-                        val g = GoogleIdTokenCredential.createFrom(r.data)
-                        login(g.idToken)
-                    } catch (e: Exception) {
-                        "error".toast()
-                    }
-                }
-            }
-            else -> "error".toast()
+        var isCustomCredential = false
+
+        when (result.credential) {
+            is CustomCredential -> isCustomCredential = true
         }
+
+        if (!isCustomCredential) return
+        if (result.credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) return
+
+
+        val g = GoogleIdTokenCredential.createFrom(result.credential.data)
+        val email = g.data.getString("com.google.android.libraries.identity.googleid.BUNDLE_KEY_ID")
+            ?: return
+
+        val l = LoginUserData(g.displayName, email, g.profilePictureUri.toString())
+        loginUser = flowOf(l)
 
         CoroutineScope(Dispatchers.IO).launch {
             credentialManager.clearCredentialState(ClearCredentialStateRequest())

@@ -63,6 +63,7 @@
     <string name="search">Search</string>
     <string name="my_music">My Music</string>
     <string name="no_lyrics_found">No Lyrics Found</string>
+    <string name="no_room_found_to_share">No Room found to share</string>
     <string name="no_playlist_found">No playlist found</string>
     <string name="feed">Feed</string>
     <string name="launched_in">Launched at</string>

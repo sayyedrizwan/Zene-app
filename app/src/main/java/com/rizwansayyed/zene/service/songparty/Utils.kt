@@ -2,11 +2,14 @@ package com.rizwansayyed.zene.service.songparty
 
 import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
-import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.simpleEncode
+import com.rizwansayyed.zene.utils.Utils.printStack
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.json.JSONArray
 import org.json.JSONObject
-import java.util.UUID
 
 object Utils {
     private var roomId: String? = null
@@ -16,8 +19,13 @@ object Utils {
     }
 
 
+    fun getRoomId() = roomId
+    fun setRoomId(id: String?) {
+        roomId = id
+    }
+
     fun generateAndSendFirstTime(): String {
-        roomId = generateTheRoom()
+        if (roomId == null) roomId = generateTheRoom()
         return """
             ["2",null,"room:${roomId}","phx_join",{"isSimulcastOn":false}]
         """.trimIndent()
@@ -35,13 +43,49 @@ object Utils {
         }"}]"""
     }
 
-
-    private fun generateTheRoom(): String = runBlocking {
-        return@runBlocking try {
-            val room = "${loginUser.first()?.email}-${UUID.randomUUID()}"
-            simpleEncode(room).toString()
-        } catch (e: Exception) {
-            ""
+    fun joinedUserDetails(json: String) = CoroutineScope(Dispatchers.IO).launch {
+        val response = getResponseInfo(json)
+        if (response?.contains("\"type\":\"join\"") == true) {
+            val r = JSONObject(response)
+            val name = r.getString("name")
+            Log.d("TAG", "joinedUserDetails: data $name")
         }
+    }
+
+    private fun getResponseInfo(json: String): String? {
+        var response: String? = null
+        try {
+            val jsonArray = JSONArray(json)
+
+            for (i in 0 until jsonArray.length()) {
+                response = try {
+                    val element = jsonArray.getJSONObject(i)
+                    val dataObject = element.getJSONObject("data")
+                    val peerId = dataObject.getString("peerId")
+                    val text = dataObject.getString("text").replace("\\\"", "\"")
+
+                    text
+                } catch (e: Exception) {
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            response = null
+        }
+
+        return response
+    }
+
+
+    fun generateTheRoom(): String = runBlocking {
+        return@runBlocking "the-zene-theqqaaz"
+
+
+//        try {
+//            val room = simpleEncode("zene_music-${loginUser.first()?.email}-${UUID.randomUUID()}")
+//            room?.toCharArray()?.toMutableList()?.shuffled()?.joinToString("")
+//        } catch (e: Exception) {
+//            ""
+//        }
     }
 }

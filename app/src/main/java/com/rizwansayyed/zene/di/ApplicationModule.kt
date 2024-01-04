@@ -53,7 +53,7 @@ class ApplicationModule : Application(), Configuration.Provider {
         super.onCreate()
         context = this
         FirebaseApp.initializeApp(this)
-        AppCrashHandler(this)
+        Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(this))
 
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -64,6 +64,9 @@ class ApplicationModule : Application(), Configuration.Provider {
             }
             if (isActive) cancel()
         }
+
+//        emVuZV9tdXNpYy1zaGFibmFtc2F5eWVkOTMyM0BnbWFpbC5jb20tOTY4MTQ2ZWMtMDA1OS00Y2I1
+
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)

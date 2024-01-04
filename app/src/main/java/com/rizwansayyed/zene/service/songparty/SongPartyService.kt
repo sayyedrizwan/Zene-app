@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.service.songparty.Utils.Free4WebSocket.FREE_4_WEB_SOCKET
 import com.rizwansayyed.zene.service.songparty.Utils.generateAndSendFirstTime
 import com.rizwansayyed.zene.service.songparty.Utils.joinedMessage
+import com.rizwansayyed.zene.service.songparty.Utils.joinedUserDetails
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -33,20 +34,22 @@ class SongPartyService : Service() {
                 .getRunningServices(Integer.MAX_VALUE)
                 .any { it.service.className == SongPartyService::class.java.name }
         }
-    }
 
-    private var webSocket: WebSocket? = null
+
+        private var webSocket: WebSocket? = null
+    }
 
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+//        val roomId = intent?.getStringExtra(Intent.EXTRA_TEXT)
+//        setRoomId(roomId)
 
-        val client = OkHttpClient()
+        connectWebSocket()
 
-        val request = Request.Builder().url(FREE_4_WEB_SOCKET).build()
-        webSocket = client.newWebSocket(request, WebSocketServiceListener())
+        return START_STICKY
     }
 
 
@@ -58,36 +61,38 @@ class SongPartyService : Service() {
                 webSocket.send(generateAndSendFirstTime())
 
                 delay(2.seconds)
-
                 webSocket.send(joinedMessage())
                 if (isActive) cancel()
             }
         }
 
-        override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-            super.onMessage(webSocket, bytes)
-            Log.d("TAG", "Received message: bytes ${bytes.hex()}");
-        }
-
         override fun onMessage(webSocket: WebSocket, text: String) {
             super.onMessage(webSocket, text)
-
+            joinedUserDetails(text)
             Log.d("TAG", "Received message: $text");
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             super.onClosed(webSocket, code, reason)
-            Log.d("TAG", "Received message: closedd");
+            connectWebSocket()
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             super.onFailure(webSocket, t, response)
-            Log.d("TAG", "Received message: failed");
+            connectWebSocket()
         }
+    }
+
+    private fun connectWebSocket() {
+        webSocket?.close(1000, "Closing or Reconnect WebSocket connection")
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(FREE_4_WEB_SOCKET).build()
+        webSocket = client.newWebSocket(request, WebSocketServiceListener())
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        webSocket?.close(0, "")
+        webSocket?.close(1000, "Closing WebSocket connection")
     }
 }

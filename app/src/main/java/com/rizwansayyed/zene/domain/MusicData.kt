@@ -106,5 +106,5 @@ data class PlaylistItemsData(
 )
 
 enum class MusicType {
-    MUSIC, ALBUMS, ARTISTS, PLAYLIST, TEXT, RADIO, VIDEO
+    MUSIC, ALBUMS, ARTISTS, PARTY, TEXT, RADIO, VIDEO
 }

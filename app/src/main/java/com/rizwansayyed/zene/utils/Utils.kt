@@ -27,6 +27,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
@@ -98,10 +99,23 @@ object Utils {
             return "$APP_URL/album/$changeIdToOurs".trim()
         }
 
+        fun appPartyJoinUrl(roomId: String): String {
+            return "$APP_URL/party/$roomId".trim()
+        }
+
+        fun urlUriType(url: String): MusicType? {
+            return if (url.contains("/s/")) MusicType.MUSIC
+            else if (url.contains("/r/")) MusicType.RADIO
+            else if (url.contains("/a/")) MusicType.ARTISTS
+            else if (url.contains("/album/")) MusicType.ALBUMS
+            else if (url.contains("/party/")) MusicType.PARTY
+            else null
+        }
+
     }
 
     private var bm = context.getSystemService(BATTERY_SERVICE) as BatteryManager
-    var myKM = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+    private var myKM = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 
 
     fun is24Hour() = DateFormat.is24HourFormat(context)

@@ -66,6 +66,20 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="www.zene.vercel.app" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="zene.vercel.app" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".presenter.ui.extra.LockScreenActivity"
@@ -144,12 +158,11 @@
         <service
             android:name=".service.songparty.SongPartyService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logo_color" />
-
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
