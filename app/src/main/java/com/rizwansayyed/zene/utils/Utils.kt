@@ -83,6 +83,11 @@ object Utils {
             return "$APP_URL/s/$changeIdToOurs".trim()
         }
 
+        fun appUrlRadioShare(id: String): String {
+            val changeIdToOurs = simpleEncode(id.trim())
+            return "$APP_URL/r/$changeIdToOurs".trim()
+        }
+
         fun appUrlArtistsShare(name: String): String {
             val changeNameToOurs = encryptData(name.trim())
             return "$APP_URL/a/$changeNameToOurs".trim()

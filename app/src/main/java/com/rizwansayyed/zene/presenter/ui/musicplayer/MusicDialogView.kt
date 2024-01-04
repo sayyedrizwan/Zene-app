@@ -49,6 +49,9 @@ import com.rizwansayyed.zene.service.player.utils.Utils.playRadioOnPlayer
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlRadioShare
+import com.rizwansayyed.zene.utils.Utils.AppUrl.appUrlSongShare
+import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
@@ -84,6 +87,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
 
     val downloading = stringResource(R.string.downloading__)
     val addInQueue = stringResource(R.string.add_in_queue)
+    val share = stringResource(R.string.share)
     val offlineDownloadString = stringResource(R.string.offline_download)
     val songInfo = stringResource(R.string.song_info)
     val makeFavourite = stringResource(R.string.mark_as_favourite)
@@ -109,6 +113,11 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
         val radioList by favouriteRadioList.collectAsState(runBlocking(Dispatchers.IO) { favouriteRadioList.first() })
         MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
             playRadioOnPlayer(homeNavModel.onlineRadioTemps!!)
+            homeNavModel.setSongDetailsDialog(null)
+        }
+
+        MusicDialogListItems(R.drawable.ic_share, share) {
+            homeNavModel.songDetailDialog?.pId?.let { shareTxt(appUrlRadioShare(it)) }
             homeNavModel.setSongDetailsDialog(null)
         }
 
@@ -142,6 +151,10 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
         }
         MusicDialogListItems(R.drawable.ic_play_in_queue, addInQueue) {
             addToEndPlayer(homeNavModel.songDetailDialog)
+            homeNavModel.setSongDetailsDialog(null)
+        }
+        MusicDialogListItems(R.drawable.ic_share, share) {
+            homeNavModel.songDetailDialog?.pId?.let { shareTxt(appUrlSongShare(it)) }
             homeNavModel.setSongDetailsDialog(null)
         }
         MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
