@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.RADIO_NAME
 import com.rizwansayyed.zene.presenter.util.UtilsWallpaperImage
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
+import com.rizwansayyed.zene.service.songparty.Utils.sendSongChangeInService
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +29,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
@@ -77,6 +77,7 @@ class PlayerServiceAction @Inject constructor(
     ) {
         playerSongSearchJob?.cancel()
         playerSongSearchJob = CoroutineScope(Dispatchers.IO).launch {
+            sendSongChangeInService(music)
             withContext(Dispatchers.Main) {
                 player.pause()
                 player.stop()
