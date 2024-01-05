@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
+import com.rizwansayyed.zene.service.player.utils.Utils.playOrPauseMedia
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -25,7 +26,11 @@ import org.json.JSONObject
 
 object Utils {
     private var roomId: String? = null
-    val PARTY_SERVICE_ACTION = "${context.packageManager}.PARTY_SERVICE_ACTION"
+    val PARTY_SERVICE_ACTION_SONG_CHANGE =
+        "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_CHANGE"
+    val PARTY_SERVICE_ACTION_SONG_PLAY = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PLAY"
+    val PARTY_SERVICE_ACTION_SONG_PAUSE =
+        "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PAUSE"
 
     object Free4WebSocket {
         const val FREE_4_WEB_SOCKET = "wss://rtc1.free4.chat/socket/websocket?vsn=2.0.0"
@@ -40,8 +45,21 @@ object Utils {
 
     fun sendSongChangeInService(music: MusicData?) {
         val d = moshi.adapter(MusicData::class.java).toJson(music)
-        Intent(PARTY_SERVICE_ACTION).apply {
+        Intent(PARTY_SERVICE_ACTION_SONG_CHANGE).apply {
             putExtra(Intent.EXTRA_TEXT, d)
+            context.sendBroadcast(this)
+        }
+    }
+
+    fun playSongChangeInService() {
+        Intent(PARTY_SERVICE_ACTION_SONG_PLAY).apply {
+            context.sendBroadcast(this)
+        }
+    }
+
+
+    fun pauseSongChangeInService() {
+        Intent(PARTY_SERVICE_ACTION_SONG_PAUSE).apply {
             context.sendBroadcast(this)
         }
     }
@@ -67,6 +85,30 @@ object Utils {
         }"}]"""
     }
 
+    suspend fun playMusicChangeData(): String {
+        val json = JSONObject().apply {
+            put("name", loginUser.first()?.name)
+            put("photo", loginUser.first()?.image)
+            put("type", "play")
+        }
+
+        return """["2", null,"room:${roomId}","textEvent",{"data":"${
+            json.toString().replace("\"", "\\\\\\\"")
+        }"}]"""
+    }
+
+    suspend fun pauseMusicChangeData(): String {
+        val json = JSONObject().apply {
+            put("name", loginUser.first()?.name)
+            put("photo", loginUser.first()?.image)
+            put("type", "pause")
+        }
+
+        return """["2", null,"room:${roomId}","textEvent",{"data":"${
+            json.toString().replace("\"", "\\\\\\\"")
+        }"}]"""
+    }
+
     suspend fun joinedMessage(): String {
         val json = JSONObject().apply {
             put("name", loginUser.first()?.name)
@@ -79,7 +121,7 @@ object Utils {
         }"}]"""
     }
 
-    suspend fun joinedUserDetails(json: String) {
+    fun joinedUserDetails(json: String) {
         val response = getResponseInfo(json)
         if (response?.contains("\"type\":\"join\"") == true) {
             val r = JSONObject(response)
@@ -100,6 +142,20 @@ object Utils {
             ytAPI.songDetail(songId).catch { }.collectLatest {
                 addAllPlayer(listOf(it).toTypedArray(), 0)
             }
+        }
+    }
+
+    fun playPausePartySync(json: String) {
+        val response = getResponseInfo(json)
+        if (response?.contains("\"type\":\"pause\"") == true ||
+            response?.contains("\"type\":\"play\"") == true
+        ) {
+            val r = JSONObject(response)
+            val name = r.getString("name")
+            val photo = r.getString("photo")
+            val type = r.getString("type").trim()
+
+            playOrPauseMedia(type == "play")
         }
     }
 

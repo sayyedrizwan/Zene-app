@@ -14,10 +14,15 @@ import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.service.songparty.Utils.Free4WebSocket.FREE_4_WEB_SOCKET
-import com.rizwansayyed.zene.service.songparty.Utils.PARTY_SERVICE_ACTION
+import com.rizwansayyed.zene.service.songparty.Utils.PARTY_SERVICE_ACTION_SONG_CHANGE
+import com.rizwansayyed.zene.service.songparty.Utils.PARTY_SERVICE_ACTION_SONG_PAUSE
+import com.rizwansayyed.zene.service.songparty.Utils.PARTY_SERVICE_ACTION_SONG_PLAY
 import com.rizwansayyed.zene.service.songparty.Utils.generateAndSendFirstTime
 import com.rizwansayyed.zene.service.songparty.Utils.joinedMessage
 import com.rizwansayyed.zene.service.songparty.Utils.joinedUserDetails
+import com.rizwansayyed.zene.service.songparty.Utils.pauseMusicChangeData
+import com.rizwansayyed.zene.service.songparty.Utils.playMusicChangeData
+import com.rizwansayyed.zene.service.songparty.Utils.playPausePartySync
 import com.rizwansayyed.zene.service.songparty.Utils.sendMusicChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.songListeningSync
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,12 +60,24 @@ class SongPartyService : Service() {
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == PARTY_SERVICE_ACTION) {
-                val extra = intent.getStringExtra(Intent.EXTRA_TEXT)
-                val musicData = moshi.adapter(MusicData::class.java).fromJson(extra!!)
-                CoroutineScope(Dispatchers.IO).launch {
-                    Log.d("TAG", "Received message: send ${sendMusicChangeData(musicData)}")
-                    webSocket?.send(sendMusicChangeData(musicData))
+            when (intent?.action) {
+                PARTY_SERVICE_ACTION_SONG_CHANGE -> {
+                    val extra = intent.getStringExtra(Intent.EXTRA_TEXT)
+                    val musicData = moshi.adapter(MusicData::class.java).fromJson(extra!!)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        webSocket?.send(sendMusicChangeData(musicData))
+                        if (isActive) cancel()
+                    }
+                }
+
+                PARTY_SERVICE_ACTION_SONG_PLAY -> CoroutineScope(Dispatchers.IO).launch {
+                    webSocket?.send(playMusicChangeData())
+                    if (isActive) cancel()
+                }
+
+                PARTY_SERVICE_ACTION_SONG_PAUSE -> CoroutineScope(Dispatchers.IO).launch {
+                    webSocket?.send(pauseMusicChangeData())
+                    if (isActive) cancel()
                 }
             }
         }
@@ -74,7 +91,10 @@ class SongPartyService : Service() {
 //        val roomId = intent?.getStringExtra(Intent.EXTRA_TEXT)
 //        setRoomId(roomId)
 
-        IntentFilter(PARTY_SERVICE_ACTION).apply {
+        IntentFilter().apply {
+            addAction(PARTY_SERVICE_ACTION_SONG_CHANGE)
+            addAction(PARTY_SERVICE_ACTION_SONG_PLAY)
+            addAction(PARTY_SERVICE_ACTION_SONG_PAUSE)
             priority = IntentFilter.SYSTEM_HIGH_PRIORITY
             ContextCompat.registerReceiver(
                 this@SongPartyService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
@@ -106,6 +126,7 @@ class SongPartyService : Service() {
             CoroutineScope(Dispatchers.IO).launch {
                 joinedUserDetails(text)
                 songListeningSync(text, youtubeAPIImplInterface)
+                playPausePartySync(text)
                 if (isActive) cancel()
             }
             Log.d("TAG", "Received message: $text")
