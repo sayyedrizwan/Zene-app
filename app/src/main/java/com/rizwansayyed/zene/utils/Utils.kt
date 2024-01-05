@@ -25,6 +25,8 @@ import android.text.format.DateFormat
 import android.util.Log
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicType
@@ -32,6 +34,7 @@ import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.simpleEncode
+import com.rizwansayyed.zene.utils.Utils.AdsId.OPEN_ADS_ID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -112,6 +115,11 @@ object Utils {
             else null
         }
 
+    }
+
+    fun loadOpenAppAds(context: Activity, adLoadedCallback: AppOpenAd.AppOpenAdLoadCallback) {
+        val request = AdRequest.Builder().build()
+        AppOpenAd.load(context, OPEN_ADS_ID, request, adLoadedCallback)
     }
 
     private var bm = context.getSystemService(BATTERY_SERVICE) as BatteryManager

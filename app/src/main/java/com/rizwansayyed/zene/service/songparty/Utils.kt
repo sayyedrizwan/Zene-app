@@ -1,188 +1,189 @@
 package com.rizwansayyed.zene.service.songparty
 
 import android.content.Intent
-import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.domain.GroupMusicUserInfo
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playOrPauseMedia
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_CHANGE
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PAUSE
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PLAY
+import com.rizwansayyed.zene.service.songparty.Utils.Action.joinParam
+import com.rizwansayyed.zene.service.songparty.Utils.Action.nameParam
+import com.rizwansayyed.zene.service.songparty.Utils.Action.pauseParam
+import com.rizwansayyed.zene.service.songparty.Utils.Action.photoParam
+import com.rizwansayyed.zene.service.songparty.Utils.Action.playParam
+import com.rizwansayyed.zene.service.songparty.Utils.Action.songChange
+import com.rizwansayyed.zene.service.songparty.Utils.Action.songIdParam
+import com.rizwansayyed.zene.service.songparty.Utils.Action.typeParam
 import com.rizwansayyed.zene.utils.NotificationViewManager
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.PARTY_CHANNEL_ID
 import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.PARTY_DEFAULT_CHANNEL
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
 
 object Utils {
-    private var roomId: String? = null
-    val PARTY_SERVICE_ACTION_SONG_CHANGE =
-        "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_CHANGE"
-    val PARTY_SERVICE_ACTION_SONG_PLAY = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PLAY"
-    val PARTY_SERVICE_ACTION_SONG_PAUSE =
-        "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PAUSE"
+
+    val groupMusicUsersList = mutableStateListOf<GroupMusicUserInfo>()
 
     object Free4WebSocket {
         const val FREE_4_WEB_SOCKET = "wss://rtc1.free4.chat/socket/websocket?vsn=2.0.0"
     }
 
+    object Action {
+        var partyRoomId: String? = null
 
-    fun getRoomId() = roomId
-    fun setRoomId(id: String?) {
-        roomId = id
+
+        fun generatePartyRoomId(): String = runBlocking {
+            return@runBlocking "the-zene-theqqaaz12222"
+
+//        try {
+//            val room = simpleEncode("zene_music-${loginUser.first()?.email}-${UUID.randomUUID()}")
+//            room?.toCharArray()?.toMutableList()?.shuffled()?.joinToString("")
+//        } catch (e: Exception) {
+//            ""
+//        }
+        }
+
+        val PARTY_ACTION_SONG_CHANGE = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_CHANGE"
+        val PARTY_ACTION_SONG_PLAY = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PLAY"
+        val PARTY_ACTION_SONG_PAUSE = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PAUSE"
+
+
+        const val nameParam = "name"
+        const val photoParam = "photo"
+        const val typeParam = "type"
+
+
+        const val joinParam = "join"
+        const val songIdParam = "song_id"
+        const val playParam = "play"
+        const val pauseParam = "pause"
+        const val songChange = "song_change"
     }
 
+    object ActionFunctions {
 
-    fun sendSongChangeInService(music: MusicData?) {
-        val d = moshi.adapter(MusicData::class.java).toJson(music)
-        Intent(PARTY_SERVICE_ACTION_SONG_CHANGE).apply {
-            putExtra(Intent.EXTRA_TEXT, d)
-            context.sendBroadcast(this)
+        fun sendSongChange(id: String?) = serviceAction(PARTY_ACTION_SONG_CHANGE, id)
+        fun playSongChange() = serviceAction(PARTY_ACTION_SONG_PLAY, null)
+        fun pauseSongChange() = serviceAction(PARTY_ACTION_SONG_PAUSE, null)
+
+
+        private fun serviceAction(action: String, extra: String?) {
+            Intent(action).apply {
+                if (extra != null) putExtra(Intent.EXTRA_TEXT, extra)
+                context.sendBroadcast(this)
+            }
         }
     }
 
-    fun playSongChangeInService() {
-        Intent(PARTY_SERVICE_ACTION_SONG_PLAY).apply {
-            context.sendBroadcast(this)
-        }
+    object ActionString {
+        val joined = context.resources.getString(R.string._n_joined)
+        val joinedNew = context.resources.getString(R.string._n_have_also_joined_the_song_party)
+
+        val changed = context.resources.getString(R.string._n_changed_the_song)
+        val changedNew = context.resources.getString(R.string._n_changed_the_song_to)
+
+        val paused = context.resources.getString(R.string._n_paused_the_song)
+        val play = context.resources.getString(R.string._n_start_playing_the_song)
+
     }
 
 
-    fun pauseSongChangeInService() {
-        Intent(PARTY_SERVICE_ACTION_SONG_PAUSE).apply {
-            context.sendBroadcast(this)
-        }
-    }
-
-
-    fun generateAndSendFirstTime(): String {
-        if (roomId == null) roomId = generateTheRoom()
-        return """
-            ["2",null,"room:${roomId}","phx_join",{"isSimulcastOn":false}]
-        """.trimIndent()
-    }
-
-    suspend fun sendMusicChangeData(musicData: MusicData?): String {
-        val json = JSONObject().apply {
-            put("name", loginUser.first()?.name)
-            put("photo", loginUser.first()?.image)
-            put("song_id", musicData?.pId)
-            put("type", "song_change")
-        }
-
-        return """["2", null,"room:${roomId}","textEvent",{"data":"${
-            json.toString().replace("\"", "\\\\\\\"")
-        }"}]"""
-    }
-
-    suspend fun playMusicChangeData(): String {
-        val json = JSONObject().apply {
-            put("name", loginUser.first()?.name)
-            put("photo", loginUser.first()?.image)
-            put("type", "play")
-        }
-
-        return """["2", null,"room:${roomId}","textEvent",{"data":"${
-            json.toString().replace("\"", "\\\\\\\"")
-        }"}]"""
-    }
-
-    suspend fun pauseMusicChangeData(): String {
-        val json = JSONObject().apply {
-            put("name", loginUser.first()?.name)
-            put("photo", loginUser.first()?.image)
-            put("type", "pause")
-        }
-
-        return """["2", null,"room:${roomId}","textEvent",{"data":"${
-            json.toString().replace("\"", "\\\\\\\"")
-        }"}]"""
-    }
-
-    suspend fun joinedMessage(): String {
-        val json = JSONObject().apply {
-            put("name", loginUser.first()?.name)
-            put("photo", loginUser.first()?.image)
-            put("type", "join")
-        }
-
-        return """["2", null,"room:${roomId}","textEvent",{"data":"${
-            json.toString().replace("\"", "\\\\\\\"")
-        }"}]"""
-    }
-
-    fun joinedUserDetails(json: String) {
+    fun isNewAJoin(json: String): Boolean {
         val response = getResponseInfo(json)
-        if (response?.contains("\"type\":\"join\"") == true) {
-            val r = JSONObject(response)
-            val name = r.getString("name")
-            val photo = r.getString("photo")
 
-            val joined = context.resources.getString(R.string._n_joined)
-            val joinedNew = context.resources.getString(R.string._n_have_also_joined_the_song_party)
+        if (typeCheck(response, joinParam)) {
+            val r = JSONObject(response!!)
+            val name = r.getString(nameParam)
+            val photo = r.getString(photoParam)
+
+            if (!groupMusicUsersList.any { it.name.trim() == name.trim() }) {
+                NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
+                    .title(String.format(ActionString.joined, name)).image(photo)
+                    .body(String.format(ActionString.joinedNew, name)).generate()
+
+                groupMusicUsersList.add(GroupMusicUserInfo(name, photo))
+            }
+            return true
+        }
+
+        return false
+    }
+
+    fun playPauseSongStateSync(json: String) {
+        val response = getResponseInfo(json)
+        if (typeCheck(response, playParam) || typeCheck(response, pauseParam)) {
+            val r = JSONObject(response!!)
+            val name = r.getString(nameParam)
+            val photo = r.getString(photoParam)
+            val type = r.getString(typeParam).trim()
+
+            val getTitle = String
+                .format(if (type == playParam) ActionString.play else ActionString.paused, name)
 
             NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
-                .title(String.format(joined, name)).image(photo)
-                .body(String.format(joinedNew, name)).generate()
+                .title(getTitle).image(photo).body(getTitle).generate()
+
+            playOrPauseMedia(type == playParam)
         }
     }
 
-    suspend fun songListeningSync(json: String, ytAPI: YoutubeAPIImplInterface) {
+
+    suspend fun songPartySongSync(json: String, ytAPI: YoutubeAPIImplInterface) {
         val response = getResponseInfo(json)
-        if (response?.contains("\"type\":\"song_change\"") == true) {
-            val changed = context.resources.getString(R.string._n_changed_the_song)
-            val changedNew = context.resources.getString(R.string._n_changed_the_song_to)
 
-
-            val r = JSONObject(response)
-            val name = r.getString("name")
-            val photo = r.getString("photo")
-            val songId = r.getString("song_id")
+        if (typeCheck(response, songChange)) {
+            val r = JSONObject(response!!)
+            val name = r.getString(nameParam)
+            val photo = r.getString(photoParam)
+            val songId = r.getString(songIdParam)
             if (musicPlayerData.firstOrNull()?.v?.songID == songId) return
 
             ytAPI.songDetail(songId).catch { }.collectLatest {
                 NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
-                    .title(String.format(changed, name)).image(photo)
-                    .body(String.format(changedNew, name, it.name)).generate()
+                    .title(String.format(ActionString.changed, name)).image(photo)
+                    .body(String.format(ActionString.changedNew, name, it.name)).generate()
                 addAllPlayer(listOf(it).toTypedArray(), 0)
             }
         }
     }
 
-    fun playPausePartySync(json: String) {
-        val response = getResponseInfo(json)
-        if (response?.contains("\"type\":\"pause\"") == true ||
-            response?.contains("\"type\":\"play\"") == true
-        ) {
-            val paused = context.resources.getString(R.string._n_paused_the_song)
-            val play = context.resources.getString(R.string._n_start_playing_the_song)
+    private fun typeCheck(r: String?, type: String) =
+        r?.contains("\"${typeParam}\":\"${type}\"") == true
 
-            val r = JSONObject(response)
-            val name = r.getString("name")
-            val photo = r.getString("photo")
-            val type = r.getString("type").trim()
+    fun newJoin() =
+        """["2",null,"room:${Action.partyRoomId}","phx_join",{"isSimulcastOn":false}]""".trimIndent()
 
-            NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
-                .title(String.format(if (type == "play") play else paused, name)).image(photo)
-                .body(String.format(if (type == "play") play else paused, play)).generate()
+    suspend fun sendMyDetailsInParty(): String = textDataEvents(joinParam)
 
-            playOrPauseMedia(type == "play")
-        }
+    suspend fun sendMusicChangeData(songId: String?): String =
+        textDataEvents(songChange, Pair(songIdParam, songId))
+
+    suspend fun playMusicChangeData(): String = textDataEvents(playParam)
+    suspend fun pauseMusicChangeData(): String = textDataEvents(pauseParam)
+
+
+    private suspend fun textDataEvents(type: String, extra: Pair<String, String?>? = null): String {
+        val json = JSONObject()
+        json.put(nameParam, loginUser.first()?.name)
+        json.put(photoParam, loginUser.first()?.image)
+        if (extra != null) json.put(extra.first, extra.second)
+        json.put(typeParam, type)
+        val data = json.toString().replace("\"", "\\\\\\\"")
+        return """["2", null,"room:${Action.partyRoomId}","textEvent",{"data":"$data"}]""".trimIndent()
     }
+
 
     private fun getResponseInfo(json: String): String? {
         var response: String? = null
@@ -191,12 +192,8 @@ object Utils {
 
             for (i in 0 until jsonArray.length()) {
                 response = try {
-                    val element = jsonArray.getJSONObject(i)
-                    val dataObject = element.getJSONObject("data")
-                    val peerId = dataObject.getString("peerId")
-                    val text = dataObject.getString("text").replace("\\\"", "\"")
-
-                    text
+                    val element = jsonArray.getJSONObject(i).getJSONObject("data")
+                    element.getString("text").replace("\\\"", "\"")
                 } catch (e: Exception) {
                     null
                 }
@@ -208,16 +205,4 @@ object Utils {
         return response
     }
 
-
-    fun generateTheRoom(): String = runBlocking {
-        return@runBlocking "the-zene-theqqaaz"
-
-
-//        try {
-//            val room = simpleEncode("zene_music-${loginUser.first()?.email}-${UUID.randomUUID()}")
-//            room?.toCharArray()?.toMutableList()?.shuffled()?.joinToString("")
-//        } catch (e: Exception) {
-//            ""
-//        }
-    }
 }

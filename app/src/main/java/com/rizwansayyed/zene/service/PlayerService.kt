@@ -35,8 +35,8 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.PLAY_SONG_MEDIA
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SEEK_TO_TIMESTAMP
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.SONG_MEDIA_POSITION
-import com.rizwansayyed.zene.service.songparty.Utils.pauseSongChangeInService
-import com.rizwansayyed.zene.service.songparty.Utils.playSongChangeInService
+import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.pauseSongChange
+import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.playSongChange
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -171,7 +171,7 @@ class PlayerService : MediaSessionService() {
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
-            if (isPlaying) playSongChangeInService() else pauseSongChangeInService()
+            if (isPlaying) playSongChange() else pauseSongChange()
             PlayServiceListener.getInstance().playingState()
         }
 

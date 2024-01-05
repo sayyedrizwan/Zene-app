@@ -7,7 +7,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -36,10 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.appopen.AppOpenAd
-import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
@@ -51,7 +48,6 @@ import com.rizwansayyed.zene.domain.HomeNavigation.HOME
 import com.rizwansayyed.zene.domain.HomeNavigation.MY_MUSIC
 import com.rizwansayyed.zene.domain.HomeNavigation.SEARCH
 import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
-import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.MusicType.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
@@ -69,23 +65,18 @@ import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.songparty.SongPartyService
-import com.rizwansayyed.zene.service.songparty.Utils.generateTheRoom
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
-import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
-import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
-import com.rizwansayyed.zene.utils.Utils
-import com.rizwansayyed.zene.utils.Utils.AdsId.OPEN_ADS_ID
 import com.rizwansayyed.zene.utils.Utils.AppUrl.urlUriType
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
+import com.rizwansayyed.zene.utils.Utils.loadOpenAppAds
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -93,7 +84,6 @@ import com.rizwansayyed.zene.viewmodel.JsoupScrapViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -306,8 +296,9 @@ class MainActivity : ComponentActivity() {
     @UnstableApi
     override fun onStart() {
         super.onStart()
-
         registerEvent(FirebaseEvents.FirebaseEvent.OPEN_APP)
+        loadOpenAppAds(this, adLoadedCallback)
+
         lifecycleScope.launch {
             delay(2.seconds)
             checkAndClearCache()
@@ -336,7 +327,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun apis() {
-        delay(1.seconds)
+        delay(3.seconds)
         homeApiViewModel.init()
         jsoupScrapViewModel.init()
         roomViewModel.init()

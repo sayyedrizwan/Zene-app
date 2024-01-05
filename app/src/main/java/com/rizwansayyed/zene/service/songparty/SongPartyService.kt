@@ -10,21 +10,21 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
-import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_CHANGE
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PAUSE
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PLAY
+import com.rizwansayyed.zene.service.songparty.Utils.Action.generatePartyRoomId
+import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.Free4WebSocket.FREE_4_WEB_SOCKET
-import com.rizwansayyed.zene.service.songparty.Utils.PARTY_SERVICE_ACTION_SONG_CHANGE
-import com.rizwansayyed.zene.service.songparty.Utils.PARTY_SERVICE_ACTION_SONG_PAUSE
-import com.rizwansayyed.zene.service.songparty.Utils.PARTY_SERVICE_ACTION_SONG_PLAY
-import com.rizwansayyed.zene.service.songparty.Utils.generateAndSendFirstTime
-import com.rizwansayyed.zene.service.songparty.Utils.joinedMessage
-import com.rizwansayyed.zene.service.songparty.Utils.joinedUserDetails
+import com.rizwansayyed.zene.service.songparty.Utils.isNewAJoin
+import com.rizwansayyed.zene.service.songparty.Utils.newJoin
 import com.rizwansayyed.zene.service.songparty.Utils.pauseMusicChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.playMusicChangeData
-import com.rizwansayyed.zene.service.songparty.Utils.playPausePartySync
+import com.rizwansayyed.zene.service.songparty.Utils.playPauseSongStateSync
 import com.rizwansayyed.zene.service.songparty.Utils.sendMusicChangeData
-import com.rizwansayyed.zene.service.songparty.Utils.songListeningSync
+import com.rizwansayyed.zene.service.songparty.Utils.sendMyDetailsInParty
+import com.rizwansayyed.zene.service.songparty.Utils.songPartySongSync
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,21 +61,20 @@ class SongPartyService : Service() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                PARTY_SERVICE_ACTION_SONG_CHANGE -> {
-                    val extra = intent.getStringExtra(Intent.EXTRA_TEXT)
-                    val musicData = moshi.adapter(MusicData::class.java).fromJson(extra!!)
+                PARTY_ACTION_SONG_CHANGE -> {
+                    val songId = intent.getStringExtra(Intent.EXTRA_TEXT)
                     CoroutineScope(Dispatchers.IO).launch {
-                        webSocket?.send(sendMusicChangeData(musicData))
+                        webSocket?.send(sendMusicChangeData(songId))
                         if (isActive) cancel()
                     }
                 }
 
-                PARTY_SERVICE_ACTION_SONG_PLAY -> CoroutineScope(Dispatchers.IO).launch {
+                PARTY_ACTION_SONG_PLAY -> CoroutineScope(Dispatchers.IO).launch {
                     webSocket?.send(playMusicChangeData())
                     if (isActive) cancel()
                 }
 
-                PARTY_SERVICE_ACTION_SONG_PAUSE -> CoroutineScope(Dispatchers.IO).launch {
+                PARTY_ACTION_SONG_PAUSE -> CoroutineScope(Dispatchers.IO).launch {
                     webSocket?.send(pauseMusicChangeData())
                     if (isActive) cancel()
                 }
@@ -88,13 +87,13 @@ class SongPartyService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-//        val roomId = intent?.getStringExtra(Intent.EXTRA_TEXT)
-//        setRoomId(roomId)
+        val roomId = intent?.getStringExtra(Intent.EXTRA_TEXT) ?: generatePartyRoomId()
+        partyRoomId = roomId
 
         IntentFilter().apply {
-            addAction(PARTY_SERVICE_ACTION_SONG_CHANGE)
-            addAction(PARTY_SERVICE_ACTION_SONG_PLAY)
-            addAction(PARTY_SERVICE_ACTION_SONG_PAUSE)
+            addAction(PARTY_ACTION_SONG_CHANGE)
+            addAction(PARTY_ACTION_SONG_PLAY)
+            addAction(PARTY_ACTION_SONG_PAUSE)
             priority = IntentFilter.SYSTEM_HIGH_PRIORITY
             ContextCompat.registerReceiver(
                 this@SongPartyService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
@@ -111,12 +110,13 @@ class SongPartyService : Service() {
     inner class WebSocketServiceListener : WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             super.onOpen(webSocket, response)
+            Companion.webSocket = webSocket
             CoroutineScope(Dispatchers.IO).launch {
                 delay(2.seconds)
-                webSocket.send(generateAndSendFirstTime())
+                webSocket.send(newJoin())
 
                 delay(2.seconds)
-                webSocket.send(joinedMessage())
+                joinMessage()
                 if (isActive) cancel()
             }
         }
@@ -124,9 +124,11 @@ class SongPartyService : Service() {
         override fun onMessage(webSocket: WebSocket, text: String) {
             super.onMessage(webSocket, text)
             CoroutineScope(Dispatchers.IO).launch {
-                joinedUserDetails(text)
-                songListeningSync(text, youtubeAPIImplInterface)
-                playPausePartySync(text)
+                if (isNewAJoin(text)) {
+                    joinMessage()
+                }
+                songPartySongSync(text, youtubeAPIImplInterface)
+                playPauseSongStateSync(text)
                 if (isActive) cancel()
             }
             Log.d("TAG", "Received message: $text")
@@ -141,6 +143,10 @@ class SongPartyService : Service() {
             super.onFailure(webSocket, t, response)
             connectWebSocket()
         }
+    }
+
+    private fun joinMessage() = CoroutineScope(Dispatchers.IO).launch {
+        webSocket?.send(sendMyDetailsInParty())
     }
 
     private fun connectWebSocket() {
