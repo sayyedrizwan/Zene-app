@@ -110,7 +110,6 @@ object Utils {
 
         return lists.distinctBy { it?.pId }.toTypedArray()
     }
-
     fun addAllPlayer(l: Array<MusicData?>?, p: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             delay(1.5.seconds)

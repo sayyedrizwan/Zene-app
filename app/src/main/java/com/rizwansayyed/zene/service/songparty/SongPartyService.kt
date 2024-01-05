@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
@@ -19,6 +20,7 @@ import com.rizwansayyed.zene.service.songparty.Utils.joinedMessage
 import com.rizwansayyed.zene.service.songparty.Utils.joinedUserDetails
 import com.rizwansayyed.zene.service.songparty.Utils.sendMusicChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.songListeningSync
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -30,10 +32,15 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 
+@AndroidEntryPoint
 class SongPartyService : Service() {
+
+    @Inject
+    lateinit var youtubeAPIImplInterface: YoutubeAPIImplInterface
 
     companion object {
         fun isSongPartyServiceRunning(): Boolean {
@@ -52,6 +59,7 @@ class SongPartyService : Service() {
                 val extra = intent.getStringExtra(Intent.EXTRA_TEXT)
                 val musicData = moshi.adapter(MusicData::class.java).fromJson(extra!!)
                 CoroutineScope(Dispatchers.IO).launch {
+                    Log.d("TAG", "Received message: send ${sendMusicChangeData(musicData)}")
                     webSocket?.send(sendMusicChangeData(musicData))
                 }
             }
@@ -95,9 +103,12 @@ class SongPartyService : Service() {
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             super.onMessage(webSocket, text)
-            joinedUserDetails(text)
-            songListeningSync(text)
-            Log.d("TAG", "Received message: $text");
+            CoroutineScope(Dispatchers.IO).launch {
+                joinedUserDetails(text)
+                songListeningSync(text, youtubeAPIImplInterface)
+                if (isActive) cancel()
+            }
+            Log.d("TAG", "Received message: $text")
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {

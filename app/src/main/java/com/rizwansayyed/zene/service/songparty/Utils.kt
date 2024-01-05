@@ -3,12 +3,21 @@ package com.rizwansayyed.zene.service.songparty
 import android.content.Intent
 import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
+import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.service.player.utils.Utils
+import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
@@ -70,23 +79,27 @@ object Utils {
         }"}]"""
     }
 
-    fun joinedUserDetails(json: String) = CoroutineScope(Dispatchers.IO).launch {
+    suspend fun joinedUserDetails(json: String) {
         val response = getResponseInfo(json)
         if (response?.contains("\"type\":\"join\"") == true) {
             val r = JSONObject(response)
             val name = r.getString("name")
-            val photo = r.getString("photo")
-            val songId = r.getString("song_id")
             Log.d("TAG", "joinedUserDetails: data $name")
         }
     }
 
-    fun songListeningSync(json: String) = CoroutineScope(Dispatchers.IO).launch {
+    suspend fun songListeningSync(json: String, ytAPI: YoutubeAPIImplInterface) {
         val response = getResponseInfo(json)
         if (response?.contains("\"type\":\"song_change\"") == true) {
             val r = JSONObject(response)
             val name = r.getString("name")
-            Log.d("TAG", "joinedUserDetails: data $name")
+            val photo = r.getString("photo")
+            val songId = r.getString("song_id")
+            if (musicPlayerData.firstOrNull()?.v?.songID == songId) return
+
+            ytAPI.songDetail(songId).catch { }.collectLatest {
+                addAllPlayer(listOf(it).toTypedArray(), 0)
+            }
         }
     }
 
