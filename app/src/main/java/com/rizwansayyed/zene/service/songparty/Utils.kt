@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.playOrPauseMedia
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_CHANGE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PAUSE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PLAY
+import com.rizwansayyed.zene.service.songparty.Utils.Action.emailParam
 import com.rizwansayyed.zene.service.songparty.Utils.Action.joinParam
 import com.rizwansayyed.zene.service.songparty.Utils.Action.nameParam
 import com.rizwansayyed.zene.service.songparty.Utils.Action.pauseParam
@@ -61,6 +62,7 @@ object Utils {
 
 
         const val nameParam = "name"
+        const val emailParam = "email"
         const val photoParam = "photo"
         const val typeParam = "type"
 
@@ -107,13 +109,14 @@ object Utils {
             val r = JSONObject(response!!)
             val name = r.getString(nameParam)
             val photo = r.getString(photoParam)
+            val email = r.getString(emailParam)
 
-            if (!groupMusicUsersList.any { it.name.trim() == name.trim() }) {
+            if (!groupMusicUsersList.any { it.email.trim() == name.trim() }) {
                 NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
                     .title(String.format(ActionString.joined, name)).image(photo)
                     .body(String.format(ActionString.joinedNew, name)).generate()
 
-                groupMusicUsersList.add(GroupMusicUserInfo(name, photo))
+                groupMusicUsersList.add(GroupMusicUserInfo(name, photo, email))
             }
             return true
         }
@@ -178,6 +181,7 @@ object Utils {
         val json = JSONObject()
         json.put(nameParam, loginUser.first()?.name)
         json.put(photoParam, loginUser.first()?.image)
+        json.put(emailParam, loginUser.first()?.email)
         if (extra != null) json.put(extra.first, extra.second)
         json.put(typeParam, type)
         val data = json.toString().replace("\"", "\\\\\\\"")

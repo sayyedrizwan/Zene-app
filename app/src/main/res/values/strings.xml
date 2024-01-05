@@ -108,6 +108,7 @@
     <string name="downloading_please_wait">Downloading… Please wait…</string>
     <string name="offline_downloaded">Offline Downloaded</string>
     <string name="most_listened_songs_this_week">Most listened songs this Week</string>
+    <string name="music_group_party">Music Group Party</string>
     <string name="most_listened_songs_this_month">Most listened songs this Month</string>
     <string name="show_playing_song_on_lock_screen">Show App Playing Song on Lockscreen</string>
     <string name="set_wallpaper_on_song_playing">Set Wallpaper on Song Playing</string>

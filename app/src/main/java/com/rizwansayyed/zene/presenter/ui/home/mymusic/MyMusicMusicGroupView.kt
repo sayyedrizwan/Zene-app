@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
 import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
+import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.songparty.SongPartyService
 import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
@@ -37,14 +39,19 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun MyMusic() {
-    
+fun MyMusicGroupMusicParty() {
+    Column {
+        Column(Modifier.padding(horizontal = 9.dp)) {
+            TopInfoWithSeeMore(R.string.music_group_party, null, 50) {}
+        }
+
+    }
 }
+
 
 @Composable
 fun MyMusicMusicGroupView() {
     var songSyncDialog by remember { mutableStateOf(false) }
-
 
 
 //    Column(

@@ -19,6 +19,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -243,6 +244,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                DisposableEffect(Unit){
+                    connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
+                    onDispose {
+                        connectivityManager.unregisterNetworkCallback(networkChangeListener)
+                    }
+                }
+
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
                     showBottomNav = true
@@ -266,8 +274,6 @@ class MainActivity : ComponentActivity() {
 
         doOpenMusicPlayer(intent)
         captureUrlInfo(intent)
-        connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
-
     }
 
     private val networkChangeListener = object : ConnectivityManager.NetworkCallback() {
@@ -321,13 +327,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        connectivityManager.unregisterNetworkCallback(networkChangeListener)
-        super.onDestroy()
-    }
-
-    private suspend fun apis() {
-        delay(3.seconds)
+    private fun apis() {
         homeApiViewModel.init()
         jsoupScrapViewModel.init()
         roomViewModel.init()
