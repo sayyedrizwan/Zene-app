@@ -95,10 +95,10 @@ fun RoundBorderButtonsView(text: String, click: () -> Unit) {
     Row(
         Modifier
             .padding(5.dp)
+            .border(1.dp, Color.Gray, RoundedCornerShape(100))
             .clickable {
                 click()
             }
-            .border(1.dp, Color.Gray, RoundedCornerShape(100))
             .padding(vertical = 9.dp, horizontal = 14.dp)
     ) {
         TextThin(text)

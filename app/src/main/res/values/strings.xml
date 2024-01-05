@@ -63,6 +63,7 @@
     <string name="search">Search</string>
     <string name="my_music">My Music</string>
     <string name="no_lyrics_found">No Lyrics Found</string>
+    <string name="login_to_continue">Login to continue</string>
     <string name="no_room_found_to_share">No Room found to share</string>
     <string name="no_playlist_found">No playlist found</string>
     <string name="feed">Feed</string>
@@ -241,7 +242,7 @@
     <string name="need_audio_permission_to_start_recognition_the_song">Need audio permission to start recognition the song</string>
     <string name="unable_to_identify_the_music">Unable to identify the music</string>
     <string name="try_again">Try Again</string>
-    <string name="song_group_party">Song Group Party</string>
+    <string name="start_a_group_party">Start a group Party</string>
     <string name="sign_in_for_song_group_party">You first need to login to start the song group party and become a host.</string>
     <string name="continue_with_google">Continue with google</string>
     <string name="song_group_party_desc">Create an unforgettable music experience with your friends! Start a sync-enabled song party, where everyone can seamlessly join, enjoy, and watch music videos together in perfect harmony.</string>

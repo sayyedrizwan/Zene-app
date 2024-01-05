@@ -38,6 +38,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.appopen.AppOpenAd
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
@@ -244,7 +245,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                DisposableEffect(Unit){
+                DisposableEffect(Unit) {
                     connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
                     onDispose {
                         connectivityManager.unregisterNetworkCallback(networkChangeListener)
@@ -295,6 +296,7 @@ class MainActivity : ComponentActivity() {
     private val adLoadedCallback = object : AppOpenAd.AppOpenAdLoadCallback() {
         override fun onAdLoaded(app: AppOpenAd) {
             super.onAdLoaded(app)
+            registerEvent(FirebaseEvents.FirebaseEvent.OPEN_APP_ADS)
             app.show(this@MainActivity)
         }
     }
@@ -303,7 +305,7 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         registerEvent(FirebaseEvents.FirebaseEvent.OPEN_APP)
-        loadOpenAppAds(this, adLoadedCallback)
+        if (!BuildConfig.DEBUG) loadOpenAppAds(this, adLoadedCallback)
 
         lifecycleScope.launch {
             delay(2.seconds)

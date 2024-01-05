@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 object FirebaseEvents {
 
     enum class FirebaseEvent {
+        OPEN_APP_ADS,
         OPEN_APP,
         OPEN_HOME,
         OPEN_SEARCH,

@@ -2,12 +2,20 @@ package com.rizwansayyed.zene.presenter.ui.home.mymusic
 
 import android.app.Activity
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -20,13 +28,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
+import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
+import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.songparty.SongPartyService
@@ -34,6 +47,7 @@ import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
 import com.rizwansayyed.zene.utils.GoogleSignInUtils
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appPartyJoinUrl
 import com.rizwansayyed.zene.utils.Utils.shareTxt
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
@@ -45,9 +59,64 @@ fun MyMusicGroupMusicParty() {
             TopInfoWithSeeMore(R.string.music_group_party, null, 50) {}
         }
 
+        LazyRow(Modifier.fillMaxWidth()) {
+            item {
+                HostPartyButtonCard()
+            }
+        }
     }
 }
 
+@Composable
+fun HostPartyButtonCard() {
+    val context = LocalContext.current as Activity
+    val coroutine = rememberCoroutineScope()
+    val userInfo by loginUser.collectAsState(initial = null)
+
+    val googleSignIn = GoogleSignInUtils(context)
+
+    var isLoginLoading by remember { mutableStateOf(false) }
+
+    Column(
+        Modifier
+            .padding(start = 10.dp)
+            .size(250.dp, 350.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MainColor), Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+
+        if (userInfo?.isLogin() == true) {
+            TextThin(
+                v = stringResource(R.string.song_group_party_desc),
+                Modifier.fillMaxWidth(), true, size = 14
+            )
+
+        } else {
+            TextSemiBold(
+                v = stringResource(R.string.start_a_group_party),
+                Modifier.fillMaxWidth(), true, size = 20
+            )
+
+            Spacer(Modifier.height(25.dp))
+
+            if (isLoginLoading)
+                LoadingStateBar()
+            else
+                RoundBorderButtonsView(stringResource(R.string.login_to_continue)) {
+                    isLoginLoading = true
+                    coroutine.launch(Dispatchers.IO) {
+                        googleSignIn.startLogin()
+                        isLoginLoading = false
+                    }
+                }
+        }
+
+//        TextThin(
+//            v = stringResource(R.string.song_group_party_desc),
+//            Modifier.fillMaxWidth(), true, size = 13
+//        )
+    }
+}
 
 @Composable
 fun MyMusicMusicGroupView() {

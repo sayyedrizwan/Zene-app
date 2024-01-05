@@ -61,67 +61,67 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun GlobalNativeFullAds() {
-    val context = LocalContext.current as Activity
-    val coroutine = rememberCoroutineScope()
-
-    var ads by remember { mutableStateOf<NativeAd?>(null) }
-
-
-    if (ads != null) Column(
-        Modifier
-            .padding(top = 20.dp)
-            .padding(5.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color.Black)
-            .fillMaxWidth()
-            .padding(4.dp), Arrangement.Center, Alignment.CenterHorizontally
-    ) {
-        AndroidView(
-            { c: Context ->
-                val view = LayoutInflater.from(c)
-                    .inflate(R.layout.native_ads_ui, null, false) as NativeAdView
-
-                val composeView: ComposeView = view.findViewById(R.id.compose_view)
-                val mediaView: MediaView = view.findViewById(R.id.media_view)
-
-                composeView.apply {
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        NativeAdView(ads!!)
-                    }
-                }
-                view.callToActionView = composeView
-                view.mediaView = mediaView
-                view.setNativeAd(ads!!)
-                view
-            },
-            Modifier
-                .padding(top = 20.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color.Black)
-        )
-
-        LaunchedEffect(Unit){
-            registerEvent(FirebaseEvents.FirebaseEvent.LOADED_AD)
-        }
-    }
-
-    DisposableEffect(Unit) {
-        coroutine.launch(Dispatchers.IO) {
-            val adLoader = AdLoader.Builder(context, NATIVE_ADS_ID).forNativeAd {
-                ads = it
-            }.withAdListener(object : AdListener() {
-                override fun onAdClicked() {
-                    super.onAdClicked()
-                    registerEvent(FirebaseEvents.FirebaseEvent.CLICK_AD)
-                }
-            }).build()
-            adLoader.loadAd(AdRequest.Builder().build())
-        }
-        onDispose {
-            ads?.destroy()
-        }
-    }
+//    val context = LocalContext.current as Activity
+//    val coroutine = rememberCoroutineScope()
+//
+//    var ads by remember { mutableStateOf<NativeAd?>(null) }
+//
+//
+//    if (ads != null) Column(
+//        Modifier
+//            .padding(top = 20.dp)
+//            .padding(5.dp)
+//            .clip(RoundedCornerShape(12.dp))
+//            .background(Color.Black)
+//            .fillMaxWidth()
+//            .padding(4.dp), Arrangement.Center, Alignment.CenterHorizontally
+//    ) {
+//        AndroidView(
+//            { c: Context ->
+//                val view = LayoutInflater.from(c)
+//                    .inflate(R.layout.native_ads_ui, null, false) as NativeAdView
+//
+//                val composeView: ComposeView = view.findViewById(R.id.compose_view)
+//                val mediaView: MediaView = view.findViewById(R.id.media_view)
+//
+//                composeView.apply {
+//                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+//                    setContent {
+//                        NativeAdView(ads!!)
+//                    }
+//                }
+//                view.callToActionView = composeView
+//                view.mediaView = mediaView
+//                view.setNativeAd(ads!!)
+//                view
+//            },
+//            Modifier
+//                .padding(top = 20.dp)
+//                .clip(RoundedCornerShape(12.dp))
+//                .background(Color.Black)
+//        )
+//
+//        LaunchedEffect(Unit){
+//            registerEvent(FirebaseEvents.FirebaseEvent.LOADED_AD)
+//        }
+//    }
+//
+//    DisposableEffect(Unit) {
+//        coroutine.launch(Dispatchers.IO) {
+//            val adLoader = AdLoader.Builder(context, NATIVE_ADS_ID).forNativeAd {
+//                ads = it
+//            }.withAdListener(object : AdListener() {
+//                override fun onAdClicked() {
+//                    super.onAdClicked()
+//                    registerEvent(FirebaseEvents.FirebaseEvent.CLICK_AD)
+//                }
+//            }).build()
+//            adLoader.loadAd(AdRequest.Builder().build())
+//        }
+//        onDispose {
+//            ads?.destroy()
+//        }
+//    }
 }
 
 @Composable
