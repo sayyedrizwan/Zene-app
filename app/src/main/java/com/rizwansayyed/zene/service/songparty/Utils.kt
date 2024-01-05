@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service.songparty
 
 import android.content.Intent
 import android.util.Log
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
@@ -11,6 +12,9 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.service.player.utils.Utils
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playOrPauseMedia
+import com.rizwansayyed.zene.utils.NotificationViewManager
+import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.PARTY_CHANNEL_ID
+import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.PARTY_DEFAULT_CHANNEL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -126,13 +130,24 @@ object Utils {
         if (response?.contains("\"type\":\"join\"") == true) {
             val r = JSONObject(response)
             val name = r.getString("name")
-            Log.d("TAG", "joinedUserDetails: data $name")
+            val photo = r.getString("photo")
+
+            val joined = context.resources.getString(R.string._n_joined)
+            val joinedNew = context.resources.getString(R.string._n_have_also_joined_the_song_party)
+
+            NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
+                .title(String.format(joined, name)).image(photo)
+                .body(String.format(joinedNew, name)).generate()
         }
     }
 
     suspend fun songListeningSync(json: String, ytAPI: YoutubeAPIImplInterface) {
         val response = getResponseInfo(json)
         if (response?.contains("\"type\":\"song_change\"") == true) {
+            val changed = context.resources.getString(R.string._n_changed_the_song)
+            val changedNew = context.resources.getString(R.string._n_changed_the_song_to)
+
+
             val r = JSONObject(response)
             val name = r.getString("name")
             val photo = r.getString("photo")
@@ -140,6 +155,9 @@ object Utils {
             if (musicPlayerData.firstOrNull()?.v?.songID == songId) return
 
             ytAPI.songDetail(songId).catch { }.collectLatest {
+                NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
+                    .title(String.format(changed, name)).image(photo)
+                    .body(String.format(changedNew, name, it.name)).generate()
                 addAllPlayer(listOf(it).toTypedArray(), 0)
             }
         }
@@ -150,10 +168,17 @@ object Utils {
         if (response?.contains("\"type\":\"pause\"") == true ||
             response?.contains("\"type\":\"play\"") == true
         ) {
+            val paused = context.resources.getString(R.string._n_paused_the_song)
+            val play = context.resources.getString(R.string._n_start_playing_the_song)
+
             val r = JSONObject(response)
             val name = r.getString("name")
             val photo = r.getString("photo")
             val type = r.getString("type").trim()
+
+            NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
+                .title(String.format(if (type == "play") play else paused, name)).image(photo)
+                .body(String.format(if (type == "play") play else paused, play)).generate()
 
             playOrPauseMedia(type == "play")
         }

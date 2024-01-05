@@ -117,6 +117,12 @@
     <string name="close">Close</string>
     <string name="morning_song_alarm">Morning Song Alarm</string>
     <string name="playing_as_morning_alarm_song">Playing %s as morning alarm song.</string>
+    <string name="_n_changed_the_song">%s changed the song.</string>
+    <string name="_n_paused_the_song">%s paused the song.</string>
+    <string name="_n_start_playing_the_song">%s start playing the song.</string>
+    <string name="_n_changed_the_song_to">%s changed the song to %s.</string>
+    <string name="_n_joined">%s joined.</string>
+    <string name="_n_have_also_joined_the_song_party">%s have also joined the song party on Zene.</string>
     <string name="no_song_found_to_play_as_morning_alarm">No song found to play as morning alarm song.</string>
     <string name="remove_current_song">Remove current song</string>
     <string name="confirm">Confirm</string>

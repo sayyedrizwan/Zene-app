@@ -44,6 +44,10 @@ class NotificationViewManager(private val context: Context) {
         const val ALARM_DEFAULT_CHANNEL = "alarm_channel_notification"
 
 
+        const val PARTY_CHANNEL_ID = "song_party_channel_notification_id"
+        const val PARTY_DEFAULT_CHANNEL = "song_party_channel_notification"
+
+
         const val flags = PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
     }
 
@@ -84,7 +88,7 @@ class NotificationViewManager(private val context: Context) {
     fun generate() = CoroutineScope(Dispatchers.IO).launch {
         var bitmap: Bitmap? = null
         if (image != null) {
-            val request = ImageRequest.Builder(ApplicationModule.context).data(image)
+            val request = ImageRequest.Builder(context).data(image)
                 .target(onSuccess = { result ->
                     bitmap = (result as BitmapDrawable).bitmap
                 }).build()

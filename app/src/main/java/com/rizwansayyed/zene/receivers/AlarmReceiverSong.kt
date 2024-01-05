@@ -17,6 +17,8 @@ import com.rizwansayyed.zene.utils.DateFormatter
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.NotificationViewManager
+import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.ALARM_CHANNEL_ID
+import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.ALARM_DEFAULT_CHANNEL
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -71,10 +73,7 @@ class AlarmReceiverSong : BroadcastReceiver() {
                 val playingAlarm =
                     context.resources.getString(R.string.playing_as_morning_alarm_song)
 
-                NotificationViewManager(context).nIds(
-                    NotificationViewManager.ALARM_CHANNEL_ID,
-                    NotificationViewManager.ALARM_DEFAULT_CHANNEL
-                )
+                NotificationViewManager(context).nIds(ALARM_CHANNEL_ID, ALARM_DEFAULT_CHANNEL)
                     .title(context.resources.getString(R.string.morning_song_alarm))
                     .body(String.format(playingAlarm, songDetails.name)).generate()
 
