@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_CLOSE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_CHANGE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PAUSE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PLAY
@@ -18,6 +19,8 @@ import com.rizwansayyed.zene.service.songparty.Utils.Action.generatePartyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.Free4WebSocket.FREE_4_WEB_SOCKET
 import com.rizwansayyed.zene.service.songparty.Utils.isNewAJoin
+import com.rizwansayyed.zene.service.songparty.Utils.leaveDetailsInParty
+import com.rizwansayyed.zene.service.songparty.Utils.leaveStatus
 import com.rizwansayyed.zene.service.songparty.Utils.newJoin
 import com.rizwansayyed.zene.service.songparty.Utils.pauseMusicChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.playMusicChangeData
@@ -78,6 +81,13 @@ class SongPartyService : Service() {
                     webSocket?.send(pauseMusicChangeData())
                     if (isActive) cancel()
                 }
+
+                PARTY_ACTION_CLOSE -> CoroutineScope(Dispatchers.IO).launch {
+                    webSocket?.send(leaveDetailsInParty())
+                    delay(2.seconds)
+                    onDestroy()
+                    if (isActive) cancel()
+                }
             }
         }
     }
@@ -94,6 +104,7 @@ class SongPartyService : Service() {
             addAction(PARTY_ACTION_SONG_CHANGE)
             addAction(PARTY_ACTION_SONG_PLAY)
             addAction(PARTY_ACTION_SONG_PAUSE)
+            addAction(PARTY_ACTION_CLOSE)
             priority = IntentFilter.SYSTEM_HIGH_PRIORITY
             ContextCompat.registerReceiver(
                 this@SongPartyService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
@@ -129,6 +140,7 @@ class SongPartyService : Service() {
                 }
                 songPartySongSync(text, youtubeAPIImplInterface)
                 playPauseSongStateSync(text)
+                leaveStatus(text)
                 if (isActive) cancel()
             }
             Log.d("TAG", "Received message: $text")
@@ -159,6 +171,7 @@ class SongPartyService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        partyRoomId = null
         webSocket?.close(1000, "Closing WebSocket connection")
     }
 }

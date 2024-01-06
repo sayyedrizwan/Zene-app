@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,9 +42,11 @@ import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
+import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.songparty.SongPartyService
 import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
+import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.closeParty
 import com.rizwansayyed.zene.utils.GoogleSignInUtils
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appPartyJoinUrl
 import com.rizwansayyed.zene.utils.Utils.shareTxt
@@ -73,9 +76,13 @@ fun HostPartyButtonCard() {
     val coroutine = rememberCoroutineScope()
     val userInfo by loginUser.collectAsState(initial = null)
 
+    val linkCopyInfo = stringResource(R.string.disconnected_from_party)
+
     val googleSignIn = GoogleSignInUtils(context)
 
+    var showPartyDialog by remember { mutableStateOf(false) }
     var isLoginLoading by remember { mutableStateOf(false) }
+    var isInParty by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -86,11 +93,39 @@ fun HostPartyButtonCard() {
     ) {
 
         if (userInfo?.isLogin() == true) {
-            TextThin(
-                v = stringResource(R.string.song_group_party_desc),
-                Modifier.fillMaxWidth(), true, size = 14
-            )
+            if (isInParty) {
+                TextSemiBold(
+                    v = stringResource(R.string.already_in_a_party),
+                    Modifier.fillMaxWidth(), true, size = 17
+                )
 
+                Spacer(Modifier.height(15.dp))
+
+                RoundBorderButtonsView(stringResource(R.string.share).lowercase()) {
+                    linkCopyInfo.toast()
+                    shareTxt(appPartyJoinUrl(partyRoomId!!))
+                }
+
+                Spacer(Modifier.height(15.dp))
+
+                RoundBorderButtonsView(stringResource(R.string.leave_party).lowercase()) {
+                    closeParty()
+                }
+            } else {
+                TextSemiBold(
+                    v = stringResource(R.string.start_new_party),
+                    Modifier.fillMaxWidth(), true, size = 17
+                )
+
+                Spacer(Modifier.height(15.dp))
+
+                RoundBorderButtonsView(stringResource(R.string.start).lowercase()) {
+                    showPartyDialog = true
+                }
+            }
+            LaunchedEffect(partyRoomId) {
+                isInParty = partyRoomId != null
+            }
         } else {
             TextSemiBold(
                 v = stringResource(R.string.start_a_group_party),
@@ -110,6 +145,19 @@ fun HostPartyButtonCard() {
                     }
                 }
         }
+
+        if (showPartyDialog) SimpleTextDialog(
+            stringResource(R.string.start_new_party),
+            stringResource(R.string.song_group_party_desc),
+            stringResource(R.string.start),
+            {
+                Intent(context, SongPartyService::class.java).apply {
+                    context.startService(this)
+                }
+                showPartyDialog = false
+            }, {
+                showPartyDialog = false
+            })
 
 //        TextThin(
 //            v = stringResource(R.string.song_group_party_desc),

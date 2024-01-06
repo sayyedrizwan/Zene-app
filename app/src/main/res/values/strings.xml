@@ -124,6 +124,8 @@
     <string name="_n_start_playing_the_song">%s start playing the song.</string>
     <string name="_n_changed_the_song_to">%1$s changed the song to %2$s.</string>
     <string name="_n_joined">%s joined.</string>
+    <string name="_n_left">%s left.</string>
+    <string name="_n_has_left_the_song_party">%s has left the song party.</string>
     <string name="_n_have_also_joined_the_song_party">%s have also joined the song party.</string>
     <string name="no_song_found_to_play_as_morning_alarm">No song found to play as morning alarm song.</string>
     <string name="remove_current_song">Remove current song</string>
@@ -245,7 +247,12 @@
     <string name="start_a_group_party">Start a group Party</string>
     <string name="sign_in_for_song_group_party">You first need to login to start the song group party and become a host.</string>
     <string name="continue_with_google">Continue with google</string>
-    <string name="song_group_party_desc">Create an unforgettable music experience with your friends! Start a sync-enabled song party, where everyone can seamlessly join, enjoy, and watch music videos together in perfect harmony.</string>
+    <string name="song_group_party_desc">Create an unforgettable music experience with your friends! Start a sync-enabled song party, where everyone can seamlessly join, enjoy, and watch music videos together in perfect harmony. \n\nSharing the party link can make anyone join the party and can make changes in the songs.</string>
+    <string name="start_new_party">Start new party 🎉</string>
+    <string name="disconnected_from_party">If you get disconnected from the party you can rejoin using the same link</string>
+    <string name="start">Start</string>
+    <string name="leave_party">Leave Party</string>
+    <string name="already_in_a_party">Already in a Party 🥳🍹</string>
     <string name="stand_by_mode_while_charging">Stand-by Mode while charging</string>
     <string name="need_permission_to_show_events_from_calender">Need permission to \nshow events from calender</string>
     <string name="no_events_today">No Events Today</string>

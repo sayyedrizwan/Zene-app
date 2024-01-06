@@ -1,7 +1,10 @@
 package com.rizwansayyed.zene.service.songparty
 
 import android.content.Intent
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
@@ -10,11 +13,13 @@ import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.GroupMusicUserInfo
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.playOrPauseMedia
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_CLOSE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_CHANGE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PAUSE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PLAY
 import com.rizwansayyed.zene.service.songparty.Utils.Action.emailParam
 import com.rizwansayyed.zene.service.songparty.Utils.Action.joinParam
+import com.rizwansayyed.zene.service.songparty.Utils.Action.leaveParam
 import com.rizwansayyed.zene.service.songparty.Utils.Action.nameParam
 import com.rizwansayyed.zene.service.songparty.Utils.Action.pauseParam
 import com.rizwansayyed.zene.service.songparty.Utils.Action.photoParam
@@ -42,7 +47,7 @@ object Utils {
     }
 
     object Action {
-        var partyRoomId: String? = null
+        var partyRoomId by mutableStateOf<String?>(null)
 
 
         fun generatePartyRoomId(): String = runBlocking {
@@ -59,6 +64,7 @@ object Utils {
         val PARTY_ACTION_SONG_CHANGE = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_CHANGE"
         val PARTY_ACTION_SONG_PLAY = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PLAY"
         val PARTY_ACTION_SONG_PAUSE = "${context.packageManager}.PARTY_SERVICE_ACTION_SONG_PAUSE"
+        val PARTY_ACTION_CLOSE = "${context.packageManager}.PARTY_ACTION_CLOSE"
 
 
         const val nameParam = "name"
@@ -67,6 +73,7 @@ object Utils {
         const val typeParam = "type"
 
 
+        const val leaveParam = "leave"
         const val joinParam = "join"
         const val songIdParam = "song_id"
         const val playParam = "play"
@@ -79,6 +86,7 @@ object Utils {
         fun sendSongChange(id: String?) = serviceAction(PARTY_ACTION_SONG_CHANGE, id)
         fun playSongChange() = serviceAction(PARTY_ACTION_SONG_PLAY, null)
         fun pauseSongChange() = serviceAction(PARTY_ACTION_SONG_PAUSE, null)
+        fun closeParty() = serviceAction(PARTY_ACTION_CLOSE, null)
 
 
         private fun serviceAction(action: String, extra: String?) {
@@ -92,6 +100,9 @@ object Utils {
     object ActionString {
         val joined = context.resources.getString(R.string._n_joined)
         val joinedNew = context.resources.getString(R.string._n_have_also_joined_the_song_party)
+
+        val left = context.resources.getString(R.string._n_left)
+        val leftNew = context.resources.getString(R.string._n_has_left_the_song_party)
 
         val changed = context.resources.getString(R.string._n_changed_the_song)
         val changedNew = context.resources.getString(R.string._n_changed_the_song_to)
@@ -122,6 +133,20 @@ object Utils {
         }
 
         return false
+    }
+
+    fun leaveStatus(json: String) {
+        val response = getResponseInfo(json)
+
+        if (typeCheck(response, leaveParam)) {
+            val r = JSONObject(response!!)
+            val name = r.getString(nameParam)
+            val photo = r.getString(photoParam)
+
+            NotificationViewManager(context).nIds(PARTY_CHANNEL_ID, PARTY_DEFAULT_CHANNEL)
+                .title(String.format(ActionString.left, name)).image(photo)
+                .body(String.format(ActionString.leftNew, name)).generate()
+        }
     }
 
     fun playPauseSongStateSync(json: String) {
@@ -169,6 +194,8 @@ object Utils {
         """["2",null,"room:${Action.partyRoomId}","phx_join",{"isSimulcastOn":false}]""".trimIndent()
 
     suspend fun sendMyDetailsInParty(): String = textDataEvents(joinParam)
+
+    suspend fun leaveDetailsInParty(): String = textDataEvents(leaveParam)
 
     suspend fun sendMusicChangeData(songId: String?): String =
         textDataEvents(songChange, Pair(songIdParam, songId))
