@@ -195,8 +195,6 @@ object Utils {
             data = Uri.fromParts("package", context.packageName, null)
         }
         context.startActivity(intent)
-
-        v?.toast()
     }
 
     fun downloadImageAsBitmap(uri: Uri?, done: (Bitmap) -> Unit) =

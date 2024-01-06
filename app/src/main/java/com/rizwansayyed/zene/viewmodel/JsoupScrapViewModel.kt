@@ -35,7 +35,6 @@ class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: TopArtists
         jsoupScrap.topArtistsOfWeeks().onStart {
             topArtists = DataResponse.Loading
         }.catch {
-            it.message?.toast()
             topArtists = DataResponse.Error(it)
         }.collectLatest {
             topArtists = DataResponse.Success(it)

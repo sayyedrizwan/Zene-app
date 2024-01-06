@@ -41,13 +41,7 @@ import com.rizwansayyed.zene.utils.Utils.shareTxt
 import com.rizwansayyed.zene.viewmodel.ArtistsViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun ArtistsNameWithDescription() {

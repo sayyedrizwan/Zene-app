@@ -51,10 +51,8 @@ import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.Utils.AppUrl.APP_URL
 import com.rizwansayyed.zene.utils.Utils.customBrowser
-import java.util.concurrent.Executors
 
 
 @Composable
