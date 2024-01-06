@@ -25,7 +25,7 @@ class GoogleSignInUtils(val c: Context) {
     private val credentialManager = CredentialManager.create(c)
 
     private val googleIdOption = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(true)
+        .setFilterByAuthorizedAccounts(false)
         .setServerClientId(serverId)
         .build()
 

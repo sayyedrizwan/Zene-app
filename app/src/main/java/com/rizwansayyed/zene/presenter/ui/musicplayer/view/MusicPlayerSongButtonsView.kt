@@ -47,6 +47,8 @@ import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils.onClickOn3SecD
 import com.rizwansayyed.zene.service.player.listener.PlayServiceListener
 import com.rizwansayyed.zene.service.player.listener.PlayerServiceInterface
 import com.rizwansayyed.zene.service.player.utils.Utils.seekToTimestamp
+import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.pauseSongChange
+import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.playSongChange
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -138,10 +140,12 @@ fun MusicPlayerButtons(player: ExoPlayer) {
         else
             if (isPlaying)
                 SmallIcons(R.drawable.ic_pause, 38) {
+                    pauseSongChange()
                     player.pause()
                 }
             else
                 SmallIcons(R.drawable.ic_play, 38) {
+                    playSongChange()
                     player.play()
                 }
 

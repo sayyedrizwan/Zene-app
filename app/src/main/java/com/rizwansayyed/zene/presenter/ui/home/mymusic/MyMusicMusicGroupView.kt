@@ -45,8 +45,10 @@ import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.songparty.SongPartyService
+import com.rizwansayyed.zene.service.songparty.Utils.Action.generatePartyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.closeParty
+import com.rizwansayyed.zene.service.songparty.Utils.groupMusicUsersList
 import com.rizwansayyed.zene.utils.GoogleSignInUtils
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appPartyJoinUrl
 import com.rizwansayyed.zene.utils.Utils.shareTxt
@@ -57,6 +59,8 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MyMusicGroupMusicParty() {
+    var isInParty by remember { mutableStateOf(false) }
+
     Column {
         Column(Modifier.padding(horizontal = 9.dp)) {
             TopInfoWithSeeMore(R.string.music_group_party, null, 50) {}
@@ -66,7 +70,22 @@ fun MyMusicGroupMusicParty() {
             item {
                 HostPartyButtonCard()
             }
+            if (isInParty && groupMusicUsersList.isEmpty())
+                item {
+                    Column(
+                        Modifier
+                            .padding(start = 10.dp)
+                            .size(250.dp, 350.dp)
+                            .clip(RoundedCornerShape(12.dp)), Arrangement.Center, Alignment.CenterHorizontally
+                    ) {
+                        TextSemiBold(v = stringResource(R.string.no_one_is_at_the_party))
+                    }
+                }
         }
+    }
+
+    LaunchedEffect(partyRoomId) {
+        isInParty = partyRoomId != null
     }
 }
 
@@ -152,6 +171,7 @@ fun HostPartyButtonCard() {
             stringResource(R.string.start),
             {
                 Intent(context, SongPartyService::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startService(this)
                 }
                 showPartyDialog = false

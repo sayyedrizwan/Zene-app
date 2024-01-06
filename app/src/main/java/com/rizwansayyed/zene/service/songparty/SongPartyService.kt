@@ -9,9 +9,12 @@ import android.content.IntentFilter
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_CLOSE
+import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_RADIO_CHANGE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_CHANGE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PAUSE
 import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PLAY
@@ -27,10 +30,13 @@ import com.rizwansayyed.zene.service.songparty.Utils.playMusicChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.playPauseSongStateSync
 import com.rizwansayyed.zene.service.songparty.Utils.sendMusicChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.sendMyDetailsInParty
+import com.rizwansayyed.zene.service.songparty.Utils.sendRadioChangeData
+import com.rizwansayyed.zene.service.songparty.Utils.songPartyRadioSync
 import com.rizwansayyed.zene.service.songparty.Utils.songPartySongSync
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -48,7 +54,12 @@ import kotlin.time.Duration.Companion.seconds
 class SongPartyService : Service() {
 
     @Inject
-    lateinit var youtubeAPIImplInterface: YoutubeAPIImplInterface
+    lateinit var youtubeAPIImpl: YoutubeAPIImplInterface
+
+    @Inject
+    lateinit var onlineRadioImpl: OnlineRadioImplInterface
+
+    private var tempJob: Job? = null
 
     companion object {
         fun isSongPartyServiceRunning(): Boolean {
@@ -64,12 +75,16 @@ class SongPartyService : Service() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                PARTY_ACTION_SONG_CHANGE -> {
+                PARTY_ACTION_SONG_CHANGE -> CoroutineScope(Dispatchers.IO).launch {
                     val songId = intent.getStringExtra(Intent.EXTRA_TEXT)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        webSocket?.send(sendMusicChangeData(songId))
-                        if (isActive) cancel()
-                    }
+                    webSocket?.send(sendMusicChangeData(songId))
+                    if (isActive) cancel()
+                }
+
+                PARTY_ACTION_RADIO_CHANGE -> CoroutineScope(Dispatchers.IO).launch {
+                    val radioId = intent.getStringExtra(Intent.EXTRA_TEXT)
+                    webSocket?.send(sendRadioChangeData(radioId))
+                    if (isActive) cancel()
                 }
 
                 PARTY_ACTION_SONG_PLAY -> CoroutineScope(Dispatchers.IO).launch {
@@ -105,10 +120,18 @@ class SongPartyService : Service() {
             addAction(PARTY_ACTION_SONG_PLAY)
             addAction(PARTY_ACTION_SONG_PAUSE)
             addAction(PARTY_ACTION_CLOSE)
+            addAction(PARTY_ACTION_RADIO_CHANGE)
             priority = IntentFilter.SYSTEM_HIGH_PRIORITY
             ContextCompat.registerReceiver(
                 this@SongPartyService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
             )
+        }
+
+        tempJob = CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                delay(8.seconds)
+                webSocket?.send(newJoin())
+            }
         }
 
 
@@ -138,12 +161,12 @@ class SongPartyService : Service() {
                 if (isNewAJoin(text)) {
                     joinMessage()
                 }
-                songPartySongSync(text, youtubeAPIImplInterface)
+                songPartySongSync(text, youtubeAPIImpl)
+                songPartyRadioSync(text, onlineRadioImpl)
                 playPauseSongStateSync(text)
                 leaveStatus(text)
                 if (isActive) cancel()
             }
-            Log.d("TAG", "Received message: $text")
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
@@ -171,6 +194,7 @@ class SongPartyService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        tempJob?.cancel()
         partyRoomId = null
         webSocket?.close(1000, "Closing WebSocket connection")
     }

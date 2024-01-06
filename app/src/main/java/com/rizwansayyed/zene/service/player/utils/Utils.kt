@@ -110,6 +110,7 @@ object Utils {
 
         return lists.distinctBy { it?.pId }.toTypedArray()
     }
+
     fun addAllPlayer(l: Array<MusicData?>?, p: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             delay(1.5.seconds)
@@ -170,7 +171,7 @@ object Utils {
             musicPlayerData = flowOf(mpd)
         }
 
-            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.PLAY_RADIO)
+        FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.PLAY_RADIO)
 
         val mediaData = moshi.adapter(OnlineRadioResponseItem::class.java).toJson(radio)
         Intent(PLAYER_SERVICE_ACTION).apply {

@@ -171,7 +171,6 @@ class PlayerService : MediaSessionService() {
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
-            if (isPlaying) playSongChange() else pauseSongChange()
             PlayServiceListener.getInstance().playingState()
         }
 
@@ -199,14 +198,8 @@ class PlayerService : MediaSessionService() {
                     if (isActive) cancel()
                 }
 
-                Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {
-                    retry = 0
-                }
-
-                Player.STATE_ENDED -> {
-                    retry = 0
-                }
-
+                Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> retry = 0
+                Player.STATE_ENDED -> retry = 0
                 Player.STATE_BUFFERING -> {}
                 Player.STATE_IDLE -> {}
             }

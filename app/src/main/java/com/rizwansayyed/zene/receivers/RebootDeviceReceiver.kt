@@ -27,8 +27,6 @@ class RebootDeviceReceiver : BroadcastReceiver() {
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context?, intent: Intent?) {
-        ApplicationModule.context.onCreate()
-
         registerEvent(FirebaseEvents.FirebaseEvent.REBOOT_DEVICE)
 
         CoroutineScope(Dispatchers.IO).launch {

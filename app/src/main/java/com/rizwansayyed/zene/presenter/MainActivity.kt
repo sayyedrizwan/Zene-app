@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashSc
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
+import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.domain.HomeNavigation.ALL_RADIO
 import com.rizwansayyed.zene.domain.HomeNavigation.FEED
 import com.rizwansayyed.zene.domain.HomeNavigation.HOME
@@ -67,6 +68,7 @@ import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
@@ -87,6 +89,8 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -135,6 +139,10 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var alarmManagerToPlaySong: AlarmManagerToPlaySong
+
+
+    @Inject
+    lateinit var onlineRadioImpl: OnlineRadioImplInterface
 
     private val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java) }
 
@@ -253,8 +261,9 @@ class MainActivity : ComponentActivity() {
                 }
 
                 LaunchedEffect(Unit) {
-                    delay(1.seconds)
+                    delay(500)
                     showBottomNav = true
+                    delay(1.seconds)
                     keyboard?.hide()
                 }
                 LaunchedEffect(navViewModel.homeNavV) {

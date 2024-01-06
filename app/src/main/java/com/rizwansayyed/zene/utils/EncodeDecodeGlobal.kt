@@ -31,7 +31,7 @@ object EncodeDecodeGlobal {
         return Base64.encodeToString(cipherText, Base64.DEFAULT)
     }
 
-    fun simpleEncode(txt: String): String? {
+    fun simpleEncode(txt: String): String {
         return Base64.encodeToString(txt.toByteArray(), Base64.DEFAULT)
     }
 

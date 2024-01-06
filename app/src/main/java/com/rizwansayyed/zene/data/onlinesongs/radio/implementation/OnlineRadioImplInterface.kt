@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface OnlineRadioImplInterface {
 
     suspend fun onlineRadioSearch(all: Boolean = true): Flow<OnlineRadioResponse>
-
     suspend fun favouriteRadioLists(uuid: String): Flow<List<OnlineRadioResponseItem>>
     suspend fun searchOnlineRadio(q: String): Flow<OnlineRadioResponse>
+    suspend fun searchUuids(uuid: String): Flow<OnlineRadioResponse>
 }

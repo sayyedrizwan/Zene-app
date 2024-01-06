@@ -91,6 +91,12 @@ class OnlineRadioImpl @Inject constructor(
         emit(response)
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun searchUuids(uuid: String) = flow {
+        val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
+        val response = onlineRadio.favouriteRadio(radioUUIDSearchAPI(baseURL), uuid)
+        emit(response)
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun searchOnlineRadio(q: String) = flow {
         val baseURL = activeRadioBaseURL().ifEmpty { RADIO_BASE_URL }
         val response = onlineRadio.searchRadio(searchRadioNameAPI(baseURL, q))

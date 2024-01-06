@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerData
+import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
@@ -82,27 +83,33 @@ fun TopPlayerHeader(showedOnLockScreen: Boolean, p: MusicPlayerData?) {
         )
 
 
-        Box {
-            SmallIcons(R.drawable.ic_more_menu, 25, 10) {
+        if (p?.playType == MusicType.RADIO)
+            SmallIcons(R.drawable.ic_more_menu, 0, 10) {
                 dropDownMenu = !dropDownMenu
             }
 
-            Column(Modifier.offset(x = (-120).dp, y = 0.dp)) {
-                DropdownMenu(dropDownMenu, { dropDownMenu = false }) {
-                    DropdownMenuItem({ TextSemiBold(ringtone) }, onClick = {
-                        dropDownMenu = false
-                        Intent(activity, SetRingtoneActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            activity.startActivity(this)
-                        }
-                    })
-                    DropdownMenuItem({ TextSemiBold(setAsWallpaper) }, onClick = {
-                        dropDownMenu = false
-                        homeNavViewModel.setImageAsWallpaper(p?.v?.thumbnail ?: "")
-                    })
+        else
+            Box {
+                SmallIcons(R.drawable.ic_more_menu, 25, 10) {
+                    dropDownMenu = !dropDownMenu
+                }
+
+                Column(Modifier.offset(x = (-120).dp, y = 0.dp)) {
+                    DropdownMenu(dropDownMenu, { dropDownMenu = false }) {
+                        DropdownMenuItem({ TextSemiBold(ringtone) }, onClick = {
+                            dropDownMenu = false
+                            Intent(activity, SetRingtoneActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                activity.startActivity(this)
+                            }
+                        })
+                        DropdownMenuItem({ TextSemiBold(setAsWallpaper) }, onClick = {
+                            dropDownMenu = false
+                            homeNavViewModel.setImageAsWallpaper(p?.v?.thumbnail ?: "")
+                        })
+                    }
                 }
             }
-        }
 
     }
 }

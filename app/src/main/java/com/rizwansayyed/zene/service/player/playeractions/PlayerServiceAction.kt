@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.service.player.playeractions
 
+import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
@@ -19,8 +20,10 @@ import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.toMusicData
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.RADIO_NAME
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UtilsWallpaperImage
 import com.rizwansayyed.zene.service.player.utils.Utils.toMediaItem
+import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.sendRadioChange
 import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.sendSongChange
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.songDownloadPath
 import com.rizwansayyed.zene.utils.Utils.printStack
@@ -139,11 +142,12 @@ class PlayerServiceAction @Inject constructor(
         }
 
         withContext(Dispatchers.IO) {
+            sendRadioChange(radio.stationuuid)
             val i =
                 radio.favicon?.ifEmpty { "https://cdn-icons-png.flaticon.com/512/7999/7999266.png" }
-            val currentPlayer = MusicPlayerList(radio.name, RADIO_NAME, radio.serveruuid, i)
+            val currentPlayer = MusicPlayerList(radio.name, RADIO_NAME, radio.stationuuid, i)
             val musicData =
-                MusicData(i, radio.name, RADIO_NAME, radio.serveruuid, MusicType.RADIO, "")
+                MusicData(i, radio.name, RADIO_NAME, radio.stationuuid, MusicType.RADIO, "")
 
             val d = musicPlayerData.first()?.apply {
                 v = currentPlayer

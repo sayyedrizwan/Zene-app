@@ -119,10 +119,12 @@
     <string name="close">Close</string>
     <string name="morning_song_alarm">Morning Song Alarm</string>
     <string name="playing_as_morning_alarm_song">Playing %s as morning alarm song.</string>
+    <string name="_n_changed_the_radio_channel">%s changed the radio channel.</string>
     <string name="_n_changed_the_song">%s changed the song.</string>
     <string name="_n_paused_the_song">%s paused the song.</string>
     <string name="_n_start_playing_the_song">%s start playing the song.</string>
     <string name="_n_changed_the_song_to">%1$s changed the song to %2$s.</string>
+    <string name="_n_changed_the_radio_channel_to">%1$s changed the radio channel to %2$s.</string>
     <string name="_n_joined">%s joined.</string>
     <string name="_n_left">%s left.</string>
     <string name="_n_has_left_the_song_party">%s has left the song party.</string>
@@ -251,6 +253,7 @@
     <string name="start_new_party">Start new party 🎉</string>
     <string name="disconnected_from_party">If you get disconnected from the party you can rejoin using the same link</string>
     <string name="start">Start</string>
+    <string name="no_one_is_at_the_party">No one is at the party 🕺</string>
     <string name="leave_party">Leave Party</string>
     <string name="already_in_a_party">Already in a Party 🥳🍹</string>
     <string name="stand_by_mode_while_charging">Stand-by Mode while charging</string>
