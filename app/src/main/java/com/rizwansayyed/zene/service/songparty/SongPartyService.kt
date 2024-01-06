@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.service.songparty.Utils.Action.PARTY_ACTION_SONG_PL
 import com.rizwansayyed.zene.service.songparty.Utils.Action.generatePartyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.Free4WebSocket.FREE_4_WEB_SOCKET
+import com.rizwansayyed.zene.service.songparty.Utils.groupMusicUsersList
 import com.rizwansayyed.zene.service.songparty.Utils.isNewAJoin
 import com.rizwansayyed.zene.service.songparty.Utils.leaveDetailsInParty
 import com.rizwansayyed.zene.service.songparty.Utils.leaveStatus
@@ -114,6 +115,7 @@ class SongPartyService : Service() {
         super.onStartCommand(intent, flags, startId)
         val roomId = intent?.getStringExtra(Intent.EXTRA_TEXT) ?: generatePartyRoomId()
         partyRoomId = roomId
+        groupMusicUsersList.clear()
 
         IntentFilter().apply {
             addAction(PARTY_ACTION_SONG_CHANGE)
@@ -194,6 +196,7 @@ class SongPartyService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        groupMusicUsersList.clear()
         tempJob?.cancel()
         partyRoomId = null
         webSocket?.close(1000, "Closing WebSocket connection")

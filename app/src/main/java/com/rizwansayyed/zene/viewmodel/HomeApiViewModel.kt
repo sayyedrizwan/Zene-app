@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.domain.CalendarEvents
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
+import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.SearchData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -115,6 +116,13 @@ class HomeApiViewModel @Inject constructor(
 
 
     var calenderTodayEvents by mutableStateOf<List<CalendarEvents>>(emptyList())
+        private set
+
+
+    var ytMusicSearch by mutableStateOf<DataResponse<MusicData>>(DataResponse.Empty)
+        private set
+
+    var radioMusicSearch by mutableStateOf<DataResponse<OnlineRadioResponseItem?>>(DataResponse.Empty)
         private set
 
 
@@ -278,6 +286,26 @@ class HomeApiViewModel @Inject constructor(
             calenderTodayEvents = emptyList()
         }.collectLatest {
             calenderTodayEvents = it
+        }
+    }
+
+    fun ytMusicSongDetails(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        youtubeAPI.songDetail(id).onStart {
+            ytMusicSearch = DataResponse.Loading
+        }.catch {
+            ytMusicSearch = DataResponse.Error(it)
+        }.collectLatest {
+            ytMusicSearch = DataResponse.Success(it)
+        }
+    }
+
+    fun radioDetails(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        onlineRadiosAPI.searchUuids(id).onStart {
+            radioMusicSearch = DataResponse.Loading
+        }.catch {
+            radioMusicSearch = DataResponse.Error(it)
+        }.collectLatest {
+            radioMusicSearch = DataResponse.Success(it.firstOrNull())
         }
     }
 

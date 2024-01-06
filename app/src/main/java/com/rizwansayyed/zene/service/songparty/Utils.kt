@@ -188,6 +188,10 @@ object Utils {
                 String.format(ActionString.left, name),
                 String.format(ActionString.leftNew, name), photo
             )
+
+            val list = groupMusicUsersList.filter { it.email != email }
+            groupMusicUsersList.clear()
+            groupMusicUsersList.addAll(list)
         }
     }
 

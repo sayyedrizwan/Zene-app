@@ -28,11 +28,11 @@ object EncodeDecodeGlobal {
         val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.ENCRYPT_MODE, key, iv)
         val cipherText = cipher.doFinal(txt.toByteArray())
-        return Base64.encodeToString(cipherText, Base64.DEFAULT)
+        return Base64.encodeToString(cipherText, Base64.DEFAULT).replace("=+$".toRegex(), "")
     }
 
     fun simpleEncode(txt: String): String {
-        return Base64.encodeToString(txt.toByteArray(), Base64.DEFAULT)
+        return Base64.encodeToString(txt.toByteArray(), Base64.DEFAULT).replace("=+$".toRegex(), "")
     }
 
     fun simpleDecode(txt: String): String {

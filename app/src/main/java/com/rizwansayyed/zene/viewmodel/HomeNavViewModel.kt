@@ -55,9 +55,32 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var onlineRadioTemps by mutableStateOf<OnlineRadioResponseItem?>(null)
         private set
 
+    var songPartyDialog = mutableStateOf<String?>(null)
+        private set
+
+    var songShareDialog = mutableStateOf<String?>(null)
+        private set
+
+    var radioShareDialog = mutableStateOf<String?>(null)
+        private set
+
+
+
     fun setSongDetailsDialog(v: MusicData?) {
         if (v != null) littleVibrate()
         songDetailDialog = v
+    }
+
+    fun setSongPartyDialog(v: String?) {
+        songPartyDialog.value = v
+    }
+
+    fun setRadioShareDialog(v: String?) {
+        radioShareDialog.value = v
+    }
+
+    fun setSongShareDialog(v: String?) {
+        songShareDialog.value = v
     }
 
     fun setRadioTemp(v: OnlineRadioResponseItem?) {

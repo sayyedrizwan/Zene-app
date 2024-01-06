@@ -138,7 +138,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
 
 
         LaunchedEffect(Unit){
-            registerEvent(FirebaseEvents.FirebaseEvent.SONG_MENU_SHEET)
+            registerEvent(FirebaseEvents.FirebaseEvent.RADIO_MENU_SHEET)
         }
     } else {
         MusicDialogListItems(R.drawable.ic_play, stringResource(R.string.play)) {
@@ -179,10 +179,10 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
 //
 //        }
 
-
         LaunchedEffect(Unit){
-            registerEvent(FirebaseEvents.FirebaseEvent.RADIO_MENU_SHEET)
+            registerEvent(FirebaseEvents.FirebaseEvent.SONG_MENU_SHEET)
         }
+
     }
 
     TextSemiBold(

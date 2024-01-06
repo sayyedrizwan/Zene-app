@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -54,6 +55,7 @@ import com.rizwansayyed.zene.domain.HomeNavigation.SETTINGS
 import com.rizwansayyed.zene.domain.MusicType.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
+import com.rizwansayyed.zene.presenter.ui.dialog.IntentsDialogView
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
@@ -76,8 +78,13 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
 import com.rizwansayyed.zene.service.songparty.SongPartyService
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.simpleDecode
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
+import com.rizwansayyed.zene.utils.Utils.AppUrl.ALBUMS_URL_DIFFERENTIATE
+import com.rizwansayyed.zene.utils.Utils.AppUrl.ARTIST_URL_DIFFERENTIATE
+import com.rizwansayyed.zene.utils.Utils.AppUrl.RADIO_URL_DIFFERENTIATE
 import com.rizwansayyed.zene.utils.Utils.AppUrl.urlUriType
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.loadOpenAppAds
@@ -89,8 +96,6 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -212,11 +217,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-
                 AnimatedVisibility(navViewModel.setImageAsWallpaper.isNotEmpty()) {
                     WallpaperSetView(navViewModel.setImageAsWallpaper)
                 }
 
+                IntentsDialogView()
 
                 if (doSplashScreen) MainSplashView()
 
@@ -331,11 +336,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             alarmManagerToPlaySong.startAlarmIfThere()
         }
-
-        lifecycleScope.launch {
-            delay(2.seconds)
-            alarmManagerToPlaySong.startAlarmIfThere()
-        }
     }
 
     private fun apis() {
@@ -349,20 +349,22 @@ class MainActivity : ComponentActivity() {
     private fun captureUrlInfo(i: Intent?) = lifecycleScope.launch(Dispatchers.IO) {
         val data = i?.data.toString()
         when (urlUriType(data)) {
-            MUSIC -> {}
-            ALBUMS -> {}
-            ARTISTS -> {}
-            PARTY -> {
-                val d = data.substringAfter("/party/").trim()
-                Intent(this@MainActivity, SongPartyService::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.EXTRA_TEXT, d)
-                    startService(this)
-                }
+            MUSIC -> navViewModel.setSongShareDialog(data)
+            ALBUMS -> lifecycleScope.launch {
+                delay(2.seconds)
+                val id = data.substringAfter(ALBUMS_URL_DIFFERENTIATE).trim()
+                navViewModel.setAlbum(simpleDecode(id))
             }
 
+            ARTISTS -> lifecycleScope.launch {
+                delay(2.seconds)
+                val id = data.substringAfter(ARTIST_URL_DIFFERENTIATE).trim()
+                navViewModel.setArtists(decryptData(id))
+            }
+
+            PARTY -> navViewModel.setSongPartyDialog(data)
             TEXT -> {}
-            RADIO -> {}
+            RADIO -> navViewModel.setRadioShareDialog(data)
             VIDEO -> {}
             null -> {}
         }

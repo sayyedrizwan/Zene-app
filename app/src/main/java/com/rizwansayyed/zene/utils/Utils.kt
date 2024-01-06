@@ -80,38 +80,44 @@ object Utils {
     }
 
     object AppUrl {
-        const val APP_URL = "https://zene.vercel.app"
+        const val APP_URL = "https://zenemusic.co"
+        const val SONG_URL_DIFFERENTIATE = "/s/"
+        const val PARTY_URL_DIFFERENTIATE = "/party/"
+        const val ALBUMS_URL_DIFFERENTIATE = "/album/"
+        const val ARTIST_URL_DIFFERENTIATE = "/a/"
+        const val RADIO_URL_DIFFERENTIATE = "/radio/"
+
 
         fun appUrlSongShare(id: String): String {
             val changeIdToOurs = simpleEncode(id.trim())
-            return "$APP_URL/s/$changeIdToOurs".trim()
+            return "$APP_URL$SONG_URL_DIFFERENTIATE$changeIdToOurs".trim()
         }
 
         fun appUrlRadioShare(id: String): String {
             val changeIdToOurs = simpleEncode(id.trim())
-            return "$APP_URL/r/$changeIdToOurs".trim()
+            return "$APP_URL$RADIO_URL_DIFFERENTIATE$changeIdToOurs".trim()
         }
 
         fun appUrlArtistsShare(name: String): String {
             val changeNameToOurs = encryptData(name.trim())
-            return "$APP_URL/a/$changeNameToOurs".trim()
+            return "$APP_URL$ARTIST_URL_DIFFERENTIATE$changeNameToOurs".trim()
         }
 
         fun appUrlAlbums(id: String): String {
             val changeIdToOurs = simpleEncode(id.trim())
-            return "$APP_URL/album/$changeIdToOurs".trim()
+            return "$APP_URL$ALBUMS_URL_DIFFERENTIATE$changeIdToOurs".trim()
         }
 
         fun appPartyJoinUrl(roomId: String): String {
-            return "$APP_URL/party/$roomId".trim()
+            return "$APP_URL$PARTY_URL_DIFFERENTIATE$roomId".trim()
         }
 
         fun urlUriType(url: String): MusicType? {
-            return if (url.contains("/s/")) MusicType.MUSIC
-            else if (url.contains("/r/")) MusicType.RADIO
-            else if (url.contains("/a/")) MusicType.ARTISTS
-            else if (url.contains("/album/")) MusicType.ALBUMS
-            else if (url.contains("/party/")) MusicType.PARTY
+            return if (url.contains("$APP_URL$SONG_URL_DIFFERENTIATE")) MusicType.MUSIC
+            else if (url.contains("$APP_URL$RADIO_URL_DIFFERENTIATE")) MusicType.RADIO
+            else if (url.contains("$APP_URL$ARTIST_URL_DIFFERENTIATE")) MusicType.ARTISTS
+            else if (url.contains("$APP_URL$ALBUMS_URL_DIFFERENTIATE")) MusicType.ALBUMS
+            else if (url.contains("$APP_URL$PARTY_URL_DIFFERENTIATE")) MusicType.PARTY
             else null
         }
 
@@ -278,12 +284,16 @@ object Utils {
     }
 
     fun shareTxt(txt: String) {
-        Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
+        val sendIntent: Intent = Intent().apply {
             flags = FLAG_ACTIVITY_NEW_TASK
+            action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, txt)
-            context.startActivity(this)
+            type = "text/plain"
         }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        shareIntent.flags = FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(shareIntent)
     }
 
     fun copyFileAndDelete(sourceFile: File, destinationFile: File) {

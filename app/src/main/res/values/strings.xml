@@ -78,10 +78,13 @@
     <string name="no_radio_found_search_else">No radio found, Try to search something else</string>
     <string name="no_search_history">No search history, the history of requests will appear here</string>
     <string name="no_song_found">No song found</string>
+    <string name="no_radio_found">No radio found</string>
     <string name="error_searching_try_again">Error searching. Please try again</string>
     <string name="error_loading_data_try_again">Error loading data. Please try again.</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="play">Play</string>
+    <string name="play_song">Play Song</string>
+    <string name="play_radio">Play Radio</string>
     <string name="playlists">Playlists</string>
     <string name="are_you_sure_want_to_save_it_as_a_playlist">Are you sure want to save it as a playlist ?</string>
     <string name="save_it_as_a_playlist_desc">This playlist will be uploaded to My Music\'s playlist section as a new playlist. NOTE!! Occasional playlist\'s songs mismatches occur because Zene relies on song and artist names for matching, which could be slightly difference in other song apps, which can lead to inaccuracies.</string>
@@ -253,6 +256,7 @@
     <string name="start_new_party">Start new party 🎉</string>
     <string name="disconnected_from_party">If you get disconnected from the party you can rejoin using the same link</string>
     <string name="start">Start</string>
+    <string name="is_in_the_party">is in the party</string>
     <string name="no_one_is_at_the_party">No one is at the party 🕺</string>
     <string name="leave_party">Leave Party</string>
     <string name="already_in_a_party">Already in a Party 🥳🍹</string>
@@ -267,4 +271,9 @@
     <string name="login_to_your_yt_music_account">Login to your youtube music account to get all the playlists</string>
     <string name="login_to_your_apple_music_account">Login to your apple music account to get all the playlists</string>
     <string name="no_song_found_please_check_internet">No song found. Please check your internet connection or try after some times.</string>
+    <string name="join_a_new_party">Join a new party 🎉</string>
+    <string name="join_a_new_party_new_desc">Do you want to join a party. After joining the party can then keep the music in sync with the group.</string>
+    <string name="join_a_new_party_old_desc">Do you want to join a new party you are already in a group party and you will be removed from current party.</string>
+    <string name="join">Join</string>
+    <string name="joining__">Joining…</string>
 </resources>
