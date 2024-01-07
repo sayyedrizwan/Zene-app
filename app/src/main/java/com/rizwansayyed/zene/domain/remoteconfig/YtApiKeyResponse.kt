@@ -6,4 +6,5 @@ data class YtApiKeyResponse(
     val soundcloud: String,
     val spotifyClientID: String,
     val spotifySecretID: String,
+    val giphy: String,
 )

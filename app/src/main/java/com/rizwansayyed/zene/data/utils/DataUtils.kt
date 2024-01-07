@@ -62,6 +62,15 @@ object InstagramAPI {
     const val INSTAGRAM_PROFILE_API = "web_profile_info/"
 }
 
+object GiphyAPI {
+    const val GIPHY_BASE = "https://giphy.com/"
+    const val GIPHY_BASE_API = "api.giphy.com"
+
+
+    const val GIPHY_BASE_URL = "https://api.giphy.com/v1/"
+    const val GIPHY_SEARCH_API = "gifs/search"
+}
+
 object PinterestAPI {
     const val PINTEREST_BASE_URL = "https://www.pinterest.com/"
     const val PINTEREST_SEARCH_API = "resource/BaseSearchResource/get/"

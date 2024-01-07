@@ -44,7 +44,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
 import com.rizwansayyed.zene.presenter.ui.home.online.FreshAddedSongsList
 import com.rizwansayyed.zene.presenter.ui.home.online.GlobalTrendingPagerItems
 import com.rizwansayyed.zene.presenter.ui.home.online.LoadingAlbumsCards
-import com.rizwansayyed.zene.presenter.ui.home.online.MoodTopics
+import com.rizwansayyed.zene.presenter.ui.home.mood.MoodTopics
 import com.rizwansayyed.zene.presenter.ui.home.online.RelatedAlbums
 import com.rizwansayyed.zene.presenter.ui.home.online.SimilarArtists
 import com.rizwansayyed.zene.presenter.ui.home.online.SongsExploreItems
@@ -129,7 +129,7 @@ fun HomeView() {
 
         item(key = 8, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
-                MoodTopics()
+                MoodTopics(homeNavModel)
             }
         }
 

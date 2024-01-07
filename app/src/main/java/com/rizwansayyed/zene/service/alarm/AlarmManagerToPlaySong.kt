@@ -69,7 +69,7 @@ class AlarmManagerToPlaySong @Inject constructor() {
                 if (!isPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)) return@launch
             }
 
-            alarmMgr.setExact(
+            alarmMgr.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent
             )
         } catch (e: Exception) {

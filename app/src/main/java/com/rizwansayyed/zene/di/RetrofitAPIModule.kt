@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.di
 
 import com.rizwansayyed.zene.data.onlinesongs.applemusic.AppleMusicAPIService
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
+import com.rizwansayyed.zene.data.onlinesongs.giphy.GiphyService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.SaveFromInstagramService
 import com.rizwansayyed.zene.data.onlinesongs.ip.AWSIpJsonService
@@ -18,6 +19,9 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicPlaylistService
 import com.rizwansayyed.zene.data.utils.AppleMusicAPI.APPLE_MUSIC_BASE_URL
+import com.rizwansayyed.zene.data.utils.GiphyAPI.GIPHY_BASE
+import com.rizwansayyed.zene.data.utils.GiphyAPI.GIPHY_BASE_API
+import com.rizwansayyed.zene.data.utils.GiphyAPI.GIPHY_BASE_URL
 import com.rizwansayyed.zene.data.utils.GoogleNewsAPI.GOOGLE_NEWS_BASE_URL
 import com.rizwansayyed.zene.data.utils.InstagramAPI.INSTAGRAM_BASE_URL
 import com.rizwansayyed.zene.data.utils.IpJsonAPI.IP_AWS_BASE_URL
@@ -313,6 +317,26 @@ object RetrofitAPIModule {
             .baseUrl(SAVE_FROM_INSTAGRAM_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(SaveFromInstagramService::class.java)
+    }
+
+    @Provides
+    fun retrofitGiphyService(): GiphyService {
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
+        builder.addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val chains = chain.request().newBuilder()
+                .addHeader("authority", GIPHY_BASE_API)
+                .addHeader("origin", GIPHY_BASE.substringBeforeLast("/"))
+                .addHeader("referer", GIPHY_BASE)
+            chain.proceed(chains.build())
+        })
+
+        return Retrofit.Builder()
+            .baseUrl(GIPHY_BASE_URL).client(builder.build())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
+            .build().create(GiphyService::class.java)
     }
 
 }

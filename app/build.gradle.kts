@@ -115,6 +115,7 @@ dependencies {
 
 
     implementation(libs.coil)
+    implementation("io.coil-kt:coil-gif:2.5.0")
     implementation(libs.datastore)
 
 

@@ -57,6 +57,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.dialog.IntentsDialogView
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
+import com.rizwansayyed.zene.presenter.ui.home.mood.MoodMusic
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
@@ -198,6 +199,9 @@ class MainActivity : ComponentActivity() {
                     }
                     AnimatedVisibility(navViewModel.selectedAlbum.length > 3) {
                         AlbumView()
+                    }
+                    AnimatedVisibility(navViewModel.selectedMood.length > 2) {
+                        MoodMusic()
                     }
 
                     if (showBottomNav) BottomNavBar(Modifier.align(Alignment.BottomCenter), player)
