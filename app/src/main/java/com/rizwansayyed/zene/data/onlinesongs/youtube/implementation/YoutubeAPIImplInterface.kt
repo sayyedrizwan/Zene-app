@@ -34,4 +34,5 @@ interface YoutubeAPIImplInterface {
     suspend fun artistsShopMerchandise(vId: String): Flow<MutableList<MerchandiseItems>>
     suspend fun channelVideo(id: String): Flow<MutableList<ArtistsFeedEntity>>
     suspend fun musicInfoSearch(q: String): Flow<MusicData?>
+    suspend fun searchMoodPlaylists(q: String): Flow<List<MusicData>>
 }

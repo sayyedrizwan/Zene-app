@@ -83,7 +83,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
         radioShareDialog.value = v
     }
 
-    fun setTheMood(v: MoodData) {
+    fun setTheMood(v: MoodData?) {
         selectedMood = v
     }
 

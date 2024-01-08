@@ -44,8 +44,9 @@ class SocialMediaScrapsImpl @Inject constructor(
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val instagram = instagramService
-                        .instagramInfo(remoteConfig.instagramAppID(), a.instagramUsername)
+                    val instagram = instagramService.instagramInfo(
+                        remoteConfig.allApiKeys()?.instagram ?: "", a.instagramUsername
+                    )
 
                     instagram.data?.user?.edge_owner_to_timeline_media?.edges?.forEach {
                         val media =

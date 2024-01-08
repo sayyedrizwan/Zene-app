@@ -572,6 +572,14 @@ object CacheFiles {
     val demoRingtonePath = File(context.filesDir, "demo_ringtone.mp3")
     val demoCropRingtonePath = File(context.filesDir, "demo_crop_ringtone.mp3")
 
+    fun moodPlaylistsCache(mood: String): File {
+        val m = mood.lowercase().replace(" ", "-")
+        return File(context.cacheDir, "mood-$m-yt-playlists.json")
+    }
+
+    fun moodTopSongsCache(mood: String): File {
+        return File(context.cacheDir, "mood-${mood.lowercase()}-top-songs.json")
+    }
 
     private val musicDir =
         File(Environment.getExternalStorageDirectory(), "Music").apply { mkdirs() }

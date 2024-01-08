@@ -2,8 +2,10 @@ package com.rizwansayyed.zene.presenter.ui.home.mood
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -14,6 +16,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.home.mood.view.MoodGifView
+import com.rizwansayyed.zene.presenter.ui.home.mood.view.MoodPlaylistsSongs
+import com.rizwansayyed.zene.presenter.ui.home.mood.view.MoodTopSongs
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.MoodViewModel
 
@@ -41,6 +45,20 @@ fun MoodMusic() {
                 true,
                 size = 30
             )
+        }
+
+
+        item(key = 3) {
+            MoodPlaylistsSongs(moodViewModel)
+        }
+
+        item(key = 4) {
+            MoodTopSongs(moodViewModel)
+        }
+
+
+        item(key = 100) {
+            Spacer(Modifier.height(200.dp))
         }
     }
 

@@ -24,7 +24,7 @@ import com.rizwansayyed.zene.viewmodel.MoodViewModel
 
 
 @Composable
-fun MoodGifView(moodViewModel: MoodViewModel) {
+fun MoodGifView(viewModel: MoodViewModel) {
     val height = LocalConfiguration.current.screenHeightDp / 1.3
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
@@ -37,7 +37,7 @@ fun MoodGifView(moodViewModel: MoodViewModel) {
         .build()
 
 
-    when (val v = moodViewModel.gifMood) {
+    when (val v = viewModel.gifMood) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> Spacer(Modifier.padding(top = 20.dp))
         DataResponse.Loading -> Spacer(

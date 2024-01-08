@@ -237,6 +237,10 @@ class MainActivity : ComponentActivity() {
                                 flowOf(musicPlayerData.first()?.apply { show = false })
                             return@launch
                         }
+                        if (navViewModel.selectedMood != null) {
+                            navViewModel.setTheMood(null)
+                            return@launch
+                        }
                         if (navViewModel.selectMyMusicPlaylists.value != null) {
                             navViewModel.setSelectMyMusicPlaylists(null)
                             return@launch

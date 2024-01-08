@@ -8,4 +8,6 @@ interface SpotifyAPIImplInterface {
     suspend fun globalTrendingSongs(): Flow<List<MusicData>>
 
     suspend fun topSongsInCountry(): Flow<List<MusicData>>
+    suspend fun searchSongViaPlaylists(q: String): Flow<MutableList<MusicData>>
+    suspend fun searchTopSongsMoodPlaylists(mood: String): Flow<List<MusicData>>
 }

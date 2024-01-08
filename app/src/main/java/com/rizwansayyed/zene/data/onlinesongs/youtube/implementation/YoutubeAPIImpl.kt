@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache1Days
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Days
+import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache8Hours
 import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
@@ -15,6 +16,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.utils.CacheFiles.albumsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.artistsFanWithSongsCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.freshAddedSongs
+import com.rizwansayyed.zene.data.utils.CacheFiles.moodPlaylistsCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.songsForYouCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.suggestionYouMayLikeCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topArtistsCountry
@@ -48,9 +50,6 @@ import com.rizwansayyed.zene.domain.TopSuggestMusicData
 import com.rizwansayyed.zene.domain.toTxtCache
 import com.rizwansayyed.zene.domain.yt.MerchandiseItems
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
-import com.rizwansayyed.zene.domain.yt.YoutubeLatestYearResponse
-import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
-import com.rizwansayyed.zene.domain.yt.YoutubePlaylistItemsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import com.rizwansayyed.zene.utils.Utils.printStack
@@ -74,8 +73,7 @@ class YoutubeAPIImpl @Inject constructor(
             if (returnFromCache1Days(cache.cacheTime) && cache.list.isNotEmpty()) {
                 emit(cache.list)
                 return@flow
-            } else
-                emit(cache.list)
+            }
         }
 
         val ip = userIpDetails.first()
@@ -985,4 +983,37 @@ class YoutubeAPIImpl @Inject constructor(
         }
         emit(feed)
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun searchMoodPlaylists(q: String) = flow {
+        val cache = responseCache(moodPlaylistsCache(q.lowercase()), MusicDataCache::class.java)
+        if (cache != null) {
+            if (returnFromCache8Hours(cache.cacheTime) && cache.list.isNotEmpty()) {
+                emit(cache.list)
+                return@flow
+            }
+        }
+
+        val list = mutableListOf<MusicData>()
+
+        val ip = userIpDetails.first()
+        val key = remoteConfig.allApiKeys()?.yt ?: ""
+
+        val r = youtubeAPI.youtubeSearchResponse(ytArtistsPlaylistJsonBody(ip, q), key)
+
+        r.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.first()?.itemSectionRenderer?.contents?.forEach { c ->
+            val vId = c?.videoRenderer?.videoId ?: return@forEach
+            val thumbnail = c.videoRenderer.thumbnailURL()
+
+            val m = MusicData(
+                thumbnail ?: "", q.toCapitalFirst(), "", vId, MusicType.MUSIC
+            )
+            list.add(m)
+        }
+        list.shuffle()
+
+        list.toTxtCache()?.let { writeToCacheFile(moodPlaylistsCache(q.lowercase()), it) }
+        emit(list)
+    }.flowOn(Dispatchers.IO)
+
 }

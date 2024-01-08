@@ -7,6 +7,7 @@
     <string name="uploaded_on">uploaded on</string>
     <string name="global_top_trending_artists">Global top trending artists</string>
     <string name="gt_trending_songs">Global top trending songs</string>
+    <string name="top_trending_songs_for_this_mood">Top trending songs for this mood</string>
     <string name="radio_station_in_city">Radio Stations in your city</string>
     <string name="artist_photos">Artist Photos</string>
     <string name="song_related_photos">Song Related Photos</string>
@@ -289,4 +290,5 @@
     <string name="jazz">Jazz</string>
     <string name="romance">Romance</string>
     <string name="sad">Sad</string>
+    <string name="top_playlists">Top Playlists</string>
 </resources>

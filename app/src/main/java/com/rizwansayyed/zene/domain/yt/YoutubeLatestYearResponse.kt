@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.domain.yt
 
+import com.rizwansayyed.zene.domain.MusicData
+
+
 data class YoutubeLatestYearResponse(
     val contents: Contents?,
     val estimatedResults: String?

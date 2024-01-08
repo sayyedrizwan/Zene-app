@@ -1,4 +1,7 @@
 package com.rizwansayyed.zene.presenter.ui.home.mood.view
 
-class MoodInfoView {
+import androidx.compose.runtime.Composable
+
+@Composable
+fun MoodInfoView() {
 }
