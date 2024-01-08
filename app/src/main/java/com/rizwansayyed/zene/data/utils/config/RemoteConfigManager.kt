@@ -5,25 +5,21 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.domain.remoteconfig.YtApiKeyResponse
+import com.rizwansayyed.zene.domain.remoteconfig.RemoteConfigApiKeyResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-const val REMOTE_INSTAGRAM_APP_ID = "instagramAppID"
+
 const val REMOTE_ALL_API_KEYS = "allApiKeys"
 
 class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
 
-    override suspend fun instagramAppID(): String {
-        return config(false)?.getString(REMOTE_INSTAGRAM_APP_ID) ?: ""
-    }
-
-    override suspend fun allApiKeys(): YtApiKeyResponse? {
+    override suspend fun allApiKeys(): RemoteConfigApiKeyResponse? {
         return try {
             val data = config(false)?.getString(REMOTE_ALL_API_KEYS)
-            moshi.adapter(YtApiKeyResponse::class.java).fromJson(data!!)
+            moshi.adapter(RemoteConfigApiKeyResponse::class.java).fromJson(data!!)
         } catch (e: Exception) {
             null
         }

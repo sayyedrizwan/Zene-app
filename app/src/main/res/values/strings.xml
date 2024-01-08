@@ -276,4 +276,17 @@
     <string name="join_a_new_party_old_desc">Do you want to join a new party you are already in a group party and you will be removed from current party.</string>
     <string name="join">Join</string>
     <string name="joining__">Joining…</string>
+    <string name="happy">Happy</string>
+    <string name="party">Party</string>
+    <string name="angry">Angry</string>
+    <string name="rock">Rock</string>
+    <string name="stressed">Stressed</string>
+    <string name="pop">Pop</string>
+    <string name="focused">Focused</string>
+    <string name="workout">Workout</string>
+    <string name="sleepy">Sleepy</string>
+    <string name="feel_good">Feel Good</string>
+    <string name="jazz">Jazz</string>
+    <string name="romance">Romance</string>
+    <string name="sad">Sad</string>
 </resources>

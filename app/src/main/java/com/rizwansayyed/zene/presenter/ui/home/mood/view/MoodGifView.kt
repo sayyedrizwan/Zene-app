@@ -1,10 +1,14 @@
-package com.rizwansayyed.zene.presenter.ui.home.mood
+package com.rizwansayyed.zene.presenter.ui.home.mood.view
 
 import android.os.Build
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -15,6 +19,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
+import com.rizwansayyed.zene.presenter.ui.shimmerBrush
 import com.rizwansayyed.zene.viewmodel.MoodViewModel
 
 
@@ -34,20 +39,21 @@ fun MoodGifView(moodViewModel: MoodViewModel) {
 
     when (val v = moodViewModel.gifMood) {
         DataResponse.Empty -> {}
-        is DataResponse.Error -> {
-            TextSemiBold(v = v.throwable.message ?: " ")
-        }
+        is DataResponse.Error -> Spacer(Modifier.padding(top = 20.dp))
+        DataResponse.Loading -> Spacer(
+            Modifier
+                .fillMaxWidth()
+                .height(height.dp)
+                .background(shimmerBrush())
+        )
 
-        DataResponse.Loading -> {}
-        is DataResponse.Success -> {
-            AsyncImage(
-                "https://i.giphy.com/${v.item}.gif",
-                "", imageLoader,
-                Modifier
-                    .fillMaxWidth()
-                    .height(height.dp),
-                contentScale = ContentScale.Crop
-            )
-        }
+        is DataResponse.Success -> AsyncImage(
+            "https://i.giphy.com/${v.item}.gif",
+            "", imageLoader,
+            Modifier
+                .fillMaxWidth()
+                .height(height.dp),
+            contentScale = ContentScale.Crop
+        )
     }
 }

@@ -200,7 +200,7 @@ class MainActivity : ComponentActivity() {
                     AnimatedVisibility(navViewModel.selectedAlbum.length > 3) {
                         AlbumView()
                     }
-                    AnimatedVisibility(navViewModel.selectedMood.length > 2) {
+                    AnimatedVisibility(navViewModel.selectedMood != null) {
                         MoodMusic()
                     }
 

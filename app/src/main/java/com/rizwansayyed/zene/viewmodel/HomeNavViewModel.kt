@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.HomeNavigation
+import com.rizwansayyed.zene.domain.MoodData
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
@@ -52,7 +53,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var selectedAlbum by mutableStateOf("")
         private set
 
-    var selectedMood by mutableStateOf("")
+    var selectedMood by mutableStateOf<MoodData?>(null)
         private set
 
     var onlineRadioTemps by mutableStateOf<OnlineRadioResponseItem?>(null)
@@ -82,7 +83,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
         radioShareDialog.value = v
     }
 
-    fun setTheMood(v: String) {
+    fun setTheMood(v: MoodData) {
         selectedMood = v
     }
 
