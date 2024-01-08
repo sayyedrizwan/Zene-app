@@ -27,7 +27,6 @@ interface RecentPlayedDao {
     @Query("UPDATE $RECENT_PLAYED_DB SET lastListenDuration = :duration WHERE songId = :songId")
     suspend fun updateTime(songId: String, duration: Long): Int
 
-
     @Upsert
     suspend fun insert(v: RecentPlayedEntity)
 }

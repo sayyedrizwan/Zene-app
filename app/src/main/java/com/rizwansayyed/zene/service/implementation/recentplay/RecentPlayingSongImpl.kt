@@ -4,6 +4,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedDao
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
+import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_VIDEO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -22,6 +23,9 @@ class RecentPlayingSongImpl @Inject constructor(
         if (!player.isPlaying) return@flow
 
         withContext(Dispatchers.Main) {
+            val checkIsVideo = player.currentMediaItem?.mediaMetadata?.artist
+            if (checkIsVideo == THE_VIDEO) return@withContext
+
             val halfwayPointMillis = player.duration / 2
             if (player.currentPosition in 2000..5000 || player.duration - player.currentPosition in 4000..8000 || (player.currentPosition >= halfwayPointMillis - 2000 && player.currentPosition <= halfwayPointMillis + 2000)) {
                 val addValue =

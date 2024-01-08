@@ -136,7 +136,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun similarSongsArtists(id: String) = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPI.songsSuggestionsForUsers(listOf(id)).onStart {
+        youtubeAPI.songsSuggestionsForSongs(id).onStart {
             relatedSongs = DataResponse.Loading
         }.catch {
             relatedSongs = DataResponse.Error(it)

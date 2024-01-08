@@ -13,11 +13,13 @@ import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDown
 import com.rizwansayyed.zene.data.onlinesongs.giphy.implementation.GiphyImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.songkick.SongKickScrapsImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.news.implementation.GoogleNewsInterface
 import com.rizwansayyed.zene.data.onlinesongs.pinterest.implementation.PinterestAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.soundcloud.implementation.SoundCloudImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.spotify.music.implementation.SpotifyAPIImpl
+import com.rizwansayyed.zene.data.onlinesongs.spotify.music.implementation.SpotifyAPIImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicData
@@ -43,7 +45,7 @@ import javax.inject.Inject
 class MoodViewModel @Inject constructor(
     private val giphy: GiphyImplInterface,
     private val youtube: YoutubeAPIImplInterface,
-    private val spotify: SpotifyAPIImpl,
+    private val spotify: SpotifyAPIImplInterface,
 ) : ViewModel() {
 
     var gifMood by mutableStateOf<DataResponse<String?>>(DataResponse.Empty)
@@ -54,6 +56,7 @@ class MoodViewModel @Inject constructor(
 
     var topSongs by mutableStateOf<DataResponse<List<List<MusicData>>>>(DataResponse.Empty)
         private set
+
 
     fun init(a: String) = viewModelScope.launch(Dispatchers.IO) {
         gifOfMood(a)

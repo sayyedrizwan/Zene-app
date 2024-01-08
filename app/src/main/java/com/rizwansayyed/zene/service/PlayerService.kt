@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.pauseSongCh
 import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.playSongChange
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
+import com.rizwansayyed.zene.utils.Utils.printStack
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -283,11 +284,31 @@ class PlayerService : MediaSessionService() {
     }
 
     override fun onDestroy() {
-        player.release()
-        mediaSession.release()
-        unregisterReceiver(receiver)
-        timeJob?.cancel()
-        screenLockListener.unregister()
+        try {
+            player.release()
+        }catch (e: Exception){
+            e.printStack()
+        }
+        try {
+            mediaSession.release()
+        }catch (e: Exception){
+            e.printStack()
+        }
+        try {
+            unregisterReceiver(receiver)
+        }catch (e: Exception){
+            e.printStack()
+        }
+        try {
+            timeJob?.cancel()
+        }catch (e: Exception){
+            e.printStack()
+        }
+        try {
+            screenLockListener.unregister()
+        }catch (e: Exception){
+            e.printStack()
+        }
         super.onDestroy()
     }
 }

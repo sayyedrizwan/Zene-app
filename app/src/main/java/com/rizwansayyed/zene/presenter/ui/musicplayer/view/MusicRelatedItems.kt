@@ -61,6 +61,7 @@ fun MusicPlayerRelatedSongs(playerViewModel: PlayerViewModel) {
                     Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
+                        .height(110.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(shimmerBrush())
                 )

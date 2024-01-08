@@ -113,10 +113,8 @@ import kotlin.time.Duration.Companion.seconds
 
 
 // can you replicate blur image as in-build
-// songs info on the mood
 // make fcm better
 
-// capture all sharing url
 
 
 //in future

@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.PlaylistItemsData
 import com.rizwansayyed.zene.domain.SearchData
 import com.rizwansayyed.zene.domain.SongsSuggestionsData
+import com.rizwansayyed.zene.domain.SongsSuggestionsMusic
 import com.rizwansayyed.zene.domain.yt.MerchandiseItems
 import kotlinx.coroutines.flow.Flow
 
@@ -35,4 +36,5 @@ interface YoutubeAPIImplInterface {
     suspend fun channelVideo(id: String): Flow<MutableList<ArtistsFeedEntity>>
     suspend fun musicInfoSearch(q: String): Flow<MusicData?>
     suspend fun searchMoodPlaylists(q: String): Flow<List<MusicData>>
+    suspend fun songsSuggestionsForSongs(sId: String): Flow<SongsSuggestionsMusic>
 }

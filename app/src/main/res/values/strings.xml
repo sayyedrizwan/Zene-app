@@ -36,6 +36,7 @@
     <string name="songs">Songs</string>
     <string name="your_favourite_artists">Your favourite artists</string>
     <string name="song_for_you_to_explore">Song For You to Explore</string>
+    <string name="song">Song</string>
     <string name="select_artists">Select artists</string>
     <string name="skip">Skip</string>
     <string name="latest_songs">Latest Songs</string>

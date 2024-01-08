@@ -96,6 +96,11 @@ data class SongsSuggestionsData(
     val artists: List<MusicData>,
 )
 
+data class SongsSuggestionsMusic(
+    val next: List<MusicData>,
+    val related: List<MusicData>
+)
+
 data class PlaylistItemsData(
     val thumbnail: String?,
     val name: String?,
