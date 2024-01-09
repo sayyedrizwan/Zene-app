@@ -291,4 +291,8 @@
     <string name="romance">Romance</string>
     <string name="sad">Sad</string>
     <string name="top_playlists">Top Playlists</string>
+    <string name="edit_profile">edit profile</string>
+    <string name="update_profile_picture">Update Profile Picture</string>
+    <string name="error_loading_image">Error Loading Image</string>
+    <string name="error_uploading_image">Error Uplaoding Image</string>
 </resources>

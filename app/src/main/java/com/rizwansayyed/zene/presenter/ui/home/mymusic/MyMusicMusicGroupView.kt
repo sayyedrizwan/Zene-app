@@ -2,28 +2,25 @@ package com.rizwansayyed.zene.presenter.ui.home.mymusic
 
 import android.app.Activity
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,46 +31,61 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.loginUser
+import com.rizwansayyed.zene.data.utils.CacheFiles.tempProfilePic
+import com.rizwansayyed.zene.domain.LoginUserData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
+import com.rizwansayyed.zene.presenter.theme.Purple80
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
 import com.rizwansayyed.zene.presenter.ui.dialog.SimpleTextDialog
-import com.rizwansayyed.zene.presenter.util.UiUtils
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TOTAL_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.songparty.SongPartyService
-import com.rizwansayyed.zene.service.songparty.Utils.Action.generatePartyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.Action.partyRoomId
 import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.closeParty
 import com.rizwansayyed.zene.service.songparty.Utils.groupMusicUsersList
 import com.rizwansayyed.zene.utils.GoogleSignInUtils
 import com.rizwansayyed.zene.utils.Utils.AppUrl.appPartyJoinUrl
+import com.rizwansayyed.zene.utils.Utils.copyFileTo
 import com.rizwansayyed.zene.utils.Utils.shareTxt
+import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
+import java.io.File
 
 @Composable
 fun MyMusicGroupMusicParty() {
+    val userInfo by loginUser.collectAsState(initial = null)
+
     var isInParty by remember { mutableStateOf(false) }
+    var editProfileDialog by remember { mutableStateOf(false) }
 
     Column {
         Column(Modifier.padding(horizontal = 9.dp)) {
-            TopInfoWithSeeMore(R.string.music_group_party, null, 50) {}
+            if (userInfo?.isLogin() == true)
+                TopInfoWithSeeMore(R.string.music_group_party, R.string.edit_profile, 50) {
+                    editProfileDialog = true
+                }
+            else
+                TopInfoWithSeeMore(R.string.music_group_party, null, 50) {}
         }
 
         LazyHorizontalGrid(
@@ -82,7 +94,7 @@ fun MyMusicGroupMusicParty() {
                 .height(360.dp)
         ) {
             item(key = 1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-                HostPartyButtonCard()
+                HostPartyButtonCard(userInfo)
             }
             if (isInParty && groupMusicUsersList.isEmpty())
                 item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
@@ -130,16 +142,92 @@ fun MyMusicGroupMusicParty() {
         }
     }
 
+
+    if (editProfileDialog) EditProfileDialog(userInfo) {}
+
     LaunchedEffect(partyRoomId) {
         isInParty = partyRoomId != null
     }
 }
 
 @Composable
-fun HostPartyButtonCard() {
+fun EditProfileDialog(userInfo: LoginUserData?, close: () -> Unit) {
+    val homeApiViewModel: HomeApiViewModel = hiltViewModel()
+    val errorLoadingImage = stringResource(R.string.error_loading_image)
+    val errorUploadingImage = stringResource(R.string.error_uploading_image)
+
+
+    var imageLoading by remember { mutableStateOf(false) }
+
+
+    val imgPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        if (it?.copyFileTo(tempProfilePic) == true)
+            homeApiViewModel.fileUploader(tempProfilePic)
+        else
+            errorLoadingImage.toast()
+    }
+    Dialog(close) {
+        Surface(Modifier.fillMaxWidth(), RoundedCornerShape(16.dp), MainColor) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(20.dp))
+
+                Box {
+                    AsyncImage(
+                        userInfo?.image, userInfo?.name,
+                        Modifier
+                            .align(Alignment.Center)
+                            .size(120.dp)
+                            .clip(RoundedCornerShape(100))
+                    )
+
+                    if (imageLoading) LoadingStateBar()
+                }
+
+                Spacer(Modifier.height(10.dp))
+
+
+                TextThin(
+                    stringResource(R.string.update_profile_picture).lowercase(),
+                    Modifier.clickable {
+                        imgPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    }, size = 14
+                )
+
+                Spacer(Modifier.height(30.dp))
+            }
+        }
+    }
+
+    LaunchedEffect(homeApiViewModel.fileUpload) {
+        when (val v = homeApiViewModel.fileUpload) {
+            DataResponse.Empty -> {}
+            is DataResponse.Error -> {
+                imageLoading = false
+                errorUploadingImage.toast()
+            }
+
+            DataResponse.Loading -> {
+                imageLoading = true
+            }
+
+            is DataResponse.Success -> {
+                imageLoading = false
+                val u = loginUser.first()
+                u?.image = v.item
+                loginUser = flowOf(u)
+            }
+        }
+    }
+}
+
+@Composable
+fun HostPartyButtonCard(userInfo: LoginUserData?) {
     val context = LocalContext.current as Activity
     val coroutine = rememberCoroutineScope()
-    val userInfo by loginUser.collectAsState(initial = null)
 
     val linkCopyInfo = stringResource(R.string.disconnected_from_party)
 

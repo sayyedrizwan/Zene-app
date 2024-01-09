@@ -45,7 +45,7 @@ ads-version = "22.6.0"
 
 
 #plugins
-plugin-android-app-version = "8.2.0"
+plugin-android-app-version = "8.2.1"
 plugin-kotlin-android = "1.9.21"
 plugin-hilt = "2.49"
 plugin-ksp = "1.9.21-1.0.16"

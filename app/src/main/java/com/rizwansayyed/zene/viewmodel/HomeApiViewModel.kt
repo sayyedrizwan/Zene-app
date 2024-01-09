@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.searchHistoryList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
+import com.rizwansayyed.zene.data.onlinesongs.fileuploader.implementation.FileUploaderImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
@@ -36,12 +37,14 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeApiViewModel @Inject constructor(
     private val onlineRadiosAPI: OnlineRadioImplInterface,
+    private val fileUploader: FileUploaderImplInterface,
     private val ip: IpJsonImplInterface,
     private val spotifyAPI: SpotifyAPIImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
@@ -123,6 +126,10 @@ class HomeApiViewModel @Inject constructor(
         private set
 
     var radioMusicSearch by mutableStateOf<DataResponse<OnlineRadioResponseItem?>>(DataResponse.Empty)
+        private set
+
+
+    var fileUpload by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
         private set
 
 
@@ -306,6 +313,16 @@ class HomeApiViewModel @Inject constructor(
             radioMusicSearch = DataResponse.Error(it)
         }.collectLatest {
             radioMusicSearch = DataResponse.Success(it.firstOrNull())
+        }
+    }
+
+    fun fileUploader(file: File) = viewModelScope.launch(Dispatchers.IO) {
+        fileUploader.upload(file).onStart {
+            fileUpload = DataResponse.Loading
+        }.catch {
+            fileUpload = DataResponse.Error(it)
+        }.collectLatest {
+            fileUpload = DataResponse.Success(it)
         }
     }
 

@@ -57,6 +57,10 @@ object IpJsonAPI {
     const val IP_API = "json"
 }
 
+object FileUploader0x0 {
+    const val FILE_UPLOADER_BASE_URL = "https://0x0.st/"
+}
+
 object InstagramAPI {
     const val INSTAGRAM_BASE_URL = "https://www.instagram.com/api/v1/users/"
     const val INSTAGRAM_PROFILE_API = "web_profile_info/"
@@ -591,8 +595,10 @@ object CacheFiles {
         File(context.cacheDir, "suggestion-you-may-like-cache.json")
     }
 
-    val demoRingtonePath = File(context.filesDir, "demo_ringtone.mp3")
-    val demoCropRingtonePath = File(context.filesDir, "demo_crop_ringtone.mp3")
+    val demoRingtonePath by lazy { File(context.filesDir, "demo_ringtone.mp3") }
+    val demoCropRingtonePath by lazy { File(context.filesDir, "demo_crop_ringtone.mp3") }
+
+    val tempProfilePic by lazy { File(context.cacheDir, "temp_profile_pic.png") }
 
     fun moodPlaylistsCache(mood: String): File {
         val m = mood.lowercase().replace(" ", "-")

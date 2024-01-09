@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.di
 
 import com.rizwansayyed.zene.data.onlinesongs.applemusic.AppleMusicAPIService
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
+import com.rizwansayyed.zene.data.onlinesongs.fileuploader.FileUploaderService
 import com.rizwansayyed.zene.data.onlinesongs.giphy.GiphyService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.SaveFromInstagramService
@@ -19,6 +20,7 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicAPIService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.YoutubeMusicPlaylistService
 import com.rizwansayyed.zene.data.utils.AppleMusicAPI.APPLE_MUSIC_BASE_URL
+import com.rizwansayyed.zene.data.utils.FileUploader0x0.FILE_UPLOADER_BASE_URL
 import com.rizwansayyed.zene.data.utils.GiphyAPI.GIPHY_BASE
 import com.rizwansayyed.zene.data.utils.GiphyAPI.GIPHY_BASE_API
 import com.rizwansayyed.zene.data.utils.GiphyAPI.GIPHY_BASE_URL
@@ -337,6 +339,18 @@ object RetrofitAPIModule {
             .baseUrl(GIPHY_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(GiphyService::class.java)
+    }
+
+    @Provides
+    fun retrofitFileUploaderService(): FileUploaderService {
+        val builder = OkHttpClient.Builder().connectTimeout(10, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES)
+
+        return Retrofit.Builder()
+            .baseUrl(FILE_UPLOADER_BASE_URL).client(builder.build())
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build().create(FileUploaderService::class.java)
     }
 
 }

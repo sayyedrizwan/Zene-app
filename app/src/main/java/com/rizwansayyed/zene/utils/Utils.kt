@@ -370,6 +370,20 @@ object Utils {
         }
     }
 
+    fun Uri.copyFileTo(dest: File): Boolean {
+        dest.deleteRecursively()
+        return try {
+            val inputStream = context.contentResolver.openInputStream(this) ?: return false
+            val outputStream = FileOutputStream(dest)
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+            outputStream.close()
+            true
+        } catch (e: Exception) {
+            false
+        }
+
+    }
 
     fun File.copyFileTo(dest: File) {
         val `in`: InputStream = FileInputStream(this)
