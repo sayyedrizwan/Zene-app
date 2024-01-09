@@ -295,4 +295,6 @@
     <string name="update_profile_picture">Update Profile Picture</string>
     <string name="error_loading_image">Error Loading Image</string>
     <string name="error_uploading_image">Error Uplaoding Image</string>
+    <string name="done">Done</string>
+    <string name="follow_us_on_instagram">Follow us on Instagram</string>
 </resources>

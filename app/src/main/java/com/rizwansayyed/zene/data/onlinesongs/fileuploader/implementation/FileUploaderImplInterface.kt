@@ -5,6 +5,5 @@ import kotlinx.coroutines.flow.Flow
 import java.io.File
 
 interface FileUploaderImplInterface {
-
-    suspend fun upload(file: File): Flow<String>
+    suspend fun upload(file: File): Flow<String?>
 }

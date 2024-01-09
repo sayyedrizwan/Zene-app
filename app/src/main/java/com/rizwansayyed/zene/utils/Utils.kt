@@ -58,6 +58,7 @@ object Utils {
     const val OFFSET_LIMIT = 50
 
     const val OFFICIAL_EMAIL = "contactcreator@protonmail.com"
+    const val OFFICIAL_INSTAGRAM_ACCOUNTS = "https://www.instagram.com/zene__music/"
 
     val tempEmptyList =
         listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")

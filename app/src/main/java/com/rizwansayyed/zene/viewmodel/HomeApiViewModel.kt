@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.SearchData
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -320,9 +321,13 @@ class HomeApiViewModel @Inject constructor(
         fileUploader.upload(file).onStart {
             fileUpload = DataResponse.Loading
         }.catch {
+            it.message?.toast()
             fileUpload = DataResponse.Error(it)
         }.collectLatest {
-            fileUpload = DataResponse.Success(it)
+            fileUpload = if (it == null)
+                DataResponse.Error(Exception(""))
+            else
+                DataResponse.Success(it)
         }
     }
 

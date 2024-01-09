@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageSettingsManager.userAu
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.AppleMusicLoginDialog
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.FollowUs
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.HistoryItemsList
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistAppleMusic
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistSpotify
@@ -130,7 +131,12 @@ fun MyMusicView() {
         item(key = 15, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicGroupMusicParty()
         }
+
         item(key = 16, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            FollowUs()
+        }
+
+        item(key = 100, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(200.dp))
         }
     }

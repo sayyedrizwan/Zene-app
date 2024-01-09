@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,7 @@ import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.Purple80
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
+import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.presenter.ui.TopInfoWithSeeMore
@@ -143,7 +145,9 @@ fun MyMusicGroupMusicParty() {
     }
 
 
-    if (editProfileDialog) EditProfileDialog(userInfo) {}
+    if (editProfileDialog) EditProfileDialog(userInfo) {
+        editProfileDialog = false
+    }
 
     LaunchedEffect(partyRoomId) {
         isInParty = partyRoomId != null
@@ -152,12 +156,14 @@ fun MyMusicGroupMusicParty() {
 
 @Composable
 fun EditProfileDialog(userInfo: LoginUserData?, close: () -> Unit) {
+    val coroutine = rememberCoroutineScope()
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()
     val errorLoadingImage = stringResource(R.string.error_loading_image)
     val errorUploadingImage = stringResource(R.string.error_uploading_image)
 
 
     var imageLoading by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf(userInfo?.name ?: "") }
 
 
     val imgPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
@@ -181,7 +187,8 @@ fun EditProfileDialog(userInfo: LoginUserData?, close: () -> Unit) {
                         Modifier
                             .align(Alignment.Center)
                             .size(120.dp)
-                            .clip(RoundedCornerShape(100))
+                            .clip(RoundedCornerShape(100)),
+                        contentScale = ContentScale.Crop
                     )
 
                     if (imageLoading) LoadingStateBar()
@@ -198,6 +205,28 @@ fun EditProfileDialog(userInfo: LoginUserData?, close: () -> Unit) {
                 )
 
                 Spacer(Modifier.height(30.dp))
+
+
+                SearchEditTextView(stringResource(R.string.start), name, null, {
+                    if (it.length < 25) {
+                        name = it
+                        coroutine.launch {
+                            val u = loginUser.first()
+                            u?.name = name
+                            loginUser = flowOf(u)
+                        }
+                    }
+                }) {
+
+                }
+
+                Spacer(Modifier.height(30.dp))
+
+                RoundBorderButtonsView(stringResource(R.string.done)) {
+                    close()
+                }
+
+                Spacer(Modifier.height(50.dp))
             }
         }
     }

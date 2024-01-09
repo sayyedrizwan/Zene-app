@@ -67,6 +67,7 @@ object FirebaseEvents {
         STARTED_PLAYER_SERVICE,
         DOWNLOADING_SONG_URL,
         CHANGE_SONG_TRACK_ITEM,
+        OPEN_INSTAGRAM_ACCOUNT,
     }
 
 
