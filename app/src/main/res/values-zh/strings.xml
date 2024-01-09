@@ -180,7 +180,7 @@
     <string name="high_quality">高质量</string>
     <string name="low_quality">低质量</string>
     <string name="equalizer">均衡器</string>
-    <string name="build_in_equalizer_not_found">未找到内置均衡器。</string>
+    <string name="built_in_equalizer_not_found">未找到内置均衡器。</string>
     <string name="seek_button_timer">搜索按钮定时器</string>
     <string name="hide_seek_button">隐藏搜索按钮</string>
     <string name="five_s_seek_button">五 秒搜索按钮</string>
@@ -217,7 +217,7 @@
     <string name="are_you_sure_want_to_rm_downloaded_song">您确定要删除下载的歌曲吗？</string>
     <string name="are_you_sure_want_to_download_from_mobile_data">您确定要通过移动数据离线下载歌曲吗？</string>
     <string name="download_from_mobile_data_desc">您已启用仅通过 Wifi 下载离线音乐。您确定要通过您的移动数据离线下载这首歌曲吗 </string>
-    <string name="clear_cache_sure">您确定要清除缓存吗？任何个人保存的数据都不会被窃取。</string>
+    <string name="clear_cache_sure">您确定要清除缓存吗？ 不会删除任何个人保存的数据。</string>
     <string name="history">历史</string>
     <string name="load_more">装载更多</string>
     <string name="no_song_in_your_history">你的历史中没有歌曲</string>
@@ -293,4 +293,9 @@
     <string name="sad">伤心</string>
     <string name="top_playlists">热门播放列表</string>
     <string name="edit_profile">编辑个人资料</string>
+    <string name="update_profile_picture">更新个人资料图片</string>
+    <string name="error_loading_image">加载图像时出错</string>
+    <string name="error_uploading_image">上传图片时出错</string>
+    <string name="done">完毕</string>
+    <string name="follow_us_on_instagram">在 Instagram 上关注我们</string>
 </resources>

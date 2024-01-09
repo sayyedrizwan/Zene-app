@@ -90,7 +90,7 @@
     <string name="playlists">Playlists</string>
     <string name="are_you_sure_want_to_save_it_as_a_playlist">Are you sure want to save it as a playlist ?</string>
     <string name="save_it_as_a_playlist_desc">This playlist will be uploaded to My Music\'s playlist section as a new playlist. NOTE!! Occasional playlist\'s songs mismatches occur because Zene relies on song and artist names for matching, which could be slightly difference in other song apps, which can lead to inaccuracies.</string>
-    <string name="error_loading_playlists">Error Loading Playlists, Could be expire login or internet not be working. Please try again later.</string>
+    <string name="error_loading_playlists">Error Loading Playlist, Could be expired login or internet not be working. Please try again later.</string>
     <string name="tracks">Tracks</string>
     <string name="new_playlist">New Playlist</string>
     <string name="create_new_playlist">Create new playlist</string>
@@ -179,7 +179,7 @@
     <string name="high_quality">High Quality</string>
     <string name="low_quality">Low Quality</string>
     <string name="equalizer">Equalizer</string>
-    <string name="build_in_equalizer_not_found">Build in equalizer not found.</string>
+    <string name="built_in_equalizer_not_found">Built in equalizer not found.</string>
     <string name="seek_button_timer">Seek Button Timer</string>
     <string name="hide_seek_button">Hide seek button</string>
     <string name="five_s_seek_button">5s seek button</string>
@@ -232,14 +232,14 @@
     <string name="please_wait_setting_wallpaper">Please wait. Setting Wallpaper..</string>
     <string name="wallpaper_set_successfully">Wallpaper set successfully</string>
     <string name="app_crashed">App crashed, Please try again or clear the app cache</string>
-    <string name="all_songs_album_download_desc">All Songs of this albums will be downloaded and will be available offline. If the songs are already downloaded they will not be re-downloaded.</string>
+    <string name="all_songs_album_download_desc">All Songs of this album will be downloaded and will be available offline. If the songs are already downloaded they will not be re-downloaded.</string>
     <string name="news">News</string>
     <string name="set_as_wallpaper">Set as Wallpaper</string>
     <string name="no_pinned_artists_yet">No pinned artists yet! Pin artists by going to their profile to see their latest music, projects, and news in your feed.</string>
     <string name="no_update_available_right_now">No update available. Right now…</string>
     <string name="no_ringtone_found_try_again_later">No ringtone found. Try Again Later.</string>
-    <string name="playing_song_is_paused_for_ringtone">Playing song is currently pause. To set the ringtone.</string>
-    <string name="song_downloading_please_wait_sometimes_it_takes_little_while">Song is downloading. Please wait.. Sometimes it takes a little while, depending on your internet connection</string>
+    <string name="playing_song_is_paused_for_ringtone">Playing song is currently paused. To set the ringtone.</string>
+    <string name="song_downloading_please_wait_sometimes_it_takes_little_while">Song is downloading. Please wait.. Some time it takes a little while, depending on your internet connection</string>
     <string name="need_permission_to_set_the_ringtone">Need permission to set your ringtone</string>
     <string name="need_storage_permission_to_set_the_ringtone">Need storage permission to set your ringtone</string>
     <string name="set">Set</string>
@@ -294,7 +294,7 @@
     <string name="edit_profile">edit profile</string>
     <string name="update_profile_picture">Update Profile Picture</string>
     <string name="error_loading_image">Error Loading Image</string>
-    <string name="error_uploading_image">Error Uplaoding Image</string>
+    <string name="error_uploading_image">Error Uploading Image</string>
     <string name="done">Done</string>
     <string name="follow_us_on_instagram">Follow us on Instagram</string>
 </resources>
