@@ -216,7 +216,6 @@
     <string name="are_you_sure_want_to_rm_downloaded_song">Are you sure want to remove the downloaded song?</string>
     <string name="are_you_sure_want_to_download_from_mobile_data">Are you sure want to download song offline via mobile data?</string>
     <string name="download_from_mobile_data_desc">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
-    <string name="enable_">You have enabled to download offline music via Wifi only. Are you sure want to make this song download offline via your mobile data. </string>
     <string name="clear_cache_sure">Are you sure want to clear the cache? Not any personal saved data will be eared.</string>
     <string name="history">History</string>
     <string name="load_more">Load More</string>

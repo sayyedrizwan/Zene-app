@@ -115,7 +115,7 @@ import kotlin.time.Duration.Companion.seconds
 // can you replicate blur image as in-build
 // make fcm better
 
-
+// edit their name and profile
 
 //in future
 // add insta shop items on artists page.
