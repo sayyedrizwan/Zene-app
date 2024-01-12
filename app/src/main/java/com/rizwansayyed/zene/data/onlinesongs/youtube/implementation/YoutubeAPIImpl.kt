@@ -93,8 +93,8 @@ class YoutubeAPIImpl @Inject constructor(
         val pList = mutableListOf<String>()
         channels.contents?.singleColumnBrowseResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { content ->
             content?.gridRenderer?.items?.forEach { items ->
-                items?.musicTwoRowItemRenderer?.thumbnailOverlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId?.let { pId ->
-                    pList.add(pId)
+                items?.musicTwoRowItemRenderer?.thumbnailOverlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId?.let { songId ->
+                    pList.add(songId)
                 }
             }
         }
@@ -258,9 +258,9 @@ class YoutubeAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun topFourSongsSuggestionOnHistory(pIds: List<String>) = flow {
+    override suspend fun topFourSongsSuggestionOnHistory(songIds: List<String>) = flow {
         val cache = responseCache(songsForYouCache, TopSuggestMusicData::class.java)
-        if (cache != null) if (cache.pList == pIds) {
+        if (cache != null) if (cache.pList == songIds) {
             emit(cache.list)
             return@flow
         }
@@ -270,7 +270,7 @@ class YoutubeAPIImpl @Inject constructor(
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.music ?: ""
 
-        pIds.forEach { id ->
+        songIds.forEach { id ->
             if (id.trim().isEmpty()) return@forEach
 
             val r =
@@ -295,7 +295,7 @@ class YoutubeAPIImpl @Inject constructor(
                                 if (na?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV") {
                                     musicData.name = na.text
                                     na.navigationEndpoint.watchEndpoint.videoId.also {
-                                        musicData.pId = it
+                                        musicData.songId = it
                                     }
                                 }
 
@@ -307,8 +307,8 @@ class YoutubeAPIImpl @Inject constructor(
 
                         musicData.artists = artistsListToString(artists)
 
-                        if (musicData.pId != null)
-                            if (!list.any { it.pId == musicData.pId }) list.add(musicData)
+                        if (musicData.songId != null)
+                            if (!list.any { it.songId == musicData.songId }) list.add(musicData)
                     }
                 }
             }
@@ -316,7 +316,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         list.shuffle()
 
-        TopSuggestMusicData(System.currentTimeMillis(), pIds, list).toTxtCache()
+        TopSuggestMusicData(System.currentTimeMillis(), songIds, list).toTxtCache()
             ?.let { writeToCacheFile(songsForYouCache, it) }
 
         emit(list)
@@ -416,10 +416,10 @@ class YoutubeAPIImpl @Inject constructor(
             val sName =
                 it?.musicResponsiveListItemRenderer?.flexColumns?.first()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.first()?.text
 
-            val pId =
+            val songId =
                 it?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint?.videoId
 
-            list.add(MusicData("", sName, albumName, pId, MusicType.MUSIC))
+            list.add(MusicData("", sName, albumName, songId, MusicType.MUSIC))
         }
 
 
@@ -596,12 +596,12 @@ class YoutubeAPIImpl @Inject constructor(
                                 if (r?.text?.lowercase() == "album") isAlbums = true
                             }
                         }
-                        val pId =
+                        val songId =
                             content?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
 
                         if (isAlbums) name?.let {
                             if (name.trim().isNotEmpty())
-                                list.add(MusicData(thumbnail, name, artists, pId, MusicType.ALBUMS))
+                                list.add(MusicData(thumbnail, name, artists, songId, MusicType.ALBUMS))
                         }
                     }
 
@@ -651,17 +651,17 @@ class YoutubeAPIImpl @Inject constructor(
                             a.text?.let { artists.add(it) }
                 }
                 val thumbnail = content?.playlistPanelVideoRenderer?.thumbnailURL()
-                val pID = content?.playlistPanelVideoRenderer?.videoId ?: ""
+                val songId = content?.playlistPanelVideoRenderer?.videoId ?: ""
 
                 val music =
-                    if (artists.isEmpty()) songDetail(pID).first() else MusicData(
+                    if (artists.isEmpty()) songDetail(songId).first() else MusicData(
                         thumbnail,
                         name,
                         artistsListToString(artists),
-                        pID,
+                        songId,
                         MusicType.MUSIC
                     )
-                if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
+                if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
                     upNextList.add(music)
             }
         }
@@ -695,18 +695,18 @@ class YoutubeAPIImpl @Inject constructor(
 
                         val thumbnail =
                             content.musicResponsiveListItemRenderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-                        val pID =
+                        val songId =
                             content.musicResponsiveListItemRenderer.playlistItemData?.videoId
                                 ?: ""
 
 
                         name?.let { n ->
                             val music =
-                                if (artists.isEmpty()) songDetail(pID).first() else MusicData(
+                                if (artists.isEmpty()) songDetail(songId).first() else MusicData(
                                     thumbnail, n, artistsListToString(artists),
-                                    pID, MusicType.MUSIC
+                                    songId, MusicType.MUSIC
                                 )
-                            if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
+                            if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
                                 relatedList.add(music)
                         }
                     }
@@ -758,17 +758,17 @@ class YoutubeAPIImpl @Inject constructor(
                                         a.text?.let { artists.add(it) }
                             }
                             val thumbnail = content?.playlistPanelVideoRenderer?.thumbnailURL()
-                            val pID = content?.playlistPanelVideoRenderer?.videoId ?: ""
+                            val songId = content?.playlistPanelVideoRenderer?.videoId ?: ""
 
                             val music =
-                                if (artists.isEmpty()) songDetail(pID).first() else MusicData(
+                                if (artists.isEmpty()) songDetail(songId).first() else MusicData(
                                     thumbnail,
                                     name,
                                     artistsListToString(artists),
-                                    pID,
+                                    songId,
                                     MusicType.MUSIC
                                 )
-                            if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
+                            if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
                                 upNextList.add(music)
                         }
                     }
@@ -801,18 +801,18 @@ class YoutubeAPIImpl @Inject constructor(
 
                                     val thumbnail =
                                         content.musicResponsiveListItemRenderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-                                    val pID =
+                                    val songId =
                                         content.musicResponsiveListItemRenderer.playlistItemData?.videoId
                                             ?: ""
 
 
                                     name?.let { n ->
                                         val music =
-                                            if (artists.isEmpty()) songDetail(pID).first() else MusicData(
+                                            if (artists.isEmpty()) songDetail(songId).first() else MusicData(
                                                 thumbnail, n, artistsListToString(artists),
-                                                pID, MusicType.MUSIC
+                                                songId, MusicType.MUSIC
                                             )
-                                        if (!upNextList.any { it.pId == pID } && !relatedList.any { it.pId == pID })
+                                        if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
                                             relatedList.add(music)
                                     }
                                 }
@@ -1025,12 +1025,12 @@ class YoutubeAPIImpl @Inject constructor(
                         }
                     }
 
-                    val pId =
+                    val songId =
                         content?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
 
                     if (isAlbums) name?.let {
                         if (name.trim().isNotEmpty())
-                            albums.add(MusicData(thumbnail, name, q, pId, MusicType.ALBUMS))
+                            albums.add(MusicData(thumbnail, name, q, songId, MusicType.ALBUMS))
                     }
                 }
             }

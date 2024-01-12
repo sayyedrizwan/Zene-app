@@ -4,15 +4,15 @@ targetSDK = "34"
 minSDK = "24"
 
 #app version start
-currentVersionCode = "39"
-currentVersionName = "3.1.033"
+currentVersionCode = "41"
+currentVersionName = "3.1.035"
 #app version end
 
 
 
 v1 = "1.0.0"
 kotlin-version = "1.12.0"
-runtime-version = "2.6.2"
+runtime-version = "2.7.0"
 activity-compose-version = "1.8.2"
 compose-version = "2023.10.01"
 compose-ui-util-version = "1.5.4"
@@ -53,7 +53,7 @@ plugin-hilt = "2.49"
 plugin-ksp = "1.9.21-1.0.16"
 plugin-google-services = "4.4.0"
 firebase-crashlytics-services = "2.9.9"
-lifecycleProcess = "2.6.2"
+lifecycleProcess = "2.7.0"
 
 
 

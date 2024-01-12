@@ -183,7 +183,7 @@ class PlayerViewModel @Inject constructor(
             var videoId: String? = null
             videoList?.forEachIndexed { i, musicData ->
                 if (i == 0) if (areSongNamesEqual(musicData.name ?: "", searchQuery))
-                    videoId = musicData.pId
+                    videoId = musicData.songId
             }
             artistsRetry = RetryItems(videoId, 0)
             artistsMerchandise(videoId)
@@ -200,7 +200,7 @@ class PlayerViewModel @Inject constructor(
             lyricsList?.forEachIndexed { i, musicData ->
                 if (i <= 2 && lyricsVideoId == null)
                     if (areSongNamesEqual(musicData.name ?: "", searchQuery))
-                        lyricsVideoId = musicData.pId
+                        lyricsVideoId = musicData.songId
             }
 
             videoSongs = DataResponse.Success(PlayerVideoDetailsData(videoId, lyricsVideoId))
@@ -208,10 +208,10 @@ class PlayerViewModel @Inject constructor(
 
 
     fun addOfflineSong(player: MusicData) = viewModelScope.launch(Dispatchers.IO) {
-        if (roomDb.offlineSongInfo(player.pId ?: "").first() != null) return@launch
+        if (roomDb.offlineSongInfo(player.songId ?: "").first() != null) return@launch
 
         val offline = OfflineDownloadedEntity(
-            player.pId ?: "",
+            player.songId ?: "",
             player.name ?: "",
             player.artists ?: "",
             player.thumbnail ?: "",

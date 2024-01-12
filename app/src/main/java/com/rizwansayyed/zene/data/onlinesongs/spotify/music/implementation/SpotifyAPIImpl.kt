@@ -83,11 +83,11 @@ class SpotifyAPIImpl @Inject constructor(
 
 
         val bearer = "${token.token_type} ${token.access_token}"
-        val pid = spotifyAPI.spotifyPlaylistSearch(
+        val songId = spotifyAPI.spotifyPlaylistSearch(
             bearer, "$SPOTIFY_COUNTRY_SEARCH${ipDetails?.country}"
         ).playlists?.items?.first()?.id ?: return@flow
 
-        val songs = spotifyAPI.spotifyPlaylistSongs(bearer, pid)
+        val songs = spotifyAPI.spotifyPlaylistSongs(bearer, songId)
 
         val music = mutableListOf<MusicData>()
 

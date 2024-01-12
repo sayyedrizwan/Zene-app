@@ -39,13 +39,13 @@ data class MusicData(
     val thumbnail: String? = "",
     var name: String? = "",
     var artists: String? = "",
-    var pId: String?,
+    var songId: String?,
     var type: MusicType?,
     var url: String? = ""
 )
 
 fun List<MusicDataWithArtists>.toMusicDataList(): List<MusicData> {
-    return this.map { MusicData(it.thumbnail, it.name, it.artists, it.pId, it.type) }
+    return this.map { MusicData(it.thumbnail, it.name, it.artists, it.songId, it.type) }
 }
 
 data class MusicDataWithArtistsCache(
@@ -61,7 +61,7 @@ data class MusicDataWithArtists(
     var listeners: String?,
     var artistsImg: String?,
     var artistsName: String?,
-    var pId: String?,
+    var songId: String?,
     var type: MusicType?,
 )
 

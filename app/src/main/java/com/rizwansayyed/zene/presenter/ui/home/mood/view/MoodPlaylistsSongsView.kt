@@ -56,7 +56,7 @@ fun MoodPlaylistsSongs(viewModel: MoodViewModel) {
                 TopInfoWithSeeMore(stringResource(id = R.string.top_playlists), null) {}
 
                 LazyRow(Modifier.fillMaxWidth()) {
-                    itemsIndexed(v.item, key = { _, m -> m.pId ?: UUID.randomUUID() }) { i, m ->
+                    itemsIndexed(v.item, key = { _, m -> m.songId ?: UUID.randomUUID() }) { i, m ->
                         MoodPlaylistImage(m) {
                             addAllPlayer(listOf(m).toTypedArray(), 0)
                         }

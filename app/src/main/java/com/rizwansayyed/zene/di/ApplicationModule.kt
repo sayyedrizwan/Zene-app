@@ -86,7 +86,7 @@ class ApplicationModule : Application(), Configuration.Provider {
                 if ((playerData?.songsLists?.size ?: 0) > 0) {
                     var songPosition = 0
                     playerData?.songsLists?.forEachIndexed { i, musicData ->
-                        if (musicData?.pId == playerData.v?.songID) songPosition = i
+                        if (musicData?.songId == playerData.v?.songID) songPosition = i
                     }
 
                     addAllPlayerNotPlay(playerData?.songsLists?.toTypedArray(), songPosition)

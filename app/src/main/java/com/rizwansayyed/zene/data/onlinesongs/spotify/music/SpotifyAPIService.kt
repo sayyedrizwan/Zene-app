@@ -35,10 +35,10 @@ interface SpotifyAPIService {
         @Query("type") type: String = "playlist"
     ): SpotifyPlaylistResponse
 
-    @GET("$SPOTIFY_API_PLAYLIST/{pid}")
+    @GET("$SPOTIFY_API_PLAYLIST/{songId}")
     suspend fun spotifyPlaylistSongs(
         @Header("Authorization") auth: String,
-        @Path("pid") pid: String
+        @Path("songId") songId: String
     ): SpotifyPlaylistSongsResponse
 
 }

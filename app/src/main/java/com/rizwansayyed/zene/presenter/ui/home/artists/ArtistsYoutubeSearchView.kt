@@ -58,7 +58,7 @@ fun ArtistsAlbumsList() {
                 v.item?.albums?.forEach {
                     Box(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / 2)) {
                         AlbumsItems(it) {
-                            homeNavViewModel.setAlbum(it.pId ?: "")
+                            homeNavViewModel.setAlbum(it.songId ?: "")
                         }
                     }
                 }

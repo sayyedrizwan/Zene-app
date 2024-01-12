@@ -65,11 +65,11 @@ class PlayerServiceAction @Inject constructor(
         withContext(Dispatchers.IO) {
             val musicPlayerDataLocal = musicPlayerData.first()
 
-            val music = musicPlayerDataLocal?.songsLists?.first { it?.pId == mediaId }
+            val music = musicPlayerDataLocal?.songsLists?.first { it?.songId == mediaId }
                 ?: return@withContext
 
             val position =
-                musicPlayerDataLocal.songsLists.indexOfFirst { it?.pId == mediaId }
+                musicPlayerDataLocal.songsLists.indexOfFirst { it?.songId == mediaId }
 
             startPlaying(music, emptyArray(), position, true)
         }
@@ -80,7 +80,7 @@ class PlayerServiceAction @Inject constructor(
     ) {
         playerSongSearchJob?.cancel()
         playerSongSearchJob = CoroutineScope(Dispatchers.IO).launch {
-            sendSongChange(music?.pId)
+            sendSongChange(music?.songId)
             withContext(Dispatchers.Main) {
                 player.pause()
                 player.stop()
@@ -89,7 +89,7 @@ class PlayerServiceAction @Inject constructor(
             }
             withContext(Dispatchers.IO) {
                 val currentPlayer =
-                    MusicPlayerList(music?.name, music?.artists, music?.pId, music?.thumbnail)
+                    MusicPlayerList(music?.name, music?.artists, music?.songId, music?.thumbnail)
 
                 val d = musicPlayerData.first()?.apply {
                     v = currentPlayer
@@ -102,7 +102,7 @@ class PlayerServiceAction @Inject constructor(
 
             withContext(Dispatchers.Main) {
                 if (list?.isNotEmpty() == true) list.forEach { m ->
-                    m?.toMediaItem(m.pId ?: "")?.let { player.addMediaItem(it) }
+                    m?.toMediaItem(m.songId ?: "")?.let { player.addMediaItem(it) }
                 }
 
                 player.seekTo(position, 0)
@@ -110,10 +110,10 @@ class PlayerServiceAction @Inject constructor(
 
             val url = withContext(Dispatchers.IO) {
                 try {
-                    if (File(songDownloadPath, "${music?.pId}.mp3").exists())
-                        File(songDownloadPath, "${music?.pId}.mp3").path
+                    if (File(songDownloadPath, "${music?.songId}.mp3").exists())
+                        File(songDownloadPath, "${music?.songId}.mp3").path
                     else
-                        songDownloader.download(music?.pId!!).first()
+                        songDownloader.download(music?.songId!!).first()
                 } catch (e: Exception) {
                     null
                 }
@@ -177,7 +177,7 @@ class PlayerServiceAction @Inject constructor(
             musicPlayerData.first()?.songsLists
         }
         val tempLists = ArrayList(lists ?: emptyList())
-        val presentOn = lists?.indexOfFirst { it?.pId == music.pId }
+        val presentOn = lists?.indexOfFirst { it?.songId == music.songId }
 
         if ((presentOn ?: -1) >= 0) {
             tempLists.removeAt(presentOn!!)
@@ -191,7 +191,7 @@ class PlayerServiceAction @Inject constructor(
             val currentIndex = player.currentMediaItemIndex + 1
             tempLists.add(currentIndex, music)
 
-            player.addMediaItem(currentIndex, music.toMediaItem(music.pId ?: ""))
+            player.addMediaItem(currentIndex, music.toMediaItem(music.songId ?: ""))
         }
         withContext(Dispatchers.IO) {
             val d = musicPlayerData.first()?.apply {
@@ -206,7 +206,7 @@ class PlayerServiceAction @Inject constructor(
             musicPlayerData.first()?.songsLists
         }
         val tempLists = ArrayList(lists ?: emptyList())
-        val presentOn = lists?.indexOfFirst { it?.pId == music.pId }
+        val presentOn = lists?.indexOfFirst { it?.songId == music.songId }
 
         if ((presentOn ?: -1) >= 0) {
             tempLists.removeAt(presentOn!!)
@@ -219,7 +219,7 @@ class PlayerServiceAction @Inject constructor(
         withContext(Dispatchers.Main) {
             tempLists.add(tempLists.size, music)
 
-            player.addMediaItem(tempLists.size, music.toMediaItem(music.pId ?: ""))
+            player.addMediaItem(tempLists.size, music.toMediaItem(music.songId ?: ""))
         }
         withContext(Dispatchers.IO) {
             val d = musicPlayerData.first()?.apply {
@@ -229,7 +229,7 @@ class PlayerServiceAction @Inject constructor(
         }
 
         withContext(Dispatchers.Main) {
-            player.addMediaItem(player.mediaItemCount, music.toMediaItem(music.pId ?: ""))
+            player.addMediaItem(player.mediaItemCount, music.toMediaItem(music.songId ?: ""))
         }
     }
 

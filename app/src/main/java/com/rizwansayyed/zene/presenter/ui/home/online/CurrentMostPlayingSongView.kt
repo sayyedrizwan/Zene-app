@@ -124,7 +124,7 @@ fun MostPlayedSongView(
             .clip(RoundedCornerShape(12.dp))
             .combinedClickable(onLongClick = {
                 val m = MusicData(
-                    music.thumbnail, music.name, music.artistsName, music.pId, MusicType.MUSIC
+                    music.thumbnail, music.name, music.artistsName, music.songId, MusicType.MUSIC
                 )
                 homeNav.setSongDetailsDialog(m)
             }, onClick = click)
@@ -182,7 +182,7 @@ fun MostPlayedSongView(
         ) {
             MenuIcon {
                 val m = MusicData(
-                    music.thumbnail, music.name, music.artistsName, music.pId, MusicType.MUSIC
+                    music.thumbnail, music.name, music.artistsName, music.songId, MusicType.MUSIC
                 )
                 homeNav.setSongDetailsDialog(m)
             }

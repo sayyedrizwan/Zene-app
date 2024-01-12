@@ -212,10 +212,10 @@ class PlaylistImportViewModel @Inject constructor(
 
                         }.collectLatest {
 
-                            var info = roomDb.songInfo(it?.pId ?: "").first()
+                            var info = roomDb.songInfo(it?.songId ?: "").first()
                             if (info == null) {
                                 info = PlaylistSongsEntity(
-                                    it?.pId ?: "", "${saved.id},", it?.name, it?.artists,
+                                    it?.songId ?: "", "${saved.id},", it?.name, it?.artists,
                                     it?.thumbnail, System.currentTimeMillis()
                                 )
                                 roomDb.insert(info).collect()

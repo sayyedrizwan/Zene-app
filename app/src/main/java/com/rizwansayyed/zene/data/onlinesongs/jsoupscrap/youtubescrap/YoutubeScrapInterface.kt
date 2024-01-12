@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface YoutubeScrapInterface {
 
-    suspend fun ytReleaseItems(pId: String): Flow<MutableList<String>>
+    suspend fun ytReleaseItems(songId: String): Flow<MutableList<String>>
     suspend fun getChannelId(username: String): Flow<String>
 }

@@ -83,7 +83,7 @@ object Utils {
         return MediaItem.Builder()
             .setUri(Uri.parse(url))
             .setMimeType("audio/mp3")
-            .setMediaId(this.pId ?: (123..9999).random().toString())
+            .setMediaId(this.songId ?: (123..9999).random().toString())
             .setMediaMetadata(metadata)
             .build()
     }
@@ -108,7 +108,7 @@ object Utils {
         else
             lists.addAll(afterList?.toTypedArray() ?: emptyArray())
 
-        return lists.distinctBy { it?.pId }.toTypedArray()
+        return lists.distinctBy { it?.songId }.toTypedArray()
     }
 
     fun addAllPlayer(l: Array<MusicData?>?, p: Int) {

@@ -190,8 +190,8 @@ object YoutubeAPI {
     const val YT_PLAYER_API = "player"
 
 
-    fun generateYTMusicPlaylistURL(pid: String): String {
-        return "https://music.youtube.com/playlist?list=$pid"
+    fun generateYTMusicPlaylistURL(songId: String): String {
+        return "https://music.youtube.com/playlist?list=$songId"
     }
 
     fun youtubeUsernameChannel(username: String): String {
@@ -479,9 +479,9 @@ object YoutubeAPI {
         return json.toRequestBody(mediaType)
     }
 
-    fun ytMusicNextJsonBody(ip: IpJsonResponse?, pId: String): RequestBody {
+    fun ytMusicNextJsonBody(ip: IpJsonResponse?, songId: String): RequestBody {
         val json = """{
-            "videoId": "$pId",
+            "videoId": "$songId",
             "isAudioOnly": true,
             "responsiveSignals": {
                 "videoInteraction": []
@@ -493,7 +493,7 @@ object YoutubeAPI {
                     "userAgent": "$USER_AGENT",
                     "clientName": "WEB_REMIX",
                     "clientVersion": "$ytMusicLatestClientVersion",
-                    "originalUrl": "https://music.youtube.com/watch?v=$pId",
+                    "originalUrl": "https://music.youtube.com/watch?v=$songId",
                     "timeZone": "${ip?.timezone}"
                 }
             }
@@ -504,9 +504,9 @@ object YoutubeAPI {
     }
 
 
-    fun ytMusicUpNextJsonBody(ip: IpJsonResponse?, pId: String): RequestBody {
+    fun ytMusicUpNextJsonBody(ip: IpJsonResponse?, songId: String): RequestBody {
         val json = """{
-            "playlistId": "RDAMVM$pId",
+            "playlistId": "RDAMVM$songId",
             "isAudioOnly": true,
             "context": {
                 "client": {

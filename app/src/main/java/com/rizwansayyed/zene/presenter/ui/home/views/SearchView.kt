@@ -378,7 +378,7 @@ fun SearchViewInfo(s: String, close: () -> Unit) {
                             LazyRow(Modifier.fillMaxWidth()) {
                                 items(v.item.albums) { album ->
                                     AlbumsItemsShort(album) {
-                                        homeNav.setAlbum(album.pId ?: "")
+                                        homeNav.setAlbum(album.songId ?: "")
                                     }
                                 }
                             }

@@ -232,7 +232,7 @@ class PlayerService : MediaSessionService() {
                         .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
                     val position = intent.getIntExtra(SONG_MEDIA_POSITION, 0)
 
-                    currentPlayingMusic = list?.get(position)?.pId ?: ""
+                    currentPlayingMusic = list?.get(position)?.songId ?: ""
                     playerServiceAction.addMultipleItemsAndPlay(list, position)
                     if (isActive) cancel()
                 }
@@ -242,7 +242,7 @@ class PlayerService : MediaSessionService() {
                         .fromJson(intent.getStringExtra(PLAY_SONG_MEDIA)!!)
                     val position = intent.getIntExtra(SONG_MEDIA_POSITION, 0)
 
-                    currentPlayingMusic = list?.get(position)?.pId ?: ""
+                    currentPlayingMusic = list?.get(position)?.songId ?: ""
                     playerServiceAction.addMultipleItemsAndNotPlay(list, position)
                     if (isActive) cancel()
                 }

@@ -76,7 +76,7 @@ fun AlbumsShortcutButton() {
     fun startDownload() {
         FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.DOWNLOAD_OFFLINE_ALBUMS_SONG)
         playlistAlbum.playlistSongsItem.forEach {
-            startOfflineDownloadWorkManager(it.pId)
+            startOfflineDownloadWorkManager(it.songId)
         }
         job?.cancel()
     }

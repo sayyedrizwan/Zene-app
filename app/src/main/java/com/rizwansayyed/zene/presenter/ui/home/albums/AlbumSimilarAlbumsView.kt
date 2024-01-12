@@ -35,7 +35,7 @@ fun SimilarAlbums() {
         is DataResponse.Success -> LazyRow(Modifier.fillMaxWidth()) {
             items(v.item) {
                 AlbumsItems(it) {
-                    homeNav.setAlbum(it.pId ?: "")
+                    homeNav.setAlbum(it.songId ?: "")
                 }
             }
         }

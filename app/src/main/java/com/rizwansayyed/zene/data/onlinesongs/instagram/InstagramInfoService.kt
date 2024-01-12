@@ -11,7 +11,7 @@ interface InstagramInfoService {
 
     @GET(INSTAGRAM_PROFILE_API)
     suspend fun instagramInfo(
-        @Header("x-ig-app-id") appId: String,
+        @Header("x-ig-app-id") apsongId: String,
         @Query("username") username: String,
         @Query("hl") hl: String = "en"
     ): InstagramDataResponse

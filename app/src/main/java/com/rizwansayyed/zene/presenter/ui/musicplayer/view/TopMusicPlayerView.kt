@@ -137,7 +137,7 @@ fun SongsThumbnailsWithList(p: MusicPlayerData?) {
 
     LaunchedEffect(p) {
         p?.songsLists?.forEachIndexed { i, musicData ->
-            if (musicData?.pId == p.v?.songID) pagerState.scrollToPage(i)
+            if (musicData?.songId == p.v?.songID) pagerState.scrollToPage(i)
         }
     }
     LaunchedEffect(pagerState.currentPage) {

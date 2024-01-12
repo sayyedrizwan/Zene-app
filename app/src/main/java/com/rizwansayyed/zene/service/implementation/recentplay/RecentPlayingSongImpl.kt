@@ -47,10 +47,10 @@ class RecentPlayingSongImpl @Inject constructor(
                         recentPlayed.insert(recentSongInfo)
                     } else {
                         val songInfo = youtubeAPI.songDetail(mediaId).first()
-                        if (songInfo.pId == null) return@withContext
+                        if (songInfo.songId == null) return@withContext
 
                         val data = RecentPlayedEntity(
-                            songInfo.pId!!, songInfo.name, songInfo.artists, addValue,
+                            songInfo.songId!!, songInfo.name, songInfo.artists, addValue,
                             songInfo.thumbnail, System.currentTimeMillis(), duration,
                             currentPosition
                         )

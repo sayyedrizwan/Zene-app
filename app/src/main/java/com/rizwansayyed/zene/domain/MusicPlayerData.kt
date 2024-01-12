@@ -23,5 +23,5 @@ data class MusicPlayerList(
 )
 
 fun MusicData.asMusicPlayerList(): MusicPlayerList {
-    return MusicPlayerList(name, artists, pId, thumbnail)
+    return MusicPlayerList(name, artists, songId, thumbnail)
 }

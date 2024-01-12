@@ -96,7 +96,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
     fun startDownloading() {
         homeNavModel.songDetailDialog?.let {
             playerViewModel.addOfflineSong(it)
-            OfflineDownloadManager.startOfflineDownloadWorkManager(it.pId)
+            OfflineDownloadManager.startOfflineDownloadWorkManager(it.songId)
         }
     }
 
@@ -117,21 +117,21 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
         }
 
         MusicDialogListItems(R.drawable.ic_share, share) {
-            homeNavModel.songDetailDialog?.pId?.let { shareTxt(appUrlRadioShare(it)) }
+            homeNavModel.songDetailDialog?.songId?.let { shareTxt(appUrlRadioShare(it)) }
             homeNavModel.setSongDetailsDialog(null)
         }
 
-        if (radioList?.any { it == homeNavModel.songDetailDialog?.pId } == true)
+        if (radioList?.any { it == homeNavModel.songDetailDialog?.songId } == true)
             MusicDialogListItems(R.drawable.ic_favourite_circle, removeFavourite) {
                 val list = ArrayList<String>().apply { addAll(radioList!!) }
-                list.remove(homeNavModel.songDetailDialog?.pId)
+                list.remove(homeNavModel.songDetailDialog?.songId)
                 favouriteRadioList = flowOf(list.toTypedArray())
                 homeApiViewModel.favouriteRadios(true)
             }
         else
             MusicDialogListItems(R.drawable.ic_favourite, makeFavourite) {
                 val list = ArrayList<String>().apply { addAll(radioList!!) }
-                homeNavModel.songDetailDialog?.pId?.let { list.add(0, it) }
+                homeNavModel.songDetailDialog?.songId?.let { list.add(0, it) }
                 favouriteRadioList = flowOf(list.toTypedArray())
                 homeApiViewModel.favouriteRadios(true)
             }
@@ -154,7 +154,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
             homeNavModel.setSongDetailsDialog(null)
         }
         MusicDialogListItems(R.drawable.ic_share, share) {
-            homeNavModel.songDetailDialog?.pId?.let { shareTxt(appUrlSongShare(it)) }
+            homeNavModel.songDetailDialog?.songId?.let { shareTxt(appUrlSongShare(it)) }
             homeNavModel.setSongDetailsDialog(null)
         }
         MusicDialogListItems(R.drawable.ic_playlist, stringResource(R.string.add_to_playlist)) {
@@ -201,7 +201,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
     Spacer(Modifier.height(130.dp))
 
     if (rmDialog) DeleteOfflineDialog({
-        playerViewModel.rmDownloadSongs(homeNavModel.songDetailDialog?.pId ?: "")
+        playerViewModel.rmDownloadSongs(homeNavModel.songDetailDialog?.songId ?: "")
         rmDialog = false
     }, {
         rmDialog = false
@@ -211,7 +211,7 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
     playlistDialog?.let { MusicPlaylistDialog(it) { playlistDialog = null } }
 
     LaunchedEffect(Unit) {
-        homeNavModel.songDetailDialog?.pId?.let { playerViewModel.offlineSongDetails(it) }
+        homeNavModel.songDetailDialog?.songId?.let { playerViewModel.offlineSongDetails(it) }
     }
 }
 

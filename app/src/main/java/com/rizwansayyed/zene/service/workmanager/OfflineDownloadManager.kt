@@ -63,7 +63,7 @@ class OfflineDownloadManager @AssistedInject constructor(
 
             if (offlineEntity == null)
                 offlineEntity = OfflineDownloadedEntity(
-                    songInfo.pId ?: "",
+                    songInfo.songId ?: "",
                     songInfo.name ?: "",
                     songInfo.artists ?: "",
                     songInfo.thumbnail ?: "",

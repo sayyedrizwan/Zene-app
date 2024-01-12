@@ -69,7 +69,7 @@ class LastFMImpl @Inject constructor(
                         s?.listeners ?: "",
                         s?.image?.replace("174s/", "770x0/")?.replace(".png", ".jpg"),
                         s?.name ?: "",
-                        it1.pId ?: "",
+                        it1.songId ?: "",
                         it1.type ?: MusicType.MUSIC
                     )
                 )

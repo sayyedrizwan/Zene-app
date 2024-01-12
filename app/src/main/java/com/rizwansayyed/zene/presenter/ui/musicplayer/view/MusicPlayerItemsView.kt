@@ -76,7 +76,7 @@ fun ImageOfSongWithPlayIcon(
                 alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
             }
 
-        if (item?.pId == p?.v?.songID)
+        if (item?.songId == p?.v?.songID)
             when (playerViewModel.showMusicType) {
                 Utils.MusicViewType.LYRICS -> {
                     when (val v = playerViewModel.videoSongs) {
@@ -120,7 +120,7 @@ fun ImageOfSongWithPlayIcon(
         else
             AsyncImage(item?.thumbnail, item?.name, modifier)
 
-        if (item?.pId != p?.v?.songID)
+        if (item?.songId != p?.v?.songID)
             Image(
                 painterResource(R.drawable.ic_play), "",
                 Modifier

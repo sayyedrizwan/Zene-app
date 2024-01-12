@@ -167,7 +167,7 @@ fun SongShareDialog(songIdEncrypt: String?) {
                             }
                         }
 
-                        if (v.item.pId == null) LaunchedEffect(Unit) {
+                        if (v.item.songId == null) LaunchedEffect(Unit) {
                             navViewModel.setSongShareDialog(null)
                             noSongFound.toast()
                         }

@@ -158,7 +158,7 @@ fun HomeView() {
             is DataResponse.Success ->
                 itemsIndexed(
                     v.item,
-                    key = { _, m -> m?.pId ?: "" },
+                    key = { _, m -> m?.songId ?: "" },
                     span = { _, _ -> GridItemSpan(TOTAL_ITEMS_GRID) }) { i, item ->
                     GlobalTrendingPagerItems(item, false) {
                         addAllPlayer(v.item.toTypedArray(), i)
@@ -200,10 +200,10 @@ fun HomeView() {
         when (val v = roomDbViewModel.albumsYouMayLike) {
             is DataResponse.Success -> items(
                 v.item,
-                key = { m -> m.pId ?: "" },
+                key = { m -> m.songId ?: "" },
                 span = { GridItemSpan(TWO_ITEMS_GRID) }) {
                 AlbumsItems(it) {
-                    homeNavModel.setAlbum(it.pId ?: "")
+                    homeNavModel.setAlbum(it.songId ?: "")
                 }
             }
 
@@ -254,7 +254,7 @@ fun HomeView() {
         when (val v = roomDbViewModel.songsSuggestionForUsers) {
             is DataResponse.Success -> itemsIndexed(
                 v.item,
-                key = { _, m -> m.pId ?: "" },
+                key = { _, m -> m.songId ?: "" },
                 span = { _, _ -> GridItemSpan(TWO_ITEMS_GRID) }) { i, m ->
                 SongsExploreItems(m) {
                     addAllPlayer(v.item.toTypedArray(), i)

@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 class YoutubeScrapsImpl @Inject constructor() : YoutubeScrapInterface {
 
-    override suspend fun ytReleaseItems(pId: String) = flow {
-        var response = jsoupResponseData(generateYTMusicPlaylistURL(pId))
+    override suspend fun ytReleaseItems(songId: String) = flow {
+        var response = jsoupResponseData(generateYTMusicPlaylistURL(songId))
         val jsoup = Jsoup.parse(response!!)
 
 

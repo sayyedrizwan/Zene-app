@@ -52,13 +52,13 @@ class AlarmReceiverSong : BroadcastReceiver() {
 
             registerEvent(FirebaseEvents.FirebaseEvent.PLAYING_SONG_ALARM)
 
-            if (DataStorageSettingsManager.alarmSongData.first()?.pId != null) {
+            if (DataStorageSettingsManager.alarmSongData.first()?.songId != null) {
                 val songDetails =
-                    youtubeAPIImplInterface.songDetail(DataStorageSettingsManager.alarmSongData.first()!!.pId!!)
+                    youtubeAPIImplInterface.songDetail(DataStorageSettingsManager.alarmSongData.first()!!.songId!!)
                         .first()
 
                 val data = MusicPlayerList(
-                    songDetails.name, songDetails.artists, songDetails.pId, songDetails.thumbnail
+                    songDetails.name, songDetails.artists, songDetails.songId, songDetails.thumbnail
                 )
 
                 val playerData = MusicPlayerData(
@@ -82,7 +82,7 @@ class AlarmReceiverSong : BroadcastReceiver() {
                 if ((playerData?.songsLists?.size ?: 0) > 0) {
                     var songPosition = 0
                     playerData?.songsLists?.forEachIndexed { i, musicData ->
-                        if (musicData?.pId == playerData.v?.songID) songPosition = i
+                        if (musicData?.songId == playerData.v?.songID) songPosition = i
                     }
 
                     Utils.addAllPlayer(playerData?.songsLists?.toTypedArray(), songPosition)
