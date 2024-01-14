@@ -57,8 +57,8 @@ class LastFMImpl @Inject constructor(
         val key = remoteConfig.allApiKeys()
 
         val res = lastFMS.topRecentPlayingSongs()
-        res.results?.artist?.forEach { s ->
-            val songName = "${s?.tracks?.first()?.name} - ${s?.name}"
+        res.results?.track?.forEach {
+            val songName = "${it?.name} - ${it?.artist}"
             val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
             songs?.let { it1 ->
                 list.add(
@@ -66,9 +66,9 @@ class LastFMImpl @Inject constructor(
                         it1.thumbnail ?: "",
                         it1.name ?: "",
                         it1.artists ?: "",
-                        s?.listeners ?: "",
-                        s?.image?.replace("174s/", "770x0/")?.replace(".png", ".jpg"),
-                        s?.name ?: "",
+                        it?.listeners ?: "",
+                        it?.image?.replace("174s/", "770x0/")?.replace(".png", ".jpg"),
+                        it?.name ?: "",
                         it1.songId ?: "",
                         it1.type ?: MusicType.MUSIC
                     )
