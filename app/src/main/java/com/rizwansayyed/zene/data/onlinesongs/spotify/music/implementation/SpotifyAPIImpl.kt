@@ -11,7 +11,7 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.moodTopSongsCache
 import com.rizwansayyed.zene.data.utils.CacheFiles.topCountrySongs
 import com.rizwansayyed.zene.data.utils.CacheFiles.topGlobalSongs
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_COUNTRY_SEARCH
-import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_GLOBAL_SEARCH
+import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_GLOBAL_SEARCH_PLAYLIST_ID
 import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataCache
@@ -44,12 +44,51 @@ class SpotifyAPIImpl @Inject constructor(
         }
 
         val list =
-            searchSongViaPlaylists(SPOTIFY_GLOBAL_SEARCH).firstOrNull()
+            searchSongViaPlaylists(SPOTIFY_GLOBAL_SEARCH_PLAYLIST_ID).firstOrNull()
 
         list?.shuffle()
         list?.toTxtCache()?.let { writeToCacheFile(topGlobalSongs, it) }
 
         emit(list ?: emptyList())
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun searchSongViaPlaylists(playlistId: String) = flow {
+        val key = remoteConfig.allApiKeys()
+        val ipDetails = userIpDetails.first()
+
+        val token = spotifyAPI.spotifyAccessToken(
+            clientId = key?.spotifyClientID, clientSecret = key?.spotifySecretID
+        )
+
+        val bearer = "${token.token_type} ${token.access_token}"
+        val songs = spotifyAPI.spotifyPlaylistSongs(bearer, playlistId)
+
+        val music = mutableListOf<MusicData>()
+
+        suspend fun synList(s: SpotifyItem) {
+            val sortName = "${s.track?.album?.name} - ${(s.track?.wholeArtistsName())}"
+            youtubeMusic.musicInfoSearch(sortName, ipDetails, key?.music ?: "")
+                ?.let { m -> if (!music.contains(m)) music.add(m) }
+        }
+
+        withContext(Dispatchers.IO) {
+            val first = async {
+                songs.tracks?.items?.forEachIndexed { index, s ->
+                    if (index <= songs.tracks.items.size / 2) synList(s)
+                }
+            }
+
+            val second = async {
+                songs.tracks?.items?.forEachIndexed { index, s ->
+                    if (index >= songs.tracks.items.size / 2) synList(s)
+                }
+            }
+
+            first.await()
+            second.await()
+        }
+
+        emit(music)
     }.flowOn(Dispatchers.IO)
 
 
@@ -62,25 +101,12 @@ class SpotifyAPIImpl @Inject constructor(
             }
         }
 
-        val ipDetails = userIpDetails.first()
-        val topList =
-            searchSongViaPlaylists("$SPOTIFY_COUNTRY_SEARCH${ipDetails?.country}").firstOrNull()
-
-        topList?.shuffle()
-        topList?.toTxtCache()?.let { writeToCacheFile(topCountrySongs, it) }
-
-        emit(topList ?: emptyList())
-    }.flowOn(Dispatchers.IO)
-
-
-    override suspend fun searchSongViaPlaylists(q: String) = flow {
         val key = remoteConfig.allApiKeys()
         val ipDetails = userIpDetails.first()
 
         val token = spotifyAPI.spotifyAccessToken(
             clientId = key?.spotifyClientID, clientSecret = key?.spotifySecretID
         )
-
 
         val bearer = "${token.token_type} ${token.access_token}"
         val songId = spotifyAPI.spotifyPlaylistSearch(
@@ -113,6 +139,8 @@ class SpotifyAPIImpl @Inject constructor(
             first.await()
             second.await()
         }
+        music.shuffle()
+        music.toTxtCache()?.let { writeToCacheFile(topCountrySongs, it) }
 
         emit(music)
     }.flowOn(Dispatchers.IO)

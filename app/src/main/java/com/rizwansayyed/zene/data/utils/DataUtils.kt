@@ -97,7 +97,7 @@ object SpotifyAPI {
     const val SPOTIFY_PLAYLIST_TRACK_API = "playlists/{playlist_id}/tracks"
 
 
-    const val SPOTIFY_GLOBAL_SEARCH = "top+50+global"
+    const val SPOTIFY_GLOBAL_SEARCH_PLAYLIST_ID = "37i9dQZEVXbMDoHDwVN2tF"
     const val SPOTIFY_COUNTRY_SEARCH = "top+50+"
 }
 
