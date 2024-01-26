@@ -14,10 +14,11 @@ object EncodeDecodeGlobal {
 
 
     fun decryptData(cipherText: String): String {
+        val v = cipherText.replace("__", "/")
         return try {
             val cipher = Cipher.getInstance(algorithm)
             cipher.init(Cipher.DECRYPT_MODE, key, iv)
-            val plainText = cipher.doFinal(Base64.decode(cipherText, Base64.DEFAULT))
+            val plainText = cipher.doFinal(Base64.decode(v, Base64.DEFAULT))
             String(plainText)
         } catch (e: Exception) {
             ""
@@ -28,7 +29,8 @@ object EncodeDecodeGlobal {
         val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.ENCRYPT_MODE, key, iv)
         val cipherText = cipher.doFinal(txt.toByteArray())
-        return Base64.encodeToString(cipherText, Base64.DEFAULT).replace("=+$".toRegex(), "")
+        val v = Base64.encodeToString(cipherText, Base64.DEFAULT).replace("=+$".toRegex(), "")
+        return v.replace("/", "__")
     }
 
     fun simpleEncode(txt: String): String {
