@@ -59,7 +59,8 @@ object Utils {
 
     const val OFFSET_LIMIT = 50
 
-    const val OFFICIAL_EMAIL = "contactcreator@protonmail.com"
+    const val OFFICIAL_EMAIL = "knocknock@zenemusic.co"
+    const val OFFICIAL_PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
     const val OFFICIAL_INSTAGRAM_ACCOUNTS = "https://www.instagram.com/zene__music/"
 
     val tempEmptyList =

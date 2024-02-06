@@ -102,7 +102,9 @@ import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.utils.Utils.openEqualizer
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.Utils.OFFICIAL_EMAIL
+import com.rizwansayyed.zene.utils.Utils.OFFICIAL_PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.Utils.cacheSize
+import com.rizwansayyed.zene.utils.Utils.customBrowser
 import com.rizwansayyed.zene.utils.Utils.isPermission
 import com.rizwansayyed.zene.utils.Utils.restartApp
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
@@ -183,6 +185,7 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
         }
 
         SettingsItemsCard(R.string.privacy_policy) {
+            Uri.parse(OFFICIAL_PRIVACY_POLICY).customBrowser()
         }
 
         Spacer(Modifier.height(35.dp))
