@@ -5,12 +5,14 @@ import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.KeyguardManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.BATTERY_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
@@ -400,5 +402,17 @@ object Utils {
         `in`.close()
         out.close()
         MediaScannerConnection.scanFile(context, arrayOf(dest.toString()), null, null)
+    }
+
+    fun registerAppReceiver(r: BroadcastReceiver, i: IntentFilter, c: Context) {
+        ContextCompat.registerReceiver(c, r, i, ContextCompat.RECEIVER_EXPORTED)?.apply {
+            setPackage(c.packageName)
+        }
+    }
+
+    fun registerAppNonReceiver(r: BroadcastReceiver, i: IntentFilter, c: Context) {
+        ContextCompat.registerReceiver(c, r, i, ContextCompat.RECEIVER_NOT_EXPORTED)?.apply {
+            setPackage(c.packageName)
+        }
     }
 }

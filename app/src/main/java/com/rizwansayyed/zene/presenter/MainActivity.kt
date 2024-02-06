@@ -139,14 +139,7 @@ class MainActivity : ComponentActivity() {
     lateinit var player: ExoPlayer
 
     @Inject
-    lateinit var bingScrapsImpl: BingScrapsInterface
-
-    @Inject
     lateinit var alarmManagerToPlaySong: AlarmManagerToPlaySong
-
-
-    @Inject
-    lateinit var onlineRadioImpl: OnlineRadioImplInterface
 
     private val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java) }
 

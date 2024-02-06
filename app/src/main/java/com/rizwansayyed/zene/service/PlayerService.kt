@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -39,7 +40,10 @@ import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.pauseSongCh
 import com.rizwansayyed.zene.service.songparty.Utils.ActionFunctions.playSongChange
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
+import com.rizwansayyed.zene.utils.Utils
 import com.rizwansayyed.zene.utils.Utils.printStack
+import com.rizwansayyed.zene.utils.Utils.registerAppNonReceiver
+import com.rizwansayyed.zene.utils.Utils.registerAppReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -97,18 +101,14 @@ class PlayerService : MediaSessionService() {
 
         IntentFilter(PLAYER_SERVICE_ACTION).apply {
             priority = IntentFilter.SYSTEM_HIGH_PRIORITY
-            ContextCompat.registerReceiver(
-                this@PlayerService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
-            )
+            registerAppReceiver(receiver, this, this@PlayerService)
         }
 
         IntentFilter().apply {
             priority = IntentFilter.SYSTEM_HIGH_PRIORITY
             addAction(Intent.ACTION_POWER_CONNECTED)
             addAction(Intent.ACTION_POWER_DISCONNECTED)
-            ContextCompat.registerReceiver(
-                this@PlayerService, ChargingDeviceReceiver(), this, ContextCompat.RECEIVER_EXPORTED
-            )
+            registerAppNonReceiver(ChargingDeviceReceiver(), this, this@PlayerService)
         }
 
         timeJob = CoroutineScope(Dispatchers.IO).launch {
@@ -225,6 +225,7 @@ class PlayerService : MediaSessionService() {
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("TAG", "onReceive: datatattatata 2222222")
             intent ?: return
             when (intent.getStringExtra(PLAYER_SERVICE_TYPE)) {
                 ADD_ALL_PLAYER_ITEM -> CoroutineScope(Dispatchers.IO).launch {

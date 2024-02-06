@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.service.songparty.Utils.sendMyDetailsInParty
 import com.rizwansayyed.zene.service.songparty.Utils.sendRadioChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.songPartyRadioSync
 import com.rizwansayyed.zene.service.songparty.Utils.songPartySongSync
+import com.rizwansayyed.zene.utils.Utils.registerAppReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -124,9 +125,8 @@ class SongPartyService : Service() {
             addAction(PARTY_ACTION_CLOSE)
             addAction(PARTY_ACTION_RADIO_CHANGE)
             priority = IntentFilter.SYSTEM_HIGH_PRIORITY
-            ContextCompat.registerReceiver(
-                this@SongPartyService, receiver, this, ContextCompat.RECEIVER_NOT_EXPORTED
-            )
+
+            registerAppReceiver(receiver, this, this@SongPartyService)
         }
 
         tempJob = CoroutineScope(Dispatchers.IO).launch {

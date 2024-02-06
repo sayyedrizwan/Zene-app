@@ -123,6 +123,9 @@ object Utils {
         val newList = shortListForPlayer(l, p)
         val newPosition = newList.lastIndexOf(l?.get(p))
 
+
+        Log.d("TAG", "onReceive: datatattatata 11111")
+
         Intent(PLAYER_SERVICE_ACTION).apply {
             putExtra(PLAYER_SERVICE_TYPE, ADD_ALL_PLAYER_ITEM)
             putExtra(PLAY_SONG_MEDIA, moshi.adapter(Array<MusicData?>::class.java).toJson(newList))
