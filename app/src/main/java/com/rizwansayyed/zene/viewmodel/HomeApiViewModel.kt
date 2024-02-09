@@ -330,5 +330,4 @@ class HomeApiViewModel @Inject constructor(
                 DataResponse.Success(it)
         }
     }
-
 }

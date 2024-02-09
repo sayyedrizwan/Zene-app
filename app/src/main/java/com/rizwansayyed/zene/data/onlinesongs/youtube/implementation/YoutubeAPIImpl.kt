@@ -100,15 +100,20 @@ class YoutubeAPIImpl @Inject constructor(
         }
         val music = mutableListOf<MusicData>()
 
-        pList.forEach {
-            ytJsonScrap.ytReleaseItems(it).first().forEach { name ->
-                val response = musicInfoSearch(name, ip, key?.music ?: "")
-                response?.let { m -> music.add(m) }
+        withContext(Dispatchers.IO) {
+            val jobs = pList.map { n ->
+                async {
+                    ytJsonScrap.ytReleaseItems(n).first().forEach { name ->
+                        val response = musicInfoSearch(name, ip, key?.music ?: "")
+                        response?.let { m -> music.add(m) }
+                    }
+                }
             }
+
+            jobs.awaitAll()
         }
 
         music.toTxtCache()?.let { writeToCacheFile(freshAddedSongs, it) }
-
         emit(music)
     }.flowOn(Dispatchers.IO)
 
@@ -601,7 +606,15 @@ class YoutubeAPIImpl @Inject constructor(
 
                         if (isAlbums) name?.let {
                             if (name.trim().isNotEmpty())
-                                list.add(MusicData(thumbnail, name, artists, songId, MusicType.ALBUMS))
+                                list.add(
+                                    MusicData(
+                                        thumbnail,
+                                        name,
+                                        artists,
+                                        songId,
+                                        MusicType.ALBUMS
+                                    )
+                                )
                         }
                     }
 
@@ -736,6 +749,7 @@ class YoutubeAPIImpl @Inject constructor(
                 async {
                     if (id.trim().isEmpty()) return@async
                     var upNextID = ""
+
                     val upNext = youtubeMusicAPI
                         .youtubeNextSearchResponse(ytMusicUpNextJsonBody(ip, id), key)
 
