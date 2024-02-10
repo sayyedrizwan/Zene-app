@@ -275,48 +275,54 @@ class YoutubeAPIImpl @Inject constructor(
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.music ?: ""
 
-        songIds.forEach { id ->
-            if (id.trim().isEmpty()) return@forEach
+        withContext(Dispatchers.IO) {
+            val jobs = songIds.map { id ->
+                async {
+                    if (id.trim().isEmpty()) return@async
 
-            val r =
-                youtubeMusicAPI.youtubeNextSearchResponse(ytMusicNextJsonBody(ip, id), key)
-            val browserId = r.browseID() ?: return@forEach
+                    val r =
+                        youtubeMusicAPI.youtubeNextSearchResponse(ytMusicNextJsonBody(ip, id), key)
+                    val browserId = r.browseID() ?: return@async
 
-            val songsList = youtubeMusicAPI
-                .youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, browserId), key)
+                    val songsList = youtubeMusicAPI
+                        .youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, browserId), key)
 
-            songsList.contents?.sectionListRenderer?.contents?.forEach { c ->
-                if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.accessibilityData?.accessibilityData?.label?.lowercase() == "you might also like") {
-                    c.musicCarouselShelfRenderer.contents?.forEachIndexed { index, content ->
-                        if (index > 4) return@forEachIndexed
+                    songsList.contents?.sectionListRenderer?.contents?.forEach { c ->
+                        if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.accessibilityData?.accessibilityData?.label?.lowercase() == "you might also like") {
+                            c.musicCarouselShelfRenderer.contents?.forEachIndexed { index, content ->
+                                if (index > 4) return@forEachIndexed
 
-                        val thumbnail =
-                            content?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-                        val musicData = MusicData(thumbnail, "", "", null, MusicType.MUSIC)
-                        val artists = mutableListOf<String>()
+                                val thumbnail =
+                                    content?.musicResponsiveListItemRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                                val musicData = MusicData(thumbnail, "", "", null, MusicType.MUSIC)
+                                val artists = mutableListOf<String>()
 
-                        content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { n ->
-                            n?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { na ->
-                                if (na?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV") {
-                                    musicData.name = na.text
-                                    na.navigationEndpoint.watchEndpoint.videoId.also {
-                                        musicData.songId = it
+                                content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { n ->
+                                    n?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { na ->
+                                        if (na?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV") {
+                                            musicData.name = na.text
+                                            na.navigationEndpoint.watchEndpoint.videoId.also {
+                                                musicData.songId = it
+                                            }
+                                        }
+
+                                        if (na?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
+                                            na.text?.let { artists.add(it) }
+                                        }
                                     }
                                 }
 
-                                if (na?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
-                                    na.text?.let { artists.add(it) }
-                                }
+                                musicData.artists = artistsListToString(artists)
+
+                                if (musicData.songId != null)
+                                    if (!list.any { it.songId == musicData.songId })
+                                        list.add(musicData)
                             }
                         }
-
-                        musicData.artists = artistsListToString(artists)
-
-                        if (musicData.songId != null)
-                            if (!list.any { it.songId == musicData.songId }) list.add(musicData)
                     }
                 }
             }
+            jobs.awaitAll()
         }
 
         list.shuffle()
@@ -548,15 +554,22 @@ class YoutubeAPIImpl @Inject constructor(
         if (cache != null) if (cache.list.isNotEmpty()) emit(cache.list)
 
         val list = mutableListOf<MusicData>()
-
-        artists.forEach {
-            try {
-                val l = allSongsSearch(it).first()
-                list.addAll(l)
-            } catch (e: Exception) {
-                e.printStack()
+        withContext(Dispatchers.IO) {
+            val jobs = artists.map {
+                async {
+                    try {
+                        val l = allSongsSearch(it).first()
+                        list.addAll(l)
+                    } catch (e: Exception) {
+                        e.printStack()
+                    }
+                }
             }
+
+            jobs.awaitAll()
         }
+
+
         if (list.isNotEmpty()) {
             val tempList = list.shuffled()
             TopSuggestMusicData(System.currentTimeMillis(), artists, tempList)
@@ -578,49 +591,54 @@ class YoutubeAPIImpl @Inject constructor(
 
         val list = mutableListOf<MusicData>()
 
-        names.forEach {
-            if (it.trim().isEmpty()) return@forEach
+        withContext(Dispatchers.IO) {
+            val jobs = names.map {
+                async {
+                    if (it.trim().isEmpty()) return@async
 
-            val r = youtubeMusicAPI
-                .youtubeSearchAllSongsResponse(ytMusicArtistsAlbumsJsonBody(ip, it), key)
+                    val r = youtubeMusicAPI
+                        .youtubeSearchAllSongsResponse(ytMusicArtistsAlbumsJsonBody(ip, it), key)
 
-            r.contents?.tabbedSearchResultsRenderer?.tabs?.forEach { tabs ->
-                tabs?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
-                    c?.musicShelfRenderer?.contents?.forEachIndexed { index, content ->
-                        if (index > 2) return@forEachIndexed
-                        val thumbnail = content?.musicResponsiveListItemRenderer?.thumbnail
-                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                    r.contents?.tabbedSearchResultsRenderer?.tabs?.forEach { tabs ->
+                        tabs?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+                            c?.musicShelfRenderer?.contents?.forEachIndexed { index, content ->
+                                if (index > 2) return@forEachIndexed
+                                val thumbnail = content?.musicResponsiveListItemRenderer?.thumbnail
+                                    ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
-                        val name = content?.theName()
-                        val artists = content?.getArtists()
+                                val name = content?.theName()
+                                val artists = content?.getArtists()
 
-                        var isAlbums = false
+                                var isAlbums = false
 
-                        content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { flex ->
-                            flex?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { r ->
-                                if (r?.text?.lowercase() == "album") isAlbums = true
+                                content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { flex ->
+                                    flex?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { r ->
+                                        if (r?.text?.lowercase() == "album") isAlbums = true
+                                    }
+                                }
+                                val songId =
+                                    content?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
+
+                                if (isAlbums) name?.let {
+                                    if (name.trim().isNotEmpty())
+                                        list.add(
+                                            MusicData(
+                                                thumbnail,
+                                                name,
+                                                artists,
+                                                songId,
+                                                MusicType.ALBUMS
+                                            )
+                                        )
+                                }
                             }
-                        }
-                        val songId =
-                            content?.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseId
 
-                        if (isAlbums) name?.let {
-                            if (name.trim().isNotEmpty())
-                                list.add(
-                                    MusicData(
-                                        thumbnail,
-                                        name,
-                                        artists,
-                                        songId,
-                                        MusicType.ALBUMS
-                                    )
-                                )
                         }
                     }
-
                 }
             }
 
+            jobs.awaitAll()
         }
 
         list.shuffle()
@@ -881,57 +899,72 @@ class YoutubeAPIImpl @Inject constructor(
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.music ?: ""
 
-        artists.forEach { a ->
-            if (a.trim().isEmpty()) return@forEach
+        withContext(Dispatchers.IO) {
+            val jobs = artists.map { a ->
+                async {
+                    if (a.trim().isEmpty()) return@async
 
-            try {
-                val searchResponse =
-                    youtubeMusicAPI.youtubeSearchResponse(ytMusicArtistsSearchJsonBody(ip, a), key)
+                    try {
+                        val searchResponse =
+                            youtubeMusicAPI.youtubeSearchResponse(
+                                ytMusicArtistsSearchJsonBody(
+                                    ip,
+                                    a
+                                ), key
+                            )
 
-                var artist: Pair<String?, String?> = Pair("", "")
+                        var artist: Pair<String?, String?> = Pair("", "")
 
-                searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEachIndexed { index, s ->
-                    if (index != 0) return@forEachIndexed
+                        searchResponse.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEachIndexed { index, s ->
+                            if (index != 0) return@forEachIndexed
 
-                    if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
-                        val thumbnail =
-                            s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
-                                ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                            if (s?.musicShelfRenderer?.title?.runs?.first()?.text?.lowercase() == "artists") {
+                                val thumbnail =
+                                    s.musicShelfRenderer.contents?.first()?.musicResponsiveListItemRenderer?.thumbnail
+                                        ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
 
-                        val name = s.musicShelfRenderer.getArtistsNoCheck()
-                        name?.let {
-                            artist = Pair(name, thumbnail)
+                                val name = s.musicShelfRenderer.getArtistsNoCheck()
+                                name?.let {
+                                    artist = Pair(name, thumbnail)
+                                }
+                            }
                         }
-                    }
-                }
 
-                artist.first ?: return@forEach
+                        artist.first ?: return@async
 
-                val songs = mutableListOf<MusicData>()
+                        val songs = mutableListOf<MusicData>()
 
-                val r = youtubeMusicAPI.youtubeSearchAllSongsResponse(
-                    ytMusicSearchAllSongsJsonBody(ip, artist.first!!), key
-                )
-
-                r.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
-                    c?.musicShelfRenderer?.contents?.forEach { shelf ->
-                        val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
-                            ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-                        val name = shelf?.musicResponsiveListItemRenderer?.names()
-                        val artistsN = shelf?.getArtists()
-
-                        val m = MusicData(
-                            thumbnail ?: "", name?.first, artistsN, name?.second, MusicType.MUSIC
+                        val r = youtubeMusicAPI.youtubeSearchAllSongsResponse(
+                            ytMusicSearchAllSongsJsonBody(ip, artist.first!!), key
                         )
-                        songs.add(m)
+
+                        r.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
+                            c?.musicShelfRenderer?.contents?.forEach { shelf ->
+                                val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
+                                    ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                                val name = shelf?.musicResponsiveListItemRenderer?.names()
+                                val artistsN = shelf?.getArtists()
+
+                                val m = MusicData(
+                                    thumbnail ?: "",
+                                    name?.first,
+                                    artistsN,
+                                    name?.second,
+                                    MusicType.MUSIC
+                                )
+                                songs.add(m)
+                            }
+                        }
+
+                        if (!list.any { it.artistsName.lowercase() == artist.first!!.lowercase() })
+                            list.add(ArtistsFanData(artist.first!!, artist.second ?: "", songs))
+                    } catch (e: Exception) {
+                        e.printStack()
                     }
                 }
-
-                if (!list.any { it.artistsName.lowercase() == artist.first!!.lowercase() })
-                    list.add(ArtistsFanData(artist.first!!, artist.second ?: "", songs))
-            } catch (e: Exception) {
-                e.printStack()
             }
+
+            jobs.awaitAll()
         }
 
         ArtistsFanDataCache(artists, list).toTxtCache()
@@ -950,16 +983,22 @@ class YoutubeAPIImpl @Inject constructor(
         val r = youtubeMusicAPI
             .youtubeSearchTextSuggestionResponse(ytMusicSearchSuggestionJsonBody(ip, q), key)
 
-        r.contents?.forEach { content ->
-            content?.searchSuggestionsSectionRenderer?.contents?.forEach { item ->
-                if (item?.searchSuggestionRenderer?.icon?.iconType?.lowercase() == "search") {
-                    val name =
-                        item.searchSuggestionRenderer.navigationEndpoint?.searchEndpoint?.query
-                            ?: ""
-                    val m = MusicData("", name, name, "", MusicType.TEXT)
-                    search.add(m)
+        withContext(Dispatchers.IO) {
+            val jobs = r.contents?.map { content ->
+                async {
+                    content?.searchSuggestionsSectionRenderer?.contents?.forEach { item ->
+                        if (item?.searchSuggestionRenderer?.icon?.iconType?.lowercase() == "search") {
+                            val name =
+                                item.searchSuggestionRenderer.navigationEndpoint?.searchEndpoint?.query
+                                    ?: ""
+                            val m = MusicData("", name, name, "", MusicType.TEXT)
+                            search.add(m)
+                        }
+                    }
                 }
             }
+
+            jobs?.awaitAll()
         }
 
         emit(search)
