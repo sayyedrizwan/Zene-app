@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.domain
 
+import android.util.Log
 import com.rizwansayyed.zene.domain.applemusic.AppleMusicPlaylistItemResponse
 import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistResponse
 import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistTrackResponse
@@ -41,9 +42,13 @@ fun SpotifyUserPlaylistTrackResponse.Item.toTrack(): ImportPlaylistTrackInfoData
 
 fun SpotifyUserPlaylistResponse.toPlaylistInfo(p: PlaylistImportersType): List<ImportPlaylistInfoData>? {
     return items?.map {
-        ImportPlaylistInfoData(
-            it?.images?.maxBy { i -> i?.height ?: 2 }?.url,
-            it?.name, it?.owner?.display_name, it?.id, p
-        )
+        try {
+            ImportPlaylistInfoData(
+                it?.images?.maxBy { i -> i?.height ?: 2 }?.url,
+                it?.name, it?.owner?.display_name, it?.id, p
+            )
+        }catch (e: Exception){
+            ImportPlaylistInfoData("", "", "", null, p)
+        }
     }
 }

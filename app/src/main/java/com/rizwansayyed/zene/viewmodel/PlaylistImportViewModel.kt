@@ -70,6 +70,9 @@ class PlaylistImportViewModel @Inject constructor(
             usersPlaylists = DataResponse.Error(it)
         }.collectLatest {
             playlistTrackers.clear()
+
+            Log.d("TAG", "spotifyPlaylistInfo: $it")
+
             val list = it.toPlaylistInfo(PlaylistImportersType.SPOTIFY) ?: emptyList()
             usersPlaylists = DataResponse.Success(list)
 
@@ -137,6 +140,7 @@ class PlaylistImportViewModel @Inject constructor(
         }
 
     fun spotifyPlaylistTrack(item: ImportPlaylistInfoData) = viewModelScope.launch(Dispatchers.IO) {
+        if (item.id == null) return@launch
         if (selectedPlaylist == item) return@launch
         selectedPlaylist = item
         playlistTrackJob?.cancel()
@@ -144,7 +148,7 @@ class PlaylistImportViewModel @Inject constructor(
             playlistTrackers.clear()
 
             try {
-                val lists = spotifyUserAPI.playlistTrack(item.id ?: "", 0).first()
+                val lists = spotifyUserAPI.playlistTrack(item.id, 0).first()
                 lists.items?.forEach {
                     it?.toTrack()?.let { t -> playlistTrackers.add(t) }
                 }

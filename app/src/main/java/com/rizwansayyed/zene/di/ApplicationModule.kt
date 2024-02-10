@@ -7,6 +7,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.work.Configuration
 import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
@@ -53,6 +54,7 @@ class ApplicationModule : Application(), Configuration.Provider {
         super.onCreate()
         context = this
         FirebaseApp.initializeApp(this)
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
         Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(this))
 
 
@@ -64,9 +66,6 @@ class ApplicationModule : Application(), Configuration.Provider {
             }
             if (isActive) cancel()
         }
-
-//        emVuZV9tdXNpYy1zaGFibmFtc2F5eWVkOTMyM0BnbWFpbC5jb20tOTY4MTQ2ZWMtMDA1OS00Y2I1
-
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)

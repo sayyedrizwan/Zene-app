@@ -96,8 +96,10 @@ class MoodViewModel @Inject constructor(
         spotify.searchTopSongsMoodPlaylists(q).onStart {
             topSongs = DataResponse.Loading
         }.catch {
+            Log.d("TAG", "moodTopSongs: runnneddd 222222 ${it.message}")
             topSongs = DataResponse.Error(it)
         }.collectLatest {
+            Log.d("TAG", "moodTopSongs: runnneddd 111")
             topSongs = DataResponse.Success(it.chunked(4))
         }
     }

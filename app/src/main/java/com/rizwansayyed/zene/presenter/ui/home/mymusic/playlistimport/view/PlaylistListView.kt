@@ -59,7 +59,7 @@ fun PlaylistListView(
         is DataResponse.Success -> {
             Spacer(Modifier.height(15.dp))
 
-            Row {
+            Row(Modifier.clickable { click() }) {
                 Spacer(Modifier.width(7.dp))
 
                 TextSemiBold(v = stringResource(R.string.playlists))
@@ -67,10 +67,10 @@ fun PlaylistListView(
                 Spacer(Modifier.weight(1f))
 
                 if (offset == 0)
-                    SmallIcons(icon = R.drawable.ic_arrow_down_sharp, 20, 0, click)
+                    SmallIcons(icon = R.drawable.ic_arrow_down_sharp, 20, 0)
                 else
                     Box(Modifier.rotate(180f)) {
-                        SmallIcons(icon = R.drawable.ic_arrow_down_sharp, 20, 0, click)
+                        SmallIcons(icon = R.drawable.ic_arrow_down_sharp, 20, 0)
                     }
 
                 Spacer(Modifier.width(7.dp))
