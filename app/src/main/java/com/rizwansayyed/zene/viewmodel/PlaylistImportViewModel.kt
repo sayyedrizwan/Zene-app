@@ -209,13 +209,10 @@ class PlaylistImportViewModel @Inject constructor(
                         val s = "${m.songName} - ${m.artistsName?.substringBefore(",")}"
                         youtubeAPIImpl.musicInfoSearch(s).catch {
                             done += 1
-                            songMenu = if (done == v.size)
-                                DataResponse.Empty
-                            else
-                                DataResponse.Loading
+                            songMenu = if (done == v.size) DataResponse.Empty
+                            else DataResponse.Loading
 
                         }.collectLatest {
-
                             var info = roomDb.songInfo(it?.songId ?: "").first()
                             if (info == null) {
                                 info = PlaylistSongsEntity(
@@ -241,6 +238,4 @@ class PlaylistImportViewModel @Inject constructor(
                 }
             }
         }
-
-
 }

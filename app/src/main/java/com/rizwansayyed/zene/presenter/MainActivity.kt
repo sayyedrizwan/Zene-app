@@ -7,7 +7,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -44,8 +43,6 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
-import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
-import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
 import com.rizwansayyed.zene.domain.HomeNavigation.ALL_RADIO
 import com.rizwansayyed.zene.domain.HomeNavigation.FEED
 import com.rizwansayyed.zene.domain.HomeNavigation.HOME
@@ -71,13 +68,11 @@ import com.rizwansayyed.zene.presenter.ui.home.views.WallpaperSetView
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicDialogSheet
 import com.rizwansayyed.zene.presenter.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.presenter.ui.splash.MainSplashView
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.presenter.util.UiUtils.transparentStatusAndNavigation
 import com.rizwansayyed.zene.service.alarm.AlarmManagerToPlaySong
 import com.rizwansayyed.zene.service.player.ArtistsThumbnailVideoPlayer
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
 import com.rizwansayyed.zene.service.player.utils.Utils.openSettingsPermission
-import com.rizwansayyed.zene.service.songparty.SongPartyService
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.simpleDecode
@@ -85,7 +80,6 @@ import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils.AppUrl.ALBUMS_URL_DIFFERENTIATE
 import com.rizwansayyed.zene.utils.Utils.AppUrl.ARTIST_URL_DIFFERENTIATE
-import com.rizwansayyed.zene.utils.Utils.AppUrl.RADIO_URL_DIFFERENTIATE
 import com.rizwansayyed.zene.utils.Utils.AppUrl.urlUriType
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.loadOpenAppAds

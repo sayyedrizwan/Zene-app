@@ -75,6 +75,7 @@ class YoutubeAPIImpl @Inject constructor(
     private val remoteConfig: RemoteConfigInterface,
     private val ytJsonScrap: YoutubeScrapInterface
 ) : YoutubeAPIImplInterface {
+
     override suspend fun newReleaseMusic() = flow {
         val cache = responseCache(freshAddedSongs, MusicDataCache::class.java)
         if (cache != null) {
@@ -102,7 +103,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val jobs = pList.map { n ->
-                async {
+                async(Dispatchers.IO) {
                     ytJsonScrap.ytReleaseItems(n).first().forEach { name ->
                         val response = musicInfoSearch(name, ip, key?.music ?: "")
                         response?.let { m -> music.add(m) }
@@ -270,8 +271,6 @@ class YoutubeAPIImpl @Inject constructor(
             return@flow
         }
 
-        ///songslike
-
         val list = mutableListOf<MusicData>()
 
         val ip = userIpDetails.first()
@@ -279,7 +278,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val jobs = songIds.map { id ->
-                async {
+                async(Dispatchers.IO) {
                     if (id.trim().isEmpty()) return@async
 
                     val r =
@@ -558,7 +557,7 @@ class YoutubeAPIImpl @Inject constructor(
         val list = mutableListOf<MusicData>()
         withContext(Dispatchers.IO) {
             val jobs = artists.map {
-                async {
+                async(Dispatchers.IO) {
                     try {
                         val l = allSongsSearch(it).first()
                         list.addAll(l)
@@ -595,7 +594,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val jobs = names.map {
-                async {
+                async(Dispatchers.IO) {
                     if (it.trim().isEmpty()) return@async
 
                     val r = youtubeMusicAPI
@@ -766,7 +765,7 @@ class YoutubeAPIImpl @Inject constructor(
             val key = remoteConfig.allApiKeys()?.music ?: ""
 
             val jobs = sId.map { id ->
-                async {
+                async(Dispatchers.IO) {
                     if (id.trim().isEmpty()) return@async
                     var upNextID = ""
 
@@ -903,7 +902,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val jobs = artists.map { a ->
-                async {
+                async(Dispatchers.IO) {
                     if (a.trim().isEmpty()) return@async
 
                     try {
@@ -987,7 +986,7 @@ class YoutubeAPIImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val jobs = r.contents?.map { content ->
-                async {
+                async(Dispatchers.IO) {
                     content?.searchSuggestionsSectionRenderer?.contents?.forEach { item ->
                         if (item?.searchSuggestionRenderer?.icon?.iconType?.lowercase() == "search") {
                             val name =
