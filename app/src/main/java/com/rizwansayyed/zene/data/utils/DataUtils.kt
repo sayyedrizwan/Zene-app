@@ -649,7 +649,7 @@ object BingURL {
 
     fun bingNewsSearch(artists: String): String {
         val a = artists.trim().lowercase().replace(" ", "+")
-        return "https://www.bing.com/news/search?q=$a&FORM=HDRSC7"
+        return "https://www.bing.com/news/search?q=$a&FORM=PTFTNR"
     }
 
     fun bingAccountSearch(artists: String): String {

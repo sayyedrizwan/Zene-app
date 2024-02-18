@@ -31,8 +31,7 @@ class SocialMediaScrapsImpl @Inject constructor(
     private val bingScrap: BingScrapsInterface,
     private val youtubeScrap: YoutubeScrapsImpl,
     private val youtubeAPI: YoutubeAPIImplInterface,
-    private val remoteConfig: RemoteConfigInterface,
-    private val saveFromStories: SaveFromStoriesImplInterface
+    private val remoteConfig: RemoteConfigInterface
 ) : SocialMediaScrapsImplInterface {
     override suspend fun getAllArtistsData(a: PinnedArtistsEntity) =
         CoroutineScope(Dispatchers.IO).launch {
