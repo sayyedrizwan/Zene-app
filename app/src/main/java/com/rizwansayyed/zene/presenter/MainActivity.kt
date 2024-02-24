@@ -83,6 +83,7 @@ import com.rizwansayyed.zene.utils.Utils.AppUrl.ARTIST_URL_DIFFERENTIATE
 import com.rizwansayyed.zene.utils.Utils.AppUrl.urlUriType
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.loadOpenAppAds
+import com.rizwansayyed.zene.utils.Utils.printStack
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -252,9 +253,17 @@ class MainActivity : ComponentActivity() {
                 }
 
                 DisposableEffect(Unit) {
-                    connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
+                    try {
+                        connectivityManager.registerDefaultNetworkCallback(networkChangeListener)
+                    } catch (e: Exception) {
+                        e.printStack()
+                    }
                     onDispose {
-                        connectivityManager.unregisterNetworkCallback(networkChangeListener)
+                        try {
+                            connectivityManager.unregisterNetworkCallback(networkChangeListener)
+                        } catch (e: Exception) {
+                            e.printStack()
+                        }
                     }
                 }
 

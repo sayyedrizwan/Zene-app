@@ -31,7 +31,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -47,7 +46,6 @@ import com.rizwansayyed.zene.data.utils.CacheFiles.tempProfilePic
 import com.rizwansayyed.zene.domain.LoginUserData
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
-import com.rizwansayyed.zene.presenter.theme.Purple80
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
 import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
 import com.rizwansayyed.zene.presenter.ui.SearchEditTextView
@@ -71,7 +69,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import java.io.File
 
 @Composable
 fun MyMusicGroupMusicParty() {
@@ -260,7 +257,14 @@ fun HostPartyButtonCard(userInfo: LoginUserData?) {
 
     val linkCopyInfo = stringResource(R.string.disconnected_from_party)
 
-    val googleSignIn = GoogleSignInUtils(context)
+    var googleSignIn: GoogleSignInUtils? = null
+
+    val googleListener =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            googleSignIn?.startGoogleStartSignIn(it)
+        }
+
+    googleSignIn = GoogleSignInUtils(context, googleListener)
 
     var showPartyDialog by remember { mutableStateOf(false) }
     var isLoginLoading by remember { mutableStateOf(false) }

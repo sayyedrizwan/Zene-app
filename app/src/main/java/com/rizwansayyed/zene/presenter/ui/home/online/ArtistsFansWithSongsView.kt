@@ -75,7 +75,7 @@ fun ArtistsYouMayLikeWithSongs() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel, ) {
+fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel) {
     val pagerState = rememberPagerState(pageCount = { Int.MAX_VALUE })
     val w = (LocalConfiguration.current.screenWidthDp / 1.4).dp
     val l = ((LocalConfiguration.current.screenWidthDp - w.value) / 2).dp
@@ -124,7 +124,7 @@ fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel, ) {
 
     Spacer(Modifier.height(17.dp))
 
-    ArtistsFanItemsSongs(item[pagerState.currentPage % item.size].list)
+    if (item.isNotEmpty()) ArtistsFanItemsSongs(item[pagerState.currentPage % item.size].list)
 
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(Int.MAX_VALUE / 2)

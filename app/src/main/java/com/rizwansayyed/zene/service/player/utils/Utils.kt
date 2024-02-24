@@ -195,6 +195,7 @@ object Utils {
     fun openSettingsPermission(v: String?) {
         val intent = Intent().apply {
             action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
             data = Uri.fromParts("package", context.packageName, null)
         }
         context.startActivity(intent)

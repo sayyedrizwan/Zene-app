@@ -71,8 +71,6 @@ class PlaylistImportViewModel @Inject constructor(
         }.collectLatest {
             playlistTrackers.clear()
 
-            Log.d("TAG", "spotifyPlaylistInfo: $it")
-
             val list = it.toPlaylistInfo(PlaylistImportersType.SPOTIFY) ?: emptyList()
             usersPlaylists = DataResponse.Success(list)
 

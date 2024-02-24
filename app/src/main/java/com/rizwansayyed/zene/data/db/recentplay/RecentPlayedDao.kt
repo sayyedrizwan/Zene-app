@@ -18,7 +18,7 @@ interface RecentPlayedDao {
     @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT :offset, $OFFSET_LIMIT")
     suspend fun recentList(offset: Int): List<RecentPlayedEntity>
 
-    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY playTimes DESC LIMIT :offset")
+    @Query("SELECT * FROM $RECENT_PLAYED_DB ORDER BY timestamp DESC LIMIT :offset")
     suspend fun read(offset: Int): List<RecentPlayedEntity>
 
     @Query("SELECT * FROM $RECENT_PLAYED_DB WHERE timestamp >= :timestamp ORDER BY playTimes DESC LIMIT :offset")

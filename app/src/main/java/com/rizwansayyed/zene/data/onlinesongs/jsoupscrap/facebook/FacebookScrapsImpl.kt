@@ -27,7 +27,6 @@ class FacebookScrapsImpl @Inject constructor() : FacebookScrapsImplInterface {
         jsoup.html().split("\"end_cursor\":").forEach { endCursor ->
             val cursor = endCursor.substringBefore("}},").replace("\"", "")
             if (cursor.length > 100) cursorCode = cursor
-            Log.d("TAG", "pageCreds: $cursorCode")
         }
 
         emit("")

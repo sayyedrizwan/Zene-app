@@ -23,7 +23,6 @@ import javax.inject.Inject
 class JsoupScrapViewModel @Inject constructor(private val jsoupScrap: TopArtistsPlaylistsScrapsInterface) :
     ViewModel() {
 
-
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         topArtistsList()
     }

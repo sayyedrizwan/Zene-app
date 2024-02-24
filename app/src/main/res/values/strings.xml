@@ -297,4 +297,5 @@
     <string name="error_uploading_image">Error Uploading Image</string>
     <string name="done">Done</string>
     <string name="follow_us_on_instagram">Follow us on Instagram</string>
+    <string name="error_while_login_google">Error while login with google. Try again later</string>
 </resources>

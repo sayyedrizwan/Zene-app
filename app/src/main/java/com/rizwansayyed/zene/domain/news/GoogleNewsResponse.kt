@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.domain.news
 
+import android.util.Log
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
@@ -40,9 +41,13 @@ data class GoogleNewsResponse constructor(
             var source: Source? = null
         ) {
             fun convertToMilliseconds(): Long {
-                val dateFormat =
-                    SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault())
-                return dateFormat.parse(pubDate!!)!!.time
+                return try {
+                    val dateFormat =
+                        SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault())
+                    dateFormat.parse(pubDate!!)!!.time
+                }catch (e: Exception){
+                    0
+                }
             }
 
             fun timestamp(): String {
