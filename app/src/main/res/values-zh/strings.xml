@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--Chinese (Simplified)-->
 <resources>
     <string name="app_name">泽内</string>
@@ -273,7 +274,7 @@
     <string name="login_to_your_yt_music_account">登录您的 YouTube 音乐帐户以获取所有播放列表</string>
     <string name="login_to_your_apple_music_account">登录您的Apple Music帐户以获取所有播放列表</string>
     <string name="no_song_found_please_check_internet">没有找到歌曲。请检查您的互联网连接或稍后尝试。</string>
-    <string name="join_a_new_party">加入新的派对🎉</string>
+    <string name="join_a_new_party">加入新的派对 🎉</string>
     <string name="join_a_new_party_new_desc">你想参加聚会吗？加入派对后可以让音乐与群组保持同步。</string>
     <string name="join_a_new_party_old_desc">您想加入新队伍吗？您已经在团体队伍中，并且您将从当前队伍中删除。</string>
     <string name="join">加入</string>

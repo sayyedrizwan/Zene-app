@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--Spanish-->
 <resources>
     <string name="app_name">Zené</string>
@@ -90,7 +91,7 @@
     <string name="play_radio">Reproducir radio</string>
     <string name="playlists">Listas de reproducción</string>
     <string name="are_you_sure_want_to_save_it_as_a_playlist">¿Está seguro de que desea guardarlo como lista de reproducción?</string>
-    <string name="save_it_as_a_playlist_desc">Esta lista de reproducción se cargará en la sección de listas de reproducción de Mi música como una nueva lista de reproducción. ¡¡¡NOTA!!! Se pueden producir desajustes ocasionales de las canciones de la lista de reproducción porque Zene se basa en los nombres de las canciones y los artistas para la coincidencia, lo que podría ser una ligera diferencia en otras aplicaciones de canciones, lo que puede conducir a inexactitudes.</string>
+    <string name="save_it_as_a_playlist_desc">Esta lista de reproducción se cargará en la sección de listas de reproducción de Mi música como una nueva lista de reproducción. ¡¡¡NOTA!!! Se pueden producir desajustes ocasionales de las canciones de la lista de reproducción porque Zené se basa en los nombres de las canciones y los artistas para la coincidencia, lo que podría ser una ligera diferencia en otras aplicaciones de canciones, lo que puede conducir a inexactitudes.</string>
     <string name="error_loading_playlists">Error al cargar la lista de reproducción, podría ser un inicio de sesión caducado o que Internet no funcione. Vuelve a intentarlo más tarde.</string>
     <string name="tracks">Canciones</string>
     <string name="new_playlist">Nueva lista de reproducción</string>
@@ -110,8 +111,8 @@
     <string name="set_as_ringtone">Establecer como tono de llamada</string>
     <string name="error_identifying_the_song">Error al identificar la canción. Vuelve a intentarlo más tarde.</string>
     <string name="set_ringtone">Establecer tono</string>
-    <string name="set_ringtone_desc">Cree su tono de llamada ideal sin esfuerzo con la aplicación Zene Music. Puede elegir entre 30 segundos y 1 minuto de la canción. Para establecer tu parte favorita de la música como tono de llamada de tu teléfono, debes elegir la parte del tono de llamada gris resaltada que más te guste.</string>
-    <string name="set_as_ringtone_desc">Crea tu tono de llamada ideal sin esfuerzo con la aplicación Zene Music. Puedes elegir entre 30 segundos y 1 minuto de la canción. Para establecer tu parte favorita de la música como tono de llamada de tu teléfono, debes elegir la parte del tono de llamada gris resaltada que más te guste.</string>
+    <string name="set_ringtone_desc">Cree su tono de llamada ideal sin esfuerzo con la aplicación Zené Music. Puede elegir entre 30 segundos y 1 minuto de la canción. Para establecer tu parte favorita de la música como tono de llamada de tu teléfono, debes elegir la parte del tono de llamada gris resaltada que más te guste.</string>
+    <string name="set_as_ringtone_desc">Crea tu tono de llamada ideal sin esfuerzo con la aplicación Zené Music. Puedes elegir entre 30 segundos y 1 minuto de la canción. Para establecer tu parte favorita de la música como tono de llamada de tu teléfono, debes elegir la parte del tono de llamada gris resaltada que más te guste.</string>
     <string name="downloading_please_wait">Descargando… Por favor, espera…</string>
     <string name="offline_downloaded">Descargado sin conexión</string>
     <string name="most_listened_songs_this_week">Las canciones más escuchadas de esta semana</string>
@@ -139,12 +140,12 @@
     <string name="remove_current_song">Eliminar canción actual</string>
     <string name="confirm">Confirmar</string>
     <string name="search_the_song_you_want_to_play">Busca la canción que deseas reproducir</string>
-    <string name="song_is_already_set_as_alarm">La canción '%s' ya está configurada como alarma. Eliminar la canción actual reproducirá la última canción que escuchaste.</string>
+    <string name="song_is_already_set_as_alarm">La canción \'%s\' ya está configurada como alarma. Eliminar la canción actual reproducirá la última canción que escuchaste.</string>
     <string name="no_alarm_is_set_alarm">No hay ninguna canción configurada como alarma. Se reproducirá la última canción que escuchaste.</string>
     <string name="mark_as_favourite">Marcar como favorito</string>
     <string name="rm_as_favourite">Eliminar de favoritos</string>
     <string name="cancel">Cancelar</string>
-    <string name="zene_web">Zene Web</string>
+    <string name="zene_web">Zené Web</string>
     <string name="suggested_image">Imagen sugerida</string>
     <string name="rm_radio_from_fav">Eliminar radio de favoritos</string>
     <string name="remove">Eliminar</string>
@@ -168,7 +169,7 @@
     <string name="twitter">Twitter</string>
     <string name="pinned_by_users">fijado por %s usuarios</string>
     <string name="book">Libro</string>
-    <string name="zene_music_player">Zene: Reproductor de música</string>
+    <string name="zene_music_player">Zené: Reproductor de música</string>
     <string name="offline_mode">Modo sin conexión</string>
     <string name="show_local_songs">Mostrar canciones locales</string>
     <string name="suggested_songs">Canciones sugeridas</string>
@@ -222,15 +223,15 @@
     <string name="load_more">Cargar más</string>
     <string name="no_song_in_your_history">No hay canciones en tu historial</string>
     <string name="no_offline_downloaded_song_available">No hay canciones descargadas sin conexión disponibles</string>
-    <string name="sign_in_on_zene_web">Iniciar sesión en Zene Web</string>
-    <string name="scan_qr_at_enjoy_sign_in">Puede disfrutar de la música gratuita de Zene en la Web, IOS, Windows, iPad, etc. Simplemente visite %s y disfrute de la música y escanee el código QR para sincronizar sus sugerencias, lista de reproducción, historial y sugerencias de canciones en el sitio web de Zene.</string>
+    <string name="sign_in_on_zene_web">Iniciar sesión en Zené Web</string>
+    <string name="scan_qr_at_enjoy_sign_in">Puede disfrutar de la música gratuita de Zené en la Web, IOS, Windows, iPad, etc. Simplemente visite %s y disfrute de la música y escanee el código QR para sincronizar sus sugerencias, lista de reproducción, historial y sugerencias de canciones en el sitio web de Zené.</string>
     <string name="menu">Menú</string>
     <string name="set_whole_image_as_home_screen_wallpaper">Establecer toda la imagen como\nfondo de pantalla de inicio</string>
     <string name="set_edited_image_as_home_screen_wallpaper">Establecer la imagen editada como\nfondo de pantalla de inicio</string>
     <string name="set_whole_image_as_lock_screen_wallpaper">Establecer toda la imagen como\nfondo de pantalla de bloqueo</string>
     <string name="set_edited_image_as_lock_screen_wallpaper">Establecer la imagen editada como\nfondo de pantalla de bloqueo</string>
     <string name="add_more_images">Agregar más imágenes</string>
-    <string name="please_wait_setting_wallpaper">Por favor espera. Estableciendo fondo de pantalla...</string>
+    <string name="please_wait_setting_wallpaper">Por favor espera. Estableciendo fondo de pantalla…</string>
     <string name="wallpaper_set_successfully">Fondo de pantalla establecido exitosamente</string>
     <string name="app_crashed">La aplicación se bloqueó. Vuelve a intentarlo o borra el caché de la aplicación.</string>
     <string name="all_songs_album_download_desc">Todas las canciones de este álbum se descargarán y estarán disponibles sin conexión. Si las canciones ya están descargadas, no se volverán a descargar.</string>
@@ -240,7 +241,7 @@
     <string name="no_update_available_right_now">No hay actualización disponible. En este momento…</string>
     <string name="no_ringtone_found_try_again_later">No se encontró ningún tono de llamada. Inténtalo de nuevo más tarde.</string>
     <string name="playing_song_is_paused_for_ringtone">La reproducción de la canción está actualmente en pausa. Para configurar el tono de llamada.</string>
-    <string name="song_downloading_please_wait_sometimes_it_takes_little_while">La canción se está descargando. Espera un poco... A veces tarda un poco, según tu conexión a internet.</string>
+    <string name="song_downloading_please_wait_sometimes_it_takes_little_while">La canción se está descargando. Espera un poco… A veces tarda un poco, según tu conexión a internet.</string>
     <string name="need_permission_to_set_the_ringtone">Necesita permiso para configurar su tono de llamada.</string>
     <string name="need_storage_permission_to_set_the_ringtone">Necesita permiso de almacenamiento para configurar su tono de llamada.</string>
     <string name="set">Establecer</string>
@@ -255,13 +256,13 @@
     <string name="sign_in_for_song_group_party">Primero necesitas iniciar sesión para comenzar la fiesta grupal de canciones y convertirte en anfitrión.</string>
     <string name="continue_with_google">Continuar con Google</string>
     <string name="song_group_party_desc">Compartir el enlace de la fiesta puede permitir que cualquiera se una a la fiesta y pueda realizar cambios en las canciones.</string>
-    <string name="start_new_party">Comienza una nueva fiesta </string>
+    <string name="start_new_party">Comienza una nueva fiesta 🎉</string>
     <string name="disconnected_from_party">Si te desconectas de la fiesta, puedes volver a unirte usando el mismo enlace.</string>
     <string name="start">Iniciar</string>
     <string name="is_in_the_party">está en la fiesta</string>
-    <string name="no_one_is_at_the_party">No hay nadie en la fiesta </string>
+    <string name="no_one_is_at_the_party">No hay nadie en la fiesta 🕺</string>
     <string name="leave_party">Salir de la fiesta</string>
-    <string name="already_in_a_party">Ya estás en una fiesta </string>
+    <string name="already_in_a_party">Ya estás en una fiesta 🥳🍹</string>
     <string name="stand_by_mode_while_charging">Modo de espera mientras se carga</string>
     <string name="need_permission_to_show_events_from_calender">Necesita permiso para mostrar eventos del calendario</string>
     <string name="no_events_today">No hay eventos hoy</string>
@@ -273,7 +274,7 @@
     <string name="login_to_your_yt_music_account">Inicia sesión en tu cuenta de Youtube Music para obtener todas las listas de reproducción.</string>
     <string name="login_to_your_apple_music_account">Inicia sesión en tu cuenta de Apple Music para obtener todas las listas de reproducción.</string>
     <string name="no_song_found_please_check_internet">No se encontró ninguna canción. Revisa tu conexión a internet o inténtalo de nuevo más tarde.</string>
-    <string name="join_a_new_party">Unirse a una nueva fiesta </string>
+    <string name="join_a_new_party">Unirse a una nueva fiesta 🎉</string>
     <string name="join_a_new_party_new_desc">¿Quieres unirte a una fiesta? Una vez que te unas a la fiesta, podrás mantener la música sincronizada con el grupo.</string>
     <string name="join_a_new_party_old_desc">¿Quieres unirte a una nueva fiesta? Ya estás en una fiesta grupal y serás eliminado de la fiesta actual.</string>
     <string name="join">Unirse</string>
