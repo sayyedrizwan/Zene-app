@@ -298,4 +298,5 @@
     <string name="error_uploading_image">上传图片时出错</string>
     <string name="done">完毕</string>
     <string name="follow_us_on_instagram">在 Instagram 上关注我们</string>
+    <string name="error_while_login_google">使用 google 登录时出错。 稍后再试</string>
 </resources>

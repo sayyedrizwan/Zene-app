@@ -143,7 +143,7 @@ class MainActivity : ComponentActivity() {
     private val homeApiViewModel: HomeApiViewModel by viewModels()
     private val jsoupScrapViewModel: JsoupScrapViewModel by viewModels()
 
-    @OptIn(ExperimentalComposeUiApi::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)

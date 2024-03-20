@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -75,7 +76,12 @@ class PlayerServiceNotification @Inject constructor(
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setContentIntent(openMusicPlayerIntent())
                 .build()
-            playerService.startForeground(PLAYER_NOTIFICATION_ID, notification)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) playerService.startForeground(
+                PLAYER_NOTIFICATION_ID,
+                notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            )
+            else
+                playerService.startForeground(PLAYER_NOTIFICATION_ID, notification)
         }
     }
 
