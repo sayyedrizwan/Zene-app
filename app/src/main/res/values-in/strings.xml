@@ -21,7 +21,7 @@
     <string name="trending_artists_in_country">Artis Tren di %s</string>
     <string name="zene_mostly_most_played">Temukan Lagu yang Sedang Banyak Diputar di Zene</string>
     <string name="listeners">Pendengar</string>
-    <string name="enable_lock_screen_to_show">Aktifkan juga 'Tampilkan di Layar Kunci' dan 'Tampilkan jendela pop-up saat berjalan di latar belakang' untuk menampilkan tampilan musik.</string>
+    <string name="enable_lock_screen_to_show">Aktifkan juga \'Tampilkan di Layar Kunci\' dan \'Tampilkan jendela pop-up saat berjalan di latar belakang\' untuk menampilkan tampilan musik.</string>
     <string name="lock_screen_permission_to_show">Aktifkan izin untuk menampilkan di layar kunci untuk menampilkan tampilan musik.</string>
     <string name="stand_by_permission_to_show">Aktifkan izin untuk menampilkan mode siaga di layar kunci saat mengisi daya.</string>
     <string name="songs_you_may_like_to_listen">Lagu yang mungkin Anda suka dengarkan</string>
@@ -139,7 +139,7 @@
     <string name="remove_current_song">Hapus lagu saat ini</string>
     <string name="confirm">Konfirmasi</string>
     <string name="search_the_song_you_want_to_play">Cari lagu yang ingin Anda putar</string>
-    <string name="song_is_already_set_as_alarm">Lagu '%s' sudah ditetapkan sebagai alarm. Menghapus lagu saat ini akan memutar lagu terakhir yang Anda dengarkan.</string>
+    <string name="song_is_already_set_as_alarm">Lagu \'%s\' sudah ditetapkan sebagai alarm. Menghapus lagu saat ini akan memutar lagu terakhir yang Anda dengarkan.</string>
     <string name="no_alarm_is_set_alarm">Tidak ada lagu yang ditetapkan sebagai alarm. Lagu terakhir yang Anda dengarkan akan diputar.</string>
     <string name="mark_as_favourite">Tandai sebagai favorit</string>
     <string name="rm_as_favourite">Hapus sebagai favorit</string>
