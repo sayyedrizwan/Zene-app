@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Russian-->
+<?xml version="1.0" encoding="utf-8"?><!-- Russian-->
 <resources>
     <string name="app_name">Зене</string>
     <string name="zene_ads">Зене Объявления</string>
@@ -16,11 +15,11 @@
     <string name="upcoming_events">Предстоящие события</string>
     <string name="top_songs_in_c">Топ-песни в %s</string>
     <string name="fresh_added_songs">Недавно добавленные песни</string>
-    <string name="zene_playlist">Плейлист Zene</string>
+    <string name="zene_playlist">Плейлист Зене</string>
     <string name="top_songs">Топ-песни</string>
     <string name="mood">Настроение</string>
     <string name="trending_artists_in_country">Популярные исполнители в %s</string>
-    <string name="zene_mostly_most_played">Откройте для себя самые популярные песни на Zene</string>
+    <string name="zene_mostly_most_played">Откройте для себя самые популярные песни на Зене</string>
     <string name="listeners">Слушателей</string>
     <string name="enable_lock_screen_to_show">Для отображения музыкального виджета также включите \'Показывать на экране блокировки\' и \'Показывать всплывающее окно при работе в фоновом режиме\'.</string>
     <string name="lock_screen_permission_to_show">Включите разрешение на отображение на экране блокировки для отображения музыкального виджета.</string>
@@ -91,7 +90,7 @@
     <string name="play_radio">Воспроизвести радио</string>
     <string name="playlists">Плейлисты</string>
     <string name="are_you_sure_want_to_save_it_as_a_playlist">Вы уверены, что хотите сохранить его как плейлист?</string>
-    <string name="save_it_as_a_playlist_desc">Этот плейлист будет загружен в раздел плейлистов "Моя музыка" как новый плейлист. Обратите внимание! Иногда могут возникать несоответствия песен в плейлисте, поскольку Zene полагается на названия песен и исполнителей для сопоставления, которые могут немного отличаться в других музыкальных приложениях, что может привести к неточностям.</string>
+    <string name="save_it_as_a_playlist_desc">Этот плейлист будет загружен в раздел плейлистов "Моя музыка" как новый плейлист. Обратите внимание! Иногда могут возникать несоответствия песен в плейлисте, поскольку Зене полагается на названия песен и исполнителей для сопоставления, которые могут немного отличаться в других музыкальных приложениях, что может привести к неточностям.</string>
     <string name="error_loading_playlists">Ошибка загрузки плейлиста. Срок действия логина мог истечь или интернет может не работать. Пожалуйста, попробуйте позже.</string>
     <string name="tracks">Треки</string>
     <string name="new_playlist">Новый плейлист</string>
@@ -112,7 +111,7 @@
     <string name="error_identifying_the_song">Ошибка определения песни. Попробуйте позже.</string>
     <string name="set_ringtone">Установить рингтон</string>
     <string name="set_ringtone_desc">Вы уверены, что хотите установить выбранную песню в качестве мелодии звонка?</string>
-    <string name="set_as_ringtone_desc">Легко создайте идеальный рингтон с помощью музыкального приложения Zene. Вы можете выбрать фрагмент песни длительностью от 30 секунд до 1 минуты. Чтобы установить понравившийся фрагмент музыки в качестве мелодии звонка телефона, вам нужно выбрать понравившийся фрагмент мелодии звонка, выделив выделенную серую область.</string>
+    <string name="set_as_ringtone_desc">Легко создайте идеальный рингтон с помощью музыкального приложения Зене. Вы можете выбрать фрагмент песни длительностью от 30 секунд до 1 минуты. Чтобы установить понравившийся фрагмент музыки в качестве мелодии звонка телефона, вам нужно выбрать понравившийся фрагмент мелодии звонка, выделив выделенную серую область.</string>
     <string name="downloading_please_wait">Загрузка… Пожалуйста, подождите…</string>
     <string name="offline_downloaded">Загружено офлайн</string>
     <string name="most_listened_songs_this_week">Самые прослушиваемые песни на этой неделе</string>
@@ -145,7 +144,7 @@
     <string name="mark_as_favourite">Отметить как избранное</string>
     <string name="rm_as_favourite">Убрать из избранного</string>
     <string name="cancel">Отмена</string>
-    <string name="zene_web">Zene Web</string>
+    <string name="zene_web">Зене Web</string>
     <string name="suggested_image">Предлагаемое изображение</string>
     <string name="rm_radio_from_fav">Удалить радио из избранного</string>
     <string name="remove">Удалить</string>
@@ -169,7 +168,7 @@
     <string name="twitter">Twitter</string>
     <string name="pinned_by_users">закреплено %s пользователями</string>
     <string name="book">Книга</string>
-    <string name="zene_music_player">Zene: Музыкальный плеер</string>
+    <string name="zene_music_player">Зене: Музыкальный плеер</string>
     <string name="offline_mode">Офлайн-режим</string>
     <string name="show_local_songs">Показать локальные песни</string>
     <string name="suggested_songs">Рекомендуемые песни</string>
@@ -223,15 +222,15 @@
     <string name="load_more">Загрузить еще</string>
     <string name="no_song_in_your_history">В вашей истории нет песен</string>
     <string name="no_offline_downloaded_song_available">Нет доступных загруженных офлайн-песен</string>
-    <string name="sign_in_on_zene_web">Войти на Zene Web</string>
-    <string name="scan_qr_at_enjoy_sign_in">Вы можете бесплатно пользоваться музыкой Zene на Web, IOS, Windows, iPad и т. д. Просто посетите %s, наслаждайтесь музыкой и отсканируйте QR-код, чтобы синхронизировать свои рекомендации, плейлисты, историю и предложенные песни на веб-сайте Zene.</string>
+    <string name="sign_in_on_zene_web">Войти на Зене Web</string>
+    <string name="scan_qr_at_enjoy_sign_in">Вы можете бесплатно пользоваться музыкой Зене на Web, IOS, Windows, iPad и т. д. Просто посетите %s, наслаждайтесь музыкой и отсканируйте QR-код, чтобы синхронизировать свои рекомендации, плейлисты, историю и предложенные песни на веб-сайте Zene.</string>
     <string name="menu">Меню</string>
     <string name="set_whole_image_as_home_screen_wallpaper">Установить все изображение в качестве обоев главного экрана</string>
     <string name="set_edited_image_as_home_screen_wallpaper">Установить отредактированное изображение в качестве обоев главного экрана</string>
     <string name="set_whole_image_as_lock_screen_wallpaper">Установить все изображение в качестве обоев экрана блокировки</string>
     <string name="set_edited_image_as_lock_screen_wallpaper">Установить отредактированное изображение в качестве обоев экрана блокировки</string>
     <string name="add_more_images">Добавить еще изображений</string>
-    <string name="please_wait_setting_wallpaper">Пожалуйста, подождите. Установка обоев...</string>
+    <string name="please_wait_setting_wallpaper">Пожалуйста, подождите. Установка обоев…</string>
     <string name="wallpaper_set_successfully">Обой установлены успешно</string>
     <string name="app_crashed">Приложение аварийно завершено. Пожалуйста, попробуйте еще раз или очистите кеш приложения.</string>
     <string name="all_songs_album_download_desc">Все песни из этого альбома будут загружены и будут доступны в автономном режиме. Если песни уже загружены, они не будут загружаться повторно.</string>
