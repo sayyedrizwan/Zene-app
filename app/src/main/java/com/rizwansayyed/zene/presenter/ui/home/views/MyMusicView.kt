@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistSpotify
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.ImportPlaylistYoutubeMusic
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.LinkedToBrowser
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicAlbumList
+import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicDownloadView
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicGroupMusicParty
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicOfflineDownload
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.MyMusicPlaylistsList
@@ -136,6 +137,10 @@ fun MyMusicView() {
             FollowUs()
         }
 
+        item(key = 17, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            MyMusicDownloadView(homeNavViewModel)
+        }
+
         item(key = 100, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(200.dp))
         }
@@ -160,5 +165,6 @@ fun MyMusicView() {
     LaunchedEffect(Unit) {
         myMusic.init()
         registerEvent(FirebaseEvents.FirebaseEvent.OPEN_MY_MUSIC)
+        homeNavViewModel.getAppDownloadResponse()
     }
 }

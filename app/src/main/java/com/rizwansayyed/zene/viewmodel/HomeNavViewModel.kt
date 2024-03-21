@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.domain.MoodData
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
+import com.rizwansayyed.zene.domain.remoteconfig.RemoteConfigPresentAppDownloadResponse
 import com.rizwansayyed.zene.utils.Utils.isInternetConnected
 import com.rizwansayyed.zene.utils.Utils.littleVibrate
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +24,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfigInterface) :
@@ -68,6 +68,8 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
     var radioShareDialog = mutableStateOf<String?>(null)
         private set
 
+    var downloadsAppLists = mutableStateOf<RemoteConfigPresentAppDownloadResponse?>(null)
+        private set
 
 
     fun setSongDetailsDialog(v: MusicData?) {
@@ -134,5 +136,9 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 
     fun resetConfig() = viewModelScope.launch(Dispatchers.IO) {
         remoteConfig.config(true)
+    }
+
+    fun getAppDownloadResponse() = viewModelScope.launch(Dispatchers.IO) {
+        downloadsAppLists.value = remoteConfig.downloadsAppLists()
     }
 }
