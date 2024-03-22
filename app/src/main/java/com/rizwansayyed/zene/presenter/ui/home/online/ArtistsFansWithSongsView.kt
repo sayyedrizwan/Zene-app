@@ -76,14 +76,14 @@ fun ArtistsYouMayLikeWithSongs() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel) {
-    val pagerState = rememberPagerState(pageCount = { Int.MAX_VALUE })
+    val pagerState = rememberPagerState(pageCount = { item.size })
     val w = (LocalConfiguration.current.screenWidthDp / 1.4).dp
     val l = ((LocalConfiguration.current.screenWidthDp - w.value) / 2).dp
 
     HorizontalPager(
         pagerState, contentPadding = PaddingValues(horizontal = l)
     ) { page ->
-        val i = item[page % item.size]
+        val i = item[page]
         val pageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
@@ -127,7 +127,7 @@ fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel) {
     if (item.isNotEmpty()) ArtistsFanItemsSongs(item[pagerState.currentPage % item.size].list)
 
     LaunchedEffect(Unit) {
-        pagerState.scrollToPage(Int.MAX_VALUE / 2)
+        pagerState.scrollToPage(item.size / 2)
     }
 }
 

@@ -156,17 +156,14 @@ class RoomDbViewModel @Inject constructor(
     private fun songsSuggestions(list: List<RecentPlayedEntity>) =
         viewModelScope.launch(Dispatchers.IO) {
             youtubeAPIImpl.songsSuggestionsForUsers(list.map { i -> i.songId }).onStart {
-                Log.d("TAG", "songsSuggestions: data ai")
                 artistsSuggestionForUsers = DataResponse.Loading
                 songsSuggestionForUsersTop = DataResponse.Loading
                 songsSuggestionForUsers = DataResponse.Loading
             }.catch { e ->
-                Log.d("TAG", "songsSuggestions: data error ${e.message}")
                 artistsSuggestionForUsers = DataResponse.Error(e)
                 songsSuggestionForUsers = DataResponse.Error(e)
                 songsSuggestionForUsersTop = DataResponse.Error(e)
             }.collectLatest { res ->
-                Log.d("TAG", "songsSuggestions: data $res")
                 artistsSuggestionForUsers = DataResponse.Success(res.artists)
 
                 if (res.related.size <= 15 || (res.next.size + res.related.size) <= 15) {

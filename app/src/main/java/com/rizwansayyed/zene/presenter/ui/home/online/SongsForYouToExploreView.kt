@@ -42,7 +42,7 @@ import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
 fun SongsForYouToExplore() {
     val roomDbViewModel: RoomDbViewModel = hiltViewModel()
 
-    when (val v = roomDbViewModel.songsSuggestionForUsers) {
+    when (roomDbViewModel.songsSuggestionForUsers) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {}
         DataResponse.Loading -> {
