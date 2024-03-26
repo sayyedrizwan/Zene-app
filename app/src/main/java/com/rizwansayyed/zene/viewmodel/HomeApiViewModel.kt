@@ -12,7 +12,8 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.favouriteRadioList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.searchHistoryList
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
-import com.rizwansayyed.zene.data.onlinesongs.fileuploader.implementation.FileUploaderImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.billboard.BillboardImplInterface
+import com.rizwansayyed.zene.data.onlinesongs.fileuploader.FileUploaderImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.ip.implementation.IpJsonImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation.LastFMImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.radio.implementation.OnlineRadioImplInterface
@@ -48,6 +49,7 @@ class HomeApiViewModel @Inject constructor(
     private val fileUploader: FileUploaderImplInterface,
     private val ip: IpJsonImplInterface,
     private val spotifyAPI: SpotifyAPIImplInterface,
+    private val billboardImpl: BillboardImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val lastFMAPI: LastFMImplInterface,
     private val calenderEvents: CalenderEventsInterface,
@@ -185,9 +187,10 @@ class HomeApiViewModel @Inject constructor(
 
 
     private fun globalTrendingSongs() = viewModelScope.launch(Dispatchers.IO) {
-        spotifyAPI.globalTrendingSongs().onStart {
+        billboardImpl.topSongs().onStart {
             topGlobalTrendingSongs = DataResponse.Loading
         }.catch {
+
             topGlobalTrendingSongs = DataResponse.Error(it)
         }.collectLatest {
             topGlobalTrendingSongs = DataResponse.Success(it.chunked(3))

@@ -762,118 +762,123 @@ class YoutubeAPIImpl @Inject constructor(
 
         val ip = userIpDetails.first()
         val key = remoteConfig.allApiKeys()?.music ?: ""
-        for (id in sId) {
-            try {
-                if (id.trim().isEmpty()) return@flow
-                var upNextID = ""
 
-                val upNext = youtubeMusicAPI
-                    .youtubeNextSearchResponse(ytMusicUpNextJsonBody(ip, id), key)
+        withContext(Dispatchers.IO) {
+            sId.map { id ->
+                async {
+                    try {
+                        if (id.trim().isEmpty()) return@async
+                        var upNextID = ""
 
-                upNext.contents?.singleColumnMusicWatchNextResultsRenderer?.tabbedRenderer?.watchNextTabbedResultsRenderer?.tabs?.forEach { tab ->
-                    if (tab?.tabRenderer?.endpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_TRACK_RELATED")
-                        upNextID = tab.tabRenderer.endpoint.browseEndpoint.browseId ?: ""
-                }
+                        val upNext = youtubeMusicAPI
+                            .youtubeNextSearchResponse(ytMusicUpNextJsonBody(ip, id), key)
 
-                upNext.contents?.singleColumnMusicWatchNextResultsRenderer?.tabbedRenderer?.watchNextTabbedResultsRenderer?.tabs?.forEach { tab ->
-                    tab?.tabRenderer?.content?.musicQueueRenderer?.content?.playlistPanelRenderer?.contents?.forEach { content ->
-                        val name =
-                            content?.playlistPanelVideoRenderer?.title?.runs?.first()?.text
-                        val artists = mutableListOf<String>()
-
-                        content?.playlistPanelVideoRenderer?.longBylineText?.runs?.forEach { a ->
-                            if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
-                                if (!artists.any {
-                                        it.trim().lowercase() == a.text?.trim()?.lowercase()
-                                    })
-                                    a.text?.let { artists.add(it) }
+                        upNext.contents?.singleColumnMusicWatchNextResultsRenderer?.tabbedRenderer?.watchNextTabbedResultsRenderer?.tabs?.forEach { tab ->
+                            if (tab?.tabRenderer?.endpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_TRACK_RELATED")
+                                upNextID = tab.tabRenderer.endpoint.browseEndpoint.browseId ?: ""
                         }
-                        val thumbnail = content?.playlistPanelVideoRenderer?.thumbnailURL()
-                        val songId = content?.playlistPanelVideoRenderer?.videoId ?: ""
 
-                        val music =
-                            if (artists.isEmpty()) songDetail(songId).first() else MusicData(
-                                thumbnail,
-                                name,
-                                artistsListToString(artists),
-                                songId,
-                                MusicType.MUSIC
-                            )
-                        if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
-                            upNextList.add(music)
-                    }
-                }
-
-                val related = youtubeMusicAPI
-                    .youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, upNextID), key)
-
-                related.contents?.sectionListRenderer?.contents?.forEach { c ->
-                    if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.first()?.text?.lowercase() == "you might also like") {
-
-                        c.musicCarouselShelfRenderer.contents?.forEach { content ->
-                            content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { item ->
-                                var name: String? = ""
+                        upNext.contents?.singleColumnMusicWatchNextResultsRenderer?.tabbedRenderer?.watchNextTabbedResultsRenderer?.tabs?.forEach { tab ->
+                            tab?.tabRenderer?.content?.musicQueueRenderer?.content?.playlistPanelRenderer?.contents?.forEach { content ->
+                                val name =
+                                    content?.playlistPanelVideoRenderer?.title?.runs?.first()?.text
                                 val artists = mutableListOf<String>()
 
-
-                                item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
-                                    if (n?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV")
-                                        name = n.text
-                                }
-
-                                item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
-                                    if (n?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
+                                content?.playlistPanelVideoRenderer?.longBylineText?.runs?.forEach { a ->
+                                    if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
                                         if (!artists.any {
-                                                it.trim().lowercase() == n.text?.trim()
-                                                    ?.lowercase()
+                                                it.trim().lowercase() == a.text?.trim()?.lowercase()
                                             })
-                                            n.text?.let { artists.add(it) }
+                                            a.text?.let { artists.add(it) }
                                 }
+                                val thumbnail = content?.playlistPanelVideoRenderer?.thumbnailURL()
+                                val songId = content?.playlistPanelVideoRenderer?.videoId ?: ""
 
-                                val thumbnail =
-                                    content.musicResponsiveListItemRenderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
-                                val songId =
-                                    content.musicResponsiveListItemRenderer.playlistItemData?.videoId
-                                        ?: ""
+                                val music =
+                                    if (artists.isEmpty()) songDetail(songId).first() else MusicData(
+                                        thumbnail,
+                                        name,
+                                        artistsListToString(artists),
+                                        songId,
+                                        MusicType.MUSIC
+                                    )
+                                if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
+                                    upNextList.add(music)
+                            }
+                        }
+
+                        val related = youtubeMusicAPI
+                            .youtubeBrowseResponse(ytMusicBrowseSuggestJsonBody(ip, upNextID), key)
+
+                        related.contents?.sectionListRenderer?.contents?.forEach { c ->
+                            if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.first()?.text?.lowercase() == "you might also like") {
+
+                                c.musicCarouselShelfRenderer.contents?.forEach { content ->
+                                    content?.musicResponsiveListItemRenderer?.flexColumns?.forEach { item ->
+                                        var name: String? = ""
+                                        val artists = mutableListOf<String>()
 
 
-                                name?.let { n ->
-                                    val music =
-                                        if (artists.isEmpty()) songDetail(songId).first() else MusicData(
-                                            thumbnail, n, artistsListToString(artists),
-                                            songId, MusicType.MUSIC
-                                        )
-                                    if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
-                                        relatedList.add(music)
+                                        item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
+                                            if (n?.navigationEndpoint?.watchEndpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType == "MUSIC_VIDEO_TYPE_ATV")
+                                                name = n.text
+                                        }
+
+                                        item?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.forEach { n ->
+                                            if (n?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST")
+                                                if (!artists.any {
+                                                        it.trim().lowercase() == n.text?.trim()
+                                                            ?.lowercase()
+                                                    })
+                                                    n.text?.let { artists.add(it) }
+                                        }
+
+                                        val thumbnail =
+                                            content.musicResponsiveListItemRenderer.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+                                        val songId =
+                                            content.musicResponsiveListItemRenderer.playlistItemData?.videoId
+                                                ?: ""
+
+
+                                        name?.let { n ->
+                                            val music =
+                                                if (artists.isEmpty()) songDetail(songId).first() else MusicData(
+                                                    thumbnail, n, artistsListToString(artists),
+                                                    songId, MusicType.MUSIC
+                                                )
+                                            if (!upNextList.any { it.songId == songId } && !relatedList.any { it.songId == songId })
+                                                relatedList.add(music)
+                                        }
+                                    }
+                                }
+                            } else if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.first()?.text?.lowercase() == "similar artists") {
+                                c.musicCarouselShelfRenderer.contents?.forEach { content ->
+                                    val thumbnail =
+                                        content?.musicTwoRowItemRenderer?.thumbnailRenderer?.musicThumbnailRenderer?.thumbnailURL()
+                                    var name: String? = ""
+                                    var ids: String? = ""
+                                    content?.musicTwoRowItemRenderer?.title?.runs?.forEach { a ->
+                                        if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
+                                            name = a.text
+                                            ids = a.navigationEndpoint.browseEndpoint.browseId
+                                        }
+                                    }
+
+                                    val music = MusicData(
+                                        thumbnail, name, name, ids, MusicType.ARTISTS
+                                    )
+                                    if (!artist.any { it.name?.lowercase() == name?.lowercase() })
+                                        artist.add(music)
                                 }
                             }
                         }
-                    } else if (c?.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.first()?.text?.lowercase() == "similar artists") {
-                        c.musicCarouselShelfRenderer.contents?.forEach { content ->
-                            val thumbnail =
-                                content?.musicTwoRowItemRenderer?.thumbnailRenderer?.musicThumbnailRenderer?.thumbnailURL()
-                            var name: String? = ""
-                            var ids: String? = ""
-                            content?.musicTwoRowItemRenderer?.title?.runs?.forEach { a ->
-                                if (a?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_ARTIST") {
-                                    name = a.text
-                                    ids = a.navigationEndpoint.browseEndpoint.browseId
-                                }
-                            }
-
-                            val music = MusicData(
-                                thumbnail, name, name, ids, MusicType.ARTISTS
-                            )
-                            if (!artist.any { it.name?.lowercase() == name?.lowercase() })
-                                artist.add(music)
-                        }
+                    } catch (e: Exception) {
+                        e.message
                     }
                 }
-            } catch (e: Exception) {
-                e.message
+            }.map {
+                it.await()
             }
-            val d = SongsSuggestionsData(sId, upNextList, relatedList, artist)
-            emit(d)
         }
 
         val d = SongsSuggestionsData(sId, upNextList, relatedList, artist)

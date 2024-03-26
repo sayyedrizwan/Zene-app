@@ -624,7 +624,6 @@ object RentAdvisorSubtitles {
         return "${RENT_ADVISER_BASE_URL}subtitles4songs.aspx?q=$q"
     }
 }
-
 object GeniusURL {
     const val GENIUS_BASE_URL = "https://genius.com"
 
@@ -661,6 +660,7 @@ object BingURL {
 
 object ScrapURL {
     const val TOP_ARTISTS = "https://www.billboard.com/charts/artist-100/"
+    const val TOP_SONGS = "https://www.billboard.com/charts/hot-100/"
 
 
     fun songKickArtistsSearch(artists: String): String {
