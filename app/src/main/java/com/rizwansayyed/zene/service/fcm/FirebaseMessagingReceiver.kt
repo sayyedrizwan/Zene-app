@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.service.fcm
 
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.rizwansayyed.zene.utils.FirebaseEvents
@@ -16,7 +17,6 @@ class FirebaseMessagingReceiver : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-
         message.notification?.let {
             it.title ?: return
 
