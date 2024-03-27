@@ -15,8 +15,9 @@ interface LastFMService {
 
     @GET(LFM_TOP_LISTEN_SONGS)
     suspend fun topRecentPlayingSongs(
-        @Query("type") type: String = "track",
-        @Query("nr") nr: Int = 6,
+        @Query("type") type: String = "artist",
+        @Query("tracks") tracks: Int = 1,
+        @Query("nr") nr: Int = 10,
         @Query("format") format: String = "json",
     ): TopRecentPlaySongsResponse
 

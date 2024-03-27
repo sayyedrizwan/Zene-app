@@ -27,11 +27,14 @@ import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
+import com.rizwansayyed.zene.domain.lastfm.toMusicArtists
 import com.rizwansayyed.zene.domain.toCache
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.File
 import javax.inject.Inject
@@ -45,39 +48,36 @@ class LastFMImpl @Inject constructor(
     override suspend fun topRecentPlayingSongs() = flow {
         val cache = responseCache(recentMostPlayedSongs, MusicDataWithArtistsCache::class.java)
 
-        if (cache != null) {
-            if (returnFromCache2Hours(cache.cacheTime) && cache.list.isNotEmpty()) {
-                emit(cache.list.toMutableList())
-                return@flow
-            }
-        }
+//        if (cache != null) {
+//            if (returnFromCache2Hours(cache.cacheTime) && cache.list.isNotEmpty()) {
+//                emit(cache.list.toMutableList())
+//                return@flow
+//            }
+//        }
         val list = mutableListOf<MusicDataWithArtists>()
 
         val ip = DataStorageManager.userIpDetails.first()
         val key = remoteConfig.allApiKeys()
 
-        val res = lastFMS.topRecentPlayingSongs()
-        res.results?.track?.forEach {
-            val songName = "${it?.name} - ${it?.artist}"
-            val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
-            songs?.let { it1 ->
-                list.add(
-                    MusicDataWithArtists(
-                        it1.thumbnail ?: "",
-                        it1.name ?: "",
-                        it1.artists ?: "",
-                        it?.listeners ?: "",
-                        it?.image?.replace("174s/", "770x0/")?.replace(".png", ".jpg"),
-                        it?.name ?: "",
-                        it1.songId ?: "",
-                        it1.type ?: MusicType.MUSIC
-                    )
-                )
+        withContext(Dispatchers.IO) {
+            lastFMS.topRecentPlayingSongs().results?.artist?.map { s ->
+                async {
+                    val trackInfo = s.tracks?.firstOrNull() ?: return@async
+                    val songName = "${trackInfo.name} - ${trackInfo.artist}"
+                    val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
+                    songs?.let { it1 -> list.add(it1.toMusicArtists(s)) }
+                }
+            }?.map {
+                it.await()
             }
         }
-        list.toCache()?.let { writeToCacheFile(recentMostPlayedSongs, it) }
 
-        emit(list)
+        val newList = list.toTypedArray()
+            .sortedByDescending { i -> i.listeners?.replace(",", "")?.toIntOrNull() ?: 0 }
+
+        newList.toCache()?.let { writeToCacheFile(recentMostPlayedSongs, it) }
+
+        emit(newList.toMutableList())
     }.flowOn(Dispatchers.IO)
 
 
