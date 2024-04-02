@@ -38,6 +38,8 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
+import com.rizwansayyed.zene.presenter.ui.home.ads.HomeAdsVideoView
+import com.rizwansayyed.zene.presenter.ui.home.ads.TopAdsGridLists
 import com.rizwansayyed.zene.presenter.ui.home.online.AlbumsItems
 import com.rizwansayyed.zene.presenter.ui.home.online.ArtistsYouMayLikeWithSongs
 import com.rizwansayyed.zene.presenter.ui.home.online.CurrentMostPlayingSong
@@ -115,6 +117,12 @@ fun HomeView() {
 
         item(key = 4, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
+                TopAdsGridLists()
+            }
+        }
+
+        item(key = 5, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            Column {
                 CityRadioViewList()
             }
         }
@@ -127,10 +135,14 @@ fun HomeView() {
             }
         }
 
-        item(key = 8, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 7, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {
                 MoodTopics(homeNavModel)
             }
+        }
+
+        item(key = 8, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            HomeAdsVideoView()
         }
 
         item(key = 10, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {

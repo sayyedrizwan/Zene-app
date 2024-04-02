@@ -300,4 +300,6 @@
     <string name="done">完了</string>
     <string name="follow_us_on_instagram">Instagramでフォローしてください</string>
     <string name="error_while_login_google">Googleでのログイン中にエラーが発生しました。後で再試行してください。</string>
+    <string name="share_your_feedback">フィードバックを共有してください</string>
+    <string name="sponsor">スポンサー</string>
 </resources>

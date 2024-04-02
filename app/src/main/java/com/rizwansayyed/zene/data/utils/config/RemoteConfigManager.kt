@@ -8,6 +8,7 @@ import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.domain.remoteconfig.RemoteConfigApiKeyResponse
 import com.rizwansayyed.zene.domain.remoteconfig.RemoteConfigPresentAppDownloadResponse
+import com.rizwansayyed.zene.domain.remoteconfig.RemoteConfigZeneAdsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -16,9 +17,9 @@ import javax.inject.Inject
 
 const val REMOTE_ALL_API_KEYS = "allApiKeys"
 const val REMOTE_PRESENT_APP_DOWNLOAD = "present_app_download"
+const val REMOTE_PRESENT_ADS_LIST = "zene_ads_list"
 
 class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
-
 
     override suspend fun allApiKeys(): RemoteConfigApiKeyResponse? {
         return try {
@@ -39,6 +40,16 @@ class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
 
     }
 
+    override suspend fun zeneAds(): RemoteConfigZeneAdsResponse? {
+        return try {
+            val data = config(false)?.getString(REMOTE_PRESENT_ADS_LIST)
+            moshi.adapter(RemoteConfigZeneAdsResponse::class.java).fromJson(data!!)
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
 
     override suspend fun config(doReset: Boolean): FirebaseRemoteConfig? {
         return withContext(Dispatchers.IO) {
@@ -49,7 +60,7 @@ class RemoteConfigManager @Inject constructor() : RemoteConfigInterface {
                 }
                 remoteConfig.setConfigSettingsAsync(configSettings)
                 remoteConfig.fetchAndActivate().await()
-                if (doReset) remoteConfig.reset()
+//                if (doReset) remoteConfig.reset()
                 remoteConfig
             } catch (e: Exception) {
                 null

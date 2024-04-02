@@ -22,12 +22,14 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPII
 import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.recordedMusicRecognitionFile
 import com.rizwansayyed.zene.data.utils.calender.CalenderEventsInterface
+import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.CalendarEvents
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.OnlineRadioResponse
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.SearchData
+import com.rizwansayyed.zene.domain.remoteconfig.RemoteConfigZeneAdsResponse
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +49,7 @@ import kotlin.time.Duration.Companion.seconds
 class HomeApiViewModel @Inject constructor(
     private val onlineRadiosAPI: OnlineRadioImplInterface,
     private val fileUploader: FileUploaderImplInterface,
+    private val remoteConfig: RemoteConfigInterface,
     private val ip: IpJsonImplInterface,
     private val spotifyAPI: SpotifyAPIImplInterface,
     private val billboardImpl: BillboardImplInterface,
@@ -58,6 +61,7 @@ class HomeApiViewModel @Inject constructor(
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         currentMostPlayingSong()
         favouriteRadios(false)
+        appAds()
         fun runs() {
             onlineRadiosInCity()
             globalTrendingSongs()
@@ -133,6 +137,10 @@ class HomeApiViewModel @Inject constructor(
 
 
     var fileUpload by mutableStateOf<DataResponse<String>>(DataResponse.Empty)
+        private set
+
+
+    var appAds by mutableStateOf<RemoteConfigZeneAdsResponse?>(null)
         private set
 
 
@@ -332,5 +340,10 @@ class HomeApiViewModel @Inject constructor(
             else
                 DataResponse.Success(it)
         }
+    }
+
+
+    fun appAds() = viewModelScope.launch(Dispatchers.IO) {
+       appAds = remoteConfig.zeneAds()
     }
 }

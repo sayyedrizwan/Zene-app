@@ -302,4 +302,6 @@
     <string name="done">किया हुआ</string>
     <string name="follow_us_on_instagram">हमें इंस्टाग्राम पर फॉलो करें</string>
     <string name="error_while_login_google">Google से लॉगिन करते समय त्रुटि। बाद में पुन: प्रयास करें</string>
+    <string name="share_your_feedback">अपनी प्रतिक्रिया साझा करें</string>
+    <string name="sponsor">प्रायोजक</string>
 </resources>

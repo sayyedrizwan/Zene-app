@@ -301,4 +301,6 @@
     <string name="done">تـم</string>
     <string name="follow_us_on_instagram">تابعنا على انستقرام</string>
     <string name="error_while_login_google">خطأ أثناء تسجيل الدخول باستخدام google. حاول مرة أخرى لاحقا</string>
+    <string name="share_your_feedback">شارك بتعليقاتك</string>
+    <string name="sponsor">راعي</string>
 </resources>

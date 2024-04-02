@@ -299,5 +299,6 @@
     <string name="done">Listo</string>
     <string name="follow_us_on_instagram">Síguenos en Instagram</string>
     <string name="error_while_login_google">Error al iniciar sesión con Google. Vuelve a intentarlo más tarde.</string>
-
+    <string name="share_your_feedback">Comparte tus comentarios</string>
+    <string name="sponsor">patrocinar</string>
 </resources>

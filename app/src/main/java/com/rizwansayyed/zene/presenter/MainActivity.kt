@@ -130,6 +130,7 @@ import kotlin.time.Duration.Companion.seconds
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @UnstableApi
     @Inject
     lateinit var artistsThumbnailPlayer: ArtistsThumbnailVideoPlayer
 

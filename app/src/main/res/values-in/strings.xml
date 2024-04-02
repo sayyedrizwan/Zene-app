@@ -299,4 +299,6 @@
     <string name="done">Selesai</string>
     <string name="follow_us_on_instagram">Ikuti kami di Instagram</string>
     <string name="error_while_login_google">Kesalahan saat masuk dengan google. Coba lagi nanti</string>
+    <string name="share_your_feedback">Bagikan Masukan Anda</string>
+    <string name="sponsor">Sponsor</string>
 </resources>

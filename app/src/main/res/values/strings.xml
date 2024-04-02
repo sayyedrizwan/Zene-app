@@ -300,4 +300,5 @@
     <string name="follow_us_on_instagram">Follow us on Instagram</string>
     <string name="error_while_login_google">Error while login with google. Try again later</string>
     <string name="share_your_feedback">Share your Feedback</string>
+    <string name="sponsor">Sponsor</string>
 </resources>

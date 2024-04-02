@@ -299,4 +299,6 @@
     <string name="done">Готово</string>
     <string name="follow_us_on_instagram">Подпишитесь на нас в Instagram</string>
     <string name="error_while_login_google">Ошибка входа через Google. Попробуйте позже.</string>
+    <string name="share_your_feedback">Поделитесь своим отзывом</string>
+    <string name="sponsor">Спонсор</string>
 </resources>

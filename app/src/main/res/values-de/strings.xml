@@ -299,4 +299,6 @@
     <string name="done">Fertig</string>
     <string name="follow_us_on_instagram">Folge uns auf Instagram</string>
     <string name="error_while_login_google">Fehler bei der Anmeldung mit Google. Bitte versuchen Sie es später erneut.</string>
+    <string name="share_your_feedback">Teilen Sie Ihr Feedback</string>
+    <string name="sponsor">Sponsor</string>
 </resources>

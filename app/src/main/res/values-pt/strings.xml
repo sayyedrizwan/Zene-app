@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Portuguese-->
+<?xml version="1.0" encoding="utf-8"?><!--Portuguese-->
 <resources>
     <string name="app_name">Zené</string>
     <string name="zene_ads">Anúncios Zené</string>
@@ -300,4 +299,6 @@
     <string name="done">Concluído</string>
     <string name="follow_us_on_instagram">Siga-nos no Instagram</string>
     <string name="error_while_login_google">Erro ao fazer login com o Google. Tente novamente mais tarde.</string>
+    <string name="share_your_feedback">Compartilhe seu feedback</string>
+    <string name="sponsor">Patrocinador</string>
 </resources>

@@ -300,4 +300,6 @@
     <string name="done">完毕</string>
     <string name="follow_us_on_instagram">在 Instagram 上关注我们</string>
     <string name="error_while_login_google">使用 google 登录时出错。 稍后再试</string>
+    <string name="share_your_feedback">分享您的反馈</string>
+    <string name="sponsor">赞助</string>
 </resources>
