@@ -1,22 +1,19 @@
 package com.rizwansayyed.zene.viewmodel
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.domain.MoodData
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.OnlineRadioResponseItem
 import com.rizwansayyed.zene.domain.remoteconfig.RemoteConfigPresentAppDownloadResponse
-import com.rizwansayyed.zene.utils.Utils.isInternetConnected
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.Utils.littleVibrate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -134,11 +131,7 @@ class HomeNavViewModel @Inject constructor(private val remoteConfig: RemoteConfi
 //        isOnline = isInternetConnected()
     }
 
-    fun resetConfig() = viewModelScope.launch(Dispatchers.IO) {
-        remoteConfig.config(true)
-    }
-
     fun getAppDownloadResponse() = viewModelScope.launch(Dispatchers.IO) {
-        downloadsAppLists.value = remoteConfig.downloadsAppLists()
+        downloadsAppLists.value =  remoteConfig.downloadsAppLists()
     }
 }

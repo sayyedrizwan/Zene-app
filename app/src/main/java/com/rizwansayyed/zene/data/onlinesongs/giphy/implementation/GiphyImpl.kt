@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.data.onlinesongs.giphy.implementation
 
 import com.rizwansayyed.zene.data.onlinesongs.giphy.GiphyService
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

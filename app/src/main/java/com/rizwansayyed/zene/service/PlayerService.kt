@@ -225,7 +225,6 @@ class PlayerService : MediaSessionService() {
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d("TAG", "onReceive: datatattatata 2222222")
             intent ?: return
             when (intent.getStringExtra(PLAYER_SERVICE_TYPE)) {
                 ADD_ALL_PLAYER_ITEM -> CoroutineScope(Dispatchers.IO).launch {

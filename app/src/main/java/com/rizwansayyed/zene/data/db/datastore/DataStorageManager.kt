@@ -5,8 +5,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.API_KEY_CACHE_TIMESTAMP
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.APPLE_MUSIC_TOKEN_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DATA_STORE_DB
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DOWNLOAD_APP_LIST_CACHE_TIMESTAMP
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DO_SHOW_SPLASH_SCREEN
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.FAVOURITE_RADIO_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IP_JSON
@@ -17,6 +19,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SEARCH_HISTORY_LI
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SELECTED_FAVOURITE_ARTISTS_SONGS
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.SPOTIFY_TOKEN_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.YT_MUSIC_TOKEN_DATA
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.ZENE_ADS_LISTS_CACHE_TIMESTAMP
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.cookiesName
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
@@ -121,7 +124,8 @@ object DataStorageManager {
 
     var ytMusicToken: Flow<WebMusicLoginTokens?>
         get() = context.dataStore.data.map {
-            moshi.adapter(WebMusicLoginTokens::class.java).fromJson(it[YT_MUSIC_TOKEN_DATA] ?: JSON_LIST)
+            moshi.adapter(WebMusicLoginTokens::class.java)
+                .fromJson(it[YT_MUSIC_TOKEN_DATA] ?: JSON_LIST)
         }
         set(v) = runBlocking {
             val moshi = moshi.adapter(WebMusicLoginTokens::class.java).toJson(v.first())
@@ -131,11 +135,38 @@ object DataStorageManager {
 
     var appleMusicToken: Flow<WebMusicLoginTokens?>
         get() = context.dataStore.data.map {
-            moshi.adapter(WebMusicLoginTokens::class.java).fromJson(it[APPLE_MUSIC_TOKEN_DATA] ?: JSON_LIST)
+            moshi.adapter(WebMusicLoginTokens::class.java)
+                .fromJson(it[APPLE_MUSIC_TOKEN_DATA] ?: JSON_LIST)
         }
         set(v) = runBlocking {
             val moshi = moshi.adapter(WebMusicLoginTokens::class.java).toJson(v.first())
             context.dataStore.edit { it[APPLE_MUSIC_TOKEN_DATA] = moshi }
+        }
+
+    var apiKeyCacheTimestamp: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[API_KEY_CACHE_TIMESTAMP] ?: daysOldTimestamp()
+        }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[API_KEY_CACHE_TIMESTAMP] = v.first() }
+        }
+
+
+    var downloadAppListCacheTimestamp: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[DOWNLOAD_APP_LIST_CACHE_TIMESTAMP] ?: daysOldTimestamp()
+        }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[DOWNLOAD_APP_LIST_CACHE_TIMESTAMP] = v.first() }
+        }
+
+
+    var zeneAdsCacheTimestamp: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[ZENE_ADS_LISTS_CACHE_TIMESTAMP] ?: daysOldTimestamp()
+        }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[ZENE_ADS_LISTS_CACHE_TIMESTAMP] = v.first() }
         }
 
 

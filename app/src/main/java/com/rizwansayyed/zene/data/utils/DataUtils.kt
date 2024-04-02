@@ -84,6 +84,14 @@ object PinterestAPI {
     }
 }
 
+object ZeneAPI {
+    const val ZENE_BASE_URL = "https://www.zenemusic.co/"
+    const val ADS_LISTS_CONFIG = "ad/ads_lists.json"
+    const val API_KEYS_CONFIG = "ad/api_keys.json"
+    const val APP_DOWNLOADS_CONFIG = "ad/present_app_download.json"
+
+}
+
 object SpotifyAPI {
     const val ACCOUNT_SPOTIFY_API = "https://accounts.spotify.com/api/token"
 
@@ -594,6 +602,10 @@ object CacheFiles {
     val suggestionYouMayLikeCache by lazy {
         File(context.cacheDir, "suggestion-you-may-like-cache.json")
     }
+
+    val remoteConfigKey by lazy { File(context.cacheDir, "remote-config-key.json") }
+    val remoteConfigDownloadList by lazy { File(context.cacheDir, "remote-config-download-list.json") }
+    val remoteConfigZeneAdsLists by lazy { File(context.cacheDir, "zene-ads-lists.json") }
 
     val demoRingtonePath by lazy { File(context.filesDir, "demo_ringtone.mp3") }
     val demoCropRingtonePath by lazy { File(context.filesDir, "demo_crop_ringtone.mp3") }

@@ -11,7 +11,6 @@ fun List<MusicData>.toTxtCache(): String? {
     return moshi.adapter(r.javaClass).toJson(r)
 }
 
-
 fun List<MusicDataWithArtists>.toCache(): String? {
     val r = MusicDataWithArtistsCache(System.currentTimeMillis(), this)
     return moshi.adapter(r.javaClass).toJson(r)

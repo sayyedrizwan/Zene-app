@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.di
 
 
 import com.rizwansayyed.zene.data.onlinesongs.applemusic.AppleMusicAPIService
+import com.rizwansayyed.zene.data.onlinesongs.config.RemoteConfigService
 import com.rizwansayyed.zene.data.onlinesongs.downloader.SaveFromDownloaderService
 import com.rizwansayyed.zene.data.onlinesongs.giphy.GiphyService
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
@@ -38,6 +39,8 @@ import com.rizwansayyed.zene.data.utils.USER_AGENT
 import com.rizwansayyed.zene.data.utils.VideoDownloaderAPI.SAVE_FROM_BASE_URL
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_BASE_URL
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.YT_MUSIC_BASE_URL
+import com.rizwansayyed.zene.data.utils.ZeneAPI
+import com.rizwansayyed.zene.data.utils.ZeneAPI.ZENE_BASE_URL
 import com.rizwansayyed.zene.data.utils.gsonBuilder
 import com.rizwansayyed.zene.data.utils.moshi
 import dagger.Module
@@ -291,6 +294,18 @@ object RetrofitAPIModule {
             .baseUrl(PINTEREST_BASE_URL).client(builder.build())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
             .build().create(PinterestAPIService::class.java)
+    }
+
+    @Provides
+    fun retrofitZeneAdsService(): RemoteConfigService {
+        val builder = OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+
+        return Retrofit.Builder()
+            .baseUrl(ZENE_BASE_URL).client(builder.build())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!))
+            .build().create(RemoteConfigService::class.java)
     }
 
 

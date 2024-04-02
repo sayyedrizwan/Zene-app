@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
-import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Hours
@@ -8,24 +7,18 @@ import com.rizwansayyed.zene.data.onlinesongs.cache.writeToCacheFile
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.jsoupResponseData
 import com.rizwansayyed.zene.data.onlinesongs.lastfm.LastFMService
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.data.utils.CacheFiles
 import com.rizwansayyed.zene.data.utils.CacheFiles.recentMostPlayedSongs
 import com.rizwansayyed.zene.data.utils.LastFM.LAST_FM_BASE_URL
 import com.rizwansayyed.zene.data.utils.LastFM.artistsEventInfo
 import com.rizwansayyed.zene.data.utils.LastFM.artistsTopSongsInfo
 import com.rizwansayyed.zene.data.utils.LastFM.artistsWikiInfo
 import com.rizwansayyed.zene.data.utils.LastFM.searchLastFMImageURLPath
-import com.rizwansayyed.zene.data.utils.YoutubeAPI
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.data.utils.moshi
-import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.ArtistsArtists
 import com.rizwansayyed.zene.domain.ArtistsEvents
 import com.rizwansayyed.zene.domain.MusicData
 import com.rizwansayyed.zene.domain.MusicDataWithArtists
 import com.rizwansayyed.zene.domain.MusicDataWithArtistsCache
-import com.rizwansayyed.zene.domain.MusicType
-import com.rizwansayyed.zene.domain.lastfm.ArtistsSearchResponse
 import com.rizwansayyed.zene.domain.lastfm.LastFMArtist
 import com.rizwansayyed.zene.domain.lastfm.toMusicArtists
 import com.rizwansayyed.zene.domain.toCache
@@ -36,7 +29,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
-import java.io.File
 import javax.inject.Inject
 
 class LastFMImpl @Inject constructor(
@@ -48,12 +40,12 @@ class LastFMImpl @Inject constructor(
     override suspend fun topRecentPlayingSongs() = flow {
         val cache = responseCache(recentMostPlayedSongs, MusicDataWithArtistsCache::class.java)
 
-//        if (cache != null) {
-//            if (returnFromCache2Hours(cache.cacheTime) && cache.list.isNotEmpty()) {
-//                emit(cache.list.toMutableList())
-//                return@flow
-//            }
-//        }
+        if (cache != null) {
+            if (returnFromCache2Hours(cache.cacheTime) && cache.list.isNotEmpty()) {
+                emit(cache.list.toMutableList())
+                return@flow
+            }
+        }
         val list = mutableListOf<MusicDataWithArtists>()
 
         val ip = DataStorageManager.userIpDetails.first()

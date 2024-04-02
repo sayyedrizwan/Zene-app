@@ -21,6 +21,9 @@ object DataStorageUtil {
     val YT_MUSIC_TOKEN_DATA = stringPreferencesKey("yt_music_token_data")
     val APPLE_MUSIC_TOKEN_DATA = stringPreferencesKey("apple_music_token_data")
     val LOGIN_USER_DATA = stringPreferencesKey("login_user_data")
+    val API_KEY_CACHE_TIMESTAMP = longPreferencesKey("api_key_cache_timestamp")
+    val DOWNLOAD_APP_LIST_CACHE_TIMESTAMP = longPreferencesKey("download_app_list_cache_timestamp")
+    val ZENE_ADS_LISTS_CACHE_TIMESTAMP = longPreferencesKey("zene_ads_lists_cache_timestamp")
 
     fun cookiesName(domain: String): Preferences.Key<String> {
         return stringPreferencesKey("${domain}_cookie")

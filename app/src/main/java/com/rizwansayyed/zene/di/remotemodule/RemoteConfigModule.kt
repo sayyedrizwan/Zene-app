@@ -1,11 +1,7 @@
 package com.rizwansayyed.zene.di.remotemodule
 
-import com.rizwansayyed.zene.data.db.impl.RoomDBImpl
-import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
-import com.rizwansayyed.zene.data.offlinesongs.OfflineSongReadImpl
-import com.rizwansayyed.zene.data.offlinesongs.OfflineSongsReadInterface
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigManager
+import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigInterface
+import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

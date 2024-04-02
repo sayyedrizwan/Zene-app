@@ -7,11 +7,10 @@ import com.rizwansayyed.zene.data.db.artistsfeed.youtubeToTimestamp
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.onlinesongs.instagram.InstagramInfoService
-import com.rizwansayyed.zene.data.onlinesongs.instagram.implementation.SaveFromStoriesImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.bing.BingScrapsInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.youtubescrap.YoutubeScrapsImpl
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigInterface
 import com.rizwansayyed.zene.utils.Utils.printStack
 import com.rizwansayyed.zene.utils.Utils.toLongWithPlaceHolder
 import kotlinx.coroutines.CoroutineScope

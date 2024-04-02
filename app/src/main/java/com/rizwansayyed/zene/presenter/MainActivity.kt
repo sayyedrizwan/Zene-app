@@ -147,7 +147,6 @@ class MainActivity : ComponentActivity() {
     private val homeApiViewModel: HomeApiViewModel by viewModels()
     private val jsoupScrapViewModel: JsoupScrapViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)
@@ -300,7 +299,6 @@ class MainActivity : ComponentActivity() {
     private val networkChangeListener = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             navViewModel.checkAndSetOnlineStatus()
-            navViewModel.resetConfig()
             lifecycleScope.launch(Dispatchers.IO) {
                 apis()
             }

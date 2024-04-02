@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
-import android.util.Log
 import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
@@ -28,16 +27,14 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicAlbumsDetailsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsAlbumsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicArtistsSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicBrowseSuggestJsonBody
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicCommunityPlaylistSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMainSearchJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicMusicDetails
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNewReleaseJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
-import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextDetails
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
-import com.rizwansayyed.zene.data.utils.config.RemoteConfigInterface
+import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigInterface
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.ArtistsFanDataCache
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -54,19 +51,15 @@ import com.rizwansayyed.zene.domain.yt.MerchandiseItems
 import com.rizwansayyed.zene.domain.yt.MusicShelfRendererSongs
 import com.rizwansayyed.zene.presenter.util.UiUtils.ContentTypes.THE_VIDEO
 import com.rizwansayyed.zene.presenter.util.UiUtils.toCapitalFirst
-import com.rizwansayyed.zene.utils.DateFormatter.DateStyle.YEAR_TIME
-import com.rizwansayyed.zene.utils.DateFormatter.toDate
 import com.rizwansayyed.zene.utils.Utils.artistsListToString
 import com.rizwansayyed.zene.utils.Utils.printStack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 
 class YoutubeAPIImpl @Inject constructor(
