@@ -63,8 +63,6 @@ fun FollowUs() {
     }
 }
 
-//Remember what Taylor Swift said, 'haters gonna hate, hate, hate.' So take a cue from the queen of pop and love yourself!
-
 @Composable
 fun MyMusicDownloadView(homeNavViewModel: HomeNavViewModel) {
 
