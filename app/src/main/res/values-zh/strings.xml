@@ -302,4 +302,5 @@
     <string name="error_while_login_google">使用 google 登录时出错。 稍后再试</string>
     <string name="share_your_feedback">分享您的反馈</string>
     <string name="sponsor">赞助</string>
+    <string name="advertise_with_us">与我们一起做广告</string>
 </resources>

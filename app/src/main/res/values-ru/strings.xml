@@ -301,4 +301,5 @@
     <string name="error_while_login_google">Ошибка входа через Google. Попробуйте позже.</string>
     <string name="share_your_feedback">Поделитесь своим отзывом</string>
     <string name="sponsor">Спонсор</string>
+    <string name="advertise_with_us">Рекламируйте с нами</string>
 </resources>

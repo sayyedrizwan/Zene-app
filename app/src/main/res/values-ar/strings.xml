@@ -303,4 +303,5 @@
     <string name="error_while_login_google">خطأ أثناء تسجيل الدخول باستخدام google. حاول مرة أخرى لاحقا</string>
     <string name="share_your_feedback">شارك بتعليقاتك</string>
     <string name="sponsor">راعي</string>
+    <string name="advertise_with_us">أعلن معنا</string>
 </resources>

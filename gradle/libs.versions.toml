@@ -4,8 +4,8 @@ targetSDK = "34"
 minSDK = "24"
 
 #app version start
-currentVersionCode = "53"
-currentVersionName = "3.1.054"
+currentVersionCode = "54"
+currentVersionName = "3.1.057"
 #app version end
 
 

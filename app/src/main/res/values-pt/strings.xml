@@ -301,4 +301,5 @@
     <string name="error_while_login_google">Erro ao fazer login com o Google. Tente novamente mais tarde.</string>
     <string name="share_your_feedback">Compartilhe seu feedback</string>
     <string name="sponsor">Patrocinador</string>
+    <string name="advertise_with_us">Anuncie conosco</string>
 </resources>

@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
@@ -28,6 +27,7 @@ import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.TextThin
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
+import com.rizwansayyed.zene.utils.Utils.OFFICIAL_ADS_PAGE
 import com.rizwansayyed.zene.utils.Utils.OFFICIAL_EMAIL
 import com.rizwansayyed.zene.utils.Utils.OFFICIAL_INSTAGRAM_ACCOUNTS
 import com.rizwansayyed.zene.utils.Utils.customBrowser
@@ -55,6 +55,10 @@ fun FollowUs() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(this)
             }
+        })
+        Spacer(Modifier.height(10.dp))
+        TextThin(stringResource(R.string.advertise_with_us), Modifier.clickable {
+            Uri.parse(OFFICIAL_ADS_PAGE).customBrowser()
         })
     }
 }

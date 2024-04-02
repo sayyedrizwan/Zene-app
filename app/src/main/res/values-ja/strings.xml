@@ -302,4 +302,5 @@
     <string name="error_while_login_google">Googleでのログイン中にエラーが発生しました。後で再試行してください。</string>
     <string name="share_your_feedback">フィードバックを共有してください</string>
     <string name="sponsor">スポンサー</string>
+    <string name="advertise_with_us">広告掲載のご案内</string>
 </resources>
