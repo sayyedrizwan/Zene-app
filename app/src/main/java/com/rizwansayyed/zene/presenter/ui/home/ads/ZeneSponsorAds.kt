@@ -50,7 +50,7 @@ fun TopAdsGridLists() {
         Spacer(Modifier.height(60.dp))
 
         TextThin(stringResource(R.string.sponsor), Modifier.padding(horizontal = 6.dp))
-
+        Spacer(Modifier.height(5.dp))
         TextSemiBold(homeViewModel.appAds?.title ?: "", Modifier.padding(horizontal = 6.dp))
 
         LazyRow(
@@ -65,8 +65,8 @@ fun TopAdsGridLists() {
                         .decoderFactory(if (SDK_INT >= 28) ImageDecoderDecoder.Factory() else GifDecoder.Factory())
                         .build(),
                     it?.link, Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(212.dp, 300.dp)
+                        .padding(horizontal = 6.dp)
+                        .height(300.dp)
                         .clip(RoundedCornerShape(5))
                         .clickable {
                             Uri
