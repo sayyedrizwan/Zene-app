@@ -83,7 +83,7 @@ fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel) {
     HorizontalPager(
         pagerState, contentPadding = PaddingValues(horizontal = l)
     ) { page ->
-        val i = item[page]
+        val i = if (item.isNotEmpty()) item[page] else item.firstOrNull()
         val pageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
@@ -99,11 +99,11 @@ fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel) {
                     )
                 }
                 .clickable {
-                    homeNav.setArtists(i.artistsName)
+                    homeNav.setArtists(i?.artistsName ?: "")
                 }, Arrangement.Center, Alignment.CenterHorizontally
         ) {
             AsyncImage(
-                i.artistsImg, i.artistsName,
+                i?.artistsImg, i?.artistsName,
                 Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4)),
@@ -113,7 +113,7 @@ fun ArtistsFanItems(item: List<ArtistsFanData>, homeNav: HomeNavViewModel) {
             Spacer(Modifier.height(17.dp))
 
             TextSemiBold(
-                i.artistsName,
+                i?.artistsName ?: "",
                 Modifier
                     .fillMaxWidth()
                     .animateContentSize(),

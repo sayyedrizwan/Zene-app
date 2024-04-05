@@ -45,17 +45,23 @@ data class GoogleNewsResponse constructor(
                     val dateFormat =
                         SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault())
                     dateFormat.parse(pubDate!!)!!.time
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     0
                 }
             }
 
             fun timestamp(): String {
-                val originalDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault())
-                val newDateFormat = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
-                val newDateString: String = newDateFormat.format(originalDateFormat.parse(pubDate!!)!!)
-                val calendar = Calendar.getInstance().get(Calendar.YEAR)
-                return newDateString.replace(calendar.toString(), "").trim()
+                return try {
+                    val originalDateFormat =
+                        SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault())
+                    val newDateFormat = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
+                    val newDateString: String =
+                        newDateFormat.format(originalDateFormat.parse(pubDate!!)!!)
+                    val calendar = Calendar.getInstance().get(Calendar.YEAR)
+                    newDateString.replace(calendar.toString(), "").trim()
+                } catch (e: Exception) {
+                    pubDate ?: ""
+                }
             }
 
             @Root(name = "source", strict = false)

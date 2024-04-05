@@ -115,53 +115,7 @@ data class MusicShelfRendererSongs(
 
             data class FlexColumn(
                 val musicResponsiveListItemFlexColumnRenderer: MusicResponsiveListItemFlexColumnRenderer?
-            ) {
-                data class MusicResponsiveListItemFlexColumnRenderer(
-                    val displayPriority: String?,
-                    val text: Text?
-                ) {
-                    data class Text(
-                        val runs: List<Run?>?
-                    ) {
-                        data class Run(
-                            val navigationEndpoint: NavigationEndpoint?,
-                            val text: String?
-                        ) {
-                            data class NavigationEndpoint(
-                                val browseEndpoint: BrowseEndpoint?,
-                                val clickTrackingParams: String?,
-                                val watchEndpoint: WatchEndpoint?
-                            ) {
-                                data class BrowseEndpoint(
-                                    val browseEndpointContextSupportedConfigs: BrowseEndpointContextSupportedConfigs?,
-                                    val browseId: String?
-                                ) {
-                                    data class BrowseEndpointContextSupportedConfigs(
-                                        val browseEndpointContextMusicConfig: BrowseEndpointContextMusicConfig?
-                                    ) {
-                                        data class BrowseEndpointContextMusicConfig(
-                                            val pageType: String?
-                                        )
-                                    }
-                                }
-
-                                data class WatchEndpoint(
-                                    val videoId: String?,
-                                    val watchEndpointMusicSupportedConfigs: WatchEndpointMusicSupportedConfigs?
-                                ) {
-                                    data class WatchEndpointMusicSupportedConfigs(
-                                        val watchEndpointMusicConfig: WatchEndpointMusicConfig?
-                                    ) {
-                                        data class WatchEndpointMusicConfig(
-                                            val musicVideoType: String?
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            )
 
             data class Thumbnail(
                 val musicThumbnailRenderer: MusicThumbnailRenderer?
@@ -211,3 +165,49 @@ data class MusicShelfRendererSongs(
         )
     }
 }
+
+//data class MusicResponsiveListItemFlexColumnRenderer(
+//    val displayPriority: String?,
+//    val text: Text?
+//) {
+//    data class Text(
+//        val runs: List<Run?>?
+//    ) {
+//        data class Run(
+//            val navigationEndpoint: NavigationEndpoint?,
+//            val text: String?
+//        ) {
+//            data class NavigationEndpoint(
+//                val browseEndpoint: BrowseEndpoint?,
+//                val clickTrackingParams: String?,
+//                val watchEndpoint: WatchEndpoint?
+//            ) {
+//                data class BrowseEndpoint(
+//                    val browseEndpointContextSupportedConfigs: BrowseEndpointContextSupportedConfigs?,
+//                    val browseId: String?
+//                ) {
+//                    data class BrowseEndpointContextSupportedConfigs(
+//                        val browseEndpointContextMusicConfig: BrowseEndpointContextMusicConfig?
+//                    ) {
+//                        data class BrowseEndpointContextMusicConfig(
+//                            val pageType: String?
+//                        )
+//                    }
+//                }
+//
+//                data class WatchEndpoint(
+//                    val videoId: String?,
+//                    val watchEndpointMusicSupportedConfigs: WatchEndpointMusicSupportedConfigs?
+//                ) {
+//                    data class WatchEndpointMusicSupportedConfigs(
+//                        val watchEndpointMusicConfig: WatchEndpointMusicConfig?
+//                    ) {
+//                        data class WatchEndpointMusicConfig(
+//                            val musicVideoType: String?
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

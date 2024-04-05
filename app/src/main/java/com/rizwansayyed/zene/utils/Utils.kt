@@ -14,6 +14,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -25,6 +26,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.text.format.DateFormat
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdRequest
@@ -63,6 +65,9 @@ object Utils {
     const val OFFICIAL_ADS_PAGE = "https://zenemusic.co/adswithus"
     const val OFFICIAL_PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
     const val OFFICIAL_INSTAGRAM_ACCOUNTS = "https://www.instagram.com/zene__music/"
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    const val MEDIA_PLAYBACK_SERVICE = ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
 
     val tempEmptyList =
         listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")

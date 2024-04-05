@@ -4,8 +4,8 @@ targetSDK = "34"
 minSDK = "24"
 
 #app version start
-currentVersionCode = "55"
-currentVersionName = "3.1.058"
+currentVersionCode = "56"
+currentVersionName = "3.1.062"
 #app version end
 
 
@@ -32,7 +32,7 @@ webkit-version = "1.10.0"
 jsoup-version = "1.17.2"
 ok-http-version = "4.12.0"
 work-manager-version = "2.9.0"
-firebase-bom-version = "32.7.4"
+firebase-bom-version = "32.8.0"
 fcm-directboot-version = "23.4.1"
 paging-version = "3.2.1"
 media3-version = "1.3.0"
@@ -54,6 +54,7 @@ plugin-hilt = "2.51"
 plugin-ksp = "1.9.21-1.0.16"
 plugin-google-services = "4.4.1"
 firebase-crashlytics-services = "2.9.9"
+firebase-perf-services = "1.4.2"
 lifecycleProcess = "2.7.0"
 
 
@@ -142,6 +143,7 @@ okttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 #firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom-version" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 firebase-messaging-directboot = { group = "com.google.firebase", name = "firebase-messaging-directboot", version.ref = "fcm-directboot-version"  }
@@ -187,6 +189,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "plugin-hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "plugin-ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "plugin-google-services" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-services" }
+firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf-services" }
 
 
 

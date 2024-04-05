@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotification.PLAYE
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotification.PLAYER_NOTIFICATION_CHANNEL_NAME
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotification.PLAYER_NOTIFICATION_ID
 import com.rizwansayyed.zene.service.player.utils.Utils.PlayerNotificationAction.OPEN_MUSIC_PLAYER
+import com.rizwansayyed.zene.utils.Utils.MEDIA_PLAYBACK_SERVICE
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -48,7 +49,8 @@ class PlayerServiceNotification @Inject constructor(
     override fun buildNotificationChannel() {
         val channel = NotificationChannel(
             PLAYER_NOTIFICATION_CHANNEL_ID,
-            PLAYER_NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
+            PLAYER_NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(channel)
     }
@@ -61,8 +63,7 @@ class PlayerServiceNotification @Inject constructor(
             .setNextActionIconResourceId(R.drawable.ic_song_next)
             .setPreviousActionIconResourceId(R.drawable.ic_song_previous)
             .setRewindActionIconResourceId(R.drawable.ic_go_backward_5sec)
-            .setFastForwardActionIconResourceId(R.drawable.ic_go_forward_5sec)
-            .build().apply {
+            .setFastForwardActionIconResourceId(R.drawable.ic_go_forward_5sec).build().apply {
                 setUseFastForwardActionInCompactView(true)
                 setUseRewindActionInCompactView(true)
                 setUseNextActionInCompactView(false)
@@ -74,14 +75,14 @@ class PlayerServiceNotification @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notification = Notification.Builder(context, PLAYER_NOTIFICATION_CHANNEL_ID)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setContentIntent(openMusicPlayerIntent())
-                .build()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) playerService.startForeground(
-                PLAYER_NOTIFICATION_ID,
-                notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-            )
-            else
-                playerService.startForeground(PLAYER_NOTIFICATION_ID, notification)
+                .setContentIntent(openMusicPlayerIntent()).build()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) playerService
+                .startForeground(PLAYER_NOTIFICATION_ID, notification, MEDIA_PLAYBACK_SERVICE)
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) playerService
+                .startForeground(PLAYER_NOTIFICATION_ID, notification)
+            else playerService.startForeground(PLAYER_NOTIFICATION_ID, notification)
+
         }
     }
 
@@ -95,8 +96,7 @@ class PlayerServiceNotification @Inject constructor(
         return TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(resultIntent)
             getPendingIntent(
-                1,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                1, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         }
     }
