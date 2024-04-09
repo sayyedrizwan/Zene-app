@@ -303,4 +303,7 @@
     <string name="share_your_feedback">フィードバックを共有してください</string>
     <string name="sponsor">スポンサー</string>
     <string name="advertise_with_us">広告掲載のご案内</string>
+    <string name="need_some_help_from_your_guys">音楽愛好家の方へ！ゼン があなたの助けを必要としています</string>
+    <string name="zene_help_dialog">こんにちは！ゼンはもう試しましたか？ ゼン は完全に無料で、煩わしいポップアップ広告やオーディオ広告もなく、音楽リスニング体験を邪魔しません。素晴らしいアプリにするために多大な労力とお金を費やしましたが、口コミを広めるには少し助けが必要です。\n\nZeneのウェブサイトとアプリに小さな広告を追加して、サーバーとデータベースのコストを賄っています。大手プラットフォームでの広告掲載予算がないため、ユーザーの皆様の成長に頼っています。友達や家族とZeneを共有するだけで、Zeneファミリーを築き、みんなに無料の音楽を提供することができます。</string>
+    <string name="zene_share">Zeneを発見！ 広告なしの音楽アプリ \n🆓 無料で一生音楽を楽しめ、他にも素晴らしい機能が満載。 今すぐゲット</string>
 </resources>

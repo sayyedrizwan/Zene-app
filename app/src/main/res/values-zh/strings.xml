@@ -303,4 +303,7 @@
     <string name="share_your_feedback">分享您的反馈</string>
     <string name="sponsor">赞助</string>
     <string name="advertise_with_us">与我们一起做广告</string>
+    <string name="need_some_help_from_your_guys">音乐爱好者们，集合啦！泽内 需要您的帮助</string>
+    <string name="zene_help_dialog">嗨！您使用过 泽内 吗？它是一款完全免费的出色音乐应用，没有烦人 的弹窗广告或音频广告来打扰您的聆听体验。我们投入了大量精力 和资金来打造它，但我们需要一点帮助来推广它。\n\n我们在 泽内 网站和应用内添加了一个小小的广告，以覆盖我们的服务器 和数据库成本。我们没有大预算在主要平台上投放广告，因此我们 依赖于用户来帮助我们发展。只需将 泽内 分享给您的朋友和家 人，您就可以帮助我们建立 泽内 社区，并为所有人提供免费音乐。</string>
+    <string name="zene_share">发现 泽内  无广告音乐应用 \n🆓 终身免费畅享音乐，还有更多精彩功能。立即获取</string>
 </resources>

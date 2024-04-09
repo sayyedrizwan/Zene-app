@@ -64,6 +64,7 @@ object Utils {
     const val OFFICIAL_EMAIL = "knocknock@zenemusic.co"
     const val OFFICIAL_ADS_PAGE = "https://zenemusic.co/adswithus"
     const val OFFICIAL_PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
+    const val OFFICIAL_DOWNLOAD_APP = "https://www.zenemusic.co/download"
     const val OFFICIAL_INSTAGRAM_ACCOUNTS = "https://www.instagram.com/zene__music/"
 
     @RequiresApi(Build.VERSION_CODES.Q)

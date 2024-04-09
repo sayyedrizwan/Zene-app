@@ -28,14 +28,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.exoplayer.ExoPlayer
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.HomeNavigation
 import com.rizwansayyed.zene.presenter.theme.BlackColor
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
+import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.GlobalNativeFullAds
+import com.rizwansayyed.zene.presenter.ui.RoundBorderButtonsView
+import com.rizwansayyed.zene.presenter.ui.TextBold
 import com.rizwansayyed.zene.presenter.ui.TextRegular
 import com.rizwansayyed.zene.presenter.ui.home.HomepageTopView
 import com.rizwansayyed.zene.presenter.ui.home.ads.HomeAdsVideoView
@@ -64,6 +69,8 @@ import com.rizwansayyed.zene.presenter.util.UiUtils.GridSpan.TWO_ITEMS_GRID
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.OFFICIAL_DOWNLOAD_APP
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDbViewModel
@@ -107,6 +114,37 @@ fun HomeView() {
     ) {
         item(key = 1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             HomepageTopView(homeNavModel)
+        }
+        item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+            val share = stringResource(id = R.string.zene_share)
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MainColor)
+                        .padding(6.dp)
+                ) {
+                    Spacer(Modifier.height(15.dp))
+                    TextBold(v = stringResource(id = R.string.need_some_help_from_your_guys))
+                    Spacer(Modifier.height(5.dp))
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        TextBold(v = "\uD83D\uDE4F", size= 30)
+                    }
+                    Spacer(Modifier.height(5.dp))
+                    TextRegular(v = stringResource(id = R.string.zene_help_dialog), size = 15)
+                    Spacer(Modifier.height(10.dp))
+                    RoundBorderButtonsView(stringResource(R.string.share)){
+                        Utils.shareTxt("$share \n$OFFICIAL_DOWNLOAD_APP")
+                    }
+                    Spacer(Modifier.height(10.dp))
+                }
+
+                Spacer(Modifier.height(30.dp))
+            }
         }
 
         item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
