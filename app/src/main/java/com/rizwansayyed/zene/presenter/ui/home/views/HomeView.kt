@@ -138,6 +138,7 @@ fun HomeView() {
                     TextRegular(v = stringResource(id = R.string.zene_help_dialog), size = 15)
                     Spacer(Modifier.height(10.dp))
                     RoundBorderButtonsView(stringResource(R.string.share)){
+                        registerEvent(FirebaseEvents.FirebaseEvent.SHARE_APP_VIA_DIALOG)
                         Utils.shareTxt("$share \n$OFFICIAL_DOWNLOAD_APP")
                     }
                     Spacer(Modifier.height(10.dp))

@@ -68,6 +68,7 @@ object FirebaseEvents {
         DOWNLOADING_SONG_URL,
         CHANGE_SONG_TRACK_ITEM,
         OPEN_INSTAGRAM_ACCOUNT,
+        SHARE_APP_VIA_DIALOG,
     }
 
 
