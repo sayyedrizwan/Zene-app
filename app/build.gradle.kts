@@ -86,8 +86,6 @@ dependencies {
     implementation(libs.lifecycle.process)
     implementation(libs.play.services.ads.lite)
 
-
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.expresso)

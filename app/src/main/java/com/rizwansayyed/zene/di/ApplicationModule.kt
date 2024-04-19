@@ -17,11 +17,7 @@ import com.rizwansayyed.zene.presenter.MainActivity
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayerNotPlay
 import com.rizwansayyed.zene.utils.AppCrashHandler
-import com.rizwansayyed.zene.utils.NotificationViewManager
-import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL
-import com.rizwansayyed.zene.utils.NotificationViewManager.Companion.CRASH_CHANNEL_ID
 import com.rizwansayyed.zene.utils.Utils.ifPlayerServiceNotRunning
-import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +52,6 @@ class ApplicationModule : Application(), Configuration.Provider {
         FirebaseApp.initializeApp(this)
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
         Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(this))
-
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)

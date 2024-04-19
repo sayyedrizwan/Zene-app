@@ -4,8 +4,8 @@ targetSDK = "34"
 minSDK = "24"
 
 #app version start
-currentVersionCode = "58"
-currentVersionName = "3.1.065"
+currentVersionCode = "60"
+currentVersionName = "3.1.069"
 #app version end
 
 
@@ -32,19 +32,20 @@ webkit-version = "1.10.0"
 jsoup-version = "1.17.2"
 ok-http-version = "4.12.0"
 work-manager-version = "2.9.0"
-firebase-bom-version = "32.8.0"
+firebase-bom-version = "32.8.1"
 fcm-directboot-version = "23.4.1"
 paging-version = "3.2.1"
-media3-version = "1.3.0"
+media3-version = "1.3.1"
 glide-version = "4.16.0"
 glide-transformations-version = "4.3.0"
 amplituda-version = "v2.2.2"
 amplituda-compose-version = "v1.1.2"
 ffmpeg-version = "6.0-2"
-google-sign-version = "21.0.0"
+google-sign-version = "21.1.0"
 ads-version = "23.0.0"
 google-id-version = "1.1.0"
-credentials-version = "1.3.0-alpha01"
+credentials-version = "1.3.0-alpha03"
+notix-ads-version = "0.1.86"
 
 
 #plugins
@@ -170,8 +171,6 @@ glide-transformations = { group = "jp.wasabeef", name = "glide-transformations",
 
 #ads
 play-services-ads-lite = { group = "com.google.android.gms", name = "play-services-ads-lite", version.ref = "ads-version" }
-
-
 
 #credentials
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-id-version" }

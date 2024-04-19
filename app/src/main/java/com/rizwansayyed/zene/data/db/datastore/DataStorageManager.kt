@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.ADMOB_CACHE_TIMESTAMP
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.API_KEY_CACHE_TIMESTAMP
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.APPLE_MUSIC_TOKEN_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DATA_STORE_DB
@@ -160,6 +161,14 @@ object DataStorageManager {
             context.dataStore.edit { it[DOWNLOAD_APP_LIST_CACHE_TIMESTAMP] = v.first() }
         }
 
+
+    var admobCacheTimestamp: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[ADMOB_CACHE_TIMESTAMP] ?: daysOldTimestamp()
+        }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[ADMOB_CACHE_TIMESTAMP] = v.first() }
+        }
 
     var zeneAdsCacheTimestamp: Flow<Long>
         get() = context.dataStore.data.map {

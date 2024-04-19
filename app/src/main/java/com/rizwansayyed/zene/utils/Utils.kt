@@ -32,9 +32,12 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.admobCacheTimestamp
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.MainActivity
+import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.simpleEncode
@@ -42,8 +45,12 @@ import com.rizwansayyed.zene.utils.Utils.AdsId.OPEN_ADS_ID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
@@ -55,6 +62,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.system.exitProcess
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 
 object Utils {
@@ -134,10 +143,16 @@ object Utils {
 
     }
 
-    fun loadOpenAppAds(context: Activity, adLoadedCallback: AppOpenAd.AppOpenAdLoadCallback) {
-        val request = AdRequest.Builder().build()
-        AppOpenAd.load(context, OPEN_ADS_ID, request, adLoadedCallback)
-    }
+    fun loadOpenAppAds(context: Activity, adLoadedCallback: AppOpenAd.AppOpenAdLoadCallback) =
+        CoroutineScope(Dispatchers.IO).launch {
+            if (doShowSplashScreen.firstOrNull() == true) return@launch
+            if (timestampDifference(admobCacheTimestamp.first()) < 2.minutes.inWholeSeconds) return@launch
+
+            CoroutineScope(Dispatchers.Main).launch {
+                val request = AdRequest.Builder().build()
+                AppOpenAd.load(context, OPEN_ADS_ID, request, adLoadedCallback)
+            }
+        }
 
     private var bm = context.getSystemService(BATTERY_SERVICE) as BatteryManager
     private var myKM = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager

@@ -19,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 
 class RemoteConfigManager @Inject constructor(private val service: RemoteConfigService) :
@@ -26,7 +28,7 @@ class RemoteConfigManager @Inject constructor(private val service: RemoteConfigS
 
     override suspend fun allApiKeys(): RemoteConfigApiKeyResponse? = withContext(Dispatchers.IO) {
         val cache = responseCache(remoteConfigKey, RemoteConfigApiKeyResponse::class.java)
-        if (cache != null && timestampDifference(apiKeyCacheTimestamp.first()) < 10800)
+        if (cache != null && timestampDifference(apiKeyCacheTimestamp.first()) < 180.minutes.inWholeSeconds)
             return@withContext cache
 
         return@withContext try {
@@ -43,7 +45,7 @@ class RemoteConfigManager @Inject constructor(private val service: RemoteConfigS
         val cache = responseCache(
             remoteConfigDownloadList, RemoteConfigPresentAppDownloadResponse::class.java
         )
-        if (cache != null && timestampDifference(downloadAppListCacheTimestamp.first()) < (72 * 1000))
+        if (cache != null && timestampDifference(downloadAppListCacheTimestamp.first()) < 6.hours.inWholeSeconds)
             return@withContext cache
 
         return@withContext try {
@@ -58,7 +60,7 @@ class RemoteConfigManager @Inject constructor(private val service: RemoteConfigS
 
     override suspend fun zeneAds(): RemoteConfigZeneAdsResponse? = withContext(Dispatchers.IO) {
         val cache = responseCache(remoteConfigZeneAdsLists, RemoteConfigZeneAdsResponse::class.java)
-        if (cache != null && timestampDifference(zeneAdsCacheTimestamp.first()) < (2 * 1000))
+        if (cache != null && timestampDifference(zeneAdsCacheTimestamp.first()) < 2.minutes.inWholeSeconds)
             return@withContext cache
 
         return@withContext try {

@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.admobCacheTimestamp
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashScreen
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.lastAPISyncTime
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
@@ -316,6 +317,7 @@ class MainActivity : ComponentActivity() {
             super.onAdLoaded(app)
             registerEvent(FirebaseEvents.FirebaseEvent.OPEN_APP_ADS)
             app.show(this@MainActivity)
+            admobCacheTimestamp = flowOf(System.currentTimeMillis())
         }
     }
 
