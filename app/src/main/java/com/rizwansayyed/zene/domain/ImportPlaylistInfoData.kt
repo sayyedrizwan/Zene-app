@@ -46,11 +46,15 @@ fun AppleMusicPlaylistItemResponse.toPlaylists(): List<ImportPlaylistInfoData> {
     } ?: emptyList()
 }
 
-fun SpotifyUserPlaylistTrackResponse.Item.toTrack(): ImportPlaylistTrackInfoData {
-    return ImportPlaylistTrackInfoData(
-        track?.album?.images?.maxBy { i -> i?.height ?: 2 }?.url,
-        track?.album?.artists?.map { it?.name }?.joinToString(", "), track?.name
-    )
+fun SpotifyUserPlaylistTrackResponse.Item.toTrack(): ImportPlaylistTrackInfoData? {
+    return try {
+        ImportPlaylistTrackInfoData(
+            track?.album?.images?.maxBy { i -> i?.height ?: 2 }?.url,
+            track?.album?.artists?.map { it?.name }?.joinToString(", "), track?.name
+        )
+    } catch (e: Exception) {
+        null
+    }
 }
 
 fun SpotifyUserPlaylistResponse.toPlaylistInfo(p: PlaylistImportersType): List<ImportPlaylistInfoData>? {

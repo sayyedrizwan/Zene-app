@@ -23,7 +23,7 @@ interface SpotifyUsersAPIService {
     @GET(SPOTIFY_USER_API_LIKE)
     suspend fun userLiked(
         @Header("Authorization") auth: String,
-        @Query("offset") offset: Int = 0,
+        @Query("offset") offset: Int,
         @Query("limit") limit: Int = 50
     ): SpotifyUserPlaylistTrackResponse
 

@@ -12,5 +12,5 @@ interface SpotifyUsersAPIImplInterface {
         playlistId: String, offset: Int
     ): Flow<SpotifyUserPlaylistTrackResponse>
 
-    suspend fun userLiked(limit: Int): Flow<SpotifyUserPlaylistTrackResponse>
+    suspend fun userLiked(offset: Int): Flow<SpotifyUserPlaylistTrackResponse>
 }

@@ -50,8 +50,6 @@ class PlaylistImportViewModel @Inject constructor(
     private val roomDb: RoomDBInterface
 ) : ViewModel() {
 
-    private var playlistTrackJob: Job? = null
-
     var selectedPlaylist by mutableStateOf<ImportPlaylistInfoData?>(null)
 
     var songMenu by mutableStateOf<DataResponse<MusicData?>>(DataResponse.Empty)
@@ -68,7 +66,7 @@ class PlaylistImportViewModel @Inject constructor(
         }.catch {
             usersPlaylists = DataResponse.Error(it)
         }.collectLatest {
-            playlistTrackers.clear()
+            Log.d("TAG", "spotifyPlaylistInfo:data ${it.items} ")
             val list = it.toPlaylistInfo(PlaylistImportersType.SPOTIFY) ?: emptyList()
             usersPlaylists = DataResponse.Success(list)
             spotifyPlaylistTrack(toSpotifyLiked())
@@ -134,38 +132,27 @@ class PlaylistImportViewModel @Inject constructor(
         if (item.id == null) return@launch
         if (selectedPlaylist == item) return@launch
         selectedPlaylist = item
-        playlistTrackJob?.cancel()
-        playlistTrackJob = viewModelScope.launch(Dispatchers.IO) {
-            playlistTrackers.clear()
+        playlistTrackers.clear()
 
-            try {
-                val lists = if (item.id == likedSpotify) spotifyUserAPI.userLiked(50).first()
-                else spotifyUserAPI.playlistTrack(item.id, 0).first()
-                lists.items?.forEach {
-                    it?.toTrack()?.let { t -> playlistTrackers.add(t) }
+        val lists = if (item.id == likedSpotify) spotifyUserAPI.userLiked(0).firstOrNull()
+        else spotifyUserAPI.playlistTrack(item.id, 0).firstOrNull()
+        lists?.items?.forEach {
+            it?.toTrack()?.let { t -> playlistTrackers.add(t) }
+        }
+
+        val run = (lists?.total ?: 0) / 50
+        repeat(run) {
+            if (it > 0) try {
+                val listsOffset = if (item.id == likedSpotify)
+                    spotifyUserAPI.userLiked(it).firstOrNull()
+                else spotifyUserAPI.playlistTrack(item.id, it).firstOrNull()
+
+                listsOffset?.items?.forEach { item ->
+                    item?.toTrack()?.let { t -> playlistTrackers.add(t) }
                 }
-
-                val run = (lists.total ?: 0) / 50
-                repeat(run) {
-                    if (it > 0) try {
-                        val listsOffset = if (item.id == likedSpotify)
-                            spotifyUserAPI.userLiked(it).first()
-                        else spotifyUserAPI.playlistTrack(item.id, it).first()
-
-                        listsOffset.items?.forEach { item ->
-                            item?.toTrack()?.let { t -> playlistTrackers.add(t) }
-                        }
-                    } catch (e: Exception) {
-                        e.message
-                    }
-                }
-
             } catch (e: Exception) {
                 e.message
             }
-
-            playlistTrackJob?.cancel()
-            playlistTrackJob = null
         }
     }
 
