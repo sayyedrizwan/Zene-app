@@ -6,6 +6,8 @@ import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistResponse
 import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistTrackResponse
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
 
+const val likedSpotify = "liked_spotify"
+
 data class ImportPlaylistInfoData(
     val thumbnail: String?,
     val name: String?,
@@ -20,6 +22,17 @@ data class ImportPlaylistTrackInfoData(
     val artistsName: String?,
     val songName: String?,
 )
+
+
+fun toSpotifyLiked(): ImportPlaylistInfoData {
+    return ImportPlaylistInfoData(
+        "https://misc.scdn.co/liked-songs/liked-songs-300.png",
+        "Liked Songs",
+        "Spotify",
+        likedSpotify,
+        PlaylistImportersType.SPOTIFY
+    )
+}
 
 
 fun AppleMusicPlaylistItemResponse.toPlaylists(): List<ImportPlaylistInfoData> {
@@ -47,7 +60,7 @@ fun SpotifyUserPlaylistResponse.toPlaylistInfo(p: PlaylistImportersType): List<I
                 it?.images?.maxBy { i -> i?.height ?: 2 }?.url,
                 it?.name, it?.owner?.display_name, it?.id, p
             )
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ImportPlaylistInfoData("", "", "", null, p)
         }
     }

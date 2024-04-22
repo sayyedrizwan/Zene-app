@@ -29,6 +29,8 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.DataResponse
 import com.rizwansayyed.zene.domain.ImportPlaylistInfoData
+import com.rizwansayyed.zene.domain.likedSpotify
+import com.rizwansayyed.zene.domain.toSpotifyLiked
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
@@ -39,9 +41,7 @@ import com.rizwansayyed.zene.presenter.ui.home.online.MostPlayedSongsLoading
 import com.rizwansayyed.zene.viewmodel.PlaylistImportViewModel
 
 @Composable
-fun PlaylistListView(
-    viewModel: PlaylistImportViewModel, offset: Int, type: PlaylistImportersType, click: () -> Unit
-) {
+fun PlaylistListView(viewModel: PlaylistImportViewModel, type: PlaylistImportersType) {
     when (val v = viewModel.usersPlaylists) {
         DataResponse.Empty -> {}
         is DataResponse.Error -> {
@@ -59,21 +59,12 @@ fun PlaylistListView(
         is DataResponse.Success -> {
             Spacer(Modifier.height(15.dp))
 
-            Row(Modifier.clickable { click() }) {
+            Row {
                 Spacer(Modifier.width(7.dp))
 
                 TextSemiBold(v = stringResource(R.string.playlists))
 
                 Spacer(Modifier.weight(1f))
-
-                if (offset == 0)
-                    SmallIcons(icon = R.drawable.ic_arrow_down_sharp, 20, 0)
-                else
-                    Box(Modifier.rotate(180f)) {
-                        SmallIcons(icon = R.drawable.ic_arrow_down_sharp, 20, 0)
-                    }
-
-                Spacer(Modifier.width(7.dp))
             }
 
             Spacer(Modifier.height(10.dp))
@@ -83,11 +74,19 @@ fun PlaylistListView(
                     Spacer(Modifier.height(10.dp))
                 }
 
+                if (type == SPOTIFY) item {
+                    PlaylistImportItems(
+                        toSpotifyLiked(), viewModel.selectedPlaylist?.id == likedSpotify
+                    ) {
+                        viewModel.spotifyPlaylistTrack(toSpotifyLiked())
+                    }
+                }
+
                 items(v.item) {
                     PlaylistImportItems(it, viewModel.selectedPlaylist?.id == it.id) {
                         it.let { p ->
-                            when(type){
-                                SPOTIFY ->  viewModel.spotifyPlaylistTrack(p)
+                            when (type) {
+                                SPOTIFY -> viewModel.spotifyPlaylistTrack(p)
                                 YOUTUBE_MUSIC -> viewModel.youtubeMusicPlaylistTracks(p)
                                 APPLE_MUSIC -> viewModel.appleMusicPlaylistTracks(p)
                             }

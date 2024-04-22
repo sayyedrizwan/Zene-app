@@ -296,8 +296,6 @@ class YTExtractor(
             }
             val videoDetails = ytPlayerResponse?.getJSONObject("videoDetails")
             if (videoDetails != null) {
-                if (LOGGING) Log.d(LOG_TAG, "videoDetails: $videoDetails")
-
                 videoMeta = VideoMeta(
                     videoDetails.getString("videoId"),
                     videoDetails.getString("title"),
@@ -330,10 +328,6 @@ class YTExtractor(
                 }
                 decipherJsFileName = curJsFileName
             }
-            if (LOGGING) Log.d(
-                LOG_TAG,
-                "Decipher signatures: " + encSignatures.size() + ", videos: " + ytFiles.size()
-            )
             decipheredSignature = null
             if (decipherSignature(encSignatures)) {
                 lock.lock()
@@ -409,17 +403,10 @@ class YTExtractor(
                 reader?.close()
                 urlConnection.disconnect()
             }
-            if (LOGGING) Log.d(
-                LOG_TAG,
-                "Decipher FunctURL: $decipherFunctUrl"
-            )
+
             var mat = patSignatureDecFunction.matcher(javascriptFile)
             if (mat.find()) {
                 decipherFunctionName = mat.group(1)
-                if (LOGGING) Log.d(
-                    LOG_TAG,
-                    "Decipher Functname: $decipherFunctionName"
-                )
                 val patMainVariable = Pattern.compile(
                     "(var |\\s|,|;)" + decipherFunctionName?.replace("$", "\\$") +
                             "(=function\\((.{1,3})\\)\\{)"
@@ -497,10 +484,6 @@ class YTExtractor(
                         i2++
                     }
                 }
-                if (LOGGING) Log.d(
-                    LOG_TAG,
-                    "Decipher Function: $decipherFunctions"
-                )
                 decipherViaWebView(encSignatures)
                 if (CACHING) {
                     writeDeciperFunctToChache()
@@ -624,10 +607,6 @@ class YTExtractor(
                 state = State.LOADING
                 var retry = 0
                 while (state != State.SUCCESS && retry < retryCount) {
-                    if (LOGGING) Log.d(
-                        LOG_TAG,
-                        "Retry: $retry"
-                    )
                     videoID = videoId
                     try {
                         val temp = getStreamUrls()
@@ -635,22 +614,16 @@ class YTExtractor(
                             if (temp != null) {
                                 val test = testHttp403Code(temp.getAudioOnly().bestQuality()?.url)
                                 if (!test) {
-                                    if (LOGGING) Log.d(
-                                        LOG_TAG,
-                                        "NO Error"
-                                    )
                                     state = State.SUCCESS
                                     return@async temp
                                 } else {
                                     retry++
                                     state = State.ERROR
-                                    Log.e(LOG_TAG, "Extraction failed cause 403 HTTP Error")
                                 }
                             }
                         } catch (e: IOException) {
                             retry++
                             state = State.ERROR
-                            Log.e(LOG_TAG, "Extraction failed cause 403 HTTP Error", e)
                         }
                     } catch (e: java.lang.Exception) {
                         retry++

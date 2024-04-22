@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.onlinesongs.spotify.users
 
 
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_PLAYLIST_TRACK_API
+import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_USER_API_LIKE
 import com.rizwansayyed.zene.data.utils.SpotifyAPI.SPOTIFY_USER_API_PLAYLIST
 import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistResponse
 import com.rizwansayyed.zene.domain.spotify.playlist.SpotifyUserPlaylistTrackResponse
@@ -18,6 +19,13 @@ interface SpotifyUsersAPIService {
         @Query("offset") offset: Int = 0,
         @Query("limit") limit: Int = 50
     ): SpotifyUserPlaylistResponse
+
+    @GET(SPOTIFY_USER_API_LIKE)
+    suspend fun userLiked(
+        @Header("Authorization") auth: String,
+        @Query("offset") offset: Int = 0,
+        @Query("limit") limit: Int = 50
+    ): SpotifyUserPlaylistTrackResponse
 
     @GET(SPOTIFY_PLAYLIST_TRACK_API)
     suspend fun userPlaylistTrack(

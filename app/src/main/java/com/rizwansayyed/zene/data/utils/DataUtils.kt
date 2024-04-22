@@ -102,6 +102,7 @@ object SpotifyAPI {
 
 
     const val SPOTIFY_USER_API_PLAYLIST = "me/playlists"
+    const val SPOTIFY_USER_API_LIKE = "me/tracks"
     const val SPOTIFY_PLAYLIST_TRACK_API = "playlists/{playlist_id}/tracks"
 
 

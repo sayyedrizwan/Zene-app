@@ -52,6 +52,7 @@ import com.rizwansayyed.zene.viewmodel.PlaylistImportViewModel
 @Composable
 fun ImportPlaylistView(viewModel: PlaylistImportViewModel, addToAll: (String) -> Unit) {
     val width = LocalConfiguration.current.screenWidthDp / 1.3
+    val noSongs = stringResource(id = R.string.no_song_found)
 
     var addPlaylistData by remember { mutableStateOf(false) }
 
@@ -75,6 +76,10 @@ fun ImportPlaylistView(viewModel: PlaylistImportViewModel, addToAll: (String) ->
         Spacer(Modifier.height(25.dp))
 
         RoundBorderButtonsView(stringResource(id = R.string.save_as_playlist)) {
+            if (viewModel.playlistTrackers.size <= 0) {
+                noSongs.toast()
+                return@RoundBorderButtonsView
+            }
             addPlaylistData = true
         }
 

@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -19,14 +18,14 @@ import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.userplaylis
 import com.rizwansayyed.zene.domain.ImportPlaylistInfoData
 import com.rizwansayyed.zene.domain.ImportPlaylistTrackInfoData
 import com.rizwansayyed.zene.domain.MusicData
+import com.rizwansayyed.zene.domain.likedSpotify
 import com.rizwansayyed.zene.domain.toPlaylistInfo
 import com.rizwansayyed.zene.domain.toPlaylists
+import com.rizwansayyed.zene.domain.toSpotifyLiked
 import com.rizwansayyed.zene.domain.toTrack
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.player.utils.Utils.addAllPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -70,15 +69,9 @@ class PlaylistImportViewModel @Inject constructor(
             usersPlaylists = DataResponse.Error(it)
         }.collectLatest {
             playlistTrackers.clear()
-
             val list = it.toPlaylistInfo(PlaylistImportersType.SPOTIFY) ?: emptyList()
             usersPlaylists = DataResponse.Success(list)
-
-            list.forEachIndexed { i, item ->
-                if (i == 0) {
-                    spotifyPlaylistTrack(item)
-                }
-            }
+            spotifyPlaylistTrack(toSpotifyLiked())
         }
     }
 
@@ -146,27 +139,33 @@ class PlaylistImportViewModel @Inject constructor(
             playlistTrackers.clear()
 
             try {
-                val lists = spotifyUserAPI.playlistTrack(item.id, 0).first()
+                val lists = if (item.id == likedSpotify) spotifyUserAPI.userLiked(50).first()
+                else spotifyUserAPI.playlistTrack(item.id, 0).first()
                 lists.items?.forEach {
                     it?.toTrack()?.let { t -> playlistTrackers.add(t) }
                 }
 
-                var page = 0
+                val run = (lists.total ?: 0) / 50
+                repeat(run) {
+                    if (it > 0) try {
+                        val listsOffset = if (item.id == likedSpotify)
+                            spotifyUserAPI.userLiked(it).first()
+                        else spotifyUserAPI.playlistTrack(item.id, it).first()
 
-                repeat(((lists.total ?: 0) / 50)) {
-                    if (page > 0) {
-                        val listsOffset =
-                            spotifyUserAPI.playlistTrack(item.id ?: "", page * 50).first()
-                        listsOffset.items?.forEach {
-                            it?.toTrack()?.let { t -> playlistTrackers.add(t) }
+                        listsOffset.items?.forEach { item ->
+                            item?.toTrack()?.let { t -> playlistTrackers.add(t) }
                         }
+                    } catch (e: Exception) {
+                        e.message
                     }
-                    page += 1
                 }
 
             } catch (e: Exception) {
                 e.message
             }
+
+            playlistTrackJob?.cancel()
+            playlistTrackJob = null
         }
     }
 
@@ -214,8 +213,12 @@ class PlaylistImportViewModel @Inject constructor(
                             var info = roomDb.songInfo(it?.songId ?: "").first()
                             if (info == null) {
                                 info = PlaylistSongsEntity(
-                                    it?.songId ?: "", "${saved.id},", it?.name, it?.artists,
-                                    it?.thumbnail, System.currentTimeMillis()
+                                    it?.songId ?: "",
+                                    "${saved.id},",
+                                    it?.name,
+                                    it?.artists,
+                                    it?.thumbnail,
+                                    System.currentTimeMillis()
                                 )
                                 roomDb.insert(info).collect()
                             } else {
@@ -227,10 +230,8 @@ class PlaylistImportViewModel @Inject constructor(
                             roomDb.insert(saved).collect()
 
                             done += 1
-                            songMenu = if (done == v.size)
-                                DataResponse.Empty
-                            else
-                                DataResponse.Loading
+                            songMenu = if (done == v.size) DataResponse.Empty
+                            else DataResponse.Loading
                         }
                     }
                 }

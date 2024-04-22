@@ -49,10 +49,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-fun startPlaylistImportActivity(spotify: PlaylistImportersType) {
+fun startPlaylistImportActivity(type: PlaylistImportersType) {
     Intent(context, PlaylistImportActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        putExtra(Intent.EXTRA_TEXT, spotify)
+        putExtra(Intent.EXTRA_TEXT, type)
         context.startActivity(this)
     }
 }

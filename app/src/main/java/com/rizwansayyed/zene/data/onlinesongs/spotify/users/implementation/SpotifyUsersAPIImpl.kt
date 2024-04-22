@@ -16,8 +16,12 @@ class SpotifyUsersAPIImpl @Inject constructor(
         emit(spotifyAPI.userPlaylist(spotifyToken.first()))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun userLiked(limit: Int) = flow {
+        emit(spotifyAPI.userLiked(spotifyToken.first(), offset = limit))
+    }.flowOn(Dispatchers.IO)
 
-    override suspend fun playlistTrack(playlistId :String, offset: Int) = flow {
+
+    override suspend fun playlistTrack(playlistId: String, offset: Int) = flow {
         emit(spotifyAPI.userPlaylistTrack(spotifyToken.first(), playlistId, offset))
     }.flowOn(Dispatchers.IO)
 

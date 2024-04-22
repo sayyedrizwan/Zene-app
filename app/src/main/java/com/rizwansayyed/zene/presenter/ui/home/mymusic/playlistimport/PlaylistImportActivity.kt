@@ -18,9 +18,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +46,7 @@ import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.MainColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.LoadingStateBar
+import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType.*
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.view.ImportPlaylistView
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.view.PlaylistListView
@@ -66,9 +70,8 @@ class PlaylistImportActivity : ComponentActivity() {
 
     private val playlistImportViewModel: PlaylistImportViewModel by viewModels()
     private val homeNavViewModel: HomeNavViewModel by viewModels()
-    private val playerViewModel: PlayerViewModel by viewModels()
 
-
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         transparentStatusAndNavigation()
         super.onCreate(savedInstanceState)
@@ -81,8 +84,6 @@ class PlaylistImportActivity : ComponentActivity() {
 
         setContent {
             ZeneTheme {
-                val coroutine = rememberCoroutineScope()
-                var offset by remember { mutableIntStateOf(140) }
                 var startAddingSongToPlaylist by remember { mutableStateOf("") }
                 val noSongFound = stringResource(R.string.no_song_found_please_check_internet)
 
@@ -108,22 +109,31 @@ class PlaylistImportActivity : ComponentActivity() {
                             }
 
                         item {
-                            Spacer(Modifier.height(300.dp))
+                            Spacer(Modifier.height(400.dp))
                         }
                     }
 
-                    Column(
-                        Modifier
-                            .align(Alignment.BottomCenter)
-                            .animateContentSize()
-                            .offset(y = offset.dp)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
-                            .background(MainColor), Arrangement.Center, Alignment.CenterHorizontally
+                    BottomSheetScaffold(
+                        {
+                            Column(
+                                Modifier
+                                    .animateContentSize()
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                                    .background(MainColor),
+                                Arrangement.Center,
+                                Alignment.CenterHorizontally
+                            ) {
+                                PlaylistListView(playlistImportViewModel, type)
+
+                                Spacer(Modifier.height(30.dp))
+                            }
+                        },
+                        Modifier.align(Alignment.BottomCenter),
+                        sheetContainerColor = MainColor,
+                        sheetContentColor = MainColor,
+                        sheetPeekHeight = 100.dp
                     ) {
-                        PlaylistListView(playlistImportViewModel, offset, type) {
-                            offset = if (offset == 0) 140 else 0
-                        }
                     }
 
                     LaunchedEffect(Unit) {
