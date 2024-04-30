@@ -104,7 +104,6 @@ class ArtistsViewModel @Inject constructor(
         }
     }
 
-
     fun startArtistsRadioPlaylist(artistsName: String) = viewModelScope.launch(Dispatchers.IO) {
         if (radioStatus == DataResponse.Loading) return@launch
 
