@@ -86,7 +86,7 @@ fun ArtistsMainCards(artists: ArtistsShortInfo, homeNav: HomeNavViewModel) {
             .clip(RoundedCornerShape(13.dp))
     ) {
         AsyncImage(
-            artists.info.image, artists.info.name,
+            artists.info.hdImage(), artists.info.name,
             Modifier.fillMaxSize(), contentScale = ContentScale.Crop
         )
 

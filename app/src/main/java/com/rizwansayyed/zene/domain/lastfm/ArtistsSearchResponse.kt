@@ -102,6 +102,10 @@ data class LastFMArtist(
         val w1: Int?,
         val w2: Int?
     )
+
+    fun hdImage(): String {
+        return "https://lastfm.freetls.fastly.net/i/u/${image?.substringAfterLast("/")}"
+    }
 }
 
 data class ArtistsShortInfo(

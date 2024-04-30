@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.onlinesongs.lastfm.implementation
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager
 import com.rizwansayyed.zene.data.onlinesongs.cache.responseCache
 import com.rizwansayyed.zene.data.onlinesongs.cache.returnFromCache2Hours
@@ -94,6 +95,7 @@ class LastFMImpl @Inject constructor(
                 imgId = it.next?.substringAfterLast("/")
             }
         }
+
         emit(list)
     }.flowOn(Dispatchers.IO)
 
