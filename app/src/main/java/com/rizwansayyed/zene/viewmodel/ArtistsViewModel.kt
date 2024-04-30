@@ -94,7 +94,7 @@ class ArtistsViewModel @Inject constructor(
         }.catch {
             artistsImage = DataResponse.Error(it)
         }.collectLatest {
-            artistsImage = DataResponse.Success(it?.image ?: "")
+            artistsImage = DataResponse.Success(it?.hdImage() ?: "")
             it?.let { i ->
                 searchImg(i, true)
                 artistsDesc(i)

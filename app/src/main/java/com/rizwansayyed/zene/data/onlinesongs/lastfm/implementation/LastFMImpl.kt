@@ -80,10 +80,10 @@ class LastFMImpl @Inject constructor(
 
     override suspend fun artistsImages(name: LastFMArtist?, limit: Int) = flow {
         val list = mutableListOf<String>()
-        var imgId = name?.image?.substringAfterLast("/")?.substringBeforeLast(".")
+        var imgId = name?.hdImage()?.substringAfterLast("/")?.substringBeforeLast(".")
 
         if (limit == 1) {
-            name?.image?.let { list.add(it) }
+            name?.hdImage()?.let { list.add(it) }
             emit(list)
             return@flow
         }
