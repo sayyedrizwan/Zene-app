@@ -183,8 +183,8 @@ object AppleMusicAPI {
 }
 
 object YoutubeAPI {
-    private const val ytLatestClientVersion = "2.20231219.04.00"
-    private const val ytMusicLatestClientVersion = "1.20231214.00.00"
+    private const val ytLatestClientVersion = "2.20240430.01.00"
+    private const val ytMusicLatestClientVersion = "1.20240424.01.00"
 
     const val YT_BASE_URL = "https://www.youtube.com/youtubei/v1/"
     const val YT_MAIN_GUIDE = "guide"
