@@ -4,8 +4,8 @@ targetSDK = "34"
 minSDK = "24"
 
 #app version start
-currentVersionCode = "62"
-currentVersionName = "3.1.071"
+currentVersionCode = "63"
+currentVersionName = "3.1.075"
 #app version end
 
 
@@ -50,7 +50,7 @@ notix-ads-version = "0.1.86"
 
 
 #plugins
-plugin-android-app-version = "8.2.1"
+plugin-android-app-version = "8.4.0"
 plugin-kotlin-android = "1.9.21"
 plugin-hilt = "2.51"
 plugin-ksp = "1.9.21-1.0.16"
@@ -171,7 +171,7 @@ glide-transformations = { group = "jp.wasabeef", name = "glide-transformations",
 
 
 #ads
-play-services-ads-lite = { group = "com.google.android.gms", name = "play-services-ads-lite", version.ref = "ads-version" }
+play-services-ads-lite = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "ads-version" }
 
 #credentials
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-id-version" }

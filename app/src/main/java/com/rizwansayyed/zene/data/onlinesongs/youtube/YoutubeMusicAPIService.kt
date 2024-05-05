@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.domain.yt.BrowserIdYTResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeChannelVideoResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicAllSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicMainSearchResponse
+import com.rizwansayyed.zene.domain.yt.YoutubeMusicNextSongsResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicRelatedResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicReleaseResponse
 import com.rizwansayyed.zene.domain.yt.YoutubeMusicSongDetailResponse
@@ -50,11 +51,9 @@ interface YoutubeMusicAPIService {
         @Body body: RequestBody,
         @Query("ctoken") ctoken: String,
         @Query("continuation") continuation: String,
-        @Query("itct") itct: String,
-        @Query("key") key: String,
         @Query("type") type: String = "next",
         @Query("prettyPrint") prettyPrint: Boolean = false,
-    ): YoutubeMusicAllSongsResponse
+    ): YoutubeMusicNextSongsResponse
 
     @POST(YT_NEXT_API)
     suspend fun youtubeNextSearchResponse(

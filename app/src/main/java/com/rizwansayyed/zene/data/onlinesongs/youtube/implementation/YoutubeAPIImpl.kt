@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.onlinesongs.youtube.implementation
 
 
+import android.util.Log
 import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedEntity
 import com.rizwansayyed.zene.data.db.artistsfeed.FeedPostType
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.userIpDetails
@@ -35,6 +36,8 @@ import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchAllSongsJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicSearchSuggestionJsonBody
 import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicUpNextJsonBody
 import com.rizwansayyed.zene.data.onlinesongs.config.implementation.RemoteConfigInterface
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicEmptyBody
+import com.rizwansayyed.zene.data.utils.YoutubeAPI.ytMusicNextSearchJsonBody
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.ArtistsFanDataCache
 import com.rizwansayyed.zene.domain.IpJsonResponse
@@ -361,7 +364,6 @@ class YoutubeAPIImpl @Inject constructor(
         val key = remoteConfig.allApiKeys()?.music ?: ""
 
         var token = ""
-        var clickParams = ""
 
         fun addItems(shelf: MusicShelfRendererSongs.Content?) {
             val thumbnail = shelf?.musicResponsiveListItemRenderer?.thumbnail
@@ -387,20 +389,26 @@ class YoutubeAPIImpl @Inject constructor(
 
             c?.musicShelfRenderer?.continuations?.forEach { i ->
                 token = i?.nextContinuationData?.continuation ?: ""
-                clickParams = i?.nextContinuationData?.clickTrackingParams ?: ""
             }
         }
 
-        if (token.isNotEmpty() && clickParams.isNotEmpty()) {
-//            val res = youtubeMusicAPI.youtubeMoreSearchAllSongsResponse(
-//                ytMusicNextSearchJsonBody(ip), token, token, clickParams, key
-//            )
-//
-//            res.contents?.tabbedSearchResultsRenderer?.tabs?.first()?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { c ->
-//                c?.musicShelfRenderer?.contents?.forEach { shelf ->
-//                    addItems(shelf)
-//                }
-//            }
+        if (token.isNotEmpty()) {
+            val res = youtubeMusicAPI
+                .youtubeMoreSearchAllSongsResponse(ytMusicEmptyBody(ip), token, token)
+
+            res.continuationContents?.musicShelfContinuation?.contents?.forEach { c ->
+                val thumbnail = c?.musicResponsiveListItemRenderer?.thumbnail
+                    ?.musicThumbnailRenderer?.thumbnail?.thumbnailURL()
+
+                val name = c?.musicResponsiveListItemRenderer?.names()?.first
+                val songId = c?.musicResponsiveListItemRenderer?.names()?.second
+                val artists = c?.musicResponsiveListItemRenderer?.getArtists()
+
+                val m = MusicData(
+                    thumbnail ?: "", name, artists, songId, MusicType.MUSIC
+                )
+                list.add(m)
+            }
         }
 
         emit(list)
