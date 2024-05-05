@@ -196,6 +196,7 @@ object Utils {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             data = Uri.fromParts("package", context.packageName, null)
         }
+        v?.toast()
         context.startActivity(intent)
     }
 

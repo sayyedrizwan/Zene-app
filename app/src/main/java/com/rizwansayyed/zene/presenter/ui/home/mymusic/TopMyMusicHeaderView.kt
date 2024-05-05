@@ -98,7 +98,7 @@ fun TopMyMusicHeader(userAuth: UserAuthData?) {
 
 
 @Composable
-fun LinkedToBrowser(userAuth: UserAuthData?) {
+fun LinkedToBrowser() {
     var scanLoginDialog by remember { mutableStateOf(false) }
 
     LazyRow(

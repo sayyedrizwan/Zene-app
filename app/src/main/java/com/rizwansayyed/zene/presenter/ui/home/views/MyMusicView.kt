@@ -77,7 +77,7 @@ fun MyMusicView() {
         }
 
         item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            LinkedToBrowser(userAuth)
+            LinkedToBrowser()
         }
         item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             HistoryItemsList(myMusic)

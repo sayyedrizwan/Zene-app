@@ -31,12 +31,10 @@ class GoogleSignInUtils(
     private val serverId =
         "248438081408-7c3iha16b9b1ea99hm7lt9mvp826c4c3.apps.googleusercontent.com"
 
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(serverId)
-        .requestEmail()
-        .build()
+    private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(serverId).requestEmail().build()
 
-    val mGoogleSignInClient = GoogleSignIn.getClient(c, gso)
+    private val mGoogleSignInClient = GoogleSignIn.getClient(c, gso)
 
     private val credentialManager = CredentialManager.create(c)
 

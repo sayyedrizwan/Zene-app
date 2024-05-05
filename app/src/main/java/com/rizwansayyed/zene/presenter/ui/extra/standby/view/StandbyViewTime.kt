@@ -218,7 +218,7 @@ fun StandbyViewTime() {
 fun BatteryStatusLevel(batteryLevel: Int) {
     Box {
         CircularProgressIndicator(
-            progress = (batteryLevel.toFloat() / 100),
+            progress = { (batteryLevel.toFloat() / 100) },
             modifier = Modifier
                 .offset(y = 2.dp)
                 .width(35.dp)
