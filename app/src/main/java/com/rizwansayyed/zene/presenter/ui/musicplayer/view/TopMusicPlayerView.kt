@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.presenter.ui.musicplayer.view
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.musicPlayerData
 import com.rizwansayyed.zene.domain.MusicPlayerData
 import com.rizwansayyed.zene.domain.MusicType
+import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.ui.SmallIcons
 import com.rizwansayyed.zene.presenter.ui.TextSemiBold
 import com.rizwansayyed.zene.presenter.ui.musicplayer.utils.Utils
@@ -87,7 +89,6 @@ fun TopPlayerHeader(showedOnLockScreen: Boolean, p: MusicPlayerData?) {
             SmallIcons(R.drawable.ic_more_menu, 0, 10) {
                 dropDownMenu = !dropDownMenu
             }
-
         else
             Box {
                 SmallIcons(R.drawable.ic_more_menu, 25, 10) {
@@ -95,7 +96,9 @@ fun TopPlayerHeader(showedOnLockScreen: Boolean, p: MusicPlayerData?) {
                 }
 
                 Column(Modifier.offset(x = (-120).dp, y = 0.dp)) {
-                    DropdownMenu(dropDownMenu, { dropDownMenu = false }) {
+                    DropdownMenu(
+                        dropDownMenu, { dropDownMenu = false }, Modifier.background(DarkGreyColor)
+                    ) {
                         DropdownMenuItem({ TextSemiBold(ringtone) }, onClick = {
                             dropDownMenu = false
                             Intent(activity, SetRingtoneActivity::class.java).apply {
