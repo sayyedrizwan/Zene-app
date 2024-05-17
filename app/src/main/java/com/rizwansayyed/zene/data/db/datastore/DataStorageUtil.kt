@@ -14,6 +14,7 @@ object DataStorageUtil {
     val SELECTED_FAVOURITE_ARTISTS_SONGS = stringPreferencesKey("selected_favourite_artists_songs")
     val SEARCH_HISTORY_LIST = stringPreferencesKey("search_history_list")
     val DO_SHOW_SPLASH_SCREEN = booleanPreferencesKey("do_show_splash_screen")
+    val IS_USER_EVER_RATED_APP = booleanPreferencesKey("is_user_ever_rated_app")
     val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
     val FAVOURITE_RADIO_LIST = stringPreferencesKey("favourite_radio_list")
     val MUSIC_PLAYER_DATA = stringPreferencesKey("music_player_data")

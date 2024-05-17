@@ -438,4 +438,23 @@ object Utils {
             setPackage(c.packageName)
         }
     }
+
+    fun shareFeedback() {
+        Intent(Intent.ACTION_SEND).apply {
+            setType("plain/text")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(OFFICIAL_EMAIL))
+            putExtra(Intent.EXTRA_SUBJECT, "Feedback")
+            putExtra(Intent.EXTRA_TEXT, "")
+            flags = FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(this)
+        }
+    }
+
+    fun openAppOnPlayStore(){
+        Intent(Intent.ACTION_VIEW).apply {
+            flags = FLAG_ACTIVITY_NEW_TASK
+            data = Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+            context.startActivity(this)
+        }
+    }
 }

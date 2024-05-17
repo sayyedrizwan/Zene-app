@@ -31,12 +31,12 @@ import com.rizwansayyed.zene.utils.Utils.OFFICIAL_ADS_PAGE
 import com.rizwansayyed.zene.utils.Utils.OFFICIAL_EMAIL
 import com.rizwansayyed.zene.utils.Utils.OFFICIAL_INSTAGRAM_ACCOUNTS
 import com.rizwansayyed.zene.utils.Utils.customBrowser
+import com.rizwansayyed.zene.utils.Utils.shareFeedback
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
 
 
 @Composable
 fun FollowUs() {
-    val context = LocalContext.current.applicationContext
     Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
         Spacer(Modifier.height(100.dp))
         SmallIcons(icon = R.drawable.ic_instagram, 26, 0) {
@@ -47,14 +47,7 @@ fun FollowUs() {
         TextThin(stringResource(R.string.follow_us_on_instagram))
         Spacer(Modifier.height(10.dp))
         TextThin(stringResource(R.string.share_your_feedback), Modifier.clickable {
-            Intent(Intent.ACTION_SEND).apply {
-                setType("plain/text")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(OFFICIAL_EMAIL))
-                putExtra(Intent.EXTRA_SUBJECT, "Feedback")
-                putExtra(Intent.EXTRA_TEXT, "")
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(this)
-            }
+            shareFeedback()
         })
         Spacer(Modifier.height(10.dp))
         TextThin(stringResource(R.string.advertise_with_us), Modifier.clickable {

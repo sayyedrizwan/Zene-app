@@ -135,7 +135,7 @@ fun SongsYouMayLikeList(itemList: List<List<MusicData>>) {
     itemList.forEach { d ->
         LazyRow(Modifier.fillMaxWidth()) {
             itemsIndexed(d) { i, item ->
-                SongYouMayLikeItems(i, item, itemList.flatten())
+                SongYouMayLikeItems(i, item, d)
             }
         }
     }

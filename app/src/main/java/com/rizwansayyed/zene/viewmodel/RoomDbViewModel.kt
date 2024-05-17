@@ -76,6 +76,10 @@ class RoomDbViewModel @Inject constructor(
             }
     }
 
+    suspend fun roomDBList(): List<RecentPlayedEntity> {
+       return roomDBImpl.readRecentPlay(10).first()
+    }
+
 
     var songsYouMayLike by mutableStateOf<DataResponse<List<MusicData>>>(DataResponse.Empty)
         private set

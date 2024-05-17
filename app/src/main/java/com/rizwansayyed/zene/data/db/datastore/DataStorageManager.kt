@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DOWNLOAD_APP_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.DO_SHOW_SPLASH_SCREEN
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.FAVOURITE_RADIO_LIST
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IP_JSON
+import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.IS_USER_EVER_RATED_APP
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LAST_SYNC_TIME
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.LOGIN_USER_DATA
 import com.rizwansayyed.zene.data.db.datastore.DataStorageUtil.MUSIC_PLAYER_DATA
@@ -106,6 +107,12 @@ object DataStorageManager {
         get() = context.dataStore.data.map { it[DO_SHOW_SPLASH_SCREEN] ?: true }
         set(v) = runBlocking {
             context.dataStore.edit { it[DO_SHOW_SPLASH_SCREEN] = v.first() }
+        }
+
+    var isUserEverRatedApp: Flow<Boolean>
+        get() = context.dataStore.data.map { it[IS_USER_EVER_RATED_APP] ?: false }
+        set(v) = runBlocking {
+            context.dataStore.edit { it[IS_USER_EVER_RATED_APP] = v.first() }
         }
 
 

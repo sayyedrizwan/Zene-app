@@ -137,7 +137,7 @@ fun SettingsView(player: ExoPlayer, alarmManagerToPlaySong: AlarmManagerToPlaySo
 
         Spacer(Modifier.height(70.dp))
 
-        OfflineModesSettings()
+//        OfflineModesSettings()
 
         SongQualitySettings()
 
@@ -531,11 +531,7 @@ fun TimePickerDialog(close: () -> Unit) {
     val timePickerState =
         rememberTimePickerState(selectedHour, selectedMinute, true)
 
-    AlertDialog(
-        close, Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(size = 12.dp))
-    ) {
+    AlertDialog(close, {
         Column(
             Modifier
                 .background(androidx.compose.ui.graphics.Color.LightGray.copy(alpha = 0.3f))
@@ -562,10 +558,13 @@ fun TimePickerDialog(close: () -> Unit) {
                 }
             }
         }
-    }
+    }, Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(size = 12.dp)),
+        containerColor = MaterialTheme.colorScheme.surface)
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchSongBottomSheet(currentSongInfo: MusicData?, close: () -> Unit) {
     val homeApiViewModel: HomeApiViewModel = hiltViewModel()

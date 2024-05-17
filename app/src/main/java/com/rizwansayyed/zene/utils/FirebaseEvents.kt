@@ -69,6 +69,8 @@ object FirebaseEvents {
         CHANGE_SONG_TRACK_ITEM,
         OPEN_INSTAGRAM_ACCOUNT,
         SHARE_APP_VIA_DIALOG,
+        RATING_CLICK_FEEDBACK,
+        RATING_CLICK_APP_STORE,
     }
 
 

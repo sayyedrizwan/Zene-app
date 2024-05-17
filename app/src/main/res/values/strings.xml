@@ -305,4 +305,7 @@
     <string name="need_some_help_from_your_guys">Calling All Music Lovers! Zene needs your Help</string>
     <string name="zene_help_dialog">Hey there! Have you tried Zene yet? It\'s an awesome music app that\'s completely free, with no annoying popup or audio ads to disrupt your listening experience. We\'ve put a lot of effort and money into making it great, but we do need a little help spreading the word. \n\nWe\'ve added a small ad on the Zene website and app to cover our server and database costs. We don\'t have a big budget for advertising on major platforms, so we\'re relying on our users to help us grow. By simply sharing Zene with your friends and family, you can help us build the Zene family and give free music to everyone. </string>
     <string name="zene_share">Discover Zene 🎶 an Ad-free music app \n🆓 Enjoy free music for life and many more amazing features. Get now</string>
+    <string name="do_you_like_this_app">Loving your free music? We\'d love to hear your thoughts! 😊</string>
+    <string name="share_your_feedback_to_improve">Help us improve! Share your Feedback</string>
+    <string name="review_on_play_store_help_us_to_grow">Review on Play Store. It help\'s us to grow!</string>
 </resources>

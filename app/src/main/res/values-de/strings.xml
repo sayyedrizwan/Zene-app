@@ -305,4 +305,7 @@
     <string name="need_some_help_from_your_guys">Aufruf an alle Musikliebhaber! Zene braucht deine Hilfe</string>
     <string name="zene_help_dialog">Hallo! Hast du Zene schon ausprobiert? Es handelt sich um eine fantastische Musik-App, die völlig kostenlos ist und keine lästigen Popup- oder Audio-Anzeigen enthält, die Ihr Hörerlebnis stören könnten. Wir haben viel Mühe und Geld investiert, um es großartig zu machen, aber wir brauchen ein wenig Hilfe, um es bekannt zu machen. \n\nWir haben eine kleine Anzeige auf der Zene-Website und -App hinzugefügt, um unsere Server- und Datenbankkosten zu decken. Wir haben kein großes Budget für Werbung auf großen Plattformen und verlassen uns daher darauf, dass unsere Nutzer uns beim Wachstum unterstützen. Indem Sie Zene einfach mit Ihren Freunden und Ihrer Familie teilen, können Sie uns helfen, die Zene-Familie aufzubauen und allen kostenlose Musik zur Verfügung zu stellen.</string>
     <string name="zene_share">Entdecken Sie Gene 🎶, eine werbefreie Musik-App, \n🆓 und genießen Sie lebenslange kostenlose Musik und viele weitere tolle Funktionen. Holen Sie sich jetzt</string>
+    <string name="do_you_like_this_app">Du liebst deine kostenlose Musik? Wir würden gerne Ihre Meinung hören! 😊</string>
+    <string name="share_your_feedback_to_improve">Hilf uns zu verbessern! Teilen Sie Ihr Feedback</string>
+    <string name="review_on_play_store_help_us_to_grow">Rezension im Play Store. Es hilft uns zu wachsen!</string>
 </resources>

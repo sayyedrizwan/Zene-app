@@ -60,6 +60,7 @@ import com.rizwansayyed.zene.domain.MusicType.*
 import com.rizwansayyed.zene.presenter.theme.DarkGreyColor
 import com.rizwansayyed.zene.presenter.theme.ZeneTheme
 import com.rizwansayyed.zene.presenter.ui.dialog.IntentsDialogView
+import com.rizwansayyed.zene.presenter.ui.dialog.RatingDialogView
 import com.rizwansayyed.zene.presenter.ui.home.feed.ArtistsFeedView
 import com.rizwansayyed.zene.presenter.ui.home.mood.MoodMusic
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportActivity
@@ -119,16 +120,14 @@ import kotlin.time.Duration.Companion.seconds
 // can you replicate blur image as in-build
 // make fcm better
 
-// edit their name and profile
-
-//in future
+// in future
+// faster sync songs you may like and songs to explore.
 // add insta shop items on artists page.
 // group music listeners via wifi and bluetooth
 // song info in song menu
 // song recognization
 // backup and sync
 // add stories, fb posts to show on feed
-// group playing
 
 // do something like rewind -> https://play.google.com/store/apps/details?id=com.zh.musictimetravel
 
@@ -222,8 +221,9 @@ class MainActivity : ComponentActivity() {
 
                 IntentsDialogView()
 
-                if (doSplashScreen) MainSplashView()
+                RatingDialogView()
 
+                if (doSplashScreen) MainSplashView()
 
                 BackHandler {
                     coroutine.launch(Dispatchers.IO) {
