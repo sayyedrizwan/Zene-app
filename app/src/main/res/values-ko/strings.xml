@@ -305,5 +305,7 @@
     <string name="need_some_help_from_your_guys">음악 애호가 여러분! 제네가 도움이 필요해요</string>
     <string name="zene_help_dialog">안녕하세요! 제네를 이미 사용해 보셨나요? 제네는 완전히 무료이며, 귀찮은 팝업 광고나 오디오 광고가 없어 음악 감상을 방해하지 않습니다. 훌륭한 앱을 만들기 위해 많은 노력과 비용을 투자했지만, 口コミ을 퍼트리는 데 약간의 도움이 필요합니다. \n\n제네 웹사이트와 앱에 작은 광고를 추가하여 서버 및 데이터베이스 비용을 충당하고 있습니다. 주요 플랫폼에서 광고 비용을 쓸 수 없기 때문에 사용자 여러분의 도움을 필요로 합니다. 친구 및 가족과 제네를 공유하기만 하면 제네 가족을 만들고 모든 사람에게 무료 음악을 제공할 수 있습니다.</string>
     <string name="zene_share">제네를 만나보세요! 광고 없는 음악 앱 \n🆓 평생 무료 음악을 즐기고 더 많은 멋진 기능들을 만나보세요. 지금 다운로드</string>
-
+    <string name="do_you_like_this_app">무료 음악을 좋아하시나요? 우리는 여러분의 생각을 듣고 싶습니다! 😊</string>
+    <string name="share_your_feedback_to_improve">개선할 수 있도록 도와주세요! 피드백을 공유하세요</string>
+    <string name="review_on_play_store_help_us_to_grow">Play Store 에서 검토하세요. 우리의 성장에 도움이 됩니다!</string>
 </resources>

@@ -305,4 +305,7 @@
     <string name="need_some_help_from_your_guys">Amantes da música, uni-vos! O Zené precisa da sua ajuda</string>
     <string name="zene_help_dialog">Olá! Já experimentou o Zené? É um aplicativo de música incrível, totalmente gratuito, sem pop-ups irritantes ou anúncios de áudio para interromper sua experiência de audição. Investimos muito esforço e dinheiro para torná-lo excelente, mas precisamos de um pouco de ajuda para divulgá-lo. \n\n Adicionamos um pequeno anúncio no site e no aplicativo Zené para cobrir nossos custos de servidor e banco de dados. Não temos um grande orçamento para publicidade nas principais plataformas, então contamos com nossos usuários para nos ajudar a crescer. Ao simplesmente compartilhar o Zené com seus amigos e familiares, você pode nos ajudar a construir a família Zené e oferecer música gratuita a todos.</string>
     <string name="zene_share">Descubra o Zené  Um aplicativo de música sem anúncios \n🆓 Curta música gratuita para sempre e muitos outros recursos incríveis. Baixe agora</string>
+    <string name="do_you_like_this_app">Amando sua música grátis? Adoraríamos ouvir sua opinião! 😊</string>
+    <string name="share_your_feedback_to_improve">Ajude-nos a melhorar! Compartilhe seu feedback</string>
+    <string name="review_on_play_store_help_us_to_grow">Revisão na Play Store. Isso nos ajuda a crescer!</string>
 </resources>
