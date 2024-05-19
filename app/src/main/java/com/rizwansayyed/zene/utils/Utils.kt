@@ -107,7 +107,6 @@ object Utils {
         const val ARTIST_URL_DIFFERENTIATE = "/a/"
         const val RADIO_URL_DIFFERENTIATE = "/radio/"
 
-
         fun appUrlSongShare(id: String): String {
             val changeIdToOurs = simpleEncode(id.trim())
             return "$APP_URL$SONG_URL_DIFFERENTIATE$changeIdToOurs".trim()
