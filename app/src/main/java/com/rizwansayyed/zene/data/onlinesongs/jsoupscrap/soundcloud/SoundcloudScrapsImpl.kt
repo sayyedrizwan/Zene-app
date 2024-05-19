@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.utils.GeniusURL.geniusMusicSearch
 import com.rizwansayyed.zene.data.utils.RentAdvisorSubtitles.RENT_ADVISER_BASE_URL
 import com.rizwansayyed.zene.data.utils.RentAdvisorSubtitles.searchOnRentAdviser
 import com.rizwansayyed.zene.data.utils.SoundCloudAPI.SOUND_CLOUD_CLIENT_ID
+import com.rizwansayyed.zene.data.utils.SoundCloudAPI.SOUND_CLOUD_MAIN_BASE_URL
 import com.rizwansayyed.zene.data.utils.moshi
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicPlayerList
@@ -25,9 +26,9 @@ import javax.inject.Inject
 class SoundcloudScrapsImpl @Inject constructor() : SoundcloudScrapImplInterface {
 
     override suspend fun getClientId() = flow {
-        val response = jsoupResponseData(SOUND_CLOUD_CLIENT_ID)
+        val response = jsoupResponseData(SOUND_CLOUD_MAIN_BASE_URL)
         val jsoup = Jsoup.parse(response!!)
-        val clientId = jsoup.html().substringAfter(",client_id:&quot;").substringBefore("&quot;")
+        val clientId = jsoup.html().substringAfter("clientId\":\"").substringBefore("\",\"")
         emit(clientId)
     }.flowOn(Dispatchers.IO)
 }
