@@ -163,7 +163,7 @@ class LastFMImpl @Inject constructor(
         val key = remoteConfig.allApiKeys()
 
         jsoup.select("td.chartlist-name").forEachIndexed { index, element ->
-            if (index > 10) return@forEachIndexed
+            if (index > 11) return@forEachIndexed
             val songName = "${element.text()} - $artistsName"
             val songs = youtubeMusic.musicInfoSearch(songName, ip, key?.music ?: "")
             songs?.let { songsLists.add(it) }

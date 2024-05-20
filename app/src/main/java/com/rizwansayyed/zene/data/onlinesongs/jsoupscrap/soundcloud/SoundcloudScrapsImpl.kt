@@ -28,7 +28,7 @@ class SoundcloudScrapsImpl @Inject constructor() : SoundcloudScrapImplInterface 
     override suspend fun getClientId() = flow {
         val response = jsoupResponseData(SOUND_CLOUD_MAIN_BASE_URL)
         val jsoup = Jsoup.parse(response!!)
-        val clientId = jsoup.html().substringAfter("clientId\":\"").substringBefore("\",\"")
+        val clientId = jsoup.html().substringAfter("\"clientId\":\"").substringBefore("\",\"")
         emit(clientId)
     }.flowOn(Dispatchers.IO)
 }
