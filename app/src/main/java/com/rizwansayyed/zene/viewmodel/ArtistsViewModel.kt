@@ -267,7 +267,7 @@ class ArtistsViewModel @Inject constructor(
 
 
     private fun searchData(q: String) = viewModelScope.launch(Dispatchers.IO) {
-        youtubeAPI.searchData("${q} latest songs").onStart {
+        youtubeAPI.searchData("$q latest songs").onStart {
             searchData = DataResponse.Loading
         }.catch {
             searchData = DataResponse.Error(it)

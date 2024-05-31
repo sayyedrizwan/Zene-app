@@ -98,8 +98,6 @@ class PlayerWebView(
             builtInZoomControls = false
             javaScriptEnabled = true
             allowFileAccess = true
-            databaseEnabled = true
-            domStorageEnabled = true
             setGeolocationEnabled(false)
         }
         loadUrl()
