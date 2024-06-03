@@ -302,10 +302,15 @@
     <string name="share_your_feedback">Comparte tus comentarios</string>
     <string name="sponsor">patrocinar</string>
     <string name="advertise_with_us">Anúnciate con nosotros</string>
-    <string name="need_some_help_from_your_guys">Calling All Music Lovers! Zene needs your Help</string>
-    <string name="zene_help_dialog">Hey there! Have you tried Zene yet? It\'s an awesome music app that\'s completely free, with no annoying popup or audio ads to disrupt your listening experience. We\'ve put a lot of effort and money into making it great, but we do need a little help spreading the word. \n\nWe\'ve added a small ad on the Zene website and app to cover our server and database costs. We don\'t have a big budget for advertising on major platforms, so we\'re relying on our users to help us grow. By simply sharing Zene with your friends and family, you can help us build the Zene family and give free music to everyone. </string>
+    <string name="need_some_help_from_your_guys">Calling All Music Lovers! Zené needs your Help</string>
+    <string name="zene_help_dialog">Hey there! Have you tried Zené yet? It\'s an awesome music app that\'s completely free, with no annoying popup or audio ads to disrupt your listening experience. We\'ve put a lot of effort and money into making it great, but we do need a little help spreading the word. \n\nWe\'ve added a small ad on the Zené website and app to cover our server and database costs. We don\'t have a big budget for advertising on major platforms, so we\'re relying on our users to help us grow. By simply sharing Zené with your friends and family, you can help us build the Zené family and give free music to everyone. </string>
     <string name="zene_share">Descubra Gene 🎶, una aplicación de música sin publicidad. Disfrute de música gratis de por vida y muchas más funciones sorprendentes. Obtener ahora</string>
     <string name="do_you_like_this_app">Te encanta tu música gratis? ¡Nos encantaría escuchar tu opinión! 😊</string>
     <string name="share_your_feedback_to_improve">¡Ayúdanos a mejorar! Comparte tus comentarios</string>
     <string name="review_on_play_store_help_us_to_grow">Reseña en Play Store. ¡Nos ayuda a crecer!</string>
+    <string name="donate_now_or_become_a_part_of_zene">Ayúdanos con una donación \n o \n Forma parte de la comunidad interna de Zené.</string>
+    <string name="donate_now_or_become_a_part_of_zene_desc">¡Hola! ¿Aún no has probado Zené? Es una fantástica aplicación de música completamente gratuita, sin molestos anuncios emergentes o anuncios de audio que interrumpan tu experiencia auditiva. Hemos invertido mucho esfuerzo y dinero en hacerla genial, pero necesitamos un poco de ayuda. \n Si puedes donar, nos ayudará mucho a mantener nuestro servidor o únete a la comunidad interna de Zené donde comenzarás a cobrar una vez que la aplicación sea rentable o al menos comparte Zené con tus amigos y familiares, puedes ayudarnos a construir la familia Zené y brindar música gratis a todos.</string>
+    <string name="donate">Donar</string>
+    <string name="become_a_member">Hazte miembro</string>
+    <string name="share_with_your_family_and_friend">Comparte Zené con tus amigos y familiares</string>
 </resources>

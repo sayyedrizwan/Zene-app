@@ -116,36 +116,7 @@ fun HomeView() {
             HomepageTopView(homeNavModel)
         }
         item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            val share = stringResource(id = R.string.zene_share)
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp)) {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MainColor)
-                        .padding(6.dp)
-                ) {
-                    Spacer(Modifier.height(15.dp))
-                    TextBold(v = stringResource(id = R.string.need_some_help_from_your_guys))
-                    Spacer(Modifier.height(5.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        TextBold(v = "\uD83D\uDE4F", size= 30)
-                    }
-                    Spacer(Modifier.height(5.dp))
-                    TextRegular(v = stringResource(id = R.string.zene_help_dialog), size = 15)
-                    Spacer(Modifier.height(10.dp))
-                    RoundBorderButtonsView(stringResource(R.string.share)){
-                        registerEvent(FirebaseEvents.FirebaseEvent.SHARE_APP_VIA_DIALOG)
-                        Utils.shareTxt("$share \n$OFFICIAL_DOWNLOAD_APP")
-                    }
-                    Spacer(Modifier.height(10.dp))
-                }
-
-                Spacer(Modifier.height(30.dp))
-            }
+            SupportCardView()
         }
 
         item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {

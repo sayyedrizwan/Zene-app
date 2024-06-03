@@ -72,6 +72,8 @@ object Utils {
 
     const val OFFICIAL_EMAIL = "knocknock@zenemusic.co"
     const val OFFICIAL_ADS_PAGE = "https://zenemusic.co/adswithus"
+    const val ZENE_BUY_ME_A_COFFEE = "https://bit.ly/3XphmuL"
+    const val ZENE_BUY_ME_A_COFFEE_MEMBERSHIP = "https://bit.ly/3wQav2B"
     const val OFFICIAL_PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
     const val OFFICIAL_DOWNLOAD_APP = "https://www.zenemusic.co/download"
     const val OFFICIAL_INSTAGRAM_ACCOUNTS = "https://www.instagram.com/zene__music/"

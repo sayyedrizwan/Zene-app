@@ -308,4 +308,9 @@
     <string name="do_you_like_this_app">무료 음악을 좋아하시나요? 우리는 여러분의 생각을 듣고 싶습니다! 😊</string>
     <string name="share_your_feedback_to_improve">개선할 수 있도록 도와주세요! 피드백을 공유하세요</string>
     <string name="review_on_play_store_help_us_to_grow">Play Store 에서 검토하세요. 우리의 성장에 도움이 됩니다!</string>
+    <string name="donate_now_or_become_a_part_of_zene">기부를 통해 도와주세요 \n 또는 \n 제네 내부 커뮤니티에 가입하세요.</string>
+    <string name="donate_now_or_become_a_part_of_zene_desc">안녕하세요! 아직 제네를 사용해보지 않으셨나요? 제네는 완전히 무료이며 성가신 팝업 광고나 오디오 광고가 귀하의 청취 경험을 방해하지 않는 훌륭한 음악 앱입니다. 훌륭한 앱을 만들기 위해 많은 노력과 비용을 투자했지만 약간의 도움이 필요합니다. \n 기부를 해주시면 서버 유지 관리에 큰 도움이 될 것입니다. 혹은 앱 수익 창출 시 수익을 얻을 수 있는 제네 내부 커뮤니티에 가입하거나 친구 및 가족과 제네를 공유하는 것만으로도 제네 가족을 만들고 모든 사람에게 무료 음악을 제공하는 데 도움이 될 수 있습니다.</string>
+    <string name="donate">기부</string>
+    <string name="become_a_member">멤버 가입</string>
+    <string name="share_with_your_family_and_friend">친구 및 가족과 제네 공유</string>
 </resources>
