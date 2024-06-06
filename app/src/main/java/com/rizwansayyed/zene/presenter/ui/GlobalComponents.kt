@@ -421,6 +421,7 @@ fun SearchEditTextView(
             fontSize = 17.sp,
             fontFamily = urbanistFamily,
             fontWeight = FontWeight.SemiBold,
+            color = Color.White
         ),
         trailingIcon = {
             if (listener != null)
@@ -466,6 +467,7 @@ fun TransparentEditTextView(
             fontSize = 17.sp,
             fontFamily = urbanistFamily,
             fontWeight = FontWeight.SemiBold,
+            color = Color.White
         )
     )
 }
