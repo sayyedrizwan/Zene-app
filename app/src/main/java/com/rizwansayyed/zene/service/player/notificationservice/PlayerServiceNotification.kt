@@ -55,6 +55,7 @@ class PlayerServiceNotification @Inject constructor(
         notificationManager.createNotificationChannel(channel)
     }
 
+    @Throws(Exception::class)
     override fun buildNotification(playerService: PlayerService) {
         n.setMediaDescriptionAdapter(SimpleMediaNotificationAdapter(mediaSession.sessionActivity))
             .setSmallIconResourceId(R.drawable.logo_color)

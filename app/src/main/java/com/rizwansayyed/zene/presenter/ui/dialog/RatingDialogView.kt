@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -71,62 +72,67 @@ fun RatingDialogView() {
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
     if (showDialog)
-        AlertDialog({ showDialog = false }, {
-            Column(
-                Modifier
-                    .background(MainColor)
-                    .padding(6.dp),
-                Arrangement.Center, Alignment.CenterHorizontally
-            ) {
-                Spacer(Modifier.height(10.dp))
-
-                TextBold(
-                    stringResource(id = R.string.do_you_like_this_app),
-                    Modifier.fillMaxWidth(), true,
-                    size = 21
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                AndroidView({
-                    RatingBar(it).apply {
-                        rating = 0f
-                        max = 5
-                        stepSize = 1f
-                        setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
-                            if (fromUser) showButtonShareType = if (rating == 5f) 1 else 2
-                        }
-                    }
-                })
-
-                Spacer(Modifier.height(20.dp))
-
-                if (showButtonShareType != 0) TextButton(
-                    {
-                        if (showButtonShareType == 1) {
-                            openAppOnPlayStore()
-                            registerEvent(FirebaseEvents.FirebaseEvent.RATING_CLICK_APP_STORE)
-                        } else {
-                            registerEvent(FirebaseEvents.FirebaseEvent.RATING_CLICK_FEEDBACK)
-                            shareFeedback()
-                        }
-                        isUserEverRatedApp = flowOf(true)
-                        showDialog = false
-                    }, Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Black)
+        AlertDialog(
+            { showDialog = false },
+            {
+                Column(
+                    Modifier
+                        .background(MainColor)
+                        .padding(6.dp),
+                    Arrangement.Center, Alignment.CenterHorizontally
                 ) {
-                    TextRegular(
-                        if (showButtonShareType == 1) stringResource(R.string.review_on_play_store_help_us_to_grow)
-                        else stringResource(R.string.share_your_feedback_to_improve),
-                        Modifier.fillMaxWidth(), doCenter = true
+                    Spacer(Modifier.height(10.dp))
+
+                    TextBold(
+                        stringResource(id = R.string.do_you_like_this_app),
+                        Modifier.fillMaxWidth(), true,
+                        size = 21
                     )
+
+                    Spacer(Modifier.height(20.dp))
+
+                    AndroidView({
+                        RatingBar(it).apply {
+                            rating = 0f
+                            max = 5
+                            stepSize = 1f
+                            setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+                                if (fromUser) showButtonShareType = if (rating == 5f) 1 else 2
+                            }
+                        }
+                    })
+
+                    Spacer(Modifier.height(20.dp))
+
+                    if (showButtonShareType != 0) TextButton(
+                        {
+                            if (showButtonShareType == 1) {
+                                openAppOnPlayStore()
+                                registerEvent(FirebaseEvents.FirebaseEvent.RATING_CLICK_APP_STORE)
+                            } else {
+                                registerEvent(FirebaseEvents.FirebaseEvent.RATING_CLICK_FEEDBACK)
+                                shareFeedback()
+                            }
+                            isUserEverRatedApp = flowOf(true)
+                            showDialog = false
+                        }, Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Black)
+                    ) {
+                        TextRegular(
+                            if (showButtonShareType == 1) stringResource(R.string.review_on_play_store_help_us_to_grow)
+                            else stringResource(R.string.share_your_feedback_to_improve),
+                            Modifier.fillMaxWidth(), doCenter = true
+                        )
+                    }
+
+                    Spacer(Modifier.height(5.dp))
+
                 }
-
-                Spacer(Modifier.height(5.dp))
-
-            }
-        }, containerColor = MainColor)
+            },
+            containerColor = MainColor,
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        )
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->

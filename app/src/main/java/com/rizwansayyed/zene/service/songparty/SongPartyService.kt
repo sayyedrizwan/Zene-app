@@ -34,6 +34,8 @@ import com.rizwansayyed.zene.service.songparty.Utils.sendMyDetailsInParty
 import com.rizwansayyed.zene.service.songparty.Utils.sendRadioChangeData
 import com.rizwansayyed.zene.service.songparty.Utils.songPartyRadioSync
 import com.rizwansayyed.zene.service.songparty.Utils.songPartySongSync
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils.registerAppReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -78,6 +80,7 @@ class SongPartyService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 PARTY_ACTION_SONG_CHANGE -> CoroutineScope(Dispatchers.IO).launch {
+                    registerEvent(FirebaseEvents.FirebaseEvent.PARTY_SONG_CHANGE)
                     val songId = intent.getStringExtra(Intent.EXTRA_TEXT)
                     webSocket?.send(sendMusicChangeData(songId))
                     if (isActive) cancel()
@@ -90,11 +93,13 @@ class SongPartyService : Service() {
                 }
 
                 PARTY_ACTION_SONG_PLAY -> CoroutineScope(Dispatchers.IO).launch {
+                    registerEvent(FirebaseEvents.FirebaseEvent.PARTY_SONG_PLAY)
                     webSocket?.send(playMusicChangeData())
                     if (isActive) cancel()
                 }
 
                 PARTY_ACTION_SONG_PAUSE -> CoroutineScope(Dispatchers.IO).launch {
+                    registerEvent(FirebaseEvents.FirebaseEvent.PARTY_SONG_PAUSE)
                     webSocket?.send(pauseMusicChangeData())
                     if (isActive) cancel()
                 }
@@ -117,6 +122,8 @@ class SongPartyService : Service() {
         val roomId = intent?.getStringExtra(Intent.EXTRA_TEXT) ?: generatePartyRoomId()
         partyRoomId = roomId
         groupMusicUsersList.clear()
+
+        registerEvent(FirebaseEvents.FirebaseEvent.PARTY_SERVICE_RUNNING)
 
         IntentFilter().apply {
             addAction(PARTY_ACTION_SONG_CHANGE)

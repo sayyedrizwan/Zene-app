@@ -315,5 +315,7 @@
     <string name="donate">يتبرع</string>
     <string name="become_a_member">كن عضوا</string>
     <string name="share_with_your_family_and_friend">شارك زين مع صديقك وعائلتك</string>
-
+    <string name="update_available">تحديث متوفر!</string>
+    <string name="update_available_message">عزز تجربتك مع الميزات الجديدة والتحسينات. \n\nإصدار جديد من زين جاهز للتثبيت ، مليء بالميزات الجديدة المثيرة ، وتحسينات الأداء ، وإصلاحات الأخطاء. \n\nقم بالتحديث الآن للاستمتاع بأحدث وأروع إصدار! \n هل ترغب في التحديث الآن؟</string>
+    <string name="update">تحديث</string>
 </resources>

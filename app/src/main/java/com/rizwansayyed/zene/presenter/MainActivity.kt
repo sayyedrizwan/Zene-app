@@ -67,6 +67,7 @@ import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistIm
 import com.rizwansayyed.zene.presenter.ui.home.mymusic.playlistimport.PlaylistImportersType
 import com.rizwansayyed.zene.presenter.ui.home.online.radio.OnlineRadioViewAllView
 import com.rizwansayyed.zene.presenter.ui.home.views.AlbumView
+import com.rizwansayyed.zene.presenter.ui.home.views.AppUpdateView
 import com.rizwansayyed.zene.presenter.ui.home.views.ArtistsView
 import com.rizwansayyed.zene.presenter.ui.home.views.BottomNavBar
 import com.rizwansayyed.zene.presenter.ui.home.views.HomeOfflineView
@@ -218,6 +219,7 @@ class MainActivity : ComponentActivity() {
                 AnimatedVisibility(navViewModel.setImageAsWallpaper.isNotEmpty()) {
                     WallpaperSetView(navViewModel.setImageAsWallpaper)
                 }
+                AppUpdateView()
 
                 IntentsDialogView()
 

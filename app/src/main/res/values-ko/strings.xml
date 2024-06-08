@@ -313,4 +313,8 @@
     <string name="donate">기부</string>
     <string name="become_a_member">멤버 가입</string>
     <string name="share_with_your_family_and_friend">친구 및 가족과 제네 공유</string>
+    <string name="update_available">업데이트 가능!</string>
+    <string name="update_available_message">새로운 기능과 개선사항으로 더욱 즐거운 사용 경험을 만나보세요. \n\n새로운 버전의 음악 이 설치 준비가 완료되었습니다. 흥미로운 새로운 기능, 성능 향상 및 버그 수정 사항이 가득 차 있습니다. \n\n최신 버전을 즐기려면 지금 바로 업데이트하세요! \n 업데이트 하시겠습니까?</string>
+    <string name="update">업데이트</string>
+
 </resources>

@@ -94,7 +94,11 @@ class PlayerService : MediaSessionService() {
 
         registerEvent(FirebaseEvents.FirebaseEvent.STARTED_PLAYER_SERVICE)
 
-        playerNotification.buildNotification(this@PlayerService)
+        try {
+            playerNotification.buildNotification(this@PlayerService)
+        } catch (e: Exception) {
+            e.message
+        }
 
         player.addListener(playerListener)
         screenLockListener.register()
@@ -286,27 +290,27 @@ class PlayerService : MediaSessionService() {
     override fun onDestroy() {
         try {
             player.release()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStack()
         }
         try {
             mediaSession.release()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStack()
         }
         try {
             unregisterReceiver(receiver)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStack()
         }
         try {
             timeJob?.cancel()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStack()
         }
         try {
             screenLockListener.unregister()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStack()
         }
         super.onDestroy()

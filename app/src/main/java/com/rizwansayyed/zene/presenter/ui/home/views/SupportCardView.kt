@@ -60,7 +60,7 @@ fun SupportCardView() {
     val share = stringResource(id = R.string.zene_share)
 
     if (showDialog) {
-        Column {
+        Column(Modifier.padding(top = 70.dp)) {
             Column(
                 Modifier
                     .padding(6.dp)

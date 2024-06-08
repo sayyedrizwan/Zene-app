@@ -115,9 +115,6 @@ fun HomeView() {
         item(key = 1, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             HomepageTopView(homeNavModel)
         }
-        item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            SupportCardView()
-        }
 
         item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Column {

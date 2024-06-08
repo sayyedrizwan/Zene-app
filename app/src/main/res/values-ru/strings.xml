@@ -313,5 +313,7 @@
     <string name="donate">Пожертвовать</string>
     <string name="become_a_member">Стать участником</string>
     <string name="share_with_your_family_and_friend">Поделитесь Зене с друзьями и семьей</string>
-
+    <string name="update_available">Доступно обновление!</string>
+    <string name="update_available_message">Улучшите работу с помощью новых функций и улучшений. \n\nДоступна новая версия Зене, готовая к установке. Она содержит множество интересных новых функций, улучшений производительности и исправлений ошибок. \n\nОбновите сейчас, чтобы пользоваться самой новой и лучшей версией! \n Хотите обновиться сейчас?</string>
+    <string name="update">Обновить</string>
 </resources>

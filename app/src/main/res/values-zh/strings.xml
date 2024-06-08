@@ -314,4 +314,7 @@
     <string name="donate">捐赠</string>
     <string name="become_a_member">成为会员</string>
     <string name="share_with_your_family_and_friend">与朋友和家人分享 泽内</string>
+    <string name="update_available">更新可用!</string>
+    <string name="update_available_message">使用新功能和改进功能增强您的体验。 \n\n新版本的 泽内 已准备好安装，其中包含令人兴奋的新功能、性能增强和错误修复。 \n\n立即更新，享受最新最棒的版本！ \n 您现在要更新吗？</string>
+    <string name="update">更新</string>
 </resources>

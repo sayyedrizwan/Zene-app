@@ -193,4 +193,7 @@ dependencies {
     implementation(libs.credentials)
     implementation(libs.credentials.play.services)
     implementation(libs.google.signin.auth)
+
+
+    implementation(libs.app.update)
 }

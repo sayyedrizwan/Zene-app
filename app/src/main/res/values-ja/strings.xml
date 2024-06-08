@@ -309,11 +309,13 @@
     <string name="do_you_like_this_app">無料の音楽が気に入っていますか? ぜひご意見をお聞かせください。 😊</string>
     <string name="share_your_feedback_to_improve">改善にご協力ください! フィードバックを共有してください</string>
     <string name="review_on_play_store_help_us_to_grow">Playストアでレビュー。 それは私たちの成長に役立ちます!</string>
-
     <string name="donate_now_or_become_a_part_of_zene">寄付をして私たちを助けてください \n または \n ゼン 内部コミュニティに参加しましょう。</string>
     <string name="donate_now_or_become_a_part_of_zene_desc">こんにちは！ まだ ゼン を試していませんか？ ゼン は完全に無料の素晴らしい音楽アプリで、しつこいポップアップ広告やオーディオ広告がリスニング体験を邪魔しません。 素晴らしいアプリにするために多大な労力とお金をかけてきましたが、少しだけ支援が必要です。 \n 寄付していただければ、サーバーの維持に大変役立ちます。また、アプリが収益を上げたら報酬がもらえるようになる Zene 内部コミュニティに参加するか、友達や家族と Zene を共有するだけでも、ゼン ファミリーを築き、みんなに無料の音楽を提供するのに役立ちます。</string>
     <string name="donate">寄付する</string>
     <string name="become_a_member">メンバーになる</string>
     <string name="share_with_your_family_and_friend">友達や家族と ゼン を共有する</string>
+    <string name="update_available">アップデート利用可能!</string>
+    <string name="update_available_message">新機能と改善で、さらに使いやすくしましょう。 \n\nゼン の新しいバージョンがインストール可能です。わくわくする新機能、パフォーマンスの向上、バグ修正が満載されています。 \n\n最新バージョンをお楽しみいただくために、今すぐアップデートしましょう！ \nアップデートしますか？</string>
+    <string name="update">アップデート</string>
 
 </resources>

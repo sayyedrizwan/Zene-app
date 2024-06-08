@@ -71,6 +71,10 @@ object FirebaseEvents {
         SHARE_APP_VIA_DIALOG,
         RATING_CLICK_FEEDBACK,
         RATING_CLICK_APP_STORE,
+        PARTY_SERVICE_RUNNING,
+        PARTY_SONG_CHANGE,
+        PARTY_SONG_PLAY,
+        PARTY_SONG_PAUSE,
     }
 
 

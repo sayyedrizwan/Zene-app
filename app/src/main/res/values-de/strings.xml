@@ -313,4 +313,7 @@
     <string name="donate">Spenden</string>
     <string name="become_a_member">Mitglied werden</string>
     <string name="share_with_your_family_and_friend">Teilen Sie Zene mit Ihren Freunden und Ihrer Familie</string>
+    <string name="update_available">Update verfügbar!</string>
+    <string name="update_available_message">Verbessern Sie Ihr Erlebnis mit neuen Funktionen und Verbesserungen. \n\nEine neue Version von Zene steht zur Installation bereit, vollgepackt mit spannenden neuen Funktionen, Leistungsverbesserungen und Fehlerbehebungen. \n\nJetzt aktualisieren, um die neueste und beste Version zu genießen! \n Möchten Sie jetzt aktualisieren?</string>
+    <string name="update">Aktualisieren</string>
 </resources>
