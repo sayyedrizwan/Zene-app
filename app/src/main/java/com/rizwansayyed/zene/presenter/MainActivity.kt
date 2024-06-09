@@ -337,7 +337,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             delay(2.seconds)
             checkAndClearCache()
-            roomViewModel.downloadIfNotDownloaded()
+            roomViewModel.downloadCheckAndLyrics()
         }
 
         lifecycleScope.launch(Dispatchers.IO) {

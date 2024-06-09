@@ -15,6 +15,6 @@ abstract class OfflineDownloadedDB : RoomDatabase() {
 val MIGRATION_1_2_OFFLINE_DB = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE $OFFLINE_DOWNLOADED_SONGS_DB ADD COLUMN lyrics TEXT DEFAULT ''")
-        db.execSQL("ALTER TABLE $OFFLINE_DOWNLOADED_SONGS_DB ADD COLUMN subtitles BOOLEAN")
+        db.execSQL("ALTER TABLE $OFFLINE_DOWNLOADED_SONGS_DB ADD COLUMN subtitles INTEGER")
     }
 }

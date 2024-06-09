@@ -60,24 +60,28 @@ class OfflineDownloadManager @AssistedInject constructor(
                 inputData.getString(Intent.EXTRA_TEXT) ?: return@withContext Result.success()
 
             val defaultFolder = File(songDownloadPath, "$songId.mp3")
+            var onlySyncLyrics = false
 
             var offlineEntity = roomDb.offlineSongInfo(songId).first()
-            if (offlineEntity != null)
-                if (offlineEntity.progress == 100 && defaultFolder.exists()) return@withContext Result.success()
+            if (offlineEntity != null) if (offlineEntity.progress == 100 && defaultFolder.exists()) {
+                if (offlineEntity.subtitles == null) onlySyncLyrics = true
+                else return@withContext Result.success()
+            }
 
             val songInfo = youtubeAPI.songDetail(songId).first()
-            val m = MusicPlayerList(songInfo.name, songInfo.artists, songInfo.songId, songInfo.thumbnail)
+            val m = MusicPlayerList(
+                songInfo.name, songInfo.artists, songInfo.songId, songInfo.thumbnail
+            )
             val lyrics = subtitlesScraps.searchSubtitles(m).firstOrNull()
 
-            if (offlineEntity == null)
-                offlineEntity = OfflineDownloadedEntity(
-                    songInfo.songId ?: "",
-                    songInfo.name ?: "",
-                    songInfo.artists ?: "",
-                    songInfo.thumbnail ?: "",
-                    "", System.currentTimeMillis(), 0,
-                    lyrics?.lyrics ?: "", lyrics?.subtitles ?: false,
-                )
+            if (offlineEntity == null) offlineEntity = OfflineDownloadedEntity(
+                songInfo.songId ?: "",
+                songInfo.name ?: "",
+                songInfo.artists ?: "",
+                songInfo.thumbnail ?: "",
+                "", System.currentTimeMillis(), 0,
+                lyrics?.lyrics ?: "", lyrics?.subtitles ?: false,
+            )
             else {
                 offlineEntity.songName = songInfo.name ?: ""
                 offlineEntity.songArtists = songInfo.artists ?: ""
@@ -88,6 +92,8 @@ class OfflineDownloadManager @AssistedInject constructor(
             }
 
             roomDb.insert(offlineEntity).first()
+
+            if (onlySyncLyrics) return@withContext Result.success()
 
             val force = inputData.getBoolean(DOWNLOAD_SONG_WORKER, false)
 
@@ -112,7 +118,7 @@ class OfflineDownloadManager @AssistedInject constructor(
                         info?.let { r -> roomDb.insert(r).collect() }
                         if (isActive) cancel()
                     }
-                    if (status == true && progress == 100)  CoroutineScope(Dispatchers.IO).launch {
+                    if (status == true && progress == 100) CoroutineScope(Dispatchers.IO).launch {
                         copyFileAndDelete(file, defaultFolder)
 
                         info?.progress = progress
@@ -155,8 +161,8 @@ class OfflineDownloadManager @AssistedInject constructor(
 
                 val uploadWorkRequest =
                     OneTimeWorkRequestBuilder<OfflineDownloadManager>().setInputData(data.build())
-                        .addTag("${id}_download")
-                        .setInputData(data.build()).setConstraints(builder.build()).build()
+                        .addTag("${id}_download").setInputData(data.build())
+                        .setConstraints(builder.build()).build()
 
                 WorkManager.getInstance(context)
                     .enqueueUniqueWork("${id}_download", ExistingWorkPolicy.KEEP, uploadWorkRequest)

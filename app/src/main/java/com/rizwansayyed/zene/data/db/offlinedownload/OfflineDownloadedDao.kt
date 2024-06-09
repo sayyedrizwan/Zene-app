@@ -15,6 +15,9 @@ interface OfflineDownloadedDao {
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB ORDER BY timestamp DESC LIMIT $OFFSET_LIMIT")
     fun recentList(): Flow<List<OfflineDownloadedEntity>>
 
+    @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB WHERE subtitles is NULL")
+    suspend fun noLyricsSongs(): List<OfflineDownloadedEntity>
+
     @Query("SELECT * FROM $OFFLINE_DOWNLOADED_SONGS_DB ORDER BY timestamp DESC LIMIT :offset, $OFFSET_LIMIT")
     suspend fun recentList(offset: Int): List<OfflineDownloadedEntity>
 

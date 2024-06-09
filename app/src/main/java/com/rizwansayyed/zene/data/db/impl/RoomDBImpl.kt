@@ -142,6 +142,9 @@ class RoomDBImpl @Inject constructor(
         emit(offlineDownloaded.nonDownloadedSongs())
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun noLyricsSongs() = flow {
+        emit(offlineDownloaded.noLyricsSongs())
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun offlineDownloadedSongs() = flow {
         emit(offlineDownloaded.recentList())

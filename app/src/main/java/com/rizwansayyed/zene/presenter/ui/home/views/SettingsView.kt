@@ -322,11 +322,11 @@ fun OfflineDownloadSettings() {
     SettingsLayout(R.string.offline_download) {
         SettingsItems(R.string.wifi_mobile_data, !v) {
             doOfflineDownloadWifiSettings = flowOf(false)
-            roomDb.downloadIfNotDownloaded()
+            roomDb.downloadCheckAndLyrics()
         }
         SettingsItems(R.string.only_connect_to_wifi, v) {
             doOfflineDownloadWifiSettings = flowOf(true)
-            roomDb.downloadIfNotDownloaded()
+            roomDb.downloadCheckAndLyrics()
         }
     }
 }

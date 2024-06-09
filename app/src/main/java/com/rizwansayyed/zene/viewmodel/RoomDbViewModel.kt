@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,11 +13,9 @@ import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsEntity
 import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.selectedFavouriteArtistsSongs
 import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedEntity
-import com.rizwansayyed.zene.data.db.savedplaylist.playlist.SavedPlaylistEntity
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.domain.ArtistsFanData
 import com.rizwansayyed.zene.domain.MusicData
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.workmanager.ArtistsInfoWorkManager.Companion.startArtistsInfoWorkManager
 import com.rizwansayyed.zene.service.workmanager.OfflineDownloadManager.Companion.startOfflineDownloadWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,9 +23,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -59,7 +56,7 @@ class RoomDbViewModel @Inject constructor(
         }
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
-        downloadIfNotDownloaded()
+        downloadCheckAndLyrics()
         allPinnedUserLists()
 
         if (roomDBImpl.readRecentPlay(2).first().isNotEmpty()) {
@@ -77,7 +74,7 @@ class RoomDbViewModel @Inject constructor(
     }
 
     suspend fun roomDBList(): List<RecentPlayedEntity> {
-       return roomDBImpl.readRecentPlay(10).first()
+        return roomDBImpl.readRecentPlay(10).first()
     }
 
 
@@ -206,12 +203,17 @@ class RoomDbViewModel @Inject constructor(
         }
     }
 
-    fun downloadIfNotDownloaded() = viewModelScope.launch(Dispatchers.IO) {
+    fun downloadCheckAndLyrics() = viewModelScope.launch(Dispatchers.IO) {
         roomDBImpl.nonDownloadedSongs().catch { }.collectLatest {
             it.forEach { song ->
                 startOfflineDownloadWorkManager(song.songId)
             }
         }
+
+        roomDBImpl.noLyricsSongs().firstOrNull()?.forEach { song ->
+            startOfflineDownloadWorkManager(song.songId)
+        }
+
     }
 
     fun artistsFeeds() = viewModelScope.launch(Dispatchers.IO) {
