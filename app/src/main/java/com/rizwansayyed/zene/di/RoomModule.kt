@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedDB
 import com.rizwansayyed.zene.data.db.artistsfeed.ArtistsFeedDao
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsDB
 import com.rizwansayyed.zene.data.db.artistspin.PinnedArtistsDao
+import com.rizwansayyed.zene.data.db.offlinedownload.MIGRATION_1_2_OFFLINE_DB
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDB
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedDao
 import com.rizwansayyed.zene.data.db.recentplay.RecentPlayedDao
@@ -47,6 +48,7 @@ object RoomModule {
     @Singleton
     fun offlineDownloadedDao(@ApplicationContext context: Context): OfflineDownloadedDao =
         Room.databaseBuilder(context, OfflineDownloadedDB::class.java, OFFLINE_DOWNLOADED_SONGS_DB)
+            .addMigrations(MIGRATION_1_2_OFFLINE_DB)
             .fallbackToDestructiveMigration().build().dao()
 
 

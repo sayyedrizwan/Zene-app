@@ -89,7 +89,6 @@ fun MusicDialogView(homeNavModel: HomeNavViewModel) {
     val addInQueue = stringResource(R.string.add_in_queue)
     val share = stringResource(R.string.share)
     val offlineDownloadString = stringResource(R.string.offline_download)
-    val songInfo = stringResource(R.string.song_info)
     val makeFavourite = stringResource(R.string.mark_as_favourite)
     val removeFavourite = stringResource(R.string.rm_as_favourite)
 

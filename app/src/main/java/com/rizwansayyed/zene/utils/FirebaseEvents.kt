@@ -75,6 +75,7 @@ object FirebaseEvents {
         PARTY_SONG_CHANGE,
         PARTY_SONG_PLAY,
         PARTY_SONG_PAUSE,
+        OFFLINE_MUSIC_DOWNLOADS,
     }
 
 

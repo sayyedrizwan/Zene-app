@@ -16,6 +16,8 @@ data class OfflineDownloadedEntity(
     var songPath: String,
     var timestamp: Long,
     var progress: Int,
+    var lyrics: String?,
+    var subtitles: Boolean?,
 ) {
     fun asMusicData(): MusicData {
         return MusicData(thumbnail, songName, songArtists, songId, MusicType.MUSIC)

@@ -17,11 +17,15 @@ import com.rizwansayyed.zene.data.db.impl.RoomDBInterface
 import com.rizwansayyed.zene.data.db.offlinedownload.OfflineDownloadedEntity
 import com.rizwansayyed.zene.data.onlinesongs.downloader.implementation.SongDownloaderInterface
 import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.downloadAFileFromURL
+import com.rizwansayyed.zene.data.onlinesongs.jsoupscrap.subtitles.SubtitlesScrapsImplInterface
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImpl
 import com.rizwansayyed.zene.data.onlinesongs.youtube.implementation.YoutubeAPIImplInterface
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
+import com.rizwansayyed.zene.domain.MusicPlayerList
 import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.utils.FileDownloaderInChunks
+import com.rizwansayyed.zene.utils.FirebaseEvents
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvent
 import com.rizwansayyed.zene.utils.Utils.ExtraUtils.DOWNLOAD_SONG_WORKER
 import com.rizwansayyed.zene.utils.Utils.copyFileAndDelete
 import com.rizwansayyed.zene.utils.Utils.isConnectedToWifi
@@ -33,6 +37,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,6 +49,7 @@ class OfflineDownloadManager @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val songDownloader: SongDownloaderInterface,
+    private val subtitlesScraps: SubtitlesScrapsImplInterface,
     private val youtubeAPI: YoutubeAPIImplInterface,
     private val roomDb: RoomDBInterface
 ) : CoroutineWorker(appContext, workerParams) {
@@ -60,6 +66,8 @@ class OfflineDownloadManager @AssistedInject constructor(
                 if (offlineEntity.progress == 100 && defaultFolder.exists()) return@withContext Result.success()
 
             val songInfo = youtubeAPI.songDetail(songId).first()
+            val m = MusicPlayerList(songInfo.name, songInfo.artists, songInfo.songId, songInfo.thumbnail)
+            val lyrics = subtitlesScraps.searchSubtitles(m).firstOrNull()
 
             if (offlineEntity == null)
                 offlineEntity = OfflineDownloadedEntity(
@@ -67,13 +75,16 @@ class OfflineDownloadManager @AssistedInject constructor(
                     songInfo.name ?: "",
                     songInfo.artists ?: "",
                     songInfo.thumbnail ?: "",
-                    "", System.currentTimeMillis(), 0
+                    "", System.currentTimeMillis(), 0,
+                    lyrics?.lyrics ?: "", lyrics?.subtitles ?: false,
                 )
             else {
                 offlineEntity.songName = songInfo.name ?: ""
                 offlineEntity.songArtists = songInfo.artists ?: ""
                 offlineEntity.thumbnail = songInfo.thumbnail ?: ""
                 offlineEntity.timestamp = System.currentTimeMillis()
+                offlineEntity.lyrics = lyrics?.lyrics ?: ""
+                offlineEntity.subtitles = lyrics?.subtitles ?: false
             }
 
             roomDb.insert(offlineEntity).first()
@@ -82,6 +93,8 @@ class OfflineDownloadManager @AssistedInject constructor(
 
             val file = File(songDownloadPathTemp, "$songId.mp3")
             val info = roomDb.offlineSongInfo(songId).first()
+
+            registerEvent(FirebaseEvents.FirebaseEvent.OFFLINE_MUSIC_DOWNLOADS)
 
             if (!isConnectedToWifi() && doOfflineDownloadWifiSettings.first() && !force) {
                 info?.progress = -1

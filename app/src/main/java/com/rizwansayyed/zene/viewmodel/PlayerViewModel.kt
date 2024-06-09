@@ -105,6 +105,15 @@ class PlayerViewModel @Inject constructor(
 
     fun searchLyrics(d: MusicPlayerData) = viewModelScope.launch(Dispatchers.IO) {
         if (lyricsInfo?.songId == d.v?.songID) return@launch
+
+        val lyrics = roomDb.readLyrics(d.v?.songID ?: "").firstOrNull()
+        if ((lyrics?.lyrics ?: "").length > 3) {
+            lyricsInfo = GeniusLyricsWithInfo(
+                d.v?.songID ?: "", lyrics?.lyrics ?: "", "", lyrics?.subtitles ?: false
+            )
+            return@launch
+        }
+
         d.v?.let { data ->
             subtitlesScraps.searchSubtitles(data).onStart {
                 lyricsInfo = null
@@ -209,13 +218,15 @@ class PlayerViewModel @Inject constructor(
 
     fun addOfflineSong(player: MusicData) = viewModelScope.launch(Dispatchers.IO) {
         if (roomDb.offlineSongInfo(player.songId ?: "").first() != null) return@launch
+        val lyrics = subtitlesScraps.searchSubtitles(player.asMusicPlayerList()).firstOrNull()
 
         val offline = OfflineDownloadedEntity(
             player.songId ?: "",
             player.name ?: "",
             player.artists ?: "",
             player.thumbnail ?: "",
-            "", System.currentTimeMillis(), 0
+            "", System.currentTimeMillis(), 0,
+            lyrics?.lyrics, lyrics?.subtitles ?: false
         )
 
         roomDb.addOfflineSongDownload(offline).collect()
