@@ -302,6 +302,7 @@ class MainActivity : ComponentActivity() {
 
         doOpenMusicPlayer(intent)
         captureUrlInfo(intent)
+
     }
 
     private val networkChangeListener = object : ConnectivityManager.NetworkCallback() {
