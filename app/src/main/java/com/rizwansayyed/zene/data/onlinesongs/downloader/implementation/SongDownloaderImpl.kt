@@ -33,28 +33,28 @@ class SongDownloaderImpl @Inject constructor(private val saveFromDownloader: Sav
 
     override var downloadJob: Job? = null
     override suspend fun download(songId: String) = flow {
-        val yt = YTExtractor(context, true, LOGGING = false, retryCount = 2).apply {
-            extract(songId)
-        }
-
-        if (yt.state == State.SUCCESS) {
-            val ytData = yt.getYTFiles()?.getAudioOnly()
-            val url = when (songQualitySettings.first()) {
-                SongsQualityInfo.LOW_QUALITY.v -> ytData?.minBy {
-                    it.meta?.audioBitrate ?: 0
-                }?.url
-
-                SongsQualityInfo.HIGH_QUALITY_WIFI.v -> if (isConnectedToWifi())
-                    ytData?.maxBy { it.meta?.audioBitrate ?: 0 }?.url
-                else
-                    ytData?.minBy { it.meta?.audioBitrate ?: 0 }?.url
-
-                else -> ytData?.maxBy { it.meta?.audioBitrate ?: 0 }?.url
-
-            }
-            emit(url)
-        } else
-            emit("")
+        emit("https://zenemusic.co/api/sduapp?id=${songId}")
+//        val yt = YTExtractor(context, true, LOGGING = false, retryCount = 2).apply {
+//            extract(songId)
+//        }
+//        if (yt.state == State.SUCCESS) {
+//            val ytData = yt.getYTFiles()?.getAudioOnly()
+//            val url = when (songQualitySettings.first()) {
+//                SongsQualityInfo.LOW_QUALITY.v -> ytData?.minBy {
+//                    it.meta?.audioBitrate ?: 0
+//                }?.url
+//
+//                SongsQualityInfo.HIGH_QUALITY_WIFI.v -> if (isConnectedToWifi())
+//                    ytData?.maxBy { it.meta?.audioBitrate ?: 0 }?.url
+//                else
+//                    ytData?.minBy { it.meta?.audioBitrate ?: 0 }?.url
+//
+//                else -> ytData?.maxBy { it.meta?.audioBitrate ?: 0 }?.url
+//
+//            }
+//            emit(url)
+//        } else
+//            emit("")
     }.flowOn(Dispatchers.IO)
 
 
