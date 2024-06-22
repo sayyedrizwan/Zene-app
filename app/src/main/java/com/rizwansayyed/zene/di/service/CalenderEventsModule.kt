@@ -2,8 +2,6 @@ package com.rizwansayyed.zene.di.service
 
 import com.rizwansayyed.zene.data.utils.calender.CalenderEvents
 import com.rizwansayyed.zene.data.utils.calender.CalenderEventsInterface
-import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceAction
-import com.rizwansayyed.zene.service.player.playeractions.PlayerServiceActionInterface
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

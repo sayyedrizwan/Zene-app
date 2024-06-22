@@ -458,12 +458,16 @@ object Utils {
     }
 
     fun tempApiTests() = CoroutineScope(Dispatchers.IO).launch {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("https://www.zenemusic.co/api/mysql_tests")
-            .build()
-        client.newCall(request).execute().use { response ->
-            Log.d("TAG", "tempApiTests: ${response.body?.string()}")
+        try {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("https://www.zenemusic.co/api/mysql_tests")
+                .build()
+            client.newCall(request).execute()
+
+            FirebaseEvents.registerEvent(FirebaseEvents.FirebaseEvent.TEST_API_DB)
+        } catch (e: Exception) {
+            e.message
         }
     }
 }
