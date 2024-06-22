@@ -95,6 +95,7 @@ import com.rizwansayyed.zene.utils.Utils.AppUrl.urlUriType
 import com.rizwansayyed.zene.utils.Utils.checkAndClearCache
 import com.rizwansayyed.zene.utils.Utils.loadOpenAppAds
 import com.rizwansayyed.zene.utils.Utils.printStack
+import com.rizwansayyed.zene.utils.Utils.tempApiTests
 import com.rizwansayyed.zene.utils.Utils.timestampDifference
 import com.rizwansayyed.zene.viewmodel.HomeApiViewModel
 import com.rizwansayyed.zene.viewmodel.HomeNavViewModel
@@ -281,6 +282,7 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     delay(500)
                     showBottomNav = true
+                    tempApiTests()
                     delay(1.seconds)
                     keyboard?.hide()
                 }

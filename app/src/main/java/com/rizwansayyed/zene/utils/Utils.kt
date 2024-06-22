@@ -37,7 +37,6 @@ import com.rizwansayyed.zene.data.db.datastore.DataStorageManager.doShowSplashSc
 import com.rizwansayyed.zene.di.ApplicationModule.Companion.context
 import com.rizwansayyed.zene.domain.MusicType
 import com.rizwansayyed.zene.presenter.MainActivity
-import com.rizwansayyed.zene.presenter.util.UiUtils.toast
 import com.rizwansayyed.zene.service.PlayerService
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.encryptData
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.simpleEncode
@@ -45,13 +44,13 @@ import com.rizwansayyed.zene.utils.Utils.AdsId.OPEN_ADS_ID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -63,7 +62,6 @@ import java.util.Date
 import java.util.Locale
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 
 object Utils {
@@ -451,11 +449,21 @@ object Utils {
         }
     }
 
-    fun openAppOnPlayStore(){
+    fun openAppOnPlayStore() {
         Intent(Intent.ACTION_VIEW).apply {
             flags = FLAG_ACTIVITY_NEW_TASK
             data = Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
             context.startActivity(this)
+        }
+    }
+
+    fun tempApiTests() = CoroutineScope(Dispatchers.IO).launch {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("https://www.zenemusic.co/api/mysql_tests")
+            .build()
+        client.newCall(request).execute().use { response ->
+            Log.d("TAG", "tempApiTests: ${response.body?.string()}")
         }
     }
 }
