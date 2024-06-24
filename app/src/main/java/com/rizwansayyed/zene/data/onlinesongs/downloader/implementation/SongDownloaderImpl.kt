@@ -33,7 +33,7 @@ class SongDownloaderImpl @Inject constructor(private val saveFromDownloader: Sav
 
     override var downloadJob: Job? = null
     override suspend fun download(songId: String) = flow {
-        emit("https://zenemusic.co/api/sduapp?id=${songId}")
+        emit("https://www.zenemusic.co/api/sduapp?id=${songId}")
 //        val yt = YTExtractor(context, true, LOGGING = false, retryCount = 2).apply {
 //            extract(songId)
 //        }
