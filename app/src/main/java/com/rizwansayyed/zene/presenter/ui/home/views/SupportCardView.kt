@@ -59,8 +59,8 @@ fun SupportCardView() {
 
     val share = stringResource(id = R.string.zene_share)
 
-    if (showDialog) {
-        Column(Modifier.padding(top = 70.dp)) {
+//    if (showDialog) {
+        Column(Modifier.padding(top = 10.dp)) {
             Column(
                 Modifier
                     .padding(6.dp)
@@ -85,17 +85,17 @@ fun SupportCardView() {
 
                 Spacer(Modifier.height(30.dp))
 
-                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                    MusicActionButton(R.drawable.ic_donate_heart, R.string.donate) {
-                        Uri.parse(ZENE_BUY_ME_A_COFFEE).customBrowser()
-                    }
-
-                    Spacer(Modifier.height(10.dp))
-
-                    MusicActionButton(R.drawable.ic_crown_on, R.string.become_a_member) {
-                        Uri.parse(ZENE_BUY_ME_A_COFFEE_MEMBERSHIP).customBrowser()
-                    }
-                }
+//                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+//                    MusicActionButton(R.drawable.ic_donate_heart, R.string.donate) {
+//                        Uri.parse(ZENE_BUY_ME_A_COFFEE).customBrowser()
+//                    }
+//
+//                    Spacer(Modifier.height(10.dp))
+//
+//                    MusicActionButton(R.drawable.ic_crown_on, R.string.become_a_member) {
+//                        Uri.parse(ZENE_BUY_ME_A_COFFEE_MEMBERSHIP).customBrowser()
+//                    }
+//                }
                 Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                     MusicActionButton(
                         R.drawable.ic_share,
@@ -111,7 +111,7 @@ fun SupportCardView() {
             }
             Spacer(Modifier.height(50.dp))
         }
-    }
+//    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->

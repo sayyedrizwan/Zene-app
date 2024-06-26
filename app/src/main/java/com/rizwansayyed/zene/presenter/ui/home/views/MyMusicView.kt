@@ -140,9 +140,6 @@ fun MyMusicView() {
         item(key = 17, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             MyMusicDownloadView(homeNavViewModel)
         }
-        item(key = 18, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            SupportCardView()
-        }
 
         item(key = 100, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(200.dp))
