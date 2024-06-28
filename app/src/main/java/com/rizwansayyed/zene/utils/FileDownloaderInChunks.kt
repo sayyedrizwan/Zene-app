@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.File
 import java.io.IOException
 import java.io.RandomAccessFile
@@ -83,14 +84,16 @@ class FileDownloaderInChunks(
             .header("Range", "bytes=$startByte-$endByte")
             .build()
 
-        val response = client.newCall(request).execute()
-
-        if (!response.isSuccessful) {
-            done(null, false)
-            return
-        }
+        var response: Response? = null
 
         try {
+            response = client.newCall(request).execute()
+
+            if (!response.isSuccessful) {
+                done(null, false)
+                return
+            }
+
             val randomAccessFile = RandomAccessFile(destinationPath, "rw")
             randomAccessFile.seek(startByte)
 
@@ -104,7 +107,7 @@ class FileDownloaderInChunks(
             }
             updateProgressBar(destinationPath, totalFileSize)
         } finally {
-            response.body?.close()
+            response?.body?.close()
         }
     }
 }

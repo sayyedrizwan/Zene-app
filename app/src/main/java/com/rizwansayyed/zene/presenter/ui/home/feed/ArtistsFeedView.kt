@@ -71,11 +71,11 @@ fun ArtistsFeedView() {
             FeedText()
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 2, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(20.dp))
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 3, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             LazyRow(Modifier.fillMaxWidth()) {
                 items(artistsList, key = { m -> m.id ?: "" }) { a ->
                     PinnedArtistsList(a)
@@ -83,7 +83,7 @@ fun ArtistsFeedView() {
             }
         }
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 4, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(20.dp))
         }
 
@@ -120,7 +120,7 @@ fun ArtistsFeedView() {
         }
 
 
-        item(span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+        item(key = 100, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
             Spacer(Modifier.height(200.dp))
         }
     }
