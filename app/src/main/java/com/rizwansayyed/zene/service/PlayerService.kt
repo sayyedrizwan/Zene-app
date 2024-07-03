@@ -166,7 +166,6 @@ class PlayerService : MediaSessionService() {
         if (isActive) cancel()
     }
 
-
     private val playerListener = object : Player.Listener {
         override fun onPlayerErrorChanged(error: PlaybackException?) {
             super.onPlayerErrorChanged(error)

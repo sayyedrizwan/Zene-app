@@ -180,7 +180,6 @@ fun BottomNavImage(player: ExoPlayer) {
 
                 AsyncImage(p?.v?.thumbnail, p?.v?.songName, Modifier.size(50.dp))
 
-
                 if (isLoading)
                     SmallLoadingSpinner(Modifier.align(Alignment.BottomCenter))
                 else

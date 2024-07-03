@@ -131,11 +131,11 @@ fun HomeView() {
             }
         }
 
-        item(key = 5, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
-            Column {
-                CityRadioViewList()
-            }
-        }
+//        item(key = 5, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
+//            Column {
+//                CityRadioViewList()
+//            }
+//        }
 
 
         item(key = 6, span = { GridItemSpan(TOTAL_ITEMS_GRID) }) {
