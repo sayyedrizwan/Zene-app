@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.db.model
 
+
 data class UserInfoData(
     var id: Int?,
     var name: String?,
