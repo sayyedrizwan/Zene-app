@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.rizwansayyed.zene"
-    compileSdk = 34
+    namespace = libs.versions.packagename.get()
+    compileSdk = libs.versions.compilesdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.rizwansayyed.zene"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = libs.versions.packagename.get()
+        minSdk = libs.versions.minsdk.get().toInt()
+        targetSdk = libs.versions.compilesdk.get().toInt()
+        versionCode = libs.versions.appversion.get().toInt()
+        versionName = libs.versions.versionname.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -34,13 +34,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = libs.versions.kotlincompiler.get()
     }
     packaging {
         resources {
@@ -50,7 +51,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -66,4 +66,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.moshi)
 }
