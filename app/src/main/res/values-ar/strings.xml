@@ -1,321 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Arbic-->
-<resources>
-    <string name="app_name">زين</string>
-    <string name="zene_ads">إعلانات زين</string>
-    <string name="view_all">عرض الكل</string>
-    <string name="by_rs">بواسطة رضوان سيد</string>
-    <string name="by">بواسطة</string>
-    <string name="uploaded_on">تم التحميل في</string>
-    <string name="global_top_trending_artists">أفضل الفنانين الشائعين عالميًا</string>
-    <string name="gt_trending_songs">أفضل الأغاني العالمية الشائعة</string>
-    <string name="top_trending_songs_for_this_mood">أفضل الأغاني الشائعة لهذا المزاج</string>
-    <string name="radio_station_in_city">محطات الراديو في مدينتك</string>
-    <string name="artist_photos">صور الفنان</string>
-    <string name="song_related_photos">صور متعلقة بالأغاني</string>
-    <string name="upcoming_events">الفعاليات القادمة</string>
-    <string name="top_songs_in_c">أفضل الأغاني في %s</string>
-    <string name="fresh_added_songs">أغانٍ جديدة تمت إضافتها</string>
-    <string name="zene_playlist">قائمة تشغيل زين</string>
-    <string name="top_songs">أفضل الأغاني</string>
-    <string name="mood">مزاج</string>
-    <string name="trending_artists_in_country">الفنانون الرائجون في %s</string>
-    <string name="zene_mostly_most_played">اكتشف حاليًا الأغاني الأكثر تشغيلًا على زين</string>
-    <string name="listeners">المستمعين</string>
-    <string name="enable_lock_screen_to_show">يرجى أيضًا تمكين "عرض على شاشة القفل" و "عرض النافذة المنبثقة أثناء التشغيل في الخلفية" لإظهار عرض الموسيقى.</string>
-    <string name="lock_screen_permission_to_show">تفعيل الإذن لإظهار على شاشة القفل لإظهار عرض الموسيقى.</string>
-    <string name="stand_by_permission_to_show">تفعيل الإذن لإظهار وضع الاستعداد على شاشة القفل أثناء الشحن.</string>
-    <string name="songs_you_may_like_to_listen">الأغاني التي قد ترغب في الاستماع إليها</string>
-    <string name="speak_music_artists_album">تكلم عن اسم الموسيقى أو الفنان أو الألبوم للبحث</string>
-    <string name="similar_artists">فنانون مشابهون</string>
-    <string name="artists">فنانين</string>
-    <string name="artist_image">صورة الفنان</string>
-    <string name="select_alarm_time">حدد وقت المنبه</string>
-    <string name="alarm_song">نغمة المنبه</string>
-    <string name="song_thumbnail">م缩صة الأغنية</string>
-    <string name="albums">ألبومات</string>
-    <string name="saved_albums">الألبومات المحفوظة</string>
-    <string name="songs">أغانٍ</string>
-    <string name="your_favourite_artists">فنانيك المفضلين</string>
-    <string name="song_for_you_to_explore">أغنية لك لاستكشافها</string>
-    <string name="song">أغنية</string>
-    <string name="select_artists">اختيار الفنانين</string>
-    <string name="skip">تخطي</string>
-    <string name="latest_songs">أحدث الأغاني</string>
-    <string name="artist_news">أخبار الفنان</string>
-
-    <string name="select_from_favourite">حدد فنانيك المفضلين من القائمة.</string>
-    <string name="artists_lists_try_again_later">خطأ في الحصول على قائمة الفنانين. حاول مرة أخرى لاحقًا.</string>
-    <string name="songs_you_may_like">الأغاني التي قد ترغب في الاستماع إليها</string>
-    <string name="related_songs">أغاني ذات صلة</string>
-    <string name="artist_info">معلومات الفنان</string>
-    <string name="artist_merchandise">بضائع الفنان</string>
-    <string name="next">التالي</string>
-    <string name="get_started">البدء</string>
-    <string name="start_listening">ابدأ الاستماع</string>
-    <string name="enjoy_free_access_one">استمتع بالوصول المجاني إلى أكثر من مليار أغنية وفنان بدون إعلانات</string>
-    <string name="enjoy_free_access_two">احصل على أفضل الأغاني الموصى بها بناءً على تفضيلات أغانيك واكتشف موسيقى جديدة</string>
-    <string name="enjoy_free_access_three">قم بمزامنة Spotify و YouTube Music وقائمة تشغيل Apple Music وقم بمزامنة كل الموسيقى الخاصة بك</string>
-    <string name="internet_not_available">الانترنت غير متاح</string>
-    <string name="albums_for_you">ألبومات لك</string>
-    <string name="show_full_desc">اعرض الوصف الكامل</string>
-    <string name="hide_desc">إخفاء الوصف</string>
-    <string name="settings">إعدادات</string>
-    <string name="radio">راديو</string>
-    <string name="pin_with_finger_for_wallpaper">اضغط بإصبعين لتعديل الصورة لخلفية الشاشة</string>
-    <string name="live_broadcast">بث مباشر</string>
-    <string name="home">الرئيسية</string>
-    <string name="search">بحث</string>
-    <string name="my_music">مكتبتي</string>
-    <string name="no_lyrics_found">لم يتم العثور على كلمات الاغاني</string>
-    <string name="login_to_continue">تسجيل الدخول للمتابعة</string>
-    <string name="no_room_found_to_share">لم يتم العثور على غرفة لمشاركتها</string>
-    <string name="no_playlist_found">لم يتم العثور على قائمة تشغيل</string>
-    <string name="feed">تغذية</string>
-    <string name="launched_in">تم الإطلاق في</string>
-    <string name="search_music_artists_album">ابحث عن الموسيقى أو الفنان أو الألبوم</string>
-    <string name="search_radio">ابحث عن الراديو</string>
-    <string name="enter_more_then_3_char_to_search">أدخل أكثر من 3 أحرف للبحث</string>
-    <string name="search_history">سجل البحث</string>
-    <string name="radio_in_c">الراديو في %s</string>
-    <string name="radio_s_worldwide">بحث راديو عالمي</string>
-    <string name="no_radio_in_c">لم يتم العثور على راديو في بلدك</string>
-    <string name="no_radio_found_search_else">لم يتم العثور على راديو ، حاول البحث عن شيء آخر</string>
-    <string name="no_search_history">لا يوجد سجل بحث ، سيظهر تاريخ الطلبات هنا</string>
-    <string name="no_song_found">لم يتم العثور على أغنية</string>
-    <string name="no_radio_found">لم يتم العثور على راديو</string>
-    <string name="error_searching_try_again">خطأ في البحث. حاول مرة أخرى</string>
-    <string name="error_loading_data_try_again">خطأ في تحميل البيانات. حاول مرة أخرى</string>
-    <string name="add_to_playlist">أضف إلى قائمة التشغيل</string>
-    <string name="play">تشغيل</string>
-    <string name="play_song">تشغيل الأغنية</string>
-    <string name="play_radio">تشغيل الراديو</string>
-    <string name="playlists">قوائم التشغيل</string>
-    <string name="are_you_sure_want_to_save_it_as_a_playlist">هل أنت متأكد أنك تريد حفظه كقائمة تشغيل؟</string>
-    <string name="save_it_as_a_playlist_desc">ستتم إضافة هذه القائمة إلى قسم قوائم التشغيل في مكتبتي كقائمة تشغيل جديدة. ملحوظة! قد يحدث عدم تطابق عرضي لأغاني القائمة لأن Zene تعتمد على أسماء الأغاني والفنانين للمطابقة ، والتي قد تكون مختلفة قليلاً في تطبيقات الأغاني الأخرى ، مما قد يؤدي إلى عدم الدقة.</string>
-    <string name="error_loading_playlists">خطأ في تحميل قائمة التشغيل، ربما انتهت صلاحية تسجيل الدخول أو لا يعمل الإنترنت. يرجى المحاولة مرة أخرى لاحقًا.</string>
-    <string name="tracks">المقاطع الصوتية</string>
-    <string name="new_playlist">قائمة تشغيل جديدة</string>
-    <string name="create_new_playlist">إنشاء قائمة تشغيل جديدة</string>
-    <string name="error_creating_playlist">خطأ في إنشاء قائمة التشغيل، يرجى المحاولة مرة أخرى لاحقًا.</string>
-    <string name="playlist_created_successfully">تم إنشاء قائمة التشغيل بنجاح.</string>
-    <string name="playlist_name_already_in_use">اسم قائمة التشغيل مستخدم بالفعل</string>
-    <string name="playlist_title">عنوان قائمة التشغيل</string>
-    <string name="enter_a_valid_playlist_name">أدخل اسمًا صالحًا لقائمة التشغيل</string>
-    <string name="enter_playlist_name">أدخل اسم قائمة التشغيل لإنشاء واحدة</string>
-    <string name="play_next">تشغيل التالي</string>
-    <string name="add_in_queue">إضافة إلى قائمة الانتظار</string>
-    <string name="offline_download">تنزيل دون اتصال</string>
-    <string name="waiting_for_wifi">في انتظار شبكة Wi-Fi</string>
-    <string name="downloading__">جارٍ التنزيل…</string>
-    <string name="download">تنزيل</string>
-    <string name="set_as_ringtone">تعيين كنغمة رنين</string>
-    <string name="error_identifying_the_song">خطأ في تحديد الأغنية. حاول مرة أخرى لاحقًا.</string>
-    <string name="set_ringtone">تعيين نغمة رنين</string>
-    <string name="set_ringtone_desc">هل أنت متأكد أنك تريد تعيين الأغنية المحددة كنغمة رنين لك؟</string>
-    <string name="set_as_ringtone_desc">اصنع نغمة الرنين المثالية الخاصة بك بدون جهد باستخدام تطبيق Zene Music. يمكنك اختيار جزء من الأغنية من 30 ثانية إلى دقيقة واحدة. لتعيين الجزء المفضل لديك من الموسيقى كنغمة رنين لهاتفك ، تحتاج إلى اختيار جزء نغمة الموسيقى الذي تفضله أكثر.</string>
-    <string name="downloading_please_wait">جارٍ التنزيل… يُرجى الانتظار…</string>
-    <string name="offline_downloaded">تم التنزيل دون اتصال</string>
-    <string name="most_listened_songs_this_week">الأغاني الأكثر استماعًا هذا الأسبوع</string>
-    <string name="music_group_party">مجموعة موسيقى للحفلات</string>
-    <string name="most_listened_songs_this_month">الأغاني الأكثر استماعًا هذا الشهر</string>
-    <string name="show_playing_song_on_lock_screen">إظهار الأغنية التي يتم تشغيلها على شاشة القفل</string>
-    <string name="set_wallpaper_on_song_playing">تعيين خلفية على تشغيل الأغنية</string>
-    <string name="set_alarm_to_play_song">ضبط المنبه لتشغيل الأغنية</string>
-    <string name="pause_on_headphone_detach">إيقاف التشغيل عند فصل سماعة الرأس</string>
-    <string name="song_info">معلومات الأغنية</string>
-    <string name="close">إغلاق</string>
-    <string name="morning_song_alarm">منبه أغنية الصباح</string>
-    <string name="playing_as_morning_alarm_song">يتم تشغيل %s كأغنية منبه الصباح.</string>
-    <string name="_n_changed_the_radio_channel">%s غيّر قناة الراديو.</string>
-    <string name="_n_changed_the_song">%s غيّر الأغنية.</string>
-    <string name="_n_paused_the_song">%s أوقف الأغنية مؤقتًا.</string>
-    <string name="_n_start_playing_the_song">%s بدأ تشغيل الأغنية.</string>
-    <string name="_n_changed_the_song_to">%1$s غيّر الأغنية إلى %2$s.</string>
-    <string name="_n_changed_the_radio_channel_to">%1$s غيّر قناة الراديو إلى %2$s.</string>
-    <string name="_n_joined">%s انضم.</string>
-    <string name="_n_left">%s غادر.</string>
-    <string name="_n_has_left_the_song_party">%s غادر حفلة الأغاني.</string>
-    <string name="_n_have_also_joined_the_song_party">%s انضموا أيضًا إلى حفلة الأغاني.</string>
-    <string name="no_song_found_to_play_as_morning_alarm">لم يتم العثور على أغنية لتشغيلها كأغنية منبه الصباح.</string>
-    <string name="remove_current_song">إزالة الأغنية الحالية</string>
-    <string name="confirm">تأكيد</string>
-    <string name="search_the_song_you_want_to_play">ابحث عن الأغنية التي تريد تشغيلها</string>
-    <string name="song_is_already_set_as_alarm">الأغنية \'%s\' مضبوطة بالفعل كمنبه. سيؤدي إزالة الأغنية الحالية إلى تشغيل آخر أغنية استمعت إليها.</string>
-    <string name="no_alarm_is_set_alarm">لم يتم ضبط أي أغنية كمنبه. سيتم تشغيل آخر أغنية استمعت إليها.</string>
-    <string name="mark_as_favourite">إضافة إلى المفضلة</string>
-    <string name="rm_as_favourite">إزالة من المفضلة</string>
-    <string name="cancel">إلغاء</string>
-    <string name="zene_web">زين Web</string>
-    <string name="suggested_image">صورة مقترحة</string>
-    <string name="rm_radio_from_fav">إزالة الراديو من المفضلة</string>
-    <string name="remove">إزالة</string>
-    <string name="need_notification_p">يحتاج إلى إذن الإشعار لإظهار إشعار تشغيل الموسيقى</string>
-    <string name="are_you_sure_rm_radio_from_fav">هل أنت متأكد أنك تريد إزالة هذا الراديو من قائمة المفضلة لديك؟</string>
-    <string name="max_artists_you_can_add_is_30">في الوقت الحالي ، لا يمكنك تثبيت أكثر من 30 فنانًا في المرة الواحدة.</string>
-    <string name="pin">تثبيت</string>
-    <string name="unpin">إلغاء التثبيت</string>
-    <string name="share">مشاركة</string>
-    <string name="save_album">حفظ الألبوم</string>
-    <string name="remove_from_saved_List">إزالة من القائمة المحفوظة</string>
-    <string name="save_as_playlist">حفظ كقائمة تشغيل</string>
-    <string name="website">موقع الكتروني</string>
-    <string name="instagram">انستقرام</string>
-    <string name="facebook">فيسبوك</string>
-    <string name="youtube">يوتيوب</string>
-    <string name="snapchat">سناب شات</string>
-    <string name="tiktok">تيك توك</string>
-    <string name="store">متجر</string>
-    <string name="brand_page">صفحة العلامة التجارية</string>
-    <string name="twitter">تويتر</string>
-    <string name="pinned_by_users">تم تثبيته من قبل مستخدمين %s</string>
-    <string name="book">كتاب</string>
-    <string name="zene_music_player">Zene: مشغل موسيقى</string>
-    <string name="offline_mode">الوضع غير المتصل</string>
-    <string name="show_local_songs">إظهار الأغاني المحلية</string>
-    <string name="suggested_songs">الأغاني المقترحة</string>
-    <string name="offline_downloaded_songs">الأغاني التي تم تنزيلها دون اتصال</string>
-    <string name="song_quality">جودة بث الأغاني</string>
-    <string name="play_song_on_loop">تشغيل الأغنية بشكل متكرر</string>
-    <string name="autoplay_next_song">التشغيل التلقائي للأغنية التالية</string>
-    <string name="high_quality_on_wifi">جودة عالية على الواي فاي</string>
-    <string name="high_quality">جودة عالية</string>
-    <string name="low_quality">جودة منخفضة</string>
-    <string name="equalizer">المُعادل</string>
-    <string name="built_in_equalizer_not_found">لم يتم العثور على معادل مدمج.</string>
-    <string name="seek_button_timer">مؤقت زر البحث</string>
-    <string name="hide_seek_button">إخفاء زر البحث</string>
-    <string name="five_s_seek_button">زر بحث 5 ثانية</string>
-    <string name="ten_s_seek_button">زر بحث 10 ثانية</string>
-    <string name="ten_fifteen_seek_button">زر بحث 15 ثانية</string>
-    <string name="song_playback_speed">سرعة تشغيل الأغنية</string>
-    <string name="zero_two_five">0.25x</string>
-    <string name="zero_five">0.5x</string>
-    <string name="zero_seven_five">0.75x</string>
-    <string name="one_zero">1.0x (عادي)</string>
-    <string name="one_two_five">1.25x</string>
-    <string name="one_five">1.5x</string>
-    <string name="one_seven_five">1.75x</string>
-    <string name="two_zero">2.0x</string>
-    <string name="enable">تفعيل</string>
-    <string name="disable">تعطيل</string>
-    <string name="wifi_mobile_data">WiFi + بيانات الجوال</string>
-    <string name="only_connect_to_wifi">فقط عند الاتصال بشبكة Wi-Fi</string>
-    <string name="none">بلا</string>
-    <string name="clear_cache">مسح الكاش</string>
-    <string name="clear">مسح</string>
-    <string name="feedback">ملاحظات</string>
-    <string name="privacy_policy">سياسة الخصوصية</string>
-    <string name="lyrics">كلمات الاغاني</string>
-    <string name="artist_top_songs__">أفضل أغاني الفنان -></string>
-    <string name="switch_to_video">التبديل إلى الفيديو</string>
-    <string name="switch_to_music">التبديل إلى الموسيقى</string>
-    <string name="switch_to_lyrics_video">التبديل إلى فيديو الكلمات</string>
-    <string name="playing_in_loop">يتم التشغيل بشكل متكرر</string>
-    <string name="play_in_loop">تشغيل بشكل متكرر</string>
-    <string name="autoplay_off">التشغيل التلقائي للأغنية التالية معطل</string>
-    <string name="autoplay_is_on">التشغيل التلقائي قيد التشغيل</string>
-    <string name="no_video_found_try_again">لم يتم العثور على فيديو. يرجى المحاولة مرة أخرى لاحقًا.</string>
-    <string name="are_you_sure_want_to_rm_downloaded_song">هل أنت متأكد أنك تريد حذف الأغنية التي تم تنزيلها؟</string>
-    <string name="are_you_sure_want_to_download_from_mobile_data">هل أنت متأكد أنك تريد تنزيل الأغنية دون اتصال عبر بيانات الهاتف المحمول؟</string>
-    <string name="download_from_mobile_data_desc">لقد قمت بتمكين تنزيل الموسيقى دون اتصال عبر شبكة Wi-Fi فقط. هل أنت متأكد أنك تريد تنزيل هذه الأغنية دون اتصال باستخدام بيانات الجوال الخاصة بك؟</string>
-    <string name="clear_cache_sure">هل أنت متأكد أنك تريد مسح الكاش؟ لن يتم مسح أي بيانات شخصية محفظة.</string>
-    <string name="history">السجل</string>
-    <string name="load_more">تحميل المزيد</string>
-    <string name="no_song_in_your_history">لا توجد أغنية في سجلك</string>
-    <string name="no_offline_downloaded_song_available">لا توجد أغاني متوفرة للتنزيل دون اتصال</string>
-    <string name="sign_in_on_zene_web">تسجيل الدخول على Zene Web</string>
-    <string name="scan_qr_at_enjoy_sign_in">يمكنك الاستمتاع بموسيقى Zene المجانية على الويب و iOS و Windows و iPad وما إلى ذلك. فقط قم بزيارة %s واستمتع بالموسيقى وامسح رمز الاستجابة السريعة لمزامنة اقتراحاتك وقائمة التشغيل والسجل واقتراح الأغاني على موقع Zene الإلكتروني.</string>
-    <string name="menu">قائمة</string>
-    <string name="set_whole_image_as_home_screen_wallpaper">تعيين الصورة كاملة كخلفية للشاشة الرئيسية</string>
-    <string name="set_edited_image_as_home_screen_wallpaper">تعيين الصورة المعدلة كخلفية للشاشة الرئيسية</string>
-    <string name="set_whole_image_as_lock_screen_wallpaper">تعيين الصورة كاملة كخلفية شاشة القفل</string>
-    <string name="set_edited_image_as_lock_screen_wallpaper">تعيين الصورة المعدلة كخلفية شاشة القفل</string>
-    <string name="add_more_images">إضافة المزيد من الصور</string>
-    <string name="please_wait_setting_wallpaper">الرجاء الانتظار. يتم ضبط خلفية الشاشة...</string>
-    <string name="wallpaper_set_successfully">تم ضبط خلفية الشاشة بنجاح</string>
-    <string name="app_crashed">تعطل التطبيق ، يرجى المحاولة مرة أخرى أو مسح ذاكرة التخزين المؤقت للتطبيق</string>
-    <string name="all_songs_album_download_desc">سيتم تنزيل جميع أغاني هذا الألبوم وستكون متاحة دون اتصال. إذا تم تنزيل الأغاني بالفعل ، فلن يتم إعادة تنزيلها.</string>
-    <string name="news">أخبار</string>
-    <string name="set_as_wallpaper">تعيين كخلفية</string>
-    <string name="no_pinned_artists_yet">لا يوجد فنانين مثبتين بعد! قم بتثبيت الفنانين بالانتقال إلى ملفاتهم الشخصية لرؤية آخر موسيقاهم ومشاريعهم وأخبارهم في موجز الأخبار الخاص بك.</string>
-    <string name="no_update_available_right_now">لا يوجد تحديث متاح. الآن…</string>
-    <string name="no_ringtone_found_try_again_later">لم يتم العثور على نغمة رنين. حاول مرة اخرى لاحقا.</string>
-    <string name="playing_song_is_paused_for_ringtone">تم إيقاف تشغيل الأغنية حاليًا لنغمة الرنين. لتعيين نغمة الرنين.</string>
-    <string name="song_downloading_please_wait_sometimes_it_takes_little_while">يتم تنزيل الأغنية. الرجاء الانتظار.. في بعض الأحيان يستغرق الأمر بعض الوقت ، اعتمادًا على اتصال الإنترنت الخاص بك</string>
-    <string name="need_permission_to_set_the_ringtone">تحتاج إلى إذن لتعيين نغمة الرنين</string>
-    <string name="need_storage_permission_to_set_the_ringtone">تحتاج إلى إذن تخزين لتعيين نغمة الرنين</string>
-    <string name="set">تعيين</string>
-    <string name="error_setting_ringtone">خطأ في ضبط نغمة الرنين في جهازك. الرجاء المحاولة مرة أخرى لاحقا.....</string>
-    <string name="tap_to_discover_the_song">اضغط لاكتشاف / التعرف على الأغنية ......</string>
-    <string name="listening_">استماع…</string>
-    <string name="processing_the_song_please_wait">يتم معالجة الأغنية. الرجاء الانتظار.</string>
-    <string name="need_audio_permission_to_start_recognition_the_song">تحتاج إلى إذن الصوت لبدء التعرف على الأغنية</string>
-    <string name="unable_to_identify_the_music">تعذر تحديد الموسيقى</string>
-    <string name="try_again">حاول مرة أخرى</string>
-    <string name="start_a_group_party">ابدأ حفلة جماعية</string>
-    <string name="sign_in_for_song_group_party">تحتاج أولاً إلى تسجيل الدخول لبدء حفلة مجموعة الأغاني ولتصبح مضيفًا.</string>
-    <string name="continue_with_google">استمر مع google</string>
-    <string name="song_group_party_desc">خلق تجربة موسيقية لا تُنسى مع أصدقائك! ابدأ حفلة أغاني متزامنة ، حيث يمكن للجميع الانضمام والاستمتاع ومشاهدة مقاطع الفيديو الموسيقية معًا في انسجام تام. \ n \ n يمكن لمشاركة رابط الحفلة أن يجعل أي شخص ينضم إلى الحفلة ويمكن إجراء تغييرات في الأغاني.</string>
-    <string name="start_new_party">🎉 ابدأ حفلة جديدة </string>
-    <string name="disconnected_from_party">إذا انقطعت اتصالك بالحفلة ، يمكنك إعادة الانضمام باستخدام نفس الرابط</string>
-    <string name="start">ابدأ</string>
-    <string name="is_in_the_party">بالحفل</string>
-    <string name="no_one_is_at_the_party">🕺 لا يوجد احد في الحفلة </string>
-    <string name="leave_party">مغادرة الحفلة</string>
-    <string name="already_in_a_party">🥳🍹 بالفعل في حفلة </string>
-    <string name="stand_by_mode_while_charging">وضع الاستعداد أثناء الشحن</string>
-    <string name="need_permission_to_show_events_from_calender">يحتاج إلى إذن لعرض الأحداث من التقويم</string>
-    <string name="no_events_today">لا توجد أحداث اليوم</string>
-    <string name="today_events">أحداث اليوم</string>
-    <string name="import_playlist_from_spotify">استيراد قوائم التشغيل من Spotify</string>
-    <string name="import_playlist_from_youtube_music">استيراد قوائم التشغيل من Youtube Music</string>
-    <string name="import_playlist_from_apple_music">استيراد قوائم التشغيل من Apple Music</string>
-    <string name="login_to_your_spotify_account">تسجيل الدخول إلى حساب Spotify الخاص بك للحصول على جميع قوائم التشغيل</string>
-    <string name="login_to_your_yt_music_account">تسجيل الدخول إلى حساب YouTube Music الخاص بك للحصول على جميع قوائم التشغيل</string>
-    <string name="login_to_your_apple_music_account">تسجيل الدخول إلى حساب Apple Music الخاص بك للحصول على جميع قوائم التشغيل</string>
-    <string name="no_song_found_please_check_internet">لم يتم العثور على أغنية. يرجى التحقق من اتصال الإنترنت الخاص بك أو المحاولة بعد بعض الوقت.</string>
-    <string name="join_a_new_party">🎉 الاشتراك في حفلة جديدة </string>
-    <string name="join_a_new_party_new_desc">هل تريد الانضمام إلى حفلة. بعد الانضمام إلى الحفلة ، يمكنك بعد ذلك الحفاظ على تزامن الموسيقى مع المجموعة.</string>
-    <string name="join_a_new_party_old_desc">هل تريد الانضمام إلى حفلة جديدة. أنت بالفعل في حفلة جماعية وسيتم إزالتك من الحفلة الحالية.</string>
-    <string name="join">إنضم</string>
-    <string name="joining__">يتم الانضمام…</string>
-    <string name="happy">سعيد</string>
-    <string name="party">حفل</string>
-    <string name="angry">غاضب</string>
-    <string name="rock">روك</string>
-    <string name="stressed">مكتئب</string>
-    <string name="pop">بوب</string>
-    <string name="focused">مُركز</string>
-    <string name="workout">تمارين رياضية</string>
-    <string name="sleepy">نعسان</string>
-    <string name="feel_good">شعور جيد</string>
-    <string name="jazz">جاز</string>
-    <string name="romance">رومانسي</string>
-    <string name="sad">حزين</string>
-    <string name="top_playlists">أفضل قوائم التشغيل</string>
-    <string name="edit_profile">تعديل الملف الشخصي</string>
-    <string name="update_profile_picture">تحديث صورة الملف الشخصي</string>
-    <string name="error_loading_image">خطأ في تحميل الصورة</string>
-    <string name="error_uploading_image">خطأ في تحميل الصورة</string>
-    <string name="done">تـم</string>
-    <string name="follow_us_on_instagram">تابعنا على انستقرام</string>
-    <string name="error_while_login_google">خطأ أثناء تسجيل الدخول باستخدام google. حاول مرة أخرى لاحقا</string>
-    <string name="share_your_feedback">شارك بتعليقاتك</string>
-    <string name="sponsor">راعي</string>
-    <string name="advertise_with_us">أعلن معنا</string>
-    <string name="need_some_help_from_your_guys">نداء لجميع محبي الموسيقى! زين يحتاج الى مساعدتكم</string>
-    <string name="zene_help_dialog">مرحبًا يا من هناك! هل جربت زين بعد؟ إنه تطبيق موسيقى رائع ومجاني تمامًا، بدون أي إعلانات منبثقة أو إعلانات صوتية مزعجة لتعطيل تجربة الاستماع الخاصة بك. لقد بذلنا الكثير من الجهد والمال لجعله رائعًا، ولكننا بحاجة إلى القليل من المساعدة في نشر الكلمة. \n\nلقد أضفنا إعلانًا صغيرًا على موقع وتطبيق زين لتغطية تكاليف الخادم وقاعدة البيانات لدينا. ليس لدينا ميزانية كبيرة للإعلان على المنصات الرئيسية، لذلك نحن نعتمد على مستخدمينا لمساعدتنا على النمو. بمجرد مشاركة زين مع أصدقائك وعائلتك، يمكنك مساعدتنا في بناء عائلة زين وتقديم موسيقى مجانية للجميع.</string>
-    <string name="zene_share">اكتشف Gene 🎶 تطبيق موسيقى خالي من الإعلانات 🆓 استمتع بالموسيقى المجانية مدى الحياة والعديد من الميزات الرائعة الأخرى. احصل الان</string>
-    <string name="do_you_like_this_app">هل تحب الموسيقى المجانية؟ نحن نحب أن نسمع أفكارك!😊</string>
-    <string name="share_your_feedback_to_improve">ساعدنا لنتحسن! مشاركة ملاحظاتك</string>
-    <string name="review_on_play_store_help_us_to_grow">المراجعة على متجر التطبيقات. إنها تساعدنا على النمو!</string>
-    <string name="donate_now_or_become_a_part_of_zene">ساعدنا على النمو: شارك زين مع أصدقائك!</string>
-    <string name="donate_now_or_become_a_part_of_zene_desc">زين هو تطبيق موسيقى مجاني، ونحن بحاجة لمساعدتكم لنشر الكلمة. ليس لدينا ميزانية للعروض الترويجية، ولكن بدعمكم، يمكننا الوصول إلى المزيد من محبي الموسيقى. شارك زين مع أصدقائك وعائلتك اليوم!</string>
-    <string name="donate">يتبرع</string>
-    <string name="become_a_member">كن عضوا</string>
-    <string name="share_with_your_family_and_friend">شارك زين مع صديقك وعائلتك</string>
-    <string name="update_available">تحديث متوفر!</string>
-    <string name="update_available_message">عزز تجربتك مع الميزات الجديدة والتحسينات. \n\nإصدار جديد من زين جاهز للتثبيت ، مليء بالميزات الجديدة المثيرة ، وتحسينات الأداء ، وإصلاحات الأخطاء. \n\nقم بالتحديث الآن للاستمتاع بأحدث وأروع إصدار! \n هل ترغب في التحديث الآن؟</string>
-    <string name="update">تحديث</string>
-</resources>
