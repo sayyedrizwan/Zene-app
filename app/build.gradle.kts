@@ -1,3 +1,10 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+val apikeyPropertiesFile = rootProject.file("gradle.properties")
+val apikeyProperties = Properties().apply { load(FileInputStream(apikeyPropertiesFile)) }
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -19,14 +26,17 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            "String", "GOOGLE_SERVER_ID", apikeyProperties.getProperty("GOOGLE_SERVER_ID")
+        )
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -74,8 +84,9 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.browser)
 
-    
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
+    implementation(libs.googleid)
 }

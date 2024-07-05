@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.login
 
+import android.app.Activity
 import android.net.Uri
 import android.widget.VideoView
 import androidx.compose.animation.AnimatedVisibility
@@ -45,6 +46,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.ui.login.flow.LoginFlow
+import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
@@ -162,6 +165,7 @@ fun LoginZeneLogo() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginButtonView() {
+    val activity = LocalContext.current as Activity
     var bottomSheet by remember { mutableStateOf(false) }
 
     val imgBorder = Modifier
@@ -200,7 +204,7 @@ fun LoginButtonView() {
                 Image(
                     painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { }
+                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE) }
                 )
 
                 Image(
