@@ -51,6 +51,8 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsLight
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.utils.Utils.URLS.PRIVACY_POLICY
+import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
@@ -216,7 +218,7 @@ fun LoginButtonView() {
 
             Spacer(Modifier.height(100.dp))
 
-            Row(Modifier.clickable { }) {
+            Row(Modifier.clickable { openBrowser(PRIVACY_POLICY) }) {
                 TextPoppins(
                     stringResource(R.string.agreeing_privacy_policy),
                     true, Color.Blue, 10
