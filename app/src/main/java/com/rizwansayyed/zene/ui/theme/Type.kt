@@ -36,3 +36,15 @@ val Typography = Typography(
 )
 
 val AntroVenctraFamily = FontFamily(Font(R.font.antrovectrabolder, FontWeight.Bold))
+
+val PoppinsFamily = FontFamily(
+    Font(R.font.poppinsblack, FontWeight.Black),
+    Font(R.font.poppinsbold, FontWeight.Bold),
+    Font(R.font.poppinsextrabold, FontWeight.ExtraBold),
+    Font(R.font.poppinsextralight, FontWeight.ExtraLight),
+    Font(R.font.poppinslight, FontWeight.Light),
+    Font(R.font.poppinsmedium, FontWeight.Medium),
+    Font(R.font.poppinsregular, FontWeight.Normal),
+    Font(R.font.poppinssemibold, FontWeight.SemiBold),
+    Font(R.font.poppinsthin, FontWeight.Thin),
+)
