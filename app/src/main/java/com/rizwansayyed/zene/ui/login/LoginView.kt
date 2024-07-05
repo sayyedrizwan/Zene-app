@@ -168,6 +168,10 @@ fun LoginButtonView() {
     val activity = LocalContext.current as Activity
     var bottomSheet by remember { mutableStateOf(false) }
 
+    fun runError() {
+
+    }
+
     val imgBorder = Modifier
         .padding(9.dp)
         .size(50.dp)
@@ -204,11 +208,11 @@ fun LoginButtonView() {
                 Image(
                     painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE) }
+                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE, runError()) }
                 )
 
                 Image(
-                    painterResource(R.drawable.ic_facebook),
+                    painterResource(R.drawable.ic_apple),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable { }
                 )

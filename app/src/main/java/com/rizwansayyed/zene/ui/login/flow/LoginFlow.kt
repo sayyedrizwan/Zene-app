@@ -18,13 +18,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 
-class LoginFlow(private val c: Activity, type: LoginFlowType) {
+class LoginFlow(private val c: Activity, type: LoginFlowType, private val error: Unit) {
     private val credentialManager = CredentialManager.create(c)
 
     init {
         when (type) {
             LoginFlowType.GOOGLE -> startGoogleSignIn()
-            LoginFlowType.FACEBOOK -> startFBSignIn()
+            LoginFlowType.APPLE -> startFBSignIn()
             LoginFlowType.MICROSOFT -> {}
         }
     }
@@ -44,17 +44,18 @@ class LoginFlow(private val c: Activity, type: LoginFlowType) {
                 val c = Firebase.auth.signInWithCredential(firebaseCredential).await()
                 startLogin(c.user?.email, c.user?.displayName, c.user?.photoUrl.toString())
             } catch (e: Exception) {
-                Log.d("TAG", "google sign in Received an invalid google id token response", e)
+                error
             }
         }
 
         when (credential) {
             is CustomCredential -> if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) get()
+            else -> error
         }
     }
 
     private fun startFBSignIn() = CoroutineScope(Dispatchers.Main).launch {
-        val callbackManager = CallbackManager.Factory.create()
+//        val callbackManager = CallbackManager.Factory.create()
     }
 
     private fun startLogin(e: String?, n: String?, p: String?) {
