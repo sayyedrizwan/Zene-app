@@ -6,7 +6,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -34,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -156,6 +161,12 @@ fun LoginZeneLogo() {
 fun LoginButtonView() {
     var bottomSheet by remember { mutableStateOf(false) }
 
+    val imgBorder = Modifier
+        .padding(9.dp)
+        .size(50.dp)
+        .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(100))
+        .padding(9.dp)
+
     Row(
         Modifier
             .padding(bottom = 70.dp)
@@ -180,8 +191,26 @@ fun LoginButtonView() {
 
             TextPoppins(stringResource(R.string.login_to_enjoy_free_music), false, Color.White, 15)
 
-            Row {
+            Spacer(Modifier.height(30.dp))
 
+            Row(Modifier.fillMaxWidth(), Arrangement.SpaceAround) {
+                Image(
+                    painterResource(R.drawable.ic_google),
+                    stringResource(R.string.login_to_continue),
+                    imgBorder.clickable {  }
+                )
+
+                Image(
+                    painterResource(R.drawable.ic_facebook),
+                    stringResource(R.string.login_to_continue),
+                    imgBorder.clickable {  }
+                )
+
+                Image(
+                    painterResource(R.drawable.ic_microsoft),
+                    stringResource(R.string.login_to_continue),
+                    imgBorder.clickable {  }
+                )
             }
 
             Spacer(Modifier.height(120.dp))
