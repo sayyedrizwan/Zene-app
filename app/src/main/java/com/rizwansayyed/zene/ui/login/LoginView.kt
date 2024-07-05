@@ -50,6 +50,7 @@ import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsLight
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
@@ -197,23 +198,32 @@ fun LoginButtonView() {
                 Image(
                     painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable {  }
+                    imgBorder.clickable { }
                 )
 
                 Image(
                     painterResource(R.drawable.ic_facebook),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable {  }
+                    imgBorder.clickable { }
                 )
 
                 Image(
                     painterResource(R.drawable.ic_microsoft),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable {  }
+                    imgBorder.clickable { }
                 )
             }
 
-            Spacer(Modifier.height(120.dp))
+            Spacer(Modifier.height(100.dp))
+
+            Row(Modifier.clickable { }) {
+                TextPoppins(
+                    stringResource(R.string.agreeing_privacy_policy),
+                    true, Color.Blue, 10
+                )
+            }
+
+            Spacer(Modifier.height(50.dp))
         }
     }
 }
