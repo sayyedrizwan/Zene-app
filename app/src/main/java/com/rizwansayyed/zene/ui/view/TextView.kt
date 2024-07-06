@@ -18,7 +18,7 @@ import com.rizwansayyed.zene.ui.theme.PoppinsFamily
 
 @Composable
 fun TextAntroVenctra(
-    v: String, center: Boolean = false, color: Color = Color.White, size: Int = 90
+    v: String, center: Boolean = false, color: Color = Color.White, size: Int = 94
 ) {
     Text(
         v,
