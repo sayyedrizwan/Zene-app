@@ -9,9 +9,11 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,11 +22,14 @@ import kotlinx.coroutines.tasks.await
 
 class LoginFlow(private val c: Activity, type: LoginFlowType, private val error: Unit) {
     private val credentialManager = CredentialManager.create(c)
+    private val provider = OAuthProvider.newBuilder("apple.com").apply {
+        scopes = mutableListOf("email", "name")
+    }
 
     init {
         when (type) {
             LoginFlowType.GOOGLE -> startGoogleSignIn()
-            LoginFlowType.APPLE -> startFBSignIn()
+            LoginFlowType.APPLE -> startAppleSignIn()
             LoginFlowType.MICROSOFT -> {}
         }
     }
@@ -54,12 +59,21 @@ class LoginFlow(private val c: Activity, type: LoginFlowType, private val error:
         }
     }
 
-    private fun startFBSignIn() = CoroutineScope(Dispatchers.Main).launch {
-//        val callbackManager = CallbackManager.Factory.create()
+    private fun startAppleSignIn() = CoroutineScope(Dispatchers.Main).launch {
+        val pending = Firebase.auth.pendingAuthResult
+        if (pending == null) {
+            val result =
+                Firebase.auth.startActivityForSignInWithProvider(c, provider.build()).await()
+            val user = result.user
+            startLogin(user?.email, user?.displayName, user?.photoUrl.toString())
+        } else {
+            val result = pending.await().user
+            startLogin(result?.email, result?.displayName, result?.photoUrl.toString())
+        }
     }
 
     private fun startLogin(e: String?, n: String?, p: String?) {
-
+        e?.toast()
     }
 
 }

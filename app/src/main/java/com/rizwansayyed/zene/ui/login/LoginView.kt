@@ -214,7 +214,7 @@ fun LoginButtonView() {
                 Image(
                     painterResource(R.drawable.ic_apple),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { }
+                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.APPLE, runError()) }
                 )
 
                 Image(
