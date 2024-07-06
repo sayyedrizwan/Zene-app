@@ -13,6 +13,8 @@ import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,17 +22,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 
-class LoginFlow(private val c: Activity, type: LoginFlowType, private val error: Unit) {
+class LoginFlow(private val c: Activity, type: LoginFlowType, private val success: () -> Unit) {
     private val credentialManager = CredentialManager.create(c)
-    private val provider = OAuthProvider.newBuilder("apple.com").apply {
-        scopes = mutableListOf("email", "name")
-    }
+    private val provider = OAuthProvider
+        .newBuilder(if (type == LoginFlowType.APPLE) "apple.com" else "microsoft.com").apply {
+            if (type == LoginFlowType.APPLE) scopes = mutableListOf("email", "name")
+        }
 
     init {
         when (type) {
             LoginFlowType.GOOGLE -> startGoogleSignIn()
             LoginFlowType.APPLE -> startAppleSignIn()
-            LoginFlowType.MICROSOFT -> {}
+            LoginFlowType.MICROSOFT -> startAppleSignIn()
         }
     }
 
@@ -49,13 +52,13 @@ class LoginFlow(private val c: Activity, type: LoginFlowType, private val error:
                 val c = Firebase.auth.signInWithCredential(firebaseCredential).await()
                 startLogin(c.user?.email, c.user?.displayName, c.user?.photoUrl.toString())
             } catch (e: Exception) {
-                error
+                context.getString(R.string.error_while_login).toast()
             }
         }
 
         when (credential) {
             is CustomCredential -> if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) get()
-            else -> error
+            else -> context.getString(R.string.error_while_login).toast()
         }
     }
 
@@ -73,6 +76,7 @@ class LoginFlow(private val c: Activity, type: LoginFlowType, private val error:
     }
 
     private fun startLogin(e: String?, n: String?, p: String?) {
+        success()
         e?.toast()
     }
 

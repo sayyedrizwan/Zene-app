@@ -49,6 +49,7 @@ import com.rizwansayyed.zene.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsLight
@@ -167,9 +168,11 @@ fun LoginZeneLogo() {
 fun LoginButtonView() {
     val activity = LocalContext.current as Activity
     var bottomSheet by remember { mutableStateOf(false) }
+    var loading by remember { mutableStateOf(false) }
 
-    fun runError() {
-
+    fun success() {
+        bottomSheet = false
+        loading = true
     }
 
     val imgBorder = Modifier
@@ -178,23 +181,26 @@ fun LoginButtonView() {
         .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(100))
         .padding(9.dp)
 
-    Row(
-        Modifier
-            .padding(bottom = 70.dp)
-            .padding(horizontal = 15.dp)
-            .clip(RoundedCornerShape(15.dp))
-            .fillMaxWidth()
-            .background(Color.White)
-            .clickable {
-                bottomSheet = true
-            }
-            .padding(5.dp),
-        Arrangement.Center, Alignment.CenterVertically
-    ) {
-        Spacer(Modifier.height(40.dp))
-        TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
-        Spacer(Modifier.height(40.dp))
-    }
+    if (loading)
+        LoadingView(Modifier.padding(bottom = 70.dp))
+    else
+        Row(
+            Modifier
+                .padding(bottom = 70.dp)
+                .padding(horizontal = 15.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .fillMaxWidth()
+                .background(Color.White)
+                .clickable {
+                    bottomSheet = true
+                }
+                .padding(5.dp),
+            Arrangement.Center, Alignment.CenterVertically
+        ) {
+            Spacer(Modifier.height(40.dp))
+            TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
+            Spacer(Modifier.height(40.dp))
+        }
 
     if (bottomSheet) ModalBottomSheet({ bottomSheet = false }, containerColor = Color.Black) {
         Column(Modifier.padding(horizontal = 10.dp)) {
@@ -208,19 +214,19 @@ fun LoginButtonView() {
                 Image(
                     painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE, runError()) }
+                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE) { success() } }
                 )
 
                 Image(
                     painterResource(R.drawable.ic_apple),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.APPLE, runError()) }
+                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.APPLE) { success() } }
                 )
 
                 Image(
                     painterResource(R.drawable.ic_microsoft),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { }
+                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.MICROSOFT) { success() } }
                 )
             }
 

@@ -2,6 +2,7 @@
     <string name="app_name">Zene</string>
     <string name="a_music_app">A Free Music App</string>
     <string name="login_to_continue">Login to Continue</string>
+    <string name="error_while_login">Error while login</string>
     <string name="login_to_enjoy_free_music">Login to enjoy free music</string>
     <string name="agreeing_privacy_policy">by login you are agreeing to our privacy policy</string>
 </resources>
