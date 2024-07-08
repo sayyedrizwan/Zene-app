@@ -1,70 +1,45 @@
 {
   "project_info": {
-    "project_number": "248438081408",
-    "project_id": "be-6eb1c",
-    "storage_bucket": "be-6eb1c.appspot.com"
+    "project_number": "12742833162",
+    "project_id": "zene-music",
+    "storage_bucket": "zene-music.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:248438081408:android:08b0e95b1edf1301ff6365",
+        "mobilesdk_app_id": "1:12742833162:android:2779b0e9fdc7defd0b5bf3",
         "android_client_info": {
           "package_name": "com.rizwansayyed.zene"
         }
       },
       "oauth_client": [
         {
-          "client_id": "248438081408-2ciq97qjbkir0s5mao18q80sa8egkc5k.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.rizwansayyed.zene",
-            "certificate_hash": "79be4da53ad5714302dd2f8ee18837f8f275bb06"
-          }
-        },
-        {
-          "client_id": "248438081408-3jl4gc12stvrphc6cha4fsrk3g58fg47.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.rizwansayyed.zene",
-            "certificate_hash": "6598a96a784f4dde4048ae70457c8c7156150751"
-          }
-        },
-        {
-          "client_id": "248438081408-hiqupa37vmnq97v2tngguav1ai0hfeal.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.rizwansayyed.zene",
-            "certificate_hash": "c4d3fcc63ce0d2b3a359a3210330d4bc0b51bb92"
-          }
-        },
-        {
-          "client_id": "248438081408-7c3iha16b9b1ea99hm7lt9mvp826c4c3.apps.googleusercontent.com",
+          "client_id": "12742833162-pko059vg6kqvb5pnj3uf8l7sbbih9i2f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAmRdkPxdGBw_j_6Gv6MzPG2uTICvvqR-c"
+          "current_key": "AIzaSyCI7wYev3l4hU5VmtM1XZPznaHviCLKogU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "248438081408-7c3iha16b9b1ea99hm7lt9mvp826c4c3.apps.googleusercontent.com",
+              "client_id": "12742833162-pko059vg6kqvb5pnj3uf8l7sbbih9i2f.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "248438081408-62klu6ua1ohp6ho4k9na3tri43fsg5lv.apps.googleusercontent.com",
+              "client_id": "12742833162-1rs88nho55n3kohmrp99mp0evui53qrf.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.rizwansayyed.Zene"
+                "bundle_id": "com.rizwansayyed.zenemusic"
               }
             }
           ]
         }
-      },
-      "admob_app_id": "ca-app-pub-2941808068005217~5659881245"
+      }
     }
   ],
   "configuration_version": "1"

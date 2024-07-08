@@ -23,9 +23,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.rizwansayyed.zene" />
-                  <option name="mobileSdkAppId" value="1:248438081408:android:08b0e95b1edf1301ff6365" />
-                  <option name="projectId" value="be-6eb1c" />
-                  <option name="projectNumber" value="248438081408" />
+                  <option name="mobileSdkAppId" value="1:12742833162:android:2779b0e9fdc7defd0b5bf3" />
+                  <option name="projectId" value="zene-music" />
+                  <option name="projectNumber" value="12742833162" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

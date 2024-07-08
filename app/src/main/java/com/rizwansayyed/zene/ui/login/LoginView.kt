@@ -214,7 +214,7 @@ fun LoginButtonView() {
                 Image(
                     painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE) { success() } }
+                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE) { success() }.startGoogleSignIn() }
                 )
 
                 Image(

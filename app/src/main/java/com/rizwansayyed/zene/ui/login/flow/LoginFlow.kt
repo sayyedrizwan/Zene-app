@@ -23,7 +23,6 @@ import kotlinx.coroutines.tasks.await
 
 
 class LoginFlow(private val c: Activity, type: LoginFlowType, private val success: () -> Unit) {
-    private val credentialManager = CredentialManager.create(c)
     private val provider = OAuthProvider
         .newBuilder(if (type == LoginFlowType.APPLE) "apple.com" else "microsoft.com").apply {
             if (type == LoginFlowType.APPLE) scopes = mutableListOf("email", "name")
@@ -37,7 +36,8 @@ class LoginFlow(private val c: Activity, type: LoginFlowType, private val succes
         }
     }
 
-    private fun startGoogleSignIn() = CoroutineScope(Dispatchers.Main).launch {
+    fun startGoogleSignIn() = CoroutineScope(Dispatchers.Main).launch {
+        val credentialManager = CredentialManager.create(c)
         val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(true)
             .setServerClientId(BuildConfig.GOOGLE_SERVER_ID).setAutoSelectEnabled(false)
             .setAutoSelectEnabled(true).build()
