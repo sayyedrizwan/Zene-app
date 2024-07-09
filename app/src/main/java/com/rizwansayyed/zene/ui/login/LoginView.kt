@@ -44,8 +44,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -58,6 +59,7 @@ import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.utils.Utils.URLS.PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.toast
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -166,6 +168,8 @@ fun LoginZeneLogo() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginButtonView() {
+    val homeViewModel: HomeViewModel = viewModel()
+
     val activity = LocalContext.current as Activity
     var bottomSheet by remember { mutableStateOf(false) }
     var loading by remember { mutableStateOf(false) }
@@ -214,19 +218,25 @@ fun LoginButtonView() {
                 Image(
                     painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.GOOGLE) { success() } }
+                    imgBorder.clickable {
+                        homeViewModel.loginFlow.init(LoginFlowType.GOOGLE, activity)
+                    }
                 )
 
                 Image(
                     painterResource(R.drawable.ic_apple),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.APPLE) { success() } }
+                    imgBorder.clickable {
+                        homeViewModel.loginFlow.init(LoginFlowType.APPLE, activity)
+                    }
                 )
 
                 Image(
                     painterResource(R.drawable.ic_microsoft),
                     stringResource(R.string.login_to_continue),
-                    imgBorder.clickable { LoginFlow(activity, LoginFlowType.MICROSOFT) { success() } }
+                    imgBorder.clickable {
+                        homeViewModel.loginFlow.init(LoginFlowType.MICROSOFT, activity)
+                    }
                 )
             }
 

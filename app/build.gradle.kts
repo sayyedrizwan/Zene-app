@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.services.android)
+    alias(libs.plugins.hilt.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -59,6 +61,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -87,6 +90,15 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
+
+
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
+    implementation(libs.lifecycle.compose)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.moshi)
 }

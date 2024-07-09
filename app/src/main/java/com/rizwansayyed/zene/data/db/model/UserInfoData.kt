@@ -1,15 +1,16 @@
-package com.rizwansayyed.zene.db.model
+package com.rizwansayyed.zene.data.db.model
+
+import org.json.JSONObject
 
 
 data class UserInfoData(
-    var id: Int?,
     var name: String?,
     var email: String?,
     var totalPlayTime: Int?,
-    var profilePhoto: Int?,
+    var profilePhoto: String?,
     var isReviewDone: Boolean?,
-    var subscriptionStatus: Boolean?,
-    var subscriptionExpiryData: Long?,
+    var subscriptionStatus: String?,
+    var subscriptionExpiryData: String?,
 ) {
     fun isLoggedIn(): Boolean {
         if (email?.contains("@") == false) return false

@@ -24,6 +24,10 @@ moshi = "1.15.1"
 browser = "1.8.0"
 firebase-bom = "33.1.1"
 googleid = "1.1.1"
+hilt = "2.48"
+retrofit = "2.11.0"
+lifecycle-compose = "2.6.1"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,11 +55,21 @@ browser = { module = "androidx.browser:browser", version.ref = "browser" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx"}
 
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+
+dagger = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+dagger-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-compose" }
+
+
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services-android = { id = "com.google.gms.google-services", version.ref = "googleservice" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 

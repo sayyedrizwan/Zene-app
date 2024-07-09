@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.db
+package com.rizwansayyed.zene.data.db
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -8,9 +8,9 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
-import com.rizwansayyed.zene.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
-import com.rizwansayyed.zene.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
-import com.rizwansayyed.zene.db.model.UserInfoData
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
+import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.Dispatchers
