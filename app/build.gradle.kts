@@ -32,6 +32,9 @@ android {
         buildConfigField(
             "String", "GOOGLE_SERVER_ID", apikeyProperties.getProperty("GOOGLE_SERVER_ID")
         )
+        buildConfigField(
+            "String", "AUTH_HEADER", apikeyProperties.getProperty("AUTH_HEADER")
+        )
     }
 
     buildTypes {

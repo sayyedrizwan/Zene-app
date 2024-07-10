@@ -106,8 +106,6 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         DataStoreManager.userInfoDB = flowOf(u)
         delay(2.seconds)
         zeneAPIInterface.updateUser().firstOrNull()
-        e?.toast()
-
     }
 
 }
