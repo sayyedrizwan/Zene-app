@@ -13,4 +13,5 @@ interface ZeneAPIInterface {
 
     suspend fun recommendedPlaylists(list: Array<String>): Flow<ZeneMusicDataResponse>
     suspend fun recommendedAlbums(list: Array<String>): Flow<ZeneMusicDataResponse>
+    suspend fun recommendedVideo(list: Array<String>): Flow<ZeneMusicDataResponse>
 }

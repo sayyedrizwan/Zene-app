@@ -31,6 +31,7 @@ object Utils {
         const val ZENE_USER_API = "zuser"
         const val ZENE_TOP_PLAYLISTS_API = "top/playlists"
         const val ZENE_TOP_ALBUMS_API = "top/albums"
+        const val ZENE_TOP_VIDEOS_API = "top/videos"
 
     }
 
@@ -38,6 +39,10 @@ object Utils {
 
     fun Any.toast() = CoroutineScope(Dispatchers.Main).launch {
         Toast.makeText(context, this@toast.toString(), Toast.LENGTH_LONG).show()
+    }
+
+    fun ytThumbnail(id: String): String {
+        return "https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
     }
 
     fun openBrowser(url: String) = CoroutineScope(Dispatchers.Main).launch {

@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ALBUMS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -26,4 +27,7 @@ interface ZeneAPIService {
 
     @POST(ZENE_TOP_ALBUMS_API)
     suspend fun recommendedAlbums(@Body body: RequestBody): ZeneMusicDataResponse
+
+    @POST(ZENE_TOP_VIDEOS_API)
+    suspend fun recommendedVideo(@Body body: RequestBody): ZeneMusicDataResponse
 }

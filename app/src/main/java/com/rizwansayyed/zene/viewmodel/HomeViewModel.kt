@@ -23,8 +23,8 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     var recommendedPlaylists by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
-
     var recommendedAlbums by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var recommendedVideo by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
 
     fun recommendedPlaylists() = viewModelScope.launch(Dispatchers.IO) {
         val list = listOf(
@@ -68,6 +68,28 @@ class HomeViewModel @Inject constructor(
             recommendedAlbums = APIResponse.Error(it)
         }.collectLatest {
             recommendedAlbums = APIResponse.Success(it)
+        }
+    }
+
+    fun recommendedVideo() = viewModelScope.launch(Dispatchers.IO) {
+        val list = listOf(
+            "qqywIKDTK6o",
+            "9Gduk7Zjem4",
+            "0siKyXL_h08",
+            "81oCkIJko5s",
+            "ffqliB42Nh4",
+            "gnN_jiesIkM",
+            "DcDbKDAb7go",
+            "sEPXrepgujY",
+            "KPM_BYl-EaQ",
+            "k3smYB3Nfqc"
+        )
+        zeneAPI.recommendedVideo(list.toTypedArray()).onStart {
+            recommendedVideo = APIResponse.Loading
+        }.catch {
+            recommendedVideo = APIResponse.Error(it)
+        }.collectLatest {
+            recommendedVideo = APIResponse.Success(it)
         }
     }
 }

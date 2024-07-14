@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.ui.home.view.HomeHeaderView
 import com.rizwansayyed.zene.ui.home.view.RecommendedAlbumsView
 import com.rizwansayyed.zene.ui.home.view.RecommendedPlaylistView
+import com.rizwansayyed.zene.ui.home.view.RecommendedVideoView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.SimpleCardsView
@@ -51,6 +52,12 @@ fun HomeView() {
         item(key = 5) {
             Spacer(Modifier.height(60.dp))
         }
+        item(key = 6) {
+            RecommendedVideoView(homeViewModel)
+        }
+        item(key = 7) {
+            Spacer(Modifier.height(60.dp))
+        }
         item(key = 1000) {
             Spacer(Modifier.height(100.dp))
         }
@@ -60,5 +67,6 @@ fun HomeView() {
     LaunchedEffect(Unit) {
         homeViewModel.recommendedPlaylists()
         homeViewModel.recommendedAlbums()
+        homeViewModel.recommendedVideo()
     }
 }

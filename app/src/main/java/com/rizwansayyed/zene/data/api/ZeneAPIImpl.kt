@@ -62,4 +62,12 @@ class ZeneAPIImpl @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedAlbums(body))
     }
+
+    override suspend fun recommendedVideo(list: Array<String>) = flow {
+        val json = JSONArray().apply {
+            list.forEach { put(it) }
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.recommendedVideo(body))
+    }
 }
