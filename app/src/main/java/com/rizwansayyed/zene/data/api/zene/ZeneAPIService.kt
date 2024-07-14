@@ -1,7 +1,10 @@
 package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.data.api.model.StatusResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ALBUMS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -17,4 +20,10 @@ interface ZeneAPIService {
 
     @GET(ZENE_USER_API)
     suspend fun getUser(@Query("user") user: String): ZeneUsersResponse
+
+    @POST(ZENE_TOP_PLAYLISTS_API)
+    suspend fun recommendedPlaylists(@Body body: RequestBody): ZeneMusicDataResponse
+
+    @POST(ZENE_TOP_ALBUMS_API)
+    suspend fun recommendedAlbums(@Body body: RequestBody): ZeneMusicDataResponse
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +16,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ZeneTheme {
+                HomeView()
+
                 LoginView()
             }
         }

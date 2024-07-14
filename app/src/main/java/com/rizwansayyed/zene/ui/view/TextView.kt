@@ -10,6 +10,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.R
@@ -41,14 +43,16 @@ fun TextPoppinsSemiBold(
         color,
         size.sp,
         FontStyle.Normal, FontWeight.SemiBold, PoppinsFamily,
-        textAlign = if (center) TextAlign.Center else TextAlign.Start
+        textAlign = if (center) TextAlign.Center else TextAlign.Start,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
 
 @Composable
 fun TextPoppins(
-    v: String, center: Boolean = false, color: Color = Color.White, size: Int = 20
+    v: String, center: Boolean = false, color: Color = Color.White, size: Int = 20,
+    limit: Int? = null
 ) {
     Text(
         v,
@@ -56,13 +60,16 @@ fun TextPoppins(
         color,
         size.sp,
         FontStyle.Normal, FontWeight.Normal, PoppinsFamily,
-        textAlign = if (center) TextAlign.Center else TextAlign.Start
+        textAlign = if (center) TextAlign.Center else TextAlign.Start,
+        maxLines = limit ?: 200,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
 @Composable
 fun TextPoppinsThin(
-    v: String, center: Boolean = false, color: Color = Color.White, size: Int = 20
+    v: String, center: Boolean = false, color: Color = Color.White, size: Int = 20,
+    limit: Int? = null
 ) {
     Text(
         v,
@@ -70,9 +77,12 @@ fun TextPoppinsThin(
         color,
         size.sp,
         FontStyle.Normal, FontWeight.Thin, PoppinsFamily,
-        textAlign = if (center) TextAlign.Center else TextAlign.Start
+        textAlign = if (center) TextAlign.Center else TextAlign.Start,
+        maxLines = limit ?: 200,
+        overflow = TextOverflow.Ellipsis
     )
 }
+
 @Composable
 fun TextPoppinsLight(
     v: String, center: Boolean = false, color: Color = Color.White, size: Int = 20
@@ -83,6 +93,7 @@ fun TextPoppinsLight(
         color,
         size.sp,
         FontStyle.Normal, FontWeight.ExtraLight, PoppinsFamily,
-        textAlign = if (center) TextAlign.Center else TextAlign.Start
+        textAlign = if (center) TextAlign.Center else TextAlign.Start,
+        overflow = TextOverflow.Ellipsis
     )
 }

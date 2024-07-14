@@ -8,7 +8,7 @@ minsdk = "26"
 appversion = "1"
 versionname = "1.0"
 
-agp = "8.5.0"
+agp = "8.5.1"
 datastorePreferences = "1.1.1"
 kotlin = "1.9.0"
 googleservice = "4.4.2"
@@ -22,11 +22,12 @@ composeBom = "2024.06.00"
 kotlinxCoroutinesAndroid = "1.8.0"
 moshi = "1.15.1"
 browser = "1.8.0"
-firebase-bom = "33.1.1"
+firebase-bom = "33.1.2"
 googleid = "1.1.1"
-hilt = "2.48"
+hilt = "2.51"
 retrofit = "2.11.0"
-lifecycle-compose = "2.6.1"
+lifecycle-compose = "2.8.3"
+coil = "2.6.0"
 
 
 [libraries]
@@ -66,6 +67,9 @@ lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+
+
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

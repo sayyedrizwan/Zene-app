@@ -29,6 +29,8 @@ object Utils {
         val BASE_URL =
             if (BuildConfig.DEBUG) "http://192.168.0.101:5173/-api-/" else "http://www.zenemusic.co/-api-/"
         const val ZENE_USER_API = "zuser"
+        const val ZENE_TOP_PLAYLISTS_API = "top/playlists"
+        const val ZENE_TOP_ALBUMS_API = "top/albums"
 
     }
 

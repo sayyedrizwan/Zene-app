@@ -1,14 +1,31 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.ui.theme.MainColor
 
@@ -18,5 +35,68 @@ fun LoadingView(modifier: Modifier = Modifier) {
         CircularProgressIndicator(
             Modifier.size(32.dp), MainColor, trackColor = Color.White,
         )
+    }
+}
+
+@Composable
+fun LoadingCardView() {
+    Column(Modifier.padding(7.dp)) {
+        Spacer(
+            Modifier
+                .size(220.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(shimmerEffectBrush())
+        )
+
+        Spacer(
+            Modifier
+                .padding(top = 9.dp)
+                .padding(horizontal = 5.dp)
+                .size(100.dp, 10.dp)
+                .clip(RoundedCornerShape(40))
+                .background(shimmerEffectBrush())
+        )
+
+        Spacer(
+            Modifier
+                .padding(top = 7.dp)
+                .padding(horizontal = 5.dp)
+                .size(155.dp, 10.dp)
+                .clip(RoundedCornerShape(40))
+                .background(shimmerEffectBrush())
+        )
+    }
+}
+
+
+@Composable
+fun shimmerEffectBrush(): ShaderBrush {
+    val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
+
+    val offset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1_000),
+        ),
+        label = "shimmer offset"
+    )
+    return remember(offset) {
+        object : ShaderBrush() {
+            override fun createShader(size: Size): Shader {
+                val widthOffset = size.width * offset
+                val heightOffset = size.height * offset
+                return LinearGradientShader(
+                    colors = listOf(
+                        Color.DarkGray.copy(alpha = 0.4f),
+                        Color.DarkGray.copy(alpha = 0.6f),
+                        Color.DarkGray.copy(alpha = 0.4f),
+                    ),
+                    from = Offset(widthOffset, heightOffset),
+                    to = Offset(widthOffset + size.width, heightOffset + size.height),
+                    tileMode = TileMode.Mirror
+                )
+            }
+        }
     }
 }

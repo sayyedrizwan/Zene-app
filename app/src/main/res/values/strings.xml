@@ -5,4 +5,6 @@
     <string name="error_while_login">Error while login</string>
     <string name="login_to_enjoy_free_music">Login to enjoy free music</string>
     <string name="agreeing_privacy_policy">by login you are agreeing to our privacy policy</string>
+    <string name="recommended_playlists">Recommended \n \nPlaylists</string>
+    <string name="albums_picked_for_you">Albums picked for you</string>
 </resources>
