@@ -7,8 +7,13 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -23,15 +28,26 @@ object Utils {
     object URLS {
         const val PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
 
+        const val YOUTUBE_MUSIC = "https://www.youtube.com/music"
+
+
         const val BASE_URL_IP = "http://ip-api.com/"
         const val JSON_IP = "json"
 
         val BASE_URL =
             if (BuildConfig.DEBUG) "http://192.168.0.101:5173/-api-/" else "http://www.zenemusic.co/-api-/"
         const val ZENE_USER_API = "zuser"
+        const val ZENE_MOODS_API = "moods"
+        const val ZENE_NEW_RELEASE_API = "newrelease"
+        const val ZENE_TOP_LISTEN_SONGS_API = "top/listensongs"
         const val ZENE_TOP_PLAYLISTS_API = "top/playlists"
         const val ZENE_TOP_ALBUMS_API = "top/albums"
         const val ZENE_TOP_VIDEOS_API = "top/videos"
+        const val ZENE_TOP_SONGS_API = "top/songs"
+
+
+
+        const val USER_AGENT_D = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 
     }
 
@@ -44,6 +60,7 @@ object Utils {
     fun ytThumbnail(id: String): String {
         return "https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
     }
+
 
     fun openBrowser(url: String) = CoroutineScope(Dispatchers.Main).launch {
         try {

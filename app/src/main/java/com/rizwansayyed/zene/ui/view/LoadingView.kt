@@ -70,6 +70,17 @@ fun LoadingCardView() {
 
 
 @Composable
+fun CardRoundLoading() {
+    Spacer(
+        Modifier
+            .padding(6.dp)
+            .size(100.dp, 6.dp)
+            .clip(RoundedCornerShape(10))
+            .background(shimmerEffectBrush())
+    )
+}
+
+@Composable
 fun shimmerEffectBrush(): ShaderBrush {
     val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
 

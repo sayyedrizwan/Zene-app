@@ -2,7 +2,9 @@ package com.rizwansayyed.zene.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,23 +21,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
 @Composable
-fun SimpleCardsView(m: ZeneMusicDataItems, click: () -> Unit) {
+fun SimpleCardsView(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { click() }) {
+            .clickable { }) {
         AsyncImage(
-            ImageRequest.Builder(LocalContext.current).data(m.thumbnail)
-                .memoryCachePolicy(CachePolicy.ENABLED).build(),
+            imgBuilder(m.thumbnail),
             m.name,
             Modifier
                 .size(220.dp)
@@ -57,14 +60,14 @@ fun SimpleCardsView(m: ZeneMusicDataItems, click: () -> Unit) {
 
 
 @Composable
-fun CardsViewDesc(m: ZeneMusicDataItems, click: () -> Unit) {
+fun CardsViewDesc(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { click() }) {
+            .clickable { }) {
+
         AsyncImage(
-            ImageRequest.Builder(LocalContext.current).data(m.thumbnail)
-                .memoryCachePolicy(CachePolicy.ENABLED).build(),
+            imgBuilder(m.thumbnail),
             m.name,
             Modifier
                 .size(220.dp)
@@ -94,16 +97,15 @@ fun CardsViewDesc(m: ZeneMusicDataItems, click: () -> Unit) {
 
 
 @Composable
-fun VideoCardsViewWithSong(m: ZeneMusicDataItems, click: () -> Unit) {
+fun VideoCardsViewWithSong(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { click() }) {
+            .clickable { }) {
 
         Box(Modifier.size(width = 280.dp, height = 170.dp)) {
             AsyncImage(
-                ImageRequest.Builder(LocalContext.current).data(ytThumbnail(m.extra ?: ""))
-                    .memoryCachePolicy(CachePolicy.ENABLED).build(),
+                imgBuilder(ytThumbnail(m.extra ?: "")),
                 m.name,
                 Modifier
                     .align(Alignment.Center)
@@ -113,14 +115,12 @@ fun VideoCardsViewWithSong(m: ZeneMusicDataItems, click: () -> Unit) {
                 contentScale = ContentScale.Crop
             )
 
-            Image(
-                painterResource(R.drawable.ic_youtube),
-                "",
+            ImageView(
+                R.drawable.ic_youtube,
                 Modifier
                     .align(Alignment.TopEnd)
                     .padding(5.dp)
-                    .size(20.dp),
-                contentScale = ContentScale.Fit
+                    .size(20.dp)
             )
         }
 
@@ -140,5 +140,20 @@ fun VideoCardsViewWithSong(m: ZeneMusicDataItems, click: () -> Unit) {
         ) {
             TextPoppinsThin(m.artists ?: " ", false, size = 14, limit = 1)
         }
+    }
+}
+
+
+@Composable
+fun CardRoundTextOnly(m: ZeneMusicDataItems) {
+    Row(
+        Modifier
+            .padding(6.dp)
+            .width(200.dp)
+            .clip(RoundedCornerShape(10))
+            .background(MainColor)
+            .clickable {  }, Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextPoppins(m.name ?: "", true, size = 16, limit = 2)
     }
 }

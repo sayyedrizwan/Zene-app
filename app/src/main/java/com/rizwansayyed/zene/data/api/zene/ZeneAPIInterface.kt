@@ -12,6 +12,15 @@ interface ZeneAPIInterface {
     suspend fun getUser(email: String): Flow<ZeneUsersResponse>
 
     suspend fun recommendedPlaylists(list: Array<String>): Flow<ZeneMusicDataResponse>
+
     suspend fun recommendedAlbums(list: Array<String>): Flow<ZeneMusicDataResponse>
+
     suspend fun recommendedVideo(list: Array<String>): Flow<ZeneMusicDataResponse>
+
+    suspend fun suggestTopSongs(list: Array<String>): Flow<ZeneMusicDataResponse>
+
+    suspend fun moodLists(): Flow<ZeneMusicDataResponse>
+
+    suspend fun latestReleases(id: String): Flow<ZeneMusicDataResponse>
+    suspend fun topMostListeningSong(): Flow<ZeneMusicDataResponse>
 }

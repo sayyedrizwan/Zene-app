@@ -47,6 +47,18 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.getUser(email))
     }
 
+    override suspend fun moodLists() = flow {
+        emit(zeneAPI.moodLists())
+    }
+
+    override suspend fun latestReleases(id: String) = flow {
+        emit(zeneAPI.latestReleases(id))
+    }
+
+    override suspend fun topMostListeningSong() = flow {
+        emit(zeneAPI.topMostListeningSong())
+    }
+
     override suspend fun recommendedPlaylists(list: Array<String>) = flow {
         val json = JSONArray().apply {
             list.forEach { put(it) }
@@ -69,5 +81,13 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedVideo(body))
+    }
+
+    override suspend fun suggestTopSongs(list: Array<String>) = flow {
+        val json = JSONArray().apply {
+            list.forEach { put(it) }
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.suggestTopSongs(body))
     }
 }

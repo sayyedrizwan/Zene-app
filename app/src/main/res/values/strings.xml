@@ -7,5 +7,11 @@
     <string name="agreeing_privacy_policy">by login you are agreeing to our privacy policy</string>
     <string name="recommended_playlists">Recommended \n \nPlaylists</string>
     <string name="albums_picked_for_you">Albums picked for you</string>
-    <string name="video_you_may_like">Video you may like</string>
+    <string name="videos_you_may_like">Videos you may like</string>
+    <string name="play_as_song">Play as song</string>
+    <string name="songs_you_may_like">Songs you may like</string>
+    <string name="songs_for_you">Songs for you</string>
+    <string name="pick_your_mood">Pick your Mood</string>
+    <string name="latest_release">Latest Release</string>
+    <string name="most_listening_song_zene">Most listening Song \n \non Zene</string>
 </resources>
