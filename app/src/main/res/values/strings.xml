@@ -16,4 +16,7 @@
     <string name="most_listening_songs_zene">Most listening Songs \n \non Zene</string>
     <string name="listeners">Listeners</string>
     <string name="global_top_artists">Global top artists</string>
+    <string name="songs">Songs</string>
+    <string name="playlists">Playlists</string>
+    <string name="recommended">Recommended</string>
 </resources>

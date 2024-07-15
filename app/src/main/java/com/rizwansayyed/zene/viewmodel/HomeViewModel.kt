@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIHttpService.youtubeMusicPlaylist
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
@@ -31,6 +32,7 @@ class HomeViewModel @Inject constructor(
     var latestReleases by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var topMostListeningSong by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var topMostListeningArtists by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var favArtistsLists by mutableStateOf<APIResponse<ZeneArtistsData>>(APIResponse.Empty)
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         moodLists()
@@ -54,6 +56,18 @@ class HomeViewModel @Inject constructor(
         recommendedAlbums(list)
         recommendedVideo(list)
         songsYouMayLike(list)
+
+        val listName = listOf(
+            "The Weeknd",
+            "Billie Eilish",
+            "Post Malone",
+            "Taylor Swift",
+            "Karan Aujla",
+            "Ram Sampath",
+            "Karan Aujla",
+            "Jasleen Royal"
+        )
+        favArtistsData(listName)
     }
 
     private fun recommendedPlaylists(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
@@ -132,6 +146,7 @@ class HomeViewModel @Inject constructor(
             topMostListeningSong = APIResponse.Success(it)
         }
     }
+
     private fun topMostListeningArtists() = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.topMostListeningArtists().onStart {
             topMostListeningArtists = APIResponse.Loading
@@ -139,6 +154,16 @@ class HomeViewModel @Inject constructor(
             topMostListeningArtists = APIResponse.Error(it)
         }.collectLatest {
             topMostListeningArtists = APIResponse.Success(it)
+        }
+    }
+
+    private fun favArtistsData(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.favArtistsData(list.toTypedArray()).onStart {
+            favArtistsLists = APIResponse.Loading
+        }.catch {
+            favArtistsLists = APIResponse.Error(it)
+        }.collectLatest {
+            favArtistsLists = APIResponse.Success(it)
         }
     }
 }

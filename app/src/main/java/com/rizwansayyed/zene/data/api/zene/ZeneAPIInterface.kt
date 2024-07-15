@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.data.api.model.StatusResponse
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import kotlinx.coroutines.flow.Flow
@@ -26,4 +27,6 @@ interface ZeneAPIInterface {
     suspend fun latestReleases(id: String): Flow<ZeneMusicDataResponse>
 
     suspend fun topMostListeningArtists(): Flow<ZeneMusicDataResponse>
+
+    suspend fun favArtistsData(list: Array<String>): Flow<ZeneArtistsData>
 }
