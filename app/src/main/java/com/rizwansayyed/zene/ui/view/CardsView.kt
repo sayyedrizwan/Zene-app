@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
@@ -156,6 +157,8 @@ fun CardRoundTextOnly(m: ZeneMusicDataItems) {
 
 @Composable
 fun CardSmallWithListeningNumber(m: ZeneMusicDataItems) {
+    val listeners = stringResource(R.string.listeners)
+
     Row(
         Modifier
             .padding(6.dp)
@@ -184,12 +187,41 @@ fun CardSmallWithListeningNumber(m: ZeneMusicDataItems) {
             TextPoppinsThin(m.artists ?: "", false, size = 16, limit = 1)
             Spacer(Modifier.height(4.dp))
             Row(Modifier, Arrangement.Center) {
-                Box(Modifier.offset(y = 1.dp)) {
-                    ImageIcon(R.drawable.ic_play, 19)
+                Box(Modifier.offset(y = 4.dp)) {
+                    ImageIcon(R.drawable.ic_play, 15)
                 }
                 Spacer(Modifier.width(4.dp))
-                TextPoppinsThin(convertItToMoney(m.extra ?: ""), false, size = 16, limit = 1)
+                TextPoppinsThin(
+                    "${convertItToMoney(m.extra ?: "")} $listeners", size = 14, limit = 1
+                )
             }
+        }
+    }
+}
+
+@Composable
+fun ArtistsCardView(m: ZeneMusicDataItems) {
+    Column(
+        Modifier
+            .padding(7.dp)
+            .clickable { }, Arrangement.Center, Alignment.CenterHorizontally) {
+        AsyncImage(
+            imgBuilder(m.thumbnail),
+            m.name,
+            Modifier
+                .size(180.dp)
+                .clip(RoundedCornerShape(100))
+                .background(Color.DarkGray),
+            contentScale = ContentScale.Crop
+        )
+
+        Row(
+            Modifier
+                .padding(top = 8.dp)
+                .padding(horizontal = 5.dp)
+                .width(170.dp)
+        ) {
+            TextPoppinsThin(m.name ?: "", true, size = 17, limit = 1)
         }
     }
 }

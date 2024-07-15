@@ -42,6 +42,7 @@ object Utils {
         const val ZENE_USER_API = "zuser"
         const val ZENE_MOODS_API = "moods"
         const val ZENE_NEW_RELEASE_API = "newrelease"
+        const val ZENE_TOP_GLOBAL_ARTISTS_API = "top/globalartists"
         const val ZENE_TOP_LISTEN_SONGS_API = "top/listensongs"
         const val ZENE_TOP_PLAYLISTS_API = "top/playlists"
         const val ZENE_TOP_ALBUMS_API = "top/albums"

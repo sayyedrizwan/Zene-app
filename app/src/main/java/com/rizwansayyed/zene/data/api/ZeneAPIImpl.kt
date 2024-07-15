@@ -59,6 +59,10 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.topMostListeningSong())
     }
 
+    override suspend fun topMostListeningArtists() = flow {
+        emit(zeneAPI.topMostListeningArtists())
+    }
+
     override suspend fun recommendedPlaylists(list: Array<String>) = flow {
         val json = JSONArray().apply {
             list.forEach { put(it) }

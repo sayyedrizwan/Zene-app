@@ -43,11 +43,11 @@ fun LoadingView(modifier: Modifier = Modifier) {
 
 @Composable
 fun LoadingCardView() {
-    Column(Modifier.padding(7.dp)) {
+    Column(Modifier.padding(7.dp), Arrangement.Center, Alignment.CenterHorizontally) {
         Spacer(
             Modifier
                 .size(220.dp)
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(50.dp))
                 .background(shimmerEffectBrush())
         )
 
@@ -77,10 +77,32 @@ fun CardRoundLoading() {
     Spacer(
         Modifier
             .padding(6.dp)
-            .size(350.dp, 200.dp)
+            .size(350.dp, 100.dp)
             .clip(RoundedCornerShape(10))
             .background(shimmerEffectBrush())
     )
+}
+
+
+@Composable
+fun LoadingArtistsCardView() {
+    Column(Modifier.padding(7.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+        Spacer(
+            Modifier
+                .size(180.dp)
+                .clip(RoundedCornerShape(100))
+                .background(shimmerEffectBrush())
+        )
+
+        Spacer(
+            Modifier
+                .padding(top = 8.dp)
+                .padding(horizontal = 5.dp)
+                .size(100.dp, 10.dp)
+                .clip(RoundedCornerShape(40))
+                .background(shimmerEffectBrush())
+        )
+    }
 }
 
 @Composable

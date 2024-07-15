@@ -13,5 +13,7 @@
     <string name="songs_for_you">Songs for you</string>
     <string name="pick_your_mood">Pick your Mood</string>
     <string name="latest_release">Latest Release</string>
-    <string name="most_listening_song_zene">Most listening Song \n \non Zene</string>
+    <string name="most_listening_songs_zene">Most listening Songs \n \non Zene</string>
+    <string name="listeners">Listeners</string>
+    <string name="global_top_artists">Global top artists</string>
 </resources>

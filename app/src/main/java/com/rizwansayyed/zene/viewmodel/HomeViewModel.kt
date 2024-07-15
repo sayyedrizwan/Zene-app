@@ -30,11 +30,13 @@ class HomeViewModel @Inject constructor(
     var moodList by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var latestReleases by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var topMostListeningSong by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var topMostListeningArtists by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         moodLists()
         latestReleases()
         topMostListeningSong()
+        topMostListeningArtists()
 
         val list = listOf(
             "qqywIKDTK6o",
@@ -128,6 +130,15 @@ class HomeViewModel @Inject constructor(
             topMostListeningSong = APIResponse.Error(it)
         }.collectLatest {
             topMostListeningSong = APIResponse.Success(it)
+        }
+    }
+    private fun topMostListeningArtists() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.topMostListeningArtists().onStart {
+            topMostListeningArtists = APIResponse.Loading
+        }.catch {
+            topMostListeningArtists = APIResponse.Error(it)
+        }.collectLatest {
+            topMostListeningArtists = APIResponse.Success(it)
         }
     }
 }

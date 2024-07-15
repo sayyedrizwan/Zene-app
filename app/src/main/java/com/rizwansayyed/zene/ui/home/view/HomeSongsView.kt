@@ -15,10 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.ui.view.ArtistsCardView
 import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.CardRoundTextOnly
 import com.rizwansayyed.zene.ui.view.CardSmallWithListeningNumber
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
+import com.rizwansayyed.zene.ui.view.LoadingArtistsCardView
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.SimpleCardsView
 import com.rizwansayyed.zene.ui.view.TextPoppins
@@ -128,7 +130,7 @@ fun HorizontalSongView(
 
 @Composable
 fun HorizontalVideoView(homeViewModel: APIResponse<ZeneMusicDataResponse>, txt: Int) {
-    when (val v = homeViewModel) {
+    when (homeViewModel) {
         APIResponse.Empty -> {}
         is APIResponse.Error -> {}
         APIResponse.Loading -> {
@@ -143,16 +145,97 @@ fun HorizontalVideoView(homeViewModel: APIResponse<ZeneMusicDataResponse>, txt: 
         }
 
         is APIResponse.Success -> {
-            if (v.data.isNotEmpty()) {
+            if (homeViewModel.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     TextPoppinsSemiBold(stringResource(txt), size = 15)
                 }
 
                 LazyRow {
-                    items(v.data) {
+                    items(homeViewModel.data) {
                         VideoCardsViewWithSong(it)
                     }
                 }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun HorizontalArtistsView(
+    data: APIResponse<ZeneMusicDataResponse>,
+    header: Pair<TextSize, Int>,
+    showGrid: Boolean
+) {
+    when (data) {
+        APIResponse.Empty -> {}
+        is APIResponse.Error -> {}
+        APIResponse.Loading -> {
+            Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                when (header.first) {
+                    TextSize.BIG ->
+                        TextPoppins(stringResource(header.second), size = 30)
+
+                    TextSize.MEDIUM ->
+                        TextPoppins(stringResource(header.second), size = 24)
+
+                    TextSize.SMALL ->
+                        TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                }
+            }
+
+            if (showGrid)
+                LazyHorizontalGrid(
+                    GridCells.Fixed(2),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(450.dp)
+                ) {
+                    items(10) {
+                        LoadingArtistsCardView()
+                    }
+                }
+            else
+                LazyRow {
+                    items(10) {
+                        LoadingArtistsCardView()
+                    }
+                }
+
+        }
+        is APIResponse.Success -> {
+            if (data.data.isNotEmpty()){
+                Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                    when (header.first) {
+                        TextSize.BIG ->
+                            TextPoppins(stringResource(header.second), size = 30)
+
+                        TextSize.MEDIUM ->
+                            TextPoppins(stringResource(header.second), size = 24)
+
+                        TextSize.SMALL ->
+                            TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                    }
+                }
+
+                if (showGrid)
+                    LazyHorizontalGrid(
+                        GridCells.Fixed(2),
+                        Modifier
+                            .fillMaxWidth()
+                            .height(450.dp)
+                    ) {
+                        items(data.data) {
+                            ArtistsCardView(it)
+                        }
+                    }
+                else
+                    LazyRow {
+                        items(data.data) {
+                            ArtistsCardView(it)
+                        }
+                    }
+
             }
         }
     }

@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ALBUMS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_GLOBAL_ARTISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_LISTEN_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
@@ -34,6 +35,9 @@ interface ZeneAPIService {
 
     @GET(ZENE_TOP_LISTEN_SONGS_API)
     suspend fun topMostListeningSong(): ZeneMusicDataResponse
+
+    @GET(ZENE_TOP_GLOBAL_ARTISTS_API)
+    suspend fun topMostListeningArtists(): ZeneMusicDataResponse
 
     @POST(ZENE_TOP_PLAYLISTS_API)
     suspend fun recommendedPlaylists(@Body body: RequestBody): ZeneMusicDataResponse
