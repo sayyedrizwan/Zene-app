@@ -1,14 +1,14 @@
 package com.rizwansayyed.zene.ui.view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,16 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
 @Composable
@@ -152,8 +148,48 @@ fun CardRoundTextOnly(m: ZeneMusicDataItems) {
             .width(200.dp)
             .clip(RoundedCornerShape(10))
             .background(MainColor)
-            .clickable {  }, Arrangement.Center, Alignment.CenterVertically
+            .clickable { }, Arrangement.Center, Alignment.CenterVertically
     ) {
         TextPoppins(m.name ?: "", true, size = 16, limit = 2)
+    }
+}
+
+@Composable
+fun CardSmallWithListeningNumber(m: ZeneMusicDataItems) {
+    Row(
+        Modifier
+            .padding(6.dp)
+            .width(300.dp)
+            .clickable {
+
+            }, Arrangement.Center, Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            imgBuilder(m.thumbnail),
+            m.name,
+            Modifier
+                .size(100.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color.DarkGray),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(start = 9.dp, end = 4.dp)
+        ) {
+            TextPoppins(m.name ?: "", false, size = 16, limit = 1)
+            Spacer(Modifier.height(4.dp))
+            TextPoppinsThin(m.artists ?: "", false, size = 16, limit = 1)
+            Spacer(Modifier.height(4.dp))
+            Row(Modifier, Arrangement.Center) {
+                Box(Modifier.offset(y = 1.dp)) {
+                    ImageIcon(R.drawable.ic_play, 19)
+                }
+                Spacer(Modifier.width(4.dp))
+                TextPoppinsThin(convertItToMoney(m.extra ?: ""), false, size = 16, limit = 1)
+            }
+        }
     }
 }

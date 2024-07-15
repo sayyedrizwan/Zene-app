@@ -13,7 +13,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.home.view.HomeHeaderView
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
-import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
@@ -31,65 +30,65 @@ fun HomeView() {
         item(key = 1) {
             HomeHeaderView()
         }
-        item(key = 2) {
-            HorizontalSongView(
-                homeViewModel.recommendedPlaylists,
-                Pair(TextSize.BIG, R.string.recommended_playlists),
-                StyleSize.HIDE_AUTHOR, showGrid = false
-            )
-        }
-        item(key = 3) {
-            Spacer(Modifier.height(60.dp))
-        }
-        item(key = 4) {
-            HorizontalSongView(
-                homeViewModel.recommendedAlbums,
-                Pair(TextSize.SMALL, R.string.albums_picked_for_you),
-                StyleSize.SHOW_AUTHOR, showGrid = false
-            )
-        }
-        item(key = 5) {
-            Spacer(Modifier.height(60.dp))
-        }
-        item(key = 6) {
-            HorizontalVideoView(homeViewModel.recommendedVideo, R.string.videos_you_may_like)
-        }
-        item(key = 7) {
-            Spacer(Modifier.height(60.dp))
-        }
-        item(key = 8) {
-            HorizontalSongView(
-                homeViewModel.songsYouMayLike, Pair(TextSize.SMALL, R.string.songs_you_may_like),
-                StyleSize.SHOW_AUTHOR, showGrid = true
-            )
-        }
-        item(key = 9) {
-            Spacer(Modifier.height(60.dp))
-        }
-        item(key = 10) {
-            HorizontalSongView(
-                homeViewModel.moodList, Pair(TextSize.SMALL, R.string.pick_your_mood),
-                StyleSize.ONLY_TEXT, showGrid = true
-            )
-        }
-        item(key = 11) {
-            Spacer(Modifier.height(60.dp))
-        }
-        item(key = 12) {
-            HorizontalSongView(
-                homeViewModel.latestReleases, Pair(TextSize.MEDIUM, R.string.latest_release),
-                StyleSize.SHOW_AUTHOR, showGrid = true
-            )
-        }
-
-        item(key = 13) {
-            Spacer(Modifier.height(60.dp))
-        }
+//        item(key = 2) {
+//            HorizontalSongView(
+//                homeViewModel.recommendedPlaylists,
+//                Pair(TextSize.BIG, R.string.recommended_playlists),
+//                StyleSize.HIDE_AUTHOR, showGrid = false
+//            )
+//        }
+//        item(key = 3) {
+//            Spacer(Modifier.height(60.dp))
+//        }
+//        item(key = 4) {
+//            HorizontalSongView(
+//                homeViewModel.recommendedAlbums,
+//                Pair(TextSize.SMALL, R.string.albums_picked_for_you),
+//                StyleSize.SHOW_AUTHOR, showGrid = false
+//            )
+//        }
+//        item(key = 5) {
+//            Spacer(Modifier.height(60.dp))
+//        }
+//        item(key = 6) {
+//            HorizontalVideoView(homeViewModel.recommendedVideo, R.string.videos_you_may_like)
+//        }
+//        item(key = 7) {
+//            Spacer(Modifier.height(60.dp))
+//        }
+//        item(key = 8) {
+//            HorizontalSongView(
+//                homeViewModel.songsYouMayLike, Pair(TextSize.SMALL, R.string.songs_you_may_like),
+//                StyleSize.SHOW_AUTHOR, showGrid = true
+//            )
+//        }
+//        item(key = 9) {
+//            Spacer(Modifier.height(60.dp))
+//        }
+//        item(key = 10) {
+//            HorizontalSongView(
+//                homeViewModel.moodList, Pair(TextSize.SMALL, R.string.pick_your_mood),
+//                StyleSize.ONLY_TEXT, showGrid = true
+//            )
+//        }
+//        item(key = 11) {
+//            Spacer(Modifier.height(60.dp))
+//        }
+//        item(key = 12) {
+//            HorizontalSongView(
+//                homeViewModel.latestReleases, Pair(TextSize.MEDIUM, R.string.latest_release),
+//                StyleSize.SHOW_AUTHOR, showGrid = true
+//            )
+//        }
+//
+//        item(key = 13) {
+//            Spacer(Modifier.height(60.dp))
+//        }
         item(key = 14) {
             HorizontalSongView(
                 homeViewModel.topMostListeningSong,
                 Pair(TextSize.MEDIUM, R.string.most_listening_song_zene),
-                StyleSize.SHOW_AUTHOR, showGrid = false
+                StyleSize.SONG_WITH_LISTENER, showGrid = true
             )
         }
         item(key = 15) {

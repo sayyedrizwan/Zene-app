@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,8 +27,10 @@ import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.Utils.toast
 
 @Composable
 fun LoadingView(modifier: Modifier = Modifier) {
@@ -74,7 +77,7 @@ fun CardRoundLoading() {
     Spacer(
         Modifier
             .padding(6.dp)
-            .size(100.dp, 6.dp)
+            .size(350.dp, 200.dp)
             .clip(RoundedCornerShape(10))
             .background(shimmerEffectBrush())
     )

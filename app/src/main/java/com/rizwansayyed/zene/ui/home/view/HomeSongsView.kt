@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.CardRoundTextOnly
+import com.rizwansayyed.zene.ui.view.CardSmallWithListeningNumber
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.SimpleCardsView
@@ -29,7 +30,7 @@ enum class TextSize {
 }
 
 enum class StyleSize {
-    HIDE_AUTHOR, SHOW_AUTHOR, ONLY_TEXT,
+    HIDE_AUTHOR, SHOW_AUTHOR, ONLY_TEXT, SONG_WITH_LISTENER
 }
 
 @Composable
@@ -62,6 +63,7 @@ fun HorizontalSongView(
                         when (cardStyle) {
                             StyleSize.HIDE_AUTHOR, StyleSize.SHOW_AUTHOR -> LoadingCardView()
                             StyleSize.ONLY_TEXT -> LoadingCardView()
+                            StyleSize.SONG_WITH_LISTENER -> CardRoundLoading()
                         }
                     }
                 }
@@ -71,6 +73,7 @@ fun HorizontalSongView(
                         when (cardStyle) {
                             StyleSize.HIDE_AUTHOR, StyleSize.SHOW_AUTHOR -> LoadingCardView()
                             StyleSize.ONLY_TEXT -> LoadingCardView()
+                            StyleSize.SONG_WITH_LISTENER -> CardRoundLoading()
                         }
                     }
                 }
@@ -96,13 +99,14 @@ fun HorizontalSongView(
                     GridCells.Fixed(2),
                     Modifier
                         .fillMaxWidth()
-                        .height(if (cardStyle == StyleSize.ONLY_TEXT) 160.dp else 600.dp)
+                        .height(if (cardStyle == StyleSize.ONLY_TEXT) 160.dp else if (cardStyle == StyleSize.SONG_WITH_LISTENER) 250.dp else 600.dp)
                 ) {
                     items(data.data) {
                         when (cardStyle) {
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
+                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(it)
                         }
                     }
                 }
@@ -112,6 +116,7 @@ fun HorizontalSongView(
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
+                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(it)
                         }
                     }
                 }

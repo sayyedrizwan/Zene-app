@@ -22,6 +22,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 
 
 object Utils {
@@ -46,8 +49,8 @@ object Utils {
         const val ZENE_TOP_SONGS_API = "top/songs"
 
 
-
-        const val USER_AGENT_D = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+        const val USER_AGENT_D =
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 
     }
 
@@ -61,6 +64,14 @@ object Utils {
         return "https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
     }
 
+    fun convertItToMoney(s: String): String {
+        return try {
+            val m = s.toInt()
+            return DecimalFormat("#,###").format(m)
+        } catch (e: Exception) {
+            s
+        }
+    }
 
     fun openBrowser(url: String) = CoroutineScope(Dispatchers.Main).launch {
         try {
