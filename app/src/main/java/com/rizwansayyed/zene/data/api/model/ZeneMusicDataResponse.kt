@@ -5,7 +5,8 @@ typealias ZeneArtistsData = List<ZeneArtistsDataList>
 data class ZeneArtistsDataList(
     val artists: ZeneMusicDataItems,
     val songs: List<ZeneMusicDataItems>,
-    val playlists: List<ZeneMusicDataItems>
+    val playlists: List<ZeneMusicDataItems>,
+    val videos: List<ZeneMusicDataItems>
 )
 
 typealias ZeneMusicDataResponse = List<ZeneMusicDataItems>
@@ -16,5 +17,20 @@ data class ZeneMusicDataItems(
     val id: String?,
     val thumbnail: String?,
     val extra: String?,
-    val type: String?
-)
+    private val type: String?
+) {
+    fun type(): MusicType {
+        return if (type == "SONGS") MusicType.SONGS
+        else if (type == "PLAYLIST") MusicType.PLAYLIST
+        else if (type == "ALBUMS") MusicType.ALBUMS
+        else if (type == "ARTISTS") MusicType.ARTISTS
+        else if (type == "VIDEO") MusicType.VIDEO
+        else if (type == "MOOD") MusicType.MOOD
+        else MusicType.NONE
+    }
+}
+
+
+enum class MusicType {
+    SONGS, PLAYLIST, ALBUMS, ARTISTS, VIDEO, MOOD, NONE
+}

@@ -62,7 +62,6 @@ fun CardsViewDesc(m: ZeneMusicDataItems) {
         Modifier
             .padding(7.dp)
             .clickable { }) {
-
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,
