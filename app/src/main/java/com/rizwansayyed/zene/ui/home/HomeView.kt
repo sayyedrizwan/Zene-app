@@ -13,8 +13,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -44,10 +42,8 @@ import java.util.UUID
 
 
 @Composable
-fun HomeView() {
-    val homeViewModel: HomeViewModel = viewModel()
+fun HomeView(homeViewModel: HomeViewModel) {
     val isThreeGrid = isScreenBig()
-
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -60,62 +56,62 @@ fun HomeView() {
                 HomeHeaderView()
             }
         }
-//        item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                HorizontalSongView(
-//                    homeViewModel.recommendedPlaylists,
-//                    Pair(TextSize.BIG, R.string.recommended_playlists),
-//                    StyleSize.HIDE_AUTHOR, showGrid = false
-//                )
-//            }
-//        }
-//        item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                Spacer(Modifier.height(60.dp))
-//            }
-//        }
-//        item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                HorizontalSongView(
-//                    homeViewModel.recommendedAlbums,
-//                    Pair(TextSize.SMALL, R.string.albums_picked_for_you),
-//                    StyleSize.SHOW_AUTHOR, showGrid = false
-//                )
-//            }
-//        }
-//        item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                Spacer(Modifier.height(60.dp))
-//            }
-//        }
-//        item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                HorizontalVideoView(homeViewModel.recommendedVideo, R.string.videos_you_may_like)
-//            }
-//        }
-//        item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                Spacer(Modifier.height(60.dp))
-//            }
-//        }
-//        item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                HorizontalSongView(
-//                    homeViewModel.songsYouMayLike,
-//                    Pair(TextSize.SMALL, R.string.songs_you_may_like),
-//                    StyleSize.SHOW_AUTHOR,
-//                    showGrid = true
-//                )
-//            }
-//        }
-//
-//        item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column {
-//                Spacer(Modifier.height(60.dp))
-//                AdsBannerView()
-//                Spacer(Modifier.height(60.dp))
-//            }
-//        }
+        item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                HorizontalSongView(
+                    homeViewModel.recommendedPlaylists,
+                    Pair(TextSize.BIG, R.string.recommended_playlists),
+                    StyleSize.HIDE_AUTHOR, showGrid = false
+                )
+            }
+        }
+        item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(60.dp))
+            }
+        }
+        item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                HorizontalSongView(
+                    homeViewModel.recommendedAlbums,
+                    Pair(TextSize.SMALL, R.string.albums_picked_for_you),
+                    StyleSize.SHOW_AUTHOR, showGrid = false
+                )
+            }
+        }
+        item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(60.dp))
+            }
+        }
+        item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                HorizontalVideoView(homeViewModel.recommendedVideo, R.string.videos_you_may_like)
+            }
+        }
+        item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(60.dp))
+            }
+        }
+        item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                HorizontalSongView(
+                    homeViewModel.songsYouMayLike,
+                    Pair(TextSize.SMALL, R.string.songs_you_may_like),
+                    StyleSize.SHOW_AUTHOR,
+                    showGrid = true
+                )
+            }
+        }
+
+        item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(60.dp))
+                AdsBannerView()
+                Spacer(Modifier.height(60.dp))
+            }
+        }
 
         item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {

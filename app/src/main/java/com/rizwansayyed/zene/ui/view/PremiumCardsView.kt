@@ -21,12 +21,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.GoldColor
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
+import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 
 @Composable
 fun JoinPremiumCommunity(modifier: Modifier = Modifier) {
@@ -37,7 +37,7 @@ fun JoinPremiumCommunity(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(12.dp))
             .background(GoldColor.copy(0.4f))
             .padding(vertical = 5.dp, horizontal = 9.dp)
-            .clickable { }) {
+            .clickable { sendNavCommand(NAV_SUBSCRIPTION) }) {
         ImageIcon(R.drawable.ic_crown, 20, GoldColor)
         Spacer(Modifier.width(9.dp))
         TextPoppins(
@@ -47,7 +47,7 @@ fun JoinPremiumCommunity(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun UpgradeToPremiumCard(modifier: Modifier = Modifier) {
+fun UpgradeToPremiumCard() {
     Column(
         Modifier
             .padding(horizontal = 12.dp)
@@ -66,7 +66,9 @@ fun UpgradeToPremiumCard(modifier: Modifier = Modifier) {
                 .padding(5.dp)
                 .padding(horizontal = 10.dp)
                 .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(14.dp))
-                .padding(5.dp)
+                .padding(5.dp).clickable {
+                    sendNavCommand(NAV_SUBSCRIPTION)
+                }
         ) {
             TextPoppins(
                 stringResource(R.string.upgrade_if_you_are_a_music_enthusiasts),

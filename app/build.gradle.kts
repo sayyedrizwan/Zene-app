@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.browser)
     implementation(libs.coil.compose)
+    implementation(libs.nav.compose)
 
 
     implementation(platform(libs.firebase.bom))

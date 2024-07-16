@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Zene</string>
+    <string name="app_name_premium">Zene Premium</string>
     <string name="a_music_app">A Free Music App</string>
     <string name="login_to_continue">Login to Continue</string>
     <string name="error_while_login">Error while login</string>
@@ -24,5 +25,15 @@
     <string name="join_premium_community_desc">Zene is a free music app dedicated to providing unlimited access to your favorite tunes without any cost. While our core features remain free, Premium is for music enthusiasts who want exclusive benefits. Music enthusiasts support helps keep Zene free for everyone. Join our Premium family and elevate your music experience today!</string>
     <string name="upgrade_if_you_are_a_music_enthusiasts">Upgrade if your are a music enthusiasts</string>
     <string name="share_zene_friends_family">Share Zene with friends and family</string>
+    <string name="zene_premium_is_for_music_enthusiast">Zene premium is more for music enthusiast</string>
+    <string name="zene_premium_is_for_music_enthusiast_desc">At Zene, we believe music should be accessible to everyone, which is why our app provides unlimited access to your favorite tunes completely free of charge. We are committed to never charging you a penny to enjoy music on our platform. Our goal is to create a space where everyone can experience the joy of music without any barriers. \n\n However, for the true music enthusiasts who want to take their listening experience to the next level, we offer a Premium option. Premium is designed for those who seek exclusive benefits and a more immersive experience. By upgrading to Premium, you not only unlock advanced features but also support Zene in maintaining and improving our services. Your contribution helps us keep the app free for all users, ensuring that everyone can enjoy high-quality music without any cost.</string>
+    <string name="upgrade_to_zene_premium">Upgrade to Zene Premium</string>
+    <string name="make_and_sync_playlists">Make and sync playlists</string>
+    <string name="monthly">Monthly</string>
+    <string name="one_month">1 Month</string>
+    <string name="three_days_free_trial">3 days free trial</string>
+    <string name="per_month">per month</string>
+    <string name="available_plans">Available plans</string>
+    <string name="upgrade">Upgrade</string>
 
 </resources>

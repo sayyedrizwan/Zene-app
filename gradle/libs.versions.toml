@@ -29,6 +29,7 @@ retrofit = "2.11.0"
 lifecycle-compose = "2.8.3"
 coil = "2.6.0"
 ads = "23.2.0"
+nav = "2.7.7"
 
 
 [libraries]
@@ -57,7 +58,7 @@ browser = { module = "androidx.browser:browser", version.ref = "browser" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
-firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx"}
+firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx" }
 
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "ads" }
@@ -71,7 +72,9 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 
 
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+nav-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

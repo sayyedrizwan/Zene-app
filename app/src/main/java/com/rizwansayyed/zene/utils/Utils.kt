@@ -68,6 +68,7 @@ object Utils {
     const val TWO_GRID_SIZE = 6
     const val THREE_GRID_SIZE = 4
 
+
     val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
     fun Any.toast() = CoroutineScope(Dispatchers.Main).launch {
