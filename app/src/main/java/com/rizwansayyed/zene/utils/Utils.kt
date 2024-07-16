@@ -28,6 +28,13 @@ import java.util.Locale
 
 
 object Utils {
+
+    object IDs {
+        const val AD_UNIT_ID: String = "ca-app-pub-2941808068005217/7650500204"
+        val AD_BANNER_ID: String =
+            if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9214589741" else "ca-app-pub-2941808068005217/1624020934"
+    }
+
     object URLS {
         const val PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
 
@@ -42,6 +49,7 @@ object Utils {
         const val ZENE_USER_API = "zuser"
         const val ZENE_MOODS_API = "moods"
         const val ZENE_NEW_RELEASE_API = "newrelease"
+        const val ZENE_SUGGESTED_SONGS_API = "suggestedsongs"
         const val ZENE_TOP_GLOBAL_ARTISTS_API = "top/globalartists"
         const val ZENE_TOP_LISTEN_SONGS_API = "top/listensongs"
         const val ZENE_TOP_ARTISTS_API = "top/artistssongs"
@@ -55,6 +63,10 @@ object Utils {
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 
     }
+
+    const val TOTAL_GRID_SIZE = 12
+    const val TWO_GRID_SIZE = 6
+    const val THREE_GRID_SIZE = 4
 
     val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 

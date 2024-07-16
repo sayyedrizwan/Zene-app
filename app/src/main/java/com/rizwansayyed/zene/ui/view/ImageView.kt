@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.rizwansayyed.zene.utils.Utils.toast
 
 @Composable
 fun imgBuilder(path: String?): ImageRequest {
@@ -35,10 +36,10 @@ fun ImageIcon(id: Int, click: () -> Unit) {
 }
 
 @Composable
-fun ImageIcon(id: Int, size: Int) {
+fun ImageIcon(id: Int, size: Int, color: Color = Color.White) {
     Image(
         painterResource(id), "",
-        Modifier.size(size.dp), colorFilter = ColorFilter.tint(Color.White)
+        Modifier.size(size.dp), colorFilter = ColorFilter.tint(color)
     )
 }
 
@@ -52,5 +53,5 @@ fun ImageView(id: Int, modifier: Modifier = Modifier) {
 @Composable
 fun isScreenBig(): Boolean {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    return screenWidth.value > 400
+    return screenWidth.value > 500
 }

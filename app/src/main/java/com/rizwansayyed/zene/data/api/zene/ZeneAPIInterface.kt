@@ -29,4 +29,6 @@ interface ZeneAPIInterface {
     suspend fun topMostListeningArtists(): Flow<ZeneMusicDataResponse>
 
     suspend fun favArtistsData(list: Array<String>): Flow<ZeneArtistsData>
+
+    suspend fun suggestedSongs(list: Array<String>): Flow<ZeneMusicDataResponse>
 }

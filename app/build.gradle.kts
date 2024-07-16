@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
+    implementation(libs.ads)
 
 
     implementation(libs.dagger)

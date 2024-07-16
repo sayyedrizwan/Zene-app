@@ -203,7 +203,8 @@ fun ArtistsCardView(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { }, Arrangement.Center, Alignment.CenterHorizontally) {
+            .clickable { }, Arrangement.Center, Alignment.CenterHorizontally
+    ) {
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,
@@ -221,6 +222,31 @@ fun ArtistsCardView(m: ZeneMusicDataItems) {
                 .width(170.dp)
         ) {
             TextPoppinsThin(m.name ?: "", true, size = 17, limit = 1)
+        }
+    }
+}
+
+
+@Composable
+fun SongDynamicCards(m: ZeneMusicDataItems) {
+    Column(
+        Modifier
+            .padding(bottom = 15.dp)
+            .padding(7.dp)
+            .clickable { }, Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            imgBuilder(m.thumbnail),
+            m.name,
+            Modifier.clip(RoundedCornerShape(10.dp)).background(Color.DarkGray),
+            contentScale = ContentScale.Crop
+        )
+
+        Row(Modifier.padding(top = 4.dp).padding(horizontal = 2.dp)) {
+            TextPoppins(m.name ?: "", true, size = 17, limit = 2)
+        }
+        Row(Modifier.padding(top = 2.dp).padding(horizontal = 2.dp)) {
+            TextPoppinsThin(m.artists ?: "", true, size = 15, limit = 2)
         }
     }
 }

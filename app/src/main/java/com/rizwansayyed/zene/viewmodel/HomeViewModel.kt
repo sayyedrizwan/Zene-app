@@ -32,6 +32,7 @@ class HomeViewModel @Inject constructor(
     var latestReleases by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var topMostListeningSong by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var topMostListeningArtists by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var suggestedSongsForYou by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var favArtistsLists by mutableStateOf<APIResponse<ZeneArtistsData>>(APIResponse.Empty)
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
@@ -56,6 +57,7 @@ class HomeViewModel @Inject constructor(
         recommendedAlbums(list)
         recommendedVideo(list)
         songsYouMayLike(list)
+        suggestedSongsForYou(list)
 
         val listName = listOf(
             "The Weeknd",
@@ -164,6 +166,16 @@ class HomeViewModel @Inject constructor(
             favArtistsLists = APIResponse.Error(it)
         }.collectLatest {
             favArtistsLists = APIResponse.Success(it)
+        }
+    }
+
+    private fun suggestedSongsForYou(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.suggestedSongs(list.toTypedArray()).onStart {
+            suggestedSongsForYou = APIResponse.Loading
+        }.catch {
+            suggestedSongsForYou = APIResponse.Error(it)
+        }.collectLatest {
+            suggestedSongsForYou = APIResponse.Success(it)
         }
     }
 }

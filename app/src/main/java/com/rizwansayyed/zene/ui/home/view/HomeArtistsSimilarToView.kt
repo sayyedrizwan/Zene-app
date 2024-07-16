@@ -41,7 +41,6 @@ import com.rizwansayyed.zene.ui.view.VideoCardsViewWithSong
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeArtistsSimilarToView(m: ZeneArtistsDataList) {
     Column(

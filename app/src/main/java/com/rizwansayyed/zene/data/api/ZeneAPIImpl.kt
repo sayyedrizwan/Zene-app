@@ -71,6 +71,14 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.favArtistsData(body))
     }
 
+    override suspend fun suggestedSongs(list: Array<String>) = flow {
+        val json = JSONArray().apply {
+            list.forEach { put(it) }
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.suggestedSongs(body))
+    }
+
     override suspend fun recommendedPlaylists(list: Array<String>) = flow {
         val json = JSONArray().apply {
             list.forEach { put(it) }

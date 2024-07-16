@@ -19,4 +19,10 @@
     <string name="songs">Songs</string>
     <string name="playlists">Playlists</string>
     <string name="recommended">Recommended</string>
+    <string name="join_premium_community">Join Premium Community</string>
+    <string name="join_zene_premium">Join Zene Premium</string>
+    <string name="join_premium_community_desc">Zene is a free music app dedicated to providing unlimited access to your favorite tunes without any cost. While our core features remain free, Premium is for music enthusiasts who want exclusive benefits. Music enthusiasts support helps keep Zene free for everyone. Join our Premium family and elevate your music experience today!</string>
+    <string name="upgrade_if_you_are_a_music_enthusiasts">Upgrade if your are a music enthusiasts</string>
+    <string name="share_zene_friends_family">Share Zene with friends and family</string>
+
 </resources>
