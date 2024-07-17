@@ -37,11 +37,11 @@ import com.rizwansayyed.zene.utils.Utils.toast
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreenBar(
-    searchQuery: String, onSearch: (String) -> Unit
+    searchQuery: String, onChange: (String) -> Unit, onSearch: (String) -> Unit
 ) {
     SearchBar(
         query = searchQuery,
-        onQueryChange = { onSearch(it) },
+        onQueryChange = { onChange(it) },
         active = false,
         onActiveChange = {},
         onSearch = { onSearch(it) },
@@ -73,7 +73,7 @@ fun SearchTexts(txt: String, showIcon: Boolean, clicked: (Boolean) -> Unit) {
     ) {
 
         if (showIcon) {
-            ImageIcon(R.drawable.ic_go_forward, 17, Color.White)
+            ImageIcon(R.drawable.ic_go_forward, 15, Color.White)
             Spacer(Modifier.width(9.dp))
         }
 

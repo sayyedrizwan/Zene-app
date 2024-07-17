@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
@@ -94,10 +97,17 @@ fun CardsViewDesc(m: ZeneMusicDataItems) {
 
 @Composable
 fun VideoCardsViewWithSong(m: ZeneMusicDataItems) {
+    val context = LocalContext.current.applicationContext
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { }) {
+            .clickable {
+                Intent(context, VideoPlayerActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(Intent.ACTION_MAIN, m.extra)
+                    context.startActivity(this)
+                }
+            }) {
 
         Box(Modifier.size(width = 280.dp, height = 170.dp)) {
             AsyncImage(
@@ -238,14 +248,24 @@ fun SongDynamicCards(m: ZeneMusicDataItems) {
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,
-            Modifier.clip(RoundedCornerShape(10.dp)).background(Color.DarkGray),
+            Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.DarkGray),
             contentScale = ContentScale.Crop
         )
 
-        Row(Modifier.padding(top = 4.dp).padding(horizontal = 2.dp)) {
+        Row(
+            Modifier
+                .padding(top = 4.dp)
+                .padding(horizontal = 2.dp)
+        ) {
             TextPoppins(m.name ?: "", true, size = 17, limit = 2)
         }
-        Row(Modifier.padding(top = 2.dp).padding(horizontal = 2.dp)) {
+        Row(
+            Modifier
+                .padding(top = 2.dp)
+                .padding(horizontal = 2.dp)
+        ) {
             TextPoppinsThin(m.artists ?: "", true, size = 15, limit = 2)
         }
     }

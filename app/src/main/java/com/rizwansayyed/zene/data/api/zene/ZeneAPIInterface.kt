@@ -32,6 +32,8 @@ interface ZeneAPIInterface {
     suspend fun favArtistsData(list: Array<String>): Flow<ZeneArtistsData>
 
     suspend fun suggestedSongs(list: Array<String>): Flow<ZeneMusicDataResponse>
+
     suspend fun searchData(s: String): Flow<ZeneSearchData>
+
     suspend fun searchSuggestions(s: String): Flow<List<String>>
 }

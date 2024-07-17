@@ -1,8 +1,11 @@
 package com.rizwansayyed.zene.utils
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
+import android.webkit.WebSettings
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.browser.customtabs.CustomTabColorSchemeParams
@@ -18,6 +21,7 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import okhttp3.internal.userAgent
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -120,8 +125,24 @@ object Utils {
         val list = searchHistoryDB.first()?.toList() ?: emptyList()
         array.add(txt.trim())
         list.forEach {
-            if (array.size <= 30 && it.trim() != txt.trim()) array.add(it)
+            if (array.size <= 100 && it.trim() != txt.trim()) array.add(it)
         }
         searchHistoryDB = flowOf(array.toTypedArray())
+    }
+
+    @Suppress("DEPRECATION")
+    @SuppressLint("SetJavaScriptEnabled")
+    fun WebView.enable() {
+        isFocusable = true
+        isFocusableInTouchMode = true
+        settings.javaScriptEnabled = true
+        settings.cacheMode = WebSettings.LOAD_DEFAULT
+        settings.domStorageEnabled = true
+        settings.databaseEnabled = true
+        settings.pluginState = WebSettings.PluginState.ON
+        settings.allowFileAccess = true
+        settings.loadWithOverviewMode = true
+        settings.useWideViewPort = true
+        settings.userAgentString = USER_AGENT_D
     }
 }

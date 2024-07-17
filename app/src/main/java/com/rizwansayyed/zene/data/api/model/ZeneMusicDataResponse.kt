@@ -9,10 +9,8 @@ data class ZeneArtistsDataList(
     val videos: List<ZeneMusicDataItems>
 )
 
-typealias ZeneSearchData = List<ZeneSearchDataList>
-
-data class ZeneSearchDataList(
-    val artists: ZeneMusicDataItems,
+data class ZeneSearchData(
+    val artists: List<ZeneMusicDataItems>,
     val songs: List<ZeneMusicDataItems>,
     val playlists: List<ZeneMusicDataItems>,
     val videos: List<ZeneMusicDataItems>,

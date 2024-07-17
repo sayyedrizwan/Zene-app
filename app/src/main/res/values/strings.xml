@@ -9,6 +9,7 @@
     <string name="recommended_playlists">Recommended \n \nPlaylists</string>
     <string name="albums_picked_for_you">Albums picked for you</string>
     <string name="videos_you_may_like">Videos you may like</string>
+    <string name="videos">Videos</string>
     <string name="play_as_song">Play as song</string>
     <string name="songs_you_may_like">Songs you may like</string>
     <string name="songs_for_you">Songs for you</string>
@@ -17,7 +18,9 @@
     <string name="most_listening_songs_zene">Most listening Songs \n \non Zene</string>
     <string name="listeners">Listeners</string>
     <string name="global_top_artists">Global top artists</string>
+    <string name="artists">Artists</string>
     <string name="songs">Songs</string>
+    <string name="albums">Albums</string>
     <string name="playlists">Playlists</string>
     <string name="recommended">Recommended</string>
     <string name="join_premium_community">Join Premium Community</string>

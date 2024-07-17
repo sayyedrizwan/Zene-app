@@ -192,7 +192,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchSuggestions(q: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchSuggestions(q: String, doEmpty: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
+        if (doEmpty) {
+            searchSuggestions = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.searchSuggestions(q).onStart {
             searchSuggestions = APIResponse.Loading
         }.catch {
