@@ -30,6 +30,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import okhttp3.internal.userAgent
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -144,6 +147,18 @@ object Utils {
         settings.allowFileAccess = true
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
-        settings.userAgentString = USER_AGENT_D
+        settings.mediaPlaybackRequiresUserGesture = false
+//        settings.userAgentString = USER_AGENT_D
+    }
+
+    fun readHTMLFromUTF8File(inputStream: InputStream): String {
+        inputStream.use {
+            try {
+                val bufferedReader = BufferedReader(InputStreamReader(inputStream, "utf-8"))
+                return bufferedReader.readLines().joinToString("\n")
+            } catch (e: Exception) {
+                return ""
+            }
+        }
     }
 }

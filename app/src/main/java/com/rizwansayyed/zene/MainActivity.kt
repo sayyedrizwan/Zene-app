@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @SuppressLint("UnspecifiedRegisterReceiverFlag", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
             var listener by remember { mutableStateOf<BroadcastReceiver?>(null) }
             val navController = rememberNavController()
             ZeneTheme {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 NavHost(navController, NAV_HOME) {
                     composable(NAV_HOME) {
                         HomeView(homeViewModel)
