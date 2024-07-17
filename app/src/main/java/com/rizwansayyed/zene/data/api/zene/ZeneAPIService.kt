@@ -3,9 +3,12 @@ package com.rizwansayyed.zene.data.api.zene
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ALBUMS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ARTISTS_API
@@ -41,6 +44,12 @@ interface ZeneAPIService {
 
     @GET(ZENE_TOP_GLOBAL_ARTISTS_API)
     suspend fun topMostListeningArtists(): ZeneMusicDataResponse
+
+    @GET(ZENE_SEARCH_API)
+    suspend fun searchData(@Query("s") id: String): ZeneSearchData
+
+    @GET(ZENE_SEARCH_SUGGESTIONS_API)
+    suspend fun searchSuggestions(@Query("s") id: String): List<String>
 
     @POST(ZENE_TOP_ARTISTS_API)
     suspend fun favArtistsData(@Body body: RequestBody): ZeneArtistsData

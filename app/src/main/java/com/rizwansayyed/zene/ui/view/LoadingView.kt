@@ -71,6 +71,18 @@ fun LoadingCardView() {
     }
 }
 
+@Composable
+fun LoadingText() {
+    Spacer(
+        Modifier
+            .padding(top = 17.dp)
+            .padding(horizontal = 7.dp)
+            .size(245.dp, 20.dp)
+            .clip(RoundedCornerShape(40))
+            .background(shimmerEffectBrush())
+    )
+}
+
 
 @Composable
 fun CardRoundLoading() {

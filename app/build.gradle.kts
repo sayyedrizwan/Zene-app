@@ -64,7 +64,17 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
+    signingConfigs {
+        create("release") {
+            val properties = Properties().apply {
+                load(File("signing.properties").reader())
+            }
+            storeFile = File(properties.getProperty("storeFilePath"))
+            storePassword = properties.getProperty("storePassword")
+            keyPassword = properties.getProperty("keyPassword")
+            keyAlias = properties.getProperty("keyAlias")
+        }
+    }
 }
 
 dependencies {

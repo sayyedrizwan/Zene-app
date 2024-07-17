@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.data.api.zene
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -31,4 +32,6 @@ interface ZeneAPIInterface {
     suspend fun favArtistsData(list: Array<String>): Flow<ZeneArtistsData>
 
     suspend fun suggestedSongs(list: Array<String>): Flow<ZeneMusicDataResponse>
+    suspend fun searchData(s: String): Flow<ZeneSearchData>
+    suspend fun searchSuggestions(s: String): Flow<List<String>>
 }

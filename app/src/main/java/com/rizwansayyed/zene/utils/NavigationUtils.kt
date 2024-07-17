@@ -10,9 +10,12 @@ import com.rizwansayyed.zene.di.BaseApp.Companion.context
 object NavigationUtils {
     const val NAV_HOME = "home"
     const val NAV_SUBSCRIPTION = "subscription"
+    const val NAV_SEARCH = "search"
+    const val NAV_MY_MUSIC = "my_music"
+    const val NAV_SETTINGS = "settings"
 
 
-    val NAV_ACTION = "${context.packageName}_NAV_ACTION"
+    private val NAV_ACTION = "${context.packageName}_NAV_ACTION"
 
     fun registerNavCommand(c: Activity, listener: BroadcastReceiver?) {
         val l = IntentFilter(NAV_ACTION)

@@ -27,6 +27,10 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.JoinPremiumCommunity
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
+import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 
 @Composable
 fun HomeHeaderView() {
@@ -47,19 +51,19 @@ fun HomeHeaderView() {
 
         Row(Modifier.height(65.dp), Arrangement.Center, Alignment.CenterVertically) {
             ImageIcon(R.drawable.ic_search) {
-
+                sendNavCommand(NAV_SEARCH)
             }
 
             Spacer(Modifier.width(15.dp))
 
             ImageIcon(R.drawable.ic_music_note_square) {
-
+                sendNavCommand(NAV_MY_MUSIC)
             }
 
             Spacer(Modifier.width(15.dp))
 
             ImageIcon(R.drawable.ic_setting) {
-
+                sendNavCommand(NAV_SETTINGS)
             }
         }
     }

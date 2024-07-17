@@ -5,18 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,13 +21,13 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.GoldColor
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.theme.Purple80
 import com.rizwansayyed.zene.ui.theme.PurpleGrey80
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.utils.SubscriptionPurchaseUtils
 
 @Composable
 fun SubscriptionInfoCard(img: Int, s: Int) {
@@ -105,7 +99,7 @@ fun UpgradeToBtn() {
 }
 
 @Composable
-fun BuyNowBtn() {
+fun BuyNowBtn(subscription: SubscriptionPurchaseUtils) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -129,7 +123,7 @@ fun BuyNowBtn() {
             Modifier
                 .padding(horizontal = 15.dp, vertical = 12.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .clickable { }
+                .clickable { subscription.buy() }
                 .background(MainColor)
                 .padding(horizontal = 10.dp, vertical = 15.dp)) {
             TextPoppins(

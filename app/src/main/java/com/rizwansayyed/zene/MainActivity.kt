@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,16 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
+import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ACTION
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
@@ -48,9 +47,14 @@ class MainActivity : ComponentActivity() {
             var listener by remember { mutableStateOf<BroadcastReceiver?>(null) }
             val navController = rememberNavController()
             ZeneTheme {
-                NavHost(navController, NAV_SUBSCRIPTION) {
+                NavHost(navController, NAV_HOME) {
                     composable(NAV_HOME) {
                         HomeView(homeViewModel)
+                    }
+                    composable(NAV_SEARCH) {
+                        SearchView(homeViewModel) {
+                            navController.popBackStack()
+                        }
                     }
                     composable(NAV_SUBSCRIPTION) {
                         SubscriptionView()

@@ -15,12 +15,15 @@ import androidx.core.content.ContextCompat
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -50,6 +53,8 @@ object Utils {
         const val ZENE_MOODS_API = "moods"
         const val ZENE_NEW_RELEASE_API = "newrelease"
         const val ZENE_SUGGESTED_SONGS_API = "suggestedsongs"
+        const val ZENE_SEARCH_API = "search"
+        const val ZENE_SEARCH_SUGGESTIONS_API = "search_suggestions"
         const val ZENE_TOP_GLOBAL_ARTISTS_API = "top/globalartists"
         const val ZENE_TOP_LISTEN_SONGS_API = "top/listensongs"
         const val ZENE_TOP_ARTISTS_API = "top/artistssongs"
@@ -108,5 +113,15 @@ object Utils {
             i.addFlags(FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(i)
         }
+    }
+
+    fun enterUniqueSearchHistory(txt: String) = CoroutineScope(Dispatchers.IO).launch {
+        val array = ArrayList<String>()
+        val list = searchHistoryDB.first()?.toList() ?: emptyList()
+        array.add(txt.trim())
+        list.forEach {
+            if (array.size <= 30 && it.trim() != txt.trim()) array.add(it)
+        }
+        searchHistoryDB = flowOf(array.toTypedArray())
     }
 }

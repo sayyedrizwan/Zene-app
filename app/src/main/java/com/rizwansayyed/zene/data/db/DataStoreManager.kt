@@ -8,7 +8,9 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -25,6 +27,7 @@ object DataStoreManager {
         const val JSON_EMPTY = "{}"
         const val ARRAY_EMPTY = "[]"
         val USER_INFOS = stringPreferencesKey("user_info")
+        val SEARCH_HISTORY = stringPreferencesKey("search_history")
     }
 
 
@@ -35,5 +38,14 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(UserInfoData::class.java).toJson(value.first())
             context.dataStore.edit { it[USER_INFOS] = json }
+        }
+
+    var searchHistoryDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<String>::class.java).fromJson(it[SEARCH_HISTORY] ?: ARRAY_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
+            context.dataStore.edit { it[SEARCH_HISTORY] = json }
         }
 }

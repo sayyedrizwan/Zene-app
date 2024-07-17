@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.api.APIHttpService.youtubeMusicPlaylist
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,8 @@ class HomeViewModel @Inject constructor(
     var topMostListeningArtists by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var suggestedSongsForYou by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var favArtistsLists by mutableStateOf<APIResponse<ZeneArtistsData>>(APIResponse.Empty)
+    var searchQuery by mutableStateOf<APIResponse<ZeneSearchData>>(APIResponse.Empty)
+    var searchSuggestions by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         moodLists()
@@ -176,6 +179,26 @@ class HomeViewModel @Inject constructor(
             suggestedSongsForYou = APIResponse.Error(it)
         }.collectLatest {
             suggestedSongsForYou = APIResponse.Success(it)
+        }
+    }
+
+    fun search(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.searchData(q).onStart {
+            searchQuery = APIResponse.Loading
+        }.catch {
+            searchQuery = APIResponse.Error(it)
+        }.collectLatest {
+            searchQuery = APIResponse.Success(it)
+        }
+    }
+
+    fun searchSuggestions(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.searchSuggestions(q).onStart {
+            searchSuggestions = APIResponse.Loading
+        }.catch {
+            searchSuggestions = APIResponse.Error(it)
+        }.collectLatest {
+            searchSuggestions = APIResponse.Success(it)
         }
     }
 }
