@@ -47,6 +47,7 @@ object Utils {
         const val PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
 
         const val YOUTUBE_MUSIC = "https://www.youtube.com/music"
+        const val YOUTUBE_URL = "https://www.youtube.com"
 
 
         const val BASE_URL_IP = "http://ip-api.com/"
