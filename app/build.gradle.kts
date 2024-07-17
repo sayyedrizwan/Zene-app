@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
     implementation(libs.ads)
+    implementation(libs.billing.client)
 
 
     implementation(libs.dagger)

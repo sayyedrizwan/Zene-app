@@ -137,40 +137,4 @@ fun BuyNowBtn() {
             )
         }
     }
-
-
-//    Column(
-//        Modifier
-//            .padding(top = 10.dp, bottom = 5.dp)
-//            .padding(horizontal = 20.dp)
-//            .fillMaxWidth()
-//            .clip(RoundedCornerShape(15.dp))
-//            .background(Color.Black)
-//            .padding(horizontal = 16.dp)
-//    ) {
-//        Spacer(Modifier.height(20.dp))
-//        TextPoppinsSemiBold(
-//            stringResource(R.string.monthly), false, Purple80, 27
-//        )
-//        Spacer(Modifier.height(5.dp))
-//        TextPoppins("$12 ${stringResource(R.string.per_month)}", size = 13)
-//        Spacer(Modifier.height(1.dp))
-//        TextPoppinsThin(stringResource(R.string.three_days_free_trial), size = 14)
-//
-//        Spacer(Modifier.height(10.dp))
-//
-//        HorizontalDivider(
-//            color = Color.White,
-//            modifier = Modifier
-//                .padding(horizontal = 5.dp)
-//                .fillMaxWidth()
-//                .width(1.dp)
-//        )
-//
-//        Column {
-//
-//        }
-//
-//        Spacer(Modifier.height(20.dp))
-//    }
 }
