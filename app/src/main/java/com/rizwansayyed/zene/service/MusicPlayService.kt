@@ -7,27 +7,24 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.webkit.ConsoleMessage
+import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEW_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PAUSE
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
-import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,6 +43,7 @@ class MusicPlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
         webView = WebViewService(applicationContext).apply {
             enable()
             addJavascriptInterface(JavaScriptInterface(), "ZeneListener")
@@ -59,7 +57,6 @@ class MusicPlayService : Service() {
             delay(4.seconds)
             while (true) {
                 getDurations()
-                Log.d("TAG", "onCreate: runnned on ")
                 delay(1.seconds)
             }
         }
@@ -67,9 +64,8 @@ class MusicPlayService : Service() {
     }
 
     fun loadURL(vID: String) {
-        val player =
-            readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
-                .replace("<<VideoID>>", vID)
+        val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
+            .replace("<<VideoID>>", vID)
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
     }
@@ -86,6 +82,8 @@ class MusicPlayService : Service() {
             if (json == PLAY_VIDEO) play()
             else if (json == PAUSE_VIDEO) pause()
             else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
+                clearCache()
+
                 val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)
                 d?.player?.id?.let { loadURL(it) }
                 musicPlayerDB = flowOf(d)
@@ -105,14 +103,14 @@ class MusicPlayService : Service() {
         webView.evaluateJavascript("playerDurations();", null)
     }
 
+
     inner class JavaScriptInterface {
         @JavascriptInterface
         fun playerState(v: Int) = CoroutineScope(Dispatchers.IO).launch {
             val d = musicPlayerDB.first()
             d?.isBuffering = v == VIDEO_BUFFERING
-
+            d?.isPlaying = false
             if (v == VIDEO_PLAYING) d?.isPlaying = true
-            else if (v == VIDEO_PAUSE) d?.isPlaying = true
 
             musicPlayerDB = flowOf(d)
 
@@ -149,5 +147,11 @@ class MusicPlayService : Service() {
         super.onDestroy()
         job?.cancel()
         job = null
+    }
+
+    fun clearCache() {
+        webView.clearCache(true)
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.removeAllCookies({})
     }
 }

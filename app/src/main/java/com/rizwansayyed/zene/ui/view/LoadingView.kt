@@ -36,7 +36,7 @@ import com.rizwansayyed.zene.utils.Utils.toast
 fun LoadingView(modifier: Modifier = Modifier) {
     Column(modifier, Arrangement.Center, Alignment.CenterHorizontally) {
         CircularProgressIndicator(
-            Modifier.size(32.dp), MainColor, trackColor = Color.White,
+            modifier, MainColor, trackColor = Color.White,
         )
     }
 }

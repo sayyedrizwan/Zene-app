@@ -53,6 +53,7 @@ class VideoPlayerActivity : ComponentActivity() {
                     webViewClient = webViewClientObject
                     webChromeClient = WebChromeClient()
 
+
                     val player =
                         readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_video_player))
                             .replace("<<VideoID>>", videoID)

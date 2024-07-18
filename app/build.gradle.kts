@@ -112,11 +112,12 @@ dependencies {
     implementation(libs.ads)
     implementation(libs.billing.client)
 
-
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
     implementation(libs.lifecycle.compose)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
+
+    implementation("androidx.media:media:1.1.0")
 }

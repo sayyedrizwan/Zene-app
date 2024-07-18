@@ -23,10 +23,6 @@ fun SearchView(homeViewModel: HomeViewModel, back: () -> Unit) {
     else
         SearchItemView(homeViewModel, search, back)
 
-    LaunchedEffect(Unit) {
-        search = "Taylor Swift"
-    }
-
     BackHandler {
         if (search != "") {
             search = ""

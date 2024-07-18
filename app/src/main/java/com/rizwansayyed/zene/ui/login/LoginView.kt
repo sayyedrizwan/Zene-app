@@ -186,7 +186,7 @@ fun LoginButtonView() {
         .padding(9.dp)
 
     if (loading)
-        LoadingView(Modifier.padding(bottom = 70.dp))
+        LoadingView(Modifier.padding(bottom = 70.dp).size(32.dp))
     else
         Row(
             Modifier

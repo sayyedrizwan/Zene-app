@@ -39,7 +39,7 @@ fun HomeHeaderView() {
     Row(Modifier.padding(horizontal = 7.dp), Arrangement.Center) {
         Column {
             Row {
-                Image(painterResource(R.drawable.ic_zene_logo_round), "", Modifier.size(65.dp))
+                Image(painterResource(R.mipmap.logor), "", Modifier.size(65.dp))
 
                 Row(Modifier.padding(top = 7.dp, start = 12.dp)) {
                     TextAntroVenctra(stringResource(R.string.app_name), size = 36)

@@ -1,9 +1,13 @@
 package com.rizwansayyed.zene.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
@@ -138,6 +142,7 @@ object Utils {
     @SuppressLint("SetJavaScriptEnabled")
     fun WebView.enable() {
         isFocusable = true
+        requestFocus()
         isFocusableInTouchMode = true
         settings.javaScriptEnabled = true
         settings.cacheMode = WebSettings.LOAD_DEFAULT
@@ -170,4 +175,8 @@ object Utils {
         }
     }
 
+    fun Context.vibratePhone() {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+    }
 }
