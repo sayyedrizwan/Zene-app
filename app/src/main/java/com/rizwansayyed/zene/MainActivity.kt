@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rizwansayyed.zene.service.MusicPlayService
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.search.SearchView
@@ -76,11 +77,19 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 registerNavCommand(this@MainActivity, listener)
+                startMusicActivity()
 
                 onDispose {
                     unregisterReceiver(listener)
                 }
             }
+        }
+    }
+
+    private fun startMusicActivity() {
+        Intent(this, MusicPlayService::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startService(this)
         }
     }
 

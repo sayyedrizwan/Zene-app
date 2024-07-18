@@ -49,7 +49,8 @@
                         rel: 0
                     },
                     events: {
-                        'onReady': onPlayerReady
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
                     }
                 })
             }
@@ -60,6 +61,13 @@
                 setTimeout(() => {
                     event.target.unMute()
                 }, 500);
+
+                console.log(event.target)
+                console.log(event.target.getDuration())
+            }
+
+            function onPlayerStateChange(event) {
+                JavaScriptInterface.playerState(event.data)
             }
 
         </script>

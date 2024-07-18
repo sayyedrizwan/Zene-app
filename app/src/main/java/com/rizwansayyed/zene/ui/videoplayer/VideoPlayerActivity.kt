@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.ui.view.LockScreenOrientation
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.BufferedReader
 import java.io.InputStream
@@ -41,10 +42,10 @@ class VideoPlayerActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+
         val videoID = intent.getStringExtra(Intent.ACTION_MAIN) ?: return
         setContent {
-            LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
-
             AndroidView({ ctx ->
                 WebView(ctx).apply {
                     webView = this
@@ -63,6 +64,9 @@ class VideoPlayerActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 window.decorView.systemUiVisibility =
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+                window.setFlags(
+                    WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE
+                )
             }
         }
     }
@@ -73,17 +77,13 @@ class VideoPlayerActivity : ComponentActivity() {
         ): Boolean = true
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        webView?.clearHistory()
-//        webView?.clearCache(true)
-//        webView?.loadUrl("about:blank")
-//        webView?.onPause()
-//        webView?.removeAllViews()
-//        webView?.pauseTimers()
-//        webView?.destroy()
-//        webView = null
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        webView?.loadUrl("about:blank")
+        webView?.onPause()
+        webView?.destroy()
+        webView = null
+    }
 }
 
 

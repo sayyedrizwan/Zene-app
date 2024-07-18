@@ -25,7 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.service.MusicServiceUtils
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommandSongID
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
@@ -64,7 +67,15 @@ fun CardsViewDesc(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { }) {
+            .clickable {
+                when (m.type()) {
+                    MusicType.SONGS -> {
+                        m.id?.let { sendWebViewCommandSongID(it) }
+                    }
+
+                    else -> {}
+                }
+            }) {
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,
@@ -243,7 +254,15 @@ fun SongDynamicCards(m: ZeneMusicDataItems) {
         Modifier
             .padding(bottom = 15.dp)
             .padding(7.dp)
-            .clickable { }, Arrangement.Center, Alignment.CenterHorizontally
+            .clickable {
+                when (m.type()) {
+                    MusicType.SONGS -> {
+                        m.id?.let { sendWebViewCommandSongID(it) }
+                    }
+
+                    else -> {}
+                }
+            }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
             imgBuilder(m.thumbnail),

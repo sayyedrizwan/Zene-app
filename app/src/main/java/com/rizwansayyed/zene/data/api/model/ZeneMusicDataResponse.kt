@@ -28,13 +28,15 @@ data class ZeneMusicDataItems(
     private val type: String?
 ) {
     fun type(): MusicType {
-        return if (type == "SONGS") MusicType.SONGS
-        else if (type == "PLAYLIST") MusicType.PLAYLIST
-        else if (type == "ALBUMS") MusicType.ALBUMS
-        else if (type == "ARTISTS") MusicType.ARTISTS
-        else if (type == "VIDEO") MusicType.VIDEO
-        else if (type == "MOOD") MusicType.MOOD
-        else MusicType.NONE
+        return when (type) {
+            "SONGS" -> MusicType.SONGS
+            "PLAYLIST" -> MusicType.PLAYLIST
+            "ALBUMS" -> MusicType.ALBUMS
+            "ARTISTS" -> MusicType.ARTISTS
+            "VIDEO" -> MusicType.VIDEO
+            "MOOD" -> MusicType.MOOD
+            else -> MusicType.NONE
+        }
     }
 }
 

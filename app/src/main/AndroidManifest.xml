@@ -34,8 +34,11 @@
         </activity>
 
         <activity
+            android:configChanges="orientation|screenSize"
             android:name=".ui.videoplayer.VideoPlayerActivity"
             android:exported="true" />
+
+        <service android:name=".service.MusicPlayService" />
 
         <property
             android:name="android.adservices.AD_SERVICES_CONFIG"
