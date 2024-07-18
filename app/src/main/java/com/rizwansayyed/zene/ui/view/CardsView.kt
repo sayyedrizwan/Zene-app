@@ -27,8 +27,8 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
-import com.rizwansayyed.zene.service.MusicServiceUtils
-import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommandSongID
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
@@ -63,16 +63,13 @@ fun SimpleCardsView(m: ZeneMusicDataItems) {
 
 
 @Composable
-fun CardsViewDesc(m: ZeneMusicDataItems) {
+fun CardsViewDesc(m: ZeneMusicDataItems, songs: List<ZeneMusicDataItems>) {
     Column(
         Modifier
             .padding(7.dp)
             .clickable {
                 when (m.type()) {
-                    MusicType.SONGS -> {
-                        m.id?.let { sendWebViewCommandSongID(it) }
-                    }
-
+                    MusicType.SONGS -> sendWebViewCommand(m, songs)
                     else -> {}
                 }
             }) {
@@ -249,17 +246,14 @@ fun ArtistsCardView(m: ZeneMusicDataItems) {
 
 
 @Composable
-fun SongDynamicCards(m: ZeneMusicDataItems) {
+fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
     Column(
         Modifier
             .padding(bottom = 15.dp)
             .padding(7.dp)
             .clickable {
                 when (m.type()) {
-                    MusicType.SONGS -> {
-                        m.id?.let { sendWebViewCommandSongID(it) }
-                    }
-
+                    MusicType.SONGS -> sendWebViewCommand(m, list)
                     else -> {}
                 }
             }, Arrangement.Center, Alignment.CenterHorizontally

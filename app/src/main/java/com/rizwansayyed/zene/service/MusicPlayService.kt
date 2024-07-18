@@ -14,16 +14,28 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
+import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEW_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PAUSE
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
+import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -43,13 +55,15 @@ class MusicPlayService : Service() {
 
         registerWebViewCommand(applicationContext, listener)
 
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.Main).launch {
             delay(4.seconds)
             while (true) {
+                getDurations()
                 Log.d("TAG", "onCreate: runnned on ")
-                delay(500)
+                delay(1.seconds)
             }
         }
+        loadURL("2")
     }
 
     fun loadURL(vID: String) {
@@ -67,22 +81,59 @@ class MusicPlayService : Service() {
             c ?: return
             i ?: return
 
-            val data = i.getStringExtra(Intent.ACTION_MAIN) ?: return
+            val json = i.getStringExtra(Intent.ACTION_MAIN) ?: return
 
-            if (data.contains(NEW_VIDEO)) loadURL(data.substringAfter(NEW_VIDEO))
+            if (json == PLAY_VIDEO) play()
+            else if (json == PAUSE_VIDEO) pause()
+            else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
+                val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)
+                d?.player?.id?.let { loadURL(it) }
+                musicPlayerDB = flowOf(d)
+            }
         }
+    }
+
+    private fun pause() {
+        webView.evaluateJavascript("pauseSong();", null)
+    }
+
+    private fun play() {
+        webView.evaluateJavascript("playSong();", null)
+    }
+
+    private fun getDurations() {
+        webView.evaluateJavascript("playerDurations();", null)
     }
 
     inner class JavaScriptInterface {
         @JavascriptInterface
-        fun playerState(v: Int) {
-            "$v".toast()
+        fun playerState(v: Int) = CoroutineScope(Dispatchers.IO).launch {
+            val d = musicPlayerDB.first()
+            d?.isBuffering = v == VIDEO_BUFFERING
+
+            if (v == VIDEO_PLAYING) d?.isPlaying = true
+            else if (v == VIDEO_PAUSE) d?.isPlaying = true
+
+            musicPlayerDB = flowOf(d)
+
+            if (isActive) cancel()
+        }
+
+        @JavascriptInterface
+        fun playerDuration(current: Int, total: Int) = CoroutineScope(Dispatchers.IO).launch {
+            val d = musicPlayerDB.first()
+            d?.totalDuration = total
+            d?.currentDuration = current
+            musicPlayerDB = flowOf(d)
+            if (isActive) cancel()
         }
     }
 
 
     private val webViewChromeClientObject = object : WebChromeClient() {
         override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+            //undefined (reading 'target')
+//            Log.d("TAG", "playerTotalDuration: runned 111 ${consoleMessage?.message()}")
             return true
         }
     }

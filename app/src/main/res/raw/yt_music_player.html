@@ -72,6 +72,22 @@
                 }, 500);
             }
 
+            function pauseSong() {
+                player.pauseVideo()
+            }
+
+            function playSong() {
+                player.playVideo()
+            }
+
+            function playerDurations() {
+                if (player.getDuration() == undefined || player.getCurrentTime() == undefined) {
+                    ZeneListener.playerDuration(-1, -1)
+                } else {
+                    ZeneListener.playerDuration(player.getCurrentTime(), player.getDuration())
+                }
+            }
+
         </script>
     </body>
 </html>

@@ -5,14 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEW_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
+import com.rizwansayyed.zene.utils.Utils.moshi
 
 object MusicServiceUtils {
 
     object Commands {
         const val PLAY_VIDEO = "play"
-        const val PAUSE_VIDEO = "play"
+        const val PAUSE_VIDEO = "pause"
         const val NEW_VIDEO = "new_"
 
 
@@ -42,9 +46,11 @@ object MusicServiceUtils {
         }
     }
 
-    fun sendWebViewCommandSongID(id: String) {
+    fun sendWebViewCommand(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
+        val d = MusicPlayerData(list, m, VIDEO_BUFFERING, 0, false, 0, true)
+        val json = moshi.adapter(MusicPlayerData::class.java).toJson(d)
         Intent(WEB_VIEW_SERVICE_ACTION).apply {
-            putExtra(Intent.ACTION_MAIN, "${NEW_VIDEO}$id")
+            putExtra(Intent.ACTION_MAIN, json)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.sendBroadcast(this)
         }

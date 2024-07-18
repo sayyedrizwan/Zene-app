@@ -106,7 +106,7 @@ fun HorizontalSongView(
                     items(data.data) {
                         when (cardStyle) {
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it)
-                            StyleSize.SHOW_AUTHOR -> CardsViewDesc(it)
+                            StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
                             StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(it)
                         }
@@ -116,7 +116,7 @@ fun HorizontalSongView(
                     items(data.data) {
                         when (cardStyle) {
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it)
-                            StyleSize.SHOW_AUTHOR -> CardsViewDesc(it)
+                            StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
                             StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(it)
                         }

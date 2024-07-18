@@ -16,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.ui.home.view.HomeArtistsSimilarLoading
@@ -207,7 +206,7 @@ fun HomeView(homeViewModel: HomeViewModel) {
 
                 items(v.data,
                     span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                    SongDynamicCards(it)
+                    SongDynamicCards(it, v.data)
                 }
             }
         }

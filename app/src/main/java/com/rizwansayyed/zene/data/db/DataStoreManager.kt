@@ -10,8 +10,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_PLAYER
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
+import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.moshi
@@ -28,6 +30,7 @@ object DataStoreManager {
         const val ARRAY_EMPTY = "[]"
         val USER_INFOS = stringPreferencesKey("user_info")
         val SEARCH_HISTORY = stringPreferencesKey("search_history")
+        val MUSIC_PLAYER = stringPreferencesKey("music_player")
     }
 
 
@@ -47,5 +50,14 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
             context.dataStore.edit { it[SEARCH_HISTORY] = json }
+        }
+
+    var musicPlayerDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(MusicPlayerData::class.java).fromJson(it[MUSIC_PLAYER] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(MusicPlayerData::class.java).toJson(value.first())
+            context.dataStore.edit { it[MUSIC_PLAYER] = json }
         }
 }

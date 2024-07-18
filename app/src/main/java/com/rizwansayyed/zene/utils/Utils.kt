@@ -161,4 +161,13 @@ object Utils {
             }
         }
     }
+
+    fun getPercentageLeft(current: Int?, total: Int?): Double {
+        return try {
+            ((current?.toDouble() ?: 0.0) / (total ?: 0.0).toDouble()) * 100
+        } catch (e: Exception) {
+            0.0
+        }
+    }
+
 }
