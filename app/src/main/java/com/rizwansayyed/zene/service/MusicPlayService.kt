@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -35,9 +36,9 @@ class MusicPlayService : Service() {
         super.onCreate()
         webView = WebViewService(applicationContext).apply {
             enable()
+            addJavascriptInterface(JavaScriptInterface(), "ZeneListener")
             webViewClient = webViewClientObject
-            webChromeClient = WebChromeClient()
-            addJavascriptInterface(JavaScriptInterface(), "ZeneListener");
+            webChromeClient = webViewChromeClientObject
         }
 
         registerWebViewCommand(applicationContext, listener)
@@ -53,7 +54,7 @@ class MusicPlayService : Service() {
 
     fun loadURL(vID: String) {
         val player =
-            readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_video_player))
+            readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
                 .replace("<<VideoID>>", vID)
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
@@ -68,16 +69,21 @@ class MusicPlayService : Service() {
 
             val data = i.getStringExtra(Intent.ACTION_MAIN) ?: return
 
-            if (data.contains(NEW_VIDEO)) {
-                loadURL(data.substringAfter(NEW_VIDEO))
-            }
+            if (data.contains(NEW_VIDEO)) loadURL(data.substringAfter(NEW_VIDEO))
         }
     }
 
     inner class JavaScriptInterface {
         @JavascriptInterface
-        fun playerState(state: Int) {
-            state.toast()
+        fun playerState(v: Int) {
+            "$v".toast()
+        }
+    }
+
+
+    private val webViewChromeClientObject = object : WebChromeClient() {
+        override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+            return true
         }
     }
 

@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.browser)
     implementation(libs.coil.compose)
     implementation(libs.nav.compose)
+    implementation(libs.webkit)
 
 
     implementation(platform(libs.firebase.bom))

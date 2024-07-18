@@ -14,6 +14,14 @@ object MusicServiceUtils {
         const val PLAY_VIDEO = "play"
         const val PAUSE_VIDEO = "play"
         const val NEW_VIDEO = "new_"
+
+
+        const val VIDEO_UNSTARTED = -1
+        const val VIDEO_ENDED = 0
+        const val VIDEO_PLAYING = 1
+        const val VIDEO_PAUSE = 2
+        const val VIDEO_BUFFERING = 3
+        const val VIDEO_CUED = 5
     }
 
 
