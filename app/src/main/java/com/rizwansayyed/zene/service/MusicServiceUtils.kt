@@ -17,6 +17,8 @@ object MusicServiceUtils {
         const val PLAY_VIDEO = "play"
         const val PAUSE_VIDEO = "pause"
         const val SEEK_DURATION_VIDEO = "seek_duration"
+        const val NEXT_SONG = "next_song"
+        const val PREVIOUS_SONG = "previous_song"
 
 
         const val VIDEO_UNSTARTED = -1
@@ -37,7 +39,7 @@ object MusicServiceUtils {
         }
     }
 
-    fun sendWebViewCommand(s: String, v: Int?) {
+    fun sendWebViewCommand(s: String, v: Int? = null) {
         Intent(WEB_VIEW_SERVICE_ACTION).apply {
             putExtra(Intent.ACTION_MAIN, s)
             if (v != null) putExtra(Intent.ACTION_MEDIA_EJECT, v)

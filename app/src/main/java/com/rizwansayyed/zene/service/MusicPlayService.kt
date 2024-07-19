@@ -16,8 +16,10 @@ import android.webkit.WebViewClient
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
@@ -33,15 +35,19 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
 
 class MusicPlayService : Service() {
     private lateinit var webView: WebView
     private var job: Job? = null
+    private var defaultID = "2"
+    private var currentVideoID = ""
 
     override fun onCreate() {
         super.onCreate()
@@ -62,10 +68,11 @@ class MusicPlayService : Service() {
                 delay(1.seconds)
             }
         }
-        loadURL("2")
+        loadURL(defaultID)
     }
 
     fun loadURL(vID: String) {
+        currentVideoID = vID
         val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
             .replace("<<VideoID>>", vID)
 
@@ -82,7 +89,9 @@ class MusicPlayService : Service() {
             val json = i.getStringExtra(Intent.ACTION_MAIN) ?: return
             val int = i.getIntExtra(Intent.ACTION_MEDIA_EJECT, 0)
 
-            if (json == SEEK_DURATION_VIDEO) seekTo(int)
+            if (json == NEXT_SONG) forwardAndRewindSong(true)
+            else if (json == PREVIOUS_SONG) forwardAndRewindSong(false)
+            else if (json == SEEK_DURATION_VIDEO) seekTo(int)
             else if (json == PLAY_VIDEO) play()
             else if (json == PAUSE_VIDEO) pause()
             else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
@@ -90,16 +99,25 @@ class MusicPlayService : Service() {
 
                 val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)
                 d?.player?.id?.let { loadURL(it) }
+                currentVideoID = d?.player?.id ?: ""
                 musicPlayerDB = flowOf(d)
             }
         }
     }
 
     private fun pause() {
+        if (currentVideoID == defaultID) {
+            loadCurrentSong()
+            return
+        }
         webView.evaluateJavascript("pauseSong();", null)
     }
 
     private fun play() {
+        if (currentVideoID == defaultID) {
+            loadCurrentSong()
+            return
+        }
         webView.evaluateJavascript("playSong();", null)
     }
 
@@ -157,9 +175,39 @@ class MusicPlayService : Service() {
         job = null
     }
 
-    fun clearCache() {
+    private fun clearCache() {
         webView.clearCache(true)
         val cookieManager = CookieManager.getInstance()
         cookieManager.removeAllCookies({})
+    }
+
+    private fun loadCurrentSong() = CoroutineScope(Dispatchers.IO).launch {
+        val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
+        withContext(Dispatchers.Main) {
+            loadURL(id)
+        }
+    }
+
+    private fun forwardAndRewindSong(nextSong: Boolean) = CoroutineScope(Dispatchers.IO).launch {
+        val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
+        try {
+            val player = musicPlayerDB.firstOrNull()
+            val index = player?.list?.indexOfFirst { it.id == id } ?: -1
+            if (index < 0) return@launch
+
+            val p = if(nextSong) index + 1 else index - 1
+            val data = player?.list?.get(p) ?: return@launch
+            data.id?.let {
+                withContext(Dispatchers.Main) {
+                    loadURL(it)
+                }
+                val new =
+                    MusicPlayerData(player.list, data, VIDEO_BUFFERING, 0, false, 0, true)
+                musicPlayerDB = flowOf(new)
+            }
+        } catch (e: Exception) {
+            e.message
+        }
+
     }
 }

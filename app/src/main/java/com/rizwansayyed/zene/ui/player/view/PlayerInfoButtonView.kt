@@ -1,0 +1,105 @@
+package com.rizwansayyed.zene.ui.player.view
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.TextPoppins
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SongSliderData(playerInfo: MusicPlayerData?) {
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+
+    Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+        Spacer(Modifier.width(6.dp))
+        TextPoppins(playerInfo?.formatCurrentDuration() ?: "0:00", false, size = 16)
+        Spacer(Modifier.width(6.dp))
+
+        Slider(value = sliderPosition,
+            onValueChange = { sliderPosition = it },
+            Modifier.weight(1f),
+            valueRange = 0f..(playerInfo?.totalDuration ?: 0).toFloat(),
+            colors = SliderColors(
+                activeTickColor = Color.White,
+                activeTrackColor = Color.White,
+                disabledActiveTickColor = Color.DarkGray,
+                disabledInactiveTickColor = Color.DarkGray,
+                disabledInactiveTrackColor = Color.DarkGray,
+                disabledThumbColor = Color.DarkGray,
+                inactiveTickColor = Color.DarkGray,
+                inactiveTrackColor = Color.DarkGray,
+                thumbColor = Color.White,
+                disabledActiveTrackColor = Color.White,
+            ),
+            thumb = {
+                Spacer(Modifier.padding(5.dp))
+            },
+            onValueChangeFinished = {
+                sendWebViewCommand(SEEK_DURATION_VIDEO, sliderPosition.toInt())
+            })
+
+        Spacer(Modifier.width(6.dp))
+        TextPoppins(playerInfo?.formatTotalDuration() ?: "0:00", false, size = 16)
+        Spacer(Modifier.width(6.dp))
+    }
+
+    LaunchedEffect(playerInfo?.currentDuration) {
+        sliderPosition = (playerInfo?.currentDuration ?: 0).toFloat()
+    }
+}
+
+@Composable
+fun ButtonsView(playerInfo: MusicPlayerData?) {
+    Spacer(Modifier.height(15.dp))
+
+    Row(Modifier.fillMaxWidth(), Arrangement.SpaceAround, Alignment.CenterVertically) {
+        Box(Modifier.rotate(180f)) {
+            ImageIcon(R.drawable.ic_next) {
+                sendWebViewCommand(PREVIOUS_SONG)
+            }
+        }
+
+        if (playerInfo?.isBuffering == true)
+            LoadingView(Modifier.size(32.dp))
+        else
+            ImageIcon(if (playerInfo?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play) {
+                if (playerInfo?.isPlaying == true) sendWebViewCommand(PAUSE_VIDEO)
+                else sendWebViewCommand(PLAY_VIDEO)
+            }
+
+        ImageIcon(R.drawable.ic_next) {
+            sendWebViewCommand(NEXT_SONG)
+        }
+    }
+}
