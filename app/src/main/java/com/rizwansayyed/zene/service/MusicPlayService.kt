@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
@@ -25,6 +26,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
+import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -78,8 +80,10 @@ class MusicPlayService : Service() {
             i ?: return
 
             val json = i.getStringExtra(Intent.ACTION_MAIN) ?: return
+            val int = i.getIntExtra(Intent.ACTION_MEDIA_EJECT, 0)
 
-            if (json == PLAY_VIDEO) play()
+            if (json == SEEK_DURATION_VIDEO) seekTo(int)
+            else if (json == PLAY_VIDEO) play()
             else if (json == PAUSE_VIDEO) pause()
             else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
                 clearCache()
@@ -101,6 +105,10 @@ class MusicPlayService : Service() {
 
     private fun getDurations() {
         webView.evaluateJavascript("playerDurations();", null)
+    }
+
+    private fun seekTo(v: Int) {
+        webView.evaluateJavascript("seekTo($v);", null)
     }
 
 

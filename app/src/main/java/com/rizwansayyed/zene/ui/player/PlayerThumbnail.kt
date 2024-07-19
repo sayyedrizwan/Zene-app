@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
+import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
@@ -32,9 +33,8 @@ import com.rizwansayyed.zene.utils.Utils.getPercentageLeft
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 
 @Composable
-fun PlayerThumbnail(modifier: Modifier = Modifier, open: () -> Unit) {
+fun PlayerThumbnail(modifier: Modifier = Modifier, info: MusicPlayerData?, open: () -> Unit) {
     val isBig = isScreenBig()
-    val info by musicPlayerDB.collectAsState(initial = null)
     var currentProgress by remember { mutableFloatStateOf(0f) }
 
     Box(

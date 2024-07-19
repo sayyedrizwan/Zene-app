@@ -19,6 +19,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.service.MusicPlayService
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
@@ -66,6 +68,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             var listener by remember { mutableStateOf<BroadcastReceiver?>(null) }
             val navController = rememberNavController()
+
+            val playerInfo by musicPlayerDB.collectAsState(initial = null)
+
             ZeneTheme {
                 Box {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -83,7 +88,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    PlayerThumbnail(Modifier.align(Alignment.BottomEnd)) {
+                    PlayerThumbnail(Modifier.align(Alignment.BottomEnd), playerInfo) {
                         homeNavModel.showMusicPlayer(true)
                         vibratePhone()
                     }
@@ -93,7 +98,7 @@ class MainActivity : ComponentActivity() {
                         enter = slideInVertically(initialOffsetY = { it / 2 }),
                         exit = slideOutVertically(targetOffsetY = { it / 2 }),
                     ) {
-                        MusicPlayerView {
+                        MusicPlayerView(playerInfo) {
                             homeNavModel.showMusicPlayer(false)
                         }
                     }

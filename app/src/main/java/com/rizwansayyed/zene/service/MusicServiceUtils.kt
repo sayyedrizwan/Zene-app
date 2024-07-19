@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEW_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.utils.Utils.moshi
 
@@ -17,7 +16,7 @@ object MusicServiceUtils {
     object Commands {
         const val PLAY_VIDEO = "play"
         const val PAUSE_VIDEO = "pause"
-        const val NEW_VIDEO = "new_"
+        const val SEEK_DURATION_VIDEO = "seek_duration"
 
 
         const val VIDEO_UNSTARTED = -1
@@ -38,9 +37,10 @@ object MusicServiceUtils {
         }
     }
 
-    fun sendWebViewCommand(s: String) {
+    fun sendWebViewCommand(s: String, v: Int?) {
         Intent(WEB_VIEW_SERVICE_ACTION).apply {
             putExtra(Intent.ACTION_MAIN, s)
+            if (v != null) putExtra(Intent.ACTION_MEDIA_EJECT, v)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.sendBroadcast(this)
         }
