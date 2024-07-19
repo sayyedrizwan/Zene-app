@@ -44,4 +44,6 @@
     <string name="music_player">Music Player</string>
     <string name="music_player_desc">Displays the current playing music, including the song title, artist name, and album artwork, providing a visually engaging experience while you enjoy your favorite tracks.</string>
     <string name="zene_music_player">Zene Music Player</string>
+    <string name="song_video">Song Video</string>
+    <string name="lyrics_video">Lyrics Video</string>
 </resources>

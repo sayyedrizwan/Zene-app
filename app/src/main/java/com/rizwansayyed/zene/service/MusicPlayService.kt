@@ -195,7 +195,7 @@ class MusicPlayService : Service() {
             val index = player?.list?.indexOfFirst { it.id == id } ?: -1
             if (index < 0) return@launch
 
-            val p = if(nextSong) index + 1 else index - 1
+            val p = if (nextSong) index + 1 else index - 1
             val data = player?.list?.get(p) ?: return@launch
             data.id?.let {
                 withContext(Dispatchers.Main) {
@@ -208,6 +208,5 @@ class MusicPlayService : Service() {
         } catch (e: Exception) {
             e.message
         }
-
     }
 }

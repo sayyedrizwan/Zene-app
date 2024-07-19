@@ -45,7 +45,7 @@ fun HomeHeaderView() {
                     TextAntroVenctra(stringResource(R.string.app_name), size = 36)
                 }
             }
-            JoinPremiumCommunity()
+//            JoinPremiumCommunity()
         }
         Spacer(Modifier.weight(1f))
 

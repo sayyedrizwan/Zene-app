@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.player.view.ButtonsView
+import com.rizwansayyed.zene.ui.player.view.ExtraButtonsData
 import com.rizwansayyed.zene.ui.player.view.SongSliderData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -67,6 +68,10 @@ fun MusicPlayerView(playerInfo: MusicPlayerData?, close: () -> Unit) {
 
         item {
             ButtonsView(playerInfo)
+        }
+
+        item {
+            ExtraButtonsData(playerInfo)
         }
     }
 

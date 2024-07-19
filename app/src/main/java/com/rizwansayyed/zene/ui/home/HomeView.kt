@@ -115,7 +115,7 @@ fun HomeView(homeViewModel: HomeViewModel) {
 
         item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
-                UpgradeToPremiumCard()
+//                UpgradeToPremiumCard()
                 HorizontalSongView(
                     homeViewModel.moodList, Pair(TextSize.SMALL, R.string.pick_your_mood),
                     StyleSize.ONLY_TEXT, showGrid = true

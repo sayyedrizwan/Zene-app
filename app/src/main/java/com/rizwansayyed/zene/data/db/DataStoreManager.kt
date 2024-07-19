@@ -60,4 +60,13 @@ object DataStoreManager {
             val json = moshi.adapter(MusicPlayerData::class.java).toJson(value.first())
             context.dataStore.edit { it[MUSIC_PLAYER] = json }
         }
+
+    var musicSettings
+        get() = context.dataStore.data.map {
+            moshi.adapter(MusicPlayerData::class.java).fromJson(it[MUSIC_PLAYER] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(MusicPlayerData::class.java).toJson(value.first())
+            context.dataStore.edit { it[MUSIC_PLAYER] = json }
+        }
 }

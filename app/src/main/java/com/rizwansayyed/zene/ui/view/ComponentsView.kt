@@ -3,9 +3,12 @@ package com.rizwansayyed.zene.ui.view
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,7 +77,8 @@ fun SearchTexts(txt: String, showIcon: Boolean, clicked: (Boolean) -> Unit) {
         Modifier
             .padding(top = 17.dp)
             .padding(horizontal = 7.dp)
-            .clickable { clicked(true) }, verticalAlignment = Alignment.CenterVertically
+            .clickable { clicked(true) },
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         if (showIcon) {
@@ -87,28 +91,30 @@ fun SearchTexts(txt: String, showIcon: Boolean, clicked: (Boolean) -> Unit) {
         }
 
         Image(
-            painterResource(R.drawable.ic_arrow_up_right), "", Modifier
+            painterResource(R.drawable.ic_arrow_up_right),
+            "",
+            Modifier
                 .size(20.dp)
-                .clickable { clicked(false) }, contentScale = ContentScale.Fit,
+                .clickable { clicked(false) },
+            contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(Color.White)
         )
     }
 }
 
 @Composable
-fun LockScreenOrientation(orientation: Int) {
-    val activity = LocalContext.current as Activity
-    DisposableEffect(orientation) {
-        val originalOrientation = activity.requestedOrientation
-        activity.requestedOrientation = orientation
-        onDispose {
-            activity.requestedOrientation = originalOrientation
-        }
-    }
-}
+fun BorderButtons(modifier: Modifier = Modifier, icon: Int, s: Int) {
+    Row(
+        modifier
+            .padding(5.dp)
+            .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(25))
+            .padding(vertical = 7.dp, horizontal = 10.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        ImageIcon(icon, 18)
 
-fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
+        Spacer(Modifier.width(9.dp))
+
+        TextPoppins(stringResource(id = s), size = 15)
+    }
 }

@@ -18,21 +18,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.view.WindowInsetsControllerCompat
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.ui.view.LockScreenOrientation
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
-import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
 
 
 @AndroidEntryPoint
@@ -75,7 +67,7 @@ class VideoPlayerActivity : ComponentActivity() {
     private val webViewClientObject = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(
             view: WebView?, request: WebResourceRequest?
-        ): Boolean = true
+        ): Boolean = false
     }
 
     override fun onDestroy() {

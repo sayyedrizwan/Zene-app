@@ -1,5 +1,14 @@
 package com.rizwansayyed.zene.ui.player.view
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioDeviceInfo
+import android.media.AudioManager
+import android.os.Build
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -9,19 +18,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
@@ -31,9 +47,17 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.utils.EarphoneType
+import com.rizwansayyed.zene.utils.EarphoneType.*
+import com.rizwansayyed.zene.utils.EarphoneTypeCheck.getAudioRoute
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,16 +114,123 @@ fun ButtonsView(playerInfo: MusicPlayerData?) {
             }
         }
 
-        if (playerInfo?.isBuffering == true)
-            LoadingView(Modifier.size(32.dp))
-        else
-            ImageIcon(if (playerInfo?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play) {
-                if (playerInfo?.isPlaying == true) sendWebViewCommand(PAUSE_VIDEO)
-                else sendWebViewCommand(PLAY_VIDEO)
-            }
+        if (playerInfo?.isBuffering == true) LoadingView(Modifier.size(32.dp))
+        else ImageIcon(if (playerInfo?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play) {
+            if (playerInfo?.isPlaying == true) sendWebViewCommand(PAUSE_VIDEO)
+            else sendWebViewCommand(PLAY_VIDEO)
+        }
 
         ImageIcon(R.drawable.ic_next) {
             sendWebViewCommand(NEXT_SONG)
         }
+    }
+}
+
+
+@Composable
+fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
+    Spacer(Modifier.height(30.dp))
+
+    val context = LocalContext.current.applicationContext
+    val coroutines = rememberCoroutineScope()
+    var earphoneType by remember { mutableStateOf(NORMAL) }
+
+    Row {
+        BorderButtons(
+            Modifier
+                .weight(1f)
+                .clickable { }, R.drawable.ic_flim_slate, R.string.song_video
+        )
+        BorderButtons(
+            Modifier
+                .weight(1f)
+                .clickable { }, R.drawable.ic_closed_caption, R.string.lyrics_video
+        )
+    }
+
+    Spacer(Modifier.height(30.dp))
+
+    LazyRow(
+        Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .height(70.dp)
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color.Black),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        item {
+            when (earphoneType) {
+                BLUETOOTH -> ImgButton(R.drawable.ic_bluetooth) {
+
+                }
+
+                WIRED -> ImgButton(R.drawable.ic_apple) {
+
+                }
+                NORMAL -> ImgButton(R.drawable.ic_volume_high) {
+
+                }
+            }
+        }
+
+        item {
+            ImgButton(R.drawable.ic_repeat) {
+
+            }
+        }
+
+        item {
+            ImgButton(R.drawable.ic_go_forward) {
+
+            }
+        }
+
+        item {
+            ImgButton(R.drawable.ic_add_playlist) {
+
+            }
+        }
+
+        item {
+            TextButton("1.0x") {
+
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        earphoneType = getAudioRoute(context)
+
+        coroutines.launch {
+            while (true) {
+                earphoneType = getAudioRoute(context)
+                delay(2.seconds)
+            }
+        }
+        onDispose {
+            coroutines.cancel()
+        }
+    }
+}
+
+@Composable
+private fun ImgButton(i: Int, onclick: () -> Unit) {
+    Box(
+        Modifier
+            .padding(horizontal = 20.dp)
+            .clickable { onclick() }) {
+        ImageIcon(i, 21)
+    }
+}
+
+@Composable
+private fun TextButton(i: String, onclick: () -> Unit) {
+    Box(
+        Modifier
+            .padding(horizontal = 20.dp)
+            .clickable { onclick() }) {
+        TextPoppins(v = i, size = 18)
     }
 }
