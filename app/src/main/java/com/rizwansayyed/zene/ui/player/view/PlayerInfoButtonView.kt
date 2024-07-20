@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.os.Build
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +21,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,9 +44,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.data.db.model.MusicSpeed
+import com.rizwansayyed.zene.data.db.model.MusicSpeed.*
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAYBACK_RATE
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
@@ -54,8 +64,11 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.utils.EarphoneType
 import com.rizwansayyed.zene.utils.EarphoneType.*
 import com.rizwansayyed.zene.utils.EarphoneTypeCheck.getAudioRoute
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -131,6 +144,11 @@ fun ButtonsView(playerInfo: MusicPlayerData?) {
 fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
     Spacer(Modifier.height(30.dp))
 
+    var expanded by remember { mutableStateOf(false) }
+    val musicSpeed by musicSpeedSettings.collectAsState(initial = `1`)
+    val musicLoop by musicLoopSettings.collectAsState(initial = false)
+    val musicAutoplay by musicAutoplaySettings.collectAsState(initial = false)
+
     Row {
         BorderButtons(
             Modifier
@@ -157,14 +175,44 @@ fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         item {
-            ImgButton(R.drawable.ic_repeat) {
+            Box {
+                ImgButton(R.drawable.ic_repeat) {
+                    musicLoopSettings = flowOf(!musicLoop)
+                }
 
+                AnimatedVisibility(
+                    musicLoop, Modifier
+                        .padding(top = 27.dp)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    Spacer(
+                        Modifier
+                            .size(4.dp)
+                            .clip(RoundedCornerShape(100))
+                            .background(Color.White)
+                    )
+                }
             }
         }
 
         item {
-            ImgButton(R.drawable.ic_go_forward) {
+            Box {
+                ImgButton(R.drawable.ic_go_forward) {
+                    musicAutoplaySettings = flowOf(!musicAutoplay)
+                }
 
+                AnimatedVisibility(
+                    musicAutoplay, Modifier
+                        .padding(top = 27.dp)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    Spacer(
+                        Modifier
+                            .size(4.dp)
+                            .clip(RoundedCornerShape(100))
+                            .background(Color.White)
+                    )
+                }
             }
         }
 
@@ -175,8 +223,24 @@ fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
         }
 
         item {
-            TextButton("1.0x") {
+            Box {
+                TextButton(musicSpeed.data) {
+                    expanded = true
+                }
 
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    MusicSpeed.entries.forEach {
+                        DropdownMenuItem(text = { TextPoppins(it.data, true, size = 16) },
+                            onClick = {
+                                musicSpeedSettings = flowOf(it)
+                                expanded = false
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    delay(1.seconds)
+                                    sendWebViewCommand(PLAYBACK_RATE)
+                                }
+                            })
+                    }
+                }
             }
         }
     }

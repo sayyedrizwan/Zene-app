@@ -45,7 +45,6 @@
                         loop: 1,
                         fs: 0,
                         enablejsapi: 1,
-                        playlist: ['<<VideoID>>'],
                         rel: 0
                     },
                     events: {
@@ -61,8 +60,6 @@
                 setTimeout(() => {
                     event.target.unMute()
                 }, 500);
-                console.log(event.target)
-                console.log(event.target.getDuration())
                 ZeneListener.playerState(event.target.getPlayerState())
             }
 
@@ -90,6 +87,10 @@
 
             function seekTo(time) {
                 player.seekTo(time, true)
+            }
+
+            function playbackSpeed(speed) {
+                player.setPlaybackRate(speed)
             }
 
         </script>

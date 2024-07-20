@@ -14,14 +14,20 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAYBACK_RATE
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
@@ -71,7 +77,7 @@ class MusicPlayService : Service() {
         loadURL(defaultID)
     }
 
-    fun loadURL(vID: String) {
+    fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
         currentVideoID = vID
         val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
             .replace("<<VideoID>>", vID)
@@ -89,7 +95,8 @@ class MusicPlayService : Service() {
             val json = i.getStringExtra(Intent.ACTION_MAIN) ?: return
             val int = i.getIntExtra(Intent.ACTION_MEDIA_EJECT, 0)
 
-            if (json == NEXT_SONG) forwardAndRewindSong(true)
+            if (json == PLAYBACK_RATE) updatePlaybackSpeed()
+            else if (json == NEXT_SONG) forwardAndRewindSong(true)
             else if (json == PREVIOUS_SONG) forwardAndRewindSong(false)
             else if (json == SEEK_DURATION_VIDEO) seekTo(int)
             else if (json == PLAY_VIDEO) play()
@@ -105,10 +112,10 @@ class MusicPlayService : Service() {
         }
     }
 
-    private fun pause() {
+    private fun pause() = CoroutineScope(Dispatchers.Main).launch {
         if (currentVideoID == defaultID) {
             loadCurrentSong()
-            return
+            return@launch
         }
         webView.evaluateJavascript("pauseSong();", null)
     }
@@ -129,15 +136,33 @@ class MusicPlayService : Service() {
         webView.evaluateJavascript("seekTo($v);", null)
     }
 
+    private fun updatePlaybackSpeed() = CoroutineScope(Dispatchers.IO).launch {
+        val v = when (musicSpeedSettings.first()) {
+            MusicSpeed.`025` -> 0.25
+            MusicSpeed.`05` -> 0.5
+            MusicSpeed.`1` -> 1
+            MusicSpeed.`15` -> 1.5
+            MusicSpeed.`20` -> 2.0
+        }
+        withContext(Dispatchers.Main) {
+            webView.evaluateJavascript("playbackSpeed($v);", null)
+        }
+    }
+
 
     inner class JavaScriptInterface {
         @JavascriptInterface
         fun playerState(v: Int) = CoroutineScope(Dispatchers.IO).launch {
+            if (currentVideoID == defaultID) return@launch
+            if (v == VIDEO_ENDED) checkAndPlayNextSong()
+
             val d = musicPlayerDB.first()
             d?.isBuffering = v == VIDEO_BUFFERING
             d?.isPlaying = false
-            if (v == VIDEO_PLAYING) d?.isPlaying = true
-
+            if (v == VIDEO_PLAYING) {
+                d?.isPlaying = true
+                updatePlaybackSpeed()
+            }
             musicPlayerDB = flowOf(d)
 
             if (isActive) cancel()
@@ -156,7 +181,6 @@ class MusicPlayService : Service() {
 
     private val webViewChromeClientObject = object : WebChromeClient() {
         override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-            //undefined (reading 'target')
 //            Log.d("TAG", "playerTotalDuration: runned 111 ${consoleMessage?.message()}")
             return true
         }
@@ -183,10 +207,26 @@ class MusicPlayService : Service() {
 
     private fun loadCurrentSong() = CoroutineScope(Dispatchers.IO).launch {
         val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
-        withContext(Dispatchers.Main) {
-            loadURL(id)
-        }
+        loadURL(id)
     }
+
+    private fun checkAndPlayNextSong() = CoroutineScope(Dispatchers.IO).launch {
+        val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
+        Log.d(
+            "TAG",
+            "checkAndPlayNextSong: run loop ${musicLoopSettings.firstOrNull()} == ${musicAutoplaySettings.firstOrNull()}"
+        )
+        if (musicLoopSettings.firstOrNull() == true) {
+            loadURL(id)
+            return@launch
+        }
+        if (musicAutoplaySettings.firstOrNull() == false) {
+            pause()
+            return@launch
+        }
+        forwardAndRewindSong(true)
+    }
+
 
     private fun forwardAndRewindSong(nextSong: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
@@ -198,11 +238,8 @@ class MusicPlayService : Service() {
             val p = if (nextSong) index + 1 else index - 1
             val data = player?.list?.get(p) ?: return@launch
             data.id?.let {
-                withContext(Dispatchers.Main) {
-                    loadURL(it)
-                }
-                val new =
-                    MusicPlayerData(player.list, data, VIDEO_BUFFERING, 0, false, 0, true)
+                loadURL(it)
+                val new = MusicPlayerData(player.list, data, VIDEO_BUFFERING, 0, false, 0, true)
                 musicPlayerDB = flowOf(new)
             }
         } catch (e: Exception) {

@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.data.db
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -10,10 +11,14 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_AUTOPLAY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_LOOP
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_PLAYER
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_SPEED
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.moshi
@@ -31,6 +36,9 @@ object DataStoreManager {
         val USER_INFOS = stringPreferencesKey("user_info")
         val SEARCH_HISTORY = stringPreferencesKey("search_history")
         val MUSIC_PLAYER = stringPreferencesKey("music_player")
+        val MUSIC_SPEED = stringPreferencesKey("music_speed")
+        val MUSIC_LOOP = booleanPreferencesKey("music_loop")
+        val MUSIC_AUTOPLAY = booleanPreferencesKey("music_autoplay")
     }
 
 
@@ -61,12 +69,24 @@ object DataStoreManager {
             context.dataStore.edit { it[MUSIC_PLAYER] = json }
         }
 
-    var musicSettings
+    var musicSpeedSettings
         get() = context.dataStore.data.map {
-            moshi.adapter(MusicPlayerData::class.java).fromJson(it[MUSIC_PLAYER] ?: JSON_EMPTY)
+            MusicSpeed.valueOf(it[MUSIC_SPEED] ?: MusicSpeed.`1`.name)
         }
         set(value) = runBlocking(Dispatchers.IO) {
-            val json = moshi.adapter(MusicPlayerData::class.java).toJson(value.first())
-            context.dataStore.edit { it[MUSIC_PLAYER] = json }
+            context.dataStore.edit { it[MUSIC_SPEED] = value.first().name }
+        }
+
+    var musicLoopSettings
+        get() = context.dataStore.data.map { it[MUSIC_LOOP] ?: false }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[MUSIC_LOOP] = value.first() }
+        }
+
+
+    var musicAutoplaySettings
+        get() = context.dataStore.data.map { it[MUSIC_AUTOPLAY] ?: true }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[MUSIC_AUTOPLAY] = value.first() }
         }
 }
