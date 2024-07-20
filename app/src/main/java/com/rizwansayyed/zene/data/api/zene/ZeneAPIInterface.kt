@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
+import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import kotlinx.coroutines.flow.Flow
 
 interface ZeneAPIInterface {
@@ -39,5 +40,10 @@ interface ZeneAPIInterface {
     suspend fun searchSuggestions(s: String): Flow<List<String>>
 
     suspend fun suggestedSongs(id: String): Flow<ZeneMusicDataResponse>
+
     suspend fun lyrics(id: String, name: String, artists: String): Flow<ZeneLyricsData>
+
+    suspend fun playerVideoData(name: String, artists: String): Flow<ZeneVideosMusicData>
+
+    suspend fun addMusicHistory(songID: String): Flow<Boolean>
 }

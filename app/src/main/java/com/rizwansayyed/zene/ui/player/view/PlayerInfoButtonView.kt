@@ -1,12 +1,5 @@
 package com.rizwansayyed.zene.ui.player.view
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.media.AudioDeviceInfo
-import android.media.AudioManager
-import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,24 +20,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
@@ -57,18 +48,16 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAYBACK_RATE
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
-import com.rizwansayyed.zene.utils.EarphoneType
-import com.rizwansayyed.zene.utils.EarphoneType.*
-import com.rizwansayyed.zene.utils.EarphoneTypeCheck.getAudioRoute
 import com.rizwansayyed.zene.utils.Utils.toast
+import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -143,8 +132,10 @@ fun ButtonsView(playerInfo: MusicPlayerData?) {
 
 
 @Composable
-fun ExtraButtonsData() {
+fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel) {
     Spacer(Modifier.height(30.dp))
+
+    val tryAgain = stringResource(id = R.string.try_after_a_seconds_fetching_video_details)
 
     var expanded by remember { mutableStateOf(false) }
     val musicSpeed by musicSpeedSettings.collectAsState(initial = `1`)
@@ -155,12 +146,26 @@ fun ExtraButtonsData() {
         BorderButtons(
             Modifier
                 .weight(1f)
-                .clickable { }, R.drawable.ic_flim_slate, R.string.song_video
+                .clickable {
+                    when (val v = musicPlayerViewModel.videoDetails) {
+                        is APIResponse.Success -> {
+                            openVideoPlayer(v.data.officialVideoID)
+                        }
+                        else -> tryAgain.toast()
+                    }
+                }, R.drawable.ic_flim_slate, R.string.song_video
         )
         BorderButtons(
             Modifier
                 .weight(1f)
-                .clickable { }, R.drawable.ic_closed_caption, R.string.lyrics_video
+                .clickable {
+                    when (val v = musicPlayerViewModel.videoDetails) {
+                        is APIResponse.Success -> {
+                            openVideoPlayer(v.data.lyricsVideoID)
+                        }
+                        else -> tryAgain.toast()
+                    }
+                }, R.drawable.ic_closed_caption, R.string.lyrics_video
         )
     }
 

@@ -64,12 +64,16 @@ object Utils {
 
         val BASE_URL =
             if (BuildConfig.DEBUG) "http://192.168.0.101:5173/-api-/" else "http://www.zenemusic.co/-api-/"
-        const val ZENE_USER_API = "zuser"
+        const val ZENE_USER_API = "zuser/users"
+        const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
+
+
         const val ZENE_MOODS_API = "moods"
         const val ZENE_NEW_RELEASE_API = "newrelease"
         const val ZENE_SUGGESTED_SONGS_API = "suggestedsongs"
         const val ZENE_PLAYER_SUGGESTED_SONGS_API = "player/suggestedsongs"
         const val ZENE_PLAYER_LYRICS_API = "player/lyrics"
+        const val ZENE_PLAYER_VIDEO_DATA_API = "player/videosdata"
         const val ZENE_SEARCH_API = "search"
         const val ZENE_SEARCH_SUGGESTIONS_API = "search_suggestions"
         const val ZENE_TOP_GLOBAL_ARTISTS_API = "top/globalartists"

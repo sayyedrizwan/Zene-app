@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,9 +27,11 @@ class MusicPlayerViewModel @Inject constructor(
 
     private var songID = ""
     private var lyricsID = ""
+    private var videoDetailsID = ""
 
     var lyrics by mutableStateOf<APIResponse<ZeneLyricsData>>(APIResponse.Empty)
     var similarSongs by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var videoDetails by mutableStateOf<APIResponse<ZeneVideosMusicData>>(APIResponse.Empty)
 
     fun similarSongs(songId: String) = viewModelScope.launch(Dispatchers.IO) {
         if (songId == songID) return@launch
@@ -45,7 +48,7 @@ class MusicPlayerViewModel @Inject constructor(
 
     fun lyrics(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
         if (m.id == lyricsID) return@launch
-        if (m.id == null){
+        if (m.id == null) {
             similarSongs = APIResponse.Empty
             return@launch
         }
@@ -57,6 +60,23 @@ class MusicPlayerViewModel @Inject constructor(
         }.collectLatest {
             lyricsID = m.id
             lyrics = APIResponse.Success(it)
+        }
+    }
+
+    fun videoPlayerData(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
+        if (m.id == videoDetailsID) return@launch
+        if (m.id == null) {
+            similarSongs = APIResponse.Empty
+            return@launch
+        }
+
+        zeneAPI.playerVideoData(m.name ?: "", m.artists ?: "").onStart {
+            videoDetails = APIResponse.Loading
+        }.catch {
+            videoDetails = APIResponse.Error(it)
+        }.collectLatest {
+            videoDetailsID = m.id
+            videoDetails = APIResponse.Success(it)
         }
     }
 }

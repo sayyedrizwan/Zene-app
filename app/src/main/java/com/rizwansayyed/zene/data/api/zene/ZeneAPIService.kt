@@ -6,10 +6,12 @@ import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
+import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_LYRICS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_SUGGESTED_SONGS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_VIDEO_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SUGGESTED_SONGS_API
@@ -21,6 +23,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.http.Body
@@ -46,6 +49,11 @@ interface ZeneAPIService {
     suspend fun lyrics(
         @Query("s") id: String, @Query("n") name: String, @Query("a") artists: String
     ): ZeneLyricsData
+
+    @GET(ZENE_PLAYER_VIDEO_DATA_API)
+    suspend fun playerVideoData(
+        @Query("n") name: String, @Query("a") artists: String
+    ): ZeneVideosMusicData
 
     @GET(ZENE_TOP_LISTEN_SONGS_API)
     suspend fun topMostListeningSong(): ZeneMusicDataResponse
@@ -79,4 +87,7 @@ interface ZeneAPIService {
 
     @POST(ZENE_TOP_SONGS_API)
     suspend fun suggestTopSongs(@Body body: RequestBody): ZeneMusicDataResponse
+
+    @POST(ZENE_USER_SONG_HISTORY_API)
+    suspend fun addSongHistory(@Body body: RequestBody): Boolean
 }

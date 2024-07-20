@@ -14,6 +14,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
@@ -35,6 +36,7 @@ import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
 import com.rizwansayyed.zene.utils.Utils.toast
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,10 +48,15 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-
+@AndroidEntryPoint
 class MusicPlayService : Service() {
+
+    @Inject
+    lateinit var zeneAPI: ZeneAPIInterface
+
     private lateinit var webView: WebView
     private var job: Job? = null
     private var defaultID = "2"
@@ -83,6 +90,10 @@ class MusicPlayService : Service() {
             .replace("<<VideoID>>", vID)
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
+
+        withContext(Dispatchers.IO) {
+            zeneAPI.addMusicHistory(vID).firstOrNull()
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder? = null

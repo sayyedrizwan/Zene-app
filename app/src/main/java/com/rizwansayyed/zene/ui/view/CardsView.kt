@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
@@ -106,16 +107,11 @@ fun CardsViewDesc(m: ZeneMusicDataItems, songs: List<ZeneMusicDataItems>) {
 
 @Composable
 fun VideoCardsViewWithSong(m: ZeneMusicDataItems) {
-    val context = LocalContext.current.applicationContext
     Column(
         Modifier
             .padding(7.dp)
             .bouncingClickable {
-                Intent(context, VideoPlayerActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.ACTION_MAIN, m.extra)
-                    context.startActivity(this)
-                }
+                openVideoPlayer(m.extra)
             }) {
 
         Box(Modifier.size(width = 280.dp, height = 170.dp)) {

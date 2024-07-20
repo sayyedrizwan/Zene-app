@@ -240,7 +240,7 @@ fun HomeView(homeViewModel: HomeViewModel) {
             }
         }
 
-        if (!loadFirstUI && !loadSecondUI && !loadThirdUI) {
+        if (!loadFirstUI || !loadSecondUI || !loadThirdUI) {
             item(900, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Box(Modifier.fillMaxWidth()) {
                     Spacer(Modifier.height(9.dp))

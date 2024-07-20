@@ -124,7 +124,7 @@ fun MusicPlayerView(
 
         item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
-                ExtraButtonsData()
+                ExtraButtonsData(musicPlayerViewModel)
             }
         }
 
@@ -198,7 +198,10 @@ fun MusicPlayerView(
 
     LaunchedEffect(playerInfo?.player?.id) {
         playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
-        playerInfo?.player?.let { musicPlayerViewModel.lyrics(it) }
+        playerInfo?.player?.let {
+            musicPlayerViewModel.lyrics(it)
+            musicPlayerViewModel.videoPlayerData(it)
+        }
         delay(1.seconds)
         scrollThumbnailCard()
     }
@@ -207,7 +210,10 @@ fun MusicPlayerView(
         if (lifecycleState == Lifecycle.State.RESUMED || lifecycleState == Lifecycle.State.STARTED) {
             scrollThumbnailCard()
             playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
-            playerInfo?.player?.let { musicPlayerViewModel.lyrics(it) }
+            playerInfo?.player?.let {
+                musicPlayerViewModel.lyrics(it)
+                musicPlayerViewModel.videoPlayerData(it)
+            }
         }
 
     }

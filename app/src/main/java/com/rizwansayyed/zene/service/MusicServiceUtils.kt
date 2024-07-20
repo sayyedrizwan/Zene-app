@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
+import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.Utils.moshi
 
 object MusicServiceUtils {
@@ -59,5 +60,12 @@ object MusicServiceUtils {
         }
     }
 
+    fun openVideoPlayer(videoID: String?) {
+        Intent(context, VideoPlayerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(Intent.ACTION_MAIN, videoID)
+            context.startActivity(this)
+        }
+    }
 
 }

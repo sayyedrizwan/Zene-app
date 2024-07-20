@@ -53,7 +53,35 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
 
     val pager = rememberPagerState(pageCount = { lyrics.split("<br>").size })
 
-    if (lyrics != "") Column(
+    if (lyrics != "") if (isSync)
+        VerticalPager(
+            pager,
+            Modifier
+                .padding(top = 40.dp, bottom = 10.dp)
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+                .height(350.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(DarkCharcoal),
+            PaddingValues(vertical = 135.dp),
+        ) { page ->
+            if (page == 0) {
+                Spacer(Modifier.height(5.dp))
+                Row(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
+                    TextPoppins(stringResource(R.string.lyrics), size = 25)
+                }
+                Spacer(Modifier.height(5.dp))
+            } else if (page == 1) {
+                Spacer(Modifier.height(20.dp))
+            }
+
+            TextPoppins(
+                lyrics.split("<br>")[page].substringAfter("]").trim(),
+                true, if (lyricsDone > page) Color.White else Color.DarkGray,
+                if (lyricsDone > page) 19 else 16
+            )
+        }
+    else Column(
         Modifier
             .padding(top = 40.dp, bottom = 10.dp)
             .padding(horizontal = 10.dp)
@@ -63,32 +91,6 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
             .background(DarkCharcoal)
             .verticalScroll(rememberScrollState())
     ) {
-        if (isSync) {
-            VerticalPager(
-                pager,
-                Modifier
-                    .fillMaxWidth()
-                    .height(350.dp),
-                PaddingValues(vertical = 135.dp),
-            ) { page ->
-                if (page == 0) {
-                    Spacer(Modifier.height(5.dp))
-                    Row(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
-                        TextPoppins(stringResource(R.string.lyrics), size = 25)
-                    }
-                    Spacer(Modifier.height(5.dp))
-                } else if (page == 1) {
-                    Spacer(Modifier.height(20.dp))
-                }
-
-                TextPoppins(
-                    lyrics.split("<br>")[page].substringAfter("]").trim(),
-                    true, if (lyricsDone > page) Color.White else Color.DarkGray,
-                    if (lyricsDone > page) 19 else 16
-                )
-            }
-        }
-    } else {
         Spacer(Modifier.height(5.dp))
         Row(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
             TextPoppins(stringResource(R.string.lyrics), size = 25)
@@ -96,6 +98,8 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
         Spacer(Modifier.height(5.dp))
 
         TextPoppins(lyrics, true, size = 16)
+
+        Spacer(Modifier.height(5.dp))
     }
 
 
@@ -108,6 +112,7 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
                     if (!userIsScrolling) pager.animateScrollToPage(index + 1)
                 }
             }
+            return@LaunchedEffect
         }
         if ((lyricsData.lyrics?.trim()?.length ?: 0) > 5) lyrics = lyricsData.lyrics ?: ""
     }
