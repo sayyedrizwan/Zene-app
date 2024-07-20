@@ -23,7 +23,7 @@ object EarphoneTypeCheck {
                 AudioDeviceInfo.TYPE_BLE_HEADSET, AudioDeviceInfo.TYPE_BLE_SPEAKER ->
                     EarphoneType.BLUETOOTH
 
-                AudioDeviceInfo.TYPE_WIRED_HEADPHONES, AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_AUX_LINE ->
+                AudioDeviceInfo.TYPE_WIRED_HEADPHONES, AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_AUX_LINE, AudioDeviceInfo.TYPE_BUILTIN_EARPIECE ->
                     EarphoneType.WIRED
 
                 else -> EarphoneType.NORMAL

@@ -131,10 +131,6 @@ fun ButtonsView(playerInfo: MusicPlayerData?) {
 fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
     Spacer(Modifier.height(30.dp))
 
-    val context = LocalContext.current.applicationContext
-    val coroutines = rememberCoroutineScope()
-    var earphoneType by remember { mutableStateOf(NORMAL) }
-
     Row {
         BorderButtons(
             Modifier
@@ -161,21 +157,6 @@ fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         item {
-            when (earphoneType) {
-                BLUETOOTH -> ImgButton(R.drawable.ic_bluetooth) {
-
-                }
-
-                WIRED -> ImgButton(R.drawable.ic_apple) {
-
-                }
-                NORMAL -> ImgButton(R.drawable.ic_volume_high) {
-
-                }
-            }
-        }
-
-        item {
             ImgButton(R.drawable.ic_repeat) {
 
             }
@@ -197,20 +178,6 @@ fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
             TextButton("1.0x") {
 
             }
-        }
-    }
-
-    DisposableEffect(Unit) {
-        earphoneType = getAudioRoute(context)
-
-        coroutines.launch {
-            while (true) {
-                earphoneType = getAudioRoute(context)
-                delay(2.seconds)
-            }
-        }
-        onDispose {
-            coroutines.cancel()
         }
     }
 }
