@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
@@ -64,6 +65,7 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.utils.EarphoneType
 import com.rizwansayyed.zene.utils.EarphoneType.*
 import com.rizwansayyed.zene.utils.EarphoneTypeCheck.getAudioRoute
+import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -141,7 +143,7 @@ fun ButtonsView(playerInfo: MusicPlayerData?) {
 
 
 @Composable
-fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
+fun ExtraButtonsData() {
     Spacer(Modifier.height(30.dp))
 
     var expanded by remember { mutableStateOf(false) }
@@ -175,8 +177,13 @@ fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         item {
+            val loopEnabled = stringResource(R.string.looping_song_enabled)
+            val loopDisabled = stringResource(R.string.looping_song_disabled)
+
             Box {
                 ImgButton(R.drawable.ic_repeat) {
+                    if (musicLoop) loopDisabled.toast()
+                    else loopEnabled.toast()
                     musicLoopSettings = flowOf(!musicLoop)
                 }
 
@@ -196,8 +203,13 @@ fun ExtraButtonsData(playerInfo: MusicPlayerData?) {
         }
 
         item {
+            val autoplayEnabled = stringResource(R.string.autoplay_song_enabled)
+            val autoplayDisabled = stringResource(R.string.autoplay_song_disabled)
+
             Box {
                 ImgButton(R.drawable.ic_go_forward) {
+                    if (musicAutoplay) autoplayDisabled.toast()
+                    else autoplayEnabled.toast()
                     musicAutoplaySettings = flowOf(!musicAutoplay)
                 }
 

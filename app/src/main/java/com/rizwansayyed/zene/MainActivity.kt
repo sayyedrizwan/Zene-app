@@ -49,6 +49,7 @@ import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val homeNavModel: HomeNavModel by viewModels()
+    private val musicPlayerViewModel: MusicPlayerViewModel by viewModels()
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +100,7 @@ class MainActivity : ComponentActivity() {
                         enter = slideInVertically(initialOffsetY = { it / 2 }),
                         exit = slideOutVertically(targetOffsetY = { it / 2 }),
                     ) {
-                        MusicPlayerView(playerInfo) {
+                        MusicPlayerView(playerInfo, musicPlayerViewModel) {
                             homeNavModel.showMusicPlayer(false)
                         }
                     }

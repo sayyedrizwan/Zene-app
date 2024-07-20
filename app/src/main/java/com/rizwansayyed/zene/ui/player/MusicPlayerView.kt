@@ -5,20 +5,29 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,52 +35,147 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.player.view.ButtonsView
 import com.rizwansayyed.zene.ui.player.view.ExtraButtonsData
+import com.rizwansayyed.zene.ui.player.view.LyricsView
 import com.rizwansayyed.zene.ui.player.view.SongSliderData
+import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
+import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
+import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
+import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
+import kotlinx.coroutines.delay
+import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MusicPlayerView(playerInfo: MusicPlayerData?, close: () -> Unit) {
+fun MusicPlayerView(
+    playerInfo: MusicPlayerData?, musicPlayerViewModel: MusicPlayerViewModel, close: () -> Unit
+) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
     val pagerState = rememberPagerState(pageCount = { playerInfo?.list?.size ?: 0 })
     var name by remember { mutableStateOf("") }
     var artists by remember { mutableStateOf("") }
 
-    LazyColumn(
+    val isThreeGrid = isScreenBig()
+
+    LazyVerticalGrid(
+        GridCells.Fixed(TOTAL_GRID_SIZE),
         Modifier
             .fillMaxSize()
             .background(MainColor)
     ) {
-        item {
-            Spacer(Modifier.height(60.dp))
-            TextPoppins(stringResource(R.string.zene_music_player), true, size = 17)
-            Spacer(Modifier.height(20.dp))
+        item(1, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(60.dp))
+                Box(Modifier.fillMaxWidth(), Alignment.Center) {
+                    Row(
+                        Modifier
+                            .padding(start = 5.dp)
+                            .align(Alignment.CenterStart)
+                            .rotate(-90f)
+                            .clickable {
+                                close()
+                            }) {
+                        ImageIcon(R.drawable.ic_arrow_left, 26)
+                    }
+
+                    TextPoppins(stringResource(R.string.zene_music_player), true, size = 17)
+                }
+                Spacer(Modifier.height(20.dp))
+            }
         }
 
-        item {
-            MusicListCards(pagerState, playerInfo, name, artists)
+        item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                MusicListCards(pagerState, playerInfo, name, artists)
+            }
         }
 
-        item {
-            SongSliderData(playerInfo)
+        item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                SongSliderData(playerInfo)
+            }
         }
 
-        item {
-            ButtonsView(playerInfo)
+        item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                ButtonsView(playerInfo)
+            }
         }
 
-        item {
-            ExtraButtonsData(playerInfo)
+        item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                ExtraButtonsData()
+            }
+        }
+
+        item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                LyricsView(musicPlayerViewModel)
+            }
+        }
+
+        item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(40.dp))
+            }
+        }
+
+        when (val v = musicPlayerViewModel.similarSongs) {
+            APIResponse.Empty -> {}
+            is APIResponse.Error -> {}
+            APIResponse.Loading -> {
+                item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                        TextPoppinsSemiBold(
+                            stringResource(R.string.similar_songs_you_may_like), size = 15
+                        )
+
+                    }
+                }
+
+                items(1, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    LoadingView(Modifier.size(32.dp))
+                }
+            }
+
+            is APIResponse.Success -> {
+                item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                        TextPoppinsSemiBold(
+                            stringResource(R.string.similar_songs_you_may_like), size = 15
+                        )
+
+                    }
+                }
+
+                items(v.data,
+                    span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                    SongDynamicCards(it, v.data)
+                }
+            }
         }
     }
 
@@ -80,7 +184,7 @@ fun MusicPlayerView(playerInfo: MusicPlayerData?, close: () -> Unit) {
         artists = playerInfo?.list?.get(pagerState.currentPage)?.artists ?: ""
     }
 
-    LaunchedEffect(playerInfo?.player?.id) {
+    suspend fun scrollThumbnailCard() {
         playerInfo?.list?.forEachIndexed { index, z ->
             if (z.id == playerInfo.player?.id) {
                 pagerState.animateScrollToPage(index)
@@ -88,6 +192,20 @@ fun MusicPlayerView(playerInfo: MusicPlayerData?, close: () -> Unit) {
                 artists = z.artists ?: ""
             }
         }
+    }
+
+    LaunchedEffect(playerInfo?.player?.id) {
+        playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
+        delay(1.seconds)
+        scrollThumbnailCard()
+    }
+
+    LaunchedEffect(lifecycleState) {
+        if (lifecycleState == Lifecycle.State.RESUMED || lifecycleState == Lifecycle.State.STARTED) {
+            scrollThumbnailCard()
+            playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
+        }
+
     }
 
     BackHandler {
@@ -114,20 +232,19 @@ fun MusicListCards(
                     .fillMaxWidth()
             )
 
-            if (playerInfo?.player?.id != playerInfo?.list?.get(page)?.id)
-                Row(
-                    Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(9.dp)
-                        .clickable {
-                            sendWebViewCommand(playerInfo?.list?.get(page)!!, playerInfo.list)
-                        }
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(MainColor)
-                        .padding(8.dp)
-                ) {
-                    ImageIcon(R.drawable.ic_play, 24)
+            if (playerInfo?.player?.id != playerInfo?.list?.get(page)?.id) Row(Modifier
+                .align(
+                    Alignment.BottomEnd
+                )
+                .padding(9.dp)
+                .clickable {
+                    sendWebViewCommand(playerInfo?.list?.get(page)!!, playerInfo.list)
                 }
+                .clip(RoundedCornerShape(14.dp))
+                .background(MainColor)
+                .padding(8.dp)) {
+                ImageIcon(R.drawable.ic_play, 24)
+            }
         }
     }
 
