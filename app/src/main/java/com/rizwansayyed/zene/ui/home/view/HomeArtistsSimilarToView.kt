@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.ui.view.SimpleCardsView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.VideoCardsViewWithSong
+import com.rizwansayyed.zene.ui.view.bouncingClickable
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 
@@ -46,7 +47,7 @@ fun HomeArtistsSimilarToView(m: ZeneArtistsDataList) {
                 Modifier
                     .size(80.dp)
                     .clip(RoundedCornerShape(100))
-                    .background(Color.DarkGray).clickable {  },
+                    .background(Color.DarkGray).bouncingClickable {  },
                 contentScale = ContentScale.Crop
             )
 

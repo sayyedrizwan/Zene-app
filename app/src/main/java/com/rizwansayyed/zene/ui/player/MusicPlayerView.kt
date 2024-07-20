@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,7 +23,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,8 +46,8 @@ import com.rizwansayyed.zene.ui.player.view.ButtonsView
 import com.rizwansayyed.zene.ui.player.view.ExtraButtonsData
 import com.rizwansayyed.zene.ui.player.view.LyricsView
 import com.rizwansayyed.zene.ui.player.view.SongSliderData
-import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
@@ -132,8 +129,13 @@ fun MusicPlayerView(
         }
 
         item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                LyricsView(musicPlayerViewModel)
+            when(val v = musicPlayerViewModel.lyrics){
+                APIResponse.Empty -> {}
+                is APIResponse.Error -> TextPoppins(v.error.message ?: "", size = 25)
+                APIResponse.Loading -> CardRoundLoading()
+                is APIResponse.Success -> Column {
+                    LyricsView(v.data, playerInfo)
+                }
             }
         }
 
@@ -196,6 +198,7 @@ fun MusicPlayerView(
 
     LaunchedEffect(playerInfo?.player?.id) {
         playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
+        playerInfo?.player?.let { musicPlayerViewModel.lyrics(it) }
         delay(1.seconds)
         scrollThumbnailCard()
     }
@@ -204,6 +207,7 @@ fun MusicPlayerView(
         if (lifecycleState == Lifecycle.State.RESUMED || lifecycleState == Lifecycle.State.STARTED) {
             scrollThumbnailCard()
             playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
+            playerInfo?.player?.let { musicPlayerViewModel.lyrics(it) }
         }
 
     }

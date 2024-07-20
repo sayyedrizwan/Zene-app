@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
-import com.rizwansayyed.zene.ui.login.flow.LoginFlow
-import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -25,8 +25,9 @@ class MusicPlayerViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var songID = ""
+    private var lyricsID = ""
 
-    var lyrics by mutableStateOf<APIResponse<String>>(APIResponse.Empty)
+    var lyrics by mutableStateOf<APIResponse<ZeneLyricsData>>(APIResponse.Empty)
     var similarSongs by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
 
     fun similarSongs(songId: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -39,6 +40,23 @@ class MusicPlayerViewModel @Inject constructor(
         }.collectLatest {
             songID = songId
             similarSongs = APIResponse.Success(it)
+        }
+    }
+
+    fun lyrics(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
+        if (m.id == lyricsID) return@launch
+        if (m.id == null){
+            similarSongs = APIResponse.Empty
+            return@launch
+        }
+
+        zeneAPI.lyrics(m.id, m.name ?: "", m.artists ?: "").onStart {
+            lyrics = APIResponse.Loading
+        }.catch {
+            lyrics = APIResponse.Error(it)
+        }.collectLatest {
+            lyricsID = m.id
+            lyrics = APIResponse.Success(it)
         }
     }
 }

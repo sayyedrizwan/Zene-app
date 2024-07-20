@@ -51,4 +51,5 @@
     <string name="looping_song_disabled">Looping song is disabled</string>
     <string name="autoplay_song_enabled">Autoplay next song is enabled</string>
     <string name="autoplay_song_disabled">Autoplay next song is disabled</string>
+    <string name="lyrics">Lyrics</string>
 </resources>

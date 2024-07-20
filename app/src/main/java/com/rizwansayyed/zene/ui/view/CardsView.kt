@@ -40,7 +40,7 @@ fun SimpleCardsView(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { }) {
+            .bouncingClickable { }) {
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,
@@ -68,7 +68,7 @@ fun CardsViewDesc(m: ZeneMusicDataItems, songs: List<ZeneMusicDataItems>) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable {
+            .bouncingClickable {
                 when (m.type()) {
                     MusicType.SONGS -> sendWebViewCommand(m, songs)
                     else -> {}
@@ -110,7 +110,7 @@ fun VideoCardsViewWithSong(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable {
+            .bouncingClickable {
                 Intent(context, VideoPlayerActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra(Intent.ACTION_MAIN, m.extra)
@@ -167,7 +167,7 @@ fun CardRoundTextOnly(m: ZeneMusicDataItems) {
             .width(200.dp)
             .clip(RoundedCornerShape(10))
             .background(MainColor)
-            .clickable { }, Arrangement.Center, Alignment.CenterVertically
+            .bouncingClickable { }, Arrangement.Center, Alignment.CenterVertically
     ) {
         TextPoppins(m.name ?: "", true, size = 16, limit = 2)
     }
@@ -181,7 +181,7 @@ fun CardSmallWithListeningNumber(m: ZeneMusicDataItems) {
         Modifier
             .padding(6.dp)
             .width(300.dp)
-            .clickable {
+            .bouncingClickable {
 
             }, Arrangement.Center, Alignment.CenterVertically
     ) {
@@ -222,7 +222,7 @@ fun ArtistsCardView(m: ZeneMusicDataItems) {
     Column(
         Modifier
             .padding(7.dp)
-            .clickable { }, Arrangement.Center, Alignment.CenterHorizontally
+            .bouncingClickable { }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
             imgBuilder(m.thumbnail),
@@ -252,7 +252,7 @@ fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
         Modifier
             .padding(bottom = 15.dp)
             .padding(7.dp)
-            .clickable {
+            .bouncingClickable {
                 when (m.type()) {
                     MusicType.SONGS -> sendWebViewCommand(m, list)
                     else -> {}

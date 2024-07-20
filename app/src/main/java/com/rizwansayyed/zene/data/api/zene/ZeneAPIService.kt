@@ -2,11 +2,13 @@ package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
+import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_LYRICS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
@@ -39,6 +41,11 @@ interface ZeneAPIService {
 
     @GET(ZENE_NEW_RELEASE_API)
     suspend fun latestReleases(@Query("i") id: String): ZeneMusicDataResponse
+
+    @GET(ZENE_PLAYER_LYRICS_API)
+    suspend fun lyrics(
+        @Query("s") id: String, @Query("n") name: String, @Query("a") artists: String
+    ): ZeneLyricsData
 
     @GET(ZENE_TOP_LISTEN_SONGS_API)
     suspend fun topMostListeningSong(): ZeneMusicDataResponse

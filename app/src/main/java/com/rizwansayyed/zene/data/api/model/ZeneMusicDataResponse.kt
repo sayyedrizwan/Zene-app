@@ -17,6 +17,11 @@ data class ZeneSearchData(
     val albums: List<ZeneMusicDataItems>
 )
 
+data class ZeneLyricsData(
+    val isSync : Boolean?,
+    val lyrics : String?
+)
+
 typealias ZeneMusicDataResponse = List<ZeneMusicDataItems>
 
 data class ZeneMusicDataItems(

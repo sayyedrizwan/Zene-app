@@ -1,10 +1,13 @@
 package com.rizwansayyed.zene.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,6 +17,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,12 +46,18 @@ import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
 fun HomeView(homeViewModel: HomeViewModel) {
     val isThreeGrid = isScreenBig()
+
+    var loadFirstUI by remember { mutableStateOf(false) }
+    var loadSecondUI by remember { mutableStateOf(false) }
+    var loadThirdUI by remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -79,135 +93,162 @@ fun HomeView(homeViewModel: HomeViewModel) {
                 )
             }
         }
-        item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-            }
-        }
-        item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                HorizontalVideoView(homeViewModel.recommendedVideo, R.string.videos_you_may_like)
-            }
-        }
-        item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-            }
-        }
-        item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                HorizontalSongView(
-                    homeViewModel.songsYouMayLike,
-                    Pair(TextSize.SMALL, R.string.songs_you_may_like),
-                    StyleSize.SHOW_AUTHOR,
-                    showGrid = true
-                )
-            }
-        }
 
-        item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-                AdsBannerView()
-                Spacer(Modifier.height(60.dp))
-            }
-        }
+        if (loadFirstUI) {
 
-        item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
+            item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                }
+            }
+            item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    HorizontalVideoView(
+                        homeViewModel.recommendedVideo,
+                        R.string.videos_you_may_like
+                    )
+                }
+            }
+            item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                }
+            }
+            item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    HorizontalSongView(
+                        homeViewModel.songsYouMayLike,
+                        Pair(TextSize.SMALL, R.string.songs_you_may_like),
+                        StyleSize.SHOW_AUTHOR,
+                        showGrid = true
+                    )
+                }
+            }
+
+            item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                    AdsBannerView()
+                    Spacer(Modifier.height(60.dp))
+                }
+            }
+
+            item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
 //                UpgradeToPremiumCard()
-                HorizontalSongView(
-                    homeViewModel.moodList, Pair(TextSize.SMALL, R.string.pick_your_mood),
-                    StyleSize.ONLY_TEXT, showGrid = true
-                )
+                    HorizontalSongView(
+                        homeViewModel.moodList, Pair(TextSize.SMALL, R.string.pick_your_mood),
+                        StyleSize.ONLY_TEXT, showGrid = true
+                    )
+                }
             }
-        }
-        item(11, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
+            item(11, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                }
             }
-        }
-        item(12, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                HorizontalSongView(
-                    homeViewModel.latestReleases, Pair(TextSize.MEDIUM, R.string.latest_release),
-                    StyleSize.SHOW_AUTHOR, showGrid = true
-                )
-            }
-        }
-        item(13, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-            }
-        }
-        item(14, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                HorizontalArtistsView(
-                    homeViewModel.topMostListeningArtists,
-                    Pair(TextSize.SMALL, R.string.global_top_artists), showGrid = true
-                )
-            }
-        }
-        item(15, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-                AdsBannerView()
-                Spacer(Modifier.height(60.dp))
+            item(12, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    HorizontalSongView(
+                        homeViewModel.latestReleases,
+                        Pair(TextSize.MEDIUM, R.string.latest_release),
+                        StyleSize.SHOW_AUTHOR,
+                        showGrid = true
+                    )
+                }
             }
         }
 
-        when (val v = homeViewModel.favArtistsLists) {
-            APIResponse.Empty -> {}
-            is APIResponse.Error -> {}
-            APIResponse.Loading -> items(
-                5,
-                key = { 16 },
-                span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                HomeArtistsSimilarLoading()
+        if (loadSecondUI) {
+            item(13, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                }
+            }
+            item(14, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    HorizontalArtistsView(
+                        homeViewModel.topMostListeningArtists,
+                        Pair(TextSize.SMALL, R.string.global_top_artists), showGrid = true
+                    )
+                }
+            }
+            item(15, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                    AdsBannerView()
+                    Spacer(Modifier.height(60.dp))
+                }
             }
 
-            is APIResponse.Success -> items(
-                v.data, { it.artists.id ?: UUID.randomUUID() },
-                span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                HomeArtistsSimilarToView(it)
+            when (val v = homeViewModel.favArtistsLists) {
+                APIResponse.Empty -> {}
+                is APIResponse.Error -> {}
+                APIResponse.Loading -> items(
+                    5,
+                    key = { 16 },
+                    span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    HomeArtistsSimilarLoading()
+                }
+
+                is APIResponse.Success -> items(
+                    v.data, { it.artists.id ?: UUID.randomUUID() },
+                    span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    HomeArtistsSimilarToView(it)
+                }
             }
         }
 
-        item(17, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-                AdsBannerView()
-                Spacer(Modifier.height(60.dp))
+        if (loadThirdUI) {
+            item(17, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                    AdsBannerView()
+                    Spacer(Modifier.height(60.dp))
+                }
             }
-        }
 
-        when (val v = homeViewModel.suggestedSongsForYou) {
-            APIResponse.Empty -> {}
-            is APIResponse.Error -> {}
-            APIResponse.Loading -> {
-                item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                        TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
+            when (val v = homeViewModel.suggestedSongsForYou) {
+                APIResponse.Empty -> {}
+                is APIResponse.Error -> {}
+                APIResponse.Loading -> {
+                    item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                            TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
 
+                        }
+                    }
+
+                    items(1, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        LoadingView(Modifier.size(32.dp))
                     }
                 }
 
-                items(1, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    LoadingView(Modifier.size(32.dp))
-                }
-            }
+                is APIResponse.Success -> {
+                    item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                            TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
 
-            is APIResponse.Success -> {
-                item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                        TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
+                        }
+                    }
 
+                    items(v.data,
+                        span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                        SongDynamicCards(it, v.data)
                     }
                 }
+            }
+        }
 
-                items(v.data,
-                    span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                    SongDynamicCards(it, v.data)
+        if (!loadFirstUI && !loadSecondUI && !loadThirdUI) {
+            item(900, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Box(Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.height(9.dp))
+                    LoadingView(
+                        Modifier
+                            .align(Alignment.Center)
+                            .size(35.dp)
+                    )
                 }
             }
         }
@@ -220,5 +261,12 @@ fun HomeView(homeViewModel: HomeViewModel) {
 
     LaunchedEffect(Unit) {
         homeViewModel.init()
+
+        delay(7.seconds)
+        loadFirstUI = true
+        delay(7.seconds)
+        loadSecondUI = true
+        delay(7.seconds)
+        loadThirdUI = true
     }
 }

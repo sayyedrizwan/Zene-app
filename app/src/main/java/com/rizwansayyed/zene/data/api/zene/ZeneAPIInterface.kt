@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
+import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
@@ -36,5 +37,7 @@ interface ZeneAPIInterface {
     suspend fun searchData(s: String): Flow<ZeneSearchData>
 
     suspend fun searchSuggestions(s: String): Flow<List<String>>
+
     suspend fun suggestedSongs(id: String): Flow<ZeneMusicDataResponse>
+    suspend fun lyrics(id: String, name: String, artists: String): Flow<ZeneLyricsData>
 }

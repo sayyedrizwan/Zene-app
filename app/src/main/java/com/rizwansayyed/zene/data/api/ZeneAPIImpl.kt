@@ -54,6 +54,9 @@ class ZeneAPIImpl @Inject constructor(
     override suspend fun latestReleases(id: String) = flow {
         emit(zeneAPI.latestReleases(id))
     }
+    override suspend fun lyrics(id: String, name: String, artists: String) = flow {
+        emit(zeneAPI.lyrics(id, name, artists))
+    }
 
     override suspend fun topMostListeningSong() = flow {
         emit(zeneAPI.topMostListeningSong())
