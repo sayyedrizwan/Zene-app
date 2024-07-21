@@ -4,6 +4,7 @@ import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
+import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
@@ -53,4 +54,6 @@ interface ZeneAPIInterface {
     suspend fun addMusicHistory(songID: String): Flow<ZeneBooleanResponse>
 
     suspend fun playlistAlbums(id: String): Flow<ZenePlaylistAlbumsData>
+
+    suspend fun moodLists(id: String): Flow<ZeneMoodPlaylistData>
 }

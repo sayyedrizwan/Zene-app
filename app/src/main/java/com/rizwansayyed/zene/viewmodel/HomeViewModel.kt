@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIHttpService.youtubeMusicPlaylist
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
+import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
@@ -41,6 +42,7 @@ class HomeViewModel @Inject constructor(
     var searchQuery by mutableStateOf<APIResponse<ZeneSearchData>>(APIResponse.Empty)
     var searchSuggestions by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
     var albumPlaylistData by mutableStateOf<APIResponse<ZenePlaylistAlbumsData>>(APIResponse.Empty)
+    var moodPlaylist by mutableStateOf<APIResponse<ZeneMoodPlaylistData>>(APIResponse.Empty)
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         moodLists()
@@ -194,6 +196,15 @@ class HomeViewModel @Inject constructor(
             albumPlaylistData = APIResponse.Error(it)
         }.collectLatest {
             albumPlaylistData = APIResponse.Success(it)
+        }
+    }
+    fun moodPlaylists(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.moodLists(id).onStart {
+            moodPlaylist = APIResponse.Loading
+        }.catch {
+            moodPlaylist = APIResponse.Error(it)
+        }.collectLatest {
+            moodPlaylist = APIResponse.Success(it)
         }
     }
 }

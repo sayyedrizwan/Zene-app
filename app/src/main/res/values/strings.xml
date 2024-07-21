@@ -53,4 +53,6 @@
     <string name="autoplay_song_disabled">Autoplay next song is disabled</string>
     <string name="lyrics">Lyrics</string>
     <string name="try_after_a_seconds_fetching_video_details">Try after a seconds. Fetching video details....</string>
+    <string name="playlists_for_your_mood">Playlist for your mood</string>
+    <string name="empty" />
 </resources>

@@ -4,6 +4,7 @@ import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
+import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
@@ -45,6 +46,9 @@ interface ZeneAPIService {
 
     @GET(ZENE_MOODS_API)
     suspend fun moodLists(): ZeneMusicDataResponse
+
+    @POST(ZENE_MOODS_API)
+    suspend fun moodLists(@Body body: RequestBody): ZeneMoodPlaylistData
 
     @GET(ZENE_NEW_RELEASE_API)
     suspend fun latestReleases(@Query("i") id: String): ZeneMusicDataResponse

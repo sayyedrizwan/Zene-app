@@ -53,6 +53,14 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.moodLists())
     }
 
+    override suspend fun moodLists(id: String) = flow {
+        val json = JSONObject().apply {
+            put("id", id)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.moodLists(body))
+    }
+
     override suspend fun latestReleases(id: String) = flow {
         emit(zeneAPI.latestReleases(id))
     }

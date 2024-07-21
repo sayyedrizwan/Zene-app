@@ -32,6 +32,17 @@ data class ZenePlaylistAlbumsData(
     val songs : List<ZeneMusicDataItems>
 )
 
+
+data class ZeneMoodPlaylistData(
+    val name : String?,
+    val list : List<MoodLists>
+) {
+    data class MoodLists(
+        val name : String?,
+        val list : List<ZeneMusicDataItems>
+    )
+}
+
 typealias ZeneMusicDataResponse = List<ZeneMusicDataItems>
 
 data class ZeneMusicDataItems(

@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
+import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.player.PlayerThumbnail
 import com.rizwansayyed.zene.ui.player.customPlayerNotification
@@ -36,6 +37,7 @@ import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
@@ -82,6 +84,11 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NAV_SEARCH) {
                             SearchView(homeViewModel) {
+                                navController.popBackStack()
+                            }
+                        }
+                        composable(NAV_MOOD) {
+                            MoodView(homeViewModel, it.arguments?.getString("id")) {
                                 navController.popBackStack()
                             }
                         }
