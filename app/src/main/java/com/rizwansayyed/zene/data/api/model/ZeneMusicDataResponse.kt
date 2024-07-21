@@ -27,6 +27,11 @@ data class ZeneVideosMusicData(
     val officialVideoID : String?
 )
 
+data class ZenePlaylistAlbumsData(
+    val info : ZeneMusicDataItems?,
+    val songs : List<ZeneMusicDataItems>
+)
+
 typealias ZeneMusicDataResponse = List<ZeneMusicDataItems>
 
 data class ZeneMusicDataItems(

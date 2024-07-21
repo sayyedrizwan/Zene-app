@@ -149,4 +149,8 @@ class ZeneAPIImpl @Inject constructor(
         val email = userInfoDB.firstOrNull()?.email ?: ""
         emit(zeneAPI.getSongHistory(email, page))
     }
+
+    override suspend fun playlistAlbums(id: String) = flow {
+        emit(zeneAPI.playlistAlbums(id))
+    }
 }

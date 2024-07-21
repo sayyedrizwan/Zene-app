@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
+import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
@@ -48,5 +49,8 @@ interface ZeneAPIInterface {
     suspend fun playerVideoData(name: String, artists: String): Flow<ZeneVideosMusicData>
 
     suspend fun getMusicHistory(page: Int): Flow<ZeneMusicHistoryResponse>
+
     suspend fun addMusicHistory(songID: String): Flow<ZeneBooleanResponse>
+
+    suspend fun playlistAlbums(id: String): Flow<ZenePlaylistAlbumsData>
 }

@@ -1,9 +1,9 @@
 package com.rizwansayyed.zene.data.api.model
 
 
-typealias ZeneMusicHistoryResponse = List<Root2>
+typealias ZeneMusicHistoryResponse = List<ZeneMusicHistoryItem>
 
-data class Root2(
+data class ZeneMusicHistoryItem(
     val _id: String,
     val email: String,
     val name: String,
@@ -14,4 +14,5 @@ data class Root2(
     val deviceType: String,
     val timestamp: Long,
     val timesItsPlayed: Long,
+    val type: String,
 )

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,7 +68,7 @@ fun TextPoppinsThin(
 ) {
     Text(
         v,
-        if (center) Modifier.fillMaxWidth() else Modifier,
+        if (center) Modifier.animateContentSize().fillMaxWidth() else Modifier.animateContentSize(),
         color,
         size.sp,
         FontStyle.Normal, FontWeight.Thin, PoppinsFamily,

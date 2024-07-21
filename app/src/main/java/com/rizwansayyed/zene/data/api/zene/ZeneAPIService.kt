@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
+import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
@@ -14,6 +15,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_LYRICS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_VIDEO_DATA_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SUGGESTED_SONGS_API
@@ -97,4 +99,7 @@ interface ZeneAPIService {
     suspend fun getSongHistory(
         @Query("email") email: String, @Query("page") page: Int
     ): ZeneMusicHistoryResponse
+
+    @GET(ZENE_PLAYLISTS_API)
+    suspend fun playlistAlbums(@Query("id") id: String): ZenePlaylistAlbumsData
 }

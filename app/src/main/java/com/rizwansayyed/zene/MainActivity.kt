@@ -76,7 +76,9 @@ class MainActivity : ComponentActivity() {
                             HomeView(homeViewModel)
                         }
                         composable(NAV_PLAYLISTS) {
-                            PlaylistsView(homeViewModel, it.arguments?.getString("id"))
+                            PlaylistsView(homeViewModel, it.arguments?.getString("id")) {
+                                navController.popBackStack()
+                            }
                         }
                         composable(NAV_SEARCH) {
                             SearchView(homeViewModel) {

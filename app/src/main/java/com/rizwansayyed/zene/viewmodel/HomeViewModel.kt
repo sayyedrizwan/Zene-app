@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,7 @@ import com.rizwansayyed.zene.data.api.APIHttpService.youtubeMusicPlaylist
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
@@ -38,6 +40,7 @@ class HomeViewModel @Inject constructor(
     var favArtistsLists by mutableStateOf<APIResponse<ZeneArtistsData>>(APIResponse.Empty)
     var searchQuery by mutableStateOf<APIResponse<ZeneSearchData>>(APIResponse.Empty)
     var searchSuggestions by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
+    var albumPlaylistData by mutableStateOf<APIResponse<ZenePlaylistAlbumsData>>(APIResponse.Empty)
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         moodLists()
@@ -204,6 +207,16 @@ class HomeViewModel @Inject constructor(
             searchSuggestions = APIResponse.Error(it)
         }.collectLatest {
             searchSuggestions = APIResponse.Success(it)
+        }
+    }
+
+    fun playlistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playlistAlbums(id).onStart {
+            albumPlaylistData = APIResponse.Loading
+        }.catch {
+            albumPlaylistData = APIResponse.Error(it)
+        }.collectLatest {
+            albumPlaylistData = APIResponse.Success(it)
         }
     }
 }

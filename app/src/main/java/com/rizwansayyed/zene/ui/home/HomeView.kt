@@ -274,7 +274,7 @@ fun HomeView(homeViewModel: HomeViewModel) {
             }
         }
 
-        item(key = 1000) {
+        item(key = 1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(100.dp))
         }
 
