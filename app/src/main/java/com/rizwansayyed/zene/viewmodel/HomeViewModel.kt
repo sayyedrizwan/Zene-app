@@ -48,39 +48,16 @@ class HomeViewModel @Inject constructor(
         topMostListeningSong()
         topMostListeningArtists()
 
-        val list = listOf(
-            "qqywIKDTK6o",
-            "9Gduk7Zjem4",
-            "0siKyXL_h08",
-            "81oCkIJko5s",
-            "ffqliB42Nh4",
-            "gnN_jiesIkM",
-            "DcDbKDAb7go",
-            "sEPXrepgujY",
-            "KPM_BYl-EaQ",
-            "k3smYB3Nfqc"
-        )
-        recommendedPlaylists(list)
-        recommendedAlbums(list)
-        recommendedVideo(list)
-        songsYouMayLike(list)
-        suggestedSongsForYou(list)
-
-        val listName = listOf(
-            "The Weeknd",
-            "Billie Eilish",
-            "Post Malone",
-            "Taylor Swift",
-            "Karan Aujla",
-            "Ram Sampath",
-            "Karan Aujla",
-            "Jasleen Royal"
-        )
-        favArtistsData(listName)
+        recommendedPlaylists()
+        recommendedAlbums()
+        recommendedVideo()
+        songsYouMayLike()
+        suggestedSongsForYou()
+        favArtistsData()
     }
 
-    private fun recommendedPlaylists(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.recommendedPlaylists(list.toTypedArray()).onStart {
+    private fun recommendedPlaylists() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.recommendedPlaylists().onStart {
             recommendedPlaylists = APIResponse.Loading
         }.catch {
             recommendedPlaylists = APIResponse.Error(it)
@@ -90,8 +67,8 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private fun recommendedAlbums(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.recommendedAlbums(list.toTypedArray()).onStart {
+    private fun recommendedAlbums() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.recommendedAlbums().onStart {
             recommendedAlbums = APIResponse.Loading
         }.catch {
             recommendedAlbums = APIResponse.Error(it)
@@ -100,8 +77,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun recommendedVideo(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.recommendedVideo(list.toTypedArray()).onStart {
+    private fun recommendedVideo() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.recommendedVideo().onStart {
             recommendedVideo = APIResponse.Loading
         }.catch {
             recommendedVideo = APIResponse.Error(it)
@@ -110,8 +87,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun songsYouMayLike(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.suggestTopSongs(list.toTypedArray()).onStart {
+    private fun songsYouMayLike() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.suggestTopSongs().onStart {
             songsYouMayLike = APIResponse.Loading
         }.catch {
             songsYouMayLike = APIResponse.Error(it)
@@ -166,8 +143,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun favArtistsData(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.favArtistsData(list.toTypedArray()).onStart {
+    private fun favArtistsData() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.favArtistsData().onStart {
             favArtistsLists = APIResponse.Loading
         }.catch {
             favArtistsLists = APIResponse.Error(it)
@@ -176,8 +153,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun suggestedSongsForYou(list: List<String>) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.suggestedSongs(list.toTypedArray()).onStart {
+    private fun suggestedSongsForYou() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.suggestedSongs().onStart {
             suggestedSongsForYou = APIResponse.Loading
         }.catch {
             suggestedSongsForYou = APIResponse.Error(it)

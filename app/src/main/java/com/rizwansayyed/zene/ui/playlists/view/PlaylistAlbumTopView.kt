@@ -84,7 +84,7 @@ fun LoadingAlbumTopView(modifier: Modifier = Modifier) {
     val isBig = isScreenBig()
 
     Column(
-        Modifier
+        modifier
             .padding(horizontal = 5.dp)
             .fillMaxWidth(),
         Arrangement.Center, Alignment.CenterHorizontally

@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
+import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -80,17 +81,19 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.searchSuggestions(s))
     }
 
-    override suspend fun favArtistsData(list: Array<String>) = flow {
-        val json = JSONArray().apply {
-            list.forEach { put(it) }
+    override suspend fun favArtistsData() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.favArtistsData(body))
     }
 
-    override suspend fun suggestedSongs(list: Array<String>) = flow {
-        val json = JSONArray().apply {
-            list.forEach { put(it) }
+    override suspend fun suggestedSongs() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.suggestedSongs(body))
@@ -100,33 +103,37 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.suggestedSongs(id))
     }
 
-    override suspend fun recommendedPlaylists(list: Array<String>) = flow {
-        val json = JSONArray().apply {
-            list.forEach { put(it) }
+    override suspend fun recommendedPlaylists() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedPlaylists(body))
     }
 
-    override suspend fun recommendedAlbums(list: Array<String>) = flow {
-        val json = JSONArray().apply {
-            list.forEach { put(it) }
+    override suspend fun recommendedAlbums() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedAlbums(body))
     }
 
-    override suspend fun recommendedVideo(list: Array<String>) = flow {
-        val json = JSONArray().apply {
-            list.forEach { put(it) }
+    override suspend fun recommendedVideo() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedVideo(body))
     }
 
-    override suspend fun suggestTopSongs(list: Array<String>) = flow {
-        val json = JSONArray().apply {
-            list.forEach { put(it) }
+    override suspend fun suggestTopSongs() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.suggestTopSongs(body))

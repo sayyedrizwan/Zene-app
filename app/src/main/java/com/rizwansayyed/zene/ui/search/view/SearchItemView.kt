@@ -130,7 +130,6 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
                     Spacer(Modifier.height(70.dp))
                 }
 
-
                 item(65, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                         TextPoppinsSemiBold(stringResource(R.string.songs), size = 15)
@@ -141,6 +140,10 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
                 items(v.data.songs,
                     span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
                     SongDynamicCards(it, v.data.songs)
+                }
+
+                item(key = 1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                   Spacer(Modifier.height(150.dp))
                 }
             }
         }

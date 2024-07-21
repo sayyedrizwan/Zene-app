@@ -20,13 +20,13 @@ interface ZeneAPIInterface {
 
     suspend fun topMostListeningSong(): Flow<ZeneMusicDataResponse>
 
-    suspend fun recommendedPlaylists(list: Array<String>): Flow<ZeneMusicDataResponse>
+    suspend fun recommendedPlaylists(): Flow<ZeneMusicDataResponse>
 
-    suspend fun recommendedAlbums(list: Array<String>): Flow<ZeneMusicDataResponse>
+    suspend fun recommendedAlbums(): Flow<ZeneMusicDataResponse>
 
-    suspend fun recommendedVideo(list: Array<String>): Flow<ZeneMusicDataResponse>
+    suspend fun recommendedVideo(): Flow<ZeneMusicDataResponse>
 
-    suspend fun suggestTopSongs(list: Array<String>): Flow<ZeneMusicDataResponse>
+    suspend fun suggestTopSongs(): Flow<ZeneMusicDataResponse>
 
     suspend fun moodLists(): Flow<ZeneMusicDataResponse>
 
@@ -34,9 +34,9 @@ interface ZeneAPIInterface {
 
     suspend fun topMostListeningArtists(): Flow<ZeneMusicDataResponse>
 
-    suspend fun favArtistsData(list: Array<String>): Flow<ZeneArtistsData>
+    suspend fun favArtistsData(): Flow<ZeneArtistsData>
 
-    suspend fun suggestedSongs(list: Array<String>): Flow<ZeneMusicDataResponse>
+    suspend fun suggestedSongs(): Flow<ZeneMusicDataResponse>
 
     suspend fun searchData(s: String): Flow<ZeneSearchData>
 
