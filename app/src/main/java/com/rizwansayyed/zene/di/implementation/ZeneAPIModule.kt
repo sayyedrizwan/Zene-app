@@ -4,6 +4,7 @@ import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 

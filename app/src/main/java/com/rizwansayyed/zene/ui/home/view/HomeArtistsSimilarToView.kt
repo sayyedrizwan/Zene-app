@@ -88,7 +88,7 @@ fun HomeArtistsSimilarToView(m: ZeneArtistsDataList) {
 
         LazyRow {
             items(m.playlists) {
-                SimpleCardsView(it)
+                SimpleCardsView(it, m.playlists)
             }
         }
 
@@ -96,7 +96,7 @@ fun HomeArtistsSimilarToView(m: ZeneArtistsDataList) {
 
         LazyRow {
             items(m.videos) {
-                VideoCardsViewWithSong(it)
+                VideoCardsViewWithSong(it, m.videos)
             }
         }
     }

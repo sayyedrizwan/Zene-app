@@ -105,20 +105,22 @@ fun HorizontalSongView(
                 ) {
                     items(data.data) {
                         when (cardStyle) {
-                            StyleSize.HIDE_AUTHOR -> SimpleCardsView(it)
+                            StyleSize.HIDE_AUTHOR -> SimpleCardsView(it, data.data)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
-                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(it)
+                            StyleSize.SONG_WITH_LISTENER ->
+                                CardSmallWithListeningNumber(it, data.data)
                         }
                     }
                 }
                 else LazyRow {
                     items(data.data) {
                         when (cardStyle) {
-                            StyleSize.HIDE_AUTHOR -> SimpleCardsView(it)
+                            StyleSize.HIDE_AUTHOR -> SimpleCardsView(it, data.data)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
-                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(it)
+                            StyleSize.SONG_WITH_LISTENER ->
+                                CardSmallWithListeningNumber(it, data.data)
                         }
                     }
                 }
@@ -152,7 +154,7 @@ fun HorizontalVideoView(homeViewModel: APIResponse<ZeneMusicDataResponse>, txt: 
 
                 LazyRow {
                     items(homeViewModel.data) {
-                        VideoCardsViewWithSong(it)
+                        VideoCardsViewWithSong(it, homeViewModel.data)
                     }
                 }
             }
@@ -226,13 +228,13 @@ fun HorizontalArtistsView(
                             .height(450.dp)
                     ) {
                         items(data.data) {
-                            ArtistsCardView(it)
+                            ArtistsCardView(it, data.data)
                         }
                     }
                 else
                     LazyRow {
                         items(data.data) {
-                            ArtistsCardView(it)
+                            ArtistsCardView(it, data.data)
                         }
                     }
 

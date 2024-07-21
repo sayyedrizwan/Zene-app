@@ -11,10 +11,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
@@ -26,22 +22,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
-import com.rizwansayyed.zene.service.MusicPlayService
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.player.PlayerThumbnail
 import com.rizwansayyed.zene.ui.player.customPlayerNotification
+import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
@@ -79,6 +74,9 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
                             HomeView(homeViewModel)
+                        }
+                        composable(NAV_PLAYLISTS) {
+                            PlaylistsView(homeViewModel, it.arguments?.getString("id"))
                         }
                         composable(NAV_SEARCH) {
                             SearchView(homeViewModel) {

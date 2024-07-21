@@ -95,7 +95,6 @@ fun HomeView(homeViewModel: HomeViewModel) {
         }
 
         if (loadFirstUI) {
-
             item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     Spacer(Modifier.height(60.dp))
@@ -160,12 +159,34 @@ fun HomeView(homeViewModel: HomeViewModel) {
         }
 
         if (loadSecondUI) {
-            item(13, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            item(20, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     Spacer(Modifier.height(60.dp))
                 }
             }
-            item(14, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            item(21, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    HorizontalSongView(
+                        homeViewModel.topMostListeningSong,
+                        Pair(TextSize.SMALL, R.string.most_listening_songs_zene),
+                        StyleSize.SONG_WITH_LISTENER, showGrid = true
+                    )
+                }
+            }
+            item(22, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                    AdsBannerView()
+                    Spacer(Modifier.height(60.dp))
+                }
+            }
+
+            item(23, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                }
+            }
+            item(24, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     HorizontalArtistsView(
                         homeViewModel.topMostListeningArtists,
@@ -262,11 +283,11 @@ fun HomeView(homeViewModel: HomeViewModel) {
     LaunchedEffect(Unit) {
         homeViewModel.init()
 
-        delay(7.seconds)
+        delay(5.seconds)
         loadFirstUI = true
-        delay(7.seconds)
+        delay(4.seconds)
         loadSecondUI = true
-        delay(7.seconds)
+        delay(4.seconds)
         loadThirdUI = true
     }
 }

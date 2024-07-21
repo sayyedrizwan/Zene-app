@@ -1,8 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
-import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,27 +19,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.api.model.MusicType
+import com.rizwansayyed.zene.data.api.model.MusicType.*
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
+import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
 @Composable
-fun SimpleCardsView(m: ZeneMusicDataItems) {
+fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     Column(
         Modifier
             .padding(7.dp)
-            .bouncingClickable { }) {
+            .bouncingClickable { openSpecificIntent(m, list) }) {
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,
@@ -65,15 +64,12 @@ fun SimpleCardsView(m: ZeneMusicDataItems) {
 
 
 @Composable
-fun CardsViewDesc(m: ZeneMusicDataItems, songs: List<ZeneMusicDataItems>) {
+fun CardsViewDesc(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     Column(
         Modifier
             .padding(7.dp)
             .bouncingClickable {
-                when (m.type()) {
-                    MusicType.SONGS -> sendWebViewCommand(m, songs)
-                    else -> {}
-                }
+                openSpecificIntent(m, list)
             }) {
         AsyncImage(
             imgBuilder(m.thumbnail),
@@ -106,12 +102,12 @@ fun CardsViewDesc(m: ZeneMusicDataItems, songs: List<ZeneMusicDataItems>) {
 
 
 @Composable
-fun VideoCardsViewWithSong(m: ZeneMusicDataItems) {
+fun VideoCardsViewWithSong(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     Column(
         Modifier
             .padding(7.dp)
             .bouncingClickable {
-                openVideoPlayer(m.extra)
+                openSpecificIntent(m, list)
             }) {
 
         Box(Modifier.size(width = 280.dp, height = 170.dp)) {
@@ -163,14 +159,16 @@ fun CardRoundTextOnly(m: ZeneMusicDataItems) {
             .width(200.dp)
             .clip(RoundedCornerShape(10))
             .background(MainColor)
-            .bouncingClickable { }, Arrangement.Center, Alignment.CenterVertically
+            .bouncingClickable { openSpecificIntent(m, emptyList()) },
+        Arrangement.Center,
+        Alignment.CenterVertically
     ) {
         TextPoppins(m.name ?: "", true, size = 16, limit = 2)
     }
 }
 
 @Composable
-fun CardSmallWithListeningNumber(m: ZeneMusicDataItems) {
+fun CardSmallWithListeningNumber(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
     val listeners = stringResource(R.string.listeners)
 
     Row(
@@ -178,7 +176,7 @@ fun CardSmallWithListeningNumber(m: ZeneMusicDataItems) {
             .padding(6.dp)
             .width(300.dp)
             .bouncingClickable {
-
+                openSpecificIntent(m, list)
             }, Arrangement.Center, Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -214,11 +212,13 @@ fun CardSmallWithListeningNumber(m: ZeneMusicDataItems) {
 }
 
 @Composable
-fun ArtistsCardView(m: ZeneMusicDataItems) {
+fun ArtistsCardView(m: ZeneMusicDataItems, data: ZeneMusicDataResponse) {
     Column(
         Modifier
             .padding(7.dp)
-            .bouncingClickable { }, Arrangement.Center, Alignment.CenterHorizontally
+            .bouncingClickable { openSpecificIntent(m, data) },
+        Arrangement.Center,
+        Alignment.CenterHorizontally
     ) {
         AsyncImage(
             imgBuilder(m.thumbnail),
@@ -249,10 +249,7 @@ fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
             .padding(bottom = 15.dp)
             .padding(7.dp)
             .bouncingClickable {
-                when (m.type()) {
-                    MusicType.SONGS -> sendWebViewCommand(m, list)
-                    else -> {}
-                }
+                openSpecificIntent(m, list)
             }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
@@ -280,5 +277,17 @@ fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
         ) {
             TextPoppinsThin(m.artists ?: "", true, size = 15, limit = 2)
         }
+    }
+}
+
+fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
+    when (m.type()) {
+        SONGS -> sendWebViewCommand(m, list)
+        PLAYLIST -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}" , it)) }
+        ALBUMS -> {}
+        ARTISTS -> {}
+        VIDEO -> openVideoPlayer(m.extra)
+        MOOD -> {}
+        NONE -> {}
     }
 }

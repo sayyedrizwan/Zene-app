@@ -188,5 +188,11 @@ object Utils {
         vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
+    fun getDeviceName(): String {
+        val manufacturer = Build.MANUFACTURER.uppercase()
+        val model = Build.MODEL
+        val osVersion = Build.VERSION.RELEASE
 
+        return "$manufacturer $model, Android $osVersion"
+    }
 }

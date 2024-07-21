@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.api.ip.IpAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.utils.Utils.getDeviceName
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -132,11 +133,20 @@ class ZeneAPIImpl @Inject constructor(
     }
 
     override suspend fun addMusicHistory(songID: String) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+
         val json = JSONObject().apply {
             put("songID", songID)
+            put("email", email)
+            put("device", getDeviceName())
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.addSongHistory(body))
+    }
+
+    override suspend fun getMusicHistory(page: Int) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        emit(zeneAPI.getSongHistory(email, page))
     }
 }
