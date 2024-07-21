@@ -42,6 +42,9 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
+import com.rizwansayyed.zene.ui.home.view.StyleSize
+import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.player.view.ButtonsView
 import com.rizwansayyed.zene.ui.player.view.ExtraButtonsData
 import com.rizwansayyed.zene.ui.player.view.LyricsView
@@ -129,7 +132,7 @@ fun MusicPlayerView(
         }
 
         item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            when(val v = musicPlayerViewModel.lyrics){
+            when (val v = musicPlayerViewModel.lyrics) {
                 APIResponse.Empty -> {}
                 is APIResponse.Error -> TextPoppins(v.error.message ?: "", size = 25)
                 APIResponse.Loading -> CardRoundLoading()
@@ -140,6 +143,26 @@ fun MusicPlayerView(
         }
 
         item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(40.dp))
+            }
+        }
+
+
+        item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Column {
+                    HorizontalSongView(
+                        musicPlayerViewModel.storeData,
+                        Pair(TextSize.SMALL, R.string.artists_merchandise),
+                        StyleSize.SHOW_AUTHOR,
+                        showGrid = true
+                    )
+                }
+            }
+        }
+
+        item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
                 Spacer(Modifier.height(40.dp))
             }
@@ -201,6 +224,7 @@ fun MusicPlayerView(
         playerInfo?.player?.let {
             musicPlayerViewModel.lyrics(it)
             musicPlayerViewModel.videoPlayerData(it)
+            musicPlayerViewModel.storeData(it)
         }
         delay(1.seconds)
         scrollThumbnailCard()
@@ -213,6 +237,7 @@ fun MusicPlayerView(
             playerInfo?.player?.let {
                 musicPlayerViewModel.lyrics(it)
                 musicPlayerViewModel.videoPlayerData(it)
+                musicPlayerViewModel.storeData(it)
             }
         }
 

@@ -61,6 +61,7 @@ data class ZeneMusicDataItems(
             "ARTISTS" -> MusicType.ARTISTS
             "VIDEO" -> MusicType.VIDEO
             "MOOD" -> MusicType.MOOD
+            "STORE" -> MusicType.STORE
             else -> MusicType.NONE
         }
     }
@@ -68,5 +69,5 @@ data class ZeneMusicDataItems(
 
 
 enum class MusicType {
-    SONGS, PLAYLIST, ALBUMS, ARTISTS, VIDEO, MOOD, NONE
+    SONGS, PLAYLIST, ALBUMS, ARTISTS, VIDEO, MOOD, STORE, NONE
 }

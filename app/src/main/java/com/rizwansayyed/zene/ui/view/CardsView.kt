@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
+import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
@@ -290,6 +291,7 @@ fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
         ARTISTS -> {}
         VIDEO -> openVideoPlayer(m.extra)
         MOOD -> m.id?.let { sendNavCommand(NAV_MOOD.replace("{id}" , it)) }
+        STORE -> m.id?.let { openBrowser(it) }
         NONE -> {}
     }
 }

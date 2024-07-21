@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_LYRICS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_MERCHANDISE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_VIDEO_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYLISTS_API
@@ -49,6 +50,9 @@ interface ZeneAPIService {
 
     @POST(ZENE_MOODS_API)
     suspend fun moodLists(@Body body: RequestBody): ZeneMoodPlaylistData
+
+    @GET(ZENE_PLAYER_MERCHANDISE_API)
+    suspend fun merchandise(@Query("n") name: String): ZeneMusicDataResponse
 
     @GET(ZENE_NEW_RELEASE_API)
     suspend fun latestReleases(@Query("i") id: String): ZeneMusicDataResponse

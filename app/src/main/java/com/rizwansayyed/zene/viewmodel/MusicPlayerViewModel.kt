@@ -28,10 +28,12 @@ class MusicPlayerViewModel @Inject constructor(
     private var songID = ""
     private var lyricsID = ""
     private var videoDetailsID = ""
+    private var storeID = ""
 
     var lyrics by mutableStateOf<APIResponse<ZeneLyricsData>>(APIResponse.Empty)
     var similarSongs by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var videoDetails by mutableStateOf<APIResponse<ZeneVideosMusicData>>(APIResponse.Empty)
+    var storeData by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
 
     fun similarSongs(songId: String) = viewModelScope.launch(Dispatchers.IO) {
         if (songId == songID) return@launch
@@ -77,6 +79,23 @@ class MusicPlayerViewModel @Inject constructor(
         }.collectLatest {
             videoDetailsID = m.id
             videoDetails = APIResponse.Success(it)
+        }
+    }
+
+    fun storeData(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
+        if (m.id == storeID) return@launch
+        if (m.id == null) {
+            storeData = APIResponse.Empty
+            return@launch
+        }
+
+        zeneAPI.merchandise(m.name ?: "", m.artists ?: "").onStart {
+            storeData = APIResponse.Loading
+        }.catch {
+            storeData = APIResponse.Error(it)
+        }.collectLatest {
+            storeID = m.id
+            storeData = APIResponse.Success(it)
         }
     }
 }

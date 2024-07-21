@@ -62,7 +62,8 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
                 .fillMaxWidth()
                 .height(350.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .background(DarkCharcoal),
+                .background(DarkCharcoal)
+                .padding(horizontal = 5.dp),
             PaddingValues(vertical = 135.dp),
         ) { page ->
             if (page == 0) {
@@ -90,6 +91,7 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
             .clip(RoundedCornerShape(15.dp))
             .background(DarkCharcoal)
             .verticalScroll(rememberScrollState())
+            .padding(horizontal = 5.dp)
     ) {
         Spacer(Modifier.height(5.dp))
         Row(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
@@ -106,7 +108,9 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
     LaunchedEffect(playerInfo?.currentDuration) {
         if (lyricsData.isSync == true) {
             isSync = true
-            lyrics.split("<br>").forEachIndexed { index, s ->
+            if (lyricsData.lyrics?.contains("<br>") == true) lyrics = lyricsData.lyrics
+
+            lyricsData.lyrics?.split("<br>")?.forEachIndexed { index, s ->
                 if (s.contains(playerInfo?.formatCurrentDuration() ?: "")) {
                     lyricsDone = index + 1
                     if (!userIsScrolling) pager.animateScrollToPage(index + 1)

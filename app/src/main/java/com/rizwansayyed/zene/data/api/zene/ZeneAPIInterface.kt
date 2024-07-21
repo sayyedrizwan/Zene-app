@@ -56,4 +56,5 @@ interface ZeneAPIInterface {
     suspend fun playlistAlbums(id: String): Flow<ZenePlaylistAlbumsData>
 
     suspend fun moodLists(id: String): Flow<ZeneMoodPlaylistData>
+    suspend fun merchandise(name: String, artists: String): Flow<ZeneMusicDataResponse>
 }
