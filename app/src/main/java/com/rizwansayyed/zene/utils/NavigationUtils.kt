@@ -15,6 +15,7 @@ object NavigationUtils {
     const val NAV_SETTINGS = "settings"
     const val NAV_PLAYLISTS = "playlist/{id}"
     const val NAV_MOOD = "mood/{id}"
+    const val NAV_ARTISTS = "artists/{id}"
 
 
     private val NAV_ACTION = "${context.packageName}_NAV_ACTION"

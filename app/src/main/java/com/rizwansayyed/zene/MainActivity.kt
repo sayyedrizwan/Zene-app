@@ -14,6 +14,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
+import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.mood.MoodView
@@ -36,6 +38,7 @@ import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
@@ -47,6 +50,7 @@ import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
+import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -59,6 +63,7 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val homeNavModel: HomeNavModel by viewModels()
     private val musicPlayerViewModel: MusicPlayerViewModel by viewModels()
+    private val zeneViewModel: ZeneViewModel by viewModels()
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +76,7 @@ class MainActivity : ComponentActivity() {
             val playerInfo by musicPlayerDB.collectAsState(initial = null)
 
             ZeneTheme {
-                Box {
+                Box(Modifier.fillMaxSize()) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
@@ -89,6 +94,11 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NAV_MOOD) {
                             MoodView(homeViewModel, it.arguments?.getString("id")) {
+                                navController.popBackStack()
+                            }
+                        }
+                        composable(NAV_ARTISTS) {
+                            ArtistsView(zeneViewModel, it.arguments?.getString("id")) {
                                 navController.popBackStack()
                             }
                         }

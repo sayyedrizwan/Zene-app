@@ -44,6 +44,7 @@ class HomeViewModel @Inject constructor(
     var albumPlaylistData by mutableStateOf<APIResponse<ZenePlaylistAlbumsData>>(APIResponse.Empty)
     var moodPlaylist by mutableStateOf<APIResponse<ZeneMoodPlaylistData>>(APIResponse.Empty)
 
+
     fun init() = viewModelScope.launch(Dispatchers.IO) {
         moodLists()
         latestReleases()
@@ -175,19 +176,20 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchSuggestions(q: String, doEmpty: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
-        if (doEmpty) {
-            searchSuggestions = APIResponse.Empty
-            return@launch
+    fun searchSuggestions(q: String, doEmpty: Boolean = false) =
+        viewModelScope.launch(Dispatchers.IO) {
+            if (doEmpty) {
+                searchSuggestions = APIResponse.Empty
+                return@launch
+            }
+            zeneAPI.searchSuggestions(q).onStart {
+                searchSuggestions = APIResponse.Loading
+            }.catch {
+                searchSuggestions = APIResponse.Error(it)
+            }.collectLatest {
+                searchSuggestions = APIResponse.Success(it)
+            }
         }
-        zeneAPI.searchSuggestions(q).onStart {
-            searchSuggestions = APIResponse.Loading
-        }.catch {
-            searchSuggestions = APIResponse.Error(it)
-        }.collectLatest {
-            searchSuggestions = APIResponse.Success(it)
-        }
-    }
 
     fun playlistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.playlistAlbums(id).onStart {
@@ -198,6 +200,8 @@ class HomeViewModel @Inject constructor(
             albumPlaylistData = APIResponse.Success(it)
         }
     }
+
+
     fun moodPlaylists(id: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.moodLists(id).onStart {
             moodPlaylist = APIResponse.Loading

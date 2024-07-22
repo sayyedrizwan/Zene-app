@@ -164,6 +164,15 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.addSongHistory(body))
     }
 
+    override suspend fun artistsInfo(name: String) = flow {
+        val json = JSONObject().apply {
+            put("name", name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.artistsInfo(body))
+    }
+
     override suspend fun getMusicHistory(page: Int) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
         emit(zeneAPI.getSongHistory(email, page))
