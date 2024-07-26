@@ -22,6 +22,7 @@
     <string name="top_songs">Top Songs</string>
     <string name="news">News</string>
     <string name="artists">Artists</string>
+    <string name="similar_artists">Similar Artists</string>
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
     <string name="playlists">Playlists</string>
@@ -58,7 +59,7 @@
     <string name="playlists_for_your_mood">Playlist for your mood</string>
     <string name="empty" />
     <string name="artists_merchandise">Artists Merchandises</string>
-    <string name="followed_by">followed by</string>
+    <string name="followed_by">Followed by</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
     <string name="cannot_follow_more_then_30_artists">Currently you cannot follow more then 30 artists at a time.</string>

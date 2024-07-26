@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.services.android)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.compose.compiler)
     id("kotlin-kapt")
 }
 
@@ -118,6 +119,4 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
-
-    implementation("androidx.media:media:1.1.0")
 }

@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.artists
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +21,10 @@ import com.rizwansayyed.zene.ui.artists.view.ArtistsSocialButton
 import com.rizwansayyed.zene.ui.artists.view.ArtistsTopView
 import com.rizwansayyed.zene.ui.artists.view.ArtistsTopViewLoading
 import com.rizwansayyed.zene.ui.artists.view.FollowArtists
+import com.rizwansayyed.zene.ui.home.view.HorizontalArtistsView
 import com.rizwansayyed.zene.ui.home.view.HorizontalNewsView
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
+import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
@@ -96,6 +99,54 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
                         Pair(TextSize.SMALL, R.string.news), showGrid = false
                     )
                 }
+
+                item(8) {
+                    Spacer(Modifier.height(90.dp))
+
+                    HorizontalVideoView(
+                        APIResponse.Success(v.data.videos), R.string.videos
+                    )
+                }
+
+                item(9) {
+                    Spacer(Modifier.height(90.dp))
+
+                    HorizontalSongView(
+                        APIResponse.Success(v.data.playlists),
+                        Pair(TextSize.SMALL, R.string.playlists),
+                        StyleSize.HIDE_AUTHOR, showGrid = true
+                    )
+                }
+
+                item(10) {
+                    Spacer(Modifier.height(90.dp))
+
+                    HorizontalSongView(
+                        APIResponse.Success(v.data.albums),
+                        Pair(TextSize.SMALL, R.string.albums),
+                        StyleSize.SHOW_AUTHOR, showGrid = true
+                    )
+                }
+
+                item(11) {
+                    Spacer(Modifier.height(90.dp))
+
+                    HorizontalSongView(
+                        APIResponse.Success(v.data.songs),
+                        Pair(TextSize.SMALL, R.string.songs),
+                        StyleSize.SHOW_AUTHOR, showGrid = true
+                    )
+                }
+
+                item(12) {
+                    Spacer(Modifier.height(90.dp))
+
+                    HorizontalArtistsView(
+                        APIResponse.Success(v.data.artists),
+                        Pair(TextSize.SMALL, R.string.similar_artists), showGrid = true
+                    )
+                }
+
             }
         }
 

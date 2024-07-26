@@ -47,7 +47,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.LoadingView
@@ -186,7 +185,11 @@ fun LoginButtonView() {
         .padding(9.dp)
 
     if (loading)
-        LoadingView(Modifier.padding(bottom = 70.dp).size(32.dp))
+        LoadingView(
+            Modifier
+                .padding(bottom = 70.dp)
+                .size(32.dp)
+        )
     else
         Row(
             Modifier

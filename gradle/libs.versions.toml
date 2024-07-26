@@ -10,14 +10,14 @@ versionname = "3.2.021"
 
 agp = "8.5.1"
 datastorePreferences = "1.1.1"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 googleservice = "4.4.2"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.9.0"
+lifecycleRuntimeKtx = "2.8.4"
+activityCompose = "1.9.1"
 composeBom = "2024.06.00"
 kotlinxCoroutinesAndroid = "1.8.0"
 moshi = "1.15.1"
@@ -26,7 +26,7 @@ firebase-bom = "33.1.2"
 googleid = "1.1.1"
 hilt = "2.51"
 retrofit = "2.11.0"
-lifecycle-compose = "2.8.3"
+lifecycle-compose = "2.8.4"
 coil = "2.6.0"
 ads = "23.2.0"
 nav = "2.7.7"
@@ -85,4 +85,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services-android = { id = "com.google.gms.google-services", version.ref = "googleservice" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

@@ -1,8 +1,5 @@
 package com.rizwansayyed.zene.ui.home.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +15,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,13 +30,14 @@ import com.rizwansayyed.zene.ui.view.CardSmallWithListeningNumber
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
 import com.rizwansayyed.zene.ui.view.LoadingArtistsCardView
 import com.rizwansayyed.zene.ui.view.LoadingCardView
+import com.rizwansayyed.zene.ui.view.LoadingNewsCardView
+import com.rizwansayyed.zene.ui.view.NewsItemCard
 import com.rizwansayyed.zene.ui.view.SimpleCardsView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.VideoCardsViewWithSong
 import com.rizwansayyed.zene.ui.view.imgBuilder
-import com.rizwansayyed.zene.utils.Utils.openBrowser
 
 enum class TextSize {
     BIG, MEDIUM, SMALL
@@ -70,31 +66,29 @@ fun HorizontalSongView(
                 }
             }
 
-            if (showGrid)
-                LazyHorizontalGrid(
-                    GridCells.Fixed(2),
-                    Modifier
-                        .fillMaxWidth()
-                        .height(if (cardStyle == StyleSize.ONLY_TEXT) 160.dp else 600.dp)
-                ) {
-                    items(9) {
-                        when (cardStyle) {
-                            StyleSize.HIDE_AUTHOR, StyleSize.SHOW_AUTHOR -> LoadingCardView()
-                            StyleSize.ONLY_TEXT -> LoadingCardView()
-                            StyleSize.SONG_WITH_LISTENER -> CardRoundLoading()
-                        }
+            if (showGrid) LazyHorizontalGrid(
+                GridCells.Fixed(2),
+                Modifier
+                    .fillMaxWidth()
+                    .height(if (cardStyle == StyleSize.ONLY_TEXT) 160.dp else 600.dp)
+            ) {
+                items(9) {
+                    when (cardStyle) {
+                        StyleSize.HIDE_AUTHOR, StyleSize.SHOW_AUTHOR -> LoadingCardView()
+                        StyleSize.ONLY_TEXT -> LoadingCardView()
+                        StyleSize.SONG_WITH_LISTENER -> CardRoundLoading()
                     }
                 }
-            else
-                LazyRow {
-                    items(9) {
-                        when (cardStyle) {
-                            StyleSize.HIDE_AUTHOR, StyleSize.SHOW_AUTHOR -> LoadingCardView()
-                            StyleSize.ONLY_TEXT -> LoadingCardView()
-                            StyleSize.SONG_WITH_LISTENER -> CardRoundLoading()
-                        }
+            }
+            else LazyRow {
+                items(9) {
+                    when (cardStyle) {
+                        StyleSize.HIDE_AUTHOR, StyleSize.SHOW_AUTHOR -> LoadingCardView()
+                        StyleSize.ONLY_TEXT -> LoadingCardView()
+                        StyleSize.SONG_WITH_LISTENER -> CardRoundLoading()
                     }
                 }
+            }
 
         }
 
@@ -102,14 +96,14 @@ fun HorizontalSongView(
             if (data.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     when (header.first) {
-                        TextSize.BIG ->
-                            TextPoppins(stringResource(header.second), size = 30)
+                        TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
 
-                        TextSize.MEDIUM ->
-                            TextPoppins(stringResource(header.second), size = 24)
+                        TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
-                        TextSize.SMALL ->
-                            TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                        TextSize.SMALL -> TextPoppinsSemiBold(
+                            stringResource(header.second),
+                            size = 15
+                        )
                     }
                 }
 
@@ -124,8 +118,10 @@ fun HorizontalSongView(
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it, data.data)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
-                            StyleSize.SONG_WITH_LISTENER ->
-                                CardSmallWithListeningNumber(it, data.data)
+                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(
+                                it,
+                                data.data
+                            )
                         }
                     }
                 }
@@ -135,8 +131,10 @@ fun HorizontalSongView(
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it, data.data)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
-                            StyleSize.SONG_WITH_LISTENER ->
-                                CardSmallWithListeningNumber(it, data.data)
+                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(
+                                it,
+                                data.data
+                            )
                         }
                     }
                 }
@@ -181,9 +179,7 @@ fun HorizontalVideoView(homeViewModel: APIResponse<ZeneMusicDataResponse>, txt: 
 
 @Composable
 fun HorizontalArtistsView(
-    data: APIResponse<ZeneMusicDataResponse>,
-    header: Pair<TextSize, Int>,
-    showGrid: Boolean
+    data: APIResponse<ZeneMusicDataResponse>, header: Pair<TextSize, Int>, showGrid: Boolean
 ) {
     when (data) {
         APIResponse.Empty -> {}
@@ -191,34 +187,29 @@ fun HorizontalArtistsView(
         APIResponse.Loading -> {
             Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                 when (header.first) {
-                    TextSize.BIG ->
-                        TextPoppins(stringResource(header.second), size = 30)
+                    TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
 
-                    TextSize.MEDIUM ->
-                        TextPoppins(stringResource(header.second), size = 24)
+                    TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
-                    TextSize.SMALL ->
-                        TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                    TextSize.SMALL -> TextPoppinsSemiBold(stringResource(header.second), size = 15)
                 }
             }
 
-            if (showGrid)
-                LazyHorizontalGrid(
-                    GridCells.Fixed(2),
-                    Modifier
-                        .fillMaxWidth()
-                        .height(450.dp)
-                ) {
-                    items(10) {
-                        LoadingArtistsCardView()
-                    }
+            if (showGrid) LazyHorizontalGrid(
+                GridCells.Fixed(2),
+                Modifier
+                    .fillMaxWidth()
+                    .height(450.dp)
+            ) {
+                items(10) {
+                    LoadingArtistsCardView()
                 }
-            else
-                LazyRow {
-                    items(10) {
-                        LoadingArtistsCardView()
-                    }
+            }
+            else LazyRow {
+                items(10) {
+                    LoadingArtistsCardView()
                 }
+            }
 
         }
 
@@ -226,34 +217,32 @@ fun HorizontalArtistsView(
             if (data.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     when (header.first) {
-                        TextSize.BIG ->
-                            TextPoppins(stringResource(header.second), size = 30)
+                        TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
 
-                        TextSize.MEDIUM ->
-                            TextPoppins(stringResource(header.second), size = 24)
+                        TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
-                        TextSize.SMALL ->
-                            TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                        TextSize.SMALL -> TextPoppinsSemiBold(
+                            stringResource(header.second),
+                            size = 15
+                        )
                     }
                 }
 
-                if (showGrid)
-                    LazyHorizontalGrid(
-                        GridCells.Fixed(2),
-                        Modifier
-                            .fillMaxWidth()
-                            .height(450.dp)
-                    ) {
-                        items(data.data) {
-                            ArtistsCardView(it, data.data)
-                        }
+                if (showGrid) LazyHorizontalGrid(
+                    GridCells.Fixed(2),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(450.dp)
+                ) {
+                    items(data.data) {
+                        ArtistsCardView(it, data.data)
                     }
-                else
-                    LazyRow {
-                        items(data.data) {
-                            ArtistsCardView(it, data.data)
-                        }
+                }
+                else LazyRow {
+                    items(data.data) {
+                        ArtistsCardView(it, data.data)
                     }
+                }
 
             }
         }
@@ -263,9 +252,7 @@ fun HorizontalArtistsView(
 
 @Composable
 fun HorizontalNewsView(
-    data: APIResponse<ZeneMusicDataResponse>,
-    header: Pair<TextSize, Int>,
-    showGrid: Boolean
+    data: APIResponse<ZeneMusicDataResponse>, header: Pair<TextSize, Int>, showGrid: Boolean
 ) {
     when (data) {
         APIResponse.Empty -> {}
@@ -273,34 +260,29 @@ fun HorizontalNewsView(
         APIResponse.Loading -> {
             Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                 when (header.first) {
-                    TextSize.BIG ->
-                        TextPoppins(stringResource(header.second), size = 30)
+                    TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
 
-                    TextSize.MEDIUM ->
-                        TextPoppins(stringResource(header.second), size = 24)
+                    TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
-                    TextSize.SMALL ->
-                        TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                    TextSize.SMALL -> TextPoppinsSemiBold(stringResource(header.second), size = 15)
                 }
             }
 
-            if (showGrid)
-                LazyHorizontalGrid(
-                    GridCells.Fixed(2),
-                    Modifier
-                        .fillMaxWidth()
-                        .height(450.dp)
-                ) {
-                    items(10) {
-                        LoadingArtistsCardView()
-                    }
+            if (showGrid) LazyHorizontalGrid(
+                GridCells.Fixed(2),
+                Modifier
+                    .fillMaxWidth()
+                    .height(450.dp)
+            ) {
+                items(10) {
+                    LoadingNewsCardView()
                 }
-            else
-                LazyRow {
-                    items(10) {
-                        LoadingArtistsCardView()
-                    }
+            }
+            else LazyRow {
+                items(10) {
+                    LoadingNewsCardView()
                 }
+            }
 
         }
 
@@ -308,56 +290,32 @@ fun HorizontalNewsView(
             if (data.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     when (header.first) {
-                        TextSize.BIG ->
-                            TextPoppins(stringResource(header.second), size = 30)
+                        TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
 
-                        TextSize.MEDIUM ->
-                            TextPoppins(stringResource(header.second), size = 24)
+                        TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
-                        TextSize.SMALL ->
-                            TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                        TextSize.SMALL -> TextPoppinsSemiBold(
+                            stringResource(header.second),
+                            size = 15
+                        )
                     }
                 }
 
-                if (showGrid)
-                    LazyHorizontalGrid(
-                        GridCells.Fixed(2),
-                        Modifier
-                            .fillMaxWidth()
-                            .height(450.dp)
-                    ) {
-                        items(data.data) {
-                            ArtistsCardView(it, data.data)
-                        }
+                if (showGrid) LazyHorizontalGrid(
+                    GridCells.Fixed(2),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(680.dp)
+                ) {
+                    items(data.data) {
+                        NewsItemCard(it)
                     }
-                else
-                    LazyRow {
-                        items(data.data) {
-
-                            Column(
-                                Modifier
-                                    .width(300.dp)
-                                    .padding(horizontal = 9.dp)
-                            ) {
-                                AsyncImage(
-                                    imgBuilder(it.thumbnail), it.name,
-                                    Modifier
-                                        .clip(RoundedCornerShape(13.dp))
-                                        .size(300.dp, 400.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                                Spacer(Modifier.height(10.dp))
-
-                                TextPoppins(it.name ?: "", false, size = 15, limit = 3)
-
-                                Spacer(Modifier.height(6.dp))
-
-                                TextPoppinsThin(
-                                    "${it.getDomain()} • ${it.extra}", false, size = 14, limit = 3
-                                )
-                            }
-                        }
+                }
+                else LazyRow {
+                    items(data.data) {
+                        NewsItemCard(it)
                     }
+                }
 
             }
         }

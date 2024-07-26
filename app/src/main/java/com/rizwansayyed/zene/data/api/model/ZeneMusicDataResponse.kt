@@ -18,28 +18,23 @@ data class ZeneSearchData(
 )
 
 data class ZeneLyricsData(
-    val isSync: Boolean?,
-    val lyrics: String?
+    val isSync: Boolean?, val lyrics: String?
 )
 
 data class ZeneVideosMusicData(
-    val lyricsVideoID: String?,
-    val officialVideoID: String?
+    val lyricsVideoID: String?, val officialVideoID: String?
 )
 
 data class ZenePlaylistAlbumsData(
-    val info: ZeneMusicDataItems?,
-    val songs: List<ZeneMusicDataItems>
+    val info: ZeneMusicDataItems?, val songs: List<ZeneMusicDataItems>
 )
 
 
 data class ZeneMoodPlaylistData(
-    val name: String?,
-    val list: List<MoodLists>
+    val name: String?, val list: List<MoodLists>
 ) {
     data class MoodLists(
-        val name: String?,
-        val list: List<ZeneMusicDataItems>
+        val name: String?, val list: List<ZeneMusicDataItems>
     )
 }
 
@@ -62,6 +57,7 @@ data class ZeneMusicDataItems(
             "VIDEO" -> MusicType.VIDEO
             "MOOD" -> MusicType.MOOD
             "STORE" -> MusicType.STORE
+            "NEWS" -> MusicType.NEWS
             else -> MusicType.NONE
         }
     }
@@ -79,5 +75,5 @@ data class ZeneMusicDataItems(
 
 
 enum class MusicType {
-    SONGS, PLAYLIST, ALBUMS, ARTISTS, VIDEO, MOOD, STORE, NONE
+    SONGS, PLAYLIST, ALBUMS, ARTISTS, VIDEO, MOOD, STORE, NEWS, NONE
 }

@@ -118,6 +118,27 @@ fun LoadingArtistsCardView() {
 }
 
 @Composable
+fun LoadingNewsCardView() {
+    Column(Modifier.padding(7.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+        Spacer(
+            Modifier
+                .size(300.dp, 400.dp)
+                .clip(RoundedCornerShape(100))
+                .background(shimmerEffectBrush())
+        )
+
+        Spacer(
+            Modifier
+                .padding(top = 8.dp)
+                .padding(horizontal = 5.dp)
+                .size(100.dp, 10.dp)
+                .clip(RoundedCornerShape(40))
+                .background(shimmerEffectBrush())
+        )
+    }
+}
+
+@Composable
 fun shimmerEffectBrush(): ShaderBrush {
     val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
 

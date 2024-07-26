@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.ui.artists.ArtistsView
+import com.rizwansayyed.zene.ui.extra.MyMusicView
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.mood.MoodView
@@ -41,11 +42,11 @@ import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
-import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
@@ -53,12 +54,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -88,6 +84,9 @@ class MainActivity : ComponentActivity() {
                         composable(NAV_HOME) {
                             HomeView(homeViewModel)
                         }
+                        composable(NAV_MY_MUSIC) {
+                            MyMusicView(zeneViewModel)
+                        }
                         composable(NAV_PLAYLISTS) {
                             PlaylistsView(homeViewModel, it.arguments?.getString("id")) {
                                 navController.popBackStack()
@@ -113,10 +112,11 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    PlayerThumbnail(Modifier.align(Alignment.BottomEnd), playerInfo) {
-                        homeNavModel.showMusicPlayer(true)
-                        vibratePhone()
-                    }
+                    if (playerInfo?.player?.id == null)
+                        PlayerThumbnail(Modifier.align(Alignment.BottomEnd), playerInfo) {
+                            homeNavModel.showMusicPlayer(true)
+                            vibratePhone()
+                        }
 
                     AnimatedVisibility(
                         visible = homeNavModel.showMusicPlayer,
@@ -138,6 +138,7 @@ class MainActivity : ComponentActivity() {
                         c ?: return
                         i ?: return
                         val data = i.getStringExtra(Intent.ACTION_MAIN) ?: return
+
                         navController.navigate(data)
                     }
                 }
@@ -156,10 +157,5 @@ class MainActivity : ComponentActivity() {
         showAdsOnAppOpen.showAds()
 
         homeViewModel.userArtistsList()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(2.seconds)
-            sendNavCommand(NAV_ARTISTS.replace("{id}" , "Taylor Swift"))
-        }
     }
 }

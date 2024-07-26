@@ -53,9 +53,9 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         startLogin("sayyedrizwanahmed@gmail.com", "Rizwan Sayyed", "")
         return@launch
 
-        val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(true)
+        val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
             .setServerClientId(BuildConfig.GOOGLE_SERVER_ID).setAutoSelectEnabled(false)
-            .setAutoSelectEnabled(true).build()
+            .setAutoSelectEnabled(false).build()
 
         val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
         val credential = credentialManager?.getCredential(c, request)?.credential

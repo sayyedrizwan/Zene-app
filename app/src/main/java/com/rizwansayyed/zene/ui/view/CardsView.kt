@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,14 +30,12 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.openBrowser
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
 @Composable
@@ -284,15 +283,43 @@ fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
     }
 }
 
+@Composable
+fun NewsItemCard(news: ZeneMusicDataItems) {
+    Column(
+        Modifier
+            .width(300.dp)
+            .padding(horizontal = 9.dp)
+            .clickable { openSpecificIntent(news, emptyList()) }
+    ) {
+        AsyncImage(
+            imgBuilder(news.thumbnail), news.name,
+            Modifier
+                .clip(RoundedCornerShape(13.dp))
+                .size(300.dp, 400.dp),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(Modifier.height(10.dp))
+
+        TextPoppins(news.name ?: "", false, size = 15, limit = 3)
+
+        Spacer(Modifier.height(6.dp))
+
+        TextPoppinsThin(
+            "${news.getDomain()} • ${news.extra}", false, size = 14, limit = 3
+        )
+    }
+}
+
 fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     when (m.type()) {
         SONGS -> sendWebViewCommand(m, list)
-        PLAYLIST -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}" , it)) }
-        ALBUMS -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}" , it)) }
-        ARTISTS -> m.name?.let { sendNavCommand(NAV_ARTISTS.replace("{id}" , it)) }
+        PLAYLIST -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
+        ALBUMS -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
+        ARTISTS -> m.name?.let { sendNavCommand(NAV_ARTISTS.replace("{id}", it)) }
         VIDEO -> openVideoPlayer(m.extra)
-        MOOD -> m.id?.let { sendNavCommand(NAV_MOOD.replace("{id}" , it)) }
+        MOOD -> m.id?.let { sendNavCommand(NAV_MOOD.replace("{id}", it)) }
         STORE -> m.id?.let { openBrowser(it) }
         NONE -> {}
+        NEWS -> m.id?.let { openBrowser(it) }
     }
 }
