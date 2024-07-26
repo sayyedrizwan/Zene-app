@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
 
     var artistsInfo by mutableStateOf<APIResponse<ZeneArtistsInfoResponse>>(APIResponse.Empty)
+    var artistsData by mutableStateOf<APIResponse<ZeneArtistsDataResponse>>(APIResponse.Empty)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.artistsInfo(name).onStart {
@@ -31,6 +33,16 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             artistsInfo = APIResponse.Error(it)
         }.collectLatest {
             artistsInfo = APIResponse.Success(it)
+        }
+    }
+
+    fun artistsData(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.artistsData(name).onStart {
+            artistsData = APIResponse.Loading
+        }.catch {
+            artistsData = APIResponse.Error(it)
+        }.collectLatest {
+            artistsData = APIResponse.Success(it)
         }
     }
 }

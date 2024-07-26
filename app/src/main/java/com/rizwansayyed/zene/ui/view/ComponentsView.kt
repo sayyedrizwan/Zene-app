@@ -139,6 +139,7 @@ fun BorderButtons(modifier: Modifier = Modifier, icon: Int, s: Int) {
 
 enum class ButtonState { Pressed, Idle }
 
+@SuppressLint("ReturnFromAwaitPointerEventScope")
 fun Modifier.bounceClick() = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val scale by animateFloatAsState(
@@ -171,7 +172,6 @@ fun Modifier.bounceClick() = composed {
 
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 fun Modifier.bouncingClickable(
-    animationDuration: Int = 100,
     scaleDown: Float = 0.9f,
     onClick: () -> Unit
 ) = composed {

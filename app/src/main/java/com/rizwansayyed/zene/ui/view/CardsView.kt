@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
@@ -288,7 +289,7 @@ fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
         SONGS -> sendWebViewCommand(m, list)
         PLAYLIST -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}" , it)) }
         ALBUMS -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}" , it)) }
-        ARTISTS -> {}
+        ARTISTS -> m.name?.let { sendNavCommand(NAV_ARTISTS.replace("{id}" , it)) }
         VIDEO -> openVideoPlayer(m.extra)
         MOOD -> m.id?.let { sendNavCommand(NAV_MOOD.replace("{id}" , it)) }
         STORE -> m.id?.let { openBrowser(it) }

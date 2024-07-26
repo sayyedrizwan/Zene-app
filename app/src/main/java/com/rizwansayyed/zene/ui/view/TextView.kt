@@ -51,7 +51,7 @@ fun TextPoppins(
 ) {
     Text(
         v,
-        if (center) Modifier.fillMaxWidth() else Modifier,
+        if (center) Modifier.fillMaxWidth().animateContentSize() else Modifier.animateContentSize(),
         color,
         size.sp,
         FontStyle.Normal, FontWeight.Normal, PoppinsFamily,

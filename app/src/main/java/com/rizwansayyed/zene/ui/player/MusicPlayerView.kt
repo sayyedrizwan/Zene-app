@@ -57,6 +57,7 @@ import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
@@ -260,7 +261,7 @@ fun MusicListCards(
     ) { page ->
         Box(Modifier.fillMaxWidth()) {
             AsyncImage(
-                playerInfo?.list?.get(page)?.thumbnail,
+                imgBuilder(playerInfo?.list?.get(page)?.thumbnail),
                 playerInfo?.list?.get(page)?.name,
                 Modifier
                     .align(Alignment.Center)

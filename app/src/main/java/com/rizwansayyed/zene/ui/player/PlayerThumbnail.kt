@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.getPercentageLeft
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
@@ -45,7 +46,7 @@ fun PlayerThumbnail(modifier: Modifier = Modifier, info: MusicPlayerData?, open:
             .clickable { open() }) {
 
         AsyncImage(
-            info?.player?.thumbnail,
+            imgBuilder(info?.player?.thumbnail),
             info?.player?.name,
             Modifier
                 .align(Alignment.Center)

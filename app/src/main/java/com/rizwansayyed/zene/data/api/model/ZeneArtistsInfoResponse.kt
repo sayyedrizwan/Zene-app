@@ -15,3 +15,13 @@ data class ZeneArtistsInfoResponse(
         val username: String?
     )
 }
+
+
+data class ZeneArtistsDataResponse(
+    val songs: List<ZeneMusicDataItems>,
+    val albums: List<ZeneMusicDataItems>,
+    val videos: List<ZeneMusicDataItems>,
+    val playlists: List<ZeneMusicDataItems>,
+    val artists: List<ZeneMusicDataItems>,
+    val news: List<ZeneMusicDataItems?>?
+)

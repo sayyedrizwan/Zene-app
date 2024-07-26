@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 
@@ -46,8 +47,7 @@ fun PlaylistAlbumTopView(v: ZeneMusicDataItems?) {
         Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            v?.thumbnail,
-            v?.name,
+            imgBuilder(v?.thumbnail), v?.name,
             Modifier
                 .clip(RoundedCornerShape(12.dp))
                 .size(if (isBig) (screenWidth / 2) else (screenWidth - 120.dp))

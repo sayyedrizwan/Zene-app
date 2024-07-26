@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
@@ -12,6 +13,7 @@ import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
@@ -107,6 +109,9 @@ interface ZeneAPIService {
 
     @POST(ZENE_ARTISTS_INFO_API)
     suspend fun artistsInfo(@Body body: RequestBody): ZeneArtistsInfoResponse
+
+    @POST(ZENE_ARTISTS_DATA_API)
+    suspend fun artistsData(@Body body: RequestBody): ZeneArtistsDataResponse
 
     @GET(ZENE_USER_SONG_HISTORY_API)
     suspend fun getSongHistory(

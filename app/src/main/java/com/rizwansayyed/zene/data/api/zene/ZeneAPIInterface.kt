@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
@@ -59,5 +60,8 @@ interface ZeneAPIInterface {
     suspend fun moodLists(id: String): Flow<ZeneMoodPlaylistData>
 
     suspend fun merchandise(name: String, artists: String): Flow<ZeneMusicDataResponse>
+
     suspend fun artistsInfo(name: String): Flow<ZeneArtistsInfoResponse>
+
+    suspend fun artistsData(name: String): Flow<ZeneArtistsDataResponse>
 }
