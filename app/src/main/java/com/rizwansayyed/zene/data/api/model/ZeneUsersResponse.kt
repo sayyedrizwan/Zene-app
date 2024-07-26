@@ -19,7 +19,7 @@ data class ZeneUsersResponse(
     val subscription_status: String?,
     val total_playtime: Int?
 ) {
-    fun isReviewDone(): Boolean {
+    private fun isReviewDone(): Boolean {
         return is_review_done == 1
     }
 

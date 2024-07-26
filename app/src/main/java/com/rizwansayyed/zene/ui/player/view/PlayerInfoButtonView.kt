@@ -54,6 +54,7 @@ import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -132,9 +133,7 @@ fun ButtonsView(playerInfo: MusicPlayerData?) {
 
 
 @Composable
-fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel) {
-    Spacer(Modifier.height(30.dp))
-
+fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: MusicPlayerData?) {
     val tryAgain = stringResource(id = R.string.try_after_a_seconds_fetching_video_details)
 
     var expanded by remember { mutableStateOf(false) }
@@ -142,31 +141,38 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel) {
     val musicLoop by musicLoopSettings.collectAsState(initial = false)
     val musicAutoplay by musicAutoplaySettings.collectAsState(initial = false)
 
-    Row {
-        BorderButtons(
-            Modifier
-                .weight(1f)
-                .clickable {
-                    when (val v = musicPlayerViewModel.videoDetails) {
-                        is APIResponse.Success -> {
-                            openVideoPlayer(v.data.officialVideoID)
+    if (playerInfo?.player?.id?.contains(RADIO_ARTISTS) == false) {
+        Spacer(Modifier.height(30.dp))
+
+        Row {
+            BorderButtons(
+                Modifier
+                    .weight(1f)
+                    .clickable {
+                        when (val v = musicPlayerViewModel.videoDetails) {
+                            is APIResponse.Success -> {
+                                openVideoPlayer(v.data.officialVideoID)
+                            }
+
+                            else -> tryAgain.toast()
                         }
-                        else -> tryAgain.toast()
-                    }
-                }, R.drawable.ic_flim_slate, R.string.song_video
-        )
-        BorderButtons(
-            Modifier
-                .weight(1f)
-                .clickable {
-                    when (val v = musicPlayerViewModel.videoDetails) {
-                        is APIResponse.Success -> {
-                            openVideoPlayer(v.data.lyricsVideoID)
+                    }, R.drawable.ic_flim_slate, R.string.song_video
+            )
+
+            BorderButtons(
+                Modifier
+                    .weight(1f)
+                    .clickable {
+                        when (val v = musicPlayerViewModel.videoDetails) {
+                            is APIResponse.Success -> {
+                                openVideoPlayer(v.data.lyricsVideoID)
+                            }
+
+                            else -> tryAgain.toast()
                         }
-                        else -> tryAgain.toast()
-                    }
-                }, R.drawable.ic_closed_caption, R.string.lyrics_video
-        )
+                    }, R.drawable.ic_closed_caption, R.string.lyrics_video
+            )
+        }
     }
 
     Spacer(Modifier.height(30.dp))

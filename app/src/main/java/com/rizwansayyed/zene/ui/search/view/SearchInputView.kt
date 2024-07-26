@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.search.view
 
+import android.app.Activity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -37,6 +39,7 @@ import com.rizwansayyed.zene.ui.view.SearchScreenBar
 import com.rizwansayyed.zene.ui.view.SearchTexts
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.enterUniqueSearchHistory
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
@@ -45,6 +48,8 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (String) -> Unit) {
     val searchHistory by searchHistoryDB.collectAsState(initial = emptyArray())
     var searchQuery by remember { mutableStateOf("") }
+
+    val context = LocalContext.current as Activity
 
     LazyColumn(
         Modifier
@@ -126,5 +131,7 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
     LaunchedEffect(Unit) {
         homeViewModel.searchSuggestions("", true)
         searchQuery = ""
+
+        ShowAdsOnAppOpen(context).interstitialAds()
     }
 }

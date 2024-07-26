@@ -16,6 +16,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.extra.MyMusicView
@@ -58,9 +60,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var showAdsOnAppOpen: ShowAdsOnAppOpen
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val homeNavModel: HomeNavModel by viewModels()
@@ -112,7 +111,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    if (playerInfo?.player?.id == null)
+                    if (playerInfo?.player?.id != null)
                         PlayerThumbnail(Modifier.align(Alignment.BottomEnd), playerInfo) {
                             homeNavModel.showMusicPlayer(true)
                             vibratePhone()
@@ -148,13 +147,17 @@ class MainActivity : ComponentActivity() {
                     unregisterReceiver(listener)
                 }
             }
+
+            LaunchedEffect(Unit) {
+                MobileAds.initialize(this@MainActivity) { }
+            }
         }
     }
 
     override fun onStart() {
         super.onStart()
         customPlayerNotification(this@MainActivity)
-        showAdsOnAppOpen.showAds()
+        ShowAdsOnAppOpen(this).showAds()
 
         homeViewModel.userArtistsList()
     }

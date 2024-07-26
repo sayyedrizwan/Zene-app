@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.playlists
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -25,6 +27,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
@@ -33,6 +36,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 @Composable
 fun PlaylistsView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
     val isThreeGrid = isScreenBig()
+    val context = LocalContext.current as Activity
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -81,7 +85,10 @@ fun PlaylistsView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) 
     }
     LaunchedEffect(Unit) {
         if (id == null) close()
-        else homeViewModel.playlistsData(id)
+        else {
+            ShowAdsOnAppOpen(context).interstitialAds()
+            homeViewModel.playlistsData(id)
+        }
     }
 
     BackHandler {

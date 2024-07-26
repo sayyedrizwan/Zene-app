@@ -128,7 +128,7 @@ fun MusicPlayerView(
 
         item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
-                ExtraButtonsData(musicPlayerViewModel)
+                ExtraButtonsData(musicPlayerViewModel, playerInfo)
             }
         }
 

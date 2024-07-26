@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.artists
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
@@ -31,10 +33,13 @@ import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
+import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
 fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
+    val context = LocalContext.current as Activity
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -158,7 +163,7 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
     LaunchedEffect(Unit) {
         if (id == null) close()
         else {
-            viewModel.artistsInfo(id)
+            ShowAdsOnAppOpen(context).interstitialAds()
             viewModel.artistsData(id)
         }
     }

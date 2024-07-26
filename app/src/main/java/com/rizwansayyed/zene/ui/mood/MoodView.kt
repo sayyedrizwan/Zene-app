@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.mood
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -31,11 +33,14 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
 fun MoodView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
+    val context = LocalContext.current as Activity
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -62,7 +67,10 @@ fun MoodView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
 
             is APIResponse.Success -> {
                 item(3) {
-                    Box(Modifier.padding(horizontal = 14.dp).padding(top = 15.dp, bottom = 25.dp)) {
+                    Box(
+                        Modifier
+                            .padding(horizontal = 14.dp)
+                            .padding(top = 15.dp, bottom = 25.dp)) {
                         TextPoppins(v.data.name ?: "", size = 36)
                     }
                 }
@@ -91,7 +99,10 @@ fun MoodView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
 
     LaunchedEffect(Unit) {
         if (id == null) close()
-        else homeViewModel.moodPlaylists(id)
+        else {
+            ShowAdsOnAppOpen(context).interstitialAds()
+            homeViewModel.moodPlaylists(id)
+        }
     }
 
     BackHandler {
