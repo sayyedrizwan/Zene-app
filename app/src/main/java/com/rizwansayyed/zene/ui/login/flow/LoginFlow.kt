@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager
+import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.model.SubscriptionType
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -96,6 +97,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                 user.name, e, user.total_playtime, user.profile_photo,
                 user.isReviewDone(), user.subscription_status, user.subscription_status
             )
+            pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
             DataStoreManager.userInfoDB = flowOf(u)
             return
         }

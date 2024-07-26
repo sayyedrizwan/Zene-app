@@ -13,16 +13,24 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
+import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
+import com.rizwansayyed.zene.ui.view.ButtonWithImage
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
+import com.rizwansayyed.zene.viewmodel.ZeneViewModel
+import kotlinx.coroutines.flow.firstOrNull
 
 @Composable
 fun ArtistsTopView(v: ZeneArtistsInfoResponse) {
@@ -51,6 +59,41 @@ fun ArtistsTopView(v: ZeneArtistsInfoResponse) {
                 limit = if (fullDesc) 10000 else 3
             )
         }
+    }
+}
+
+@Composable
+fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
+    var isFollowing by remember { mutableStateOf(false) }
+
+    Spacer(Modifier.height(80.dp))
+
+    val a = stringResource(R.string.followed_by)
+
+    TextPoppinsThin("$a ${artists.followers()}", true)
+    Spacer(Modifier.height(30.dp))
+
+    ButtonWithImage(
+        if (isFollowing) R.drawable.ic_user_check else R.drawable.ic_add_user,
+        if (isFollowing) R.string.following else R.string.follow
+    ) {
+        isFollowing = !isFollowing
+        viewModel.followArtists(artists.name, isFollowing)
+    }
+
+    Spacer(Modifier.height(40.dp))
+
+    ButtonWithImage(R.drawable.ic_user_check, R.string.following) {
+
+    }
+
+    Spacer(Modifier.height(150.dp))
+
+    LaunchedEffect(Unit) {
+        val isPresent = pinnedArtistsList.firstOrNull()
+            ?.filter { it.lowercase() == artists.name?.lowercase() } ?: emptyList()
+
+        isFollowing = isPresent.isNotEmpty()
     }
 }
 

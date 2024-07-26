@@ -155,6 +155,8 @@ class MainActivity : ComponentActivity() {
         customPlayerNotification(this@MainActivity)
         showAdsOnAppOpen.showAds()
 
+        homeViewModel.userArtistsList()
+
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)
             sendNavCommand(NAV_ARTISTS.replace("{id}" , "Taylor Swift"))

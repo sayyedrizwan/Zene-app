@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MU
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_LOOP
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_PLAYER
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_SPEED
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PINNED_ARTISTS_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
@@ -39,6 +40,7 @@ object DataStoreManager {
         val MUSIC_SPEED = stringPreferencesKey("music_speed")
         val MUSIC_LOOP = booleanPreferencesKey("music_loop")
         val MUSIC_AUTOPLAY = booleanPreferencesKey("music_autoplay")
+        val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
     }
 
 
@@ -88,5 +90,15 @@ object DataStoreManager {
         get() = context.dataStore.data.map { it[MUSIC_AUTOPLAY] ?: true }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[MUSIC_AUTOPLAY] = value.first() }
+        }
+
+    var pinnedArtistsList
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<String>::class.java)
+                .fromJson(it[PINNED_ARTISTS_LIST] ?: ARRAY_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
+            context.dataStore.edit { it[PINNED_ARTISTS_LIST] = json }
         }
 }

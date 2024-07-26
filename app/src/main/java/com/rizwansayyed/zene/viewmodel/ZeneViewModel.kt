@@ -8,9 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
-import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
-import com.rizwansayyed.zene.ui.login.flow.LoginFlow
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -44,5 +43,9 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }.collectLatest {
             artistsData = APIResponse.Success(it)
         }
+    }
+
+    fun followArtists(name: String?, b: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        b.toast()
     }
 }

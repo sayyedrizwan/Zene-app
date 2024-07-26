@@ -19,6 +19,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -127,7 +128,8 @@ fun BorderButtons(modifier: Modifier = Modifier, icon: Int, s: Int) {
             .padding(5.dp)
             .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(25))
             .padding(vertical = 7.dp, horizontal = 10.dp),
-        Arrangement.Center, Alignment.CenterVertically
+        Arrangement.Center,
+        Alignment.CenterVertically
     ) {
         ImageIcon(icon, 18)
 
@@ -137,14 +139,34 @@ fun BorderButtons(modifier: Modifier = Modifier, icon: Int, s: Int) {
     }
 }
 
+@Composable
+fun ButtonWithImage(img: Int, txt: Int, click: () -> Unit) {
+    Row(
+        Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(MainColor)
+            .clickable { click() }
+            .padding(horizontal = 25.dp, vertical = 15.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        ImageIcon(img, 18)
+
+        Spacer(Modifier.width(10.dp))
+
+        TextPoppinsSemiBold(v = stringResource(id = txt), size = 14)
+    }
+}
+
+
 enum class ButtonState { Pressed, Idle }
 
 @SuppressLint("ReturnFromAwaitPointerEventScope")
 fun Modifier.bounceClick() = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val scale by animateFloatAsState(
-        if (buttonState == ButtonState.Pressed) 0.70f else 1f,
-        label = ""
+        if (buttonState == ButtonState.Pressed) 0.70f else 1f, label = ""
     )
 
     this
@@ -152,11 +174,9 @@ fun Modifier.bounceClick() = composed {
             scaleX = scale
             scaleY = scale
         }
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
+        .clickable(interactionSource = remember { MutableInteractionSource() },
             indication = null,
-            onClick = { }
-        )
+            onClick = { })
         .pointerInput(buttonState) {
             awaitPointerEventScope {
                 buttonState = if (buttonState == ButtonState.Pressed) {
@@ -172,8 +192,7 @@ fun Modifier.bounceClick() = composed {
 
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 fun Modifier.bouncingClickable(
-    scaleDown: Float = 0.9f,
-    onClick: () -> Unit
+    scaleDown: Float = 0.9f, onClick: () -> Unit
 ) = composed {
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -195,8 +214,7 @@ fun Modifier.bouncingClickable(
             scaleY = scale
         }
         .clickable(
-            interactionSource = interactionSource,
-            indication = null
+            interactionSource = interactionSource, indication = null
         ) {
             onClick()
         }

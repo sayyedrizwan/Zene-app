@@ -14,12 +14,16 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
+import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -209,6 +213,15 @@ class HomeViewModel @Inject constructor(
             moodPlaylist = APIResponse.Error(it)
         }.collectLatest {
             moodPlaylist = APIResponse.Success(it)
+        }
+    }
+
+    fun userArtistsList() = viewModelScope.launch(Dispatchers.IO) {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        if (email == "") return@launch
+
+        zeneAPI.getUser(email).catch {}.collectLatest {
+            pinnedArtistsList = flowOf(it.pinned_artists?.filterNotNull()?.toTypedArray())
         }
     }
 }

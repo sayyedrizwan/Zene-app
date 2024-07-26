@@ -56,4 +56,7 @@
     <string name="playlists_for_your_mood">Playlist for your mood</string>
     <string name="empty" />
     <string name="artists_merchandise">Artists Merchandises</string>
+    <string name="followed_by">followed by</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
 </resources>

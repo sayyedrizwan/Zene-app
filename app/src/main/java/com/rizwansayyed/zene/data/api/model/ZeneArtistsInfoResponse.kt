@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.data.api.model
 
+import java.util.Locale
+
 data class ZeneArtistsInfoResponse(
     val desc: String?,
     val followers: Int?,
@@ -14,6 +16,16 @@ data class ZeneArtistsInfoResponse(
         val url: String?,
         val username: String?
     )
+
+    fun followers(): String {
+        return when {
+            (followers ?: 0) >= 1_000_000 ->
+                String.format(Locale.getDefault(), "%.1fM", (followers ?: 0) / 1_000_000.0)
+            (followers ?: 0) >= 1_000 ->
+                String.format(Locale.getDefault(), "%.1fK", (followers ?: 0) / 1_000.0)
+            else -> followers.toString()
+        }
+    }
 }
 
 
