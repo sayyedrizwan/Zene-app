@@ -188,14 +188,15 @@ fun MusicPlayerView(
             }
 
             is APIResponse.Success -> {
-                item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                        TextPoppinsSemiBold(
-                            stringResource(R.string.similar_songs_you_may_like), size = 15
-                        )
+                if (v.data.isNotEmpty())
+                    item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                            TextPoppinsSemiBold(
+                                stringResource(R.string.similar_songs_you_may_like), size = 15
+                            )
 
+                        }
                     }
-                }
 
                 items(v.data,
                     span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
@@ -206,8 +207,12 @@ fun MusicPlayerView(
     }
 
     LaunchedEffect(pagerState.currentPage) {
-        name = playerInfo?.list?.get(pagerState.currentPage)?.name ?: ""
-        artists = playerInfo?.list?.get(pagerState.currentPage)?.artists ?: ""
+        try {
+            name = playerInfo?.list?.get(pagerState.currentPage)?.name ?: ""
+            artists = playerInfo?.list?.get(pagerState.currentPage)?.artists ?: ""
+        } catch (e: Exception) {
+            e.message
+        }
     }
 
     suspend fun scrollThumbnailCard() {

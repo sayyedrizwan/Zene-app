@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.VideoCardsViewWithSong
 import com.rizwansayyed.zene.ui.view.bouncingClickable
 import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.ui.view.openSpecificIntent
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 
 @Composable
@@ -47,7 +48,8 @@ fun HomeArtistsSimilarToView(m: ZeneArtistsDataList) {
                 Modifier
                     .size(80.dp)
                     .clip(RoundedCornerShape(100))
-                    .background(Color.DarkGray).bouncingClickable {  },
+                    .background(Color.DarkGray)
+                    .bouncingClickable { openSpecificIntent(m.artists, emptyList()) },
                 contentScale = ContentScale.Crop
             )
 
@@ -68,7 +70,7 @@ fun HomeArtistsSimilarToView(m: ZeneArtistsDataList) {
                     Modifier
                         .padding(top = 2.dp)
                         .padding(horizontal = 5.dp)
-                        .clickable {  }
+                        .clickable { }
                 ) {
                     TextPoppins(m.artists.name ?: "", size = 17, limit = 1)
                 }

@@ -93,12 +93,8 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
     private suspend fun startLogin(e: String?, n: String?, p: String?) {
         val user = zeneAPIInterface.getUser(e ?: "").firstOrNull()
         if (user?.email != null) {
-            val u = UserInfoData(
-                user.name, e, user.total_playtime, user.profile_photo,
-                user.isReviewDone(), user.subscription_status, user.subscription_status
-            )
             pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
-            DataStoreManager.userInfoDB = flowOf(u)
+            DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))
             return
         }
 

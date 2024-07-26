@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
+import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.moshi
@@ -86,14 +87,15 @@ class MusicPlayService : Service() {
     }
 
     fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
-        currentVideoID = vID
+        currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
         val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
-            .replace("<<VideoID>>", vID)
+            .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
 
         withContext(Dispatchers.IO) {
-            if (vID != defaultID) zeneAPI.addMusicHistory(vID).firstOrNull()
+            if (vID != defaultID && !vID.contains(RADIO_ARTISTS))
+                zeneAPI.addMusicHistory(vID).firstOrNull()
         }
     }
 

@@ -7,6 +7,7 @@ data class ZeneArtistsInfoResponse(
     val followers: Int?,
     val img: List<String?>?,
     val name: String?,
+    val radioID: String?,
     val socialMedia: List<SocialMedia?>?,
     val topSongs: List<ZeneMusicDataItems?>?
 ) {

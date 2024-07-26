@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_UPDATE_ARTISTS_API
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.http.Body
@@ -80,11 +81,15 @@ interface ZeneAPIService {
     @GET(ZENE_SEARCH_API)
     suspend fun searchData(@Query("s") id: String): ZeneSearchData
 
+    @POST(ZENE_USER_UPDATE_ARTISTS_API)
+    suspend fun updateArtists(@Body body: RequestBody): ZeneBooleanResponse
+
     @GET(ZENE_SEARCH_SUGGESTIONS_API)
     suspend fun searchSuggestions(@Query("s") id: String): List<String>
 
     @POST(ZENE_TOP_ARTISTS_API)
     suspend fun favArtistsData(@Body body: RequestBody): ZeneArtistsData
+
 
     @POST(ZENE_SUGGESTED_SONGS_API)
     suspend fun suggestedSongs(@Body body: RequestBody): ZeneMusicDataResponse

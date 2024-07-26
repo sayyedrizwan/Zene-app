@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.data.api.model
 
+import com.rizwansayyed.zene.data.db.model.UserInfoData
+
 data class ZeneUsersResponse(
     val country: String?,
     val device_info: String?,
@@ -19,5 +21,13 @@ data class ZeneUsersResponse(
 ) {
     fun isReviewDone(): Boolean {
         return is_review_done == 1
+    }
+
+
+    fun toUserInfo(email: String?): UserInfoData {
+        return UserInfoData(
+            name, email, total_playtime, profile_photo,
+            isReviewDone(), subscription_status, subscription_status
+        )
     }
 }

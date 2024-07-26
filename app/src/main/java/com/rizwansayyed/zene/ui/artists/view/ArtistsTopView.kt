@@ -23,12 +23,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
+import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.view.ButtonWithImage
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
+import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -65,6 +71,7 @@ fun ArtistsTopView(v: ZeneArtistsInfoResponse) {
 @Composable
 fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
     var isFollowing by remember { mutableStateOf(false) }
+    val canFollowOnly30 = stringResource(R.string.cannot_follow_more_then_30_artists)
 
     Spacer(Modifier.height(80.dp))
 
@@ -78,13 +85,23 @@ fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
         if (isFollowing) R.string.following else R.string.follow
     ) {
         isFollowing = !isFollowing
-        viewModel.followArtists(artists.name, isFollowing)
+        viewModel.followArtists(artists.name, isFollowing) {
+            canFollowOnly30.toast()
+        }
     }
 
     Spacer(Modifier.height(40.dp))
 
-    ButtonWithImage(R.drawable.ic_user_check, R.string.following) {
-
+    ButtonWithImage(R.drawable.ic_radio, R.string.radio) {
+        val m = ZeneMusicDataItems(
+            "${artists.name} Radio",
+            artists.name ?: "",
+            "${artists.radioID}$RADIO_ARTISTS",
+            artists.img?.randomOrNull() ?: "",
+            "",
+            MusicType.SONGS.name
+        )
+        sendWebViewCommand(m, listOf(m))
     }
 
     Spacer(Modifier.height(150.dp))

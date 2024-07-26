@@ -66,6 +66,7 @@ object Utils {
             if (BuildConfig.DEBUG) "http://192.168.0.101:5173/-api-/" else "http://www.zenemusic.co/-api-/"
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
+        const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"
 
 
         const val ZENE_MOODS_API = "moods"
@@ -97,6 +98,8 @@ object Utils {
     const val TOTAL_GRID_SIZE = 12
     const val TWO_GRID_SIZE = 6
     const val THREE_GRID_SIZE = 4
+
+    const val RADIO_ARTISTS = "_radio_artists"
 
 
     val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()

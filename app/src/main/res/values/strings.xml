@@ -59,4 +59,6 @@
     <string name="followed_by">followed by</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
+    <string name="cannot_follow_more_then_30_artists">Currently you cannot follow more then 30 artists at a time.</string>
+    <string name="radio">Radio</string>
 </resources>

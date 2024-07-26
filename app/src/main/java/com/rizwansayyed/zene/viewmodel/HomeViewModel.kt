@@ -14,8 +14,10 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
+import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -221,6 +223,7 @@ class HomeViewModel @Inject constructor(
         if (email == "") return@launch
 
         zeneAPI.getUser(email).catch {}.collectLatest {
+            userInfoDB = flowOf(it.toUserInfo(email))
             pinnedArtistsList = flowOf(it.pinned_artists?.filterNotNull()?.toTypedArray())
         }
     }
