@@ -8,17 +8,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.ui.artists.view.ArtistsNews
+import com.rizwansayyed.zene.ui.artists.view.ArtistsSocialButton
 import com.rizwansayyed.zene.ui.artists.view.ArtistsTopView
 import com.rizwansayyed.zene.ui.artists.view.ArtistsTopViewLoading
 import com.rizwansayyed.zene.ui.artists.view.FollowArtists
+import com.rizwansayyed.zene.ui.home.view.HorizontalNewsView
+import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
+import com.rizwansayyed.zene.ui.home.view.StyleSize
+import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
@@ -39,8 +48,17 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
         when (val v = viewModel.artistsInfo) {
             APIResponse.Empty -> {}
             is APIResponse.Error -> {}
-            APIResponse.Loading -> item(2) {
-                ArtistsTopViewLoading()
+            APIResponse.Loading -> {
+                item(300) {
+                    ArtistsTopViewLoading()
+                }
+                item(301) {
+                    LazyRow(Modifier.padding(top = 20.dp)) {
+                        items(9) {
+                            LoadingCardView()
+                        }
+                    }
+                }
             }
 
             is APIResponse.Success -> {
@@ -50,9 +68,35 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
                 item(4) {
                     FollowArtists(v.data, viewModel)
                 }
+                item(5) {
+                    ArtistsSocialButton(v.data.socialMedia)
+                }
+                item(6) {
+                    Spacer(Modifier.height(90.dp))
+
+                    if (v.data.topSongs != null) HorizontalSongView(
+                        APIResponse.Success(v.data.topSongs.filterNotNull()),
+                        Pair(TextSize.SMALL, R.string.top_songs),
+                        StyleSize.SONG_WITH_LISTENER, showGrid = true
+                    )
+                }
             }
+        }
 
+        when (val v = viewModel.artistsData) {
+            APIResponse.Empty -> {}
+            is APIResponse.Error -> {}
+            APIResponse.Loading -> {}
+            is APIResponse.Success -> {
+                item(7) {
+                    Spacer(Modifier.height(90.dp))
 
+                    if (v.data.news != null) HorizontalNewsView(
+                        APIResponse.Success(v.data.news.filterNotNull()),
+                        Pair(TextSize.SMALL, R.string.news), showGrid = false
+                    )
+                }
+            }
         }
 
         item(1000) {

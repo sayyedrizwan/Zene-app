@@ -1,18 +1,31 @@
 package com.rizwansayyed.zene.ui.home.view
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.ui.view.ArtistsCardView
@@ -25,7 +38,10 @@ import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.SimpleCardsView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.VideoCardsViewWithSong
+import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.utils.Utils.openBrowser
 
 enum class TextSize {
     BIG, MEDIUM, SMALL
@@ -205,8 +221,9 @@ fun HorizontalArtistsView(
                 }
 
         }
+
         is APIResponse.Success -> {
-            if (data.data.isNotEmpty()){
+            if (data.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     when (header.first) {
                         TextSize.BIG ->
@@ -241,4 +258,109 @@ fun HorizontalArtistsView(
             }
         }
     }
+}
+
+
+@Composable
+fun HorizontalNewsView(
+    data: APIResponse<ZeneMusicDataResponse>,
+    header: Pair<TextSize, Int>,
+    showGrid: Boolean
+) {
+    when (data) {
+        APIResponse.Empty -> {}
+        is APIResponse.Error -> {}
+        APIResponse.Loading -> {
+            Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                when (header.first) {
+                    TextSize.BIG ->
+                        TextPoppins(stringResource(header.second), size = 30)
+
+                    TextSize.MEDIUM ->
+                        TextPoppins(stringResource(header.second), size = 24)
+
+                    TextSize.SMALL ->
+                        TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                }
+            }
+
+            if (showGrid)
+                LazyHorizontalGrid(
+                    GridCells.Fixed(2),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(450.dp)
+                ) {
+                    items(10) {
+                        LoadingArtistsCardView()
+                    }
+                }
+            else
+                LazyRow {
+                    items(10) {
+                        LoadingArtistsCardView()
+                    }
+                }
+
+        }
+
+        is APIResponse.Success -> {
+            if (data.data.isNotEmpty()) {
+                Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                    when (header.first) {
+                        TextSize.BIG ->
+                            TextPoppins(stringResource(header.second), size = 30)
+
+                        TextSize.MEDIUM ->
+                            TextPoppins(stringResource(header.second), size = 24)
+
+                        TextSize.SMALL ->
+                            TextPoppinsSemiBold(stringResource(header.second), size = 15)
+                    }
+                }
+
+                if (showGrid)
+                    LazyHorizontalGrid(
+                        GridCells.Fixed(2),
+                        Modifier
+                            .fillMaxWidth()
+                            .height(450.dp)
+                    ) {
+                        items(data.data) {
+                            ArtistsCardView(it, data.data)
+                        }
+                    }
+                else
+                    LazyRow {
+                        items(data.data) {
+
+                            Column(
+                                Modifier
+                                    .width(300.dp)
+                                    .padding(horizontal = 9.dp)
+                            ) {
+                                AsyncImage(
+                                    imgBuilder(it.thumbnail), it.name,
+                                    Modifier
+                                        .clip(RoundedCornerShape(13.dp))
+                                        .size(300.dp, 400.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(Modifier.height(10.dp))
+
+                                TextPoppins(it.name ?: "", false, size = 15, limit = 3)
+
+                                Spacer(Modifier.height(6.dp))
+
+                                TextPoppinsThin(
+                                    "${it.getDomain()} • ${it.extra}", false, size = 14, limit = 3
+                                )
+                            }
+                        }
+                    }
+
+            }
+        }
+    }
+
 }

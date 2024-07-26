@@ -104,7 +104,6 @@ fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
         sendWebViewCommand(m, listOf(m))
     }
 
-    Spacer(Modifier.height(150.dp))
 
     LaunchedEffect(Unit) {
         val isPresent = pinnedArtistsList.firstOrNull()
