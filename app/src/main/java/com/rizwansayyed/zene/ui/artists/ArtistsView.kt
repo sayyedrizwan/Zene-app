@@ -164,6 +164,7 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
         if (id == null) close()
         else {
             ShowAdsOnAppOpen(context).interstitialAds()
+            viewModel.artistsInfo(id)
             viewModel.artistsData(id)
         }
     }

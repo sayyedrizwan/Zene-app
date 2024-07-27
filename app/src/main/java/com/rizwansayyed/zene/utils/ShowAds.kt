@@ -63,5 +63,5 @@ fun isMoreThanThreeMinutesAds(): Boolean = runBlocking(Dispatchers.IO) {
     val now = Instant.now().toEpochMilli()
     val duration =
         Duration.between(Instant.ofEpochMilli(timestamp), Instant.ofEpochMilli(now))
-    return@runBlocking duration.toMinutes() > 3
+    return@runBlocking duration.toMinutes() > 4
 }

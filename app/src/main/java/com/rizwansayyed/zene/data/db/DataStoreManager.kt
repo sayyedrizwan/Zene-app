@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.api.model.IpJsonResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.LAST_ADS_TIMESTAMP
@@ -21,6 +22,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PI
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_IP_INFO
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.data.db.model.UserInfoData
@@ -46,6 +48,7 @@ object DataStoreManager {
         val MUSIC_AUTOPLAY = booleanPreferencesKey("music_autoplay")
         val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
         val LAST_ADS_TIMESTAMP = longPreferencesKey("last_ads_timestamp")
+        val USER_IP_INFO = stringPreferencesKey("user_ip_info")
     }
 
 
@@ -113,5 +116,15 @@ object DataStoreManager {
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[LAST_ADS_TIMESTAMP] = value.first() }
+        }
+
+
+    var ipDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(IpJsonResponse::class.java).fromJson(it[USER_IP_INFO] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(IpJsonResponse::class.java).toJson(value.first())
+            context.dataStore.edit { it[USER_IP_INFO] = json }
         }
 }

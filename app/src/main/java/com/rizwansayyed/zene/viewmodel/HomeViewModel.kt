@@ -228,4 +228,8 @@ class HomeViewModel @Inject constructor(
             pinnedArtistsList = flowOf(it.pinned_artists?.filterNotNull()?.toTypedArray())
         }
     }
+
+    fun updateUser() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.updateUser().catch {}.collectLatest {}
+    }
 }

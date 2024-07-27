@@ -1,8 +1,5 @@
 package com.rizwansayyed.zene.data.db.model
 
-import org.json.JSONObject
-
-
 data class UserInfoData(
     var name: String?,
     var email: String?,
@@ -18,4 +15,11 @@ data class UserInfoData(
 
         return true
     }
+
+    fun totalPlaytime(): String {
+        val hours = (totalPlayTime ?: 0) / 60
+        val remainingMinutes = (totalPlayTime ?: 0) % 60
+        return "${hours}h ${remainingMinutes}m"
+    }
+
 }

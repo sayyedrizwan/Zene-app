@@ -79,12 +79,14 @@ class MainActivity : ComponentActivity() {
             ZeneTheme {
                 Box(Modifier.fillMaxSize()) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    NavHost(navController, NAV_HOME) {
+                    NavHost(navController, NAV_MY_MUSIC) {
                         composable(NAV_HOME) {
                             HomeView(homeViewModel)
                         }
                         composable(NAV_MY_MUSIC) {
-                            MyMusicView(zeneViewModel)
+                            MyMusicView(zeneViewModel) {
+                                navController.popBackStack()
+                            }
                         }
                         composable(NAV_PLAYLISTS) {
                             PlaylistsView(homeViewModel, it.arguments?.getString("id")) {

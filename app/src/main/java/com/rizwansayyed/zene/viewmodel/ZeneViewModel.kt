@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -29,6 +30,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
 
     var artistsInfo by mutableStateOf<APIResponse<ZeneArtistsInfoResponse>>(APIResponse.Empty)
     var artistsData by mutableStateOf<APIResponse<ZeneArtistsDataResponse>>(APIResponse.Empty)
+    var songHistory by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.artistsInfo(name).onStart {
@@ -72,4 +74,8 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             pinnedArtistsList = flowOf(list.toTypedArray())
             zeneAPI.updateArtists(list.toTypedArray()).firstOrNull()
         }
+
+    fun songHistory() = viewModelScope.launch(Dispatchers.IO) {
+
+    }
 }

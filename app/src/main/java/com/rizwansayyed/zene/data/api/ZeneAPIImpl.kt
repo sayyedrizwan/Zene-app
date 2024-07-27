@@ -5,11 +5,13 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.api.ip.IpAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
+import com.rizwansayyed.zene.data.db.DataStoreManager.ipDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -23,9 +25,15 @@ import javax.inject.Inject
 class ZeneAPIImpl @Inject constructor(
     private val zeneAPI: ZeneAPIService, private val ipAPI: IpAPIService
 ) : ZeneAPIInterface {
+    override suspend fun ip() = flow {
+        val ip = ipAPI.ip()
+        ipDB = flowOf(ip)
+        emit(ip)
+    }
 
     override suspend fun updateUser() = flow {
-        val ip = ipAPI.ip()
+        val ip = ip().firstOrNull()
+
         val users = userInfoDB.firstOrNull()
         val fcm = FirebaseMessaging.getInstance().token.await()
 
@@ -34,10 +42,10 @@ class ZeneAPIImpl @Inject constructor(
             put("email", users?.email)
             put("photo", users?.profilePhoto)
             put("playtime", users?.totalPlayTime ?: 0)
-            put("ip", ip.query)
+            put("ip", ip?.query)
             put("fcm", fcm)
             put("device", "${Build.MANUFACTURER} ${Build.MODEL} ${Build.VERSION.RELEASE}")
-            put("country", "${ip.city}, ${ip.regionName}, ${ip.country}")
+            put("country", "${ip?.city}, ${ip?.regionName}, ${ip?.country}")
             put("review", users?.isReviewDone ?: false)
         }
 
