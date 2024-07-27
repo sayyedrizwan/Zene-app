@@ -6,7 +6,7 @@
     <string name="error_while_login">Error while login</string>
     <string name="login_to_enjoy_free_music">Login to enjoy free music</string>
     <string name="agreeing_privacy_policy">by login you are agreeing to our privacy policy</string>
-    <string name="recommended_playlists">Recommended \n \nPlaylists</string>
+    <string name="recommended_playlists">Recommended \nPlaylists</string>
     <string name="albums_picked_for_you">Albums picked for you</string>
     <string name="videos_you_may_like">Videos you may like</string>
     <string name="videos">Videos</string>
@@ -27,6 +27,7 @@
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
     <string name="playlists">Playlists</string>
+    <string name="playlists_albums">Playlists/Albums</string>
     <string name="recommended">Recommended</string>
     <string name="join_premium_community">Join Premium Community</string>
     <string name="join_zene_premium">Join Zene Premium</string>
@@ -70,4 +71,6 @@
     <string name="minutes">Minutes</string>
     <string name="update_profile">Update profile</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="load_more">Load More</string>
+    <string name="new_playlists">New Playlists</string>
 </resources>

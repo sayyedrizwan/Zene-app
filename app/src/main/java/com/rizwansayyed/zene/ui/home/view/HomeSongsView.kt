@@ -60,7 +60,9 @@ fun HorizontalSongView(
         APIResponse.Loading -> {
             Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                 when (header.first) {
-                    TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
+                    TextSize.BIG ->
+                        TextPoppins(stringResource(header.second), size = 30, lineHeight = 35)
+
                     TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
                     TextSize.SMALL -> TextPoppinsSemiBold(stringResource(header.second), size = 15)
                 }
@@ -96,10 +98,10 @@ fun HorizontalSongView(
             if (data.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     when (header.first) {
-                        TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
+                        TextSize.BIG ->
+                            TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
 
                         TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-
                         TextSize.SMALL -> TextPoppinsSemiBold(
                             stringResource(header.second),
                             size = 15
@@ -118,10 +120,8 @@ fun HorizontalSongView(
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it, data.data)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
-                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(
-                                it,
-                                data.data
-                            )
+                            StyleSize.SONG_WITH_LISTENER ->
+                                CardSmallWithListeningNumber(it, data.data)
                         }
                     }
                 }
@@ -131,10 +131,8 @@ fun HorizontalSongView(
                             StyleSize.HIDE_AUTHOR -> SimpleCardsView(it, data.data)
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
-                            StyleSize.SONG_WITH_LISTENER -> CardSmallWithListeningNumber(
-                                it,
-                                data.data
-                            )
+                            StyleSize.SONG_WITH_LISTENER ->
+                                CardSmallWithListeningNumber(it, data.data)
                         }
                     }
                 }
@@ -187,7 +185,8 @@ fun HorizontalArtistsView(
         APIResponse.Loading -> {
             Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                 when (header.first) {
-                    TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
+                    TextSize.BIG ->
+                        TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
 
                     TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
@@ -217,7 +216,8 @@ fun HorizontalArtistsView(
             if (data.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     when (header.first) {
-                        TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
+                        TextSize.BIG ->
+                            TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
 
                         TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
@@ -260,7 +260,8 @@ fun HorizontalNewsView(
         APIResponse.Loading -> {
             Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                 when (header.first) {
-                    TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
+                    TextSize.BIG ->
+                        TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
 
                     TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 
@@ -290,7 +291,8 @@ fun HorizontalNewsView(
             if (data.data.isNotEmpty()) {
                 Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                     when (header.first) {
-                        TextSize.BIG -> TextPoppins(stringResource(header.second), size = 30)
+                        TextSize.BIG ->
+                            TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
 
                         TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
 

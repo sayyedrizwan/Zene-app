@@ -63,8 +63,15 @@ object Utils {
         const val BASE_URL_IP = "http://ip-api.com/"
         const val JSON_IP = "json"
 
+
+        const val BASE_URL_IMG_BB = "https://api.imgbb.com/1/"
+        const val IMG_BB_UPLOAD = "upload"
+
+
+
         val BASE_URL =
-            if (BuildConfig.DEBUG) "http://192.168.0.101:5173/-api-/" else "http://www.zenemusic.co/-api-/"
+            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
         const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"
@@ -120,6 +127,11 @@ object Utils {
         } catch (e: Exception) {
             s
         }
+    }
+
+    fun userAlphabetsImg(n: String): String {
+        return "https://ui-avatars.com/api/?name=${n.replace(" ", "+")}" +
+                "&background=2F3C7E&color=fff&size=128&length=2"
     }
 
     fun openBrowser(url: String) = CoroutineScope(Dispatchers.Main).launch {

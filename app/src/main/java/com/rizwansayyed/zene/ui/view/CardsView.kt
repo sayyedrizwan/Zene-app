@@ -273,7 +273,8 @@ fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
         ) {
             TextPoppins(m.name ?: "", true, size = 17, limit = 2)
         }
-        Row(
+
+        if (m.type() != PLAYLIST) Row(
             Modifier
                 .padding(top = 2.dp)
                 .padding(horizontal = 2.dp)

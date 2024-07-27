@@ -47,7 +47,7 @@ fun TextPoppinsSemiBold(
 @Composable
 fun TextPoppins(
     v: String, center: Boolean = false, color: Color = Color.White, size: Int = 20,
-    limit: Int? = null, lineHeight : Int = 50,
+    limit: Int? = null, lineHeight : Int = 23,
 ) {
     Text(
         v,

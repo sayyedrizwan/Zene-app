@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,8 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryItem
+import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -30,7 +33,9 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
 
     var artistsInfo by mutableStateOf<APIResponse<ZeneArtistsInfoResponse>>(APIResponse.Empty)
     var artistsData by mutableStateOf<APIResponse<ZeneArtistsDataResponse>>(APIResponse.Empty)
-    var songHistory by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var songHistory = mutableStateListOf<ZeneMusicHistoryItem>()
+    var songHistoryIsLoading by mutableStateOf(true)
+    var doShowMoreLoading by mutableStateOf(true)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.artistsInfo(name).onStart {
@@ -75,7 +80,22 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             zeneAPI.updateArtists(list.toTypedArray()).firstOrNull()
         }
 
-    fun songHistory() = viewModelScope.launch(Dispatchers.IO) {
+    fun songHistory(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        if (page == 0) songHistory.clear()
 
+        zeneAPI.getMusicHistory(page).onStart {
+            songHistoryIsLoading = true
+        }.catch {
+            songHistoryIsLoading = false
+        }.collectLatest {
+            songHistoryIsLoading = false
+            it.forEach { songHistory.add(it) }
+
+            if (it.isEmpty()) doShowMoreLoading = false
+        }
+    }
+
+    fun playlists(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        if (page == 0) songHistory.clear()
     }
 }

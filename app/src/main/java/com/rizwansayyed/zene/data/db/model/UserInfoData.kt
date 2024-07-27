@@ -1,10 +1,12 @@
 package com.rizwansayyed.zene.data.db.model
 
+import com.rizwansayyed.zene.utils.Utils.userAlphabetsImg
+
 data class UserInfoData(
     var name: String?,
     var email: String?,
     var totalPlayTime: Int?,
-    var profilePhoto: String?,
+    private var profilePhoto: String?,
     var isReviewDone: Boolean?,
     var subscriptionStatus: String?,
     var subscriptionExpiryData: String?,
@@ -14,6 +16,12 @@ data class UserInfoData(
         if ((email?.length ?: 0) <= 3) return false
 
         return true
+    }
+
+    fun getProfilePicture(): String {
+        if (profilePhoto == null) return userAlphabetsImg(name ?: "Zene User")
+        if (profilePhoto!!.length <= 3) return userAlphabetsImg(name ?: "Zene User")
+        return profilePhoto ?: userAlphabetsImg(name ?: "Zene User")
     }
 
     fun totalPlaytime(): String {

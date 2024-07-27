@@ -51,6 +51,7 @@ fun PlaylistsView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) 
                 Spacer(Modifier.weight(1f))
             }
         }
+
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             when (val v = homeViewModel.albumPlaylistData) {
                 APIResponse.Empty -> {}

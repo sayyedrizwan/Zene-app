@@ -36,6 +36,15 @@ android {
         buildConfigField(
             "String", "AUTH_HEADER", apikeyProperties.getProperty("AUTH_HEADER")
         )
+        buildConfigField(
+            "String", "DOMAIN_BASE_URL", apikeyProperties.getProperty("DOMAIN_BASE_URL")
+        )
+        buildConfigField(
+            "String", "IP_BASE_URL", apikeyProperties.getProperty("IP_BASE_URL")
+        )
+        buildConfigField(
+            "String", "IMG_BB_API", apikeyProperties.getProperty("IMG_BB_API")
+        )
     }
 
     buildTypes {

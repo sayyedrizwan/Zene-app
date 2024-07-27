@@ -40,7 +40,7 @@ class ZeneAPIImpl @Inject constructor(
         val json = JSONObject().apply {
             put("name", users?.name)
             put("email", users?.email)
-            put("photo", users?.profilePhoto)
+            put("photo", users?.getProfilePicture())
             put("playtime", users?.totalPlayTime ?: 0)
             put("ip", ip?.query)
             put("fcm", fcm)
