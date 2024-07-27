@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.api.imgbb
 
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.model.ImgBBResponse
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
@@ -51,6 +52,9 @@ interface ImgBBAPIService {
 
     @Multipart
     @POST(IMG_BB_UPLOAD)
-    suspend fun upload(@Part filePart: MultipartBody.Part): ImgBBResponse
+    suspend fun upload(
+        @Part filePart: MultipartBody.Part,
+        @Query("key") key: String = BuildConfig.IMG_BB_API
+    ): ImgBBResponse
 
 }

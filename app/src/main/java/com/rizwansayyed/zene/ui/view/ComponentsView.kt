@@ -64,7 +64,10 @@ import com.rizwansayyed.zene.utils.Utils.toast
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreenBar(
-    searchQuery: String, onChange: (String) -> Unit, onSearch: (String) -> Unit
+    placeholder: Int,
+    searchQuery: String,
+    onChange: (String) -> Unit,
+    onSearch: (String) -> Unit
 ) {
     SearchBar(
         query = searchQuery,

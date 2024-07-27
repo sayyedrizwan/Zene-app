@@ -45,6 +45,7 @@
     <string name="available_plans">Available plans</string>
     <string name="upgrade">Upgrade</string>
     <string name="search_zene">Search Zene</string>
+    <string name="search_images">Search Images</string>
     <string name="search_history">Search History</string>
     <string name="no_search_history">No Search History</string>
     <string name="music_player">Music Player</string>

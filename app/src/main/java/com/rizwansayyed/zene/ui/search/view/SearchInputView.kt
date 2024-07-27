@@ -63,7 +63,7 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
                 Box(Modifier.padding(top = 42.dp).offset(x = 4.dp).clickable { close() }) {
                     ImageIcon(R.drawable.ic_arrow_left, 35, Color.White)
                 }
-                SearchScreenBar(searchQuery, {
+                SearchScreenBar(R.string.search_zene, searchQuery, {
                     searchQuery = it
                     homeViewModel.searchSuggestions(it)
                 }) {

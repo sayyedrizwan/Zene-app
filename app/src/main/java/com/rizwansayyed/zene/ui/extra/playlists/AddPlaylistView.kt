@@ -2,7 +2,11 @@ package com.rizwansayyed.zene.ui.extra.playlists
 
 import android.content.Context
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.WindowManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +20,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +40,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.SearchScreenBar
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
@@ -72,8 +80,19 @@ fun AddPlaylistView() {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val isBig = isScreenBig()
 
-    val img =
-        "https://cdn10.phillymag.com/wp-content/uploads/sites/3/2020/09/monthly-playlist.jpg"
+    var showSearch by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: $uri")
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
+
+    val img = "https://i.ibb.co/1Xf9DkT/monthly-playlist.jpg"
 
     TextPoppins(stringResource(id = R.string.new_playlists), size = 16)
     Spacer(Modifier.height(30.dp))
@@ -84,12 +103,26 @@ fun AddPlaylistView() {
         contentScale = ContentScale.Crop
     )
     Row(Modifier.padding(top = 30.dp), Arrangement.Center, Alignment.CenterVertically) {
-        Row(Modifier.clickable { }) {
+        Row(Modifier.clickable { showSearch = !showSearch }) {
             ImageIcon(R.drawable.ic_search, 26)
         }
         Spacer(Modifier.width(30.dp))
-        Row(Modifier.clickable { }) {
+        Row(Modifier.clickable {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }) {
             ImageIcon(R.drawable.ic_folder, 26)
+        }
+    }
+
+    if (showSearch) {
+        Spacer(Modifier.height(30.dp))
+        SearchScreenBar(R.string.search_images, searchQuery, {
+            searchQuery = it
+//        homeViewModel.searchSuggestions(it)
+        }) {
+//        search(it)
+            showSearch = false
+            searchQuery = it
         }
     }
 
