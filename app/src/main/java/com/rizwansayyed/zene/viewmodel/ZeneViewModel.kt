@@ -33,6 +33,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
 
     var artistsInfo by mutableStateOf<APIResponse<ZeneArtistsInfoResponse>>(APIResponse.Empty)
     var artistsData by mutableStateOf<APIResponse<ZeneArtistsDataResponse>>(APIResponse.Empty)
+    var searchImg by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
     var songHistory = mutableStateListOf<ZeneMusicHistoryItem>()
     var songHistoryIsLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(true)
@@ -97,5 +98,26 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
 
     fun playlists(page: Int) = viewModelScope.launch(Dispatchers.IO) {
         if (page == 0) songHistory.clear()
+    }
+
+    fun searchImages(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (q == "") {
+            searchImg = APIResponse.Empty
+            return@launch
+        }
+        zeneAPI.searchImg(q.trim()).onStart {
+            searchImg = APIResponse.Loading
+        }.catch {
+            searchImg = APIResponse.Error(it)
+        }.collectLatest {
+            val result = zeneAPI.searchData(q).firstOrNull()
+            val list = ArrayList<String>()
+            it.forEach { list.add(it) }
+            result?.songs?.forEach { m -> m.thumbnail?.let { it1 -> list.add(it1) } }
+            result?.albums?.forEach { m -> m.thumbnail?.let { it1 -> list.add(it1) } }
+            result?.playlists?.forEach { m -> m.thumbnail?.let { it1 -> list.add(it1) } }
+
+            searchImg = APIResponse.Success(list)
+        }
     }
 }

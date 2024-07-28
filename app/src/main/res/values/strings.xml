@@ -27,6 +27,8 @@
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
     <string name="playlists">Playlists</string>
+    <string name="create_playlist">Create Playlist</string>
+    <string name="playlist_name">Playlist Name</string>
     <string name="playlists_albums">Playlists/Albums</string>
     <string name="recommended">Recommended</string>
     <string name="join_premium_community">Join Premium Community</string>
@@ -74,4 +76,6 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="load_more">Load More</string>
     <string name="new_playlists">New Playlists</string>
+    <string name="no_img_found">No img found</string>
+    <string name="enter_a_valid_playlists">Enter a valid playlists name</string>
 </resources>

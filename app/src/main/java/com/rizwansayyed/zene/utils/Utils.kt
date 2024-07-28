@@ -77,6 +77,7 @@ object Utils {
         const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"
 
 
+        const val ZENE_SEARCH_IMG_API = "search_img"
         const val ZENE_MOODS_API = "moods"
         const val ZENE_NEW_RELEASE_API = "newrelease"
         const val ZENE_PLAYLISTS_API = "playlists"

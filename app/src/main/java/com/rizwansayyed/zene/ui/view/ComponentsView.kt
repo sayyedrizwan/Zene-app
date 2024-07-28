@@ -28,15 +28,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -79,7 +84,7 @@ fun SearchScreenBar(
             .padding(start = 12.dp, top = 2.dp, end = 12.dp, bottom = 12.dp)
             .fillMaxWidth(),
         placeholder = {
-            TextPoppins(stringResource(R.string.search_zene), false, Color.Gray, 15)
+            TextPoppins(stringResource(placeholder), false, Color.Gray, 15)
         },
         leadingIcon = {
             Icon(
@@ -88,7 +93,130 @@ fun SearchScreenBar(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
-        colors = SearchBarDefaults.colors(containerColor = MainColor),
+        colors = SearchBarDefaults.colors(
+            MainColor, MainColor, TextFieldColors(
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                TextSelectionColors(Color.White, Color.White),
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White,
+                Color.White
+            )
+        ),
+        tonalElevation = 0.dp,
+    ) {}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PlaylistNameBar(
+    searchQuery: String,
+    onChange: (String) -> Unit,
+    onSearch: (String) -> Unit
+) {
+    SearchBar(
+        query = searchQuery,
+        onQueryChange = { onChange(it) },
+        active = false,
+        onActiveChange = {},
+        onSearch = { onSearch(it) },
+        modifier = Modifier
+            .padding(start = 12.dp, top = 2.dp, end = 12.dp, bottom = 12.dp)
+            .fillMaxWidth(),
+        placeholder = {
+            TextPoppins(stringResource(R.string.playlist_name), false, Color.Gray, 15)
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Rounded.Create,
+                contentDescription = null,
+                tint = Color.Black,
+            )
+        },
+        colors = SearchBarDefaults.colors(
+            Color.White, Color.White, TextFieldColors(
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                TextSelectionColors(Color.Black, Color.Black),
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black
+            )
+        ),
         tonalElevation = 0.dp,
     ) {}
 }

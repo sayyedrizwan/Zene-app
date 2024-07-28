@@ -67,5 +67,7 @@ interface ZeneAPIInterface {
     suspend fun artistsData(name: String): Flow<ZeneArtistsDataResponse>
 
     suspend fun updateArtists(list: Array<String>): Flow<ZeneBooleanResponse>
+
     suspend fun ip(): Flow<IpJsonResponse>
+    suspend fun searchImg(q: String): Flow<List<String>>
 }

@@ -170,7 +170,7 @@ fun MyMusicView(viewModel: ZeneViewModel, close: () -> Unit) {
         }
     }
 
-    if (addPlaylist) AddPlaylistDialog {
+    if (addPlaylist) AddPlaylistDialog(viewModel) {
         addPlaylist = false
     }
 

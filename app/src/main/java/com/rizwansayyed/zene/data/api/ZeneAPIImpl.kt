@@ -213,4 +213,8 @@ class ZeneAPIImpl @Inject constructor(
     override suspend fun playlistAlbums(id: String) = flow {
         emit(zeneAPI.playlistAlbums(id))
     }
+
+    override suspend fun searchImg(q: String) = flow {
+        emit(zeneAPI.searchImg(q))
+    }
 }

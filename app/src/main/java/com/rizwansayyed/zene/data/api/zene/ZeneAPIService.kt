@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_VIDEO_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_IMG_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ALBUMS_API
@@ -125,4 +126,7 @@ interface ZeneAPIService {
 
     @GET(ZENE_PLAYLISTS_API)
     suspend fun playlistAlbums(@Query("id") id: String): ZenePlaylistAlbumsData
+
+    @GET(ZENE_SEARCH_IMG_API)
+    suspend fun searchImg(@Query("s") search: String): List<String>
 }
