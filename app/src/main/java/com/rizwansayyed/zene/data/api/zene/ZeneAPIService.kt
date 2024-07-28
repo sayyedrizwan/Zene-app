@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
+import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
@@ -34,13 +35,18 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_UPDATE_ARTISTS_API
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Query
 
 interface ZeneAPIService {
@@ -113,6 +119,10 @@ interface ZeneAPIService {
     @POST(ZENE_USER_SONG_HISTORY_API)
     suspend fun addSongHistory(@Body body: RequestBody): ZeneBooleanResponse
 
+    @GET(ZENE_PLAYLISTS_API)
+    suspend fun playlistAlbums(@Query("id") id: String): ZenePlaylistAlbumsData
+
+
     @POST(ZENE_ARTISTS_INFO_API)
     suspend fun artistsInfo(@Body body: RequestBody): ZeneArtistsInfoResponse
 
@@ -124,9 +134,20 @@ interface ZeneAPIService {
         @Query("email") email: String, @Query("page") page: Int
     ): ZeneMusicHistoryResponse
 
-    @GET(ZENE_PLAYLISTS_API)
-    suspend fun playlistAlbums(@Query("id") id: String): ZenePlaylistAlbumsData
-
     @GET(ZENE_SEARCH_IMG_API)
     suspend fun searchImg(@Query("s") search: String): List<String>
+
+    @Multipart
+    @POST(ZENE_USER_PLAYLISTS_API)
+    suspend fun playlistCreate(
+        @Part file: MultipartBody.Part?,
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody
+    ): ZeneBooleanResponse
+
+    @GET(ZENE_USER_PLAYLISTS_API)
+    suspend fun savedPlaylists(
+        @Query("email") email: String,
+        @Query("page") page: Int
+    ): ZeneSavedPlaylistsResponse
 }

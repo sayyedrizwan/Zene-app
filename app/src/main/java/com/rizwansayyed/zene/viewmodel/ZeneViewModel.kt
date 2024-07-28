@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -10,12 +11,16 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
+import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryItem
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
+import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.utils.Utils.saveBitmap
+import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
 import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +39,9 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var artistsInfo by mutableStateOf<APIResponse<ZeneArtistsInfoResponse>>(APIResponse.Empty)
     var artistsData by mutableStateOf<APIResponse<ZeneArtistsDataResponse>>(APIResponse.Empty)
     var searchImg by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
+    var createPlaylistInfo by mutableStateOf<APIResponse<ZeneBooleanResponse>>(APIResponse.Empty)
     var songHistory = mutableStateListOf<ZeneMusicHistoryItem>()
+    var zeneSavedPlaylists = mutableStateListOf<ZeneSavedPlaylistsResponseItem>()
     var songHistoryIsLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(true)
 
@@ -82,7 +89,10 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }
 
     fun songHistory(page: Int) = viewModelScope.launch(Dispatchers.IO) {
-        if (page == 0) songHistory.clear()
+        if (page == 0) {
+            songHistory.clear()
+            zeneSavedPlaylists.clear()
+        }
 
         zeneAPI.getMusicHistory(page).onStart {
             songHistoryIsLoading = true
@@ -97,7 +107,21 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     }
 
     fun playlists(page: Int) = viewModelScope.launch(Dispatchers.IO) {
-        if (page == 0) songHistory.clear()
+        if (page == 0) {
+            songHistory.clear()
+            zeneSavedPlaylists.clear()
+        }
+
+        zeneAPI.savedPlaylists(page).onStart {
+            songHistoryIsLoading = true
+        }.catch {
+            songHistoryIsLoading = false
+        }.collectLatest {
+            songHistoryIsLoading = false
+            it.forEach { zeneSavedPlaylists.add(it) }
+
+            if (it.isEmpty()) doShowMoreLoading = false
+        }
     }
 
     fun searchImages(q: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -118,6 +142,19 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             result?.playlists?.forEach { m -> m.thumbnail?.let { it1 -> list.add(it1) } }
 
             searchImg = APIResponse.Success(list)
+        }
+    }
+
+    fun createNewPlaylist(name: String, bitmap: Bitmap?) = viewModelScope.launch(Dispatchers.IO) {
+        val savedPath = saveBitmap(savePlaylistFilePath, bitmap)
+
+        zeneAPI.createNewPlaylists(name, savedPath).onStart {
+            createPlaylistInfo = APIResponse.Loading
+        }.catch {
+            createPlaylistInfo = APIResponse.Error(it)
+        }.collectLatest {
+            createPlaylistInfo = if (it.isSuccess()) APIResponse.Success(it)
+            else APIResponse.Error(Exception(""))
         }
     }
 }

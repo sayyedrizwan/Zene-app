@@ -78,4 +78,7 @@
     <string name="new_playlists">New Playlists</string>
     <string name="no_img_found">No img found</string>
     <string name="enter_a_valid_playlists">Enter a valid playlists name</string>
+    <string name="error_creating_a_new_playlists">Error creating a new playlist.</string>
+    <string name="you_have_no_song_history">You have no song history.</string>
+    <string name="you_have_not_created_or_saved_a_playlists">You have not saved or created a playlists.</string>
 </resources>

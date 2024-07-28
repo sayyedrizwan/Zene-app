@@ -14,12 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,26 +29,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.extra.mymusic.TopMusicHeaders
 import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistDialog
-import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.PlaylistsDynamicCards
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 enum class MyMusicType {
@@ -134,17 +128,45 @@ fun MyMusicView(viewModel: ZeneViewModel, close: () -> Unit) {
             Spacer(Modifier.height(40.dp))
         }
 
-        items(
-            viewModel.songHistory,
-            span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-            SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
-        }
+        if (viewModel.songHistory.isEmpty() && type == MyMusicType.HISTORY && !viewModel.songHistoryIsLoading)
+            item(20, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                TextPoppins(stringResource(R.string.you_have_no_song_history), true, size = 16)
+            }
+        else
+            items(
+                viewModel.songHistory,
+                span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
+            }
+
+        if (viewModel.zeneSavedPlaylists.isEmpty() && type == MyMusicType.PLAYLISTS && !viewModel.songHistoryIsLoading)
+            item(20, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                TextPoppins(
+                    stringResource(R.string.you_have_not_created_or_saved_a_playlists),
+                    true, size = 16
+                )
+            }
+        else
+            items(
+                viewModel.zeneSavedPlaylists,
+                span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                PlaylistsDynamicCards(it)
+            }
 
         item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(40.dp))
         }
 
-        if (viewModel.doShowMoreLoading) item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+        if (viewModel.songHistoryIsLoading) item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            LoadingView(Modifier.size(32.dp))
+        }
+
+        item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Spacer(Modifier.height(40.dp))
+        }
+
+
+        if (viewModel.doShowMoreLoading) item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                 Box(
                     Modifier
@@ -171,7 +193,10 @@ fun MyMusicView(viewModel: ZeneViewModel, close: () -> Unit) {
     }
 
     if (addPlaylist) AddPlaylistDialog(viewModel) {
+        page = 0
         addPlaylist = false
+        type = MyMusicType.PLAYLISTS
+        viewModel.playlists(0)
     }
 
 

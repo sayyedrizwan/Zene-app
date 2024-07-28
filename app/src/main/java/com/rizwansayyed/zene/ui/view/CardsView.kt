@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.MusicType.*
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -280,6 +281,41 @@ fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
                 .padding(horizontal = 2.dp)
         ) {
             TextPoppinsThin(m.artists ?: "", true, size = 15, limit = 2)
+        }
+    }
+}
+
+@Composable
+fun PlaylistsDynamicCards(m: ZeneSavedPlaylistsResponseItem) {
+    Column(
+        Modifier
+            .padding(bottom = 15.dp)
+            .padding(7.dp)
+            .bouncingClickable {
+                if (m.isSaved == true) {
+                    m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
+                } else {
+
+                }
+            }, Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            imgBuilder(m.img),
+            m.name,
+            Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.DarkGray),
+            contentScale = ContentScale.Crop
+        )
+
+        Row(
+            Modifier
+                .padding(top = 4.dp)
+                .padding(horizontal = 2.dp)
+        ) {
+            TextPoppins(m.name ?: "", true, size = 17, limit = 2)
         }
     }
 }

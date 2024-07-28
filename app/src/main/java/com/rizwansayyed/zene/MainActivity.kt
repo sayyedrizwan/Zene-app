@@ -56,7 +56,6 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

@@ -1,14 +1,12 @@
 package com.rizwansayyed.zene.ui.extra.playlists
 
 import android.content.Context
-import android.net.Uri
+import android.graphics.Bitmap
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,11 +42,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
-import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ButtonWithImage
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
@@ -58,9 +55,9 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.Utils.URLS.IMG_PLAYLISTS
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
-import java.io.File
 
 @Composable
 fun AddPlaylistDialog(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
@@ -86,24 +83,27 @@ fun AddPlaylistDialog(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
             Arrangement.Center,
             Alignment.CenterHorizontally
         ) {
-            AddPlaylistView(viewModel)
+            AddPlaylistView(viewModel, onDismiss)
         }
     }
 }
 
 @Composable
-fun AddPlaylistView(viewModel: ZeneViewModel) {
+fun AddPlaylistView(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val isBig = isScreenBig()
 
     val enterAValidPlaylistName = stringResource(R.string.enter_a_valid_playlists)
+    val errorCreatingNewPlaylists = stringResource(R.string.error_creating_a_new_playlists)
 
     var img by remember { mutableStateOf("") }
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     var playlistName by remember { mutableStateOf("") }
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     val pickMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -119,7 +119,10 @@ fun AddPlaylistView(viewModel: ZeneViewModel) {
         Modifier
             .clip(RoundedCornerShape(12.dp))
             .size(if (isBig) (screenWidth / 2) else (screenWidth - 120.dp)),
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
+        onSuccess = {
+            bitmap = it.result.drawable.toBitmap()
+        }
     )
 
     Row(Modifier.padding(top = 30.dp), Arrangement.Center, Alignment.CenterVertically) {
@@ -153,9 +156,9 @@ fun AddPlaylistView(viewModel: ZeneViewModel) {
             }
 
             is APIResponse.Success -> {
-                if (v.data.isEmpty()) {
+                if (v.data.isEmpty())
                     TextPoppinsThin(v = stringResource(R.string.no_img_found))
-                } else LazyRow {
+                else LazyRow {
                     items(v.data) {
                         AsyncImage(
                             imgBuilder(it),
@@ -187,17 +190,37 @@ fun AddPlaylistView(viewModel: ZeneViewModel) {
 
     Spacer(Modifier.height(30.dp))
 
-    ButtonWithImage(R.drawable.ic_add_playlist, R.string.create_playlist) {
+
+    if (isLoading) LoadingView(Modifier.size(32.dp))
+    else ButtonWithImage(R.drawable.ic_add_playlist, R.string.create_playlist) {
         if (playlistName.length <= 3) {
             enterAValidPlaylistName.toast()
             return@ButtonWithImage
         }
 
+        val b = if (bitmap == null || img == IMG_PLAYLISTS) null
+        else bitmap
 
+        viewModel.createNewPlaylist(playlistName, b)
+    }
+
+    LaunchedEffect(viewModel.createPlaylistInfo) {
+        when (viewModel.createPlaylistInfo) {
+            APIResponse.Empty -> isLoading = false
+            is APIResponse.Error -> {
+                errorCreatingNewPlaylists.toast()
+                isLoading = false
+            }
+            APIResponse.Loading ->  isLoading = true
+            is APIResponse.Success -> {
+                viewModel.createPlaylistInfo = APIResponse.Empty
+                onDismiss()
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
         viewModel.searchImages("")
-        img = "https://i.ibb.co/1Xf9DkT/monthly-playlist.jpg"
+        img = IMG_PLAYLISTS
     }
 }

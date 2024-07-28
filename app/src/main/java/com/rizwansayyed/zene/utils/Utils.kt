@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.media.AudioDeviceInfo
-import android.media.AudioManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
@@ -13,21 +12,10 @@ import android.os.Vibrator
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
-import androidx.annotation.ColorInt
-import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
-import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -35,13 +23,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import okhttp3.internal.userAgent
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.Locale
 
 
 object Utils {
@@ -63,10 +51,7 @@ object Utils {
         const val BASE_URL_IP = "http://ip-api.com/"
         const val JSON_IP = "json"
 
-
-        const val BASE_URL_IMG_BB = "https://api.imgbb.com/1/"
-        const val IMG_BB_UPLOAD = "upload"
-
+        const val IMG_PLAYLISTS = "https://i.ibb.co/1Xf9DkT/monthly-playlist.jpg"
 
 
         val BASE_URL =
@@ -74,13 +59,14 @@ object Utils {
 
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
+        const val ZENE_USER_PLAYLISTS_API = "zuser/playlists"
         const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"
 
 
         const val ZENE_SEARCH_IMG_API = "search_img"
         const val ZENE_MOODS_API = "moods"
-        const val ZENE_NEW_RELEASE_API = "newrelease"
         const val ZENE_PLAYLISTS_API = "playlists"
+        const val ZENE_NEW_RELEASE_API = "newrelease"
         const val ZENE_SUGGESTED_SONGS_API = "suggestedsongs"
         const val ZENE_ARTISTS_INFO_API = "artistsdata/info"
         const val ZENE_ARTISTS_DATA_API = "artistsdata/data"
@@ -182,7 +168,6 @@ object Utils {
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
         settings.mediaPlaybackRequiresUserGesture = false
-//        settings.userAgentString = USER_AGENT_D
     }
 
     fun readHTMLFromUTF8File(inputStream: InputStream): String {
@@ -204,7 +189,7 @@ object Utils {
         }
     }
 
-    fun Context.vibratePhone() {
+    fun vibratePhone() {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
     }
@@ -215,5 +200,23 @@ object Utils {
         val osVersion = Build.VERSION.RELEASE
 
         return "$manufacturer $model, Android $osVersion"
+    }
+
+
+    val savePlaylistFilePath = File(context.filesDir, "playlist_img.png")
+
+    fun saveBitmap(file: File, bitmap: Bitmap?): File? {
+        file.deleteRecursively()
+
+        try {
+            if (bitmap == null) return null
+
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+            return file
+        } catch (e: Exception) {
+            return null
+        }
     }
 }

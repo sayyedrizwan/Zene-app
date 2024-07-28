@@ -1,11 +1,9 @@
 package com.rizwansayyed.zene.di
 
 import com.rizwansayyed.zene.BuildConfig
-import com.rizwansayyed.zene.data.api.imgbb.ImgBBAPIService
 import com.rizwansayyed.zene.data.api.ip.IpAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
 import com.rizwansayyed.zene.utils.Utils.URLS.BASE_URL
-import com.rizwansayyed.zene.utils.Utils.URLS.BASE_URL_IMG_BB
 import com.rizwansayyed.zene.utils.Utils.URLS.BASE_URL_IP
 import com.rizwansayyed.zene.utils.Utils.moshi
 import dagger.Module
@@ -46,14 +44,6 @@ object RetrofitAPI {
         return Retrofit.Builder().baseUrl(BASE_URL_IP)
             .addConverterFactory(MoshiConverterFactory.create(moshi)).build()
             .create(IpAPIService::class.java)
-    }
-
-
-    @Provides
-    fun imgBBAPIService(): ImgBBAPIService {
-        return Retrofit.Builder().baseUrl(BASE_URL_IMG_BB)
-            .addConverterFactory(MoshiConverterFactory.create(moshi)).build()
-            .create(ImgBBAPIService::class.java)
     }
 
 }

@@ -8,17 +8,19 @@ import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
 import com.rizwansayyed.zene.data.db.DataStoreManager.ipDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
-import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import javax.inject.Inject
 
 
@@ -181,6 +183,11 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.artistsInfo(body))
     }
 
+
+    override suspend fun playlistAlbums(id: String) = flow {
+        emit(zeneAPI.playlistAlbums(id))
+    }
+
     override suspend fun updateArtists(list: Array<String>) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
 
@@ -210,8 +217,22 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.getSongHistory(email, page))
     }
 
-    override suspend fun playlistAlbums(id: String) = flow {
-        emit(zeneAPI.playlistAlbums(id))
+    override suspend fun savedPlaylists(page: Int) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+        emit(zeneAPI.savedPlaylists(email, page))
+    }
+
+    override suspend fun createNewPlaylists(name: String, file: File?) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+
+        val requestFile = file?.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val fileForm = if (requestFile == null) null
+        else MultipartBody.Part.createFormData("image", file.name, requestFile)
+
+        val nameForm = name.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val emailForm = email.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+        emit(zeneAPI.playlistCreate(fileForm, nameForm, emailForm))
     }
 
     override suspend fun searchImg(q: String) = flow {

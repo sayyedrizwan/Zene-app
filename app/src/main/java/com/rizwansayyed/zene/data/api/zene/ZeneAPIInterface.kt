@@ -11,10 +11,12 @@ import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
+import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface ZeneAPIInterface {
 
@@ -56,8 +58,6 @@ interface ZeneAPIInterface {
 
     suspend fun addMusicHistory(songID: String): Flow<ZeneBooleanResponse>
 
-    suspend fun playlistAlbums(id: String): Flow<ZenePlaylistAlbumsData>
-
     suspend fun moodLists(id: String): Flow<ZeneMoodPlaylistData>
 
     suspend fun merchandise(name: String, artists: String): Flow<ZeneMusicDataResponse>
@@ -69,5 +69,11 @@ interface ZeneAPIInterface {
     suspend fun updateArtists(list: Array<String>): Flow<ZeneBooleanResponse>
 
     suspend fun ip(): Flow<IpJsonResponse>
+
     suspend fun searchImg(q: String): Flow<List<String>>
+
+    suspend fun createNewPlaylists(name: String, file: File?): Flow<ZeneBooleanResponse>
+
+    suspend fun savedPlaylists(page: Int): Flow<ZeneSavedPlaylistsResponse>
+    suspend fun playlistAlbums(id: String): Flow<ZenePlaylistAlbumsData>
 }
