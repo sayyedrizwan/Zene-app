@@ -5,34 +5,49 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.net.URL
 import java.text.DecimalFormat
 
 
 object Utils {
+
+    object Share {
+        const val WEB_BASE_URL = "https://www.zenemusic.co"
+        const val SONG_INNER = "/s/"
+        const val ARTISTS_INNER = "/a/"
+        const val PLAYLIST_ALBUM_INNER = "/p/"
+        const val VIDEO_INNER = "/v/"
+    }
 
     object IDs {
         const val AD_UNIT_ID: String = "ca-app-pub-2941808068005217/7650500204"
@@ -61,6 +76,7 @@ object Utils {
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
         const val ZENE_USER_PLAYLISTS_API = "zuser/playlists"
         const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"
+        const val ZENE_REMOVE_PLAYLISTS_API = "zuser/remove_playlists"
 
 
         const val ZENE_SEARCH_IMG_API = "search_img"
@@ -218,5 +234,53 @@ object Utils {
         } catch (e: Exception) {
             return null
         }
+    }
+
+    fun addSongToNext(m: ZeneMusicDataItems) = CoroutineScope(Dispatchers.IO).launch {
+        val dataStore = musicPlayerDB.firstOrNull() ?: return@launch
+        val list = ArrayList<ZeneMusicDataItems>()
+
+        dataStore.list?.forEach {
+            if (it.id != m.id) list.add(it)
+
+            if (it.id == dataStore.player?.id) {
+                list.add(it)
+                list.add(m)
+            }
+        }
+        dataStore.list = list.distinctBy { it.id }
+        musicPlayerDB = flowOf(dataStore)
+    }
+
+    fun addSongToLast(m: ZeneMusicDataItems) = CoroutineScope(Dispatchers.IO).launch {
+        val dataStore = musicPlayerDB.firstOrNull() ?: return@launch
+        val list = ArrayList<ZeneMusicDataItems>()
+
+        dataStore.list?.forEach {
+            list.add(it)
+        }
+        list.add(m)
+
+        dataStore.list = list.distinctBy { it.id }
+        musicPlayerDB = flowOf(dataStore)
+    }
+
+    fun shareTxtImage(url: String, name: String = "") {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+            flags = FLAG_ACTIVITY_NEW_TASK
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null).apply {
+            flags = FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(shareIntent)
+    }
+
+    suspend fun loadBitmap(img: String) = withContext(Dispatchers.IO) {
+        val url = URL(img)
+        BitmapFactory.decodeStream(url.openConnection().getInputStream())
     }
 }

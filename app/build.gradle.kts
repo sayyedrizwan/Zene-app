@@ -45,6 +45,9 @@ android {
         buildConfigField(
             "String", "IMG_BB_API", apikeyProperties.getProperty("IMG_BB_API")
         )
+        buildConfigField(
+            "String", "APP_ENCODE_KEY", apikeyProperties.getProperty("APP_ENCODE_KEY")
+        )
     }
 
     buildTypes {
@@ -128,4 +131,7 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+//    implementation("androidx.hilt:hilt-navigation-fragment:1.2.0")
 }

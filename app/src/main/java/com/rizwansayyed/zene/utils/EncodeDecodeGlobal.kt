@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.utils
 
 import android.util.Base64
+import com.rizwansayyed.zene.BuildConfig
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -8,7 +9,7 @@ import javax.crypto.spec.SecretKeySpec
 object EncodeDecodeGlobal {
 
     private const val ALGORITHM = "AES/CBC/PKCS5Padding"
-    val KEY = SecretKeySpec("zene_rizwan_app0".toByteArray(), "AES")
+    private val KEY = SecretKeySpec(BuildConfig.APP_ENCODE_KEY.toByteArray(), "AES")
     private val iv = IvParameterSpec(ByteArray(16))
 
     fun decryptData(cipherText: String): String {

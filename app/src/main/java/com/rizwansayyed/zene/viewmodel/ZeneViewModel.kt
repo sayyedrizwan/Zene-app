@@ -145,15 +145,24 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }
     }
 
-    fun createNewPlaylist(name: String, bitmap: Bitmap?) = viewModelScope.launch(Dispatchers.IO) {
-        val savedPath = saveBitmap(savePlaylistFilePath, bitmap)
+    fun createNewPlaylist(name: String, bitmap: Bitmap?, id: String?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val savedPath = saveBitmap(savePlaylistFilePath, bitmap)
 
-        zeneAPI.createNewPlaylists(name, savedPath).onStart {
-            createPlaylistInfo = APIResponse.Loading
-        }.catch {
-            createPlaylistInfo = APIResponse.Error(it)
-        }.collectLatest {
-            createPlaylistInfo = if (it.isSuccess()) APIResponse.Success(it)
+            zeneAPI.createNewPlaylists(name, savedPath, id).onStart {
+                createPlaylistInfo = APIResponse.Loading
+            }.catch {
+                createPlaylistInfo = APIResponse.Error(it)
+            }.collectLatest {
+                createPlaylistInfo = if (it.isSuccess()) APIResponse.Success(it)
+                else APIResponse.Error(Exception(""))
+            }
+        }
+
+
+    fun deletePlaylists(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.deletePlaylists(id).catch {}.collectLatest {
+            if (it.isSuccess()) APIResponse.Success(it)
             else APIResponse.Error(Exception(""))
         }
     }

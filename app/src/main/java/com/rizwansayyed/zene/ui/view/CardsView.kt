@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -14,7 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,29 +32,54 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.MusicType.*
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.ui.playlists.view.RemovePlaylistDialog
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
+import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.WEB_BASE_URL
+import com.rizwansayyed.zene.utils.Utils.addSongToLast
+import com.rizwansayyed.zene.utils.Utils.addSongToNext
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.openBrowser
+import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.ZeneViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.URL
+
 
 @Composable
 fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
+    var dialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(7.dp)
-            .bouncingClickable { openSpecificIntent(m, list) }) {
+            .bouncingClickable {
+                if (it) openSpecificIntent(m, list)
+                else dialog = true
+            }) {
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,
@@ -64,16 +99,23 @@ fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
             TextPoppins(m.name ?: " ", false, size = 16, limit = 1)
         }
     }
+
+    if (dialog) DialogSheetInfos(m) {
+        dialog = false
+    }
 }
 
 
 @Composable
 fun CardsViewDesc(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
+    var dialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(7.dp)
             .bouncingClickable {
-                openSpecificIntent(m, list)
+                if (it) openSpecificIntent(m, list)
+                else dialog = true
             }) {
         AsyncImage(
             imgBuilder(m.thumbnail),
@@ -102,18 +144,24 @@ fun CardsViewDesc(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
             TextPoppinsThin(m.artists ?: " ", false, size = 14, limit = 1)
         }
     }
+
+    if (dialog) DialogSheetInfos(m) {
+        dialog = false
+    }
 }
 
 
 @Composable
 fun VideoCardsViewWithSong(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
+    var dialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(7.dp)
             .bouncingClickable {
-                openSpecificIntent(m, list)
+                if (it) openSpecificIntent(m, list)
+                else dialog = true
             }) {
-
         Box(Modifier.size(width = 280.dp, height = 170.dp)) {
             AsyncImage(
                 imgBuilder(ytThumbnail(m.extra ?: "")),
@@ -152,6 +200,11 @@ fun VideoCardsViewWithSong(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>
             TextPoppinsThin(m.artists ?: " ", false, size = 14, limit = 1)
         }
     }
+
+
+    if (dialog) DialogSheetInfos(m) {
+        dialog = false
+    }
 }
 
 
@@ -173,6 +226,8 @@ fun CardRoundTextOnly(m: ZeneMusicDataItems) {
 
 @Composable
 fun CardSmallWithListeningNumber(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
+    var dialog by remember { mutableStateOf(false) }
+
     val listeners = stringResource(R.string.listeners)
 
     Row(
@@ -180,7 +235,8 @@ fun CardSmallWithListeningNumber(m: ZeneMusicDataItems, list: ZeneMusicDataRespo
             .padding(6.dp)
             .width(300.dp)
             .bouncingClickable {
-                openSpecificIntent(m, list)
+                if (it) openSpecificIntent(m, list)
+                else dialog = true
             }, Arrangement.Center, Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -213,14 +269,24 @@ fun CardSmallWithListeningNumber(m: ZeneMusicDataItems, list: ZeneMusicDataRespo
             }
         }
     }
+
+
+    if (dialog) DialogSheetInfos(m) {
+        dialog = false
+    }
 }
 
 @Composable
-fun ArtistsCardView(m: ZeneMusicDataItems, data: ZeneMusicDataResponse) {
+fun ArtistsCardView(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
+    var dialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(7.dp)
-            .bouncingClickable { openSpecificIntent(m, data) },
+            .bouncingClickable {
+                if (it) openSpecificIntent(m, list)
+                else dialog = true
+            },
         Arrangement.Center,
         Alignment.CenterHorizontally
     ) {
@@ -243,17 +309,24 @@ fun ArtistsCardView(m: ZeneMusicDataItems, data: ZeneMusicDataResponse) {
             TextPoppinsThin(m.name ?: "", true, size = 17, limit = 1)
         }
     }
+
+    if (dialog) DialogSheetInfos(m) {
+        dialog = false
+    }
 }
 
 
 @Composable
 fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
+    var dialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(bottom = 15.dp)
             .padding(7.dp)
             .bouncingClickable {
-                openSpecificIntent(m, list)
+                if (it) openSpecificIntent(m, list)
+                else dialog = true
             }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
@@ -283,14 +356,30 @@ fun SongDynamicCards(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
             TextPoppinsThin(m.artists ?: "", true, size = 15, limit = 2)
         }
     }
+
+
+    if (dialog) DialogSheetInfos(m) {
+        dialog = false
+    }
 }
 
 @Composable
 fun PlaylistsDynamicCards(m: ZeneSavedPlaylistsResponseItem) {
+    var dialog by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(bottom = 15.dp)
             .padding(7.dp)
+            .bouncingClickable {
+                if (it) {
+                    if (m.isSaved == true) {
+                        m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
+                    } else {
+
+                    }
+                } else dialog = true
+            }
             .bouncingClickable {
                 if (m.isSaved == true) {
                     m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
@@ -326,10 +415,10 @@ fun NewsItemCard(news: ZeneMusicDataItems) {
         Modifier
             .width(300.dp)
             .padding(horizontal = 9.dp)
-            .clickable { openSpecificIntent(news, emptyList()) }
-    ) {
+            .clickable { openSpecificIntent(news, emptyList()) }) {
         AsyncImage(
-            imgBuilder(news.thumbnail), news.name,
+            imgBuilder(news.thumbnail),
+            news.name,
             Modifier
                 .clip(RoundedCornerShape(13.dp))
                 .size(300.dp, 400.dp),
@@ -346,6 +435,79 @@ fun NewsItemCard(news: ZeneMusicDataItems) {
         )
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
+    ModalBottomSheet(
+        close, Modifier.fillMaxHeight(), containerColor = MainColor, contentColor = MainColor
+    ) {
+        Column(Modifier.fillMaxSize()) {
+            TopInfoItemSheet(m)
+
+            Spacer(Modifier.height(40.dp))
+
+            if (m.type() == SONGS) {
+                SongInfoItemSheet(m, close)
+            } else if (m.type() == ARTISTS) {
+                println()
+            } else if (m.type() == PLAYLIST || m.type() == ALBUMS) {
+                AlbumPlaylistInfoItemSheet(m, close)
+            } else if (m.type() == VIDEO) {
+                SheetDialogSheet(R.drawable.ic_play, R.string.play) {
+                    openSpecificIntent(m, listOf(m))
+                    close()
+                }
+            } else LaunchedEffect(Unit) {
+                close()
+                openSpecificIntent(m, listOf(m))
+            }
+
+
+            Spacer(Modifier.height(20.dp))
+
+            SheetDialogSheet(R.drawable.ic_share, R.string.share) {
+                val url = when (m.type()) {
+                    SONGS -> "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+                    PLAYLIST, ALBUMS ->
+                        "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+
+                    ARTISTS ->
+                        "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+
+                    VIDEO ->
+                        "${WEB_BASE_URL}${VIDEO_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+
+                    MOOD -> WEB_BASE_URL
+                    STORE -> WEB_BASE_URL
+                    NEWS -> WEB_BASE_URL
+                    NONE -> WEB_BASE_URL
+                }
+
+                shareTxtImage(url)
+                close()
+            }
+
+            Spacer(Modifier.height(70.dp))
+        }
+    }
+}
+
+@Composable
+fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
+    Row(
+        Modifier
+            .padding(horizontal = 14.dp, vertical = 3.dp)
+            .fillMaxWidth()
+            .clickable { close() }) {
+        ImageIcon(icon, 20)
+
+        Spacer(Modifier.width(9.dp))
+
+        TextPoppins(v = stringResource(txt), size = 16)
+    }
+}
+
 
 fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     when (m.type()) {

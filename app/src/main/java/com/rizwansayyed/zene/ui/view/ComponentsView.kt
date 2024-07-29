@@ -9,11 +9,14 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -321,11 +324,11 @@ fun Modifier.bounceClick() = composed {
         }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 fun Modifier.bouncingClickable(
-    scaleDown: Float = 0.9f, onClick: () -> Unit
+    scaleDown: Float = 0.9f, onClick: (Boolean) -> Unit
 ) = composed {
-
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
@@ -344,9 +347,9 @@ fun Modifier.bouncingClickable(
             scaleX = scale
             scaleY = scale
         }
-        .clickable(
-            interactionSource = interactionSource, indication = null
-        ) {
-            onClick()
-        }
+        .combinedClickable(onClick = {
+            onClick(true)
+        }, onLongClick = {
+            onClick(false)
+        })
 }

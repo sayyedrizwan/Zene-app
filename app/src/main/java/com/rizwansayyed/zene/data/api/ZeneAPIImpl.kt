@@ -183,9 +183,9 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.artistsInfo(body))
     }
 
-
     override suspend fun playlistAlbums(id: String) = flow {
-        emit(zeneAPI.playlistAlbums(id))
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        emit(zeneAPI.playlistAlbums(id, email))
     }
 
     override suspend fun updateArtists(list: Array<String>) = flow {
@@ -222,7 +222,7 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.savedPlaylists(email, page))
     }
 
-    override suspend fun createNewPlaylists(name: String, file: File?) = flow {
+    override suspend fun createNewPlaylists(name: String, file: File?, id: String?) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
 
         val requestFile = file?.asRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -231,11 +231,17 @@ class ZeneAPIImpl @Inject constructor(
 
         val nameForm = name.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val emailForm = email.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val idForm = id?.trim()?.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-        emit(zeneAPI.playlistCreate(fileForm, nameForm, emailForm))
+        emit(zeneAPI.playlistCreate(fileForm, nameForm, emailForm, idForm))
     }
 
     override suspend fun searchImg(q: String) = flow {
         emit(zeneAPI.searchImg(q))
+    }
+
+    override suspend fun deletePlaylists(id: String) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+        emit(zeneAPI.deletePlaylists(email, id))
     }
 }

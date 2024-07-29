@@ -32,9 +32,12 @@ import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
-fun PlaylistsView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
+fun PlaylistsView(
+    homeViewModel: HomeViewModel, zeneViewModel: ZeneViewModel, id: String?, close: () -> Unit
+) {
     val isThreeGrid = isScreenBig()
     val context = LocalContext.current as Activity
 
@@ -57,7 +60,8 @@ fun PlaylistsView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) 
                 APIResponse.Empty -> {}
                 is APIResponse.Error -> {}
                 APIResponse.Loading -> LoadingAlbumTopView()
-                is APIResponse.Success -> PlaylistAlbumTopView(v.data.info)
+                is APIResponse.Success ->
+                    PlaylistAlbumTopView(v.data.info, zeneViewModel, v.data.isAdded)
             }
         }
 
@@ -69,7 +73,6 @@ fun PlaylistsView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) 
                 item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     Row(Modifier.padding(start = 5.dp, bottom = 7.dp, top = 30.dp)) {
                         TextPoppinsSemiBold(stringResource(R.string.songs), size = 15)
-
                     }
                 }
 

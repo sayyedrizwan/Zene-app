@@ -201,7 +201,7 @@ fun AddPlaylistView(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
         val b = if (bitmap == null || img == IMG_PLAYLISTS) null
         else bitmap
 
-        viewModel.createNewPlaylist(playlistName, b)
+        viewModel.createNewPlaylist(playlistName, b, null)
     }
 
     LaunchedEffect(viewModel.createPlaylistInfo) {

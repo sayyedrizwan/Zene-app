@@ -56,6 +56,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import android.net.Uri
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -78,7 +79,7 @@ class MainActivity : ComponentActivity() {
             ZeneTheme {
                 Box(Modifier.fillMaxSize()) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    NavHost(navController, NAV_MY_MUSIC) {
+                    NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
                             HomeView(homeViewModel)
                         }
@@ -88,7 +89,11 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(NAV_PLAYLISTS) {
-                            PlaylistsView(homeViewModel, it.arguments?.getString("id")) {
+                            PlaylistsView(
+                                homeViewModel,
+                                zeneViewModel,
+                                it.arguments?.getString("id")
+                            ) {
                                 navController.popBackStack()
                             }
                         }
@@ -153,6 +158,13 @@ class MainActivity : ComponentActivity() {
                 MobileAds.initialize(this@MainActivity) { }
             }
         }
+
+        checkAndRunWeb(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        checkAndRunWeb(intent)
     }
 
     override fun onStart() {
@@ -161,5 +173,10 @@ class MainActivity : ComponentActivity() {
         ShowAdsOnAppOpen(this).showAds()
 
         homeViewModel.userArtistsList()
+    }
+
+    private fun checkAndRunWeb(intent: Intent) {
+        val appLinkAction: String? = intent.action
+        val appLinkData: Uri? = intent.data
     }
 }

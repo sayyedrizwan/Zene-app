@@ -4,7 +4,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import java.util.Locale
 
 data class MusicPlayerData(
-    val list: List<ZeneMusicDataItems>?,
+    var list: List<ZeneMusicDataItems>?,
     val player: ZeneMusicDataItems?,
     val state: Int?,
     var currentDuration: Int?,

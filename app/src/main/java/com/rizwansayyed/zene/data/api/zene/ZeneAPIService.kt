@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_MERCHANDISE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_VIDEO_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_REMOVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_IMG_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
@@ -120,8 +121,9 @@ interface ZeneAPIService {
     suspend fun addSongHistory(@Body body: RequestBody): ZeneBooleanResponse
 
     @GET(ZENE_PLAYLISTS_API)
-    suspend fun playlistAlbums(@Query("id") id: String): ZenePlaylistAlbumsData
-
+    suspend fun playlistAlbums(
+        @Query("id") id: String, @Query("email") email: String
+    ): ZenePlaylistAlbumsData
 
     @POST(ZENE_ARTISTS_INFO_API)
     suspend fun artistsInfo(@Body body: RequestBody): ZeneArtistsInfoResponse
@@ -137,12 +139,19 @@ interface ZeneAPIService {
     @GET(ZENE_SEARCH_IMG_API)
     suspend fun searchImg(@Query("s") search: String): List<String>
 
+    @GET(ZENE_REMOVE_PLAYLISTS_API)
+    suspend fun deletePlaylists(
+        @Query("email") email: String,
+        @Query("id") id: String
+    ): ZeneBooleanResponse
+
     @Multipart
     @POST(ZENE_USER_PLAYLISTS_API)
     suspend fun playlistCreate(
         @Part file: MultipartBody.Part?,
         @Part("name") name: RequestBody,
-        @Part("email") email: RequestBody
+        @Part("email") email: RequestBody,
+        @Part("id") id: RequestBody?
     ): ZeneBooleanResponse
 
     @GET(ZENE_USER_PLAYLISTS_API)
