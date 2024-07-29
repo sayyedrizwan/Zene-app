@@ -47,7 +47,9 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
     ) {
         item(1) {
             Row(Modifier.padding(top = 50.dp, start = 8.dp, bottom = 25.dp)) {
-                ImageIcon(R.drawable.ic_arrow_left, close)
+                ImageIcon(R.drawable.ic_arrow_left) {
+                    close()
+                }
 
                 Spacer(Modifier.weight(1f))
             }

@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryItem
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
@@ -42,8 +43,9 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var createPlaylistInfo by mutableStateOf<APIResponse<ZeneBooleanResponse>>(APIResponse.Empty)
     var songHistory = mutableStateListOf<ZeneMusicHistoryItem>()
     var zeneSavedPlaylists = mutableStateListOf<ZeneSavedPlaylistsResponseItem>()
+    var saveSongPlaylists = mutableStateListOf<ZeneMusicDataItems>()
     var songHistoryIsLoading by mutableStateOf(true)
-    var doShowMoreLoading by mutableStateOf(true)
+    var doShowMoreLoading by mutableStateOf(false)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.artistsInfo(name).onStart {
@@ -102,7 +104,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             songHistoryIsLoading = false
             it.forEach { songHistory.add(it) }
 
-            if (it.isEmpty()) doShowMoreLoading = false
+            doShowMoreLoading = it.size >= 24
         }
     }
 
@@ -120,7 +122,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             songHistoryIsLoading = false
             it.forEach { zeneSavedPlaylists.add(it) }
 
-            if (it.isEmpty()) doShowMoreLoading = false
+            doShowMoreLoading = it.size >= 24
         }
     }
 
@@ -166,4 +168,27 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             else APIResponse.Error(Exception(""))
         }
     }
+
+
+    fun checkIfSongPresentInPlaylists(id: String, page: Int) =
+        viewModelScope.launch(Dispatchers.IO) {
+            if (page == 0) saveSongPlaylists.clear()
+
+            zeneAPI.checkIfSongPresentInPlaylists(id, page).onStart {
+                songHistoryIsLoading = true
+            }.catch {
+                songHistoryIsLoading = false
+            }.collectLatest {
+                songHistoryIsLoading = false
+                saveSongPlaylists.addAll(it)
+
+                doShowMoreLoading = it.size >= 24
+            }
+        }
+
+
+    fun addRemoveSongFromPlaylists(pID: String, sID: String, add: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.addRemoveSongFromPlaylists(sID, pID, add).catch {}.collectLatest {}
+        }
 }

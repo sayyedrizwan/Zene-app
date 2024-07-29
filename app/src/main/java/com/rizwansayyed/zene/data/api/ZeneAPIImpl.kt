@@ -244,4 +244,14 @@ class ZeneAPIImpl @Inject constructor(
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
         emit(zeneAPI.deletePlaylists(email, id))
     }
+
+    override suspend fun checkIfSongPresentInPlaylists(songId: String, page: Int) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+        emit(zeneAPI.checkIfSongPresentInPlaylists(email, page, songId))
+    }
+
+    override suspend fun addRemoveSongFromPlaylists(songId: String, pID: String, doAdd: Boolean) =
+        flow {
+            emit(zeneAPI.addRemoveSongFromPlaylists(pID, songId, doAdd))
+        }
 }

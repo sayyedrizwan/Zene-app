@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.extra
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,10 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.extra.mymusic.TopHeaderSwitch
 import com.rizwansayyed.zene.ui.extra.mymusic.TopMusicHeaders
 import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistDialog
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
-import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.PlaylistsDynamicCards
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
@@ -52,7 +51,7 @@ enum class MyMusicType {
 }
 
 @Composable
-fun MyMusicView(viewModel: ZeneViewModel, close: () -> Unit) {
+fun MyMusicView(viewModel: ZeneViewModel) {
     val isThreeGrid = isScreenBig()
 
     var type by remember { mutableStateOf(MyMusicType.PLAYLISTS) }
@@ -72,55 +71,10 @@ fun MyMusicView(viewModel: ZeneViewModel, close: () -> Unit) {
         }
 
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Row {
-                Spacer(Modifier.height(6.dp))
-                Box(
-                    Modifier
-                        .padding(vertical = 2.dp, horizontal = 6.dp)
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.Black)
-                        .clickable { type = MyMusicType.PLAYLISTS }
-                        .border(
-                            1.dp,
-                            if (type == MyMusicType.PLAYLISTS) Color.White else Color.Black,
-                            RoundedCornerShape(100)
-                        )
-                        .padding(vertical = 9.dp, horizontal = 18.dp)
-                ) {
-                    TextPoppins(stringResource(R.string.playlists_albums), size = 15)
-                }
-
-                AnimatedVisibility(visible = type == MyMusicType.PLAYLISTS) {
-                    Box(
-                        Modifier
-                            .padding(vertical = 2.dp, horizontal = 6.dp)
-                            .clip(RoundedCornerShape(100))
-                            .background(Color.Black)
-                            .clickable { addPlaylist = true }
-                            .border(1.dp, Color.White, RoundedCornerShape(100))
-                            .padding(vertical = 9.dp, horizontal = 18.dp)
-                    ) {
-                        ImageIcon(R.drawable.ic_add, size = 20)
-                    }
-                }
-
-                Spacer(Modifier.height(6.dp))
-
-                Box(
-                    Modifier
-                        .padding(vertical = 2.dp, horizontal = 6.dp)
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.Black)
-                        .clickable { type = MyMusicType.HISTORY }
-                        .border(
-                            1.dp,
-                            if (type == MyMusicType.HISTORY) Color.White else Color.Black,
-                            RoundedCornerShape(100)
-                        )
-                        .padding(vertical = 9.dp, horizontal = 18.dp)
-                ) {
-                    TextPoppins(stringResource(R.string.songs_history), size = 15)
-                }
+            TopHeaderSwitch(type, {
+                type = it
+            }) {
+                addPlaylist = true
             }
         }
 

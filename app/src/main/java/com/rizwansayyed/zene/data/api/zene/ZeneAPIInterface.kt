@@ -72,11 +72,21 @@ interface ZeneAPIInterface {
 
     suspend fun searchImg(q: String): Flow<List<String>>
 
-    suspend fun createNewPlaylists(name: String, file: File?, id: String?): Flow<ZeneBooleanResponse>
+    suspend fun createNewPlaylists(
+        name: String, file: File?, id: String?
+    ): Flow<ZeneBooleanResponse>
 
     suspend fun savedPlaylists(page: Int): Flow<ZeneSavedPlaylistsResponse>
 
     suspend fun playlistAlbums(id: String): Flow<ZenePlaylistAlbumsData>
 
     suspend fun deletePlaylists(id: String): Flow<ZeneBooleanResponse>
+
+    suspend fun checkIfSongPresentInPlaylists(
+        songId: String, page: Int
+    ): Flow<ZeneMusicDataResponse>
+
+    suspend fun addRemoveSongFromPlaylists(
+        songId: String, pID: String, doAdd: Boolean
+    ): Flow<ZeneBooleanResponse>
 }

@@ -25,11 +25,11 @@ fun imgBuilder(path: String?): ImageRequest {
 
 
 @Composable
-fun ImageIcon(id: Int, click: () -> Unit) {
+fun ImageIcon(id: Int, size: Int = 30, click: () -> Unit) {
     Image(
         painterResource(id), "",
         Modifier
-            .size(30.dp)
+            .size(size.dp)
             .clickable { click() },
         colorFilter = ColorFilter.tint(Color.White)
     )

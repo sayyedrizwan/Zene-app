@@ -1,48 +1,34 @@
 package com.rizwansayyed.zene.ui.extra.mymusic
 
-import androidx.compose.foundation.Image
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.db.DataStoreManager.ipDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.data.db.model.UserInfoData
+import com.rizwansayyed.zene.ui.extra.MyMusicType
 import com.rizwansayyed.zene.ui.view.ImageIcon
-import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
-import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
-import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
-import com.rizwansayyed.zene.utils.Utils.userAlphabetsImg
 
 @Composable
 fun TopMusicHeaders() {
@@ -70,4 +56,58 @@ fun TopMusicHeaders() {
     }
 
     Spacer(Modifier.height(50.dp))
+}
+
+@Composable
+fun TopHeaderSwitch(type: MyMusicType, typeClick: (MyMusicType) -> Unit, addPlaylist: () -> Unit) {
+    Row {
+        Spacer(Modifier.height(6.dp))
+        Box(
+            Modifier
+                .padding(vertical = 2.dp, horizontal = 6.dp)
+                .clip(RoundedCornerShape(100))
+                .background(Color.Black)
+                .clickable { typeClick(MyMusicType.PLAYLISTS) }
+                .border(
+                    1.dp,
+                    if (type == MyMusicType.PLAYLISTS) Color.White else Color.Black,
+                    RoundedCornerShape(100)
+                )
+                .padding(vertical = 9.dp, horizontal = 18.dp)
+        ) {
+            TextPoppins(stringResource(R.string.playlists_albums), size = 15)
+        }
+
+        AnimatedVisibility(visible = type == MyMusicType.PLAYLISTS) {
+            Box(
+                Modifier
+                    .padding(vertical = 2.dp, horizontal = 6.dp)
+                    .clip(RoundedCornerShape(100))
+                    .background(Color.Black)
+                    .clickable { addPlaylist() }
+                    .border(1.dp, Color.White, RoundedCornerShape(100))
+                    .padding(vertical = 9.dp, horizontal = 18.dp)
+            ) {
+                ImageIcon(R.drawable.ic_add, size = 20)
+            }
+        }
+
+        Spacer(Modifier.height(6.dp))
+
+        Box(
+            Modifier
+                .padding(vertical = 2.dp, horizontal = 6.dp)
+                .clip(RoundedCornerShape(100))
+                .background(Color.Black)
+                .clickable { typeClick(MyMusicType.HISTORY) }
+                .border(
+                    1.dp,
+                    if (type == MyMusicType.HISTORY) Color.White else Color.Black,
+                    RoundedCornerShape(100)
+                )
+                .padding(vertical = 9.dp, horizontal = 18.dp)
+        ) {
+            TextPoppins(stringResource(R.string.songs_history), size = 15)
+        }
+    }
 }

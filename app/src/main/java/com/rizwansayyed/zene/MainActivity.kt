@@ -84,15 +84,11 @@ class MainActivity : ComponentActivity() {
                             HomeView(homeViewModel)
                         }
                         composable(NAV_MY_MUSIC) {
-                            MyMusicView(zeneViewModel) {
-                                navController.popBackStack()
-                            }
+                            MyMusicView(zeneViewModel)
                         }
                         composable(NAV_PLAYLISTS) {
                             PlaylistsView(
-                                homeViewModel,
-                                zeneViewModel,
-                                it.arguments?.getString("id")
+                                homeViewModel, zeneViewModel, it.arguments?.getString("id")
                             ) {
                                 navController.popBackStack()
                             }

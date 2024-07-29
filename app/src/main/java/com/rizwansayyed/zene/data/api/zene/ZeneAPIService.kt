@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
@@ -36,6 +37,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_IS_SONG_IN_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_UPDATE_ARTISTS_API
@@ -159,4 +161,19 @@ interface ZeneAPIService {
         @Query("email") email: String,
         @Query("page") page: Int
     ): ZeneSavedPlaylistsResponse
+
+    @GET(ZENE_USER_IS_SONG_IN_PLAYLISTS_API)
+    suspend fun checkIfSongPresentInPlaylists(
+        @Query("email") email: String,
+        @Query("page") page: Int,
+        @Query("songId") songId: String
+    ): ZeneMusicDataResponse
+
+
+    @GET(ZENE_ADD_SONGS_PLAYLISTS_API)
+    suspend fun addRemoveSongFromPlaylists(
+        @Query("playlistId") playlistId: String,
+        @Query("songId") songId: String,
+        @Query("doAdd") doAdd: Boolean
+    ): ZeneBooleanResponse
 }
