@@ -114,4 +114,5 @@
     <string name="need_notification_permission">Need notification permission !!</string>
     <string name="need_notification_permission_desc">Zene need notification permission to perform and give you upcoming updates.. Please enable it in App Permission -> Notifications.</string>
     <string name="grant">Grant</string>
+    <string name="zene_notification">Zene Notification</string>
 </resources>

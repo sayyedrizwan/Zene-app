@@ -45,6 +45,10 @@ import java.text.DecimalFormat
 
 object Utils {
 
+    object NotificationIDS {
+        const val NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID"
+    }
+
     object Share {
         const val WEB_BASE_URL = "https://www.zenemusic.co"
         const val SONG_INNER = "/s/"
@@ -286,9 +290,14 @@ object Utils {
         context.startActivity(shareIntent)
     }
 
-    suspend fun loadBitmap(img: String): Bitmap = withContext(Dispatchers.IO) {
-        val url = URL(img)
-        BitmapFactory.decodeStream(url.openConnection().getInputStream())
+    suspend fun loadBitmap(img: String): Bitmap? = withContext(Dispatchers.IO) {
+        try {
+            val url = URL(img)
+            return@withContext BitmapFactory.decodeStream(url.openConnection().getInputStream())
+        } catch (e: Exception) {
+            return@withContext null
+        }
+
     }
 
     fun feedbackMail() {

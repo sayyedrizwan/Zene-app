@@ -60,6 +60,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
+import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
@@ -208,6 +209,8 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         customPlayerNotification(this@MainActivity)
         ShowAdsOnAppOpen(this).showAds()
+
+        NotificationUtils("12333", "", null)
 
         homeViewModel.userArtistsList()
     }
