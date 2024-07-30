@@ -50,11 +50,14 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.ui.view.AddSongToPlaylist
 import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -137,6 +140,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
     val tryAgain = stringResource(id = R.string.try_after_a_seconds_fetching_video_details)
 
     var expanded by remember { mutableStateOf(false) }
+    var addToPlaylistSongs by remember { mutableStateOf(false) }
     val musicSpeed by musicSpeedSettings.collectAsState(initial = `1`)
     val musicLoop by musicLoopSettings.collectAsState(initial = false)
     val musicAutoplay by musicAutoplaySettings.collectAsState(initial = false)
@@ -241,7 +245,13 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
 
         item {
             ImgButton(R.drawable.ic_add_playlist) {
+                addToPlaylistSongs = true
+            }
+        }
 
+        item {
+            ImgButton(R.drawable.ic_share) {
+                playerInfo?.player?.let { shareTxtImage(shareUrl(it)) }
             }
         }
 
@@ -266,6 +276,11 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
                 }
             }
         }
+    }
+
+
+    if (addToPlaylistSongs && playerInfo?.player != null) AddSongToPlaylist(playerInfo.player) {
+        addToPlaylistSongs = false
     }
 }
 

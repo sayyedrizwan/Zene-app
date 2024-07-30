@@ -5,10 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -32,22 +36,29 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.extra.MyMusicView
 import com.rizwansayyed.zene.ui.home.HomeView
+import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.player.PlayerThumbnail
 import com.rizwansayyed.zene.ui.player.customPlayerNotification
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
+import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
 import com.rizwansayyed.zene.ui.search.SearchView
+import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
+import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
@@ -56,9 +67,6 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.net.Uri
-import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -74,19 +82,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             var listener by remember { mutableStateOf<BroadcastReceiver?>(null) }
+            var notificationPermissionDialog by remember { mutableStateOf(false) }
             val navController = rememberNavController()
 
             val playerInfo by musicPlayerDB.collectAsState(initial = null)
+
+            val notificationPermission =
+                rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                    if (!it) notificationPermissionDialog = true
+                }
 
             ZeneTheme {
                 Box(Modifier.fillMaxSize()) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
-                            HomeView(homeViewModel)
+                            HomeView(notificationPermission)
                         }
                         composable(NAV_MY_MUSIC) {
-                            MyMusicView(zeneViewModel)
+                            MyMusicView()
+                        }
+                        composable(NAV_SETTINGS) {
+                            SettingsView()
                         }
                         composable(NAV_PLAYLISTS) {
                             PlaylistsView(it.arguments?.getString("id")) {
@@ -135,6 +152,21 @@ class MainActivity : ComponentActivity() {
                     }
 
                     LoginView()
+
+                    if (notificationPermissionDialog) AlertDialogView(
+                        R.string.need_notification_permission,
+                        R.string.need_notification_permission_desc,
+                        R.string.grant
+                    ) {
+                        if (it) {
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            val uri = Uri.fromParts("package", packageName, null)
+                            intent.setData(uri)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                        }
+                        notificationPermissionDialog = false
+                    }
                 }
             }
 
@@ -145,7 +177,11 @@ class MainActivity : ComponentActivity() {
                         i ?: return
                         val data = i.getStringExtra(Intent.ACTION_MAIN) ?: return
 
-                        navController.navigate(data)
+                        if (data == SYNC_DATA) {
+                            homeViewModel.init()
+                            checkNotificationPermissionAndAsk(notificationPermission)
+                        } else
+                            navController.navigate(data)
                     }
                 }
                 registerNavCommand(this@MainActivity, listener)

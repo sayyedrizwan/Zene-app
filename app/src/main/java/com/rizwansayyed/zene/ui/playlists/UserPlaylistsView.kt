@@ -43,6 +43,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.playlists.view.LoadingAlbumTopView
 import com.rizwansayyed.zene.ui.playlists.view.PlaylistAlbumTopView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.DialogSheetInfos
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
@@ -190,7 +191,11 @@ fun PlaylistFullGridSongs(
         dialog = false
     }
 
-    if (removeSongDialog) RemoveSongFromPlaylistDialog {
+    if (removeSongDialog) AlertDialogView(
+        R.string.are_you_sure_want_to_remove,
+        R.string.are_you_sure_want_to_remove_song_desc,
+        R.string.remove
+    ) {
         removeSongDialog = false
 
         if (it) {
@@ -199,42 +204,4 @@ fun PlaylistFullGridSongs(
                 zeneViewModel.addRemoveSongFromPlaylists(playlistID, m.id, false)
         }
     }
-}
-
-
-@Composable
-fun RemoveSongFromPlaylistDialog(onDismiss: (Boolean) -> Unit) {
-    AlertDialog(
-        containerColor = Color.White,
-        title = {
-            TextPoppinsSemiBold(
-                stringResource(R.string.are_you_sure_want_to_remove), false, Color.Black, 15
-            )
-        },
-        text = {
-            TextPoppins(
-                stringResource(R.string.are_you_sure_want_to_remove_song_desc),
-                false,
-                Color.Black,
-                15
-            )
-        },
-        onDismissRequest = { onDismiss(false) },
-        confirmButton = {
-            Row(
-                Modifier
-                    .padding(horizontal = 5.dp)
-                    .clickable { onDismiss(true) }) {
-                TextPoppinsSemiBold(stringResource(R.string.remove), false, Color.Blue, 14)
-            }
-        },
-        dismissButton = {
-            Row(
-                Modifier
-                    .padding(horizontal = 5.dp)
-                    .clickable { onDismiss(false) }) {
-                TextPoppinsSemiBold(stringResource(R.string.cancel), false, Color.Blue, 14)
-            }
-        }
-    )
 }

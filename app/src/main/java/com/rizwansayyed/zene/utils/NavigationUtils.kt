@@ -19,6 +19,9 @@ object NavigationUtils {
     const val NAV_ARTISTS = "artists/{id}"
 
 
+    const val SYNC_DATA = "sync_data"
+
+
     private val NAV_ACTION = "${context.packageName}_NAV_ACTION"
 
     fun registerNavCommand(c: Activity, listener: BroadcastReceiver?) {

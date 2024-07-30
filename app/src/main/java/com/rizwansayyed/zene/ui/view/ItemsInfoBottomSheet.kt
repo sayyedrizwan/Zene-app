@@ -47,7 +47,6 @@ import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
 import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistDialog
-import com.rizwansayyed.zene.ui.playlists.view.RemovePlaylistDialog
 import com.rizwansayyed.zene.utils.Utils.addSongToLast
 import com.rizwansayyed.zene.utils.Utils.addSongToNext
 import com.rizwansayyed.zene.utils.Utils.loadBitmap
@@ -229,7 +228,11 @@ fun AlbumPlaylistInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
                 }
             }
 
-            if (removeDialog) RemovePlaylistDialog {
+            if (removeDialog) AlertDialogView(
+                R.string.are_you_sure_want_to_remove,
+                R.string.are_you_sure_want_to_remove_desc,
+                R.string.remove
+            ) {
                 if (it) {
                     i.info?.id?.let { it1 -> zeneViewModel.deletePlaylists(it1) }
                 }

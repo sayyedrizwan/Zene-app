@@ -13,6 +13,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+
     <application
         android:name=".di.BaseApp"
         android:allowBackup="true"
@@ -27,6 +31,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:launchMode="singleInstance"
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Zene">
@@ -83,7 +88,22 @@
             android:configChanges="orientation|screenSize"
             android:exported="true" />
 
+        <activity
+            android:name=".ui.lockscreen.MusicPlayerActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity="" />
+
         <service android:name=".service.MusicPlayService" />
+
+        <service
+            android:name=".service.AppFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <property
             android:name="android.adservices.AD_SERVICES_CONFIG"

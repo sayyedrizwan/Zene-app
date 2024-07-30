@@ -1,7 +1,10 @@
 package com.rizwansayyed.zene.ui.home
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,8 +28,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.home.view.HomeArtistsSimilarLoading
 import com.rizwansayyed.zene.ui.home.view.HomeArtistsSimilarToView
 import com.rizwansayyed.zene.ui.home.view.HomeHeaderView
@@ -38,26 +45,33 @@ import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.AdsBannerView
 import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.NewUserCards
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
-import com.rizwansayyed.zene.ui.view.UpgradeToPremiumCard
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
-fun HomeView(homeViewModel: HomeViewModel) {
+fun HomeView(notificationPermission: ManagedActivityResultLauncher<String, Boolean>) {
+    val homeViewModel: HomeViewModel = hiltViewModel()
     val isThreeGrid = isScreenBig()
 
     var loadFirstUI by remember { mutableStateOf(false) }
     var loadSecondUI by remember { mutableStateOf(false) }
     var loadThirdUI by remember { mutableStateOf(false) }
+
+
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -69,6 +83,16 @@ fun HomeView(homeViewModel: HomeViewModel) {
             Column {
                 HomeHeaderView()
             }
+        }
+        item(2000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            when (val v = homeViewModel.recommendedPlaylists) {
+                is APIResponse.Success -> {
+                    if (v.data.isEmpty()) NewUserCards()
+                }
+
+                else -> {}
+            }
+
         }
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
@@ -281,6 +305,7 @@ fun HomeView(homeViewModel: HomeViewModel) {
 
     LaunchedEffect(Unit) {
         homeViewModel.init()
+        checkNotificationPermissionAndAsk(notificationPermission)
 
         delay(5.seconds)
         loadFirstUI = true
@@ -290,3 +315,20 @@ fun HomeView(homeViewModel: HomeViewModel) {
         loadThirdUI = true
     }
 }
+
+
+fun checkNotificationPermissionAndAsk(permission: ManagedActivityResultLauncher<String, Boolean>) =
+    CoroutineScope(Dispatchers.Main).launch {
+        delay(3.seconds)
+        val isLoggedIn = userInfoDB.firstOrNull()?.isLoggedIn() ?: false
+        if (!isLoggedIn) return@launch
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                permission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }

@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MU
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_PLAYER
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_SPEED
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PINNED_ARTISTS_LIST
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PLAYING_SONG_ON_LOCK_SCREEN
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
@@ -46,6 +47,7 @@ object DataStoreManager {
         val MUSIC_SPEED = stringPreferencesKey("music_speed")
         val MUSIC_LOOP = booleanPreferencesKey("music_loop")
         val MUSIC_AUTOPLAY = booleanPreferencesKey("music_autoplay")
+        val PLAYING_SONG_ON_LOCK_SCREEN = booleanPreferencesKey("playing_song_on_lock_screen")
         val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
         val LAST_ADS_TIMESTAMP = longPreferencesKey("last_ads_timestamp")
         val USER_IP_INFO = stringPreferencesKey("user_ip_info")
@@ -98,6 +100,12 @@ object DataStoreManager {
         get() = context.dataStore.data.map { it[MUSIC_AUTOPLAY] ?: true }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[MUSIC_AUTOPLAY] = value.first() }
+        }
+
+    var playingSongOnLockScreen
+        get() = context.dataStore.data.map { it[PLAYING_SONG_ON_LOCK_SCREEN] ?: false }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[PLAYING_SONG_ON_LOCK_SCREEN] = value.first() }
         }
 
     var pinnedArtistsList

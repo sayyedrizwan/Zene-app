@@ -353,3 +353,28 @@ fun Modifier.bouncingClickable(
             onClick(false)
         })
 }
+
+@Composable
+fun NewUserCards() {
+    Column(
+        Modifier.padding(horizontal = 10.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(MainColor)
+            .padding(horizontal = 9.dp),
+        Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.padding(top = 30.dp))
+
+        Image(
+            painterResource(R.drawable.listening_music), "",
+            Modifier.size(140.dp)
+        )
+        Spacer(Modifier.padding(top = 30.dp))
+
+        TextPoppins(stringResource(R.string.no_song_listening), true, size = 16)
+
+        Spacer(Modifier.padding(top = 30.dp))
+    }
+}

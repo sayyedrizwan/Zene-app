@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.IBinder
 import android.util.Log
 import android.webkit.ConsoleMessage
@@ -13,15 +14,16 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
-import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
+import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAYBACK_RATE
@@ -32,12 +34,12 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
+import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
-import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +55,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+
 @AndroidEntryPoint
 class MusicPlayService : Service() {
 
@@ -64,8 +67,34 @@ class MusicPlayService : Service() {
     private var defaultID = "2"
     private var currentVideoID = ""
 
+    private val phoneWake = object : BroadcastReceiver() {
+        override fun onReceive(c: Context?, i: Intent?) {
+            c ?: return
+            i ?: return
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val music = musicPlayerDB.firstOrNull() ?: return@launch
+                if (music.isPlaying == true && (music.currentDuration ?: 0) > 0) {
+                    Intent(this@MusicPlayService, MusicPlayerActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        this@MusicPlayService.startActivity(this)
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
+
+        IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_OFF)
+            ContextCompat.registerReceiver(
+                this@MusicPlayService, phoneWake, this, ContextCompat.RECEIVER_EXPORTED
+            )?.apply {
+                setPackage(context.packageName)
+            }
+        }
 
         webView = WebViewService(applicationContext).apply {
             enable()

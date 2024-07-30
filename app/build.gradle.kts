@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.google.services.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.perf)
     id("kotlin-kapt")
 }
 
@@ -120,6 +122,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.perf.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
     implementation(libs.ads)
@@ -132,6 +136,4 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
-
-//    implementation("androidx.hilt:hilt-navigation-fragment:1.2.0")
 }

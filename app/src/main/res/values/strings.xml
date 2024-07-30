@@ -26,6 +26,8 @@
     <string name="similar_artists">Similar Artists</string>
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
+    <string name="enable">Enable</string>
+    <string name="disabled">Disabled</string>
     <string name="playlists">Playlists</string>
     <string name="create_playlist">Create Playlist</string>
     <string name="playlist_name">Playlist Name</string>
@@ -55,10 +57,13 @@
     <string name="zene_music_player">Zene Music Player</string>
     <string name="song_video">Song Video</string>
     <string name="lyrics_video">Lyrics Video</string>
+    <string name="loop_same_song">Loop same song</string>
     <string name="looping_song_enabled">Looping song is enabled</string>
     <string name="looping_song_disabled">Looping song is disabled</string>
     <string name="autoplay_song_enabled">Autoplay next song is enabled</string>
     <string name="autoplay_song_disabled">Autoplay next song is disabled</string>
+    <string name="autoplay_next_song">Autoplay next song</string>
+    <string name="show_play_song_on_lock_screen">Show playing song on Lockscreen</string>
     <string name="lyrics">Lyrics</string>
     <string name="try_after_a_seconds_fetching_video_details">Try after a seconds. Fetching video details....</string>
     <string name="playlists_for_your_mood">Playlist for your mood</string>
@@ -95,4 +100,18 @@
     <string name="share">Share</string>
     <string name="open">Open</string>
     <string name="no_song_found_in_this_playlists">No song found in this playlists</string>
+    <string name="settings">Settings</string>
+    <string name="clear">Clear</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="equalizer_not_found">Equalizer not found. Zene don\'t have a build-in equalizer. Please install a equalizer rom play store and enjoy.</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="feedback">Feedback</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="no_song_listening">You currently have no listening history. Start playing some songs, and we\'ll be able to suggest playlists, songs, albums, and artists tailored to your preferences.</string>
+    <string name="clear_cache_successfully">Clear cache successfully</string>
+    <string name="need_overlay_permission_to_show_song">Need overlay permission to show playing song view on Lockscreen.</string>
+    <string name="clear_cache_desc">Clearing cache will remove all unwanted cache stored and not any personal data.</string>
+    <string name="need_notification_permission">Need notification permission !!</string>
+    <string name="need_notification_permission_desc">Zene need notification permission to perform and give you upcoming updates.. Please enable it in App Permission -> Notifications.</string>
+    <string name="grant">Grant</string>
 </resources>

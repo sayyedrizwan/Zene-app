@@ -70,7 +70,10 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicPlayerView(
-    playerInfo: MusicPlayerData?, musicPlayerViewModel: MusicPlayerViewModel, close: () -> Unit
+    playerInfo: MusicPlayerData?,
+    musicPlayerViewModel: MusicPlayerViewModel,
+    inOnLock: Boolean = false,
+    close: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
@@ -95,7 +98,7 @@ fun MusicPlayerView(
                         Modifier
                             .padding(start = 5.dp)
                             .align(Alignment.CenterStart)
-                            .rotate(-90f)
+                            .rotate(if (inOnLock) 0f else -90f)
                             .clickable {
                                 close()
                             }) {

@@ -1,25 +1,29 @@
 package com.rizwansayyed.zene.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
+import android.provider.Settings
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.startActivity
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
-import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -282,8 +286,33 @@ object Utils {
         context.startActivity(shareIntent)
     }
 
-    suspend fun loadBitmap(img: String) = withContext(Dispatchers.IO) {
+    suspend fun loadBitmap(img: String): Bitmap = withContext(Dispatchers.IO) {
         val url = URL(img)
         BitmapFactory.decodeStream(url.openConnection().getInputStream())
+    }
+
+    fun feedbackMail() {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.flags = FLAG_ACTIVITY_NEW_TASK
+        intent.setType("plain/text")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("knocknock@zenemusic.co"))
+        intent.putExtra(Intent.EXTRA_SUBJECT, "App Feedback")
+        intent.putExtra(Intent.EXTRA_TEXT, "<<<<<<< Feedback >>>>>>>")
+
+        val select = Intent.createChooser(intent, "").apply {
+            flags = FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(select)
+    }
+
+    fun openEqualizer() {
+        val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+        intent.flags = FLAG_ACTIVITY_NEW_TASK
+
+        if ((intent.resolveActivity(context.packageManager) != null)) {
+            context.startActivity(intent)
+        } else {
+            context.resources.getString(R.string.equalizer_not_found).toast()
+        }
     }
 }

@@ -35,6 +35,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
@@ -125,7 +126,11 @@ fun PlaylistAlbumTopView(
         isAdded = added ?: false
     }
 
-    if (removeDialog) RemovePlaylistDialog {
+    if (removeDialog) AlertDialogView(
+        R.string.are_you_sure_want_to_remove,
+        R.string.are_you_sure_want_to_remove_desc,
+        R.string.remove
+    ) {
         if (it) {
             close()
             isAdded = false
@@ -176,38 +181,4 @@ fun LoadingAlbumTopView(modifier: Modifier = Modifier) {
                 .background(shimmerEffectBrush())
         )
     }
-}
-
-@Composable
-fun RemovePlaylistDialog(onDismiss: (Boolean) -> Unit) {
-    AlertDialog(
-        containerColor = Color.White,
-        title = {
-            TextPoppinsSemiBold(
-                stringResource(R.string.are_you_sure_want_to_remove), false, Color.Black, 15
-            )
-        },
-        text = {
-            TextPoppins(
-                stringResource(R.string.are_you_sure_want_to_remove_desc), false, Color.Black, 15
-            )
-        },
-        onDismissRequest = { onDismiss(false) },
-        confirmButton = {
-            Row(
-                Modifier
-                    .padding(horizontal = 5.dp)
-                    .clickable { onDismiss(true) }) {
-                TextPoppinsSemiBold(stringResource(R.string.remove), false, Color.Blue, 14)
-            }
-        },
-        dismissButton = {
-            Row(
-                Modifier
-                    .padding(horizontal = 5.dp)
-                    .clickable { onDismiss(false) }) {
-                TextPoppinsSemiBold(stringResource(R.string.cancel), false, Color.Blue, 14)
-            }
-        }
-    )
 }

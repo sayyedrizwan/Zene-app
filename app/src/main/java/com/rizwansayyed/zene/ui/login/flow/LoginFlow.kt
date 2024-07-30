@@ -19,6 +19,8 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.model.SubscriptionType
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
+import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +97,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         if (user?.email != null) {
             pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
             DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))
+            sendNavCommand(SYNC_DATA)
             return
         }
 
@@ -102,8 +105,9 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             n, e, 0, p, false, SubscriptionType.FREE.name, null
         )
         DataStoreManager.userInfoDB = flowOf(u)
-        delay(2.seconds)
+        delay(1.seconds)
         zeneAPIInterface.updateUser().firstOrNull()
+        sendNavCommand(SYNC_DATA)
     }
 
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.extra.mymusic.TopHeaderSwitch
 import com.rizwansayyed.zene.ui.extra.mymusic.TopMusicHeaders
@@ -44,6 +45,7 @@ import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 enum class MyMusicType {
@@ -51,7 +53,8 @@ enum class MyMusicType {
 }
 
 @Composable
-fun MyMusicView(viewModel: ZeneViewModel) {
+fun MyMusicView() {
+    val viewModel: ZeneViewModel = hiltViewModel()
     val isThreeGrid = isScreenBig()
 
     var type by remember { mutableStateOf(MyMusicType.PLAYLISTS) }

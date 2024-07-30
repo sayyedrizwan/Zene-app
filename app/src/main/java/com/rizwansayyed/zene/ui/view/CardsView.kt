@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.view
 
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,17 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.MusicType.*
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
-import com.rizwansayyed.zene.ui.playlists.view.RemovePlaylistDialog
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
@@ -68,7 +64,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
-
 
 @Composable
 fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
