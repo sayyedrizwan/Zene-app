@@ -1,4 +1,5 @@
 [versions]
+hiltNavigationCompose = "1.2.0"
 packagename = "com.rizwansayyed.zene"
 kotlincompiler = "1.5.1"
 compilesdk = "35"
@@ -35,6 +36,7 @@ webkit = "1.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

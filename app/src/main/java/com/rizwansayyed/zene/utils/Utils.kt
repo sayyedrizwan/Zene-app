@@ -75,6 +75,7 @@ object Utils {
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
         const val ZENE_USER_PLAYLISTS_API = "zuser/playlists"
+        const val ZENE_USER_MY_PLAYLISTS_API = "zuser/myplaylists"
         const val ZENE_USER_IS_SONG_IN_PLAYLISTS_API = "zuser/is_song_in_playlists"
         const val ZENE_ADD_SONGS_PLAYLISTS_API = "zuser/add_song_to_playlists"
         const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"

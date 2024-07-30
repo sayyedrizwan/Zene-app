@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
@@ -89,4 +90,7 @@ interface ZeneAPIInterface {
     suspend fun addRemoveSongFromPlaylists(
         songId: String, pID: String, doAdd: Boolean
     ): Flow<ZeneBooleanResponse>
+
+    suspend fun userPlaylistData(playlistID: String): Flow<ZeneMusicDataItems>
+    suspend fun userPlaylistSongs(playlistID: String, page: Int): Flow<ZeneMusicDataResponse>
 }

@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
@@ -38,6 +39,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_IS_SONG_IN_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_MY_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_UPDATE_ARTISTS_API
@@ -176,4 +178,15 @@ interface ZeneAPIService {
         @Query("songId") songId: String,
         @Query("doAdd") doAdd: Boolean
     ): ZeneBooleanResponse
+
+
+    @POST(ZENE_USER_MY_PLAYLISTS_API)
+    suspend fun userPlaylistData(@Body body: RequestBody): ZeneMusicDataItems
+
+    @GET(ZENE_USER_MY_PLAYLISTS_API)
+    suspend fun userPlaylistSongs(
+        @Query("playlistID") playlistID: String,
+        @Query("page") page: Int
+    ): ZeneMusicDataResponse
+
 }

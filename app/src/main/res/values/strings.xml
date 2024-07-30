@@ -84,6 +84,7 @@
     <string name="you_have_not_created_or_saved_a_playlists">You have not saved or created a playlists.</string>
     <string name="are_you_sure_want_to_remove">Are you sure want to remove?</string>
     <string name="are_you_sure_want_to_remove_desc">This playlists will be remove from your music library. Do you want to continue!!</string>
+    <string name="are_you_sure_want_to_remove_song_desc">This song will be remove from this playlist. Do you want to continue!!</string>
     <string name="cancel">Cancel</string>
     <string name="play">Play</string>
     <string name="play_next">Play next</string>
@@ -93,4 +94,5 @@
     <string name="added_to_library">Added to library</string>
     <string name="share">Share</string>
     <string name="open">Open</string>
+    <string name="no_song_found_in_this_playlists">No song found in this playlists</string>
 </resources>

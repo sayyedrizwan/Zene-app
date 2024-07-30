@@ -57,6 +57,8 @@ import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.net.Uri
+import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -87,9 +89,12 @@ class MainActivity : ComponentActivity() {
                             MyMusicView(zeneViewModel)
                         }
                         composable(NAV_PLAYLISTS) {
-                            PlaylistsView(
-                                homeViewModel, zeneViewModel, it.arguments?.getString("id")
-                            ) {
+                            PlaylistsView(it.arguments?.getString("id")) {
+                                navController.popBackStack()
+                            }
+                        }
+                        composable(NAV_USER_PLAYLISTS) {
+                            UserPlaylistsView(it.arguments?.getString("id")) {
                                 navController.popBackStack()
                             }
                         }

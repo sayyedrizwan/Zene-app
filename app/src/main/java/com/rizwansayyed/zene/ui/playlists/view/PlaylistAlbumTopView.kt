@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,11 +41,15 @@ import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
+import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
-fun PlaylistAlbumTopView(v: ZeneMusicDataItems?, zeneViewModel: ZeneViewModel, added: Boolean?) {
+fun PlaylistAlbumTopView(
+    v: ZeneMusicDataItems?, zeneViewModel: ZeneViewModel, added: Boolean?, close: () -> Unit
+) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val isBig = isScreenBig()
 
@@ -64,6 +69,7 @@ fun PlaylistAlbumTopView(v: ZeneMusicDataItems?, zeneViewModel: ZeneViewModel, a
             Modifier
                 .clip(RoundedCornerShape(12.dp))
                 .size(if (isBig) (screenWidth / 2) else (screenWidth - 120.dp)),
+            contentScale = ContentScale.Crop,
             onSuccess = {
                 bitmap = it.result.drawable.toBitmap()
             }
@@ -95,7 +101,7 @@ fun PlaylistAlbumTopView(v: ZeneMusicDataItems?, zeneViewModel: ZeneViewModel, a
         Spacer(Modifier.height(27.dp))
 
         Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-            Box(Modifier.clickable { }) {
+            Box(Modifier.clickable { v?.let { shareTxtImage(shareUrl(v)) } }) {
                 ImageIcon(R.drawable.ic_share, 27)
             }
             Spacer(Modifier.width(15.dp))
@@ -121,6 +127,7 @@ fun PlaylistAlbumTopView(v: ZeneMusicDataItems?, zeneViewModel: ZeneViewModel, a
 
     if (removeDialog) RemovePlaylistDialog {
         if (it) {
+            close()
             isAdded = false
             v?.id?.let { it1 -> zeneViewModel.deletePlaylists(it1) }
         }
@@ -187,12 +194,18 @@ fun RemovePlaylistDialog(onDismiss: (Boolean) -> Unit) {
         },
         onDismissRequest = { onDismiss(false) },
         confirmButton = {
-            Row(Modifier.padding(horizontal = 5.dp).clickable { onDismiss(true) }) {
+            Row(
+                Modifier
+                    .padding(horizontal = 5.dp)
+                    .clickable { onDismiss(true) }) {
                 TextPoppinsSemiBold(stringResource(R.string.remove), false, Color.Blue, 14)
             }
         },
         dismissButton = {
-            Row(Modifier.padding(horizontal = 5.dp).clickable { onDismiss(false) }) {
+            Row(
+                Modifier
+                    .padding(horizontal = 5.dp)
+                    .clickable { onDismiss(false) }) {
                 TextPoppinsSemiBold(stringResource(R.string.cancel), false, Color.Blue, 14)
             }
         }

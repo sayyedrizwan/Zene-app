@@ -48,6 +48,7 @@ import com.rizwansayyed.zene.utils.EncodeDecodeGlobal
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
@@ -376,16 +377,9 @@ fun PlaylistsDynamicCards(m: ZeneSavedPlaylistsResponseItem) {
                     if (m.isSaved == true) {
                         m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
                     } else {
-
+                        m.id?.let { sendNavCommand(NAV_USER_PLAYLISTS.replace("{id}", it)) }
                     }
                 } else dialog = true
-            }
-            .bouncingClickable {
-                if (m.isSaved == true) {
-                    m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
-                } else {
-
-                }
             }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
@@ -467,24 +461,7 @@ fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
             Spacer(Modifier.height(20.dp))
 
             SheetDialogSheet(R.drawable.ic_share, R.string.share) {
-                val url = when (m.type()) {
-                    SONGS -> "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
-                    PLAYLIST, ALBUMS ->
-                        "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
-
-                    ARTISTS ->
-                        "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
-
-                    VIDEO ->
-                        "${WEB_BASE_URL}${VIDEO_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
-
-                    MOOD -> WEB_BASE_URL
-                    STORE -> WEB_BASE_URL
-                    NEWS -> WEB_BASE_URL
-                    NONE -> WEB_BASE_URL
-                }
-
-                shareTxtImage(url)
+                shareTxtImage(shareUrl(m))
                 close()
             }
 
@@ -508,6 +485,25 @@ fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
     }
 }
 
+
+fun shareUrl(m: ZeneMusicDataItems): String {
+   return when (m.type()) {
+        SONGS -> "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+        PLAYLIST, ALBUMS ->
+            "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+
+        ARTISTS ->
+            "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+
+        VIDEO ->
+            "${WEB_BASE_URL}${VIDEO_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+
+        MOOD -> WEB_BASE_URL
+        STORE -> WEB_BASE_URL
+        NEWS -> WEB_BASE_URL
+        NONE -> WEB_BASE_URL
+    }
+}
 
 fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     when (m.type()) {

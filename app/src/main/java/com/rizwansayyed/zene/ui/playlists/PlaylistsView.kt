@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.ui.playlists.view.LoadingAlbumTopView
@@ -35,9 +36,10 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
-fun PlaylistsView(
-    homeViewModel: HomeViewModel, zeneViewModel: ZeneViewModel, id: String?, close: () -> Unit
-) {
+fun PlaylistsView(id: String?, close: () -> Unit) {
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val zeneViewModel: ZeneViewModel = hiltViewModel()
+
     val isThreeGrid = isScreenBig()
     val context = LocalContext.current as Activity
 
@@ -63,7 +65,7 @@ fun PlaylistsView(
                 is APIResponse.Error -> {}
                 APIResponse.Loading -> LoadingAlbumTopView()
                 is APIResponse.Success ->
-                    PlaylistAlbumTopView(v.data.info, zeneViewModel, v.data.isAdded)
+                    PlaylistAlbumTopView(v.data.info, zeneViewModel, v.data.isAdded) {}
             }
         }
 

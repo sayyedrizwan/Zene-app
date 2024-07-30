@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -10,16 +10,14 @@ import com.rizwansayyed.zene.data.api.APIHttpService.youtubeMusicPlaylist
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
-import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
-import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +48,9 @@ class HomeViewModel @Inject constructor(
     var searchSuggestions by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
     var albumPlaylistData by mutableStateOf<APIResponse<ZenePlaylistAlbumsData>>(APIResponse.Empty)
     var moodPlaylist by mutableStateOf<APIResponse<ZeneMoodPlaylistData>>(APIResponse.Empty)
+    var userPlaylistsSong = mutableStateListOf<ZeneMusicDataItems>()
+    var showMorePlaylistSongs by mutableStateOf(false)
+    var isUserPlaylistLoading by mutableStateOf(true)
 
 
     fun init() = viewModelScope.launch(Dispatchers.IO) {
@@ -229,7 +230,38 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateUser() = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.updateUser().catch {}.collectLatest {}
+    fun userPlaylists(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.userPlaylistData(id).onStart {
+            albumPlaylistData = APIResponse.Loading
+        }.catch {
+            albumPlaylistData = APIResponse.Error(it)
+        }.collectLatest {
+            albumPlaylistData = APIResponse.Success(ZenePlaylistAlbumsData(it, emptyList(), false))
+        }
+    }
+
+    fun userPlaylistsSongs(id: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        if (page == 0) userPlaylistsSong.clear()
+
+        zeneAPI.userPlaylistSongs(id, page).onStart {
+            isUserPlaylistLoading = true
+        }.catch {
+            isUserPlaylistLoading = false
+        }.collectLatest {
+            isUserPlaylistLoading = false
+            viewModelScope.launch(Dispatchers.IO) {
+                it.forEach { v -> userPlaylistsSong.add(v) }
+            }
+            showMorePlaylistSongs = it.size >= 24
+        }
+    }
+
+    fun removePlaylistsSongs(id: String?) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val position = userPlaylistsSong.indexOfFirst { it.id == id }
+            userPlaylistsSong.removeAt(position)
+        }catch (e: Exception){
+            e.message
+        }
     }
 }

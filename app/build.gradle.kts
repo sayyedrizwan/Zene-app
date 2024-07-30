@@ -127,11 +127,11 @@ dependencies {
 
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.lifecycle.compose)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
 
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 //    implementation("androidx.hilt:hilt-navigation-fragment:1.2.0")
 }
