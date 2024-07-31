@@ -5,6 +5,12 @@ import android.content.Context
 import android.content.Intent
 import com.rizwansayyed.zene.service.MusicPlayService
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.seconds
 
 @HiltAndroidApp
 class BaseApp : Application() {
@@ -18,12 +24,15 @@ class BaseApp : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
-        startMusicService()
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(4.seconds)
+            startMusicService()
+        }
     }
 
 
-    private fun startMusicService() {
-        Intent(this, MusicPlayService::class.java).apply {
+    private fun startMusicService() = runBlocking(Dispatchers.Main) {
+        Intent(this@BaseApp, MusicPlayService::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startService(this)
         }
