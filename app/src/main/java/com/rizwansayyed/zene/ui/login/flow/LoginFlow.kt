@@ -52,8 +52,8 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
     }
 
     private fun startGoogleSignIn(c: Activity) = CoroutineScope(Dispatchers.Main).launch {
-        startLogin("sayyedrizwanahmed@gmail.com", "Rizwan Sayyed", "")
-        return@launch
+//        startLogin("sayyedrizwanahmed@gmail.com", "Rizwan Sayyed", "")
+//        return@launch
 
         val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
             .setServerClientId(BuildConfig.GOOGLE_SERVER_ID).setAutoSelectEnabled(false)
@@ -66,8 +66,8 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             try {
                 val g = GoogleIdTokenCredential.createFrom(credential!!.data)
                 val firebaseCredential = GoogleAuthProvider.getCredential(g.idToken, null)
-                val c = Firebase.auth.signInWithCredential(firebaseCredential).await()
-                startLogin(c.user?.email, c.user?.displayName, c.user?.photoUrl.toString())
+                val u = Firebase.auth.signInWithCredential(firebaseCredential).await()
+                startLogin(u.user?.email, u.user?.displayName, u.user?.photoUrl.toString())
             } catch (e: Exception) {
                 context.getString(R.string.error_while_login).toast()
             }
