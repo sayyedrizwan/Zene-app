@@ -28,11 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
+import com.rizwansayyed.zene.service.MusicPlayService
+import com.rizwansayyed.zene.service.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.extra.MyMusicView
 import com.rizwansayyed.zene.ui.home.HomeView
@@ -68,6 +71,11 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -210,9 +218,17 @@ class MainActivity : ComponentActivity() {
         customPlayerNotification(this@MainActivity)
         ShowAdsOnAppOpen(this).showAds()
 
-        NotificationUtils("12333", "", null)
-
         homeViewModel.userArtistsList()
+        startMusicService()
+    }
+
+
+    private fun startMusicService() {
+        if (isMusicServiceRunning(this)) return
+        Intent(this, MusicPlayService::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startService(this)
+        }
     }
 
     private fun checkAndRunWeb(intent: Intent) {

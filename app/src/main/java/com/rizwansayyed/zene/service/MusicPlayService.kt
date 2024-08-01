@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.service
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -15,6 +17,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
@@ -56,6 +59,17 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 
+fun isMusicServiceRunning(context: Activity): Boolean {
+    val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
+    for (service in manager!!.getRunningServices(Int.MAX_VALUE)) {
+        if (MusicPlayService::class.java.name == service.service.className) {
+            return true
+        }
+    }
+    return false
+}
+
+
 @AndroidEntryPoint
 class MusicPlayService : Service() {
 
@@ -86,7 +100,6 @@ class MusicPlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
         IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
             ContextCompat.registerReceiver(
@@ -240,6 +253,16 @@ class MusicPlayService : Service() {
         super.onDestroy()
         job?.cancel()
         job = null
+        try {
+            unregisterReceiver(listener)
+        } catch (e: Exception) {
+            e.message
+        }
+        try {
+            unregisterReceiver(phoneWake)
+        } catch (e: Exception) {
+            e.message
+        }
     }
 
     private fun clearCache() {

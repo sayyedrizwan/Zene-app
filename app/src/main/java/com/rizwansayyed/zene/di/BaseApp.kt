@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.di
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -24,17 +25,5 @@ class BaseApp : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(4.seconds)
-            startMusicService()
-        }
-    }
-
-
-    private fun startMusicService() = runBlocking(Dispatchers.Main) {
-        Intent(this@BaseApp, MusicPlayService::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startService(this)
-        }
     }
 }

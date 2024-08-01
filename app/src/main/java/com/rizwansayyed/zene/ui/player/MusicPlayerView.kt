@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -262,6 +263,7 @@ fun MusicPlayerView(
 fun MusicListCards(
     pagerState: PagerState, playerInfo: MusicPlayerData?, name: String, artists: String
 ) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     Spacer(Modifier.height(60.dp))
 
     HorizontalPager(
@@ -273,7 +275,7 @@ fun MusicListCards(
                 playerInfo?.list?.get(page)?.name,
                 Modifier
                     .align(Alignment.Center)
-                    .fillMaxWidth()
+                    .size((screenWidth.value / 1.3).dp)
             )
 
             if (playerInfo?.player?.id != playerInfo?.list?.get(page)?.id) Row(Modifier
