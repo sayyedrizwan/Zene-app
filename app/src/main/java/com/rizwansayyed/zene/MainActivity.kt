@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene
 
 import android.annotation.SuppressLint
-import android.app.ComponentCaller
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,7 +8,6 @@ import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -30,11 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.apple.android.sdk.authentication.AuthenticationFactory
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.service.MusicPlayService
@@ -66,22 +62,13 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
-import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
-import com.rizwansayyed.zene.utils.Utils.URLS.GRAPH_FB_API
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import okhttp3.HttpUrl
-import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -219,7 +206,6 @@ class MainActivity : ComponentActivity() {
         checkAndRunWeb(intent)
     }
 
-    val authManager = AuthenticationFactory.createAuthenticationManager(this)
     override fun onStart() {
         super.onStart()
         customPlayerNotification(this@MainActivity)
@@ -227,15 +213,6 @@ class MainActivity : ComponentActivity() {
 
         homeViewModel.userArtistsList()
         startMusicService()
-
-//        lifecycleScope.launch {
-//            delay(3.seconds)
-//            val intent = authManager.createIntentBuilder("T32DH75M59")
-//                .setHideStartScreen(true)
-//                .setStartScreenMessage("Connect with apple music!")
-//                .build()
-//            startActivityForResult(intent, 1)
-//        }
     }
 
 
@@ -250,22 +227,5 @@ class MainActivity : ComponentActivity() {
     private fun checkAndRunWeb(intent: Intent) {
         val appLinkAction: String? = intent.action
         val appLinkData: Uri? = intent.data
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 1) {
-            val result = authManager.handleTokenResult(data)
-            if (result.isError) {
-                val error = result.error
-                Log.d("TAG", "esuthmusic rror: $error")
-            }
-            else {
-                Log.d("TAG", "esuthmusic done: ${result.musicUserToken}")
-            }
-        }
-        else {
-            Log.d("TAG", "esuthmusic done: ${requestCode}")
-            super.onActivityResult(requestCode, resultCode, data)
-        }
     }
 }

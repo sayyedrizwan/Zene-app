@@ -78,6 +78,8 @@ object Utils {
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
+        const val APPLE_MUSIC_LOGIN = "https://music.apple.com/us/login"
+
 
         val BASE_URL =
             if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
