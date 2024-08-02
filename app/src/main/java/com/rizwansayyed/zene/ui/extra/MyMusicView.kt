@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -31,8 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.extra.mymusic.spotify.MyMusicImportPlaylistView
 import com.rizwansayyed.zene.ui.extra.mymusic.TopHeaderSwitch
 import com.rizwansayyed.zene.ui.extra.mymusic.TopMusicHeaders
 import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistDialog
@@ -45,7 +46,6 @@ import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
-import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 enum class MyMusicType {
@@ -53,8 +53,7 @@ enum class MyMusicType {
 }
 
 @Composable
-fun MyMusicView() {
-    val viewModel: ZeneViewModel = hiltViewModel()
+fun MyMusicView(viewModel: ZeneViewModel) {
     val isThreeGrid = isScreenBig()
 
     var type by remember { mutableStateOf(MyMusicType.PLAYLISTS) }
@@ -145,6 +144,21 @@ fun MyMusicView() {
 
 
         item(1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Spacer(Modifier.height(70.dp))
+        }
+
+        item(1001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            TextPoppins(stringResource(R.string.import_playlists), false)
+        }
+
+        item(1002, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            LazyRow(Modifier.fillMaxWidth()) {
+                item { MyMusicImportPlaylistView() }
+                item { MyMusicImportPlaylistView() }
+            }
+        }
+
+        item(1003, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(140.dp))
         }
     }

@@ -9,6 +9,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_INTERSTITIAL_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -40,6 +41,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     }
 
     fun interstitialAds() = CoroutineScope(Dispatchers.Main).launch {
+        if (userInfoDB.firstOrNull()?.isLoggedIn() == false) return@launch
         if (BuildConfig.DEBUG) return@launch
         val doShowAds = isMoreThanThreeMinutesAds()
         if (!doShowAds) return@launch
@@ -49,6 +51,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     }
 
     fun showAds() = CoroutineScope(Dispatchers.Main).launch {
+        if (userInfoDB.firstOrNull()?.isLoggedIn() == false) return@launch
         if (BuildConfig.DEBUG) return@launch
         val doShowAds = isMoreThanThreeMinutesAds()
         if (!doShowAds) return@launch

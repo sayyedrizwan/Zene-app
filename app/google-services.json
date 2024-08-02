@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:12742833162:android:2779b0e9fdc7defd0b5bf3",
+        "mobilesdk_app_id": "1:12742833162:android:4225c8231d73a9a90b5bf3",
         "android_client_info": {
           "package_name": "com.rizwansayyed.zene"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "12742833162-r3s8kg80i2lt4qsk7a58a4k4l8tm143k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rizwansayyed.zene",
+            "certificate_hash": "79be4da53ad5714302dd2f8ee18837f8f275bb06"
+          }
+        },
         {
           "client_id": "12742833162-pko059vg6kqvb5pnj3uf8l7sbbih9i2f.apps.googleusercontent.com",
           "client_type": 3

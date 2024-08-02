@@ -63,15 +63,15 @@ import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
-fun HomeView(notificationPermission: ManagedActivityResultLauncher<String, Boolean>) {
-    val homeViewModel: HomeViewModel = hiltViewModel()
+fun HomeView(
+    notificationPermission: ManagedActivityResultLauncher<String, Boolean>,
+    homeViewModel: HomeViewModel
+) {
     val isThreeGrid = isScreenBig()
 
     var loadFirstUI by remember { mutableStateOf(false) }
     var loadSecondUI by remember { mutableStateOf(false) }
     var loadThirdUI by remember { mutableStateOf(false) }
-
-
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),

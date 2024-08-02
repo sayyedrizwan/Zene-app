@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,10 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -33,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -57,9 +61,10 @@ import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
-import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
+import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
@@ -114,7 +119,7 @@ fun MusicPlayerView(
 
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
-                MusicListCards(pagerState, playerInfo, name, artists)
+                MusicListCards(pagerState, playerInfo, name, artists, close)
             }
         }
 
@@ -192,15 +197,14 @@ fun MusicPlayerView(
             }
 
             is APIResponse.Success -> {
-                if (v.data.isNotEmpty())
-                    item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                        Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                            TextPoppinsSemiBold(
-                                stringResource(R.string.similar_songs_you_may_like), size = 15
-                            )
+                if (v.data.isNotEmpty()) item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                        TextPoppinsSemiBold(
+                            stringResource(R.string.similar_songs_you_may_like), size = 15
+                        )
 
-                        }
                     }
+                }
 
                 items(v.data,
                     span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
@@ -261,7 +265,11 @@ fun MusicPlayerView(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicListCards(
-    pagerState: PagerState, playerInfo: MusicPlayerData?, name: String, artists: String
+    pagerState: PagerState,
+    playerInfo: MusicPlayerData?,
+    name: String,
+    artists: String,
+    close: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     Spacer(Modifier.height(60.dp))
@@ -297,6 +305,28 @@ fun MusicListCards(
     Spacer(Modifier.height(25.dp))
     TextPoppins(name, true, size = 22)
     Spacer(Modifier.height(5.dp))
-    TextPoppinsThin(artists, true, size = 17)
 
+    LazyRow(
+        Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        items(artists.split(",", " & ", " and ")) {
+            if (it.trim() == "," && it.trim() == "&" && it.trim() == " and ")
+                Spacer(Modifier.size(0.dp))
+            else if (it.trim().isNotEmpty()) Row(
+                Modifier
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.Black)
+                    .clickable {
+                        close()
+                        sendNavCommand(NAV_ARTISTS.replace("{id}", it.trim()))
+                    }
+                    .padding(vertical = 5.dp, horizontal = 14.dp)
+            ) {
+                TextPoppins(it, false, size = 15)
+            }
+        }
+    }
 }

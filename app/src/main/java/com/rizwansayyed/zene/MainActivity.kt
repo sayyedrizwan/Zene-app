@@ -65,6 +65,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -106,10 +107,10 @@ class MainActivity : ComponentActivity() {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
-                            HomeView(notificationPermission)
+                            HomeView(notificationPermission, homeViewModel)
                         }
                         composable(NAV_MY_MUSIC) {
-                            MyMusicView()
+                            MyMusicView(zeneViewModel)
                         }
                         composable(NAV_SETTINGS) {
                             SettingsView()

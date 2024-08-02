@@ -50,6 +50,9 @@ android {
         buildConfigField(
             "String", "APP_ENCODE_KEY", apikeyProperties.getProperty("APP_ENCODE_KEY")
         )
+        buildConfigField(
+            "String", "SPOTIFY_CLIENT_ID", apikeyProperties.getProperty("SPOTIFY_CLIENT_ID")
+        )
     }
 
     buildTypes {
@@ -136,4 +139,6 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
+
+    implementation("com.spotify.android:auth:1.2.5")
 }

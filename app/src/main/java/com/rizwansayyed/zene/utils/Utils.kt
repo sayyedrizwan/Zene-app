@@ -115,6 +115,8 @@ object Utils {
         const val USER_AGENT_D =
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 
+        const val GOOGLE_BUNDLE_EMAIL =
+            "com.google.android.libraries.identity.googleid.BUNDLE_KEY_ID"
     }
 
     const val TOTAL_GRID_SIZE = 12
@@ -323,5 +325,10 @@ object Utils {
         } else {
             context.resources.getString(R.string.equalizer_not_found).toast()
         }
+    }
+
+    fun String.replaceArtistsForCheck(): String {
+        return this.replace(",", "//,").replace(" & ", "//&")
+            .replace(" and ", "//and")
     }
 }

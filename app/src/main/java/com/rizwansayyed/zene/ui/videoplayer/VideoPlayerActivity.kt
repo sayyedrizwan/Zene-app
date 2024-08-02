@@ -37,6 +37,7 @@ class VideoPlayerActivity : ComponentActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 
         val videoID = intent.getStringExtra(Intent.ACTION_MAIN) ?: return
+
         setContent {
             AndroidView({ ctx ->
                 WebView(ctx).apply {

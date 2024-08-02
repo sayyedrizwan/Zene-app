@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.login.flow
 
 import android.app.Activity
+import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -21,6 +22,7 @@ import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
+import com.rizwansayyed.zene.utils.Utils.URLS.GOOGLE_BUNDLE_EMAIL
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,9 +54,6 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
     }
 
     private fun startGoogleSignIn(c: Activity) = CoroutineScope(Dispatchers.Main).launch {
-//        startLogin("sayyedrizwanahmed@gmail.com", "Rizwan Sayyed", "")
-//        return@launch
-
         val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
             .setServerClientId(BuildConfig.GOOGLE_SERVER_ID).setAutoSelectEnabled(false)
             .setAutoSelectEnabled(false).build()
@@ -65,9 +64,8 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         suspend fun get() {
             try {
                 val g = GoogleIdTokenCredential.createFrom(credential!!.data)
-                val firebaseCredential = GoogleAuthProvider.getCredential(g.idToken, null)
-                val u = Firebase.auth.signInWithCredential(firebaseCredential).await()
-                startLogin(u.user?.email, u.user?.displayName, u.user?.photoUrl.toString())
+                val email = g.data.getString(GOOGLE_BUNDLE_EMAIL)
+                startLogin(email, g.displayName, g.profilePictureUri.toString())
             } catch (e: Exception) {
                 context.getString(R.string.error_while_login).toast()
             }
@@ -93,7 +91,16 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
     }
 
     private suspend fun startLogin(e: String?, n: String?, p: String?) {
-        val user = zeneAPIInterface.getUser(e ?: "").firstOrNull()
+        if (e == null) {
+            context.getString(R.string.error_while_login).toast()
+            return
+        }
+        if (e.length <= 3 && !e.contains("@")) {
+            context.getString(R.string.error_while_login).toast()
+            return
+        }
+
+        val user = zeneAPIInterface.getUser(e).firstOrNull()
         if (user?.email != null) {
             pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
             DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))
