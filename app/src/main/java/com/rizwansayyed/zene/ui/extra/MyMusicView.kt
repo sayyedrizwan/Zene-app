@@ -33,9 +33,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.ui.extra.mymusic.spotify.MyMusicImportPlaylistView
 import com.rizwansayyed.zene.ui.extra.mymusic.TopHeaderSwitch
 import com.rizwansayyed.zene.ui.extra.mymusic.TopMusicHeaders
+import com.rizwansayyed.zene.ui.extra.mymusic.spotify.MyMusicImportAppleMusicPlaylistView
+import com.rizwansayyed.zene.ui.extra.mymusic.spotify.MyMusicImportSpotifyPlaylistView
 import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistDialog
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.LoadingView
@@ -153,8 +154,8 @@ fun MyMusicView(viewModel: ZeneViewModel) {
 
         item(1002, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             LazyRow(Modifier.fillMaxWidth()) {
-                item { MyMusicImportPlaylistView() }
-                item { MyMusicImportPlaylistView() }
+                item { MyMusicImportSpotifyPlaylistView() }
+                item { MyMusicImportAppleMusicPlaylistView() }
             }
         }
 

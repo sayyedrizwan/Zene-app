@@ -2,18 +2,27 @@ package com.rizwansayyed.zene.ui.login.flow
 
 import android.app.Activity
 import android.util.Log
+import androidx.activity.result.ActivityResultRegistryOwner
+import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.FbLoginResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
@@ -23,6 +32,8 @@ import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.URLS.GOOGLE_BUNDLE_EMAIL
+import com.rizwansayyed.zene.utils.Utils.URLS.GRAPH_FB_API
+import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +41,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.nio.ByteBuffer
+import java.nio.CharBuffer
+import java.nio.charset.CodingErrorAction
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.security.SecureRandom
+import java.util.Arrays
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -38,10 +61,8 @@ import kotlin.time.Duration.Companion.seconds
 class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterface) {
     private var credentialManager: CredentialManager? = null
     private val providerApple = OAuthProvider.newBuilder("apple.com").apply {
-        scopes = mutableListOf("email", "name")
+        scopes = arrayOf("email", "name").toMutableList()
     }
-
-    private val providerMicrosoft = OAuthProvider.newBuilder("microsoft.com")
 
     fun init(type: LoginFlowType, c: Activity) {
         credentialManager = CredentialManager.create(c)
@@ -49,7 +70,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         when (type) {
             LoginFlowType.GOOGLE -> startGoogleSignIn(c)
             LoginFlowType.APPLE -> startAppleSignIn(c)
-            LoginFlowType.MICROSOFT -> startAppleSignIn(c)
+            LoginFlowType.FACEBOOK -> startFBSignIn(c)
         }
     }
 
@@ -77,16 +98,72 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         }
     }
 
+    private fun startFBSignIn(c: Activity) = CoroutineScope(Dispatchers.Main).launch {
+        val callbackManager = CallbackManager.Factory.create()
+        val loginManager = LoginManager.getInstance()
+
+        loginManager.logIn(
+            c as ActivityResultRegistryOwner,
+            callbackManager,
+            listOf("openid", "email", "public_profile")
+        )
+
+        val callback = object : FacebookCallback<LoginResult> {
+            override fun onCancel() {}
+
+            override fun onError(error: FacebookException) {
+                context.getString(R.string.error_while_login).toast()
+            }
+
+            override fun onSuccess(result: LoginResult) {
+                fbGraph(result.accessToken.token)
+            }
+
+        }
+
+        loginManager.registerCallback(callbackManager, callback)
+    }
+
     private fun startAppleSignIn(c: Activity) = CoroutineScope(Dispatchers.Main).launch {
-        val pending = Firebase.auth.pendingAuthResult
-        if (pending == null) {
-            val result = Firebase.auth
+        try {
+            val auth = FirebaseAuth.getInstance()
                 .startActivityForSignInWithProvider(c, providerApple.build()).await()
-            val user = result.user
-            startLogin(user?.email, user?.displayName, user?.photoUrl.toString())
-        } else {
-            val result = pending.await().user
-            startLogin(result?.email, result?.displayName, result?.photoUrl.toString())
+
+            if ((auth.user?.providerData?.size ?: 0) <= 0) {
+                context.getString(R.string.error_while_login).toast()
+                return@launch
+            }
+
+            auth.user?.providerData?.forEach { user ->
+                if (user.email?.contains("@") == true)
+                    startLogin(user?.email, user?.displayName, user?.photoUrl.toString())
+            }
+
+        } catch (e: Exception) {
+            context.getString(R.string.error_while_login).toast()
+        }
+    }
+
+    private fun fbGraph(token: String) = runBlocking(Dispatchers.IO) {
+        val client = OkHttpClient().newBuilder().connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build()
+
+        val httpUrl = HttpUrl.Builder().scheme("https").host(GRAPH_FB_API)
+            .addPathSegment("me")
+            .addQueryParameter("access_token", token)
+            .addQueryParameter("fields", "id,name,email,picture.width(640).height(640)")
+
+        try {
+            val request = Request.Builder().url(httpUrl.toString()).build()
+            val response = client.newCall(request).execute()
+
+            val data =
+                moshi.adapter(FbLoginResponse::class.java).fromJson(response.body?.string() ?: "")
+
+            startLogin(data?.email(), data?.name ?: "", data?.profilePic())
+        } catch (e: Exception) {
+            context.getString(R.string.error_while_login).toast()
         }
     }
 

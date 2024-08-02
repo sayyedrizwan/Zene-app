@@ -250,10 +250,10 @@ fun LoginButtonView() {
                 )
 
                 Image(
-                    painterResource(R.drawable.ic_microsoft),
+                    painterResource(R.drawable.ic_facebook),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable {
-                        homeViewModel.loginFlow.init(LoginFlowType.MICROSOFT, activity)
+                        homeViewModel.loginFlow.init(LoginFlowType.FACEBOOK, activity)
                     }
                 )
             }

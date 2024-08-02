@@ -53,6 +53,10 @@ android {
         buildConfigField(
             "String", "SPOTIFY_CLIENT_ID", apikeyProperties.getProperty("SPOTIFY_CLIENT_ID")
         )
+
+        resValue("string", "FB_APP_ID", apikeyProperties.getProperty("FB_APP_ID"))
+        resValue("string", "FB_SECRET_KEY", apikeyProperties.getProperty("FB_SECRET_KEY"))
+        resValue("string", "FB_LOGIN_PROTOCOL_SCHEME", apikeyProperties.getProperty("FB_LOGIN_PROTOCOL_SCHEME"))
     }
 
     buildTypes {
@@ -120,7 +124,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.nav.compose)
     implementation(libs.webkit)
+    implementation(libs.spotify)
 
+
+    implementation(libs.facebook.login)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
@@ -140,5 +147,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
 
-    implementation("com.spotify.android:auth:1.2.5")
+
+    implementation(files("libs/musickitauth-1.1.2.aar"))
 }

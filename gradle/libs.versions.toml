@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "85"
-versionname = "3.2.030"
+appversion = "86"
+versionname = "3.2.031"
 
 agp = "8.5.1"
 datastorePreferences = "1.1.1"
@@ -25,6 +25,8 @@ hiltNavigationCompose = "1.2.0"
 kotlinxCoroutinesAndroid = "1.8.0"
 moshi = "1.15.1"
 browser = "1.8.0"
+spotify = "1.2.5"
+facebook = "latest.release"
 firebase-bom = "33.1.2"
 googleid = "1.1.1"
 hilt = "2.51"
@@ -58,7 +60,10 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
+spotify = { module = "com.spotify.android:auth", version.ref = "spotify" }
 
+
+facebook-login = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebook" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }

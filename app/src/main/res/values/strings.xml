@@ -20,6 +20,7 @@
     <string name="most_listening_songs_zene">Most listening Songs on Zene</string>
     <string name="listeners">Listeners</string>
     <string name="import_from_spotify">Import from Spotify</string>
+    <string name="import_from_apple_music">Import from Apple Music</string>
     <string name="import_playlists">Import Playlists</string>
     <string name="global_top_artists">Global top artists</string>
     <string name="top_songs">Top Songs</string>

@@ -76,6 +76,8 @@ object Utils {
 
         const val IMG_PLAYLISTS = "https://i.ibb.co/1Xf9DkT/monthly-playlist.jpg"
 
+        const val GRAPH_FB_API = "graph.facebook.com"
+
 
         val BASE_URL =
             if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
@@ -325,10 +327,5 @@ object Utils {
         } else {
             context.resources.getString(R.string.equalizer_not_found).toast()
         }
-    }
-
-    fun String.replaceArtistsForCheck(): String {
-        return this.replace(",", "//,").replace(" & ", "//&")
-            .replace(" and ", "//and")
     }
 }

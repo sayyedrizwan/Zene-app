@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import com.facebook.FacebookSdk
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.service.MusicPlayService
@@ -27,6 +28,7 @@ class BaseApp : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
+        FacebookSdk.sdkInitialize(this)
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 }

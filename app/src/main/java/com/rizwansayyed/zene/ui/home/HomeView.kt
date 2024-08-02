@@ -85,7 +85,7 @@ fun HomeView(
             }
         }
         item(2000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            when (val v = homeViewModel.recommendedPlaylists) {
+            when (val v = homeViewModel.songsYouMayLike) {
                 is APIResponse.Success -> {
                     if (v.data.isEmpty()) NewUserCards()
                 }
