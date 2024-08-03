@@ -70,6 +70,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -181,7 +182,7 @@ fun HomeHeaderView() {
 @Composable
 fun SearchSongDialog(close: () -> Unit) {
     val zeneViewModel: ZeneViewModel = hiltViewModel()
-
+    val context = LocalContext.current.applicationContext
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var coroutine by remember { mutableStateOf<Job?>(null) }
@@ -194,6 +195,7 @@ fun SearchSongDialog(close: () -> Unit) {
     var isFindingSong by remember { mutableStateOf(false) }
 
     var startSearch by remember { mutableStateOf<String?>(null) }
+
 
     var webView: SongDetectWebView? = null
 
@@ -220,11 +222,15 @@ fun SearchSongDialog(close: () -> Unit) {
                 Box(Modifier.size(0.dp)) {
                     AndroidView({ ctx ->
                         SongDetectWebView(ctx, {
+                            coroutine?.cancel()
+                            coroutine = null
                             notFound(true)
                         }, {
                             isLoading = false
                             isFindingSong = true
                         }, {
+                            coroutine?.cancel()
+                            coroutine = null
                             startSearch = it
                         }).also {
                             webView = it

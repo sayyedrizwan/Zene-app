@@ -3,23 +3,31 @@ package com.rizwansayyed.zene.ui.home.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
+import android.util.Log
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.compose.runtime.MutableState
-import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
+import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_MUSIC
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.jsoup.Jsoup
+import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
 import kotlin.time.Duration.Companion.seconds
+
 
 @SuppressLint("ViewConstructor")
 class SongDetectWebView(
@@ -29,7 +37,22 @@ class SongDetectWebView(
     private val name: (String) -> Unit
 ) : WebView(context) {
 
+    private val baseURL = "https://www.aha-music.com/"
+    private var isRedirectNewPage = false
+
     private val webViewClientObj = object : WebViewClient() {
+        override fun shouldOverrideUrlLoading(
+            view: WebView?,
+            request: WebResourceRequest?
+        ): Boolean {
+            if (!isRedirectNewPage && request != null) {
+                isRedirectNewPage = true
+                destroyView()
+                readTheSongDetails(request.url)
+            }
+            return true
+        }
+
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             CoroutineScope(Dispatchers.IO).launch {
@@ -38,7 +61,7 @@ class SongDetectWebView(
 
                 withContext(Dispatchers.Main) {
                     view?.evaluateJavascript(
-                        "document.querySelector('.FloatingShazamButton_buttonContainer__DZGwL').click();",
+                        "document.querySelector('.circleBase.grid.place-items-center').click();",
                         null
                     )
                 }
@@ -52,17 +75,25 @@ class SongDetectWebView(
         }
     }
 
-    private val isSongDataAvailable = """javascript:(function() {
-              var element = document.getElementsByClassName('TrackPageHeader_data__RxygT TrackPageHeader_grid__EPCjO');
-              return element.length;
+
+    private val isSongButtonAvailableC = """javascript:(function() {
+               return document.querySelectorAll('button.detail-btn').length
             })()"""
 
     private val isSongNotFound = """javascript:(function() {
-            var element = document.getElementsByClassName('FloatingShazamButton_calloutContainer__ERGTc');
-            return element.length;
-            })()"""
+            const element = document.querySelector('h4[data-v-122e4e3c].text-xl.font-semibold');
 
-    private var getTitle: String = "javascript:(function() { return document.title; })()"
+            if (element) {
+                const style = window.getComputedStyle(element);
+                const isVisible = style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        
+                const containsText = element.textContent.trim() === "Couldn’t quite catch that.";
+                
+                return isVisible && containsText;
+            }
+        
+            return false;
+            })()"""
 
     init {
         enable()
@@ -70,52 +101,35 @@ class SongDetectWebView(
         setBackgroundColor(Color.TRANSPARENT)
         webViewClient = webViewClientObj
         webChromeClient = webViewChromeClientObj
-
-        loadUrl("https://www.shazam.com/")
+        setInitialScale(0)
+        loadUrl(baseURL)
     }
 
     fun checkFunctions() = CoroutineScope(Dispatchers.Main).launch {
-        evaluateJavascript(isSongDataAvailable) {
-            if (it.toInt() > 0) evaluateJavascript(getTitle) {
-                val nameTitle = it.substringBefore(": Song Lyrics")
-                name(nameTitle)
-            }
+        evaluateJavascript(isSongButtonAvailableC) {
+            if (it == "1") loadUrl("javascript:document.querySelector('button.detail-btn').click();")
         }
 
         evaluateJavascript(isSongNotFound) {
-            if (it.toInt() > 0) notFound()
+            if (it.toBoolean()) notFound()
         }
 
         if (isActive) cancel()
     }
 
-    fun destroyView() {
+    fun destroyView() = CoroutineScope(Dispatchers.Main).launch {
         clearCache(true)
         loadUrl("about:blank")
         destroy()
     }
 
-    fun setDesktopMode(webView: WebView, enabled: Boolean) {
-        var newUserAgent: String? = webView.settings.userAgentString
-        if (enabled) {
-            try {
-                val ua: String = webView.settings.userAgentString
-                val androidOSString: String = webView.settings.userAgentString.substring(
-                    ua.indexOf("("),
-                    ua.indexOf(")") + 1
-                )
-                newUserAgent =
-                    webView.settings.userAgentString.replace(androidOSString, "(X11; Linux x86_64)")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } else {
-            newUserAgent = null
-        }
-        webView.settings.apply {
-            userAgentString = newUserAgent
-            useWideViewPort = enabled
-            loadWithOverviewMode = enabled
+    fun readTheSongDetails(url: Uri) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val document = Jsoup.connect(url.toString()).get()
+            val title = document.title()
+            name(title.substringBefore("| AHA Music").trim())
+        } catch (e: Exception) {
+            notFound()
         }
     }
 }

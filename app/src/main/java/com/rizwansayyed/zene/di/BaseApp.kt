@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.webkit.WebView
 import com.facebook.FacebookSdk
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rizwansayyed.zene.BuildConfig
@@ -29,6 +30,7 @@ class BaseApp : Application() {
         super.onCreate()
         context = this
         FacebookSdk.sdkInitialize(this)
+        WebView.setWebContentsDebuggingEnabled(true);
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 }
