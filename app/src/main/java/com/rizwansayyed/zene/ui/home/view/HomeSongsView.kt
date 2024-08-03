@@ -102,10 +102,8 @@ fun HorizontalSongView(
                             TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
 
                         TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-                        TextSize.SMALL -> TextPoppinsSemiBold(
-                            stringResource(header.second),
-                            size = 15
-                        )
+                        TextSize.SMALL ->
+                            TextPoppinsSemiBold(stringResource(header.second), size = 15)
                     }
                 }
 

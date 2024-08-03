@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -37,6 +36,7 @@ import com.rizwansayyed.zene.service.MusicPlayService
 import com.rizwansayyed.zene.service.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.extra.MyMusicView
+import com.rizwansayyed.zene.ui.feed.FeedView
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
 import com.rizwansayyed.zene.ui.login.LoginView
@@ -52,6 +52,7 @@ import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
@@ -63,6 +64,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.utils.Utils.startAppSettings
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -103,6 +105,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NAV_MY_MUSIC) {
                             MyMusicView(zeneViewModel)
+                        }
+                        composable(NAV_FEED) {
+                            FeedView(zeneViewModel)
                         }
                         composable(NAV_SETTINGS) {
                             SettingsView()
@@ -160,13 +165,7 @@ class MainActivity : ComponentActivity() {
                         R.string.need_notification_permission_desc,
                         R.string.grant
                     ) {
-                        if (it) {
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                            val uri = Uri.fromParts("package", packageName, null)
-                            intent.setData(uri)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                        }
+                        if (it) startAppSettings()
                         notificationPermissionDialog = false
                     }
                 }

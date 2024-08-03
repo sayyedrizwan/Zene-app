@@ -1,10 +1,12 @@
 package com.rizwansayyed.zene.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.audiofx.AudioEffect
@@ -18,6 +20,7 @@ import android.webkit.WebView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
@@ -77,9 +80,6 @@ object Utils {
         const val IMG_PLAYLISTS = "https://i.ibb.co/1Xf9DkT/monthly-playlist.jpg"
 
         const val GRAPH_FB_API = "graph.facebook.com"
-
-        const val APPLE_MUSIC_LOGIN = "https://music.apple.com/us/login"
-
 
         val BASE_URL =
             if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
@@ -329,5 +329,19 @@ object Utils {
         } else {
             context.resources.getString(R.string.equalizer_not_found).toast()
         }
+    }
+
+    fun isPermissionDisabled(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context, permission
+        ) == PackageManager.PERMISSION_DENIED
+    }
+
+    fun startAppSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", context.packageName, null)
+        intent.setData(uri)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
 }

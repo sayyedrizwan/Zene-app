@@ -52,6 +52,7 @@ import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
+import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -324,11 +325,8 @@ fun checkNotificationPermissionAndAsk(permission: ManagedActivityResultLauncher<
         if (!isLoggedIn) return@launch
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(
-                    context, Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_DENIED
-            ) {
+            if (isPermissionDisabled(Manifest.permission.POST_NOTIFICATIONS))
                 permission.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
+
         }
     }

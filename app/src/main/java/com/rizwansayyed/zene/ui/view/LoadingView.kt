@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +37,15 @@ import com.rizwansayyed.zene.utils.Utils.toast
 fun LoadingView(modifier: Modifier = Modifier) {
     Column(modifier, Arrangement.Center, Alignment.CenterHorizontally) {
         CircularProgressIndicator(
+            modifier, MainColor, trackColor = Color.White,
+        )
+    }
+}
+
+@Composable
+fun LoadingLinearView(modifier: Modifier = Modifier) {
+    Column(modifier, Arrangement.Center, Alignment.CenterHorizontally) {
+        LinearProgressIndicator(
             modifier, MainColor, trackColor = Color.White,
         )
     }

@@ -46,6 +46,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var saveSongPlaylists = mutableStateListOf<ZeneMusicDataItems>()
     var songHistoryIsLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
+    var searchFindSong by mutableStateOf<APIResponse<ZeneMusicDataItems>>(APIResponse.Empty)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.artistsInfo(name).onStart {
@@ -191,4 +192,15 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         viewModelScope.launch(Dispatchers.IO) {
             zeneAPI.addRemoveSongFromPlaylists(sID, pID, add).catch {}.collectLatest {}
         }
+
+    fun searchFindSong(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.searchData(q).onStart {
+            searchFindSong = APIResponse.Loading
+        }.catch {
+            searchFindSong = APIResponse.Error(it)
+        }.collectLatest {
+            val d = it.songs.first()
+            searchFindSong = APIResponse.Success(d)
+        }
+    }
 }

@@ -19,6 +19,7 @@
     <string name="latest_release">Latest Release</string>
     <string name="most_listening_songs_zene">Most listening Songs on Zene</string>
     <string name="listeners">Listeners</string>
+    <string name="listening___">Listening....</string>
     <string name="import_from_spotify">Import from Spotify</string>
     <string name="import_from_apple_music">Import from Apple Music</string>
     <string name="import_playlists">Import Playlists</string>
@@ -51,6 +52,7 @@
     <string name="per_month">per month</string>
     <string name="available_plans">Available plans</string>
     <string name="upgrade">Upgrade</string>
+    <string name="search">Search</string>
     <string name="search_zene">Search Zene</string>
     <string name="search_images">Search Images</string>
     <string name="search_history">Search History</string>
@@ -115,7 +117,12 @@
     <string name="need_overlay_permission_to_show_song">Need overlay permission to show playing song view on Lockscreen.</string>
     <string name="clear_cache_desc">Clearing cache will remove all unwanted cache stored and not any personal data.</string>
     <string name="need_notification_permission">Need notification permission !!</string>
+    <string name="need_microphone_permission">Need microphone permission !!</string>
     <string name="need_notification_permission_desc">Zene need notification permission to perform and give you upcoming updates.. Please enable it in App Permission -> Notifications.</string>
+    <string name="need_microphone_permission_desc">Zene need microphone permission to listen to the song and search the database.</string>
     <string name="grant">Grant</string>
     <string name="zene_notification">Zene Notification</string>
+    <string name="find_song">Find song</string>
+    <string name="no_song_found_try_again">No song found. Please try again!</string>
+    <string name="loading_make_sure_your_device_can_hear_song_properly">Loading Please Wait.. Make sure your device can hear the song clearly. That you want to search..</string>
 </resources>
