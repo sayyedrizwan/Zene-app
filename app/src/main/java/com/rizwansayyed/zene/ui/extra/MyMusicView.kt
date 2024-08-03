@@ -155,7 +155,7 @@ fun MyMusicView(viewModel: ZeneViewModel) {
         item(1002, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             LazyRow(Modifier.fillMaxWidth()) {
                 item { MyMusicImportSpotifyPlaylistView() }
-                item { MyMusicImportAppleMusicPlaylistView() }
+//                item { MyMusicImportAppleMusicPlaylistView() }
             }
         }
 
