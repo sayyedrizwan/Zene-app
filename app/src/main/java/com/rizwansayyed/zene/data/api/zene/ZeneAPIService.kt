@@ -4,6 +4,7 @@ import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
@@ -18,6 +19,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_FEEDS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_LYRICS_API
@@ -179,7 +181,9 @@ interface ZeneAPIService {
         @Query("doAdd") doAdd: Boolean
     ): ZeneBooleanResponse
 
-
+    @POST(ZENE_FEEDS_API)
+    suspend fun artistsPosts(@Body body: RequestBody): ZeneArtistsPostsResponse
+    
     @POST(ZENE_USER_MY_PLAYLISTS_API)
     suspend fun userPlaylistData(@Body body: RequestBody): ZeneMusicDataItems
 

@@ -224,6 +224,8 @@ class HomeViewModel @Inject constructor(
         val email = userInfoDB.firstOrNull()?.email ?: ""
         if (email == "") return@launch
 
+        zeneAPI.updateUser().catch { }.collectLatest { }
+
         zeneAPI.getUser(email).catch {}.collectLatest {
             userInfoDB = flowOf(it.toUserInfo(email))
             pinnedArtistsList = flowOf(it.pinned_artists?.filterNotNull()?.toTypedArray())
@@ -260,7 +262,7 @@ class HomeViewModel @Inject constructor(
         try {
             val position = userPlaylistsSong.indexOfFirst { it.id == id }
             userPlaylistsSong.removeAt(position)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.message
         }
     }

@@ -71,14 +71,16 @@ fun ArtistsTopView(v: ZeneArtistsInfoResponse) {
 @Composable
 fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
     var isFollowing by remember { mutableStateOf(false) }
-    val canFollowOnly30 = stringResource(R.string.cannot_follow_more_then_30_artists)
+    val canFollowOnly40 = stringResource(R.string.cannot_follow_more_then_40_artists)
 
     Spacer(Modifier.height(80.dp))
 
     val a = stringResource(R.string.followed_by)
 
-    TextPoppinsThin("$a ${artists.followers()}", true)
-    Spacer(Modifier.height(30.dp))
+    if ((artists.followers ?: 0) > 0) {
+        TextPoppinsThin("$a ${artists.followers()}", true)
+        Spacer(Modifier.height(30.dp))
+    }
 
     ButtonWithImage(
         if (isFollowing) R.drawable.ic_user_check else R.drawable.ic_add_user,
@@ -86,7 +88,7 @@ fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
     ) {
         isFollowing = !isFollowing
         viewModel.followArtists(artists.name, isFollowing) {
-            canFollowOnly30.toast()
+            canFollowOnly40.toast()
         }
     }
 

@@ -95,6 +95,7 @@ object Utils {
 
 
         const val ZENE_SEARCH_IMG_API = "search_img"
+        const val ZENE_FEEDS_API = "feeds"
         const val ZENE_MOODS_API = "moods"
         const val ZENE_PLAYLISTS_API = "playlists"
         const val ZENE_NEW_RELEASE_API = "newrelease"

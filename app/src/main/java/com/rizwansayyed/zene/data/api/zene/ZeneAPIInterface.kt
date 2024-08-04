@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
@@ -92,5 +93,8 @@ interface ZeneAPIInterface {
     ): Flow<ZeneBooleanResponse>
 
     suspend fun userPlaylistData(playlistID: String): Flow<ZeneMusicDataItems>
+
     suspend fun userPlaylistSongs(playlistID: String, page: Int): Flow<ZeneMusicDataResponse>
+
+    suspend fun artistsPosts(): Flow<ZeneArtistsPostsResponse>
 }

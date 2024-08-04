@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
@@ -25,5 +26,9 @@ fun FeedView(viewModel: ZeneViewModel) {
 
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.startGettingFeed()
     }
 }
