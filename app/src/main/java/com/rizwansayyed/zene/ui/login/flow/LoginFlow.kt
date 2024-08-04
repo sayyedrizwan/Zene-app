@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.lifecycle.viewModelScope
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -44,8 +45,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import okhttp3.HttpUrl
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.CodingErrorAction
@@ -167,31 +172,31 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         }
     }
 
-    private suspend fun startLogin(e: String?, n: String?, p: String?) {
-        if (e == null) {
-            context.getString(R.string.error_while_login).toast()
-            return
-        }
-        if (e.length <= 3 && !e.contains("@")) {
-            context.getString(R.string.error_while_login).toast()
-            return
-        }
+    private suspend fun startLogin(e: String?, n: String?, p: String?) =
+        runBlocking(Dispatchers.IO) {
+            if (e == null) {
+                context.getString(R.string.error_while_login).toast()
+                return@runBlocking
+            }
+            if (e.length <= 3 && !e.contains("@")) {
+                context.getString(R.string.error_while_login).toast()
+                return@runBlocking
+            }
 
-        val user = zeneAPIInterface.getUser(e).firstOrNull()
-        if (user?.email != null) {
-            pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
-            DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))
+            val user = zeneAPIInterface.getUser(e).firstOrNull()
+            if (user?.email != null) {
+                pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
+                DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))
+                sendNavCommand(SYNC_DATA)
+                return@runBlocking
+            }
+
+            val u = UserInfoData(
+                n, e, 0, p, false, SubscriptionType.FREE.name, null
+            )
+            DataStoreManager.userInfoDB = flowOf(u)
+            delay(1.seconds)
+            zeneAPIInterface.updateUser().firstOrNull()
             sendNavCommand(SYNC_DATA)
-            return
         }
-
-        val u = UserInfoData(
-            n, e, 0, p, false, SubscriptionType.FREE.name, null
-        )
-        DataStoreManager.userInfoDB = flowOf(u)
-        delay(1.seconds)
-        zeneAPIInterface.updateUser().firstOrNull()
-        sendNavCommand(SYNC_DATA)
-    }
-
 }

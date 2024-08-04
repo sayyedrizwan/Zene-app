@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -45,8 +46,6 @@ class VideoPlayerActivity : ComponentActivity() {
                     enable()
                     webViewClient = webViewClientObject
                     webChromeClient = WebChromeClient()
-
-
                     val player =
                         readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_video_player))
                             .replace("<<VideoID>>", videoID)

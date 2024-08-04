@@ -31,12 +31,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 import javax.inject.Inject
 
 
@@ -211,37 +205,4 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     }
 
 
-    fun uploadFile(file: File) = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            val client = OkHttpClient()
-            val body = MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart(
-                    "file", file.name, file.asRequestBody("application/octet-stream".toMediaType())
-                )
-                .addFormDataPart("sample_size","155648")
-                .build()
-            val request = Request.Builder()
-                .url("https://api.doreso.com/identify")
-                .post(body)
-                .addHeader("accept", "application/json, text/plain, */*")
-                .addHeader("accept-language", "en-US,en;q=0.9")
-                .addHeader("origin", "https://www.aha-music.com")
-                .addHeader("priority", "u=1, i")
-                .addHeader("referer", "https://www.aha-music.com/")
-                .addHeader("sec-ch-ua", "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"")
-                .addHeader("sec-ch-ua-mobile", "?1")
-                .addHeader("sec-ch-ua-platform", "\"Android\"")
-                .addHeader("sec-fetch-dest", "empty")
-                .addHeader("sec-fetch-mode", "cors")
-                .addHeader("sec-fetch-site", "cross-site")
-                .addHeader("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36")
-                .build()
-
-            val response = client.newCall(request).execute()
-
-            Log.d("TAG", "uploadFile: ${response.body?.string()}")
-        } catch (e: Exception) {
-            Log.d("TAG", "uploadFile: on ${e.message}")
-        }
-    }
 }

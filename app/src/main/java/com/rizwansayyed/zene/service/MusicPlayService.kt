@@ -278,10 +278,6 @@ class MusicPlayService : Service() {
 
     private fun checkAndPlayNextSong() = CoroutineScope(Dispatchers.IO).launch {
         val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
-        Log.d(
-            "TAG",
-            "checkAndPlayNextSong: run loop ${musicLoopSettings.firstOrNull()} == ${musicAutoplaySettings.firstOrNull()}"
-        )
         if (musicLoopSettings.firstOrNull() == true) {
             loadURL(id)
             return@launch
