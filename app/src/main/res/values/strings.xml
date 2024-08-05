@@ -124,5 +124,6 @@
     <string name="zene_notification">Zene Notification</string>
     <string name="find_song">Find song</string>
     <string name="no_song_found_try_again">No song found. Please try again!</string>
+    <string name="you_haven_t_follow_artists_yet">Oops! It looks like you haven\'t followed any artists yet. Start following your favorite artists to get personalized news updates in your feed!</string>
     <string name="loading_make_sure_your_device_can_hear_song_properly">Loading Please Wait.. Make sure your device can hear the song clearly. That you want to search..</string>
 </resources>

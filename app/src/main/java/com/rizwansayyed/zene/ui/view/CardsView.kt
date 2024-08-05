@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.MusicType.*
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
@@ -51,19 +52,10 @@ import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.WEB_BASE_URL
-import com.rizwansayyed.zene.utils.Utils.addSongToLast
-import com.rizwansayyed.zene.utils.Utils.addSongToNext
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
-import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import com.rizwansayyed.zene.viewmodel.ZeneViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.URL
 
 @Composable
 fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
@@ -282,9 +274,7 @@ fun ArtistsCardView(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
             .bouncingClickable {
                 if (it) openSpecificIntent(m, list)
                 else dialog = true
-            },
-        Arrangement.Center,
-        Alignment.CenterHorizontally
+            }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         AsyncImage(
             imgBuilder(m.thumbnail),
@@ -425,6 +415,48 @@ fun NewsItemCard(news: ZeneMusicDataItems) {
     }
 }
 
+@Composable
+fun FeedNewsItemView(posts: ZeneArtistsPostItems?) {
+    Row(
+        Modifier
+            .padding(horizontal = 0.dp, vertical = 4.dp)
+            .fillMaxWidth()
+            .clickable {
+                posts?.url?.let { openBrowser(it) }
+            }
+            .padding(9.dp),
+        Arrangement.Center,
+        Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            imgBuilder(posts?.thumbnail),
+            posts?.name,
+            Modifier
+                .size(120.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color.Gray),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(horizontal = 10.dp)
+        ) {
+            Spacer(Modifier.height(10.dp))
+            TextPoppinsThin("${posts?.name}'s ${stringResource(R.string.news)}", size = 14)
+            Spacer(Modifier.height(5.dp))
+            TextPoppins(posts?.caption ?: "", size = 15, limit = 3)
+
+            Row {
+                TextPoppinsThin(posts?.timestampToDate() ?: "", size = 14)
+            }
+
+            Spacer(Modifier.height(10.dp))
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
@@ -482,16 +514,17 @@ fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
 
 
 fun shareUrl(m: ZeneMusicDataItems): String {
-   return when (m.type()) {
+    return when (m.type()) {
         SONGS -> "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
-        PLAYLIST, ALBUMS ->
-            "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+        PLAYLIST, ALBUMS -> "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${
+            EncodeDecodeGlobal.encryptData(
+                m.id ?: "-"
+            )
+        }"
 
-        ARTISTS ->
-            "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+        ARTISTS -> "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
 
-        VIDEO ->
-            "${WEB_BASE_URL}${VIDEO_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+        VIDEO -> "${WEB_BASE_URL}${VIDEO_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
 
         MOOD -> WEB_BASE_URL
         STORE -> WEB_BASE_URL

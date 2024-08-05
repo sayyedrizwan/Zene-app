@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
             ZeneTheme {
                 Box(Modifier.fillMaxSize()) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    NavHost(navController, NAV_HOME) {
+                    NavHost(navController, NAV_FEED) {
                         composable(NAV_HOME) {
                             HomeView(notificationPermission, homeViewModel)
                         }

@@ -183,7 +183,7 @@ interface ZeneAPIService {
 
     @POST(ZENE_FEEDS_API)
     suspend fun artistsPosts(@Body body: RequestBody): ZeneArtistsPostsResponse
-    
+
     @POST(ZENE_USER_MY_PLAYLISTS_API)
     suspend fun userPlaylistData(@Body body: RequestBody): ZeneMusicDataItems
 
