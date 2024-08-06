@@ -14,28 +14,23 @@ import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
-import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryItem
-import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsItems
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.ui.feed.view.FeedTypes
+import com.rizwansayyed.zene.ui.extra.mymusic.spotify.ImportPlaylistActivity
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
 import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,6 +49,9 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var doShowMoreLoading by mutableStateOf(false)
     var searchFindSong by mutableStateOf<APIResponse<ZeneMusicDataItems>>(APIResponse.Empty)
     var feedItems by mutableStateOf<APIResponse<ZeneArtistsPostsResponse>>(APIResponse.Empty)
+
+    var spotifyPlaylists = mutableStateListOf<ZeneMusicImportPlaylistsItems>()
+    var isSpotifyPlaylistsLoading by mutableStateOf(false)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.artistsInfo(name).onStart {
@@ -217,6 +215,24 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             feedItems = APIResponse.Empty
         }.collectLatest {
             feedItems = APIResponse.Success(it)
+        }
+    }
+
+    fun spotifyPlaylists(token: String, path: String?) = viewModelScope.launch(Dispatchers.IO) {
+        isSpotifyPlaylistsLoading = true
+        try {
+            val list = zeneAPI.importSpotifyPlaylists(token, path).firstOrNull()
+            val nextPath = list?.firstOrNull()?.next
+            if (nextPath != null) {
+                ImportPlaylistActivity.playlistRun.spotify(token, nextPath)
+                isSpotifyPlaylistsLoading = true
+            } else {
+                isSpotifyPlaylistsLoading = false
+            }
+
+            list?.forEach { spotifyPlaylists.add(it) }
+        } catch (e: Exception) {
+            isSpotifyPlaylistsLoading = false
         }
     }
 }

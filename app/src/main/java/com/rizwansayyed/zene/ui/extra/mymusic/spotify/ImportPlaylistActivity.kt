@@ -1,95 +1,105 @@
 package com.rizwansayyed.zene.ui.extra.mymusic.spotify
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.ads.MobileAds
-import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
-import com.rizwansayyed.zene.service.MusicPlayService
-import com.rizwansayyed.zene.service.isMusicServiceRunning
-import com.rizwansayyed.zene.ui.artists.ArtistsView
-import com.rizwansayyed.zene.ui.extra.MyMusicView
-import com.rizwansayyed.zene.ui.home.HomeView
-import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
-import com.rizwansayyed.zene.ui.login.LoginView
-import com.rizwansayyed.zene.ui.mood.MoodView
-import com.rizwansayyed.zene.ui.player.MusicPlayerView
-import com.rizwansayyed.zene.ui.player.PlayerThumbnail
-import com.rizwansayyed.zene.ui.player.customPlayerNotification
-import com.rizwansayyed.zene.ui.playlists.PlaylistsView
-import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
-import com.rizwansayyed.zene.ui.search.SearchView
-import com.rizwansayyed.zene.ui.settings.SettingsView
-import com.rizwansayyed.zene.ui.subscription.SubscriptionView
-import com.rizwansayyed.zene.ui.theme.ZeneTheme
-import com.rizwansayyed.zene.ui.view.AlertDialogView
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
-import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
-import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
-import com.rizwansayyed.zene.utils.NotificationUtils
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.view.HorizontalCardItems
+import com.rizwansayyed.zene.ui.view.LoadingCardView
+import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
-import com.rizwansayyed.zene.utils.Utils.toast
-import com.rizwansayyed.zene.utils.Utils.vibratePhone
-import com.rizwansayyed.zene.viewmodel.HomeNavModel
-import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
+
+interface PlaylistRun {
+    fun spotify(token: String, path: String?)
+}
 
 @AndroidEntryPoint
-class ImportPlaylistActivity : ComponentActivity() {
+class ImportPlaylistActivity : ComponentActivity(), PlaylistRun {
 
+    companion object {
+        lateinit var playlistRun: PlaylistRun
+    }
+
+    private val viewModel: ZeneViewModel by viewModels()
+
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        playlistRun = this
+
         checkAndRunWeb(intent)
         setContent {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        }
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .background(DarkCharcoal)
+            ) {
+                if (viewModel.isSpotifyPlaylistsLoading) item {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 50.dp),
+                        Arrangement.Center,
+                        Alignment.Bottom
+                    ) {
+                        LoadingCardView()
+                    }
+                }
 
+                if (!viewModel.isSpotifyPlaylistsLoading && viewModel.spotifyPlaylists.isEmpty())
+                    item {
+                        Spacer(Modifier.height(190.dp))
+                        TextPoppins(
+                            stringResource(R.string.no_playlists_found_on_spotify), true, size = 17
+                        )
+                        Spacer(Modifier.height(30.dp))
+                    }
+
+                if (viewModel.spotifyPlaylists.isNotEmpty()) {
+                    item {
+                        Spacer(Modifier.height(90.dp))
+
+                        TextPoppinsSemiBold(stringResource(R.string.playlists), size = 15)
+                    }
+                    items(viewModel.spotifyPlaylists) {
+                        HorizontalCardItems(it)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ShowAdsOnAppOpen(this).interstitialAds()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -98,9 +108,28 @@ class ImportPlaylistActivity : ComponentActivity() {
     }
 
     private fun checkAndRunWeb(intent: Intent) {
-        val appLinkAction: String? = intent.action
         val appLinkData: Uri? = intent.data
+        if (appLinkData == null) {
+            finish()
+            return
+        }
+        val accessToken = extractAccessToken(appLinkData.toString())
+        if (accessToken != null) {
+            viewModel.spotifyPlaylists(accessToken, null)
+        }
+    }
 
-        appLinkData?.toast()
+    private fun extractAccessToken(callbackUrl: String): String? {
+        val uri = Uri.parse(callbackUrl)
+        val fragment = uri.fragment ?: return null
+        val params = fragment.split("&").associate {
+            val (key, value) = it.split("=")
+            key to value
+        }
+        return params["access_token"]
+    }
+
+    override fun spotify(token: String, path: String?) {
+        viewModel.spotifyPlaylists(token, path)
     }
 }

@@ -92,11 +92,12 @@ fun MyMusicImportAppleMusicPlaylistView() {
 
 
 fun openSpotifyLogin(activity: Activity) {
+    AuthorizationClient.clearCookies(activity)
     val redirectURI = "com.rizwansayyed.zene.import://callback"
     val builder = AuthorizationRequest.Builder(
         BuildConfig.SPOTIFY_CLIENT_ID, AuthorizationResponse.Type.TOKEN, redirectURI
     )
-    builder.setScopes(arrayOf("playlist-read-private", "playlist-read-collaborative"))
+    builder.setScopes(arrayOf("playlist-read-private", "playlist-read-collaborative", "user-library-read"))
 
     AuthorizationClient.openLoginInBrowser(activity, builder.build())
 }

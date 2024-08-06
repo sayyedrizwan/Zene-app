@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.data.api.model.MusicType.*
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsItems
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
@@ -424,10 +425,7 @@ fun FeedNewsItemView(posts: ZeneArtistsPostItems?) {
             .clickable {
                 posts?.url?.let { openBrowser(it) }
             }
-            .padding(9.dp),
-        Arrangement.Center,
-        Alignment.CenterVertically
-    ) {
+            .padding(9.dp), Arrangement.Center, Alignment.CenterVertically) {
         AsyncImage(
             imgBuilder(posts?.thumbnail),
             posts?.name,
@@ -498,6 +496,26 @@ fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
 }
 
 @Composable
+fun HorizontalCardItems(items: ZeneMusicImportPlaylistsItems) {
+//    Row(
+//        Modifier
+//            .fillMaxSize()
+//            .padding(horizontal = 4.dp, vertical = 10.dp),
+//        Arrangement.Center, Alignment.CenterVertically
+//    ) {
+//        AsyncImage(
+//            imgBuilder(items.thumbnail),
+//            posts?.name,
+//            Modifier
+//                .size(120.dp)
+//                .clip(RoundedCornerShape(14.dp))
+//                .background(Color.Gray),
+//            contentScale = ContentScale.Crop
+//        )
+//    }
+}
+
+@Composable
 fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
     Row(
         Modifier
@@ -516,11 +534,8 @@ fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
 fun shareUrl(m: ZeneMusicDataItems): String {
     return when (m.type()) {
         SONGS -> "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
-        PLAYLIST, ALBUMS -> "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${
-            EncodeDecodeGlobal.encryptData(
-                m.id ?: "-"
-            )
-        }"
+        PLAYLIST, ALBUMS ->
+            "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
 
         ARTISTS -> "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
 

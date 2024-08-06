@@ -15,8 +15,8 @@ object APIHttpService {
 
     fun youtubeMusicPlaylist(): String = runBlocking(Dispatchers.IO) {
         val client = OkHttpClient.Builder()
-            .readTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.MINUTES)
+            .connectTimeout(30, TimeUnit.MINUTES)
             .build()
 
         val request = Request.Builder().url(YOUTUBE_MUSIC)

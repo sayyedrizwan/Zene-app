@@ -85,6 +85,10 @@ fun FeedView(viewModel: ZeneViewModel) {
                     items(v.data.posts ?: emptyList()) {
                         FeedNewsItemView(it)
                     }
+
+                    item(3) {
+                        Spacer(Modifier.height(140.dp))
+                    }
                 } else
                     item(5) {
                         Spacer(Modifier.height(190.dp))

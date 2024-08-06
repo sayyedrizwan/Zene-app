@@ -151,7 +151,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
 
     private fun fbGraph(token: String) = runBlocking(Dispatchers.IO) {
         val client = OkHttpClient().newBuilder().connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.MINUTES)
             .build()
 
         val httpUrl = HttpUrl.Builder().scheme("https").host(GRAPH_FB_API)

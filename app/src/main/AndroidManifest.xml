@@ -141,11 +141,6 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2941808068005217~5659881245" />
 
-
-        <activity
-            android:name="com.apple.android.sdk.authentication.SDKUriHandlerActivity"
-            android:exported="true" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/FB_APP_ID" />

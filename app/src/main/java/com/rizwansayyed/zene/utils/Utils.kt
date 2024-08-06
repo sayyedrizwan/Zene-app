@@ -93,6 +93,8 @@ object Utils {
         const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"
         const val ZENE_REMOVE_PLAYLISTS_API = "zuser/remove_playlists"
 
+        const val ZENE_IMPORT_PLAYLISTS_SPOTIFY_API = "importplaylists/spotify"
+
 
         const val ZENE_SEARCH_IMG_API = "search_img"
         const val ZENE_FEEDS_API = "feeds"
@@ -169,6 +171,7 @@ object Utils {
 
             val build = customTabsIntent.build()
             build.intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+            build.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             build.launchUrl(context, Uri.parse(url))
         } catch (e: Exception) {
             val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))

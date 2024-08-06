@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_FEEDS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_IMPORT_PLAYLISTS_SPOTIFY_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_LYRICS_API
@@ -189,8 +191,13 @@ interface ZeneAPIService {
 
     @GET(ZENE_USER_MY_PLAYLISTS_API)
     suspend fun userPlaylistSongs(
-        @Query("playlistID") playlistID: String,
-        @Query("page") page: Int
+        @Query("playlistID") playlistID: String, @Query("page") page: Int
     ): ZeneMusicDataResponse
+
+
+    @GET(ZENE_IMPORT_PLAYLISTS_SPOTIFY_API)
+    suspend fun importSpotifyPlaylists(
+        @Query("token") token: String, @Query("url") url: String?
+    ): ZeneMusicImportPlaylistsDataResponse
 
 }

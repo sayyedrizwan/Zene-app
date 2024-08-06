@@ -40,6 +40,20 @@ data class ZeneMoodPlaylistData(
     )
 }
 
+typealias ZeneMusicImportPlaylistsDataResponse = List<ZeneMusicImportPlaylistsItems>
+
+
+data class ZeneMusicImportPlaylistsItems(
+    val name: String?,
+    val artists: String?,
+    val id: String?,
+    val thumbnail: String?,
+    val desc: String?,
+    val path: String?,
+    val next: String?,
+    private val type: String?
+)
+
 typealias ZeneMusicDataResponse = List<ZeneMusicDataItems>
 
 data class ZeneMusicDataItems(

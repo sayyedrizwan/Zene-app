@@ -24,8 +24,8 @@ object RetrofitAPI {
     @Provides
     fun zeneAPIService(): ZeneAPIService {
         val okHttpClient = OkHttpClient.Builder()
-            .readTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.MINUTES)
+            .connectTimeout(30, TimeUnit.MINUTES)
 
         okHttpClient.networkInterceptors().add(Interceptor { chain ->
             val requestBuilder = chain.request().newBuilder()

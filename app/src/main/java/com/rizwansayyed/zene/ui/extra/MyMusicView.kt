@@ -148,13 +148,14 @@ fun MyMusicView(viewModel: ZeneViewModel) {
             Spacer(Modifier.height(70.dp))
         }
 
-        item(1001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            TextPoppins(stringResource(R.string.import_playlists), false)
-        }
+//        item(1001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+//            TextPoppins(stringResource(R.string.import_playlists), false)
+//        }
 
         item(1002, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             LazyRow(Modifier.fillMaxWidth()) {
-                item { MyMusicImportSpotifyPlaylistView() }
+//                item { MyMusicImportSpotifyPlaylistView() }
+
 //                item { MyMusicImportAppleMusicPlaylistView() }
             }
         }

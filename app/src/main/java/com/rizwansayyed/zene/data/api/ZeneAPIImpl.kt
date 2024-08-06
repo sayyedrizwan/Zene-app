@@ -12,10 +12,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
@@ -277,6 +275,10 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun userPlaylistSongs(playlistID: String, page: Int) = flow {
         emit(zeneAPI.userPlaylistSongs(playlistID, page))
+    }
+
+    override suspend fun importSpotifyPlaylists(token: String, path: String?) = flow {
+        emit(zeneAPI.importSpotifyPlaylists(token, path))
     }
 
 }

@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
@@ -97,4 +98,6 @@ interface ZeneAPIInterface {
     suspend fun userPlaylistSongs(playlistID: String, page: Int): Flow<ZeneMusicDataResponse>
 
     suspend fun artistsPosts(): Flow<ZeneArtistsPostsResponse>
+
+    suspend fun importSpotifyPlaylists(token: String, path: String?): Flow<ZeneMusicImportPlaylistsDataResponse>
 }
