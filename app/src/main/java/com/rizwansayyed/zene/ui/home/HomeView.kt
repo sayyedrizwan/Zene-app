@@ -89,6 +89,11 @@ fun HomeView(
             when (val v = homeViewModel.songsYouMayLike) {
                 is APIResponse.Success -> {
                     if (v.data.isEmpty()) NewUserCards()
+//                    if (v.data.size > 4)
+
+                    LaunchedEffect(Unit) {
+
+                    }
                 }
 
                 else -> {}
@@ -100,7 +105,8 @@ fun HomeView(
                 HorizontalSongView(
                     homeViewModel.recommendedPlaylists,
                     Pair(TextSize.BIG, R.string.recommended_playlists),
-                    StyleSize.HIDE_AUTHOR, showGrid = false
+                    StyleSize.HIDE_AUTHOR,
+                    showGrid = false
                 )
             }
         }
@@ -114,7 +120,8 @@ fun HomeView(
                 HorizontalSongView(
                     homeViewModel.recommendedAlbums,
                     Pair(TextSize.SMALL, R.string.albums_picked_for_you),
-                    StyleSize.SHOW_AUTHOR, showGrid = false
+                    StyleSize.SHOW_AUTHOR,
+                    showGrid = false
                 )
             }
         }
@@ -128,8 +135,7 @@ fun HomeView(
             item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     HorizontalVideoView(
-                        homeViewModel.recommendedVideo,
-                        R.string.videos_you_may_like
+                        homeViewModel.recommendedVideo, R.string.videos_you_may_like
                     )
                 }
             }
@@ -160,8 +166,10 @@ fun HomeView(
             item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     HorizontalSongView(
-                        homeViewModel.moodList, Pair(TextSize.SMALL, R.string.pick_your_mood),
-                        StyleSize.ONLY_TEXT, showGrid = true
+                        homeViewModel.moodList,
+                        Pair(TextSize.SMALL, R.string.pick_your_mood),
+                        StyleSize.ONLY_TEXT,
+                        showGrid = true
                     )
                 }
             }
@@ -193,7 +201,8 @@ fun HomeView(
                     HorizontalSongView(
                         homeViewModel.topMostListeningSong,
                         Pair(TextSize.SMALL, R.string.most_listening_songs_zene),
-                        StyleSize.SONG_WITH_LISTENER, showGrid = true
+                        StyleSize.SONG_WITH_LISTENER,
+                        showGrid = true
                     )
                 }
             }
@@ -214,7 +223,8 @@ fun HomeView(
                 Column {
                     HorizontalArtistsView(
                         homeViewModel.topMostListeningArtists,
-                        Pair(TextSize.SMALL, R.string.global_top_artists), showGrid = true
+                        Pair(TextSize.SMALL, R.string.global_top_artists),
+                        showGrid = true
                     )
                 }
             }
@@ -229,15 +239,14 @@ fun HomeView(
             when (val v = homeViewModel.favArtistsLists) {
                 APIResponse.Empty -> {}
                 is APIResponse.Error -> {}
-                APIResponse.Loading -> items(
-                    5,
+                APIResponse.Loading -> items(5,
                     key = { 16 },
                     span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     HomeArtistsSimilarLoading()
                 }
 
-                is APIResponse.Success -> items(
-                    v.data, { it.artists.id ?: UUID.randomUUID() },
+                is APIResponse.Success -> items(v.data,
+                    { it.artists.id ?: UUID.randomUUID() },
                     span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     HomeArtistsSimilarToView(it)
                 }
@@ -325,8 +334,9 @@ fun checkNotificationPermissionAndAsk(permission: ManagedActivityResultLauncher<
         if (!isLoggedIn) return@launch
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (isPermissionDisabled(Manifest.permission.POST_NOTIFICATIONS))
-                permission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            if (isPermissionDisabled(Manifest.permission.POST_NOTIFICATIONS)) permission.launch(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
 
         }
     }

@@ -109,8 +109,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
 
         loginManager.logIn(
             c as ActivityResultRegistryOwner,
-            callbackManager,
-            listOf("openid", "email", "public_profile")
+            callbackManager, listOf("openid", "email", "public_profile")
         )
 
         val callback = object : FacebookCallback<LoginResult> {
