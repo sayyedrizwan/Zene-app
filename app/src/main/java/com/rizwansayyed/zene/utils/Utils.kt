@@ -345,7 +345,24 @@ object Utils {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri = Uri.fromParts("package", context.packageName, null)
         intent.setData(uri)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
+    }
+
+    fun openAppPageOnPlayStore() {
+        val playStoreURL = "market://details?id=${context.packageName}"
+        val playStoreBrowser = "https://play.google.com/store/apps/details?id=${context.packageName}"
+        try {
+            Intent(Intent.ACTION_VIEW, Uri.parse(playStoreURL)).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            }
+        } catch (e: Exception) {
+            Intent(Intent.ACTION_VIEW, Uri.parse(playStoreBrowser)).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            }
+
+        }
     }
 }

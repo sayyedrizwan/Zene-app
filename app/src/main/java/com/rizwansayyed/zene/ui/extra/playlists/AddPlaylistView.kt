@@ -55,6 +55,8 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.IMG_PLAYLISTS
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
@@ -201,6 +203,7 @@ fun AddPlaylistView(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
         val b = if (bitmap == null || img == IMG_PLAYLISTS) null
         else bitmap
 
+        logEvents(FirebaseLogEvents.FirebaseEvents.CREATING_NEW_PLAYLISTS)
         viewModel.createNewPlaylist(playlistName, b, null)
     }
 

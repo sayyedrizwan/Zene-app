@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_INTERSTITIAL_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -28,6 +29,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     private val listener = object : AppOpenAd.AppOpenAdLoadCallback() {
         override fun onAdLoaded(p0: AppOpenAd) {
             super.onAdLoaded(p0)
+            logEvents(FirebaseLogEvents.FirebaseEvents.LOADED_APP_OPEN_ADS)
             p0.show(activity)
             lastAdsTimestamp = flowOf(System.currentTimeMillis())
         }
@@ -35,6 +37,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     private val iListener = object : InterstitialAdLoadCallback() {
         override fun onAdLoaded(p0: InterstitialAd) {
             super.onAdLoaded(p0)
+            logEvents(FirebaseLogEvents.FirebaseEvents.LOADED_INTERSTITIAL_ADS)
             p0.show(activity)
             lastAdsTimestamp = flowOf(System.currentTimeMillis())
         }

@@ -38,6 +38,8 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
@@ -133,6 +135,8 @@ class MusicPlayService : Service() {
         val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
             .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
 
+        logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
+
         webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
 
         withContext(Dispatchers.IO) {
@@ -151,12 +155,27 @@ class MusicPlayService : Service() {
             val json = i.getStringExtra(Intent.ACTION_MAIN) ?: return
             val int = i.getIntExtra(Intent.ACTION_MEDIA_EJECT, 0)
 
-            if (json == PLAYBACK_RATE) updatePlaybackSpeed()
-            else if (json == NEXT_SONG) forwardAndRewindSong(true)
-            else if (json == PREVIOUS_SONG) forwardAndRewindSong(false)
+            if (json == PLAYBACK_RATE) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.UPDATED_PLAYBACK_SPEED)
+                updatePlaybackSpeed()
+            }
+            else if (json == NEXT_SONG) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.TO_NEXT_SONG)
+                forwardAndRewindSong(true)
+            }
+            else if (json == PREVIOUS_SONG) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.TO_PREVIOUS_SONG)
+                forwardAndRewindSong(false)
+            }
             else if (json == SEEK_DURATION_VIDEO) seekTo(int)
-            else if (json == PLAY_VIDEO) play()
-            else if (json == PAUSE_VIDEO) pause()
+            else if (json == PLAY_VIDEO) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PLAYING)
+                play()
+            }
+            else if (json == PAUSE_VIDEO) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PAUSE)
+                pause()
+            }
             else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
                 clearCache()
 

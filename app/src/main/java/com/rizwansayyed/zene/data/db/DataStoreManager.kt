@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.model.IpJsonResponse
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.APP_REVIEW_STATUS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.LAST_ADS_TIMESTAMP
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SE
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_IP_INFO
+import com.rizwansayyed.zene.data.db.model.AppReviewData
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.data.db.model.UserInfoData
@@ -51,6 +53,7 @@ object DataStoreManager {
         val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
         val LAST_ADS_TIMESTAMP = longPreferencesKey("last_ads_timestamp")
         val USER_IP_INFO = stringPreferencesKey("user_ip_info")
+        val APP_REVIEW_STATUS = stringPreferencesKey("app_review_status")
     }
 
 
@@ -134,5 +137,14 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(IpJsonResponse::class.java).toJson(value.first())
             context.dataStore.edit { it[USER_IP_INFO] = json }
+        }
+
+    var appReviewStatusDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(AppReviewData::class.java).fromJson(it[APP_REVIEW_STATUS] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(AppReviewData::class.java).toJson(value.first())
+            context.dataStore.edit { it[APP_REVIEW_STATUS] = json }
         }
 }

@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,7 +48,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AlertDialogView
+import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageView
@@ -56,12 +60,15 @@ import com.rizwansayyed.zene.ui.view.LoadingLinearView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
+import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
@@ -72,6 +79,33 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 import kotlin.time.Duration.Companion.seconds
+
+@Composable
+fun ShareWithYourFamily() {
+    val share = stringResource(R.string.download_this_ad_free_music_app)
+
+    Column(
+        Modifier
+            .padding(20.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(MainColor), Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(30.dp))
+        TextPoppinsSemiBold(stringResource(R.string.zene_needs_your_help), true, size = 25)
+        Spacer(Modifier.height(10.dp))
+        TextPoppinsSemiBold(stringResource(R.string.zene_needs_your_help_desc), true, size = 14)
+        Spacer(Modifier.height(20.dp))
+
+        BorderButtons(
+            Modifier.clickable {
+                shareTxtImage("$share https://play.google.com/store/apps/details?id=com.rizwansayyed.zene")
+            }, R.drawable.ic_share, R.string.share
+        )
+
+        Spacer(Modifier.height(50.dp))
+    }
+}
 
 @Composable
 fun HomeHeaderView() {
@@ -162,7 +196,7 @@ fun HomeHeaderView() {
         }
     }
 
-    Spacer(Modifier.height(70.dp))
+    Spacer(Modifier.height(30.dp))
 
     if (findSongDialog) SearchSongDialog {
         findSongDialog = false

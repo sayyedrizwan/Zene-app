@@ -33,6 +33,8 @@ import com.rizwansayyed.zene.ui.view.ButtonWithImage
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
@@ -86,6 +88,9 @@ fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
         if (isFollowing) R.drawable.ic_user_check else R.drawable.ic_add_user,
         if (isFollowing) R.string.following else R.string.follow
     ) {
+        if (isFollowing) logEvents(FirebaseLogEvents.FirebaseEvents.STOP_FOLLOWING)
+        else logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_FOLLOWING)
+
         isFollowing = !isFollowing
         viewModel.followArtists(artists.name, isFollowing) {
             canFollowOnly40.toast()
@@ -104,6 +109,7 @@ fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
             MusicType.SONGS.name
         )
         sendWebViewCommand(m, listOf(m))
+        logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_ARTISTS_RADIO)
     }
 
 

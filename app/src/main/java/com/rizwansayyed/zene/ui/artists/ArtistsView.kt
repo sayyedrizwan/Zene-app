@@ -33,6 +33,8 @@ import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
@@ -165,6 +167,7 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
     LaunchedEffect(Unit) {
         if (id == null) close()
         else {
+            logEvents(FirebaseLogEvents.FirebaseEvents.VIEWED_ARTISTS)
             ShowAdsOnAppOpen(context).interstitialAds()
             viewModel.artistsInfo(id)
             viewModel.artistsData(id)

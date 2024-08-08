@@ -40,6 +40,8 @@ import com.rizwansayyed.zene.ui.home.view.HomeHeaderView
 import com.rizwansayyed.zene.ui.home.view.HorizontalArtistsView
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
 import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
+import com.rizwansayyed.zene.ui.home.view.ReviewAppDialog
+import com.rizwansayyed.zene.ui.home.view.ShareWithYourFamily
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
@@ -85,20 +87,19 @@ fun HomeView(
                 HomeHeaderView()
             }
         }
-        item(2000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+        item(2001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             when (val v = homeViewModel.songsYouMayLike) {
                 is APIResponse.Success -> {
                     if (v.data.isEmpty()) NewUserCards()
-//                    if (v.data.size > 4)
 
-                    LaunchedEffect(Unit) {
-
+                    if (v.data.size > 4) {
+                        ShareWithYourFamily()
+                        ReviewAppDialog()
                     }
                 }
 
                 else -> {}
             }
-
         }
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {

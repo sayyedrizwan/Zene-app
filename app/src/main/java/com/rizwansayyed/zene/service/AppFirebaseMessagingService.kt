@@ -11,6 +11,8 @@ import com.google.firebase.messaging.RemoteMessage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.Utils.NotificationIDS.NOTIFICATION_CHANNEL_ID
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +36,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         super.onNewToken(token)
         CoroutineScope(Dispatchers.IO).launch {
             delay(3.seconds)
+            logEvents(FirebaseLogEvents.FirebaseEvents.UPDATED_USER_INFO)
             zeneAPI.updateUser().catch { }.collectLatest { }
         }
     }
@@ -42,8 +45,10 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         super.onMessageReceived(message)
 
         message.notification?.let {
-            if (it.title != null)
+            if (it.title != null) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.RECEIVED_NOTIFICATION)
                 NotificationUtils(it.title!!, it.body ?: "", it.imageUrl)
+            }
         }
     }
 }

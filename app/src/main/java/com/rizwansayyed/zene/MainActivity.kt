@@ -51,6 +51,8 @@ import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.AlertDialogView
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
@@ -212,6 +214,8 @@ class MainActivity : ComponentActivity() {
 
         homeViewModel.userArtistsList()
         startMusicService()
+
+        logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
     }
 
 

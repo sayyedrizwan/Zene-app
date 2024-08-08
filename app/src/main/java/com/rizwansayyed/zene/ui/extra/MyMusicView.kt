@@ -44,6 +44,8 @@ import com.rizwansayyed.zene.ui.view.PlaylistsDynamicCards
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
@@ -175,7 +177,12 @@ fun MyMusicView(viewModel: ZeneViewModel) {
 
     LaunchedEffect(type) {
         page = 0
-        if (type == MyMusicType.PLAYLISTS) viewModel.playlists(0)
-        else viewModel.songHistory(0)
+        if (type == MyMusicType.PLAYLISTS) {
+            logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_PERSONAL_PLAYLISTS)
+            viewModel.playlists(0)
+        } else {
+            logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_SONG_HISTORY)
+            viewModel.songHistory(0)
+        }
     }
 }

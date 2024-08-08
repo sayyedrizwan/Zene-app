@@ -23,6 +23,8 @@ import com.rizwansayyed.zene.ui.view.ArtistsCardView
 import com.rizwansayyed.zene.ui.view.FeedNewsItemView
 import com.rizwansayyed.zene.ui.view.LoadingArtistsCardView
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
@@ -102,6 +104,7 @@ fun FeedView(viewModel: ZeneViewModel) {
     }
 
     LaunchedEffect(Unit) {
+        logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP_FEED)
         viewModel.startGettingFeed()
     }
 }
