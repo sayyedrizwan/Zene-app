@@ -35,6 +35,7 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
@@ -48,6 +49,7 @@ import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
+import kotlinx.coroutines.flow.firstOrNull
 
 @Composable
 fun PlaylistAlbumTopView(
@@ -60,6 +62,7 @@ fun PlaylistAlbumTopView(
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isAdded by remember { mutableStateOf(false) }
     var removeDialog by remember { mutableStateOf(false) }
+    var isUserOwner by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -81,6 +84,7 @@ fun PlaylistAlbumTopView(
         Spacer(Modifier.height(15.dp))
         TextPoppins(v?.name ?: "", true, size = 25)
         Spacer(Modifier.height(5.dp))
+
         if (v?.type() == MusicType.ALBUMS) {
             TextPoppinsThin(v.artists ?: "", true, size = 17)
         }
@@ -103,7 +107,12 @@ fun PlaylistAlbumTopView(
 
         Spacer(Modifier.height(27.dp))
 
-        Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+
+        if (isUserOwner) Row(
+            Modifier.fillMaxWidth(),
+            Arrangement.Center,
+            Alignment.CenterVertically
+        ) {
             Box(Modifier.clickable { v?.let { shareTxtImage(shareUrl(v)) } }) {
                 ImageIcon(R.drawable.ic_share, 27)
             }
@@ -128,6 +137,7 @@ fun PlaylistAlbumTopView(
 
     LaunchedEffect(Unit) {
         isAdded = added ?: false
+        isUserOwner = v?.artists == DataStoreManager.userInfoDB.firstOrNull()?.email
     }
 
     if (removeDialog) AlertDialogView(

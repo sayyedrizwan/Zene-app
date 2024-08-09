@@ -28,7 +28,8 @@ data class ZeneVideosMusicData(
 data class ZenePlaylistAlbumsData(
     val info: ZeneMusicDataItems?,
     val songs: List<ZeneMusicDataItems>,
-    val isAdded: Boolean?
+    val isAdded: Boolean?,
+    val ownerEmail: String?,
 )
 
 

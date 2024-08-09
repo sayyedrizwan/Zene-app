@@ -301,7 +301,8 @@ class HomeViewModel @Inject constructor(
         }.catch {
             albumPlaylistData = APIResponse.Error(it)
         }.collectLatest {
-            albumPlaylistData = APIResponse.Success(ZenePlaylistAlbumsData(it, emptyList(), false))
+            val d = ZenePlaylistAlbumsData(it, emptyList(), false, it.artists)
+            albumPlaylistData = APIResponse.Success(d)
         }
     }
 
