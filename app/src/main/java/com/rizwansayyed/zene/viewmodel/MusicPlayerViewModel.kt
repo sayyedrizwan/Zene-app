@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
+import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -38,6 +39,11 @@ class MusicPlayerViewModel @Inject constructor(
     fun similarSongs(songId: String) = viewModelScope.launch(Dispatchers.IO) {
         if (songId == songID) return@launch
 
+        if (!internetIsConnected()) {
+            similarSongs = APIResponse.Empty
+            return@launch
+        }
+
         zeneAPI.suggestedSongs(songId).onStart {
             similarSongs = APIResponse.Loading
         }.catch {
@@ -54,6 +60,12 @@ class MusicPlayerViewModel @Inject constructor(
             similarSongs = APIResponse.Empty
             return@launch
         }
+
+        if (!internetIsConnected()) {
+            similarSongs = APIResponse.Empty
+            return@launch
+        }
+
 
         zeneAPI.lyrics(m.id, m.name ?: "", m.artists ?: "").onStart {
             lyrics = APIResponse.Loading
@@ -72,6 +84,12 @@ class MusicPlayerViewModel @Inject constructor(
             return@launch
         }
 
+        if (!internetIsConnected()) {
+            similarSongs = APIResponse.Empty
+            return@launch
+        }
+
+
         zeneAPI.playerVideoData(m.name ?: "", m.artists ?: "").onStart {
             videoDetails = APIResponse.Loading
         }.catch {
@@ -88,6 +106,12 @@ class MusicPlayerViewModel @Inject constructor(
             storeData = APIResponse.Empty
             return@launch
         }
+
+        if (!internetIsConnected()) {
+            similarSongs = APIResponse.Empty
+            return@launch
+        }
+
 
         zeneAPI.merchandise(m.name ?: "", m.artists ?: "").onStart {
             storeData = APIResponse.Loading

@@ -274,13 +274,13 @@ fun HomeView(
                         }
                     }
 
-                    items(1, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    items(26, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                         LoadingView(Modifier.size(32.dp))
                     }
                 }
 
                 is APIResponse.Success -> {
-                    item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    item(27, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                         Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                             TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
 
@@ -331,13 +331,15 @@ fun HomeView(
 fun checkNotificationPermissionAndAsk(permission: ManagedActivityResultLauncher<String, Boolean>) =
     CoroutineScope(Dispatchers.Main).launch {
         delay(3.seconds)
-        val isLoggedIn = userInfoDB.firstOrNull()?.isLoggedIn() ?: false
-        if (!isLoggedIn) return@launch
+        try {
+            val isLoggedIn = userInfoDB.firstOrNull()?.isLoggedIn() ?: false
+            if (!isLoggedIn) return@launch
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (isPermissionDisabled(Manifest.permission.POST_NOTIFICATIONS)) permission.launch(
-                Manifest.permission.POST_NOTIFICATIONS
-            )
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@launch
 
+            if (isPermissionDisabled(Manifest.permission.POST_NOTIFICATIONS))
+                permission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }

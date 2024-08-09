@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_REMOVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_IMG_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SONG_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ALBUMS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ARTISTS_API
@@ -199,5 +200,9 @@ interface ZeneAPIService {
     suspend fun importSpotifyPlaylists(
         @Query("token") token: String, @Query("url") url: String?
     ): ZeneMusicImportPlaylistsDataResponse
+
+
+    @GET(ZENE_SONG_INFO_API)
+    suspend fun songInfo(@Query("id") token: String): ZeneMusicDataItems
 
 }

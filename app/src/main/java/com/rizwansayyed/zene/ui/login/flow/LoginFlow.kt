@@ -30,6 +30,8 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.model.SubscriptionType
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.URLS.GOOGLE_BUNDLE_EMAIL
@@ -80,26 +82,32 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
     }
 
     private fun startGoogleSignIn(c: Activity) = CoroutineScope(Dispatchers.Main).launch {
-        val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
-            .setServerClientId(BuildConfig.GOOGLE_SERVER_ID).setAutoSelectEnabled(false)
-            .setAutoSelectEnabled(false).build()
+        try {
+            val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
+                .setServerClientId(BuildConfig.GOOGLE_SERVER_ID).setAutoSelectEnabled(false)
+                .setAutoSelectEnabled(false).build()
 
-        val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
-        val credential = credentialManager?.getCredential(c, request)?.credential
+            val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
+            val credential = credentialManager?.getCredential(c, request)?.credential
 
-        suspend fun get() {
-            try {
-                val g = GoogleIdTokenCredential.createFrom(credential!!.data)
-                val email = g.data.getString(GOOGLE_BUNDLE_EMAIL)
-                startLogin(email, g.displayName, g.profilePictureUri.toString())
-            } catch (e: Exception) {
-                context.getString(R.string.error_while_login).toast()
+            suspend fun get() {
+                try {
+                    val g = GoogleIdTokenCredential.createFrom(credential!!.data)
+                    val email = g.data.getString(GOOGLE_BUNDLE_EMAIL)
+
+                    logEvents(FirebaseLogEvents.FirebaseEvents.LOGIN_WITH_GOOGLE)
+                    startLogin(email, g.displayName, g.profilePictureUri.toString())
+                } catch (e: Exception) {
+                    context.getString(R.string.error_while_login).toast()
+                }
             }
-        }
 
-        when (credential) {
-            is CustomCredential -> if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) get()
-            else -> context.getString(R.string.error_while_login).toast()
+            when (credential) {
+                is CustomCredential -> if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) get()
+                else -> context.getString(R.string.error_while_login).toast()
+            }
+        } catch (e: Exception) {
+            e.message
         }
     }
 
@@ -139,8 +147,10 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             }
 
             auth.user?.providerData?.forEach { user ->
-                if (user.email?.contains("@") == true)
+                if (user.email?.contains("@") == true) {
+                    logEvents(FirebaseLogEvents.FirebaseEvents.LOGIN_WITH_APPLE)
                     startLogin(user?.email, user?.displayName, user?.photoUrl.toString())
+                }
             }
 
         } catch (e: Exception) {
@@ -165,6 +175,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             val data =
                 moshi.adapter(FbLoginResponse::class.java).fromJson(response.body?.string() ?: "")
 
+            logEvents(FirebaseLogEvents.FirebaseEvents.LOGIN_WITH_FB)
             startLogin(data?.email(), data?.name ?: "", data?.profilePic())
         } catch (e: Exception) {
             context.getString(R.string.error_while_login).toast()

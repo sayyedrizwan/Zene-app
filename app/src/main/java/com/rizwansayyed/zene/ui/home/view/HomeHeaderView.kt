@@ -63,6 +63,8 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.shareUrl
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
@@ -99,6 +101,7 @@ fun ShareWithYourFamily() {
 
         BorderButtons(
             Modifier.clickable {
+                logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_SHARE_APP)
                 shareTxtImage("$share https://play.google.com/store/apps/details?id=com.rizwansayyed.zene")
             }, R.drawable.ic_share, R.string.share
         )
@@ -256,6 +259,7 @@ fun SearchSongDialog(close: () -> Unit) {
                 Box(Modifier.size(0.dp)) {
                     AndroidView({ ctx ->
                         SongDetectWebView(ctx, {
+                            logEvents(FirebaseLogEvents.FirebaseEvents.NOT_FOUND_SONG_DETECT_VIEW)
                             coroutine?.cancel()
                             coroutine = null
                             notFound(true)
@@ -263,6 +267,7 @@ fun SearchSongDialog(close: () -> Unit) {
                             isLoading = false
                             isFindingSong = true
                         }, {
+                            logEvents(FirebaseLogEvents.FirebaseEvents.FOUND_SONG_DETECT_VIEW)
                             coroutine?.cancel()
                             coroutine = null
                             startSearch = it

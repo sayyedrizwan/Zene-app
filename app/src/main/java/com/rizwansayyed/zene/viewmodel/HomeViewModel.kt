@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
+import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +69,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun recommendedPlaylists() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            recommendedPlaylists = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.recommendedPlaylists().onStart {
             recommendedPlaylists = APIResponse.Loading
         }.catch {
@@ -79,6 +84,10 @@ class HomeViewModel @Inject constructor(
 
 
     private fun recommendedAlbums() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            recommendedAlbums = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.recommendedAlbums().onStart {
             recommendedAlbums = APIResponse.Loading
         }.catch {
@@ -89,6 +98,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun recommendedVideo() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            recommendedVideo = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.recommendedVideo().onStart {
             recommendedVideo = APIResponse.Loading
         }.catch {
@@ -99,6 +112,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun songsYouMayLike() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            songsYouMayLike = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.suggestTopSongs().onStart {
             songsYouMayLike = APIResponse.Loading
         }.catch {
@@ -109,6 +126,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun moodLists() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            moodList = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.moodLists().onStart {
             moodList = APIResponse.Loading
         }.catch {
@@ -119,9 +140,13 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun latestReleases() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            latestReleases = APIResponse.Empty
+            return@launch
+        }
         val id = youtubeMusicPlaylist()
         if (id == "") {
-            moodList = APIResponse.Empty
+            latestReleases = APIResponse.Empty
             return@launch
         }
 
@@ -135,6 +160,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun topMostListeningSong() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            topMostListeningSong = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.topMostListeningSong().onStart {
             topMostListeningSong = APIResponse.Loading
         }.catch {
@@ -145,6 +174,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun topMostListeningArtists() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            topMostListeningArtists = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.topMostListeningArtists().onStart {
             topMostListeningArtists = APIResponse.Loading
         }.catch {
@@ -155,6 +188,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun favArtistsData() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            favArtistsLists = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.favArtistsData().onStart {
             favArtistsLists = APIResponse.Loading
         }.catch {
@@ -165,6 +202,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun suggestedSongsForYou() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            suggestedSongsForYou = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.suggestedSongs().onStart {
             suggestedSongsForYou = APIResponse.Loading
         }.catch {
@@ -175,6 +216,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun search(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            searchQuery = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.searchData(q).onStart {
             searchQuery = APIResponse.Loading
         }.catch {
@@ -186,6 +231,10 @@ class HomeViewModel @Inject constructor(
 
     fun searchSuggestions(q: String, doEmpty: Boolean = false) =
         viewModelScope.launch(Dispatchers.IO) {
+            if (!internetIsConnected()) {
+                searchSuggestions = APIResponse.Empty
+                return@launch
+            }
             if (doEmpty) {
                 searchSuggestions = APIResponse.Empty
                 return@launch
@@ -200,6 +249,10 @@ class HomeViewModel @Inject constructor(
         }
 
     fun playlistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            albumPlaylistData = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.playlistAlbums(id).onStart {
             albumPlaylistData = APIResponse.Loading
         }.catch {
@@ -211,6 +264,10 @@ class HomeViewModel @Inject constructor(
 
 
     fun moodPlaylists(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            moodPlaylist = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.moodLists(id).onStart {
             moodPlaylist = APIResponse.Loading
         }.catch {
@@ -221,6 +278,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun userArtistsList() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) return@launch
+
         val email = userInfoDB.firstOrNull()?.email ?: ""
         if (email == "") return@launch
 
@@ -233,6 +292,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun userPlaylists(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            albumPlaylistData = APIResponse.Empty
+            return@launch
+        }
         zeneAPI.userPlaylistData(id).onStart {
             albumPlaylistData = APIResponse.Loading
         }.catch {
@@ -244,6 +307,10 @@ class HomeViewModel @Inject constructor(
 
     fun userPlaylistsSongs(id: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
         if (page == 0) userPlaylistsSong.clear()
+        if (!internetIsConnected()) {
+            isUserPlaylistLoading = false
+            return@launch
+        }
 
         zeneAPI.userPlaylistSongs(id, page).onStart {
             isUserPlaylistLoading = true
@@ -264,6 +331,14 @@ class HomeViewModel @Inject constructor(
             userPlaylistsSong.removeAt(position)
         } catch (e: Exception) {
             e.message
+        }
+    }
+
+    suspend fun getSongInfo(id: String): ZeneMusicDataItems? {
+        return try {
+            zeneAPI.songInfo(id).firstOrNull()
+        } catch (e: Exception) {
+            null
         }
     }
 }

@@ -1,8 +1,6 @@
 package com.rizwansayyed.zene.utils
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -19,9 +17,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
@@ -99,6 +95,7 @@ object Utils {
         const val ZENE_SEARCH_IMG_API = "search_img"
         const val ZENE_FEEDS_API = "feeds"
         const val ZENE_MOODS_API = "moods"
+        const val ZENE_SONG_INFO_API = "song_info"
         const val ZENE_PLAYLISTS_API = "playlists"
         const val ZENE_NEW_RELEASE_API = "newrelease"
         const val ZENE_SUGGESTED_SONGS_API = "suggestedsongs"
@@ -351,7 +348,8 @@ object Utils {
 
     fun openAppPageOnPlayStore() {
         val playStoreURL = "market://details?id=${context.packageName}"
-        val playStoreBrowser = "https://play.google.com/store/apps/details?id=${context.packageName}"
+        val playStoreBrowser =
+            "https://play.google.com/store/apps/details?id=${context.packageName}"
         try {
             Intent(Intent.ACTION_VIEW, Uri.parse(playStoreURL)).apply {
                 flags = FLAG_ACTIVITY_NEW_TASK
@@ -365,4 +363,14 @@ object Utils {
 
         }
     }
+
+    fun internetIsConnected(): Boolean {
+        try {
+            val command = "ping -c 1 google.com"
+            return (Runtime.getRuntime().exec(command).waitFor() == 0)
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
 }

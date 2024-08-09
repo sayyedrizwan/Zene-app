@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.ui.player
 
+import android.R.attr.key
+import android.content.pm.PackageManager
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -43,9 +46,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import coil.compose.AsyncImage
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
@@ -63,6 +68,8 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
@@ -70,8 +77,12 @@ import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import kotlinx.coroutines.delay
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.util.UUID
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.time.Duration.Companion.seconds
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -226,9 +237,13 @@ fun MusicPlayerView(
     suspend fun scrollThumbnailCard() {
         playerInfo?.list?.forEachIndexed { index, z ->
             if (z.id == playerInfo.player?.id) {
-                pagerState.animateScrollToPage(index)
-                name = z.name ?: ""
-                artists = z.artists ?: ""
+                try {
+                    pagerState.animateScrollToPage(index)
+                    name = z.name ?: ""
+                    artists = z.artists ?: ""
+                } catch (e: Exception) {
+                    e.message
+                }
             }
         }
     }
@@ -249,6 +264,7 @@ fun MusicPlayerView(
             scrollThumbnailCard()
             playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
             playerInfo?.player?.let {
+                logEvents(FirebaseLogEvents.FirebaseEvents.MUSIC_PLAYER_STARTED)
                 musicPlayerViewModel.lyrics(it)
                 musicPlayerViewModel.videoPlayerData(it)
                 musicPlayerViewModel.storeData(it)

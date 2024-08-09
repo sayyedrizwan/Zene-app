@@ -28,6 +28,8 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
@@ -94,6 +96,7 @@ fun PlaylistsView(id: String?, close: () -> Unit) {
     LaunchedEffect(Unit) {
         if (id == null) close()
         else {
+            logEvents(FirebaseLogEvents.FirebaseEvents.ALBUM_PLAYLIST_VIEW)
             ShowAdsOnAppOpen(context).interstitialAds()
             homeViewModel.playlistsData(id)
         }

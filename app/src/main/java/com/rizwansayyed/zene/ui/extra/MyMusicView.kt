@@ -99,7 +99,7 @@ fun MyMusicView(viewModel: ZeneViewModel) {
             }
 
         if (viewModel.zeneSavedPlaylists.isEmpty() && type == MyMusicType.PLAYLISTS && !viewModel.songHistoryIsLoading)
-            item(20, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            item(21, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 TextPoppins(
                     stringResource(R.string.you_have_not_created_or_saved_a_playlists),
                     true, size = 16

@@ -62,6 +62,8 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.feedbackMail
 import com.rizwansayyed.zene.utils.Utils.openAppPageOnPlayStore
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -157,6 +159,10 @@ fun ReviewAppDialog() {
                 }
             }
         }
+    }
+
+    LaunchedEffect(reviewDialog) {
+        if (reviewDialog) logEvents(FirebaseLogEvents.FirebaseEvents.VISIBLE_REVIEW_DIALOG)
     }
 
     LaunchedEffect(Unit) {

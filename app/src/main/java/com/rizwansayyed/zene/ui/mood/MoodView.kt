@@ -33,6 +33,8 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -102,6 +104,7 @@ fun MoodView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
     LaunchedEffect(Unit) {
         if (id == null) close()
         else {
+            logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_MOOD_VIEW)
             ShowAdsOnAppOpen(context).interstitialAds()
             homeViewModel.moodPlaylists(id)
         }

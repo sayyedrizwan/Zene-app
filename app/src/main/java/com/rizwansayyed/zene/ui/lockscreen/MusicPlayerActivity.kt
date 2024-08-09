@@ -59,6 +59,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.net.Uri
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
 import com.rizwansayyed.zene.ui.settings.SettingsView
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 
@@ -76,6 +78,11 @@ class MusicPlayerActivity : ComponentActivity() {
             MusicPlayerView(playerInfo, musicPlayerViewModel, true) {
                 finishAffinity()
             }
+
+            LaunchedEffect(Unit) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.SONG_PLAYING_VIEW_ON_LOCK_SCREEN)
+            }
         }
     }
+
 }

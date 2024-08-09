@@ -47,6 +47,8 @@ import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
 import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistDialog
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.addSongToLast
 import com.rizwansayyed.zene.utils.Utils.addSongToNext
 import com.rizwansayyed.zene.utils.Utils.loadBitmap
@@ -200,6 +202,7 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
     }
 
     LaunchedEffect(Unit) {
+        logEvents(FirebaseLogEvents.FirebaseEvents.ADDING_TO_PLAYLISTS)
         m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
     }
 }

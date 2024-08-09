@@ -133,4 +133,5 @@
     <string name="download_this_ad_free_music_app">Download this ad free Music app</string>
     <string name="like_the_app_rate_us_on_play_store">If you like the app 😊\nPlease rate us on Play Store</string>
     <string name="having_issue_please_mail_us_help">Having any issue? 😔\nPlease mail us so we can help</string>
+    <string name="sorry_no_song_found">Sorry, No Song Found.</string>
 </resources>

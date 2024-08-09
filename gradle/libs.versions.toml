@@ -5,10 +5,10 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "89"
-versionname = "3.2.038"
+appversion = "91"
+versionname = "3.2.045"
 
-agp = "8.5.1"
+agp = "8.5.2"
 datastorePreferences = "1.1.1"
 kotlin = "2.0.0"
 firebase-crashlytics = "3.0.2"

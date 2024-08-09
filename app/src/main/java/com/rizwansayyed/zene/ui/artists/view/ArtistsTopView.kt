@@ -32,10 +32,12 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.view.ButtonWithImage
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.flow.firstOrNull
@@ -93,7 +95,8 @@ fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
 
         isFollowing = !isFollowing
         viewModel.followArtists(artists.name, isFollowing) {
-            canFollowOnly40.toast()
+            isFollowing = false
+            if (it) canFollowOnly40.toast()
         }
     }
 
@@ -110,6 +113,15 @@ fun FollowArtists(artists: ZeneArtistsInfoResponse, viewModel: ZeneViewModel) {
         )
         sendWebViewCommand(m, listOf(m))
         logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_ARTISTS_RADIO)
+    }
+
+    Spacer(Modifier.height(40.dp))
+
+    ButtonWithImage(R.drawable.ic_share, R.string.share) {
+        val m = ZeneMusicDataItems(
+            artists.name, artists.name ?: "", "", "", "", MusicType.ARTISTS.name
+        )
+        shareTxtImage(shareUrl(m))
     }
 
 

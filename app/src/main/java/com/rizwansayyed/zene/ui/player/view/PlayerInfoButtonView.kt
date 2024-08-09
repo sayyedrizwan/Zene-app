@@ -56,6 +56,8 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.shareUrl
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -155,6 +157,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
                     .clickable {
                         when (val v = musicPlayerViewModel.videoDetails) {
                             is APIResponse.Success -> {
+                                logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_SONG_VIDEO)
                                 openVideoPlayer(v.data.officialVideoID)
                             }
 
@@ -169,6 +172,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
                     .clickable {
                         when (val v = musicPlayerViewModel.videoDetails) {
                             is APIResponse.Success -> {
+                                logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_SONG_LYRICS_VIDEO)
                                 openVideoPlayer(v.data.lyricsVideoID)
                             }
 
@@ -197,6 +201,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
 
             Box {
                 ImgButton(R.drawable.ic_repeat) {
+                    logEvents(FirebaseLogEvents.FirebaseEvents.MUSIC_LOOP_SETTINGS)
                     if (musicLoop) loopDisabled.toast()
                     else loopEnabled.toast()
                     musicLoopSettings = flowOf(!musicLoop)
@@ -223,6 +228,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
 
             Box {
                 ImgButton(R.drawable.ic_go_forward) {
+                    logEvents(FirebaseLogEvents.FirebaseEvents.AUTOPLAY_NEXT_SONG_SETTINGS)
                     if (musicAutoplay) autoplayDisabled.toast()
                     else autoplayEnabled.toast()
                     musicAutoplaySettings = flowOf(!musicAutoplay)
@@ -265,6 +271,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
                     MusicSpeed.entries.forEach {
                         DropdownMenuItem(text = { TextPoppins(it.data, true, size = 16) },
                             onClick = {
+                                logEvents(FirebaseLogEvents.FirebaseEvents.PLAYBACK_SONG_RATE_SETTINGS)
                                 musicSpeedSettings = flowOf(it)
                                 expanded = false
                                 CoroutineScope(Dispatchers.IO).launch {

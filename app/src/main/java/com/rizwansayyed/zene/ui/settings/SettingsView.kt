@@ -41,6 +41,8 @@ import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.Utils.feedbackMail
 import com.rizwansayyed.zene.utils.Utils.openBrowser
@@ -78,6 +80,7 @@ fun SettingsView() {
         item {
             Spacer(Modifier.height(30.dp))
             SettingsCardViews(R.string.loop_same_song, loopSong, loopSettings) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.MUSIC_LOOP_SETTINGS)
                 musicLoopSettings = flowOf(it)
             }
         }
@@ -85,6 +88,7 @@ fun SettingsView() {
         item {
             Spacer(Modifier.height(30.dp))
             SettingsCardViews(R.string.autoplay_next_song, loopSong, autoplaySettings) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.AUTOPLAY_NEXT_SONG_SETTINGS)
                 musicAutoplaySettings = flowOf(it)
             }
         }
@@ -114,6 +118,7 @@ fun SettingsView() {
         item {
             Spacer(Modifier.height(30.dp))
             CardItems(R.string.equalizer) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_EQUALIZER)
                 openEqualizer()
             }
         }

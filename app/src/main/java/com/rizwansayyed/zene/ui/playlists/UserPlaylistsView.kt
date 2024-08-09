@@ -52,6 +52,8 @@ import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.bouncingClickable
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.openSpecificIntent
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -133,6 +135,7 @@ fun UserPlaylistsView(id: String?, close: () -> Unit) {
     LaunchedEffect(Unit) {
         if (id == null) close()
         else {
+            logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_CREATING_USER_PLAYLISTS_VIEW)
             page = 0
             ShowAdsOnAppOpen(context).interstitialAds()
             homeViewModel.userPlaylists(id)

@@ -88,7 +88,7 @@ fun FeedView(viewModel: ZeneViewModel) {
                         FeedNewsItemView(it)
                     }
 
-                    item(3) {
+                    item(4) {
                         Spacer(Modifier.height(140.dp))
                     }
                 } else

@@ -108,7 +108,7 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
 
 
         if (searchHistory?.toList()?.isEmpty() == true) {
-            item(key = 4 ) {
+            item(key = 4) {
                 Spacer(Modifier.height(80.dp))
                 TextPoppinsThin(stringResource(R.string.no_search_history), true, size = 20)
                 Spacer(Modifier.height(40.dp))

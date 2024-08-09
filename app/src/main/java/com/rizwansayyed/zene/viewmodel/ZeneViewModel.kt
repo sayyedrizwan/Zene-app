@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.extra.mymusic.spotify.ImportPlaylistActivity
+import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -54,6 +55,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var isSpotifyPlaylistsLoading by mutableStateOf(false)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            artistsInfo = APIResponse.Empty
+            return@launch
+        }
+
         zeneAPI.artistsInfo(name).onStart {
             artistsInfo = APIResponse.Loading
         }.catch {
@@ -64,6 +70,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     }
 
     fun artistsData(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            artistsData = APIResponse.Empty
+            return@launch
+        }
+
         zeneAPI.artistsData(name).onStart {
             artistsData = APIResponse.Loading
         }.catch {
@@ -73,13 +84,18 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }
     }
 
-    fun followArtists(name: String?, b: Boolean, isMore: () -> Unit) =
+    fun followArtists(name: String?, b: Boolean, isMore: (Boolean) -> Unit) =
         viewModelScope.launch(Dispatchers.IO) {
+            if (!internetIsConnected()) {
+                isMore(false)
+                return@launch
+            }
+
             val email = userInfoDB.firstOrNull()?.email ?: ""
             val user = zeneAPI.getUser(email).firstOrNull()
 
             if ((user?.pinned_artists?.size ?: 0) >= 40) {
-                isMore()
+                isMore(true)
                 return@launch
             }
 
@@ -101,6 +117,12 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             zeneSavedPlaylists.clear()
         }
 
+        if (!internetIsConnected()) {
+            songHistoryIsLoading = false
+            return@launch
+        }
+
+
         zeneAPI.getMusicHistory(page).onStart {
             songHistoryIsLoading = true
         }.catch {
@@ -119,6 +141,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             zeneSavedPlaylists.clear()
         }
 
+        if (!internetIsConnected()) {
+            songHistoryIsLoading = false
+            return@launch
+        }
+
         zeneAPI.savedPlaylists(page).onStart {
             songHistoryIsLoading = true
         }.catch {
@@ -132,6 +159,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     }
 
     fun searchImages(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            searchImg = APIResponse.Empty
+            return@launch
+        }
+
         if (q == "") {
             searchImg = APIResponse.Empty
             return@launch
@@ -154,6 +186,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
 
     fun createNewPlaylist(name: String, bitmap: Bitmap?, id: String?) =
         viewModelScope.launch(Dispatchers.IO) {
+            if (!internetIsConnected()) {
+                createPlaylistInfo = APIResponse.Empty
+                return@launch
+            }
+
             val savedPath = saveBitmap(savePlaylistFilePath, bitmap)
 
             zeneAPI.createNewPlaylists(name, savedPath, id).onStart {
@@ -168,6 +205,8 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
 
 
     fun deletePlaylists(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) return@launch
+
         zeneAPI.deletePlaylists(id).catch {}.collectLatest {
             if (it.isSuccess()) APIResponse.Success(it)
             else APIResponse.Error(Exception(""))
@@ -178,6 +217,12 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     fun checkIfSongPresentInPlaylists(id: String, page: Int) =
         viewModelScope.launch(Dispatchers.IO) {
             if (page == 0) saveSongPlaylists.clear()
+
+            if (!internetIsConnected()) {
+                songHistoryIsLoading = false
+                return@launch
+            }
+
 
             zeneAPI.checkIfSongPresentInPlaylists(id, page).onStart {
                 songHistoryIsLoading = true
@@ -194,10 +239,16 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
 
     fun addRemoveSongFromPlaylists(pID: String, sID: String, add: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
+            if (!internetIsConnected()) return@launch
             zeneAPI.addRemoveSongFromPlaylists(sID, pID, add).catch {}.collectLatest {}
         }
 
     fun searchFindSong(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            searchFindSong = APIResponse.Empty
+            return@launch
+        }
+
         zeneAPI.searchData(q).onStart {
             searchFindSong = APIResponse.Loading
         }.catch {
@@ -209,6 +260,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     }
 
     fun startGettingFeed() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            feedItems = APIResponse.Empty
+            return@launch
+        }
+
         zeneAPI.artistsPosts().onStart {
             feedItems = APIResponse.Loading
         }.catch {
@@ -219,6 +275,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     }
 
     fun spotifyPlaylists(token: String, path: String?) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            isSpotifyPlaylistsLoading = false
+            return@launch
+        }
+
         isSpotifyPlaylistsLoading = true
         try {
             val list = zeneAPI.importSpotifyPlaylists(token, path).firstOrNull()

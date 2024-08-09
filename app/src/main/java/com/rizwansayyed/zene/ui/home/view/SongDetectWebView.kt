@@ -10,6 +10,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_MUSIC
 import com.rizwansayyed.zene.utils.Utils.enable
@@ -103,6 +105,9 @@ class SongDetectWebView(
         webChromeClient = webViewChromeClientObj
         setInitialScale(0)
         loadUrl(baseURL)
+
+
+        logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_SONG_DETECT_VIEW)
     }
 
     fun checkFunctions() = CoroutineScope(Dispatchers.Main).launch {

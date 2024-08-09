@@ -21,6 +21,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
@@ -38,6 +40,7 @@ class VideoPlayerActivity : ComponentActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 
         val videoID = intent.getStringExtra(Intent.ACTION_MAIN) ?: return
+        logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_VIDEO_VIEW)
 
         setContent {
             AndroidView({ ctx ->

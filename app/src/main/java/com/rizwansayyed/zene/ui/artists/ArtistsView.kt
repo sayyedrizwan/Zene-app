@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
@@ -59,7 +60,7 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
 
         when (val v = viewModel.artistsInfo) {
             APIResponse.Empty -> {}
-            is APIResponse.Error -> {}
+            is APIResponse.Error -> v.error.message?.toast()
             APIResponse.Loading -> {
                 item(300) {
                     ArtistsTopViewLoading()

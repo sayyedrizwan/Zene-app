@@ -66,6 +66,8 @@ import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsLight
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -170,6 +172,7 @@ fun LoginZeneLogo() {
     }
 
     LaunchedEffect(Unit) {
+        logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_LOGIN_VIEW)
         while (nameText != name) {
             delay(400)
             nameText += name.split("").filter { it.isNotEmpty() }[nameText.length]
@@ -186,12 +189,6 @@ fun LoginButtonView() {
 
     val activity = LocalContext.current as Activity
     var bottomSheet by remember { mutableStateOf(false) }
-    var loading by remember { mutableStateOf(false) }
-
-    fun success() {
-        bottomSheet = false
-        loading = true
-    }
 
     val imgBorder = Modifier
         .padding(9.dp)
@@ -199,30 +196,23 @@ fun LoginButtonView() {
         .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(100))
         .padding(9.dp)
 
-    if (loading)
-        LoadingView(
-            Modifier
-                .padding(bottom = 70.dp)
-                .size(32.dp)
-        )
-    else
-        Row(
-            Modifier
-                .padding(bottom = 70.dp)
-                .padding(horizontal = 15.dp)
-                .clip(RoundedCornerShape(15.dp))
-                .fillMaxWidth()
-                .background(Color.White)
-                .clickable {
-                    bottomSheet = true
-                }
-                .padding(5.dp),
-            Arrangement.Center, Alignment.CenterVertically
-        ) {
-            Spacer(Modifier.height(40.dp))
-            TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
-            Spacer(Modifier.height(40.dp))
-        }
+    Row(
+        Modifier
+            .padding(bottom = 70.dp)
+            .padding(horizontal = 15.dp)
+            .clip(RoundedCornerShape(15.dp))
+            .fillMaxWidth()
+            .background(Color.White)
+            .clickable {
+                bottomSheet = true
+            }
+            .padding(5.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        Spacer(Modifier.height(40.dp))
+        TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
+        Spacer(Modifier.height(40.dp))
+    }
 
     if (bottomSheet) ModalBottomSheet({ bottomSheet = false }, containerColor = Color.Black) {
         Column(Modifier.padding(horizontal = 10.dp)) {

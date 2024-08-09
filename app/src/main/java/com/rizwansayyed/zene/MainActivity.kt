@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -33,6 +34,8 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.service.MusicPlayService
+import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.extra.MyMusicView
@@ -51,6 +54,7 @@ import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.AlertDialogView
+import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
@@ -65,14 +69,25 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
+import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -183,10 +198,13 @@ class MainActivity : ComponentActivity() {
                         if (data == SYNC_DATA) {
                             homeViewModel.init()
                             checkNotificationPermissionAndAsk(notificationPermission)
-                        } else
+                        } else {
+                            logEvents(FirebaseLogEvents.FirebaseEvents.NAVIGATION_DATA)
                             navController.navigate(data)
+                        }
                     }
                 }
+
                 registerNavCommand(this@MainActivity, listener)
 
                 onDispose {
@@ -223,12 +241,47 @@ class MainActivity : ComponentActivity() {
         if (isMusicServiceRunning(this)) return
         Intent(this, MusicPlayService::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startService(this)
+            try {
+                startService(this)
+            } catch (e: Exception) {
+                e.message
+            }
         }
     }
 
     private fun checkAndRunWeb(intent: Intent) {
-        val appLinkAction: String? = intent.action
-        val appLinkData: Uri? = intent.data
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(1.seconds)
+            val appLinkData: Uri = intent.data ?: return@launch
+
+            if (appLinkData.toString().contains(SONG_INNER)) {
+                val songLink = decryptData(appLinkData.toString().substringAfterLast(SONG_INNER))
+                val info = homeViewModel.getSongInfo(songLink)
+                if (info == null) {
+                    resources.getString(R.string.sorry_no_song_found)
+                    return@launch
+                }
+
+                sendWebViewCommand(info, listOf(info))
+                delay(1.seconds)
+                homeNavModel.showMusicPlayer(true)
+            } else if (appLinkData.toString().contains(ARTISTS_INNER)) {
+                val artistsName =
+                    decryptData(appLinkData.toString().substringAfterLast(ARTISTS_INNER))
+                sendNavCommand(NAV_ARTISTS.replace("{id}", artistsName.trim()))
+            } else if (appLinkData.toString().contains(PLAYLIST_ALBUM_INNER)) {
+                val playlistID =
+                    decryptData(appLinkData.toString().substringAfterLast(PLAYLIST_ALBUM_INNER))
+
+                if (playlistID.contains("zene_p_"))
+                    sendNavCommand(NAV_USER_PLAYLISTS.replace("{id}", playlistID.trim()))
+                else
+                    sendNavCommand(NAV_PLAYLISTS.replace("{id}", playlistID.trim()))
+
+            } else if (appLinkData.toString().contains(VIDEO_INNER)) {
+                val videoLink = decryptData(appLinkData.toString().substringAfterLast(VIDEO_INNER))
+                openVideoPlayer(videoLink)
+            }
+        }
     }
 }

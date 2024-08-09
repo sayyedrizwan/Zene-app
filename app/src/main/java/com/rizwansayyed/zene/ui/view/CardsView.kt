@@ -43,6 +43,8 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
@@ -56,6 +58,7 @@ import com.rizwansayyed.zene.utils.Utils.Share.WEB_BASE_URL
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
 @Composable
@@ -492,6 +495,10 @@ fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
 
             Spacer(Modifier.height(70.dp))
         }
+
+        LaunchedEffect(Unit) {
+            logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_SONG_SHEET)
+        }
     }
 }
 
@@ -533,13 +540,29 @@ fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
 
 fun shareUrl(m: ZeneMusicDataItems): String {
     return when (m.type()) {
-        SONGS -> "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
-        PLAYLIST, ALBUMS ->
-            "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+        SONGS -> {
+            logEvents(FirebaseLogEvents.FirebaseEvents.SHARE_SONG_URL)
+            "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}".trim()
+                .replace("\n", "")
+        }
 
-        ARTISTS -> "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+        PLAYLIST, ALBUMS -> {
+            logEvents(FirebaseLogEvents.FirebaseEvents.SHARE_PLAYLISTS_URL)
+            "${WEB_BASE_URL}${PLAYLIST_ALBUM_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}".trim()
+                .replace("\n", "")
+        }
 
-        VIDEO -> "${WEB_BASE_URL}${VIDEO_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}"
+        ARTISTS -> {
+            logEvents(FirebaseLogEvents.FirebaseEvents.SHARE_ARTISTS_URL)
+            "${WEB_BASE_URL}${ARTISTS_INNER}${EncodeDecodeGlobal.encryptData(m.name ?: "-")}".trim()
+                .replace("\n", "")
+        }
+
+        VIDEO -> {
+            logEvents(FirebaseLogEvents.FirebaseEvents.SHARE_VIDEO_URL)
+            "${WEB_BASE_URL}${VIDEO_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}".trim()
+                .replace("\n", "")
+        }
 
         MOOD -> WEB_BASE_URL
         STORE -> WEB_BASE_URL

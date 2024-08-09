@@ -100,4 +100,5 @@ interface ZeneAPIInterface {
     suspend fun artistsPosts(): Flow<ZeneArtistsPostsResponse>
 
     suspend fun importSpotifyPlaylists(token: String, path: String?): Flow<ZeneMusicImportPlaylistsDataResponse>
+    suspend fun songInfo(id: String): Flow<ZeneMusicDataItems>
 }

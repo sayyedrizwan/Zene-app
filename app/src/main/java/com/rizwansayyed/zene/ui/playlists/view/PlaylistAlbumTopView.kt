@@ -44,6 +44,8 @@ import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
@@ -109,8 +111,10 @@ fun PlaylistAlbumTopView(
 
             Box(Modifier.clickable {
                 if (isAdded) {
+                    logEvents(FirebaseLogEvents.FirebaseEvents.REMOVED_CURRENT_PLAYLIST)
                     removeDialog = true
                 } else {
+                    logEvents(FirebaseLogEvents.FirebaseEvents.SAVED_CURRENT_PLAYLIST)
                     isAdded = true
                     zeneViewModel.createNewPlaylist(v?.name ?: "", bitmap, v?.id)
                 }
