@@ -16,8 +16,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
@@ -158,25 +158,20 @@ class MusicPlayService : Service() {
             if (json == PLAYBACK_RATE) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.UPDATED_PLAYBACK_SPEED)
                 updatePlaybackSpeed()
-            }
-            else if (json == NEXT_SONG) {
+            } else if (json == NEXT_SONG) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TO_NEXT_SONG)
                 forwardAndRewindSong(true)
-            }
-            else if (json == PREVIOUS_SONG) {
+            } else if (json == PREVIOUS_SONG) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TO_PREVIOUS_SONG)
                 forwardAndRewindSong(false)
-            }
-            else if (json == SEEK_DURATION_VIDEO) seekTo(int)
+            } else if (json == SEEK_DURATION_VIDEO) seekTo(int)
             else if (json == PLAY_VIDEO) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PLAYING)
                 play()
-            }
-            else if (json == PAUSE_VIDEO) {
+            } else if (json == PAUSE_VIDEO) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PAUSE)
                 pause()
-            }
-            else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
+            } else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
                 clearCache()
 
                 val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)

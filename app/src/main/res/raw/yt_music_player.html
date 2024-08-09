@@ -66,6 +66,7 @@
             function onPlayerStateChange(event) {
                 setTimeout(() => {
                     ZeneListener.playerState(event.target.getPlayerState())
+                     ZeneListener.onMediaDataChanged("title", "artist", "https://i.ytimg.com/vi/dRTsay1jVwg/sddefault.jpg");
                 }, 500);
             }
 

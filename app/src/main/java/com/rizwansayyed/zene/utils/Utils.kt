@@ -45,7 +45,7 @@ import java.text.DecimalFormat
 object Utils {
 
     object NotificationIDS {
-        const val NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID"
+        const val NOTIFICATION_CHANNEL_ID = "ZENE_NOTIFICATION"
     }
 
     object Share {

@@ -37,6 +37,7 @@ ads = "23.2.0"
 nav = "2.7.7"
 billing = "7.0.0"
 webkit = "1.11.0"
+jsoup = "1.18.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -90,6 +91,7 @@ billing-client = { group = "com.android.billingclient", name = "billing-ktx", ve
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 nav-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,11 +1,16 @@
 package com.rizwansayyed.zene.utils
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.RingtoneManager
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -18,8 +23,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 @SuppressLint("MissingPermission")
 class NotificationUtils(title: String, body: String, img: Uri?) {
+
+    private var soundAudio: Uri =
+        Uri.parse((ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName) + "/" + R.raw.custom_notification_tone)
+
+    private val soundAttributes: AudioAttributes = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+        .build()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -35,9 +48,10 @@ class NotificationUtils(title: String, body: String, img: Uri?) {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setSound(soundAudio, AudioManager.STREAM_NOTIFICATION)
 
             if (img != null) {
                 val imgLoaded = loadBitmap(img.toString())
@@ -56,13 +70,14 @@ class NotificationUtils(title: String, body: String, img: Uri?) {
         }
     }
 
-
     private fun createNotificationChannel() {
         val name = context.resources.getString(R.string.zene_notification)
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
-            description = name
-        }
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance)
+        channel.description = name
+        channel.vibrationPattern = longArrayOf(100, 1000, 100, 1000, 100, 1000, 100)
+        channel.setSound(soundAudio, soundAttributes)
+
 
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

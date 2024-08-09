@@ -145,5 +145,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
 
-    implementation("org.jsoup:jsoup:1.18.1")
+    implementation(libs.jsoup)
 }
