@@ -1,14 +1,22 @@
-package com.rizwansayyed.zene.service
+package com.rizwansayyed.zene.service.musicplayer
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaMetadata
+import android.media.session.MediaSession
+import android.media.session.PlaybackState
 import android.os.IBinder
-import android.util.Log
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaSessionCompat
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -16,8 +24,10 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.annotation.OptIn
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.media.app.NotificationCompat
+import com.rizwansayyed.zene.MainActivity
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
@@ -40,6 +50,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
+import com.rizwansayyed.zene.utils.Utils.NotificationIDS.NOTIFICATION_CHANNEL_ID
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
@@ -221,22 +232,29 @@ class MusicPlayService : Service() {
 
 
     inner class JavaScriptInterface {
+        @SuppressLint("MissingPermission")
         @JavascriptInterface
-        fun playerState(v: Int) = CoroutineScope(Dispatchers.IO).launch {
-            if (currentVideoID == defaultID) return@launch
-            if (v == VIDEO_ENDED) checkAndPlayNextSong()
+        fun playerState(v: Int, duration: Int, currentDuration: Int, updatePlayback: Boolean) =
+            CoroutineScope(Dispatchers.IO).launch {
+                if (currentVideoID == defaultID) return@launch
+                if (v == VIDEO_ENDED) checkAndPlayNextSong()
 
-            val d = musicPlayerDB.first()
-            d?.isBuffering = v == VIDEO_BUFFERING
-            d?.isPlaying = false
-            if (v == VIDEO_PLAYING) {
-                d?.isPlaying = true
-                updatePlaybackSpeed()
+                val d = musicPlayerDB.first()
+                d?.isBuffering = v == VIDEO_BUFFERING
+                d?.isPlaying = false
+                if (v == VIDEO_PLAYING) {
+                    d?.isPlaying = true
+                    if (updatePlayback) updatePlaybackSpeed()
+                }
+                musicPlayerDB = flowOf(d)
+
+                MusicPlayerNotifications(
+                    v == VIDEO_PLAYING, d?.player?.name, d?.player?.artists,
+                    d?.player?.thumbnail, duration, currentDuration
+                ).generate()
+
+                if (isActive) cancel()
             }
-            musicPlayerDB = flowOf(d)
-
-            if (isActive) cancel()
-        }
 
         @JavascriptInterface
         fun playerDuration(current: Int, total: Int) = CoroutineScope(Dispatchers.IO).launch {

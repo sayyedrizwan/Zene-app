@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -33,10 +32,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
-import com.rizwansayyed.zene.service.MusicPlayService
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
-import com.rizwansayyed.zene.service.isMusicServiceRunning
+import com.rizwansayyed.zene.service.musicplayer.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.extra.MyMusicView
 import com.rizwansayyed.zene.ui.feed.FeedView
@@ -76,7 +75,6 @@ import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel

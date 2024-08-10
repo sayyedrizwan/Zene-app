@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.service
+package com.rizwansayyed.zene.service.musicplayer
 
 import android.content.Context
 import android.view.View

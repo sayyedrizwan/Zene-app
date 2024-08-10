@@ -98,7 +98,10 @@
     <string name="are_you_sure_want_to_remove_song_desc">This song will be remove from this playlist. Do you want to continue!!</string>
     <string name="cancel">Cancel</string>
     <string name="play">Play</string>
+    <string name="play_previous">Play previous</string>
     <string name="play_next">Play next</string>
+    <string name="back_5s">Back 5s</string>
+    <string name="forward_5s">Forward 5s</string>
     <string name="add_in_queue">Add in queue</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="add_to_library">Add to library</string>
@@ -123,6 +126,7 @@
     <string name="need_microphone_permission_desc">Zene need microphone permission to listen to the song and search the database.</string>
     <string name="grant">Grant</string>
     <string name="zene_notification">Zene Notification</string>
+    <string name="zene_music_player_notification">Zene Music Player Notification</string>
     <string name="find_song">Find song</string>
     <string name="no_song_found_try_again">No song found. Please try again!</string>
     <string name="you_haven_t_follow_artists_yet">Oops! It looks like you haven\'t followed any artists yet. Start following your favorite artists to get personalized news updates in your feed!</string>
@@ -134,4 +138,6 @@
     <string name="like_the_app_rate_us_on_play_store">If you like the app 😊\nPlease rate us on Play Store</string>
     <string name="having_issue_please_mail_us_help">Having any issue? 😔\nPlease mail us so we can help</string>
     <string name="sorry_no_song_found">Sorry, No Song Found.</string>
+    <string name="loop_song">Loop Song</string>
+    <string name="play_pause">Play/Pause</string>
 </resources>

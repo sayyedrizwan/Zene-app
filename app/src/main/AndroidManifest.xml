@@ -116,7 +116,7 @@
             android:taskAffinity="" />
 
         <service
-            android:name=".service.MusicPlayService"
+            android:name=".service.musicplayer.MusicPlayService"
             android:enabled="true" />
 
         <service

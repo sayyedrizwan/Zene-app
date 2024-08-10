@@ -46,6 +46,7 @@ object Utils {
 
     object NotificationIDS {
         const val NOTIFICATION_CHANNEL_ID = "ZENE_NOTIFICATION"
+        const val NOTIFICATION_M_P_CHANNEL_ID = "ZENE_MUSIC_PLAYER"
     }
 
     object Share {

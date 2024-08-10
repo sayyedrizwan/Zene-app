@@ -60,13 +60,17 @@
                 setTimeout(() => {
                     event.target.unMute()
                 }, 500);
-                ZeneListener.playerState(event.target.getPlayerState())
+                playerState(event.target, true);
             }
 
             function onPlayerStateChange(event) {
+                playerState(event.target, true);
+            }
+
+
+            function playerState(p, updatePlayback) {
                 setTimeout(() => {
-                    ZeneListener.playerState(event.target.getPlayerState())
-                     ZeneListener.onMediaDataChanged("title", "artist", "https://i.ytimg.com/vi/dRTsay1jVwg/sddefault.jpg");
+                    ZeneListener.playerState(p.getPlayerState(), p.getDuration(), p.getCurrentTime(), updatePlayback)
                 }, 500);
             }
 
@@ -88,10 +92,12 @@
 
             function seekTo(time) {
                 player.seekTo(time, true)
+                playerState(player, true);
             }
 
             function playbackSpeed(speed) {
-                player.setPlaybackRate(speed)
+                player.setPlaybackRate(speed);
+                playerState(player, false);
             }
 
         </script>
