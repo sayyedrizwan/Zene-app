@@ -42,6 +42,8 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAYBACK_RATE
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_BACK_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_FORWARD_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
@@ -176,6 +178,8 @@ class MusicPlayService : Service() {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TO_PREVIOUS_SONG)
                 forwardAndRewindSong(false)
             } else if (json == SEEK_DURATION_VIDEO) seekTo(int)
+            else if (json == SEEK_5S_BACK_VIDEO) seek5sMinus()
+            else if (json == SEEK_5S_FORWARD_VIDEO) seek5sPlus()
             else if (json == PLAY_VIDEO) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PLAYING)
                 play()
@@ -199,6 +203,14 @@ class MusicPlayService : Service() {
             return@launch
         }
         webView.evaluateJavascript("pauseSong();", null)
+    }
+
+    private fun seek5sPlus() = CoroutineScope(Dispatchers.Main).launch {
+        webView.evaluateJavascript("seekTo5sForward();", null)
+    }
+
+    private fun seek5sMinus() = CoroutineScope(Dispatchers.Main).launch {
+        webView.evaluateJavascript("seekTo5sBack();", null)
     }
 
     private fun play() {

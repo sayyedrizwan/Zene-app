@@ -9,8 +9,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadata
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -21,12 +23,23 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_FORWARD_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.GO_TO_THE_NEXT_MUSIC
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.GO_TO_THE_PREVIOUS_MUSIC
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.MUSIC_BACKWARD_5S
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.MUSIC_FORWARD_5S
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.PAUSE_THE_MUSIC
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.PLAY_THE_MUSIC
 import com.rizwansayyed.zene.utils.Utils.NotificationIDS.NOTIFICATION_M_P_CHANNEL_ID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+
 
 class MusicPlayerNotifications(
     private val isPlaying: Boolean,
@@ -37,20 +50,27 @@ class MusicPlayerNotifications(
     private val currentDuration: Int?
 ) {
 
-    val piss =
-        Intent(context, MainActivity::class.java).let { intent ->
-            PendingIntent.getActivity(
-                context, 99,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        }
+    companion object {
+        private val playPauseSongTxt = context.resources.getString(R.string.play_pause)
+        private val previousSongTxt = context.resources.getString(R.string.play_previous)
+        private val nextSongTxt = context.resources.getString(R.string.play_next)
+        private val back5sTxt = context.resources.getString(R.string.back_5s)
+        private val forward5sTxt = context.resources.getString(R.string.forward_5s)
+    }
 
-    private val playPauseSongTxt = context.resources.getString(R.string.play_pause)
-    private val previousSongTxt = context.resources.getString(R.string.play_previous)
-    private val nextSongTxt = context.resources.getString(R.string.play_next)
-    private val back5sTxt = context.resources.getString(R.string.back_5s)
-    private val forward5sTxt = context.resources.getString(R.string.forward_5s)
+    private val openMusicPlayerIntent = Intent(context, MainActivity::class.java).let { i ->
+        i.putExtra(Intent.ACTION_MAIN, "PLAYER")
+        PendingIntent.getActivity(context, 99, i, PendingIntent.FLAG_IMMUTABLE)
+    }
+
+
+    private val callback = object : MediaSessionCompat.Callback() {
+        override fun onSeekTo(pos: Long) {
+            super.onSeekTo(pos)
+            val position = pos / 1000
+            sendWebViewCommand(SEEK_DURATION_VIDEO, position.toInt())
+        }
+    }
 
     @SuppressLint("MissingPermission")
     fun generate() = CoroutineScope(Dispatchers.IO).launch {
@@ -74,25 +94,32 @@ class MusicPlayerNotifications(
             MusicSpeed.`20` -> 2.0
         }
 
-        val style = androidx.media.app.NotificationCompat.MediaStyle()
-            .setShowActionsInCompactView(1, 2, 3)
-            .setShowCancelButton(false)
-            .setMediaSession(prepareMediaSession(imageBitmap, v.toFloat()).sessionToken)
+        val mediaSession = prepareMediaSession(imageBitmap, v.toFloat()).sessionToken
+        val style =
+            androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(1, 2, 3)
+                .setShowCancelButton(false).setMediaSession(mediaSession)
 
         val notification = NotificationCompat.Builder(context, NOTIFICATION_M_P_CHANNEL_ID).apply {
-            addAction(R.drawable.ic_go_backward_5sec, back5sTxt, piss)
-            addAction(R.drawable.ic_previous, previousSongTxt, piss)
             addAction(
-                if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play, playPauseSongTxt, piss
+                R.drawable.ic_go_backward_5sec, back5sTxt, pendingIntent(MUSIC_BACKWARD_5S)
             )
-            addAction(R.drawable.ic_next, nextSongTxt, piss)
-            addAction(R.drawable.ic_go_forward_5sec, forward5sTxt, piss)
+            addAction(
+                R.drawable.ic_previous, previousSongTxt, pendingIntent(GO_TO_THE_PREVIOUS_MUSIC)
+            )
+            addAction(
+                if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play,
+                playPauseSongTxt,
+                if (isPlaying) pendingIntent(PAUSE_THE_MUSIC)
+                else pendingIntent(PLAY_THE_MUSIC)
+            )
+            addAction(R.drawable.ic_next, nextSongTxt, pendingIntent(GO_TO_THE_NEXT_MUSIC))
+            addAction(R.drawable.ic_go_forward_5sec, forward5sTxt, pendingIntent(MUSIC_FORWARD_5S))
             setStyle(style)
             setSmallIcon(R.drawable.ic_zene_logo_round)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setSilent(true)
             priority = NotificationCompat.PRIORITY_MAX
-            setContentIntent(piss)
+            setContentIntent(openMusicPlayerIntent)
             setContentTitle(name)
             setContentText(artists)
             setSubText(name)
@@ -111,7 +138,7 @@ class MusicPlayerNotifications(
     }
 
     private fun generateChannel() {
-        val name = context.resources.getString(R.string.zene_music_player_notification)
+        val name = context.resources.getString(R.string.zene_music_player)
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channel = NotificationChannel(NOTIFICATION_M_P_CHANNEL_ID, name, importance)
         channel.description = name
@@ -121,8 +148,8 @@ class MusicPlayerNotifications(
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun prepareMediaSession(imageBitmap: Bitmap?, v: Float) =
-        runBlocking(Dispatchers.Main) {
+    private suspend fun prepareMediaSession(imageBitmap: Bitmap?, v: Float) =
+        withContext(Dispatchers.Main) {
             val mediaSession = MediaSessionCompat(context, "MEDIA_SESSION_TAG")
             mediaSession.isActive = true
 
@@ -133,6 +160,7 @@ class MusicPlayerNotifications(
                 )
                 .setActions(PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_PLAY_PAUSE)
 
+            mediaSession.setCallback(callback)
             mediaSession.setPlaybackState(stateBuilder.build())
 
             val mediaData = MediaMetadataCompat.Builder()
@@ -140,14 +168,23 @@ class MusicPlayerNotifications(
                 .putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, art)
                 .putString(MediaMetadata.METADATA_KEY_TITLE, name)
                 .putString(MediaMetadata.METADATA_KEY_ARTIST, artists)
+                .putString(MediaMetadata.METADATA_KEY_ARTIST, artists)
                 .putBitmap(MediaMetadata.METADATA_KEY_ART, imageBitmap)
-                .putLong(
-                    MediaMetadataCompat.METADATA_KEY_DURATION,
-                    (duration?.toLong() ?: 0) * 1000
-                )
-                .build()
+                .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, imageBitmap).putLong(
+                    MediaMetadataCompat.METADATA_KEY_DURATION, (duration?.toLong() ?: 0) * 1000
+                ).build()
             mediaSession.setMetadata(mediaData)
-            return@runBlocking mediaSession
+            return@withContext mediaSession
         }
 
+
+    private fun pendingIntent(action: String): PendingIntent? {
+        val brPlay = Intent(context, MusicPlayerNotificationReceiver::class.java).apply {
+            putExtra(Intent.ACTION_MAIN, action)
+        }
+
+        return PendingIntent
+            .getBroadcast(context, (11..888).random(), brPlay, PendingIntent.FLAG_MUTABLE)
+
+    }
 }

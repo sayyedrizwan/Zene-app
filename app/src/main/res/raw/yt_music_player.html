@@ -95,6 +95,16 @@
                 playerState(player, true);
             }
 
+            function seekTo5sBack() {
+                player.seekTo(player.getCurrentTime() - 5, true)
+                playerState(player, true);
+            }
+
+            function seekTo5sForward() {
+                player.seekTo(player.getCurrentTime() + 5, true)
+                playerState(player, true);
+            }
+
             function playbackSpeed(speed) {
                 player.setPlaybackRate(speed);
                 playerState(player, false);

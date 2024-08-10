@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
@@ -55,6 +56,7 @@ import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +70,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun HomeView(
     notificationPermission: ManagedActivityResultLauncher<String, Boolean>,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel, isNotificationOff: () -> Unit
 ) {
     val isThreeGrid = isScreenBig()
 
@@ -316,7 +318,7 @@ fun HomeView(
 
     LaunchedEffect(Unit) {
         homeViewModel.init()
-        checkNotificationPermissionAndAsk(notificationPermission)
+        checkNotificationPermissionAndAsk(notificationPermission, isNotificationOff)
 
         delay(5.seconds)
         loadFirstUI = true
@@ -328,18 +330,22 @@ fun HomeView(
 }
 
 
-fun checkNotificationPermissionAndAsk(permission: ManagedActivityResultLauncher<String, Boolean>) =
-    CoroutineScope(Dispatchers.Main).launch {
-        delay(3.seconds)
-        try {
-            val isLoggedIn = userInfoDB.firstOrNull()?.isLoggedIn() ?: false
-            if (!isLoggedIn) return@launch
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@launch
-
-            if (isPermissionDisabled(Manifest.permission.POST_NOTIFICATIONS))
-                permission.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } catch (e: Exception) {
-            e.printStackTrace()
+fun checkNotificationPermissionAndAsk(
+    permission: ManagedActivityResultLauncher<String, Boolean>, isNotificationOff: () -> Unit
+) = CoroutineScope(Dispatchers.Main).launch {
+    delay(3.seconds)
+    try {
+        val isLoggedIn = userInfoDB.firstOrNull()?.isLoggedIn() ?: false
+        if (!isLoggedIn) return@launch
+        if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+            isNotificationOff()
+            return@launch
         }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@launch
+
+        if (isPermissionDisabled(Manifest.permission.POST_NOTIFICATIONS))
+            permission.launch(Manifest.permission.POST_NOTIFICATIONS)
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
+}

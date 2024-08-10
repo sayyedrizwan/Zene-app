@@ -116,7 +116,9 @@ class MainActivity : ComponentActivity() {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
-                            HomeView(notificationPermission, homeViewModel)
+                            HomeView(notificationPermission, homeViewModel) {
+                                notificationPermissionDialog = true
+                            }
                         }
                         composable(NAV_MY_MUSIC) {
                             MyMusicView(zeneViewModel)
@@ -195,7 +197,9 @@ class MainActivity : ComponentActivity() {
 
                         if (data == SYNC_DATA) {
                             homeViewModel.init()
-                            checkNotificationPermissionAndAsk(notificationPermission)
+                            checkNotificationPermissionAndAsk(notificationPermission) {
+                                notificationPermissionDialog = true
+                            }
                         } else {
                             logEvents(FirebaseLogEvents.FirebaseEvents.NAVIGATION_DATA)
                             navController.navigate(data)
@@ -248,6 +252,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkAndRunWeb(intent: Intent) {
+        if ((intent.getStringExtra(Intent.ACTION_MAIN) ?: "") == "PLAYER") {
+            homeNavModel.showMusicPlayer(true)
+        }
         CoroutineScope(Dispatchers.IO).launch {
             delay(1.seconds)
             val appLinkData: Uri = intent.data ?: return@launch

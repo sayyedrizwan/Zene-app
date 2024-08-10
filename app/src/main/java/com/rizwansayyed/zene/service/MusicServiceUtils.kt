@@ -18,6 +18,8 @@ object MusicServiceUtils {
         const val PLAY_VIDEO = "play"
         const val PAUSE_VIDEO = "pause"
         const val SEEK_DURATION_VIDEO = "seek_duration"
+        const val SEEK_5S_BACK_VIDEO = "seek_5s_back"
+        const val SEEK_5S_FORWARD_VIDEO = "seek_5s_forward"
         const val NEXT_SONG = "next_song"
         const val PREVIOUS_SONG = "previous_song"
         const val PLAYBACK_RATE = "playback_rate"

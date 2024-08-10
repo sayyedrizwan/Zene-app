@@ -122,11 +122,10 @@
     <string name="clear_cache_desc">Clearing cache will remove all unwanted cache stored and not any personal data.</string>
     <string name="need_notification_permission">Need notification permission !!</string>
     <string name="need_microphone_permission">Need microphone permission !!</string>
-    <string name="need_notification_permission_desc">Zene need notification permission to perform and give you upcoming updates.. Please enable it in App Permission -> Notifications.</string>
+    <string name="need_notification_permission_desc">Zene need notification permission to show music player on lockscreen and at notification bar. Please enable it in App Permission -> Notifications or Notification -> Enable Switch..</string>
     <string name="need_microphone_permission_desc">Zene need microphone permission to listen to the song and search the database.</string>
     <string name="grant">Grant</string>
     <string name="zene_notification">Zene Notification</string>
-    <string name="zene_music_player_notification">Zene Music Player Notification</string>
     <string name="find_song">Find song</string>
     <string name="no_song_found_try_again">No song found. Please try again!</string>
     <string name="you_haven_t_follow_artists_yet">Oops! It looks like you haven\'t followed any artists yet. Start following your favorite artists to get personalized news updates in your feed!</string>
