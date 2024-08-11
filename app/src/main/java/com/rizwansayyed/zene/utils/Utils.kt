@@ -205,6 +205,22 @@ object Utils {
         settings.mediaPlaybackRequiresUserGesture = false
     }
 
+    @Suppress("DEPRECATION")
+    @SuppressLint("SetJavaScriptEnabled")
+    fun WebView.enableSimple() {
+        isFocusable = true
+        requestFocus()
+        isFocusableInTouchMode = true
+        settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
+        settings.databaseEnabled = true
+        settings.pluginState = WebSettings.PluginState.ON
+        settings.allowFileAccess = true
+        settings.loadWithOverviewMode = true
+        settings.useWideViewPort = true
+        settings.mediaPlaybackRequiresUserGesture = false
+    }
+
     fun readHTMLFromUTF8File(inputStream: InputStream): String {
         inputStream.use {
             try {
