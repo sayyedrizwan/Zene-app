@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_MUSIC
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 object APIHttpService {
 
-    fun youtubeMusicPlaylist(): String = runBlocking(Dispatchers.IO) {
+    suspend fun youtubeMusicPlaylist(): String = withContext(Dispatchers.IO) {
         val client = OkHttpClient.Builder()
             .readTimeout(30, TimeUnit.MINUTES)
             .connectTimeout(30, TimeUnit.MINUTES)
@@ -29,9 +30,9 @@ object APIHttpService {
             val id = data?.substringAfterLast("RELEASED\"},")
                 ?.substringAfter("/playlist?list=")?.substringBefore("\\u0026")
 
-            return@runBlocking if ((id?.trim()?.length ?: 100) < 55) id?.trim() ?: "" else ""
+            return@withContext if ((id?.trim()?.length ?: 100) < 55) id?.trim() ?: "" else ""
         } catch (e: Exception) {
-            return@runBlocking ""
+            return@withContext ""
         }
     }
 }

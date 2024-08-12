@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.Instant
 
@@ -46,7 +47,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     fun interstitialAds() = CoroutineScope(Dispatchers.Main).launch {
         if (userInfoDB.firstOrNull()?.isLoggedIn() == false) return@launch
         if (BuildConfig.DEBUG) return@launch
-        val doShowAds = isMoreThanThreeMinutesAds()
+        val doShowAds = isMoreThanTimeAds()
         if (!doShowAds) return@launch
 
         val adRequest = AdRequest.Builder().build()
@@ -56,7 +57,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     fun showAds() = CoroutineScope(Dispatchers.Main).launch {
         if (userInfoDB.firstOrNull()?.isLoggedIn() == false) return@launch
         if (BuildConfig.DEBUG) return@launch
-        val doShowAds = isMoreThanThreeMinutesAds()
+        val doShowAds = isMoreThanTimeAds()
         if (!doShowAds) return@launch
 
         val request = AdRequest.Builder().build()
@@ -64,10 +65,10 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     }
 }
 
-fun isMoreThanThreeMinutesAds(): Boolean = runBlocking(Dispatchers.IO) {
+suspend fun isMoreThanTimeAds(): Boolean = withContext(Dispatchers.IO) {
     val timestamp = lastAdsTimestamp.firstOrNull() ?: TS_LAST_DATA
     val now = Instant.now().toEpochMilli()
     val duration =
         Duration.between(Instant.ofEpochMilli(timestamp), Instant.ofEpochMilli(now))
-    return@runBlocking duration.toMinutes() > 4
+    return@withContext duration.toMinutes() > 6
 }

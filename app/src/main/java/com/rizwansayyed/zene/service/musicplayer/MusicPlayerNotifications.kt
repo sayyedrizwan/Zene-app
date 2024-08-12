@@ -6,8 +6,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadata
+import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -15,6 +18,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
@@ -39,9 +43,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.net.URL
 
 
 class MusicPlayerNotifications(
+    private val context: MusicPlayService,
     private val isPlaying: Boolean,
     private val name: String?,
     private val artists: String?,
@@ -63,7 +69,6 @@ class MusicPlayerNotifications(
         PendingIntent.getActivity(context, 99, i, PendingIntent.FLAG_IMMUTABLE)
     }
 
-
     private val callback = object : MediaSessionCompat.Callback() {
         override fun onSeekTo(pos: Long) {
             super.onSeekTo(pos)
@@ -74,17 +79,7 @@ class MusicPlayerNotifications(
 
     @SuppressLint("MissingPermission")
     fun generate() = CoroutineScope(Dispatchers.IO).launch {
-        var imageBitmap: Bitmap? = null
-
-        runBlocking(Dispatchers.IO) {
-            try {
-                val request = ImageRequest.Builder(context).data(art).build()
-                val drawable = context.imageLoader.execute(request).drawable
-                imageBitmap = drawable?.toBitmap()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        val imageBitmap: Bitmap? = art?.let { downloadImage(it) }
 
         val v = when (musicSpeedSettings.first()) {
             MusicSpeed.`025` -> 0.25
@@ -128,10 +123,36 @@ class MusicPlayerNotifications(
 
         generateChannel()
 
+        val type =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            else 0
+
         try {
-            with(NotificationManagerCompat.from(context)) {
-                notify(54, notification.build())
-            }
+            ServiceCompat.startForeground(context, 99, notification.build(), type)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun generateEmpty() = CoroutineScope(Dispatchers.IO).launch {
+        val notification = NotificationCompat.Builder(context, NOTIFICATION_M_P_CHANNEL_ID).apply {
+            setSmallIcon(R.drawable.ic_zene_logo_round)
+            setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            setSilent(true)
+            priority = NotificationCompat.PRIORITY_MAX
+            setContentIntent(openMusicPlayerIntent)
+            setContentTitle("")
+        }
+
+        generateChannel()
+
+        val type =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            else 0
+
+        try {
+            ServiceCompat.startForeground(context, 99, notification.build(), type)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -185,6 +206,25 @@ class MusicPlayerNotifications(
 
         return PendingIntent
             .getBroadcast(context, (11..888).random(), brPlay, PendingIntent.FLAG_MUTABLE)
+    }
 
+    private suspend fun downloadImage(path: String) = withContext(Dispatchers.IO) {
+        try {
+            val compressPath = path.substringBeforeLast("=w")
+            val url = URL("$compressPath=w120-h120-l90-rj")
+            val connection = url.openConnection()
+                    as java.net.HttpURLConnection
+            connection.requestMethod = "GET"
+            connection.connectTimeout = 10000
+            connection.readTimeout = 10000
+
+            val inputStream = connection.inputStream
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream.close()
+            return@withContext bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return@withContext null
+        }
     }
 }

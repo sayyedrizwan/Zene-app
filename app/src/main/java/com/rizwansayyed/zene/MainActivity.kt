@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.app.ServiceCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -244,7 +245,7 @@ class MainActivity : ComponentActivity() {
         Intent(this, MusicPlayService::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             try {
-                startService(this)
+                startForegroundService(this)
             } catch (e: Exception) {
                 e.message
             }

@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -128,7 +129,9 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             }
 
             override fun onSuccess(result: LoginResult) {
-                fbGraph(result.accessToken.token)
+                CoroutineScope(Dispatchers.IO).launch {
+                    fbGraph(result.accessToken.token)
+                }
             }
 
         }
@@ -158,7 +161,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         }
     }
 
-    private fun fbGraph(token: String) = runBlocking(Dispatchers.IO) {
+    private suspend fun fbGraph(token: String) = withContext(Dispatchers.IO) {
         val client = OkHttpClient().newBuilder().connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.MINUTES)
             .build()
@@ -183,14 +186,14 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
     }
 
     private suspend fun startLogin(e: String?, n: String?, p: String?) =
-        runBlocking(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             if (e == null) {
                 context.getString(R.string.error_while_login).toast()
-                return@runBlocking
+                return@withContext
             }
             if (e.length <= 3 && !e.contains("@")) {
                 context.getString(R.string.error_while_login).toast()
-                return@runBlocking
+                return@withContext
             }
 
             val user = zeneAPIInterface.getUser(e).firstOrNull()
@@ -198,7 +201,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                 pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
                 DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))
                 sendNavCommand(SYNC_DATA)
-                return@runBlocking
+                return@withContext
             }
 
             val u = UserInfoData(

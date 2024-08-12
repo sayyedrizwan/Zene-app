@@ -113,6 +113,23 @@ class MusicPlayService : Service() {
         }
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        CoroutineScope(Dispatchers.IO).launch {
+            val player = musicPlayerDB.firstOrNull()?.player
+
+            if (player?.id == null)
+                MusicPlayerNotifications(
+                    this@MusicPlayService, false, null, null, null, 0, 0
+                ).generateEmpty()
+            else
+                MusicPlayerNotifications(
+                    this@MusicPlayService, false, player.name, player.artists,
+                    player.thumbnail, 0, 0
+                ).generate()
+        }
+        return START_STICKY
+    }
+
     override fun onCreate() {
         super.onCreate()
         IntentFilter().apply {
@@ -261,7 +278,7 @@ class MusicPlayService : Service() {
                 musicPlayerDB = flowOf(d)
 
                 MusicPlayerNotifications(
-                    v == VIDEO_PLAYING, d?.player?.name, d?.player?.artists,
+                    this@MusicPlayService, v == VIDEO_PLAYING, d?.player?.name, d?.player?.artists,
                     d?.player?.thumbnail, duration, currentDuration
                 ).generate()
 
