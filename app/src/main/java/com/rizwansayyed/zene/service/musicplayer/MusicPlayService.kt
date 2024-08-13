@@ -114,8 +114,8 @@ class MusicPlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        CoroutineScope(Dispatchers.IO).launch {
-            val player = musicPlayerDB.firstOrNull()?.player
+        CoroutineScope(Dispatchers.Main).launch {
+            val player = withContext(Dispatchers.IO) { musicPlayerDB.firstOrNull()?.player }
 
             if (player?.id == null)
                 MusicPlayerNotifications(

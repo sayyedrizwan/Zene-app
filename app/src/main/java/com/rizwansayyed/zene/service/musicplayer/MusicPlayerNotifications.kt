@@ -12,22 +12,15 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadata
 import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
-import androidx.core.graphics.drawable.toBitmap
-import coil.imageLoader
-import coil.request.ImageRequest
 import com.rizwansayyed.zene.MainActivity
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_FORWARD_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.GO_TO_THE_NEXT_MUSIC
@@ -62,6 +55,10 @@ class MusicPlayerNotifications(
         private val nextSongTxt = context.resources.getString(R.string.play_next)
         private val back5sTxt = context.resources.getString(R.string.back_5s)
         private val forward5sTxt = context.resources.getString(R.string.forward_5s)
+        var mediaSession: MediaSessionCompat =
+            MediaSessionCompat(context, "MEDIA_SESSION_TAG").apply {
+                isActive = true
+            }
     }
 
     private val openMusicPlayerIntent = Intent(context, MainActivity::class.java).let { i ->
@@ -171,9 +168,6 @@ class MusicPlayerNotifications(
 
     private suspend fun prepareMediaSession(imageBitmap: Bitmap?, v: Float) =
         withContext(Dispatchers.Main) {
-            val mediaSession = MediaSessionCompat(context, "MEDIA_SESSION_TAG")
-            mediaSession.isActive = true
-
             val stateBuilder = PlaybackStateCompat.Builder()
                 .setState(
                     if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,

@@ -5,6 +5,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -28,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.app.ServiceCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -217,10 +222,27 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 MobileAds.initialize(this@MainActivity) { }
+
+                val networkRequest = NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                    .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                    .build()
+
+                val connectivityManager =
+                    getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+                connectivityManager.requestNetwork(networkRequest, networkCallback)
             }
         }
 
         checkAndRunWeb(intent)
+    }
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            homeViewModel.init()
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -234,15 +256,17 @@ class MainActivity : ComponentActivity() {
         ShowAdsOnAppOpen(this).showAds()
 
         homeViewModel.userArtistsList()
+
         startMusicService()
 
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
     }
 
 
-    private fun startMusicService() {
-        if (isMusicServiceRunning(this)) return
-        Intent(this, MusicPlayService::class.java).apply {
+    private fun startMusicService() = lifecycleScope.launch(Dispatchers.Main) {
+        delay(2.seconds)
+        if (isMusicServiceRunning(this@MainActivity)) return@launch
+        Intent(this@MainActivity, MusicPlayService::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             try {
                 startForegroundService(this)

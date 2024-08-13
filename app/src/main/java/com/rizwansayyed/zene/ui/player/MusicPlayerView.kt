@@ -227,8 +227,10 @@ fun MusicPlayerView(
 
     LaunchedEffect(pagerState.currentPage) {
         try {
-            name = playerInfo?.list?.get(pagerState.currentPage)?.name ?: ""
-            artists = playerInfo?.list?.get(pagerState.currentPage)?.artists ?: ""
+            if ((playerInfo?.list?.size ?: 0) >= pagerState.currentPage) {
+                name = playerInfo?.list?.get(pagerState.currentPage)?.name ?: ""
+                artists = playerInfo?.list?.get(pagerState.currentPage)?.artists ?: ""
+            }
         } catch (e: Exception) {
             e.message
         }

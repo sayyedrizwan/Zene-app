@@ -41,6 +41,8 @@ import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -196,7 +198,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                 return@withContext
             }
 
-            val user = zeneAPIInterface.getUser(e).firstOrNull()
+            val user = zeneAPIInterface.getUser(e).catch {  }.firstOrNull()
             if (user?.email != null) {
                 pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
                 DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))
@@ -209,7 +211,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             )
             DataStoreManager.userInfoDB = flowOf(u)
             delay(1.seconds)
-            zeneAPIInterface.updateUser().firstOrNull()
+            zeneAPIInterface.updateUser().catch { }.collect()
             sendNavCommand(SYNC_DATA)
         }
 }
