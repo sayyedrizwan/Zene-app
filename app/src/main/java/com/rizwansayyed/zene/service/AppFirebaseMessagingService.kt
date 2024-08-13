@@ -10,6 +10,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
+import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
@@ -43,11 +44,16 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-
-        message.notification?.let {
-            if (it.title != null) {
-                logEvents(FirebaseLogEvents.FirebaseEvents.RECEIVED_NOTIFICATION)
-                NotificationUtils(it.title!!, it.body ?: "", it.imageUrl)
+        CoroutineScope(Dispatchers.IO).launch {
+            message.notification?.let {
+                if (it.title != null) {
+                    val name =
+                        if (DataStoreManager.userInfoDB.firstOrNull()?.name == null) "Zene user" else DataStoreManager.userInfoDB.firstOrNull()?.name
+                    val title = it.title!!.replace("[[user]]", name ?: "Zene user")
+                    val body = it.body ?: "".replace("[[user]]", name ?: "Zene user")
+                    logEvents(FirebaseLogEvents.FirebaseEvents.RECEIVED_NOTIFICATION)
+                    NotificationUtils(title, body, it.imageUrl)
+                }
             }
         }
     }
