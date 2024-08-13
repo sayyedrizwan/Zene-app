@@ -21,6 +21,10 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.GO_TO_THE_NEXT_MUSIC
@@ -34,7 +38,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.net.URL
 
@@ -67,6 +70,31 @@ class MusicPlayerNotifications(
     }
 
     private val callback = object : MediaSessionCompat.Callback() {
+        override fun onPlay() {
+            super.onPlay()
+            sendWebViewCommand(PLAY_VIDEO)
+        }
+
+        override fun onPause() {
+            super.onPause()
+            sendWebViewCommand(PAUSE_VIDEO)
+        }
+
+        override fun onSkipToPrevious() {
+            super.onSkipToPrevious()
+            sendWebViewCommand(PREVIOUS_SONG)
+        }
+
+        override fun onSkipToNext() {
+            super.onSkipToNext()
+            sendWebViewCommand(NEXT_SONG)
+        }
+
+        override fun onStop() {
+            super.onStop()
+            sendWebViewCommand(PAUSE_VIDEO)
+        }
+
         override fun onSeekTo(pos: Long) {
             super.onSeekTo(pos)
             val position = pos / 1000
@@ -168,12 +196,13 @@ class MusicPlayerNotifications(
 
     private suspend fun prepareMediaSession(imageBitmap: Bitmap?, v: Float) =
         withContext(Dispatchers.Main) {
+
+            val state =
+                if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+
             val stateBuilder = PlaybackStateCompat.Builder()
-                .setState(
-                    if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,
-                    (currentDuration?.toLong() ?: 0) * 1000, v
-                )
-                .setActions(PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_PLAY_PAUSE)
+                .setState(state, (currentDuration?.toLong() ?: 0) * 1000, v)
+                .setActions(allActions())
 
             mediaSession.setCallback(callback)
             mediaSession.setPlaybackState(stateBuilder.build())
@@ -182,7 +211,6 @@ class MusicPlayerNotifications(
                 .putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, name)
                 .putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, art)
                 .putString(MediaMetadata.METADATA_KEY_TITLE, name)
-                .putString(MediaMetadata.METADATA_KEY_ARTIST, artists)
                 .putString(MediaMetadata.METADATA_KEY_ARTIST, artists)
                 .putBitmap(MediaMetadata.METADATA_KEY_ART, imageBitmap)
                 .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, imageBitmap).putLong(
@@ -198,8 +226,10 @@ class MusicPlayerNotifications(
             putExtra(Intent.ACTION_MAIN, action)
         }
 
-        return PendingIntent
-            .getBroadcast(context, (11..888).random(), brPlay, PendingIntent.FLAG_MUTABLE)
+        return PendingIntent.getBroadcast(
+            context, (11..888).random(), brPlay,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
     }
 
     private suspend fun downloadImage(path: String) = withContext(Dispatchers.IO) {
@@ -220,5 +250,14 @@ class MusicPlayerNotifications(
             e.printStackTrace()
             return@withContext null
         }
+    }
+
+    private fun allActions(): Long {
+        return PlaybackStateCompat.ACTION_SEEK_TO or
+                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                PlaybackStateCompat.ACTION_PLAY or
+                PlaybackStateCompat.ACTION_PAUSE or
+                PlaybackStateCompat.ACTION_STOP
     }
 }

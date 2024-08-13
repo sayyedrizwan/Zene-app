@@ -272,7 +272,6 @@ fun HomeView(
                     item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                         Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                             TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
-
                         }
                     }
 
@@ -282,16 +281,19 @@ fun HomeView(
                 }
 
                 is APIResponse.Success -> {
-                    item(27, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                        Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                            TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
-
+                    if (v.data.isNotEmpty()) {
+                        item(27, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                            Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                                TextPoppinsSemiBold(
+                                    stringResource(R.string.songs_for_you),
+                                    size = 15
+                                )
+                            }
                         }
-                    }
-
-                    items(v.data,
-                        span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                        SongDynamicCards(it, v.data)
+                        items(v.data,
+                            span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                            SongDynamicCards(it, v.data)
+                        }
                     }
                 }
             }

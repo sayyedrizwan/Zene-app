@@ -1,18 +1,15 @@
 package com.rizwansayyed.zene.di
 
-import android.content.Context
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.ip.IpAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
 import com.rizwansayyed.zene.utils.Utils.URLS.BASE_URL
 import com.rizwansayyed.zene.utils.Utils.URLS.BASE_URL_IP
-import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -25,18 +22,14 @@ object RetrofitAPI {
 
     @Provides
     fun zeneAPIService(): ZeneAPIService {
-        fun provideCacheInterceptor(): Interceptor {
-            return Interceptor { chain ->
-                val request = chain.request()
-                val response = chain.proceed(request)
-                response.newBuilder().header("auth", BuildConfig.AUTH_HEADER).build()
-            }
-        }
-
         val okHttpClient = OkHttpClient.Builder().readTimeout(3, TimeUnit.MINUTES)
             .connectTimeout(3, TimeUnit.MINUTES)
 
-        okHttpClient.addNetworkInterceptor(provideCacheInterceptor())
+//        okHttpClient.addInterceptor { chain ->
+//            chain.proceed(
+//                chain.request().newBuilder().addHeader("auth", BuildConfig.AUTH_HEADER).build()
+//            )
+//        }
 
         return Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi)).build()

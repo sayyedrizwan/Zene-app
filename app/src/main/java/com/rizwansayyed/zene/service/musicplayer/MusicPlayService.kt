@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaSession
 import android.media.session.PlaybackState
@@ -113,19 +114,27 @@ class MusicPlayService : Service() {
         }
     }
 
+    private val becomingNoisyReceiver = object : BroadcastReceiver() {
+        override fun onReceive(c: Context?, i: Intent?) {
+            if (i?.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val d = musicPlayerDB.first()
+                    if (d?.isPlaying == true) pause()
+                }
+            }
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         CoroutineScope(Dispatchers.Main).launch {
             val player = withContext(Dispatchers.IO) { musicPlayerDB.firstOrNull()?.player }
 
-            if (player?.id == null)
-                MusicPlayerNotifications(
-                    this@MusicPlayService, false, null, null, null, 0, 0
-                ).generateEmpty()
-            else
-                MusicPlayerNotifications(
-                    this@MusicPlayService, false, player.name, player.artists,
-                    player.thumbnail, 0, 0
-                ).generate()
+            if (player?.id == null) MusicPlayerNotifications(
+                this@MusicPlayService, false, null, null, null, 0, 0
+            ).generateEmpty()
+            else MusicPlayerNotifications(
+                this@MusicPlayService, false, player.name, player.artists, player.thumbnail, 0, 0
+            ).generate()
         }
         return START_STICKY
     }
@@ -136,6 +145,14 @@ class MusicPlayService : Service() {
             addAction(Intent.ACTION_SCREEN_OFF)
             ContextCompat.registerReceiver(
                 this@MusicPlayService, phoneWake, this, ContextCompat.RECEIVER_EXPORTED
+            )?.apply {
+                setPackage(context.packageName)
+            }
+        }
+
+        IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY).apply {
+            ContextCompat.registerReceiver(
+                this@MusicPlayService, becomingNoisyReceiver, this, ContextCompat.RECEIVER_EXPORTED
             )?.apply {
                 setPackage(context.packageName)
             }
@@ -162,16 +179,18 @@ class MusicPlayService : Service() {
 
     fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
         currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
-        val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
-            .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
+        val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
+            "<<VideoID>>",
+            vID.replace(RADIO_ARTISTS, "").trim()
+        )
 
         logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
 
         withContext(Dispatchers.IO) {
-            if (vID != defaultID && !vID.contains(RADIO_ARTISTS))
-                zeneAPI.addMusicHistory(vID).firstOrNull()
+            if (vID != defaultID && !vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID)
+                .firstOrNull()
         }
     }
 
@@ -278,8 +297,13 @@ class MusicPlayService : Service() {
                 musicPlayerDB = flowOf(d)
 
                 MusicPlayerNotifications(
-                    this@MusicPlayService, v == VIDEO_PLAYING, d?.player?.name, d?.player?.artists,
-                    d?.player?.thumbnail, duration, currentDuration
+                    this@MusicPlayService,
+                    v == VIDEO_PLAYING,
+                    d?.player?.name,
+                    d?.player?.artists,
+                    d?.player?.thumbnail,
+                    duration,
+                    currentDuration
                 ).generate()
 
                 if (isActive) cancel()

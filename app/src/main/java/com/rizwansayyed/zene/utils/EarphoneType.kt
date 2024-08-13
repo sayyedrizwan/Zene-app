@@ -17,7 +17,6 @@ object EarphoneTypeCheck {
         var type: EarphoneType = EarphoneType.NORMAL
 
         for (device in devices) {
-            device.type.toast()
             type = when (device.type) {
                 AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_BLUETOOTH_SCO, AudioDeviceInfo.TYPE_BLE_BROADCAST,
                 AudioDeviceInfo.TYPE_BLE_HEADSET, AudioDeviceInfo.TYPE_BLE_SPEAKER ->

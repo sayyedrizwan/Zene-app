@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.api.zene
 
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
@@ -53,6 +54,8 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -61,99 +64,126 @@ import retrofit2.http.Query
 
 interface ZeneAPIService {
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_USER_API)
     suspend fun updateUser(@Body body: RequestBody): StatusResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_USER_API)
     suspend fun getUser(@Query("user") user: String): ZeneUsersResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_MOODS_API)
     suspend fun moodLists(): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_MOODS_API)
     suspend fun moodLists(@Body body: RequestBody): ZeneMoodPlaylistData
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_PLAYER_MERCHANDISE_API)
     suspend fun merchandise(@Query("n") name: String): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_NEW_RELEASE_API)
     suspend fun latestReleases(@Query("i") id: String): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_PLAYER_LYRICS_API)
     suspend fun lyrics(
         @Query("s") id: String, @Query("n") name: String, @Query("a") artists: String
     ): ZeneLyricsData
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_PLAYER_VIDEO_DATA_API)
     suspend fun playerVideoData(
         @Query("n") name: String, @Query("a") artists: String
     ): ZeneVideosMusicData
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_TOP_LISTEN_SONGS_API)
     suspend fun topMostListeningSong(): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_TOP_GLOBAL_ARTISTS_API)
     suspend fun topMostListeningArtists(): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SEARCH_API)
     suspend fun searchData(@Query("s") id: String): ZeneSearchData
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_USER_UPDATE_ARTISTS_API)
     suspend fun updateArtists(@Body body: RequestBody): ZeneBooleanResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SEARCH_SUGGESTIONS_API)
     suspend fun searchSuggestions(@Query("s") id: String): List<String>
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_TOP_ARTISTS_API)
     suspend fun favArtistsData(@Body body: RequestBody): ZeneArtistsData
 
-
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_SUGGESTED_SONGS_API)
     suspend fun suggestedSongs(@Body body: RequestBody): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_PLAYER_SUGGESTED_SONGS_API)
     suspend fun suggestedSongs(@Query("s") id: String): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_TOP_PLAYLISTS_API)
     suspend fun recommendedPlaylists(@Body body: RequestBody): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_TOP_ALBUMS_API)
     suspend fun recommendedAlbums(@Body body: RequestBody): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_TOP_VIDEOS_API)
     suspend fun recommendedVideo(@Body body: RequestBody): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_TOP_SONGS_API)
     suspend fun suggestTopSongs(@Body body: RequestBody): ZeneMusicDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_USER_SONG_HISTORY_API)
     suspend fun addSongHistory(@Body body: RequestBody): ZeneBooleanResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_PLAYLISTS_API)
     suspend fun playlistAlbums(
         @Query("id") id: String, @Query("email") email: String
     ): ZenePlaylistAlbumsData
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_ARTISTS_INFO_API)
     suspend fun artistsInfo(@Body body: RequestBody): ZeneArtistsInfoResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_ARTISTS_DATA_API)
     suspend fun artistsData(@Body body: RequestBody): ZeneArtistsDataResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_USER_SONG_HISTORY_API)
     suspend fun getSongHistory(
         @Query("email") email: String, @Query("page") page: Int
     ): ZeneMusicHistoryResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SEARCH_IMG_API)
     suspend fun searchImg(@Query("s") search: String): List<String>
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_REMOVE_PLAYLISTS_API)
     suspend fun deletePlaylists(
         @Query("email") email: String,
         @Query("id") id: String
     ): ZeneBooleanResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @Multipart
     @POST(ZENE_USER_PLAYLISTS_API)
     suspend fun playlistCreate(
@@ -163,12 +193,15 @@ interface ZeneAPIService {
         @Part("id") id: RequestBody?
     ): ZeneBooleanResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_USER_PLAYLISTS_API)
     suspend fun savedPlaylists(
         @Query("email") email: String,
         @Query("page") page: Int
     ): ZeneSavedPlaylistsResponse
 
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_USER_IS_SONG_IN_PLAYLISTS_API)
     suspend fun checkIfSongPresentInPlaylists(
         @Query("email") email: String,
@@ -177,6 +210,7 @@ interface ZeneAPIService {
     ): ZeneMusicDataResponse
 
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_ADD_SONGS_PLAYLISTS_API)
     suspend fun addRemoveSongFromPlaylists(
         @Query("playlistId") playlistId: String,
@@ -184,24 +218,32 @@ interface ZeneAPIService {
         @Query("doAdd") doAdd: Boolean
     ): ZeneBooleanResponse
 
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_FEEDS_API)
     suspend fun artistsPosts(@Body body: RequestBody): ZeneArtistsPostsResponse
 
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_USER_MY_PLAYLISTS_API)
     suspend fun userPlaylistData(@Body body: RequestBody): ZeneMusicDataItems
 
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_USER_MY_PLAYLISTS_API)
     suspend fun userPlaylistSongs(
         @Query("playlistID") playlistID: String, @Query("page") page: Int
     ): ZeneMusicDataResponse
 
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_IMPORT_PLAYLISTS_SPOTIFY_API)
     suspend fun importSpotifyPlaylists(
         @Query("token") token: String, @Query("url") url: String?
     ): ZeneMusicImportPlaylistsDataResponse
 
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SONG_INFO_API)
     suspend fun songInfo(@Query("id") token: String): ZeneMusicDataItems
 

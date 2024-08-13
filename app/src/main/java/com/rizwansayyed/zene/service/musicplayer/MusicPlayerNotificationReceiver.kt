@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.musicplayer
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
@@ -11,6 +12,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_BACK_VID
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_FORWARD_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.utils.Utils.toast
 
 class MusicPlayerNotificationReceiver : BroadcastReceiver() {
 
@@ -28,6 +30,10 @@ class MusicPlayerNotificationReceiver : BroadcastReceiver() {
         i ?: return
 
         val value = i.getStringExtra(Intent.ACTION_MAIN)
+
+        Log.d("TAG", "onReceive: on data on $value")
+        value?.toast()
+
         if (value == PLAY_THE_MUSIC) sendWebViewCommand(PLAY_VIDEO)
         if (value == PAUSE_THE_MUSIC) sendWebViewCommand(PAUSE_VIDEO)
         if (value == GO_TO_THE_NEXT_MUSIC) sendWebViewCommand(NEXT_SONG)

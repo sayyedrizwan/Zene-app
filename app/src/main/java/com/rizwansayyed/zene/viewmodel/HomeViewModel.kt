@@ -73,6 +73,7 @@ class HomeViewModel @Inject constructor(
             recommendedPlaylists = APIResponse.Empty
             return@launch
         }
+
         zeneAPI.recommendedPlaylists().onStart {
             recommendedPlaylists = APIResponse.Loading
         }.catch {
