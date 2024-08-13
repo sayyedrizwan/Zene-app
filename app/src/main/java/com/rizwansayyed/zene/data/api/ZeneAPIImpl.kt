@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.data.api
 
 import android.os.Build
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import com.rizwansayyed.zene.data.api.ip.IpAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
@@ -33,6 +35,9 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun updateUser() = flow {
         val ip = ip().firstOrNull()
+
+        Firebase.messaging.subscribeToTopic("country_${ip?.country?.lowercase()}")
+            .addOnCompleteListener { }
 
         val users = userInfoDB.firstOrNull()
         val fcm = FirebaseMessaging.getInstance().token.await()
