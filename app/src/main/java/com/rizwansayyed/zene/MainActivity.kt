@@ -51,7 +51,6 @@ import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.player.PlayerThumbnail
-import com.rizwansayyed.zene.ui.player.customPlayerNotification
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
 import com.rizwansayyed.zene.ui.search.SearchView
@@ -252,7 +251,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        customPlayerNotification(this@MainActivity)
         ShowAdsOnAppOpen(this).showAds()
 
         homeViewModel.userArtistsList()

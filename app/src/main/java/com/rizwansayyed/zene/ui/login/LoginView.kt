@@ -187,8 +187,12 @@ fun LoginZeneLogo() {
 fun LoginButtonView() {
     val homeViewModel: HomeViewModel = viewModel()
 
+    var isLoginLoading by remember { mutableStateOf(false) }
+
     val activity = LocalContext.current as Activity
     var bottomSheet by remember { mutableStateOf(false) }
+
+    val errorLogin = stringResource(R.string.error_while_login)
 
     val imgBorder = Modifier
         .padding(9.dp)
@@ -210,8 +214,20 @@ fun LoginButtonView() {
         Arrangement.Center, Alignment.CenterVertically
     ) {
         Spacer(Modifier.height(40.dp))
-        TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
+        if (isLoginLoading)
+            LoadingView(Modifier.size(34.dp))
+        else
+            TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
         Spacer(Modifier.height(40.dp))
+    }
+
+    fun startLogin(t: LoginFlowType) {
+        bottomSheet = false
+        isLoginLoading = true
+        homeViewModel.loginFlow.init(t, activity) {
+            isLoginLoading = false
+            errorLogin.toast()
+        }
     }
 
     if (bottomSheet) ModalBottomSheet({ bottomSheet = false }, containerColor = Color.Black) {
@@ -227,7 +243,7 @@ fun LoginButtonView() {
                     painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable {
-                        homeViewModel.loginFlow.init(LoginFlowType.GOOGLE, activity)
+                        startLogin(LoginFlowType.GOOGLE)
                     }
                 )
 
@@ -235,7 +251,7 @@ fun LoginButtonView() {
                     painterResource(R.drawable.ic_apple),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable {
-                        homeViewModel.loginFlow.init(LoginFlowType.APPLE, activity)
+                        startLogin(LoginFlowType.APPLE)
                     }
                 )
 
@@ -243,7 +259,7 @@ fun LoginButtonView() {
                     painterResource(R.drawable.ic_facebook),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable {
-                        homeViewModel.loginFlow.init(LoginFlowType.FACEBOOK, activity)
+                        startLogin(LoginFlowType.FACEBOOK)
                     }
                 )
             }

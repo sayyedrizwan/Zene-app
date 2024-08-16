@@ -14,6 +14,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,32 +45,48 @@ import com.rizwansayyed.zene.ui.view.SearchTexts
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.enterUniqueSearchHistory
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (String) -> Unit) {
     val searchHistory by searchHistoryDB.collectAsState(initial = emptyArray())
     var searchQuery by remember { mutableStateOf("") }
 
+    var searchJob by remember { mutableStateOf<Job?>(null) }
+    val coroutine = rememberCoroutineScope()
+
     val context = LocalContext.current as Activity
 
-    LazyColumn(
+    LazyVerticalGrid(
+        GridCells.Fixed(TOTAL_GRID_SIZE),
         Modifier
             .fillMaxSize()
             .background(DarkCharcoal)
     ) {
-        stickyHeader {
+        item(key = 800, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(20.dp))
 
             Row(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterVertically) {
-                Box(Modifier.padding(top = 42.dp).offset(x = 4.dp).clickable { close() }) {
+                Box(
+                    Modifier
+                        .padding(top = 42.dp)
+                        .offset(x = 4.dp)
+                        .clickable { close() }) {
                     ImageIcon(R.drawable.ic_arrow_left, 35, Color.White)
                 }
                 SearchScreenBar(R.string.search_zene, searchQuery, {
                     searchQuery = it
-                    homeViewModel.searchSuggestions(it)
+                    searchJob?.cancel()
+                    searchJob = coroutine.launch {
+                        delay(600)
+                        homeViewModel.searchSuggestions(it)
+                    }
                 }) {
                     search(it)
                     searchQuery = it
@@ -73,19 +94,19 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
             }
         }
 
-        item(key = 1 ) {
+        item(key = 1, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(20.dp))
         }
 
         when (val v = homeViewModel.searchSuggestions) {
             APIResponse.Empty -> {}
             is APIResponse.Error -> {}
-            APIResponse.Loading -> items(10) {
+            APIResponse.Loading -> items(10, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 LoadingText()
             }
 
             is APIResponse.Success -> {
-                items(v.data) {
+                items(v.data, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     SearchTexts(it, false) { b ->
                         searchQuery = it
                         if (b) search(it)
@@ -93,13 +114,13 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
                     }
                 }
 
-                item(key = 2 ) {
+                item(key = 2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     Spacer(Modifier.height(60.dp))
                 }
             }
         }
 
-        item(key = 3) {
+        item(key = 3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(20.dp))
             Row(Modifier.padding(horizontal = 9.dp)) {
                 TextPoppins(stringResource(R.string.search_history), size = 24)
@@ -108,13 +129,14 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
 
 
         if (searchHistory?.toList()?.isEmpty() == true) {
-            item(key = 4) {
+            item(key = 4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Spacer(Modifier.height(80.dp))
                 TextPoppinsThin(stringResource(R.string.no_search_history), true, size = 20)
                 Spacer(Modifier.height(40.dp))
             }
         } else {
-            items(searchHistory?.toList() ?: emptyList()) {
+            items(searchHistory?.toList() ?: emptyList(),
+                span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 SearchTexts(it, true) { b ->
                     searchQuery = it
                     if (b) search(it)
@@ -123,7 +145,7 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
             }
         }
 
-        item(key = 5) {
+        item(key = 5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(80.dp))
         }
     }

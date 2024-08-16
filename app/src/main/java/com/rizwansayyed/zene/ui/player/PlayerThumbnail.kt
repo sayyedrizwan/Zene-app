@@ -84,8 +84,4 @@ fun PlayerThumbnail(modifier: Modifier = Modifier, info: MusicPlayerData?, open:
         currentProgress = if (info?.currentDuration == 0) 0f
         else getPercentageLeft(info?.currentDuration, info?.totalDuration).toFloat() / 100
     }
-
-    LaunchedEffect(Unit) {
-        sendWebViewCommand(OPEN_PLAYER)
-    }
 }

@@ -74,8 +74,11 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         scopes = arrayOf("email", "name").toMutableList()
     }
 
-    fun init(type: LoginFlowType, c: Activity) {
+    private lateinit var close: () -> Unit
+
+    fun init(type: LoginFlowType, c: Activity, close: () -> Unit) {
         credentialManager = CredentialManager.create(c)
+        this.close = close
 
         when (type) {
             LoginFlowType.GOOGLE -> startGoogleSignIn(c)
@@ -101,16 +104,16 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                     logEvents(FirebaseLogEvents.FirebaseEvents.LOGIN_WITH_GOOGLE)
                     startLogin(email, g.displayName, g.profilePictureUri.toString())
                 } catch (e: Exception) {
-                    context.getString(R.string.error_while_login).toast()
+                    close()
                 }
             }
 
             when (credential) {
                 is CustomCredential -> if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) get()
-                else -> context.getString(R.string.error_while_login).toast()
+                else -> close()
             }
         } catch (e: Exception) {
-            e.message
+            close()
         }
     }
 
@@ -124,10 +127,12 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
         )
 
         val callback = object : FacebookCallback<LoginResult> {
-            override fun onCancel() {}
+            override fun onCancel() {
+                close()
+            }
 
             override fun onError(error: FacebookException) {
-                context.getString(R.string.error_while_login).toast()
+                close()
             }
 
             override fun onSuccess(result: LoginResult) {
@@ -135,9 +140,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                     fbGraph(result.accessToken.token)
                 }
             }
-
         }
-
         loginManager.registerCallback(callbackManager, callback)
     }
 
@@ -147,7 +150,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                 .startActivityForSignInWithProvider(c, providerApple.build()).await()
 
             if ((auth.user?.providerData?.size ?: 0) <= 0) {
-                context.getString(R.string.error_while_login).toast()
+                close()
                 return@launch
             }
 
@@ -159,7 +162,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             }
 
         } catch (e: Exception) {
-            context.getString(R.string.error_while_login).toast()
+            close()
         }
     }
 
@@ -183,22 +186,22 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             logEvents(FirebaseLogEvents.FirebaseEvents.LOGIN_WITH_FB)
             startLogin(data?.email(), data?.name ?: "", data?.profilePic())
         } catch (e: Exception) {
-            context.getString(R.string.error_while_login).toast()
+            close()
         }
     }
 
     private suspend fun startLogin(e: String?, n: String?, p: String?) =
         withContext(Dispatchers.IO) {
             if (e == null) {
-                context.getString(R.string.error_while_login).toast()
+                close()
                 return@withContext
             }
             if (e.length <= 3 && !e.contains("@")) {
-                context.getString(R.string.error_while_login).toast()
+                close()
                 return@withContext
             }
 
-            val user = zeneAPIInterface.getUser(e).catch {  }.firstOrNull()
+            val user = zeneAPIInterface.getUser(e).catch { }.firstOrNull()
             if (user?.email != null) {
                 pinnedArtistsList = flowOf(user.pinned_artists?.filterNotNull()?.toTypedArray())
                 DataStoreManager.userInfoDB = flowOf(user.toUserInfo(e))

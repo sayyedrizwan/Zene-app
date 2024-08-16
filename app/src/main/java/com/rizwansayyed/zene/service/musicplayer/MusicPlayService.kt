@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -66,6 +67,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
@@ -95,8 +98,8 @@ class MusicPlayService : Service() {
 
     private lateinit var webView: WebView
     private var job: Job? = null
-    private var defaultID = "2"
     private var currentVideoID = ""
+    private var isNewPlay = true
 
     private val phoneWake = object : BroadcastReceiver() {
         override fun onReceive(c: Context?, i: Intent?) {
@@ -127,21 +130,25 @@ class MusicPlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        CoroutineScope(Dispatchers.Main).launch {
-            val player = withContext(Dispatchers.IO) { musicPlayerDB.firstOrNull()?.player }
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2.seconds)
+            val player = musicPlayerDB.firstOrNull()?.player
 
-            if (player?.id == null) MusicPlayerNotifications(
-                this@MusicPlayService, false, null, null, null, 0, 0
-            ).generateEmpty()
-            else MusicPlayerNotifications(
-                this@MusicPlayService, false, player.name, player.artists, player.thumbnail, 0, 0
-            ).generate()
+            if (player?.id != null)
+                MusicPlayerNotifications(
+                    this@MusicPlayService, false, player.name,
+                    player.artists, player.thumbnail, 0, 0
+                ).generate()
         }
         return START_STICKY
     }
 
     override fun onCreate() {
         super.onCreate()
+        isNewPlay = true
+
+        MusicPlayerNotifications(this@MusicPlayService).generateEmpty()
+
         IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
             ContextCompat.registerReceiver(
@@ -169,7 +176,12 @@ class MusicPlayService : Service() {
         registerWebViewCommand(applicationContext, listener)
 
         durationUpdateJob()
-        loadURL(defaultID)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            musicPlayerDB.firstOrNull()?.player?.id?.let {
+                loadURL(it)
+            }
+        }
     }
 
     fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
@@ -183,9 +195,10 @@ class MusicPlayService : Service() {
         webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
 
         withContext(Dispatchers.IO) {
-            if (vID != defaultID && !vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID)
-                .firstOrNull()
+            if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID).catch { }.collect()
         }
+
+        if (isActive) cancel()
     }
 
     override fun onBind(p0: Intent?): IBinder? = null
@@ -242,10 +255,6 @@ class MusicPlayService : Service() {
     }
 
     private fun pause() = CoroutineScope(Dispatchers.Main).launch {
-        if (currentVideoID == defaultID) {
-            loadCurrentSong()
-            return@launch
-        }
         webView.evaluateJavascript("pauseSong();", null)
     }
 
@@ -258,10 +267,6 @@ class MusicPlayService : Service() {
     }
 
     private fun play() {
-        if (currentVideoID == defaultID) {
-            loadCurrentSong()
-            return
-        }
         webView.evaluateJavascript("playSong();", null)
     }
 
@@ -269,8 +274,9 @@ class MusicPlayService : Service() {
         webView.evaluateJavascript("playerDurations();", null)
     }
 
-    private fun seekTo(v: Int) {
+    private fun seekTo(v: Int) = CoroutineScope(Dispatchers.Main).launch {
         webView.evaluateJavascript("seekTo($v);", null)
+        if (isActive) cancel()
     }
 
     private fun updatePlaybackSpeed() = CoroutineScope(Dispatchers.IO).launch {
@@ -292,7 +298,6 @@ class MusicPlayService : Service() {
         @JavascriptInterface
         fun playerState(v: Int, duration: Int, currentDuration: Int, updatePlayback: Boolean) =
             CoroutineScope(Dispatchers.IO).launch {
-                if (currentVideoID == defaultID) return@launch
                 if (v == VIDEO_ENDED) checkAndPlayNextSong()
 
                 val d = musicPlayerDB.first()
@@ -301,6 +306,12 @@ class MusicPlayService : Service() {
                 if (v == VIDEO_PLAYING) {
                     d?.isPlaying = true
                     if (updatePlayback) updatePlaybackSpeed()
+
+                    if (isNewPlay) {
+                        isNewPlay = false
+                        pause()
+                        d?.currentDuration?.let { seekTo(it) }
+                    }
                 }
                 musicPlayerDB = flowOf(d)
 
@@ -362,11 +373,6 @@ class MusicPlayService : Service() {
         webView.clearCache(true)
         val cookieManager = CookieManager.getInstance()
         cookieManager.removeAllCookies({})
-    }
-
-    private fun loadCurrentSong() = CoroutineScope(Dispatchers.IO).launch {
-        val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
-        loadURL(id)
     }
 
     private fun checkAndPlayNextSong() = CoroutineScope(Dispatchers.IO).launch {

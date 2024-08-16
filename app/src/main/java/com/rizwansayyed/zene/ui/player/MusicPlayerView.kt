@@ -51,6 +51,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.OPEN_PLAYER
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
@@ -236,14 +237,13 @@ fun MusicPlayerView(
 
     suspend fun scrollThumbnailCard() {
         playerInfo?.list?.forEachIndexed { index, z ->
-            if (z.id == playerInfo.player?.id) {
-                try {
-                    pagerState.animateScrollToPage(index)
-                    name = z.name ?: ""
-                    artists = z.artists ?: ""
-                } catch (e: Exception) {
-                    e.message
-                }
+            try {
+                if (z.id != playerInfo.player?.id) return@forEachIndexed
+                pagerState.animateScrollToPage(index)
+                name = z.name ?: ""
+                artists = z.artists ?: ""
+            } catch (e: Exception) {
+                e.message
             }
         }
     }
@@ -261,6 +261,7 @@ fun MusicPlayerView(
 
     LaunchedEffect(lifecycleState) {
         if (lifecycleState == Lifecycle.State.RESUMED || lifecycleState == Lifecycle.State.STARTED) {
+            sendWebViewCommand(OPEN_PLAYER)
             scrollThumbnailCard()
             playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
             playerInfo?.player?.let {

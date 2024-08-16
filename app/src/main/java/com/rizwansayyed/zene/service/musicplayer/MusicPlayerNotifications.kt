@@ -44,12 +44,12 @@ import java.net.URL
 
 class MusicPlayerNotifications(
     private val context: MusicPlayService,
-    private val isPlaying: Boolean,
-    private val name: String?,
-    private val artists: String?,
-    private val art: String?,
-    private val duration: Int?,
-    private val currentDuration: Int?
+    private val isPlaying: Boolean = false,
+    private val name: String? = null,
+    private val artists: String? = null,
+    private val art: String? = null,
+    private val duration: Int? = 0,
+    private val currentDuration: Int? = 0
 ) {
 
     companion object {

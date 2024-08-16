@@ -25,12 +25,6 @@ object RetrofitAPI {
         val okHttpClient = OkHttpClient.Builder().readTimeout(3, TimeUnit.MINUTES)
             .connectTimeout(3, TimeUnit.MINUTES)
 
-//        okHttpClient.addInterceptor { chain ->
-//            chain.proceed(
-//                chain.request().newBuilder().addHeader("auth", BuildConfig.AUTH_HEADER).build()
-//            )
-//        }
-
         return Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi)).build()
             .create(ZeneAPIService::class.java)
