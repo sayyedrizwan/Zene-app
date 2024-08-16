@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.utils.Utils.moshi
 object MusicServiceUtils {
 
     object Commands {
+        const val OPEN_PLAYER = "open_player"
         const val PLAY_VIDEO = "play"
         const val PAUSE_VIDEO = "pause"
         const val SEEK_DURATION_VIDEO = "seek_duration"

@@ -25,6 +25,8 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.OPEN_PLAYER
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
@@ -81,5 +83,9 @@ fun PlayerThumbnail(modifier: Modifier = Modifier, info: MusicPlayerData?, open:
     LaunchedEffect(info?.currentDuration) {
         currentProgress = if (info?.currentDuration == 0) 0f
         else getPercentageLeft(info?.currentDuration, info?.totalDuration).toFloat() / 100
+    }
+
+    LaunchedEffect(Unit) {
+        sendWebViewCommand(OPEN_PLAYER)
     }
 }

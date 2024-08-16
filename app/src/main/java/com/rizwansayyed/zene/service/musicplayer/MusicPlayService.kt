@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.OPEN_PLAYER
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAYBACK_RATE
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAY_VIDEO
@@ -167,21 +168,14 @@ class MusicPlayService : Service() {
 
         registerWebViewCommand(applicationContext, listener)
 
-        job = CoroutineScope(Dispatchers.Main).launch {
-            delay(4.seconds)
-            while (true) {
-                getDurations()
-                delay(1.seconds)
-            }
-        }
+        durationUpdateJob()
         loadURL(defaultID)
     }
 
     fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
         currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
         val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
-            "<<VideoID>>",
-            vID.replace(RADIO_ARTISTS, "").trim()
+            "<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim()
         )
 
         logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
@@ -195,6 +189,19 @@ class MusicPlayService : Service() {
     }
 
     override fun onBind(p0: Intent?): IBinder? = null
+
+    fun durationUpdateJob() {
+        job?.cancel()
+        job = null
+
+        job = CoroutineScope(Dispatchers.Main).launch {
+            delay(4.seconds)
+            while (true) {
+                getDurations()
+                delay(1.seconds)
+            }
+        }
+    }
 
     private val listener = object : BroadcastReceiver() {
         override fun onReceive(c: Context?, i: Intent?) {
@@ -219,7 +226,8 @@ class MusicPlayService : Service() {
             else if (json == PLAY_VIDEO) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PLAYING)
                 play()
-            } else if (json == PAUSE_VIDEO) {
+            } else if (json == OPEN_PLAYER) durationUpdateJob()
+            else if (json == PAUSE_VIDEO) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PAUSE)
                 pause()
             } else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
