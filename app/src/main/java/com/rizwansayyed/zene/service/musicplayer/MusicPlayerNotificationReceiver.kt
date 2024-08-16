@@ -31,9 +31,6 @@ class MusicPlayerNotificationReceiver : BroadcastReceiver() {
 
         val value = i.getStringExtra(Intent.ACTION_MAIN)
 
-        Log.d("TAG", "onReceive: on data on $value")
-        value?.toast()
-
         if (value == PLAY_THE_MUSIC) sendWebViewCommand(PLAY_VIDEO)
         if (value == PAUSE_THE_MUSIC) sendWebViewCommand(PAUSE_VIDEO)
         if (value == GO_TO_THE_NEXT_MUSIC) sendWebViewCommand(NEXT_SONG)
