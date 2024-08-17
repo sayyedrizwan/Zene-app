@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -26,14 +27,18 @@ object FirebaseLogEvents {
         PLAYBACK_SONG_RATE_SETTINGS, SHARE_SONG_URL, SHARE_PLAYLISTS_URL, SHARE_ARTISTS_URL, SHARE_VIDEO_URL,
         ADDING_TO_PLAYLISTS, ALBUM_PLAYLIST_VIEW, SAVED_CURRENT_PLAYLIST, REMOVED_CURRENT_PLAYLIST,
         STARTED_CREATING_USER_PLAYLISTS_VIEW, STARTED_SEARCHING, OPEN_EQUALIZER, BANNER_AD_VIEW,
-        OPEN_SONG_SHEET, NAVIGATION_DATA, OPEN_SHARE_APP
+        OPEN_SONG_SHEET, NAVIGATION_DATA, OPEN_SHARE_APP, APP_LANGUAGE
     }
 
-    fun logEvents(e: FirebaseEvents) = CoroutineScope(Dispatchers.IO).launch {
-        val userInfo = DataStoreManager.userInfoDB.firstOrNull()
+    fun logEvents(e: FirebaseEvents, n: String? = null) = CoroutineScope(Dispatchers.IO).launch {
+        val userInfo = DataStoreManager.userInfoDB.catch { }.firstOrNull()
         val parameters = Bundle().apply {
             putString(FirebaseAnalytics.Param.ITEM_ID, userInfo?.email)
             putString(FirebaseAnalytics.Param.ITEM_NAME, userInfo?.name)
+        }
+        if (n == null) {
+            firebaseAnalytics.logEvent("${e.name.lowercase()}_${n}", parameters)
+            return@launch
         }
         firebaseAnalytics.logEvent(e.name.lowercase(), parameters)
     }

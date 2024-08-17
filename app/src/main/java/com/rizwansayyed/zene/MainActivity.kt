@@ -90,6 +90,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -258,6 +259,9 @@ class MainActivity : ComponentActivity() {
         startMusicService()
 
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
+        logEvents(
+            FirebaseLogEvents.FirebaseEvents.APP_LANGUAGE, Locale.getDefault().displayLanguage
+        )
     }
 
 

@@ -122,24 +122,30 @@ fun HomeHeaderView() {
 
             Spacer(Modifier.width(15.dp))
 
+            ImageIcon(R.drawable.ic_search) {
+                sendNavCommand(NAV_SEARCH)
+            }
+
+            Spacer(Modifier.width(15.dp))
+
             Box {
                 ImageIcon(R.drawable.ic_menu) {
                     otherSettings = true
                 }
 
                 DropdownMenu(otherSettings, { otherSettings = false }) {
-                    DropdownMenuItem(
-                        {
-                            Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
-                                ImageIcon(R.drawable.ic_search, 24)
-                                Spacer(Modifier.width(8.dp))
-                                TextPoppins(stringResource(R.string.search), size = 18)
-                            }
-                        }, {
-                            otherSettings = false
-                            sendNavCommand(NAV_SEARCH)
-                        }
-                    )
+//                    DropdownMenuItem(
+//                        {
+//                            Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
+//                                ImageIcon(R.drawable.ic_search, 24)
+//                                Spacer(Modifier.width(8.dp))
+//                                TextPoppins(stringResource(R.string.search), size = 18)
+//                            }
+//                        }, {
+//                            otherSettings = false
+//                            sendNavCommand(NAV_SEARCH)
+//                        }
+//                    )
 
                     DropdownMenuItem(
                         {

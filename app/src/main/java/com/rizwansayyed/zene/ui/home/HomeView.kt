@@ -86,7 +86,6 @@ fun HomeView(
         item(1, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
                 HomeHeaderView()
-                ReviewAppDialog()
             }
         }
         item(2001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
