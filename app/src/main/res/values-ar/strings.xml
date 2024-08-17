@@ -1,0 +1,143 @@
+<resources> <!-- Arabic -->
+    <string name="app_name">زين</string>
+    <string name="app_name_premium">زين بريميوم</string>
+    <string name="a_music_app">تطبيق موسيقى مجاني</string>
+    <string name="login_to_continue">تسجيل الدخول للمتابعة</string>
+    <string name="error_while_login">خطأ أثناء تسجيل الدخول</string>
+    <string name="login_to_enjoy_free_music">تسجيل الدخول للاستمتاع بالموسيقى المجانية</string>
+    <string name="agreeing_privacy_policy">بالتسجيل ، فإنك توافق على سياسة الخصوصية الخاصة بنا</string>
+    <string name="recommended_playlists">قوائم التشغيل الموصى بها</string>
+    <string name="albums_picked_for_you">الألبومات المختارة لك</string>
+    <string name="videos_you_may_like">فيديوهات قد تعجبك</string>
+    <string name="videos">فيديوهات</string>
+    <string name="play_as_song">تشغيل كأغنية</string>
+    <string name="songs_you_may_like">الأغاني التي قد تعجبك</string>
+    <string name="songs_history">تاريخ الأغاني</string>
+    <string name="songs_for_you">أغاني لك</string>
+    <string name="similar_songs_you_may_like">أغاني مشابهة قد تعجبك</string>
+    <string name="pick_your_mood">اختر مزاجك</string>
+    <string name="latest_release">أحدث إصدار</string>
+    <string name="most_listening_songs_zene">الأغاني الأكثر استماعًا على زين</string>
+    <string name="listeners">المدونون</string>
+    <string name="listening___">استماع…</string>
+    <string name="import_from_spotify">استيراد من Spotify</string>
+    <string name="import_from_apple_music">استيراد من Apple Music</string>
+    <string name="import_playlists">استيراد قوائم التشغيل</string>
+    <string name="global_top_artists">أفضل الفنانين العالميين</string>
+    <string name="top_songs">أفضل الأغاني</string>
+    <string name="news">أخبار</string>
+    <string name="artists">فنانون</string>
+    <string name="similar_artists">فنانون متشابهون</string>
+    <string name="songs">أغاني</string>
+    <string name="albums">البومات</string>
+    <string name="enable">مكّن</string>
+    <string name="disabled">معطل</string>
+    <string name="playlists">قوائم التشغيل</string>
+    <string name="create_playlist">إنشاء قائمة تشغيل</string>
+    <string name="playlist_name">اسم قائمة التشغيل</string>
+    <string name="playlists_albums">قوائم التشغيل/الألبومات</string>
+    <string name="recommended">موصى به</string>
+    <string name="join_premium_community">انضم إلى مجتمع بريميوم</string>
+    <string name="join_zene_premium">انضم إلى زين بريميوم</string>
+    <string name="join_premium_community_desc">زين هو تطبيق موسيقى مجاني يوفر لك إمكانية الوصول غير المحدود إلى الألحان المفضلة لديك بدون أي تكلفة. بينما تظل ميزاتنا الأساسية مجانية ، فإن بريميوم مخصص لعشاق الموسيقى الذين يرغبون في الحصول على مزايا حصرية. يدعم عشاق الموسيقى الحفاظ على زين مجانيًا للجميع. انضم إلى عائلتنا بريميوم وارفع مستوى تجربتك الموسيقية اليوم!</string>
+    <string name="upgrade_if_you_are_a_music_enthusiasts">قم بالترقية إذا كنت من عشاق الموسيقى</string>
+    <string name="share_zene_friends_family">شارك زين مع الأصدقاء والعائلة</string>
+    <string name="zene_premium_is_for_music_enthusiast">زين بريميوم مخصص أكثر لعشاق الموسيقى</string>
+    <string name="zene_premium_is_for_music_enthusiast_desc">في زين ، نعتقد أن الموسيقى يجب أن تكون في متناول الجميع ، وهذا هو السبب في أن تطبيقنا يوفر إمكانية الوصول غير المحدود إلى الألحان المفضلة لديك مجانًا تمامًا. نحن ملتزمون بعدم احتساب أي رسوم للاستمتاع بالموسيقى على نظامنا الأساسي. هدفنا هو إنشاء مساحة يمكن للجميع فيها تجربة متعة الموسيقى بدون أي عوائق. \ n \ n ومع ذلك ، بالنسبة لعشاق الموسيقى الحقيقيين الذين يرغبون في الارتقاء بتجربة الاستماع إلى المستوى التالي ، فإننا نقدم خيار بريميوم. تم تصميم بريميوم لأولئك الذين يبحثون عن مزايا حصرية وتجربة غامرة أكثر. من خلال الترقية إلى بريميوم ، لا تقوم فقط بإلغاء قفل الميزات المتقدمة ، ولكنك تدعم أيضًا زين في الحفاظ على خدماتنا وتحسينها. تساعد مساهمتك في الحفاظ على التطبيق مجانيًا لجميع المستخدمين ، مما يضمن تمتع الجميع بالموسيقى عالية الجودة بدون أي تكلفة.</string>
+    <string name="upgrade_to_zene_premium">ترقية إلى زين بريميوم</string>
+    <string name="make_and_sync_playlists">إنشاء ومزامنة قوائم التشغيل</string>
+    <string name="monthly">شهريا</string>
+    <string name="one_month">1 شهر</string>
+    <string name="three_days_free_trial">تجربة مجانية لمدة 3 أيام</string>
+    <string name="per_month">لكل شهر</string>
+    <string name="available_plans">الخطط المتاحة</string>
+    <string name="upgrade">ترقية</string>
+    <string name="search">بحث</string>
+    <string name="search_zene">بحث زين</string>
+    <string name="search_images">بحث الصور</string>
+    <string name="search_history">تاريخ البحث</string>
+    <string name="no_search_history">لا يوجد تاريخ بحث</string>
+    <string name="music_player">مشغل الموسيقى</string>
+    <string name="music_player_desc">يعرض الموسيقى التي يتم تشغيلها حاليًا ، بما في ذلك عنوان الأغنية واسم الفنان وغلاف الألبوم ، مما يوفر تجربة بصرية جذابة أثناء الاستمتاع بمقطوعاتك المفضلة.</string>
+    <string name="zene_music_player">مشغل موسيقى زين</string>
+    <string name="song_video">فيديو الأغنية</string>
+    <string name="lyrics_video">فيديو الكلمات</string>
+    <string name="loop_same_song">تكرار نفس الأغنية</string>
+    <string name="looping_song_enabled">تم تمكين تكرار الأغنية</string>
+    <string name="looping_song_disabled">تم تعطيل تكرار الأغنية</string>
+    <string name="autoplay_song_enabled">تم تمكين التشغيل التلقائي للأغنية التالية</string>
+    <string name="autoplay_song_disabled">تم تعطيل التشغيل التلقائي للأغنية التالية</string>
+    <string name="autoplay_next_song">تشغيل الأغنية التالية تلقائيًا</string>
+    <string name="show_play_song_on_lock_screen">إظهار الأغنية قيد التشغيل على شاشة القفل</string>
+    <string name="lyrics">كلمات الأغنية</string>
+    <string name="try_after_a_seconds_fetching_video_details">جرب بعد ثوانٍ. جلب تفاصيل الفيديو...</string>
+    <string name="playlists_for_your_mood">قائمة تشغيل لمزاجك</string>
+    <string name="empty" />
+    <string name="artists_merchandise">بضائع الفنانين</string>
+    <string name="followed_by">يتبعه</string>
+    <string name="follow">تابع</string>
+    <string name="following">متابعة</string>
+    <string name="cannot_follow_more_then_40_artists">لا يمكنك متابعة أكثر من 40 فنانًا في المرة الواحدة حاليًا.</string>
+    <string name="radio">راديو</string>
+    <string name="playback_duration">مدة التشغيل</string>
+    <string name="hours">ساعات</string>
+    <string name="minutes">دقائق</string>
+    <string name="update_profile">تحديث الملف الشخصي</string>
+    <string name="edit_profile">تحرير الملف الشخصي</string>
+    <string name="load_more">تحميل المزيد</string>
+    <string name="new_playlists">قوائم تشغيل جديدة</string>
+    <string name="no_img_found">لم يتم العثور على صورة</string>
+    <string name="remove">إزالة</string>
+    <string name="enter_a_valid_playlists">أدخل اسم قائمة تشغيل صالح</string>
+    <string name="error_creating_a_new_playlists">خطأ في إنشاء قائمة تشغيل جديدة.</string>
+    <string name="you_have_no_song_history">ليس لديك سجل أغاني.</string>
+    <string name="you_have_not_created_or_saved_a_playlists">لم تقم بحفظ أو إنشاء قوائم تشغيل.</string>
+    <string name="are_you_sure_want_to_remove">هل أنت متأكد من الرغبة في حذف؟</string>
+    <string name="are_you_sure_want_to_remove_desc">سيتم حذف هذه القائمة التشغيل من مكتبة الموسيقى الخاصة بك. هل تريد المتابعة؟ !!</string>
+    <string name="are_you_sure_want_to_remove_song_desc">سيتم حذف هذه الأغنية من هذه القائمة التشغيل. هل تريد المتابعة؟ !!</string>
+    <string name="cancel">إلغاء</string>
+    <string name="play">لعب</string>
+    <string name="play_previous">تشغيل السابق</string>
+    <string name="play_next">تشغيل التالي</string>
+    <string name="back_5s">رجوع 5 ثواني</string>
+    <string name="forward_5s">أمام 5 ثواني</string>
+    <string name="add_in_queue">أضف إلى قائمة الانتظار</string>
+    <string name="add_to_playlist">أضف إلى قائمة التشغيل</string>
+    <string name="add_to_library">أضف إلى المكتبة</string>
+    <string name="added_to_library">تم الإضافة إلى المكتبة</string>
+    <string name="share">مشاركة</string>
+    <string name="open">افتح</string>
+    <string name="no_song_found_in_this_playlists">لم يتم العثور على أغنية في هذه القوائم التشغيل</string>
+    <string name="settings">إعدادات</string>
+    <string name="clear">واضح</string>
+    <string name="equalizer">معادل الصوت</string>
+    <string name="equalizer_not_found">لم يتم العثور على معادل الصوت. لا يحتوي زين على معادل صوت مضمن. يرجى تثبيت معادل صوت من متجر Play والاستمتاع به.</string>
+    <string name="clear_cache">مسح ذاكرة التخزين المؤقت</string>
+    <string name="feedback">ردود الفعل</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="no_song_listening">ليس لديك سجل استماع حاليًا. ابدأ في تشغيل بعض الأغاني ، وسنتمكن من اقتراح قوائم تشغيل وأغاني وألبومات وفنانين مصممة حسب تفضيلاتك.</string>
+    <string name="clear_cache_successfully">تم مسح ذاكرة التخزين المؤقت بنجاح</string>
+    <string name="need_overlay_permission_to_show_song">أحتاج إلى إذن تراكب لإظهار عرض الأغنية قيد التشغيل على شاشة القفل.</string>
+    <string name="clear_cache_desc">سيؤدي مسح ذاكرة التخزين المؤقت إلى إزالة جميع ذاكرة التخزين المؤقت غير المرغوب فيها المخزنة وليس أي بيانات شخصية.</string>
+    <string name="need_notification_permission">أحتاج إلى إذن الإشعارات !!</string>
+    <string name="need_microphone_permission">أحتاج إلى إذن الميكروفون !!</string>
+    <string name="need_notification_permission_desc">يحتاج زين إلى إذن الإشعارات لعرض مشغل الموسيقى على شاشة القفل وفي شريط الإشعارات. يرجى تمكينه في إذن التطبيق -> الإشعارات أو الإشعار -> تمكين المفتاح ..</string>
+    <string name="need_microphone_permission_desc">يحتاج زين إلى إذن الميكروفون للاستماع إلى الأغنية والبحث في قاعدة البيانات.</string>
+    <string name="grant">منح</string>
+    <string name="zene_notification">إشعار زين</string>
+    <string name="find_song">البحث عن أغنية</string>
+    <string name="no_song_found_try_again">لم يتم العثور على أغنية. يرجى المحاولة مرة أخرى!</string>
+    <string name="you_haven_t_follow_artists_yet">اوو! يبدو أنك لم تتابع أي فنانين بعد. ابدأ في متابعة الفنانين المفضلين لديك للحصول على تحديثات الأخبار المخصصة في خلاصتك!</string>
+    <string name="loading_make_sure_your_device_can_hear_song_properly">جار التحميل يرجى الانتظار .. تأكد من أن جهازك يمكنه سماع الأغنية بوضوح. تريد البحث ..</string>
+    <string name="no_playlists_found_on_spotify">لم يتم العثور على قوائم تشغيل على Spotify.</string>
+    <string name="download_this_ad_free_music_app">قم بتنزيل تطبيق الموسيقى هذا الخالي من الإعلانات</string>
+    <string name="having_issue_please_mail_us_help">هل لديك أي مشكلة؟ 😔\nيرجى مراسلتنا بملاحظاتك / اقتراحاتك حتى نتمكن من مساعدتك!</string>
+    <string name="sorry_no_song_found">عذرًا ، لم يتم العثور على أغنية.</string>
+    <string name="loop_song">تكرار الأغنية</string>
+    <string name="play_pause">تشغيل / إيقاف</string>
+    <string name="do_you_like_the_app">هل أعجبك التطبيق؟</string>
+    <string name="mail_us">راسلنا</string>
+    <string name="seem_enjoyed_the_app">يبدو أنك استمتعت باستخدام التطبيق!</string>
+    <string name="post_a_review_on_play_store">انشر مراجعة على Play Store</string>
+    <string name="help_us_by_sharing_your_thoughts">لا توجد 5 نجوم ، ساعدنا في التحسين من خلال مشاركة أفكارك وتعليقاتك.</string>
+</resources>
