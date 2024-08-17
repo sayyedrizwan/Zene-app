@@ -83,34 +83,6 @@ import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun ShareWithYourFamily() {
-    val share = stringResource(R.string.download_this_ad_free_music_app)
-
-    Column(
-        Modifier
-            .padding(20.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(MainColor), Arrangement.Center, Alignment.CenterHorizontally
-    ) {
-        Spacer(Modifier.height(30.dp))
-        TextPoppinsSemiBold(stringResource(R.string.zene_needs_your_help), true, size = 25)
-        Spacer(Modifier.height(10.dp))
-        TextPoppinsSemiBold(stringResource(R.string.zene_needs_your_help_desc), true, size = 14)
-        Spacer(Modifier.height(20.dp))
-
-        BorderButtons(
-            Modifier.clickable {
-                logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_SHARE_APP)
-                shareTxtImage("$share https://play.google.com/store/apps/details?id=com.rizwansayyed.zene")
-            }, R.drawable.ic_share, R.string.share
-        )
-
-        Spacer(Modifier.height(50.dp))
-    }
-}
-
-@Composable
 fun HomeHeaderView() {
     var otherSettings by remember { mutableStateOf(false) }
     var findSongDialog by remember { mutableStateOf(false) }

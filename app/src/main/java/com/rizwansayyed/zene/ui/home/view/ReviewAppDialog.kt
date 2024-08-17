@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.home.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.DisplayMetrics
@@ -10,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,21 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -76,89 +64,51 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ReviewAppDialog() {
-    var rating by remember { mutableFloatStateOf(0f) }
     var reviewDialog by remember { mutableStateOf(false) }
+    var loveTheAppDialog by remember { mutableStateOf(false) }
+    var dislikedTheAppDialog by remember { mutableStateOf(false) }
 
-    if (reviewDialog) Dialog(properties = DialogProperties(
-        usePlatformDefaultWidth = false,
-        dismissOnBackPress = false,
-        dismissOnClickOutside = false
-    ), onDismissRequest = { reviewDialog = false }) {
-        val context = LocalContext.current
-        val windowManager =
-            remember { context.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
-
-        val metrics = DisplayMetrics().apply {
-            windowManager.defaultDisplay.getRealMetrics(this)
-        }
-        val (width, height) = with(LocalDensity.current) {
-            Pair(metrics.widthPixels.toDp(), metrics.heightPixels.toDp())
-        }
-
-        Column(
-            modifier = Modifier
-                .requiredSize(width - 120.dp, height / 2)
-                .clip(RoundedCornerShape(14.dp))
-                .background(color = Color.White)
-                .padding(8.dp),
-            Arrangement.Center,
-            Alignment.CenterHorizontally
+    if (reviewDialog) Row(
+        Modifier
+            .padding(vertical = 20.dp, horizontal = 5.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color.Black)
+            .padding(vertical = 25.dp, horizontal = 15.dp),
+        Arrangement.Center,
+        Alignment.CenterVertically
+    ) {
+        Row(
+            Modifier.weight(1f),
+            Arrangement.Start, Alignment.CenterVertically,
         ) {
-
-            TextPoppinsSemiBold(
-                stringResource(R.string.please_give_us_feedback_on_the_app), true, Color.Black, 15
-            )
-
-            Spacer(Modifier.height(10.dp))
-
-            AndroidView({
-                RatingBar(it).apply {
-                    numStars = 5
-                    stepSize = 1f
-                    progressTintList = ColorStateList.valueOf(Color.Yellow.toArgb())
-                    setOnRatingBarChangeListener { ratingBar, _, _ ->
-                        rating = ratingBar.rating
-                    }
-                }
-            })
-
-            if (rating > 0) {
-                Row(
-                    Modifier
-                        .padding(15.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(13.dp))
-                        .background(MainColor)
-                        .clickable {
-                            if (rating >= 5) {
-                                openAppPageOnPlayStore()
-                                val d = AppReviewData(AppReviewEnum.DONE, null)
-                                appReviewStatusDB = flowOf(d)
-                            } else {
-                                val d = AppReviewData(
-                                    AppReviewEnum.FEEDBACK, System.currentTimeMillis()
-                                )
-                                appReviewStatusDB = flowOf(d)
-                                feedbackMail()
-                            }
-                            reviewDialog = false
-                        }
-                        .padding(vertical = 15.dp, horizontal = 15.dp),
-                    Arrangement.Center,
-                    Alignment.CenterVertically) {
-                    if (rating >= 5) TextPoppins(
-                        stringResource(id = R.string.like_the_app_rate_us_on_play_store),
-                        true,
-                        size = 15
-                    )
-                    else TextPoppins(
-                        stringResource(id = R.string.having_issue_please_mail_us_help),
-                        true,
-                        size = 15
-                    )
-                }
-            }
+            TextPoppins(stringResource(R.string.do_you_like_the_app), size = 18)
         }
+
+        Row {
+            Box(Modifier.clickable { loveTheAppDialog = true }) {
+                TextPoppins("\uD83D\uDE0A", size = 27)
+            }
+            Spacer(Modifier.width(16.dp))
+            Box(Modifier.clickable {
+                dislikedTheAppDialog = true
+                val d = AppReviewData(AppReviewEnum.FEEDBACK, System.currentTimeMillis())
+                appReviewStatusDB = flowOf(d)
+            }) {
+                TextPoppins("\uD83D\uDE14", size = 27)
+            }
+            Spacer(Modifier.width(5.dp))
+        }
+    }
+
+    if (dislikedTheAppDialog) DislikeUsAppDialog {
+        dislikedTheAppDialog = false
+        if (it) reviewDialog = false
+    }
+
+    if (loveTheAppDialog) LikeUsAppDialog {
+        loveTheAppDialog = false
+        if (it) reviewDialog = false
     }
 
     LaunchedEffect(reviewDialog) {
@@ -166,7 +116,6 @@ fun ReviewAppDialog() {
     }
 
     LaunchedEffect(Unit) {
-        delay(2.seconds)
         val appReviewDB = appReviewStatusDB.firstOrNull()
         if (appReviewDB == null) {
             reviewDialog = true
@@ -181,5 +130,145 @@ fun ReviewAppDialog() {
         val diffInMillis = (appReviewDB.atTimestamp ?: 0) - System.currentTimeMillis()
         val hours = TimeUnit.MILLISECONDS.toHours(diffInMillis)
         if (hours > 96) reviewDialog = true
+    }
+}
+
+@Composable
+private fun DislikeUsAppDialog(close: (Boolean) -> Unit) {
+    val context = LocalContext.current.applicationContext
+
+    Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = { close(false) }
+    ) {
+        val windowManager =
+            remember { context.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+
+        val metrics = DisplayMetrics().apply {
+            windowManager.defaultDisplay.getRealMetrics(this)
+        }
+        val (width, _) = with(LocalDensity.current) {
+            Pair(metrics.widthPixels.toDp(), metrics.heightPixels.toDp())
+        }
+
+        Column(
+            modifier = Modifier
+                .requiredSize(width - 120.dp, width)
+                .clip(RoundedCornerShape(14.dp))
+                .background(color = Color.White)
+                .padding(8.dp),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            TextPoppinsSemiBold(
+                stringResource(R.string.having_issue_please_mail_us_help), true, Color.Black, 16
+            )
+
+            Spacer(Modifier.height(9.dp))
+
+            Row(
+                Modifier
+                    .padding(5.dp)
+                    .border(BorderStroke(1.dp, MainColor), RoundedCornerShape(25))
+                    .clickable {
+                        close(true)
+                        feedbackMail()
+                    }
+                    .padding(vertical = 7.dp, horizontal = 10.dp),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                TextPoppins(
+                    stringResource(id = R.string.mail_us), true, Color.Black, size = 15
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LikeUsAppDialog(close: (Boolean) -> Unit) {
+    val context = LocalContext.current as Activity
+    var rating by remember { mutableFloatStateOf(0f) }
+
+    Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = { close(false) }
+    ) {
+        val windowManager =
+            remember { context.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+
+        val metrics = DisplayMetrics().apply {
+            windowManager.defaultDisplay.getRealMetrics(this)
+        }
+        val (width, _) = with(LocalDensity.current) {
+            Pair(metrics.widthPixels.toDp(), metrics.heightPixels.toDp())
+        }
+
+        Column(
+            modifier = Modifier
+                .requiredSize(width - 120.dp, width)
+                .clip(RoundedCornerShape(14.dp))
+                .background(color = Color.White)
+                .padding(8.dp),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            TextPoppinsSemiBold(
+                stringResource(R.string.seem_enjoyed_the_app),
+                true, Color.Black, 16
+            )
+
+            Spacer(Modifier.height(9.dp))
+
+            AndroidView({
+                RatingBar(it).apply {
+                    numStars = 5
+                    stepSize = 1f
+                    progressTintList = ColorStateList.valueOf(Color.Yellow.toArgb())
+                    setOnRatingBarChangeListener { ratingBar, _, _ ->
+                        rating = ratingBar.rating
+                    }
+                }
+            })
+
+            if (rating > 0) {
+                TextPoppinsSemiBold(
+                    stringResource(if (rating == 5f) R.string.seem_enjoyed_the_app else R.string.help_us_by_sharing_your_thoughts),
+                    true, Color.Black, 16
+                )
+
+                Spacer(Modifier.height(9.dp))
+
+                Row(
+                    Modifier
+                        .padding(5.dp)
+                        .border(BorderStroke(1.dp, MainColor), RoundedCornerShape(25))
+                        .clickable {
+                            if (rating < 5f) {
+                                val d = AppReviewData(
+                                    AppReviewEnum.FEEDBACK, System.currentTimeMillis()
+                                )
+                                appReviewStatusDB = flowOf(d)
+                                close(true)
+                                feedbackMail()
+                                return@clickable
+                            }
+                            val d = AppReviewData(AppReviewEnum.DONE, null)
+                            appReviewStatusDB = flowOf(d)
+                            close(true)
+                            openAppPageOnPlayStore()
+                        }
+                        .padding(vertical = 7.dp, horizontal = 10.dp),
+                    Arrangement.Center,
+                    Alignment.CenterVertically
+                ) {
+                    TextPoppins(
+                        if (rating == 5f) stringResource(id = R.string.post_a_review_on_play_store)
+                        else stringResource(id = R.string.mail_us), true, Color.Black, size = 15
+                    )
+                }
+            }
+        }
     }
 }

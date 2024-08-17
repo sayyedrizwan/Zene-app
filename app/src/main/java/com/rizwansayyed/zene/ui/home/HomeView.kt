@@ -42,7 +42,6 @@ import com.rizwansayyed.zene.ui.home.view.HorizontalArtistsView
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
 import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
 import com.rizwansayyed.zene.ui.home.view.ReviewAppDialog
-import com.rizwansayyed.zene.ui.home.view.ShareWithYourFamily
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
@@ -87,6 +86,7 @@ fun HomeView(
         item(1, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
                 HomeHeaderView()
+                ReviewAppDialog()
             }
         }
         item(2001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -94,10 +94,7 @@ fun HomeView(
                 is APIResponse.Success -> {
                     if (v.data.isEmpty()) NewUserCards()
 
-                    if (v.data.size > 4) {
-                        ShareWithYourFamily()
-                        ReviewAppDialog()
-                    }
+                    if (v.data.size > 4) ReviewAppDialog()
                 }
 
                 else -> {}

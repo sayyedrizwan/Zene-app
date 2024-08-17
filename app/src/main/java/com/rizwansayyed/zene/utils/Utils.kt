@@ -330,7 +330,7 @@ object Utils {
         intent.setType("plain/text")
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("knocknock@zenemusic.co"))
         intent.putExtra(Intent.EXTRA_SUBJECT, "App Feedback")
-        intent.putExtra(Intent.EXTRA_TEXT, "<<<<<<< Feedback >>>>>>>")
+        intent.putExtra(Intent.EXTRA_TEXT, "<<<<<<< Feedback Android >>>>>>>")
 
         val select = Intent.createChooser(intent, "").apply {
             flags = FLAG_ACTIVITY_NEW_TASK

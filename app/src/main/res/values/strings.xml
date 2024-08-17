@@ -32,7 +32,6 @@
     <string name="albums">Albums</string>
     <string name="enable">Enable</string>
     <string name="disabled">Disabled</string>
-    <string name="please_give_us_feedback_on_the_app">Please give us feedback on the app.</string>
     <string name="playlists">Playlists</string>
     <string name="create_playlist">Create Playlist</string>
     <string name="playlist_name">Playlist Name</string>
@@ -131,12 +130,14 @@
     <string name="you_haven_t_follow_artists_yet">Oops! It looks like you haven\'t followed any artists yet. Start following your favorite artists to get personalized news updates in your feed!</string>
     <string name="loading_make_sure_your_device_can_hear_song_properly">Loading Please Wait.. Make sure your device can hear the song clearly. That you want to search..</string>
     <string name="no_playlists_found_on_spotify">No playlists found on Spotify.</string>
-    <string name="zene_needs_your_help">Zene needs your help 🙏</string>
-    <string name="zene_needs_your_help_desc">Zene is a free app designed for music lovers like you! Without a large advertising budget, we rely on word of mouth to grow. Help us grow by sharing Zene with your friends and family. Your support means the world to us!</string>
     <string name="download_this_ad_free_music_app">Download this ad free Music app</string>
-    <string name="like_the_app_rate_us_on_play_store">If you like the app 😊\nPlease rate us on Play Store</string>
-    <string name="having_issue_please_mail_us_help">Having any issue? 😔\nPlease mail us so we can help</string>
+    <string name="having_issue_please_mail_us_help">Having any issue? 😔\nPlease mail us your feedback/suggestion so you can help us!</string>
     <string name="sorry_no_song_found">Sorry, No Song Found.</string>
     <string name="loop_song">Loop Song</string>
     <string name="play_pause">Play/Pause</string>
+    <string name="do_you_like_the_app">Did you like the app?</string>
+    <string name="mail_us">Mail Us</string>
+    <string name="seem_enjoyed_the_app">You seem to have enjoyed using the app!</string>
+    <string name="post_a_review_on_play_store">Post a review on Play Store</string>
+    <string name="help_us_by_sharing_your_thoughts">No 5 star, Help us improve by sharing your thoughts and feedbacks.</string>
 </resources>
