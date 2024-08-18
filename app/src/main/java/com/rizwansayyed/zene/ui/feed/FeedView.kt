@@ -89,7 +89,7 @@ fun FeedView(viewModel: ZeneViewModel) {
                     }
 
                     item(4) {
-                        Spacer(Modifier.height(140.dp))
+                        Spacer(Modifier.height(210.dp))
                     }
                 } else
                     item(5) {

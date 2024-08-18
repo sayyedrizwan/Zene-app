@@ -39,6 +39,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
 
+    private var lastSyncedA by mutableStateOf<String?>(null)
     var artistsInfo by mutableStateOf<APIResponse<ZeneArtistsInfoResponse>>(APIResponse.Empty)
     var artistsData by mutableStateOf<APIResponse<ZeneArtistsDataResponse>>(APIResponse.Empty)
     var searchImg by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
@@ -55,6 +56,8 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var isSpotifyPlaylistsLoading by mutableStateOf(false)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (lastSyncedA == name && artistsInfo is APIResponse.Success) return@launch
+
         if (!internetIsConnected()) {
             artistsInfo = APIResponse.Empty
             return@launch
@@ -65,11 +68,14 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }.catch {
             artistsInfo = APIResponse.Error(it)
         }.collectLatest {
+            lastSyncedA = name
             artistsInfo = APIResponse.Success(it)
         }
     }
 
     fun artistsData(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (lastSyncedA == name && artistsData is APIResponse.Success) return@launch
+
         if (!internetIsConnected()) {
             artistsData = APIResponse.Empty
             return@launch

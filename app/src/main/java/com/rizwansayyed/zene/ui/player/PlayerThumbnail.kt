@@ -42,7 +42,7 @@ fun PlayerThumbnail(modifier: Modifier = Modifier, info: MusicPlayerData?, open:
 
     Box(
         modifier
-            .padding(bottom = if (isBig) 90.dp else 50.dp, end = 10.dp)
+            .padding(bottom = 10.dp, end = 10.dp)
             .size(if (isBig) 125.dp else 90.dp)
             .background(Color.Transparent)
             .clickable { open() }) {

@@ -62,6 +62,8 @@ object Utils {
         const val AD_INTERSTITIAL_UNIT_ID: String = "ca-app-pub-2941808068005217/1745328219"
         val AD_BANNER_ID: String =
             if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9214589741" else "ca-app-pub-2941808068005217/1624020934"
+        val AD_REWARDS_ID: String =
+            if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/5224354917" else "ca-app-pub-2941808068005217/6833134797"
     }
 
     object URLS {

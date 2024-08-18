@@ -96,6 +96,11 @@ fun MoodView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
 
                     Spacer(Modifier.height(15.dp))
                 }
+
+
+                item(key = 5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Spacer(Modifier.height(180.dp))
+                }
             }
         }
 

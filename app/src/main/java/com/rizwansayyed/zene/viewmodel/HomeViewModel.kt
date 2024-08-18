@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +37,11 @@ class HomeViewModel @Inject constructor(
     val loginFlow: LoginFlow, private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
+    var loadFirstUI by mutableStateOf(false)
+    var loadSecondUI by mutableStateOf(false)
+    var loadThirdUI by mutableStateOf(false)
+
+    private var lastSynced by mutableStateOf<Long?>(null)
     var recommendedPlaylists by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var recommendedAlbums by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var recommendedVideo by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
@@ -54,7 +61,13 @@ class HomeViewModel @Inject constructor(
     var isUserPlaylistLoading by mutableStateOf(true)
 
 
-    fun init() = viewModelScope.launch(Dispatchers.IO) {
+    fun init(force: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        if (lastSynced != null && !force) {
+            val diffInMillis = lastSynced!! - System.currentTimeMillis()
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis)
+            if (songsYouMayLike is APIResponse.Success && minutes <= 14) return@launch
+            lastSynced = System.currentTimeMillis()
+        }
         moodLists()
         latestReleases()
         topMostListeningSong()
@@ -122,6 +135,7 @@ class HomeViewModel @Inject constructor(
         }.catch {
             songsYouMayLike = APIResponse.Error(it)
         }.collectLatest {
+            lastSynced = System.currentTimeMillis()
             songsYouMayLike = APIResponse.Success(it)
         }
     }

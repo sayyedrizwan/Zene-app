@@ -84,7 +84,6 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HomeHeaderView() {
-    var otherSettings by remember { mutableStateOf(false) }
     var findSongDialog by remember { mutableStateOf(false) }
     var microphonePermissionDialog by remember { mutableStateOf(false) }
 
@@ -110,70 +109,17 @@ fun HomeHeaderView() {
         Spacer(Modifier.weight(1f))
 
         Row(Modifier.height(65.dp), Arrangement.Center, Alignment.CenterVertically) {
-            ImageIcon(R.drawable.ic_scroll) {
-                sendNavCommand(NAV_FEED)
+            ImageIcon(R.drawable.ic_setting) {
+                sendNavCommand(NAV_SETTINGS)
             }
 
             Spacer(Modifier.width(15.dp))
 
-            ImageIcon(R.drawable.ic_music_note_square) {
-                sendNavCommand(NAV_MY_MUSIC)
+            ImageIcon(R.drawable.ic_voice) {
+                permission.launch(Manifest.permission.RECORD_AUDIO)
             }
 
             Spacer(Modifier.width(15.dp))
-
-            ImageIcon(R.drawable.ic_search) {
-                sendNavCommand(NAV_SEARCH)
-            }
-
-            Spacer(Modifier.width(15.dp))
-
-            Box {
-                ImageIcon(R.drawable.ic_menu) {
-                    otherSettings = true
-                }
-
-                DropdownMenu(otherSettings, { otherSettings = false }) {
-//                    DropdownMenuItem(
-//                        {
-//                            Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
-//                                ImageIcon(R.drawable.ic_search, 24)
-//                                Spacer(Modifier.width(8.dp))
-//                                TextPoppins(stringResource(R.string.search), size = 18)
-//                            }
-//                        }, {
-//                            otherSettings = false
-//                            sendNavCommand(NAV_SEARCH)
-//                        }
-//                    )
-
-                    DropdownMenuItem(
-                        {
-                            Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
-                                ImageIcon(R.drawable.ic_setting, 24)
-                                Spacer(Modifier.width(8.dp))
-                                TextPoppins(stringResource(R.string.settings), size = 18)
-                            }
-                        }, {
-                            otherSettings = false
-                            sendNavCommand(NAV_SETTINGS)
-                        }
-                    )
-
-                    DropdownMenuItem(
-                        {
-                            Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
-                                ImageIcon(R.drawable.ic_voice, 24)
-                                Spacer(Modifier.width(8.dp))
-                                TextPoppins(stringResource(R.string.find_song), size = 18)
-                            }
-                        }, {
-                            permission.launch(Manifest.permission.RECORD_AUDIO)
-                            otherSettings = false
-                        }
-                    )
-                }
-            }
         }
     }
 
@@ -197,7 +143,6 @@ fun HomeHeaderView() {
 @Composable
 fun SearchSongDialog(close: () -> Unit) {
     val zeneViewModel: ZeneViewModel = hiltViewModel()
-    val context = LocalContext.current.applicationContext
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var coroutine by remember { mutableStateOf<Job?>(null) }

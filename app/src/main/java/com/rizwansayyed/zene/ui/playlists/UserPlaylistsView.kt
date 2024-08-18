@@ -127,8 +127,10 @@ fun UserPlaylistsView(id: String?, close: () -> Unit) {
             }
 
             if (homeViewModel.isUserPlaylistLoading) LoadingView(Modifier.size(30.dp))
+        }
 
-            Spacer(Modifier.height(190.dp))
+        item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Spacer(Modifier.height(230.dp))
         }
     }
 

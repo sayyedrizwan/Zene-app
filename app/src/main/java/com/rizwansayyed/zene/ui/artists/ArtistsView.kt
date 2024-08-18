@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.ui.artists.view.ArtistsNews
@@ -40,7 +41,8 @@ import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
-fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
+fun ArtistsView(id: String?, close: () -> Unit) {
+    val viewModel: ZeneViewModel = hiltViewModel()
     val context = LocalContext.current as Activity
 
     LazyColumn(
@@ -161,7 +163,7 @@ fun ArtistsView(viewModel: ZeneViewModel, id: String?, close: () -> Unit) {
         }
 
         item(1000) {
-            Spacer(Modifier.height(200.dp))
+            Spacer(Modifier.height(260.dp))
         }
     }
 

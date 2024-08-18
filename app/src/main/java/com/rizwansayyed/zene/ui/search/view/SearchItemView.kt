@@ -143,7 +143,7 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
                 }
 
                 item(key = 1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                   Spacer(Modifier.height(150.dp))
+                   Spacer(Modifier.height(240.dp))
                 }
             }
         }

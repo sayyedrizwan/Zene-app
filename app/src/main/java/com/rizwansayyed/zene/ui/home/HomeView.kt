@@ -73,10 +73,6 @@ fun HomeView(
 ) {
     val isThreeGrid = isScreenBig()
 
-    var loadFirstUI by remember { mutableStateOf(false) }
-    var loadSecondUI by remember { mutableStateOf(false) }
-    var loadThirdUI by remember { mutableStateOf(false) }
-
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
         Modifier
@@ -125,7 +121,7 @@ fun HomeView(
             }
         }
 
-        if (loadFirstUI) {
+        if (homeViewModel.loadFirstUI) {
             item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     Spacer(Modifier.height(60.dp))
@@ -189,7 +185,7 @@ fun HomeView(
             }
         }
 
-        if (loadSecondUI) {
+        if (homeViewModel.loadSecondUI) {
             item(20, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     Spacer(Modifier.height(60.dp))
@@ -252,7 +248,7 @@ fun HomeView(
             }
         }
 
-        if (loadThirdUI) {
+        if (homeViewModel.loadThirdUI) {
             item(17, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     Spacer(Modifier.height(60.dp))
@@ -295,7 +291,7 @@ fun HomeView(
             }
         }
 
-        if (!loadFirstUI || !loadSecondUI || !loadThirdUI) {
+        if (!homeViewModel.loadFirstUI || !homeViewModel.loadSecondUI || !homeViewModel.loadThirdUI) {
             item(900, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Box(Modifier.fillMaxWidth()) {
                     Spacer(Modifier.height(9.dp))
@@ -309,21 +305,27 @@ fun HomeView(
         }
 
         item(key = 1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Spacer(Modifier.height(100.dp))
+            Spacer(Modifier.height(250.dp))
         }
 
     }
 
     LaunchedEffect(Unit) {
-        homeViewModel.init()
+        homeViewModel.init(false)
         checkNotificationPermissionAndAsk(notificationPermission, isNotificationOff)
 
-        delay(5.seconds)
-        loadFirstUI = true
-        delay(4.seconds)
-        loadSecondUI = true
-        delay(4.seconds)
-        loadThirdUI = true
+        if (!homeViewModel.loadFirstUI) {
+            delay(5.seconds)
+            homeViewModel.loadFirstUI = true
+        }
+        if (!homeViewModel.loadSecondUI) {
+            delay(4.seconds)
+            homeViewModel.loadSecondUI = true
+        }
+        if (!homeViewModel.loadThirdUI) {
+            delay(4.seconds)
+            homeViewModel.loadThirdUI = true
+        }
     }
 }
 

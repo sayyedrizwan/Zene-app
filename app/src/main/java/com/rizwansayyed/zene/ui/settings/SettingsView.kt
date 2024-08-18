@@ -150,7 +150,7 @@ fun SettingsView() {
         }
 
         item {
-            Spacer(Modifier.height(180.dp))
+            Spacer(Modifier.height(210.dp))
         }
     }
 

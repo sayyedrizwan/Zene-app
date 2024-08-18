@@ -3,15 +3,20 @@ package com.rizwansayyed.zene.utils
 import android.app.Activity
 import android.util.Log
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_INTERSTITIAL_UNIT_ID
+import com.rizwansayyed.zene.utils.Utils.IDs.AD_REWARDS_ID
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +38,21 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
             logEvents(FirebaseLogEvents.FirebaseEvents.LOADED_APP_OPEN_ADS)
             p0.show(activity)
             lastAdsTimestamp = flowOf(System.currentTimeMillis())
+        }
+    }
+
+    private val rewardsListener = object : RewardedAdLoadCallback() {
+        override fun onAdLoaded(p0: RewardedAd) {
+            super.onAdLoaded(p0)
+            logEvents(FirebaseLogEvents.FirebaseEvents.LOADED_REWARDS_ADS)
+            p0.show(activity) {
+
+            }
+        }
+
+        override fun onAdFailedToLoad(p0: LoadAdError) {
+            super.onAdFailedToLoad(p0)
+            activity.resources.getString(R.string.no_ads_found)
         }
     }
     private val iListener = object : InterstitialAdLoadCallback() {
@@ -62,6 +82,11 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
 
         val request = AdRequest.Builder().build()
         AppOpenAd.load(activity, AD_UNIT_ID, request, listener)
+    }
+
+    fun showRewardsAds() = CoroutineScope(Dispatchers.Main).launch {
+        val request = AdRequest.Builder().build()
+        RewardedAd.load(activity, AD_REWARDS_ID, request, rewardsListener)
     }
 }
 

@@ -163,7 +163,7 @@ fun MyMusicView(viewModel: ZeneViewModel) {
         }
 
         item(1003, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Spacer(Modifier.height(140.dp))
+            Spacer(Modifier.height(210.dp))
         }
     }
 

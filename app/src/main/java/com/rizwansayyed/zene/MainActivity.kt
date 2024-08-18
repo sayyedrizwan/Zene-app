@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.core.app.ServiceCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -53,15 +52,19 @@ import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.player.PlayerThumbnail
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
+import com.rizwansayyed.zene.ui.rewards.RewardsView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.AlertDialogView
+import com.rizwansayyed.zene.ui.view.NavHomeMenu
+import com.rizwansayyed.zene.ui.view.NavHomeView
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_EARN
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
@@ -125,12 +128,30 @@ class MainActivity : ComponentActivity() {
                             HomeView(notificationPermission, homeViewModel) {
                                 notificationPermissionDialog = true
                             }
+
+                            LaunchedEffect(Unit) {
+                                homeNavModel.selectedMenuItems(NavHomeMenu.HOME)
+                            }
                         }
                         composable(NAV_MY_MUSIC) {
                             MyMusicView(zeneViewModel)
+
+                            LaunchedEffect(Unit) {
+                                homeNavModel.selectedMenuItems(NavHomeMenu.MY_MUSIC)
+                            }
                         }
                         composable(NAV_FEED) {
                             FeedView(zeneViewModel)
+
+                            LaunchedEffect(Unit) {
+                                homeNavModel.selectedMenuItems(NavHomeMenu.FEED)
+                            }
+                        }
+                        composable(NAV_EARN) {
+                            RewardsView()
+                            LaunchedEffect(Unit) {
+                                homeNavModel.selectedMenuItems(NavHomeMenu.EARN)
+                            }
                         }
                         composable(NAV_SETTINGS) {
                             SettingsView()
@@ -149,6 +170,10 @@ class MainActivity : ComponentActivity() {
                             SearchView(homeViewModel) {
                                 navController.popBackStack()
                             }
+
+                            LaunchedEffect(Unit) {
+                                homeNavModel.selectedMenuItems(NavHomeMenu.SEARCH)
+                            }
                         }
                         composable(NAV_MOOD) {
                             MoodView(homeViewModel, it.arguments?.getString("id")) {
@@ -156,7 +181,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(NAV_ARTISTS) {
-                            ArtistsView(zeneViewModel, it.arguments?.getString("id")) {
+                            ArtistsView(it.arguments?.getString("id")) {
                                 navController.popBackStack()
                             }
                         }
@@ -165,11 +190,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    if (playerInfo?.player?.id != null)
-                        PlayerThumbnail(Modifier.align(Alignment.BottomEnd), playerInfo) {
-                            homeNavModel.showMusicPlayer(true)
-                            vibratePhone()
-                        }
+                    NavHomeView(Modifier.align(Alignment.BottomEnd), playerInfo, homeNavModel)
 
                     AnimatedVisibility(
                         visible = homeNavModel.showMusicPlayer,
@@ -202,7 +223,7 @@ class MainActivity : ComponentActivity() {
                         val data = i.getStringExtra(Intent.ACTION_MAIN) ?: return
 
                         if (data == SYNC_DATA) {
-                            homeViewModel.init()
+                            homeViewModel.init(true)
                             checkNotificationPermissionAndAsk(notificationPermission) {
                                 notificationPermissionDialog = true
                             }
@@ -241,7 +262,7 @@ class MainActivity : ComponentActivity() {
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            homeViewModel.init()
+            homeViewModel.init(true)
         }
     }
 
