@@ -13,7 +13,9 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
+import com.rizwansayyed.zene.data.db.DataStoreManager.rewardsWatchedAds
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.ui.rewards.updateTheAdsLogs
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_INTERSTITIAL_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_REWARDS_ID
@@ -21,8 +23,10 @@ import com.rizwansayyed.zene.utils.Utils.IDs.AD_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -46,7 +50,14 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
             super.onAdLoaded(p0)
             logEvents(FirebaseLogEvents.FirebaseEvents.LOADED_REWARDS_ADS)
             p0.show(activity) {
-
+                if (it.amount > 0) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val ads = rewardsWatchedAds.firstOrNull() ?: 0
+                        rewardsWatchedAds = flowOf(ads + 1)
+                        if (isActive) cancel()
+                    }
+                    updateTheAdsLogs()
+                }
             }
         }
 

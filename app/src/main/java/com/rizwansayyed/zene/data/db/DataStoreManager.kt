@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MU
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_SPEED
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PINNED_ARTISTS_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PLAYING_SONG_ON_LOCK_SCREEN
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.REWARDS_ADS_WATCHED
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
@@ -54,6 +55,7 @@ object DataStoreManager {
         val LAST_ADS_TIMESTAMP = longPreferencesKey("last_ads_timestamp")
         val USER_IP_INFO = stringPreferencesKey("user_ip_info")
         val APP_REVIEW_STATUS = stringPreferencesKey("app_review_status")
+        val REWARDS_ADS_WATCHED = intPreferencesKey("rewards_ads_watched")
     }
 
 
@@ -146,5 +148,13 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(AppReviewData::class.java).toJson(value.first())
             context.dataStore.edit { it[APP_REVIEW_STATUS] = json }
+        }
+
+    var rewardsWatchedAds
+        get() = context.dataStore.data.map {
+            it[REWARDS_ADS_WATCHED] ?: 0
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[REWARDS_ADS_WATCHED] = value.first() }
         }
 }

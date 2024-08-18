@@ -145,6 +145,8 @@
     <string name="feed">Feed</string>
     <string name="music">Music</string>
     <string name="zene_rewards_desc">Zene is currently testing a new reward feature that allows users to earn free earphones by watching ads. \n\nWe\'re collaborating with advertising partners to optimize this feature and identify the optimal cost-per-click (CPC) target for maximizing high-value ad placements.</string>
-    <string name="zene_rewards_desc_1">Watch 50 ads to enter our lucky draw for a chance to win a reward.</string>
+    <string name="zene_rewards_desc_1">Watch 50 ads to qualify for our lucky draw. \n80 lucky winners will be randomly selected from all qualified participants to win a reward.</string>
     <string name="no_ads_found">No ads available in your area. Please try again after some time.</string>
+    <string name="watch_ad">Watch Ad</string>
+    <string name="watch_ad_done">You have successfully watched all required ads. If you own please wait for our confirmation email.</string>
 </resources>

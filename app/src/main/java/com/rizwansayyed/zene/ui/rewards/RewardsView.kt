@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,22 +31,42 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.google.gson.JsonObject
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.DataStoreManager.rewardsWatchedAds
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
+import com.rizwansayyed.zene.utils.Utils.URLS.BASE_URL
+import com.rizwansayyed.zene.utils.Utils.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+
 
 @Composable
 fun RewardsView() {
     val activity = LocalContext.current as Activity
 
     var currentProgress by remember { mutableFloatStateOf(0f) }
+    var participate by remember { mutableIntStateOf(21) }
+    val adsWatched by rewardsWatchedAds.collectAsState(initial = 0)
 
+    val watchedAdsDone = stringResource(R.string.watch_ad_done)
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -146,7 +166,39 @@ fun RewardsView() {
                 trackColor = Color.White,
             )
             Spacer(Modifier.height(10.dp))
-            TextPoppins("Watched 13/50", true, size = 16)
+            TextPoppins("Watched ${adsWatched}/50", true, size = 16)
+        }
+
+
+        item {
+            Spacer(Modifier.height(10.dp))
+            TextPoppinsThin("$participate people have participated", true, size = 14)
+
+            Row(
+                Modifier
+                    .padding(vertical = 20.dp, horizontal = 10.dp)
+                    .padding(6.dp)
+                    .clip(RoundedCornerShape(10))
+                    .background(MainColor)
+                    .clickable {
+                        if (adsWatched >= 50) {
+                            watchedAdsDone.toast()
+                            return@clickable
+                        }
+                        ShowAdsOnAppOpen(activity).showRewardsAds()
+                    }
+                    .padding(vertical = 15.dp, horizontal = 12.dp),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                TextPoppins(stringResource(R.string.watch_ad), true, size = 16)
+            }
+
+            TextPoppinsThin(
+                "If ads are not loading after clicking on watch ads for 5 seconds. That means the ads are not available in your area. Try again after some time.",
+                true,
+                size = 14
+            )
         }
 
 
@@ -157,8 +209,50 @@ fun RewardsView() {
 
 
     LaunchedEffect(Unit) {
-        currentProgress = 60f / 100
-        delay(3.seconds)
-//            ShowAdsOnAppOpen(activity).showRewardsAds()
+        currentProgress = adsWatched.toFloat() / 100
+        participate = getParticipated()
     }
+}
+
+suspend fun getParticipated() = withContext(Dispatchers.IO) {
+    var num: Int
+    try {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("${BASE_URL}participates.txt")
+            .get()
+            .build()
+
+        val response = client.newCall(request).execute()
+        val int = response.body?.string()
+        num = int?.trim()?.toInt() ?: 0
+    } catch (e: Exception) {
+        num = 21
+    }
+
+    return@withContext num
+}
+
+fun updateTheAdsLogs() = CoroutineScope(Dispatchers.IO).launch {
+    try {
+        val email = userInfoDB.firstOrNull()?.email
+        val client = OkHttpClient().newBuilder()
+            .build()
+        val mediaType = "application/json".toMediaTypeOrNull()
+        val jsonObject = JSONObject().apply {
+            put("email", email)
+        }
+        val body = jsonObject.toString().toRequestBody(mediaType)
+        val request = Request.Builder()
+            .url("${BASE_URL}zuser/add_ads_logs")
+            .method("POST", body)
+            .addHeader("auth", BuildConfig.AUTH_HEADER)
+            .addHeader("Content-Type", "application/json")
+            .build()
+
+        client.newCall(request).execute()
+    } catch (e: Exception) {
+        e.message
+    }
+
 }

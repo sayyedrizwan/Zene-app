@@ -156,7 +156,7 @@ fun MusicPlayerView(
         item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             when (val v = musicPlayerViewModel.lyrics) {
                 APIResponse.Empty -> {}
-                is APIResponse.Error -> TextPoppins(v.error.message ?: "", size = 25)
+                is APIResponse.Error -> {}
                 APIResponse.Loading -> CardRoundLoading()
                 is APIResponse.Success -> Column {
                     LyricsView(v.data, playerInfo)
