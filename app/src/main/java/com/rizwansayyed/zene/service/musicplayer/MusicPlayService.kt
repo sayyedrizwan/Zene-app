@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
+import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
@@ -107,6 +108,8 @@ class MusicPlayService : Service() {
             i ?: return
 
             CoroutineScope(Dispatchers.IO).launch {
+                if (playingSongOnLockScreen.firstOrNull() == true) return@launch
+
                 val music = musicPlayerDB.firstOrNull() ?: return@launch
                 if (music.isPlaying == true && (music.currentDuration ?: 0) > 0) {
                     Intent(this@MusicPlayService, MusicPlayerActivity::class.java).apply {
