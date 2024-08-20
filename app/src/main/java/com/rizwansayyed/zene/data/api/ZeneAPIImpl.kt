@@ -50,7 +50,7 @@ class ZeneAPIImpl @Inject constructor(
             put("playtime", users?.totalPlayTime ?: 0)
             put("ip", ip?.query)
             put("fcm", fcm)
-            put("device", "${Build.MANUFACTURER} ${Build.MODEL} ${Build.VERSION.RELEASE}")
+            put("device", "Android ${Build.MANUFACTURER} ${Build.MODEL} ${Build.VERSION.RELEASE}")
             put("country", "${ip?.city}, ${ip?.regionName}, ${ip?.country}")
             put("review", users?.isReviewDone ?: false)
         }
