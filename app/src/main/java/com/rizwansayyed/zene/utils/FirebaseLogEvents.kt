@@ -36,7 +36,7 @@ object FirebaseLogEvents {
             putString(FirebaseAnalytics.Param.ITEM_ID, userInfo?.email)
             putString(FirebaseAnalytics.Param.ITEM_NAME, userInfo?.name)
         }
-        if (n == null) {
+        if (n != null) {
             firebaseAnalytics.logEvent("${e.name.lowercase()}_${n}", parameters)
             return@launch
         }

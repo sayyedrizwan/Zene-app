@@ -234,9 +234,7 @@ fun HomeView(
             when (val v = homeViewModel.favArtistsLists) {
                 APIResponse.Empty -> {}
                 is APIResponse.Error -> {}
-                APIResponse.Loading -> items(5,
-                    key = { 16 },
-                    span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                APIResponse.Loading -> items(5, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     HomeArtistsSimilarLoading()
                 }
 
