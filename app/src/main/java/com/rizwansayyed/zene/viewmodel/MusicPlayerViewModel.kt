@@ -57,12 +57,12 @@ class MusicPlayerViewModel @Inject constructor(
     fun lyrics(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
         if (m.id == lyricsID) return@launch
         if (m.id == null) {
-            similarSongs = APIResponse.Empty
+            lyrics = APIResponse.Empty
             return@launch
         }
 
         if (!internetIsConnected()) {
-            similarSongs = APIResponse.Empty
+            lyrics = APIResponse.Empty
             return@launch
         }
 
@@ -80,12 +80,12 @@ class MusicPlayerViewModel @Inject constructor(
     fun videoPlayerData(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
         if (m.id == videoDetailsID) return@launch
         if (m.id == null) {
-            similarSongs = APIResponse.Empty
+            videoDetails = APIResponse.Empty
             return@launch
         }
 
         if (!internetIsConnected()) {
-            similarSongs = APIResponse.Empty
+            videoDetails = APIResponse.Empty
             return@launch
         }
 
@@ -108,7 +108,7 @@ class MusicPlayerViewModel @Inject constructor(
         }
 
         if (!internetIsConnected()) {
-            similarSongs = APIResponse.Empty
+            storeData = APIResponse.Empty
             return@launch
         }
 
