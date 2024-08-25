@@ -88,7 +88,7 @@ class ZeneAPIImpl @Inject constructor(
     }
 
     override suspend fun merchandise(name: String, artists: String) = flow {
-        emit(zeneAPI.merchandise("${artists.substringBefore("-").substringBefore("&")} - ${name}"))
+        emit(zeneAPI.merchandise("${artists.substringBefore("-").substringBefore("&")} - $name"))
     }
 
     override suspend fun topMostListeningSong() = flow {

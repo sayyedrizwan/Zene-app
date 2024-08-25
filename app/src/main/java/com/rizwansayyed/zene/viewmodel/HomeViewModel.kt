@@ -298,8 +298,6 @@ class HomeViewModel @Inject constructor(
         val email = userInfoDB.firstOrNull()?.email ?: ""
         if (email == "") return@launch
 
-        zeneAPI.updateUser().catch { }.collectLatest { }
-
         zeneAPI.getUser(email).catch {}.collectLatest {
             userInfoDB = flowOf(it.toUserInfo(email))
             pinnedArtistsList = flowOf(it.pinned_artists?.filterNotNull()?.toTypedArray())

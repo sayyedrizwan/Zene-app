@@ -52,6 +52,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VI
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_UNSTARTED
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -315,7 +316,13 @@ class MusicPlayService : Service() {
                         pause()
                         d?.currentDuration?.let { seekTo(it) }
                     }
+                } else if (v == VIDEO_UNSTARTED) {
+                    if (isNewPlay) {
+                        d?.isBuffering = false
+                        pause()
+                    } else play()
                 }
+
                 musicPlayerDB = flowOf(d)
 
                 MusicPlayerNotifications(
