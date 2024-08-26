@@ -249,7 +249,7 @@ class MusicPlayService : Service() {
                 pause()
             } else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
                 clearCache()
-
+                isNewPlay = false
                 val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)
                 d?.player?.id?.let { loadURL(it) }
                 currentVideoID = d?.player?.id ?: ""

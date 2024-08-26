@@ -70,7 +70,7 @@ fun ReviewAppDialog() {
 
     if (reviewDialog) Row(
         Modifier
-            .padding(vertical = 20.dp, horizontal = 5.dp)
+            .padding(vertical = 20.dp, horizontal = 10.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(15.dp))
             .background(Color.Black)
