@@ -94,7 +94,6 @@ object Utils {
 
         const val ZENE_IMPORT_PLAYLISTS_SPOTIFY_API = "importplaylists/spotify"
 
-
         const val ZENE_SEARCH_IMG_API = "search_img"
         const val ZENE_FEEDS_API = "feeds"
         const val ZENE_MOODS_API = "moods"
