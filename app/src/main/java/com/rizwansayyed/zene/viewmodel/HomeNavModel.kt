@@ -12,11 +12,23 @@ class HomeNavModel : ViewModel() {
     var showMusicPlayer by mutableStateOf(false)
     var selectedMenuItems by mutableStateOf(NavHomeMenu.HOME)
 
+
+    var lastAdRunTimestamp by mutableStateOf<Long?>(null)
+    var showingWebViewAds by mutableStateOf(false)
+
     fun showMusicPlayer(b: Boolean) {
         showMusicPlayer = b
     }
 
     fun selectedMenuItems(n: NavHomeMenu) {
         selectedMenuItems = n
+    }
+
+    fun setAdsTs() {
+        lastAdRunTimestamp = System.currentTimeMillis()
+    }
+
+    fun webVieStatus(v: Boolean) {
+        showingWebViewAds = v
     }
 }

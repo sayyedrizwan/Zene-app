@@ -11,6 +11,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -36,6 +37,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
+import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
@@ -49,7 +51,6 @@ import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
-import com.rizwansayyed.zene.ui.player.PlayerThumbnail
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
 import com.rizwansayyed.zene.ui.rewards.RewardsView
@@ -58,6 +59,7 @@ import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.AlertDialogView
+import com.rizwansayyed.zene.ui.view.ExoClickWebView
 import com.rizwansayyed.zene.ui.view.NavHomeMenu
 import com.rizwansayyed.zene.ui.view.NavHomeView
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
@@ -83,7 +85,9 @@ import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
-import com.rizwansayyed.zene.utils.Utils.vibratePhone
+import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
+import com.rizwansayyed.zene.utils.Utils.timeDifferenceInSeconds
+import com.rizwansayyed.zene.utils.isMoreThanTimeAds
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
@@ -91,7 +95,9 @@ import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
@@ -103,6 +109,8 @@ class MainActivity : ComponentActivity() {
     private val homeNavModel: HomeNavModel by viewModels()
     private val musicPlayerViewModel: MusicPlayerViewModel by viewModels()
     private val zeneViewModel: ZeneViewModel by viewModels()
+
+    private var jobCurrent: Job? = null
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -204,6 +212,8 @@ class MainActivity : ComponentActivity() {
 
                     LoginView()
 
+                    if (homeNavModel.showingWebViewAds) ExoClickWebView(homeNavModel)
+
                     if (notificationPermissionDialog) AlertDialogView(
                         R.string.need_notification_permission,
                         R.string.need_notification_permission_desc,
@@ -283,8 +293,23 @@ class MainActivity : ComponentActivity() {
         logEvents(
             FirebaseLogEvents.FirebaseEvents.APP_LANGUAGE, Locale.getDefault().displayLanguage
         )
+
+        jobCurrent?.cancel()
+        jobCurrent = lifecycleScope.launch(Dispatchers.IO) {
+            while (true) {
+                delay(5.seconds)
+                if (timeDifferenceInSeconds(homeNavModel.lastAdRunTimestamp) >= 28) {
+                    homeNavModel.webVieStatus(true)
+                }
+            }
+        }
     }
 
+    override fun onPause() {
+        super.onPause()
+        homeNavModel.webVieStatus(false)
+        jobCurrent?.cancel()
+    }
 
     private fun startMusicService() = lifecycleScope.launch(Dispatchers.Main) {
         delay(2.seconds)

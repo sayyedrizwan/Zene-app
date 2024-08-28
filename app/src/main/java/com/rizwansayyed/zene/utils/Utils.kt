@@ -21,6 +21,8 @@ import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
+import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -40,6 +42,8 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URL
 import java.text.DecimalFormat
+import java.time.Duration
+import java.time.Instant
 
 
 object Utils {
@@ -215,11 +219,7 @@ object Utils {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
-        settings.pluginState = WebSettings.PluginState.ON
-        settings.allowFileAccess = true
-        settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
-        settings.mediaPlaybackRequiresUserGesture = false
     }
 
     fun readHTMLFromUTF8File(inputStream: InputStream): String {
@@ -389,6 +389,20 @@ object Utils {
         } catch (e: Exception) {
             return false
         }
+    }
+
+    fun timeDifferenceInMinutes(ts: Long?): Long {
+        val timestamp = ts ?: TS_LAST_DATA
+        val now = Instant.now().toEpochMilli()
+        val duration = Duration.between(Instant.ofEpochMilli(timestamp), Instant.ofEpochMilli(now))
+        return duration.toMinutes()
+    }
+
+    fun timeDifferenceInSeconds(ts: Long?): Long {
+        val timestamp = ts ?: TS_LAST_DATA
+        val now = Instant.now().toEpochMilli()
+        val duration = Duration.between(Instant.ofEpochMilli(timestamp), Instant.ofEpochMilli(now))
+        return duration.seconds
     }
 
 }

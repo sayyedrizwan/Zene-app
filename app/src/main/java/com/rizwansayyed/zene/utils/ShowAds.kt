@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_INTERSTITIAL_UNIT_ID
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_REWARDS_ID
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_UNIT_ID
+import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -102,9 +103,6 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
 }
 
 suspend fun isMoreThanTimeAds(): Boolean = withContext(Dispatchers.IO) {
-    val timestamp = lastAdsTimestamp.firstOrNull() ?: TS_LAST_DATA
-    val now = Instant.now().toEpochMilli()
-    val duration =
-        Duration.between(Instant.ofEpochMilli(timestamp), Instant.ofEpochMilli(now))
-    return@withContext duration.toMinutes() > 6
+    val timestamp = timeDifferenceInMinutes(lastAdsTimestamp.firstOrNull())
+    return@withContext timestamp > 6
 }
