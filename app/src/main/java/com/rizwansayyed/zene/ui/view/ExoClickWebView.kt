@@ -62,7 +62,7 @@ fun ExoClickWebView(homeNavModel: HomeNavModel) {
     val context = LocalContext.current
     var webView: WebView? by remember { mutableStateOf(null) }
 
-    Box(Modifier.size(320.dp)) {
+    Box(Modifier.size(0.dp)) {
         AndroidView(
             factory = {
                 WebView(context).apply {
@@ -94,7 +94,7 @@ fun ExoClickWebView(homeNavModel: HomeNavModel) {
                     }
                     loadUrl("$WEB_BASE_URL/zads.html")
                 }
-            }, modifier = Modifier.size(320.dp)
+            }, modifier = Modifier.size(0.dp)
         )
     }
 }
