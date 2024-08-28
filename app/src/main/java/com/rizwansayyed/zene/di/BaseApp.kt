@@ -20,7 +20,7 @@ class BaseApp : Application() {
         super.onCreate()
         context = this
         FacebookSdk.sdkInitialize(this)
-        WebView.setWebContentsDebuggingEnabled(true);
+//        WebView.setWebContentsDebuggingEnabled(true);
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 }

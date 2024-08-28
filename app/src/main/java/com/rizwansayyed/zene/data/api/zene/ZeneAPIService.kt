@@ -245,6 +245,6 @@ interface ZeneAPIService {
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SONG_INFO_API)
-    suspend fun songInfo(@Query("id") token: String): ZeneMusicDataItems
+    suspend fun songInfo(@Query("id") id: String): ZeneMusicDataItems
 
 }

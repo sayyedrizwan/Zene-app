@@ -260,18 +260,22 @@ class MusicPlayService : Service() {
 
     private fun pause() = CoroutineScope(Dispatchers.Main).launch {
         webView.evaluateJavascript("pauseSong();", null)
+        if (isActive) cancel()
     }
 
     private fun seek5sPlus() = CoroutineScope(Dispatchers.Main).launch {
         webView.evaluateJavascript("seekTo5sForward();", null)
+        if (isActive) cancel()
     }
 
     private fun seek5sMinus() = CoroutineScope(Dispatchers.Main).launch {
         webView.evaluateJavascript("seekTo5sBack();", null)
+        if (isActive) cancel()
     }
 
-    private fun play() {
+    private fun play() = CoroutineScope(Dispatchers.Main).launch {
         webView.evaluateJavascript("playSong();", null)
+        if (isActive) cancel()
     }
 
     private fun getDurations() {
