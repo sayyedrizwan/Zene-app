@@ -158,7 +158,7 @@ class MainActivity : ComponentActivity() {
                         composable(NAV_EARN) {
                             RewardsView()
                             LaunchedEffect(Unit) {
-                                homeNavModel.selectedMenuItems(NavHomeMenu.EARN)
+//                                homeNavModel.selectedMenuItems(NavHomeMenu.EARN)
                             }
                         }
                         composable(NAV_SETTINGS) {

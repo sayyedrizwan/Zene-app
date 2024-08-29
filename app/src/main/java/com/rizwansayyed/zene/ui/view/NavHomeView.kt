@@ -42,7 +42,7 @@ import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 
 enum class NavHomeMenu {
-    HOME, EARN, FEED, SEARCH, MY_MUSIC
+    HOME, FEED, SEARCH, MY_MUSIC
 }
 
 @Composable
@@ -73,7 +73,7 @@ fun NavHomeView(
                 MenuItems(it, homeNavModel.selectedMenuItems) {
                     when (it) {
                         HOME -> sendNavCommand(NAV_HOME)
-                        EARN -> sendNavCommand(NAV_EARN)
+//                        EARN -> sendNavCommand(NAV_EARN)
                         FEED -> sendNavCommand(NAV_FEED)
                         SEARCH -> sendNavCommand(NAV_SEARCH)
                         MY_MUSIC -> sendNavCommand(NAV_MY_MUSIC)
@@ -93,7 +93,7 @@ fun MenuItems(nav: NavHomeMenu, selected: NavHomeMenu, click: () -> Unit) {
     Column(Modifier.clickable { click() }, Arrangement.Center, Alignment.CenterHorizontally) {
         when (nav) {
             HOME -> ImageIcon(R.drawable.ic_home, 25)
-            EARN -> ImageIcon(R.drawable.ic_gift, 25)
+//            EARN -> ImageIcon(R.drawable.ic_gift, 25)
             FEED -> ImageIcon(R.drawable.ic_scroll, 25)
             SEARCH -> ImageIcon(R.drawable.ic_search, 25)
             MY_MUSIC -> ImageIcon(R.drawable.ic_music_note_square, 25)
@@ -111,7 +111,7 @@ fun MenuItems(nav: NavHomeMenu, selected: NavHomeMenu, click: () -> Unit) {
             Spacer(Modifier.height(5.dp))
         } else when (nav) {
             HOME -> TextPoppins(stringResource(R.string.home), size = 13)
-            EARN -> TextPoppins(stringResource(R.string.rewards), size = 13)
+//            EARN -> TextPoppins(stringResource(R.string.rewards), size = 13)
             FEED -> TextPoppins(stringResource(R.string.feed), size = 13)
             SEARCH -> TextPoppins(stringResource(R.string.search), size = 13)
             MY_MUSIC -> TextPoppins(stringResource(R.string.music), size = 13)
