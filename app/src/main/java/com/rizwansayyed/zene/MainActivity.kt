@@ -11,7 +11,6 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -37,14 +36,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
-import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.musicplayer.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
-import com.rizwansayyed.zene.ui.extra.MyMusicView
+import com.rizwansayyed.zene.ui.mymusic.MyMusicView
 import com.rizwansayyed.zene.ui.feed.FeedView
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
@@ -85,9 +83,7 @@ import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
-import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInSeconds
-import com.rizwansayyed.zene.utils.isMoreThanTimeAds
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
@@ -97,7 +93,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds

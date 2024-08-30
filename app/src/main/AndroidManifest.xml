@@ -97,7 +97,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".ui.extra.mymusic.spotify.ImportPlaylistActivity"
+            android:name=".ui.mymusic.view.spotify.ImportPlaylistActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true">
 

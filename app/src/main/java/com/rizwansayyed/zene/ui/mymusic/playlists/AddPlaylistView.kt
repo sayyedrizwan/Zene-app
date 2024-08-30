@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.extra.playlists
+package com.rizwansayyed.zene.ui.mymusic.playlists
 
 import android.content.Context
 import android.graphics.Bitmap

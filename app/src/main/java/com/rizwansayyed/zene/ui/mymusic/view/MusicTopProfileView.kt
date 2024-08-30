@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.extra.mymusic
+package com.rizwansayyed.zene.ui.mymusic.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.ui.extra.MyMusicType
+import com.rizwansayyed.zene.ui.mymusic.MyMusicType
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin

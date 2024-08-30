@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.extra
+package com.rizwansayyed.zene.ui.mymusic
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,11 +33,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.ui.extra.mymusic.TopHeaderSwitch
-import com.rizwansayyed.zene.ui.extra.mymusic.TopMusicHeaders
-import com.rizwansayyed.zene.ui.extra.mymusic.spotify.MyMusicImportAppleMusicPlaylistView
-import com.rizwansayyed.zene.ui.extra.mymusic.spotify.MyMusicImportSpotifyPlaylistView
-import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistDialog
+import com.rizwansayyed.zene.ui.mymusic.view.TopHeaderSwitch
+import com.rizwansayyed.zene.ui.mymusic.view.TopMusicHeaders
+import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.PlaylistsDynamicCards

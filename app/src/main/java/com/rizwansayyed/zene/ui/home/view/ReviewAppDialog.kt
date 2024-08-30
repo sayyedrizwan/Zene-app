@@ -44,22 +44,16 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.appReviewStatusDB
 import com.rizwansayyed.zene.data.db.model.AppReviewData
 import com.rizwansayyed.zene.data.db.model.AppReviewEnum
-import com.rizwansayyed.zene.ui.extra.playlists.AddPlaylistView
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
-import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.feedbackMail
 import com.rizwansayyed.zene.utils.Utils.openAppPageOnPlayStore
-import com.rizwansayyed.zene.utils.Utils.toast
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.seconds
 
 
 @Composable

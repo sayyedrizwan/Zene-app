@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.extra.mymusic.spotify
+package com.rizwansayyed.zene.ui.mymusic.view.spotify
 
 import android.annotation.SuppressLint
 import android.content.Intent
