@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.playlists.view
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -137,7 +138,11 @@ fun PlaylistAlbumTopView(
 
     LaunchedEffect(Unit) {
         isAdded = added ?: false
-        isUserOwner = v?.artists == DataStoreManager.userInfoDB.firstOrNull()?.email
+        if (v?.id?.contains("zene_p_") == true) {
+            isUserOwner = v.artists == DataStoreManager.userInfoDB.firstOrNull()?.email
+        } else {
+            isUserOwner = true
+        }
     }
 
     if (removeDialog) AlertDialogView(
