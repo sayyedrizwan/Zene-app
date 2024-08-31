@@ -138,10 +138,10 @@ fun PlaylistAlbumTopView(
 
     LaunchedEffect(Unit) {
         isAdded = added ?: false
-        if (v?.id?.contains("zene_p_") == true) {
-            isUserOwner = v.artists == DataStoreManager.userInfoDB.firstOrNull()?.email
+        isUserOwner = if (v?.id?.contains("zene_p_") == true) {
+            v.artists == DataStoreManager.userInfoDB.firstOrNull()?.email
         } else {
-            isUserOwner = true
+            true
         }
     }
 
