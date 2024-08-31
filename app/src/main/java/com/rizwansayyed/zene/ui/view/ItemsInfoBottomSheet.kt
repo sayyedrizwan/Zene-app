@@ -145,7 +145,7 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
             item {
                 Row(Modifier.padding(top = 20.dp, start = 10.dp, end = 10.dp)) {
                     Row(Modifier.weight(1f)) {
-                        TextPoppins(stringResource(R.string.playlists))
+                        TextPoppins(stringResource(R.string.add_to_playlist))
                     }
                     ImageIcon(id = R.drawable.ic_add) {
                         addPlaylistItems = true
