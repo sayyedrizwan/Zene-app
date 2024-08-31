@@ -9,7 +9,6 @@ import com.rizwansayyed.zene.di.BaseApp.Companion.context
 
 object NavigationUtils {
     const val NAV_HOME = "home"
-    const val NAV_EARN = "earn"
     const val NAV_SUBSCRIPTION = "subscription"
     const val NAV_SEARCH = "search"
     const val NAV_FEED = "feed"

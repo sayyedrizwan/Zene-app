@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Zene Video</title>
         <style>
             * {
-                padding: 0;
-                margin: 0;
+              padding: 0;
+              margin: 0;
             }
 
             .player {
-                position: fixed;
-                left: 0;
-                bottom: 0;
-                width: 100%;
-                height: 100%;
+              position: fixed;
+              left: 0;
+              bottom: 0;
+              width: 100%;
+              height: 100%;
             }
         </style>
     </head>
@@ -25,91 +24,112 @@
         <div id="player" class="player"></div>
 
         <script>
-            var tag = document.createElement('script');
+            async function setLocalStorageItem() {
+              try {
+                const value = JSON.stringify({
+                  data: '{"quality":<<Quality>>,"previousQuality":<<Quality>>}',
+                  expiration: 1756614788000,
+                  creation: 1725078788000,
+                });
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                localStorage.setItem("yt-player-quality", value);
+              } catch (error) {
+                console.error("Error setting LocalStorage item:", error);
+              }
+            }
+
+            document.addEventListener("DOMContentLoaded", (event) => {
+              setLocalStorageItem();
+            });
+
+            var tag = document.createElement("script");
 
             tag.src = "https://www.youtube.com/iframe_api";
-            var firstScriptTag = document.getElementsByTagName('script')[0];
+            var firstScriptTag = document.getElementsByTagName("script")[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
             var player;
             function onYouTubeIframeAPIReady() {
-                player = new YT.Player('player', {
-                    videoId: '<<VideoID>>',
-                    playerVars: {
-                        autoplay: 1,
-                        playsinline: 1,
-                        mute: 0,
-                        controls: 1,
-                        showinfo: 0,
-                        modestbranding: 1,
-                        loop: 1,
-                        fs: 0,
-                        enablejsapi: 1,
-                        rel: 0
-                    },
-                    events: {
-                        'onReady': onPlayerReady,
-                        'onStateChange': onPlayerStateChange
-                    }
-                })
+              player = new YT.Player("player", {
+                videoId: "<<VideoID>>",
+                playerVars: {
+                  autoplay: 1,
+                  playsinline: 1,
+                  mute: 0,
+                  controls: 1,
+                  showinfo: 0,
+                  modestbranding: 1,
+                  loop: 1,
+                  fs: 0,
+                  enablejsapi: 1,
+                  rel: 0,
+                },
+                events: {
+                  onReady: onPlayerReady,
+                  onStateChange: onPlayerStateChange,
+                },
+              });
             }
 
             function onPlayerReady(event) {
-                event.target.setVolume(100);
-                event.target.playVideo();
-                setTimeout(() => {
-                    event.target.unMute()
-                }, 500);
-                playerState(event.target, true);
+              Object.keys(window.localStorage).forEach(function (key) {
+                console.log(window.localStorage.getItem(key));
+              });
+              console.log(window.localStorage);
+              event.target.setVolume(100);
+              event.target.playVideo();
+              setTimeout(() => {
+                event.target.unMute();
+              }, 500);
+
+              playerState(event.target, true);
             }
 
             function onPlayerStateChange(event) {
-                playerState(event.target, true);
+              playerState(event.target, true);
             }
 
-
             function playerState(p, updatePlayback) {
-                setTimeout(() => {
-                    ZeneListener.playerState(p.getPlayerState(), p.getDuration(), p.getCurrentTime(), updatePlayback)
-                }, 500);
+              setTimeout(() => {
+                ZeneListener.playerState(p.getPlayerState(), p.getDuration(), p.getCurrentTime(), updatePlayback);
+              }, 500);
             }
 
             function pauseSong() {
-                player.pauseVideo()
+              player.pauseVideo();
             }
 
             function playSong() {
-                player.playVideo()
+              player.playVideo();
             }
 
             function playerDurations() {
-                if (player.getDuration() == undefined || player.getCurrentTime() == undefined) {
-                    ZeneListener.playerDuration(-1, -1)
-                } else {
-                    ZeneListener.playerDuration(player.getCurrentTime(), player.getDuration())
-                }
+              if (player.getDuration() == undefined || player.getCurrentTime() == undefined) {
+                ZeneListener.playerDuration(-1, -1);
+              } else {
+                ZeneListener.playerDuration(player.getCurrentTime(), player.getDuration());
+              }
             }
 
             function seekTo(time) {
-                player.seekTo(time, true)
-                playerState(player, true);
+              player.seekTo(time, true);
+              playerState(player, true);
             }
 
             function seekTo5sBack() {
-                player.seekTo(player.getCurrentTime() - 5, true)
-                playerState(player, true);
+              player.seekTo(player.getCurrentTime() - 5, true);
+              playerState(player, true);
             }
 
             function seekTo5sForward() {
-                player.seekTo(player.getCurrentTime() + 5, true)
-                playerState(player, true);
+              player.seekTo(player.getCurrentTime() + 5, true);
+              playerState(player, true);
             }
 
             function playbackSpeed(speed) {
-                player.setPlaybackRate(speed);
-                playerState(player, false);
+              player.setPlaybackRate(speed);
+              playerState(player, false);
             }
-
         </script>
     </body>
 </html>

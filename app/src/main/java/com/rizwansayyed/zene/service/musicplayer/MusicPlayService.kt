@@ -18,6 +18,7 @@ import android.media.session.PlaybackState
 import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -36,6 +37,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
+import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
@@ -190,9 +192,9 @@ class MusicPlayService : Service() {
 
     fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
         currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
-        val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
-            "<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim()
-        )
+        val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
+            .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
+            .replace("<<Quality>>", songQualityDB.first().value)
 
         logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
 

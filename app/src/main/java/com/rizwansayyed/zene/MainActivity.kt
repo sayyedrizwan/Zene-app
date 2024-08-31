@@ -51,7 +51,6 @@ import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
-import com.rizwansayyed.zene.ui.rewards.RewardsView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
@@ -64,7 +63,6 @@ import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTISTS
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_EARN
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
@@ -148,12 +146,6 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(Unit) {
                                 homeNavModel.selectedMenuItems(NavHomeMenu.FEED)
-                            }
-                        }
-                        composable(NAV_EARN) {
-                            RewardsView()
-                            LaunchedEffect(Unit) {
-//                                homeNavModel.selectedMenuItems(NavHomeMenu.EARN)
                             }
                         }
                         composable(NAV_SETTINGS) {
