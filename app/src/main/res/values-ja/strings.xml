@@ -136,9 +136,18 @@
     <string name="sorry_no_song_found">申し訳ありません、曲が見つかりません。</string>
     <string name="loop_song">曲をループ</string>
     <string name="play_pause">再生/一時停止</string>
-    <string name="do_you_like_the_app">アプリは気に入りましたか？</string>
+    <string name="do_you_like_the_app">アプリは気に入りましたか？\n評価をお願いします🥹</string>
     <string name="mail_us">メールする</string>
     <string name="seem_enjoyed_the_app">アプリを楽しんだようです!</string>
     <string name="post_a_review_on_play_store">Playストアにレビューを投稿</string>
     <string name="help_us_by_sharing_your_thoughts">星5つなし、あなたの考えとフィードバックを共有して改善するのに役立ちます。</string>
+    <string name="home">ホーム</string>
+    <string name="feed">フィード</string>
+    <string name="music">音楽</string>
+    <string name="song_quality">曲の品質</string>
+    <string name="low_quality">低品質</string>
+    <string name="standard_quality">標準品質</string>
+    <string name="high_quality">高品質</string>
+    <string name="premium_quality">プレミアム品質</string>
+    <string name="song_quality_updated_successfully">曲の品質が正常に更新されました。曲を再開します。</string>
 </resources>

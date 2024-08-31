@@ -1,4 +1,4 @@
-<resources>
+<resources><!--    French-->
     <string name="app_name">Zène</string>
     <string name="app_name_premium">Zène Premium</string>
     <string name="a_music_app">Une application de musique gratuite</string>
@@ -135,9 +135,18 @@
     <string name="sorry_no_song_found">Désolé, aucune chanson trouvée.</string>
     <string name="loop_song">Boucler la chanson</string>
     <string name="play_pause">Lire/Pause</string>
-    <string name="do_you_like_the_app">Avez-vous aimé l\'application ?</string>
+    <string name="do_you_like_the_app">Avez-vous aimé l\'application ? \nVeuillez nous évaluer 🥹</string>
     <string name="mail_us">Nous envoyer un mail</string>
     <string name="seem_enjoyed_the_app">Vous semblez avoir apprécié l\'utilisation de l\'application !</string>
     <string name="post_a_review_on_play_store">Publiez un avis sur le Play Store</string>
     <string name="help_us_by_sharing_your_thoughts">Pas de 5 étoiles, Aidez-nous à nous améliorer en partageant vos pensées et commentaires.</string>
+    <string name="home">Accueil</string>
+    <string name="feed">Flux</string>
+    <string name="music">Musique</string>
+    <string name="song_quality">Qualité de la chanson</string>
+    <string name="low_quality">Faible qualité</string>
+    <string name="standard_quality">Qualité standard</string>
+    <string name="high_quality">Haute qualité</string>
+    <string name="premium_quality">Qualité premium</string>
+    <string name="song_quality_updated_successfully">La qualité de la chanson a été mise à jour avec succès. Redémarrage de la chanson.</string>
 </resources>

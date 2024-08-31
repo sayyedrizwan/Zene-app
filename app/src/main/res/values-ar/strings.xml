@@ -135,9 +135,18 @@
     <string name="sorry_no_song_found">عذرًا ، لم يتم العثور على أغنية.</string>
     <string name="loop_song">تكرار الأغنية</string>
     <string name="play_pause">تشغيل / إيقاف</string>
-    <string name="do_you_like_the_app">هل أعجبك التطبيق؟</string>
+    <string name="do_you_like_the_app">هل أعجبك التطبيق؟ n\ يرجى تقييمنا 🥹</string>
     <string name="mail_us">راسلنا</string>
     <string name="seem_enjoyed_the_app">يبدو أنك استمتعت باستخدام التطبيق!</string>
     <string name="post_a_review_on_play_store">انشر مراجعة على Play Store</string>
     <string name="help_us_by_sharing_your_thoughts">لا توجد 5 نجوم ، ساعدنا في التحسين من خلال مشاركة أفكارك وتعليقاتك.</string>
+    <string name="home">الرئيسية</string>
+    <string name="feed">يٌطعم</string>
+    <string name="music">الموسيقى</string>
+    <string name="song_quality">جودة الأغنية</string>
+    <string name="low_quality">جودة منخفضة</string>
+    <string name="standard_quality">جودة قياسية</string>
+    <string name="high_quality">جودة عالية</string>
+    <string name="premium_quality">جودة ممتازة</string>
+    <string name="song_quality_updated_successfully">تم تحديث جودة الأغنية بنجاح. إعادة تشغيل الأغنية.</string>
 </resources>

@@ -76,7 +76,7 @@ fun ReviewAppDialog() {
             Modifier.weight(1f),
             Arrangement.Start, Alignment.CenterVertically,
         ) {
-            TextPoppins(stringResource(R.string.do_you_like_the_app), size = 18)
+            TextPoppins(stringResource(R.string.do_you_like_the_app), size = 18, lineHeight = 30)
         }
 
         Row {

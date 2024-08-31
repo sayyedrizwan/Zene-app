@@ -135,9 +135,18 @@
     <string name="sorry_no_song_found">Извините, песня не найдена.</string>
     <string name="loop_song">Повторить песню</string>
     <string name="play_pause">Воспроизвести/Пауза</string>
-    <string name="do_you_like_the_app">Вам понравилось приложение?</string>
+    <string name="do_you_like_the_app">Вам понравилось приложение? \nПожалуйста, оцените нас 🥹</string>
     <string name="mail_us">Напишите нам</string>
     <string name="seem_enjoyed_the_app">Похоже, вам понравилось пользоваться приложением!</string>
     <string name="post_a_review_on_play_store">Оставьте отзыв в Play Маркете</string>
     <string name="help_us_by_sharing_your_thoughts">Нет 5 звезд, Помогите нам улучшиться, поделившись своими мыслями и отзывами.</string>
+    <string name="home">Главная</string>
+    <string name="feed">Лента</string>
+    <string name="music">Музыка</string>
+    <string name="song_quality">Качество песни</string>
+    <string name="low_quality">Низкое качество</string>
+    <string name="standard_quality">Стандартное качество</string>
+    <string name="high_quality">Высокое качество</string>
+    <string name="premium_quality">Премиум-качество</string>
+    <string name="song_quality_updated_successfully">Качество песни успешно обновлено. Перезапуск песни.</string>
 </resources>

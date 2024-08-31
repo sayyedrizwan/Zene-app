@@ -1,4 +1,4 @@
-<resources>
+<resources><!--    Indonesian-->
     <string name="app_name">Zene</string>
     <string name="app_name_premium">Zene Premium</string>
     <string name="a_music_app">Aplikasi Musik Gratis</string>
@@ -11,7 +11,6 @@
     <string name="videos_you_may_like">Video yang Mungkin Anda Sukai</string>
     <string name="videos">Video</string>
     <string name="play_as_song">Putar sebagai Lagu</string>
-
     <string name="songs_you_may_like">Lagu yang Mungkin Anda Sukai</string>
     <string name="songs_history">Riwayat Lagu</string>
     <string name="songs_for_you">Lagu untuk Anda</string>
@@ -20,7 +19,7 @@
     <string name="latest_release">Rilis Terbaru</string>
     <string name="most_listening_songs_zene">Lagu Terbanyak Didengarkan di Zene</string>
     <string name="listeners">Pendengar</string>
-    <string name="listening___">Sedang Mendengarkan...</string>
+    <string name="listening___">Sedang Mendengarkan…</string>
     <string name="import_from_spotify">Impor dari Spotify</string>
     <string name="import_from_apple_music">Impor dari Apple Music</string>
     <string name="import_playlists">Impor Daftar Putar</string>
@@ -136,9 +135,18 @@
     <string name="sorry_no_song_found">Maaf, Lagu Tidak Ditemukan.</string>
     <string name="loop_song">Ulangi Lagu</string>
     <string name="play_pause">Putar/Jeda</string>
-    <string name="do_you_like_the_app">Apakah Anda menyukai aplikasi ini?</string>
+    <string name="do_you_like_the_app">Apakah Anda menyukai aplikasi ini? \nMohon beri kami penilaian 🥹</string>
     <string name="mail_us">Kirim Email Kepada Kami</string>
     <string name="seem_enjoyed_the_app">Sepertinya Anda menikmati penggunaan aplikasi!</string>
     <string name="post_a_review_on_play_store">Posting ulasan di Play Store</string>
     <string name="help_us_by_sharing_your_thoughts">Tidak ada bintang 5, Bantu kami meningkatkan dengan berbagi pemikiran dan umpan balik Anda.</string>
+    <string name="home">Beranda</string>
+    <string name="feed">Umpan</string>
+    <string name="music">Musik</string>
+    <string name="song_quality">Kualitas Lagu</string>
+    <string name="low_quality">Kualitas Rendah</string>
+    <string name="standard_quality">Kualitas Standar</string>
+    <string name="high_quality">Kualitas Tinggi</string>
+    <string name="premium_quality">Kualitas Premium</string>
+    <string name="song_quality_updated_successfully">Kualitas lagu berhasil diperbarui. Memulai ulang lagu.</string>
 </resources>

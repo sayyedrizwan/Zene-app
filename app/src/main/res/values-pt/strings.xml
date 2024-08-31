@@ -136,9 +136,18 @@
     <string name="sorry_no_song_found">Desculpe, nenhuma música encontrada.</string>
     <string name="loop_song">Repetir música</string>
     <string name="play_pause">Reproduzir / Pausar</string>
-    <string name="do_you_like_the_app">Você gostou do aplicativo?</string>
+    <string name="do_you_like_the_app">Gostou da aplicação? \nPor favor, avalie-nos 🥹</string>
     <string name="mail_us">Envie-nos um email</string>
     <string name="seem_enjoyed_the_app">Parece que você gostou de usar o aplicativo!</string>
     <string name="post_a_review_on_play_store">Publique uma avaliação na Play Store</string>
     <string name="help_us_by_sharing_your_thoughts">Sem 5 estrelas, Ajude-nos a melhorar compartilhando seus pensamentos e comentários.</string>
+    <string name="home">Início</string>
+    <string name="feed">Feed</string>
+    <string name="music">Música</string>
+    <string name="song_quality">Qualidade da música</string>
+    <string name="low_quality">Baixa qualidade</string>
+    <string name="standard_quality">Qualidade padrão</string>
+    <string name="high_quality">Alta qualidade</string>
+    <string name="premium_quality">Qualidade premium</string>
+    <string name="song_quality_updated_successfully">A qualidade da música foi atualizada com sucesso. Reiniciando a música.</string>
 </resources>

@@ -136,9 +136,18 @@
     <string name="sorry_no_song_found">抱歉，未找到歌曲。</string>
     <string name="loop_song">循环歌曲</string>
     <string name="play_pause">播放/暂停</string>
-    <string name="do_you_like_the_app">你喜欢这个应用程序吗？</string>
+    <string name="do_you_like_the_app">您喜欢该应用吗？\n请给我们评分 🥹</string>
     <string name="mail_us">给我们发邮件</string>
     <string name="seem_enjoyed_the_app">您似乎喜欢使用该应用程序！</string>
     <string name="post_a_review_on_play_store">在 Play 商店上发表评论</string>
     <string name="help_us_by_sharing_your_thoughts">没有 5 星，请分享您的想法和反馈，帮助我们改进。</string>
+    <string name="home">首页</string>
+    <string name="feed">动态</string>
+    <string name="music">音乐</string>
+    <string name="song_quality">歌曲质量</string>
+    <string name="low_quality">低质量</string>
+    <string name="standard_quality">标准质量</string>
+    <string name="high_quality">高质量</string>
+    <string name="premium_quality">高级质量</string>
+    <string name="song_quality_updated_successfully">歌曲质量已成功更新。重新开始歌曲。</string>
 </resources>

@@ -25,11 +25,15 @@
 
         <script>
             async function setLocalStorageItem() {
+              const currentTimestamp = Date.now();
+              const threeMinutesBefore = currentTimestamp - 3 * 60 * 1000;
+              const oneYearAfter = threeMinutesBefore + 365 * 24 * 60 * 60 * 1000;
+
               try {
                 const value = JSON.stringify({
                   data: '{"quality":<<Quality>>,"previousQuality":<<Quality>>}',
-                  expiration: 1756614788000,
-                  creation: 1725078788000,
+                  expiration: oneYearAfter,
+                  creation: threeMinutesBefore,
                 });
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 localStorage.setItem("yt-player-quality", value);
@@ -72,10 +76,6 @@
             }
 
             function onPlayerReady(event) {
-              Object.keys(window.localStorage).forEach(function (key) {
-                console.log(window.localStorage.getItem(key));
-              });
-              console.log(window.localStorage);
               event.target.setVolume(100);
               event.target.playVideo();
               setTimeout(() => {

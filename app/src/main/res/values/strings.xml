@@ -135,7 +135,7 @@
     <string name="sorry_no_song_found">Sorry, No Song Found.</string>
     <string name="loop_song">Loop Song</string>
     <string name="play_pause">Play/Pause</string>
-    <string name="do_you_like_the_app">Did you like the app?</string>
+    <string name="do_you_like_the_app">Did you like the app? \nPlease rate us 🥹</string>
     <string name="mail_us">Mail Us</string>
     <string name="seem_enjoyed_the_app">You seem to have enjoyed using the app!</string>
     <string name="post_a_review_on_play_store">Post a review on Play Store</string>
