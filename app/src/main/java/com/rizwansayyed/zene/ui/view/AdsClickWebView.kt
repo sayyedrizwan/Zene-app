@@ -90,7 +90,7 @@ fun AdsClickWebView(homeNavModel: HomeNavModel, page: String) {
                                 delay(2.seconds)
                                 simulateClick(view)
                             } else CoroutineScope(Dispatchers.IO).launch {
-                                logEvents(FirebaseLogEvents.FirebaseEvents.EXO_CLICK_ADS_VIEWED)
+                                logEvents(FirebaseLogEvents.FirebaseEvents.CLICK_ADS_VIEWED_PAGE, page)
                                 homeNavModel.setAdsTs()
                             }
                         }
