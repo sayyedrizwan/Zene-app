@@ -219,7 +219,6 @@ object Utils {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
-        settings.useWideViewPort = true
     }
 
     fun readHTMLFromUTF8File(inputStream: InputStream): String {

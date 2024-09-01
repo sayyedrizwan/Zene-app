@@ -90,7 +90,7 @@ fun PlaylistsView(id: String?, close: () -> Unit) {
         }
 
         item(key = 1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Spacer(Modifier.height(180.dp))
+            Spacer(Modifier.height(250.dp))
         }
     }
     LaunchedEffect(Unit) {

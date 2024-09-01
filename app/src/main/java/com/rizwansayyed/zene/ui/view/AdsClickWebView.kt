@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.view
 
 import android.graphics.Color
 import android.graphics.Rect
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebResourceRequest
@@ -11,6 +10,7 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.rizwansayyed.zene.utils.FirebaseLogEvents
+import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.Share.WEB_BASE_URL
 import com.rizwansayyed.zene.utils.Utils.enableSimple
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
@@ -58,11 +60,11 @@ val userAgentForAds = arrayOf(
 )
 
 @Composable
-fun ExoClickWebView(homeNavModel: HomeNavModel) {
+fun AdsClickWebView(homeNavModel: HomeNavModel, page: String) {
     val context = LocalContext.current
     var webView: WebView? by remember { mutableStateOf(null) }
 
-    Box(Modifier.size(0.dp)) {
+    Box(Modifier.size(1.dp)) {
         AndroidView(
             factory = {
                 WebView(context).apply {
@@ -81,21 +83,33 @@ fun ExoClickWebView(homeNavModel: HomeNavModel) {
 
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
+                            homeNavModel.setAdsTs()
                             if (url?.contains(WEB_BASE_URL) == true) CoroutineScope(Dispatchers.IO).launch {
-                                delay(4.seconds)
+                                delay(2.seconds)
                                 simulateClick(view)
-
+                                delay(2.seconds)
+                                simulateClick(view)
                             } else CoroutineScope(Dispatchers.IO).launch {
-                                delay(9.seconds)
-                                homeNavModel.webVieStatus(false)
+                                logEvents(FirebaseLogEvents.FirebaseEvents.EXO_CLICK_ADS_VIEWED)
                                 homeNavModel.setAdsTs()
                             }
                         }
                     }
-                    loadUrl("$WEB_BASE_URL/zads.html")
                 }
-            }, modifier = Modifier.size(0.dp)
+            }, modifier = Modifier.size(1.dp)
         )
+    }
+
+    LaunchedEffect(homeNavModel.showingWebViewAds) {
+        webView?.clearCache(true)
+        webView?.loadUrl("about:blank")
+        webView?.reload()
+        webView?.loadUrl("$WEB_BASE_URL/$page.html")
+    }
+
+    LaunchedEffect(Unit) {
+        delay(2.seconds)
+        webView?.loadUrl("$WEB_BASE_URL/$page.html")
     }
 }
 

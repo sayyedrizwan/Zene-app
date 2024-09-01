@@ -11,6 +11,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -55,8 +56,8 @@ import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.ui.view.AdsClickWebView
 import com.rizwansayyed.zene.ui.view.AlertDialogView
-import com.rizwansayyed.zene.ui.view.ExoClickWebView
 import com.rizwansayyed.zene.ui.view.NavHomeMenu
 import com.rizwansayyed.zene.ui.view.NavHomeView
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
@@ -199,7 +200,8 @@ class MainActivity : ComponentActivity() {
 
                     LoginView()
 
-                    if (homeNavModel.showingWebViewAds) ExoClickWebView(homeNavModel)
+                    AdsClickWebView(homeNavModel, "zadsadsterra")
+                    AdsClickWebView(homeNavModel, "zadsexoclick")
 
                     if (notificationPermissionDialog) AlertDialogView(
                         R.string.need_notification_permission,
@@ -280,13 +282,15 @@ class MainActivity : ComponentActivity() {
         logEvents(
             FirebaseLogEvents.FirebaseEvents.APP_LANGUAGE, Locale.getDefault().displayLanguage
         )
+        homeNavModel.clearAdsTs()
+        homeNavModel.webViewStatus()
 
         jobCurrent?.cancel()
-        jobCurrent = lifecycleScope.launch(Dispatchers.IO) {
+        jobCurrent = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
-                delay(5.seconds)
-                if (timeDifferenceInSeconds(homeNavModel.lastAdRunTimestamp) >= 28) {
-                    homeNavModel.webVieStatus(true)
+                delay(4.seconds)
+                if (timeDifferenceInSeconds(homeNavModel.lastAdRunTimestamp) >= 7) {
+                    homeNavModel.webViewStatus()
                 }
             }
         }
@@ -294,7 +298,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        homeNavModel.webVieStatus(false)
         jobCurrent?.cancel()
     }
 

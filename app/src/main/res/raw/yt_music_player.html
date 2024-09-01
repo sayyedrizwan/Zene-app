@@ -76,9 +76,9 @@
             }
 
             function onPlayerReady(event) {
-              event.target.setVolume(100);
               event.target.playVideo();
               setTimeout(() => {
+                event.target.setVolume(100);
                 event.target.unMute();
               }, 500);
 
@@ -100,6 +100,7 @@
             }
 
             function playSong() {
+              player.setVolume(100);
               player.playVideo();
             }
 

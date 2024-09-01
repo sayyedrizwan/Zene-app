@@ -28,7 +28,11 @@ class HomeNavModel : ViewModel() {
         lastAdRunTimestamp = System.currentTimeMillis()
     }
 
-    fun webVieStatus(v: Boolean) {
-        showingWebViewAds = v
+    fun clearAdsTs() {
+        lastAdRunTimestamp = null
+    }
+
+    fun webViewStatus() {
+        showingWebViewAds = !showingWebViewAds
     }
 }
