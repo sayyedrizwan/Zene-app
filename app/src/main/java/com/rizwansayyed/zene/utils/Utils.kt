@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -262,8 +263,22 @@ object Utils {
         try {
             if (bitmap == null) return null
 
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val initialByteArray = stream.toByteArray()
+            val fileSizeInKB = initialByteArray.size / 1024
+            var compressionQuality = 100
+
+            when {
+                fileSizeInKB in 101..400 -> compressionQuality = 60
+                fileSizeInKB in 401..800 -> compressionQuality = 40
+                fileSizeInKB > 800 -> compressionQuality = 10
+            }
+
+            stream.reset()
+
             FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                bitmap.compress(Bitmap.CompressFormat.PNG, compressionQuality, stream)
             }
             return file
         } catch (e: Exception) {
