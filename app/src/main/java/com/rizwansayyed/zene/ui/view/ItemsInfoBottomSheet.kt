@@ -20,9 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -132,6 +134,8 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
     var addPlaylistItems by remember { mutableStateOf(false) }
     var page by remember { mutableIntStateOf(0) }
 
+    val playlistsAddStatus = remember { mutableStateMapOf<String, Boolean>() }
+
     Dialog(
         close, properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
@@ -157,7 +161,7 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
             }
 
             items(zeneViewModel.saveSongPlaylists) {
-                PlaylistAddComponents(it, zeneViewModel, m.id)
+                PlaylistAddComponents(it, zeneViewModel, m.id, playlistsAddStatus)
             }
 
             if (zeneViewModel.songHistoryIsLoading) item {
@@ -246,9 +250,12 @@ fun AlbumPlaylistInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
 
 
 @Composable
-fun PlaylistAddComponents(items: ZeneMusicDataItems, viewModel: ZeneViewModel, songID: String?) {
-    var isAdded by remember { mutableStateOf(false) }
-
+fun PlaylistAddComponents(
+    items: ZeneMusicDataItems,
+    viewModel: ZeneViewModel,
+    songID: String?,
+    playlistsAddStatus: SnapshotStateMap<String, Boolean>
+) {
     Row(
         Modifier
             .padding(vertical = 10.dp, horizontal = 5.dp)
@@ -273,18 +280,18 @@ fun PlaylistAddComponents(items: ZeneMusicDataItems, viewModel: ZeneViewModel, s
             TextPoppins(items.name ?: "", size = 15)
         }
 
-        if (isAdded) ImageIcon(R.drawable.ic_tick, 25) {
-            isAdded = false
+        if (playlistsAddStatus[songID] == true) ImageIcon(R.drawable.ic_tick, 25) {
+            playlistsAddStatus[songID ?: ""] = false
             viewModel.addRemoveSongFromPlaylists(items.id ?: "", songID ?: "", false)
         }
         else ImageIcon(R.drawable.ic_add, 25) {
-            isAdded = true
+            playlistsAddStatus[songID ?: ""] = true
             viewModel.addRemoveSongFromPlaylists(items.id ?: "", songID ?: "", true)
         }
 
     }
 
     LaunchedEffect(Unit) {
-        isAdded = items.extra == "present"
+        songID?.let { playlistsAddStatus[it] = items.extra == "present" }
     }
 }
