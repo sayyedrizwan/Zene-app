@@ -81,7 +81,7 @@ object Utils {
         const val BASE_URL_IP = "http://ip-api.com/"
         const val JSON_IP = "json"
 
-        const val IMG_PLAYLISTS = "https://i.ibb.co/1Xf9DkT/monthly-playlist.jpg"
+        const val IMG_PLAYLISTS = "https://www.zenemusic.co/monthly-playlist.jpg"
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
