@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.ui.settings
 
+import android.app.Activity
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.foundation.background
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
@@ -45,12 +48,14 @@ import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.Utils.feedbackMail
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.openEqualizer
+import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -58,6 +63,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
+
 
 data class SettingsData(val txt: Int, val value: Boolean)
 
@@ -71,7 +77,7 @@ fun SettingsView() {
     val lockscreenSettings by playingSongOnLockScreen.collectAsState(initial = false)
     var clearCache by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current.applicationContext
+    val context = LocalContext.current as Activity
     val needPermission = stringResource(R.string.need_overlay_permission_to_show_song)
 
     LazyColumn(
@@ -118,7 +124,7 @@ fun SettingsView() {
                     val packageName = "package:${context.packageName}"
                     val intent =
                         Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse(packageName))
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.flags = FLAG_ACTIVITY_NEW_TASK
                     context.startActivity(intent)
 
                     needPermission.toast()
@@ -154,7 +160,7 @@ fun SettingsView() {
         item {
             Spacer(Modifier.height(30.dp))
             CardItems(R.string.privacy_policy) {
-                openBrowser(PRIVACY_POLICY)
+                shareTxtImage(PRIVACY_POLICY, "Open URL on Browser")
             }
         }
 
@@ -231,8 +237,8 @@ fun CardItems(txt: Int, click: () -> Unit) {
     Row(
         Modifier
             .padding(vertical = 22.dp)
-            .clickable { click() }
             .clip(RoundedCornerShape(12.dp))
+            .clickable { click() }
             .background(Color.Black)
             .padding(horizontal = 19.dp, vertical = 22.dp),
         verticalAlignment = Alignment.CenterVertically

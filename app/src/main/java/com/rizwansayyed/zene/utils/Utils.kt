@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
+import android.util.Log
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
@@ -72,7 +73,7 @@ object Utils {
     }
 
     object URLS {
-        const val PRIVACY_POLICY = "https://www.zenemusic.co/privacy-policy"
+        const val PRIVACY_POLICY = "https://zenemusic.co/privacy-policy"
 
         const val YOUTUBE_MUSIC = "https://www.youtube.com/music"
         const val YOUTUBE_URL = "https://www.youtube.com"
@@ -315,7 +316,7 @@ object Utils {
         musicPlayerDB = flowOf(dataStore)
     }
 
-    fun shareTxtImage(url: String, name: String = "") {
+    fun shareTxtImage(url: String, name: String? = null) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, url)
@@ -323,7 +324,7 @@ object Utils {
             flags = FLAG_ACTIVITY_NEW_TASK
         }
 
-        val shareIntent = Intent.createChooser(sendIntent, null).apply {
+        val shareIntent = Intent.createChooser(sendIntent, name).apply {
             flags = FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(shareIntent)

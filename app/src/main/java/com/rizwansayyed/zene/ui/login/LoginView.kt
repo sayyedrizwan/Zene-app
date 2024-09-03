@@ -70,11 +70,14 @@ import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.Utils.openBrowser
+import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.time.Duration.Companion.seconds
@@ -266,7 +269,7 @@ fun LoginButtonView() {
 
             Spacer(Modifier.height(100.dp))
 
-            Row(Modifier.clickable { openBrowser(PRIVACY_POLICY) }) {
+            Row(Modifier.clickable { shareTxtImage(PRIVACY_POLICY, "Open URL on Browser") }) {
                 TextPoppins(
                     stringResource(R.string.agreeing_privacy_policy),
                     true, Color.Blue, 10
