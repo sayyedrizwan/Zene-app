@@ -66,7 +66,7 @@ fun UserPlaylistsView(id: String?, close: () -> Unit) {
     val context = LocalContext.current as Activity
 
     var page by remember { mutableIntStateOf(0) }
-    var isUserOwner = remember { mutableStateOf(false) }
+    val isUserOwner = remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
