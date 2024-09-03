@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.playlists.view
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,10 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
@@ -40,7 +37,6 @@ import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
-import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
@@ -54,7 +50,11 @@ import kotlinx.coroutines.flow.firstOrNull
 
 @Composable
 fun PlaylistAlbumTopView(
-    v: ZeneMusicDataItems?, zeneViewModel: ZeneViewModel, added: Boolean?, close: () -> Unit
+    v: ZeneMusicDataItems?,
+    zeneViewModel: ZeneViewModel,
+    added: Boolean?,
+    close: () -> Unit,
+    isUserOwner: MutableState<Boolean>
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val isBig = isScreenBig()
@@ -63,7 +63,6 @@ fun PlaylistAlbumTopView(
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isAdded by remember { mutableStateOf(false) }
     var removeDialog by remember { mutableStateOf(false) }
-    var isUserOwner by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -109,7 +108,7 @@ fun PlaylistAlbumTopView(
         Spacer(Modifier.height(27.dp))
 
 
-        if (isUserOwner) Row(
+        if (isUserOwner.value) Row(
             Modifier.fillMaxWidth(),
             Arrangement.Center,
             Alignment.CenterVertically
@@ -138,7 +137,7 @@ fun PlaylistAlbumTopView(
 
     LaunchedEffect(Unit) {
         isAdded = added ?: false
-        isUserOwner = if (v?.id?.contains("zene_p_") == true) {
+        isUserOwner.value = if (v?.id?.contains("zene_p_") == true) {
             v.artists == DataStoreManager.userInfoDB.firstOrNull()?.email
         } else {
             true

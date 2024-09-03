@@ -19,9 +19,9 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +48,6 @@ import com.rizwansayyed.zene.ui.view.DialogSheetInfos
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
-import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.bouncingClickable
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.openSpecificIntent
@@ -67,6 +66,7 @@ fun UserPlaylistsView(id: String?, close: () -> Unit) {
     val context = LocalContext.current as Activity
 
     var page by remember { mutableIntStateOf(0) }
+    var isUserOwner = remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -90,12 +90,12 @@ fun UserPlaylistsView(id: String?, close: () -> Unit) {
                 is APIResponse.Error -> {}
                 APIResponse.Loading -> LoadingAlbumTopView()
                 is APIResponse.Success ->
-                    PlaylistAlbumTopView(v.data.info, zeneViewModel, true, close)
+                    PlaylistAlbumTopView(v.data.info, zeneViewModel, true, close, isUserOwner)
             }
         }
 
         items(homeViewModel.userPlaylistsSong, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            PlaylistFullGridSongs(it, homeViewModel, zeneViewModel, id)
+            PlaylistFullGridSongs(it, homeViewModel, zeneViewModel, id, isUserOwner)
         }
 
         item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -151,7 +151,8 @@ fun PlaylistFullGridSongs(
     m: ZeneMusicDataItems,
     homeViewModel: HomeViewModel,
     zeneViewModel: ZeneViewModel,
-    playlistID: String?
+    playlistID: String?,
+    isUserOwner: MutableState<Boolean>
 ) {
     var dialog by remember { mutableStateOf(false) }
     var removeSongDialog by remember { mutableStateOf(false) }
@@ -187,7 +188,7 @@ fun PlaylistFullGridSongs(
             TextPoppins(v = m.artists ?: "", false, size = 13)
         }
 
-        ImageIcon(R.drawable.ic_remove_circle, 19) {
+        if (isUserOwner.value) ImageIcon(R.drawable.ic_remove_circle, 19) {
             removeSongDialog = true
         }
     }

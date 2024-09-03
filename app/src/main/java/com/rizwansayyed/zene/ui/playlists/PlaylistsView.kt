@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,6 +47,8 @@ fun PlaylistsView(id: String?, close: () -> Unit) {
     val isThreeGrid = isScreenBig()
     val context = LocalContext.current as Activity
 
+    var isUserOwner = remember { mutableStateOf(false) }
+
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
         Modifier
@@ -67,7 +71,9 @@ fun PlaylistsView(id: String?, close: () -> Unit) {
                 is APIResponse.Error -> {}
                 APIResponse.Loading -> LoadingAlbumTopView()
                 is APIResponse.Success ->
-                    PlaylistAlbumTopView(v.data.info, zeneViewModel, v.data.isAdded) {}
+                    PlaylistAlbumTopView(
+                        v.data.info, zeneViewModel, v.data.isAdded, {}, isUserOwner
+                    )
             }
         }
 
