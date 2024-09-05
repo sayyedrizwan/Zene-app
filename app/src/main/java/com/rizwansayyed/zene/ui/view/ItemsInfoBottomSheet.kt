@@ -204,6 +204,11 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
         logEvents(FirebaseLogEvents.FirebaseEvents.ADDING_TO_PLAYLISTS)
         m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
     }
+
+    LaunchedEffect(playlistsAddStatus.values) {
+        logEvents(FirebaseLogEvents.FirebaseEvents.ADDING_TO_PLAYLISTS)
+        m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
+    }
 }
 
 @Composable
@@ -280,12 +285,12 @@ fun PlaylistAddComponents(
             TextPoppins(items.name ?: "", size = 15)
         }
 
-        if (playlistsAddStatus[songID] == true) ImageIcon(R.drawable.ic_tick, 25) {
-            playlistsAddStatus[songID ?: ""] = false
+        if (playlistsAddStatus[items.id] == true) ImageIcon(R.drawable.ic_tick, 25) {
+            playlistsAddStatus[items.id ?: ""] = false
             viewModel.addRemoveSongFromPlaylists(items.id ?: "", songID ?: "", false)
         }
         else ImageIcon(R.drawable.ic_add, 25) {
-            playlistsAddStatus[songID ?: ""] = true
+            playlistsAddStatus[items.id ?: ""] = true
             viewModel.addRemoveSongFromPlaylists(items.id ?: "", songID ?: "", true)
         }
 

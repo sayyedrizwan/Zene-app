@@ -1,9 +1,13 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -61,7 +65,7 @@ val userAgentForAds = arrayOf(
 
 @Composable
 fun AdsClickWebView(homeNavModel: HomeNavModel, page: String) {
-    val context = LocalContext.current
+    val context = LocalContext.current as Activity
     var webView: WebView? by remember { mutableStateOf(null) }
 
     Box(Modifier.size(1.dp)) {
@@ -86,11 +90,13 @@ fun AdsClickWebView(homeNavModel: HomeNavModel, page: String) {
                             homeNavModel.setAdsTs()
                             if (url?.contains(WEB_BASE_URL) == true) CoroutineScope(Dispatchers.IO).launch {
                                 delay(2.seconds)
-                                simulateClick(view)
+                                simulateClick(view, context)
                                 delay(2.seconds)
-                                simulateClick(view)
+                                simulateClick(view, context)
                             } else CoroutineScope(Dispatchers.IO).launch {
-                                logEvents(FirebaseLogEvents.FirebaseEvents.CLICK_ADS_VIEWED_PAGE, page)
+                                logEvents(
+                                    FirebaseLogEvents.FirebaseEvents.CLICK_ADS_VIEWED_PAGE, page
+                                )
                                 homeNavModel.setAdsTs()
                             }
                         }
@@ -113,7 +119,13 @@ fun AdsClickWebView(homeNavModel: HomeNavModel, page: String) {
     }
 }
 
-private fun simulateClick(view: View?, x: Float = 200f, y: Float = 300f) {
+private fun simulateClick(view: View?, context: Activity) {
+    val x = 100f
+    val y = 200f
+
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    if (imm.isAcceptingText) return
+
     view?.let {
         val rect = Rect()
         it.getGlobalVisibleRect(rect)

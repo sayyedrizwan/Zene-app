@@ -123,7 +123,7 @@ class MainActivity : ComponentActivity() {
                 }
 
             ZeneTheme {
-                Box(Modifier.fillMaxSize()) {
+                 Box(Modifier.fillMaxSize()) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
@@ -200,10 +200,11 @@ class MainActivity : ComponentActivity() {
 
                     LoginView()
 
-                    AdsClickWebView(homeNavModel, "zadsadsterra")
-                    AdsClickWebView(homeNavModel, "zadsexoclick")
+                     AdsClickWebView(homeNavModel, "zadsadsterra")
+                     AdsClickWebView(homeNavModel, "zadsexoclick")
 
-                    if (notificationPermissionDialog) AlertDialogView(
+
+                     if (notificationPermissionDialog) AlertDialogView(
                         R.string.need_notification_permission,
                         R.string.need_notification_permission_desc,
                         R.string.grant

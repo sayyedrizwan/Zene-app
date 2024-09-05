@@ -34,6 +34,7 @@
         android:name=".di.BaseApp"
         android:allowBackup="true"
         android:allowClearUserData="true"
+        android:windowSoftInputMode="adjustResize"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:hardwareAccelerated="true"
