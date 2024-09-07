@@ -1,8 +1,14 @@
 package com.rizwansayyed.zene.ui.player.view
 
+import android.os.Build
+import android.widget.SeekBar
+import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,11 +20,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,9 +39,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
@@ -50,6 +63,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AddSongToPlaylist
 import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -74,6 +88,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun SongSliderData(playerInfo: MusicPlayerData?) {
     var sliderPosition by remember { mutableFloatStateOf(0f) }
+    val interactionSource = remember { MutableInteractionSource() }
 
     Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
         Spacer(Modifier.width(6.dp))
@@ -85,20 +100,27 @@ fun SongSliderData(playerInfo: MusicPlayerData?) {
             Modifier.weight(1f),
             valueRange = 0f..(playerInfo?.totalDuration ?: 0).toFloat(),
             colors = SliderColors(
-                activeTickColor = Color.White,
-                activeTrackColor = Color.White,
+                activeTickColor = White,
+                activeTrackColor = White,
                 disabledActiveTickColor = Color.DarkGray,
                 disabledInactiveTickColor = Color.DarkGray,
                 disabledInactiveTrackColor = Color.DarkGray,
                 disabledThumbColor = Color.DarkGray,
                 inactiveTickColor = Color.DarkGray,
                 inactiveTrackColor = Color.DarkGray,
-                thumbColor = Color.White,
-                disabledActiveTrackColor = Color.White,
+                thumbColor = White,
+                disabledActiveTrackColor = White,
             ),
             thumb = {
-                Spacer(Modifier.padding(5.dp))
+                Spacer(
+                    Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(White)
+                        .width(4.dp)
+                        .height(18.dp)
+                )
             },
+            interactionSource = interactionSource,
             onValueChangeFinished = {
                 sendWebViewCommand(SEEK_DURATION_VIDEO, sliderPosition.toInt())
             })
@@ -216,7 +238,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
                         Modifier
                             .size(4.dp)
                             .clip(RoundedCornerShape(100))
-                            .background(Color.White)
+                            .background(White)
                     )
                 }
             }
@@ -243,7 +265,7 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
                         Modifier
                             .size(4.dp)
                             .clip(RoundedCornerShape(100))
-                            .background(Color.White)
+                            .background(White)
                     )
                 }
             }

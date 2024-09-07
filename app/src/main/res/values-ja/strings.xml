@@ -150,4 +150,5 @@
     <string name="high_quality">高品質</string>
     <string name="premium_quality">プレミアム品質</string>
     <string name="song_quality_updated_successfully">曲の品質が正常に更新されました。曲を再開します。</string>
+    <string name="define_song_deletion">ゼネ は、過去 2 週間の曲の履歴を保存し、最もよく聴いた曲の履歴も保持します。最新の聴取データのみを保存することで、Zene はデータベースのコストを削減し、アプリを無料で提供できるようにしています。これは、曲の提案や全体的なエクスペリエンスには影響しません。</string>
 </resources>

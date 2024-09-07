@@ -149,4 +149,5 @@
     <string name="high_quality">جودة عالية</string>
     <string name="premium_quality">جودة ممتازة</string>
     <string name="song_quality_updated_successfully">تم تحديث جودة الأغنية بنجاح. إعادة تشغيل الأغنية.</string>
+    <string name="define_song_deletion">يحفظ تطبيق زين سجل أغانيك من الأسبوعين الماضيين ويحتفظ أيضًا بسجل لأغانيك الأكثر استماعًا. من خلال تخزين أحدث بيانات الاستماع فقط، يقلل تطبيق زين من تكاليف قاعدة البيانات، مما يسمح لنا بتقديم التطبيق مجانًا. لا يؤثر هذا على اقتراحات الأغاني أو تجربتك العامة.</string>
 </resources>

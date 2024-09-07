@@ -149,4 +149,5 @@
     <string name="high_quality">Kualitas Tinggi</string>
     <string name="premium_quality">Kualitas Premium</string>
     <string name="song_quality_updated_successfully">Kualitas lagu berhasil diperbarui. Memulai ulang lagu.</string>
+    <string name="define_song_deletion">Zene menyimpan riwayat lagu Anda dari dua minggu terakhir dan juga menyimpan riwayat lagu-lagu yang paling sering Anda dengarkan. Dengan hanya menyimpan data lagu-lagu yang paling baru didengarkan, Zene mengurangi biaya basis data, sehingga kami dapat menawarkan aplikasi ini secara gratis. Hal ini tidak memengaruhi saran lagu atau pengalaman Anda secara keseluruhan.</string>
 </resources>

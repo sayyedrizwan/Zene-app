@@ -13,7 +13,7 @@ import com.rizwansayyed.zene.R
 
 
 @Composable
-fun AlertDialogView(title: Int, desc: Int, btn : Int, onDismiss : (Boolean) -> Unit) {
+fun AlertDialogView(title: Int, desc: Int, btn: Int?, onDismiss: (Boolean) -> Unit) {
     AlertDialog(
         containerColor = Color.White,
         title = {
@@ -24,11 +24,13 @@ fun AlertDialogView(title: Int, desc: Int, btn : Int, onDismiss : (Boolean) -> U
         },
         onDismissRequest = { onDismiss(false) },
         confirmButton = {
-            Row(
-                Modifier
-                    .padding(horizontal = 5.dp)
-                    .clickable { onDismiss(true) }) {
-                TextPoppinsSemiBold(stringResource(btn), false, Color.Blue, 14)
+            btn?.let { b ->
+                Row(
+                    Modifier
+                        .padding(horizontal = 5.dp)
+                        .clickable { onDismiss(true) }) {
+                    TextPoppinsSemiBold(stringResource(b), false, Color.Blue, 14)
+                }
             }
         },
         dismissButton = {

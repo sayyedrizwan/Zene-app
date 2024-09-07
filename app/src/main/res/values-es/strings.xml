@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources><!--    Spanish-->
-    <string name="app_name">zené</string>
+    <string name="app_name">Zené</string>
     <string name="app_name_premium">Zené Premium</string>
     <string name="a_music_app">Una aplicación de música gratuita</string>
     <string name="login_to_continue">Iniciar sesión para continuar</string>
@@ -150,4 +150,5 @@
     <string name="high_quality">Alta calidad</string>
     <string name="premium_quality">Calidad premium</string>
     <string name="song_quality_updated_successfully">Se actualizó correctamente la calidad de la canción. Reiniciando la canción.</string>
+    <string name="define_song_deletion">Zené guarda tu historial de canciones de las últimas dos semanas y también conserva el historial de las canciones que más escuchas. Al almacenar solo los datos de escucha más recientes, Zené reduce los costos de la base de datos, lo que nos permite ofrecer la aplicación de forma gratuita. Esto no afecta tus sugerencias de canciones ni tu experiencia general.</string>
 </resources>

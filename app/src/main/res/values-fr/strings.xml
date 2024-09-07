@@ -149,4 +149,5 @@
     <string name="high_quality">Haute qualité</string>
     <string name="premium_quality">Qualité premium</string>
     <string name="song_quality_updated_successfully">La qualité de la chanson a été mise à jour avec succès. Redémarrage de la chanson.</string>
+    <string name="define_song_deletion">Zène enregistre l\'historique de vos chansons des deux dernières semaines et conserve également l\'historique de vos chansons les plus écoutées. En stockant uniquement les données d\'écoute les plus récentes, Zène réduit les coûts de base de données, ce qui nous permet de proposer l\'application gratuitement. Cela n\'a aucun impact sur vos suggestions de chansons ou sur votre expérience globale.</string>
 </resources>

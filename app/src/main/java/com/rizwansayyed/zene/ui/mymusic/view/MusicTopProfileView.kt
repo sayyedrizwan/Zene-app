@@ -16,6 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -25,10 +28,12 @@ import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.mymusic.MyMusicType
+import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.utils.Utils.startAppSettings
 
 @Composable
 fun TopMusicHeaders() {
@@ -60,6 +65,8 @@ fun TopMusicHeaders() {
 
 @Composable
 fun TopHeaderSwitch(type: MyMusicType, typeClick: (MyMusicType) -> Unit, addPlaylist: () -> Unit) {
+    var historyInfoAlert by remember { mutableStateOf(false) }
+
     Row {
         Spacer(Modifier.height(6.dp))
         Box(
@@ -109,5 +116,28 @@ fun TopHeaderSwitch(type: MyMusicType, typeClick: (MyMusicType) -> Unit, addPlay
         ) {
             TextPoppins(stringResource(R.string.songs_history), size = 15)
         }
+
+        AnimatedVisibility(visible = type == MyMusicType.HISTORY) {
+            Box(
+                Modifier
+                    .padding(vertical = 2.dp, horizontal = 6.dp)
+                    .clip(RoundedCornerShape(100))
+                    .background(Color.Black)
+                    .clickable { historyInfoAlert = true }
+                    .border(1.dp, Color.White, RoundedCornerShape(100))
+                    .padding(vertical = 9.dp, horizontal = 18.dp)
+            ) {
+                ImageIcon(R.drawable.ic_information_circle, size = 20)
+            }
+        }
+    }
+
+
+    if (historyInfoAlert) AlertDialogView(
+        R.string.empty,
+        R.string.define_song_deletion,
+        null
+    ) {
+        historyInfoAlert = false
     }
 }
