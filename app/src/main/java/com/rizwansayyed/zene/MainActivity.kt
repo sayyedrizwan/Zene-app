@@ -37,6 +37,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
@@ -76,6 +78,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
+import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER

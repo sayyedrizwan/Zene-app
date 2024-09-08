@@ -23,8 +23,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <queries>
         <package android:name="com.apple.android.music" />
@@ -34,7 +34,6 @@
         android:name=".di.BaseApp"
         android:allowBackup="true"
         android:allowClearUserData="true"
-        android:windowSoftInputMode="adjustResize"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:hardwareAccelerated="true"
@@ -44,6 +43,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zene"
         android:usesCleartextTraffic="true"
+        android:windowSoftInputMode="adjustResize"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
@@ -124,8 +124,8 @@
 
         <service
             android:name=".service.musicplayer.MusicPlayService"
-            android:foregroundServiceType="mediaPlayback"
-            android:enabled="true" />
+            android:enabled="true"
+            android:foregroundServiceType="mediaPlayback" />
 
         <service
             android:name=".service.AppFirebaseMessagingService"
@@ -138,6 +138,18 @@
         <receiver
             android:name=".service.musicplayer.MusicPlayerNotificationReceiver"
             android:exported="false" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_zene_logo_round" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/main_color" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="ZENE_NOTIFICATION" />
 
         <property
             android:name="android.adservices.AD_SERVICES_CONFIG"
