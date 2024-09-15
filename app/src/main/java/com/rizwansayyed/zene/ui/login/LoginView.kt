@@ -196,6 +196,7 @@ fun LoginButtonView() {
     var bottomSheet by remember { mutableStateOf(false) }
 
     val errorLogin = stringResource(R.string.error_while_login)
+    val openURLOnBrowser = stringResource(R.string.open_url_on_browser)
 
     val imgBorder = Modifier
         .padding(9.dp)
@@ -269,7 +270,10 @@ fun LoginButtonView() {
 
             Spacer(Modifier.height(100.dp))
 
-            Row(Modifier.clickable { shareTxtImage(PRIVACY_POLICY, "Open URL on Browser") }) {
+            Row(Modifier.clickable {
+                shareTxtImage(PRIVACY_POLICY, openURLOnBrowser)
+                openURLOnBrowser.toast()
+            }) {
                 TextPoppins(
                     stringResource(R.string.agreeing_privacy_policy),
                     true, Color.Blue, 10

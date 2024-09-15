@@ -30,7 +30,9 @@ import com.rizwansayyed.zene.utils.Utils.enableSimple
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -126,22 +128,30 @@ private fun simulateClick(view: View?, context: Activity) {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (imm.isAcceptingText) return
 
-    view?.let {
-        val rect = Rect()
-        it.getGlobalVisibleRect(rect)
-        val adjustedX = rect.left + x
-        val adjustedY = rect.top + y
-        val downTime = System.currentTimeMillis()
+    CoroutineScope(Dispatchers.Main).launch {
+        view?.let {
+            try {
+                val rect = Rect()
+                it.getGlobalVisibleRect(rect)
+                val adjustedX = rect.left + x
+                val adjustedY = rect.top + y
+                val downTime = System.currentTimeMillis()
 
-        val downEvent = MotionEvent.obtain(
-            downTime, downTime, MotionEvent.ACTION_DOWN, adjustedX, adjustedY, 0
-        )
+                val downEvent = MotionEvent.obtain(
+                    downTime, downTime, MotionEvent.ACTION_DOWN, adjustedX, adjustedY, 0
+                )
 
-        it.dispatchTouchEvent(downEvent)
+                it.dispatchTouchEvent(downEvent)
 
-        val upEvent = MotionEvent.obtain(
-            downTime, downTime + 100, MotionEvent.ACTION_UP, adjustedX, adjustedY, 0
-        )
-        it.dispatchTouchEvent(upEvent)
+                val upEvent = MotionEvent.obtain(
+                    downTime, downTime + 100, MotionEvent.ACTION_UP, adjustedX, adjustedY, 0
+                )
+                it.dispatchTouchEvent(upEvent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (isActive) cancel()
     }
 }

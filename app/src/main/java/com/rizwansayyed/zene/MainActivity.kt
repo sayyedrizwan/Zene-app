@@ -40,6 +40,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
@@ -95,6 +96,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
@@ -126,7 +128,7 @@ class MainActivity : ComponentActivity() {
                 }
 
             ZeneTheme {
-                 Box(Modifier.fillMaxSize()) {
+                Box(Modifier.fillMaxSize()) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     NavHost(navController, NAV_HOME) {
                         composable(NAV_HOME) {
@@ -203,11 +205,11 @@ class MainActivity : ComponentActivity() {
 
                     LoginView()
 
-                     AdsClickWebView(homeNavModel, "zadsadsterra")
-                     AdsClickWebView(homeNavModel, "zadsexoclick")
+                    AdsClickWebView(homeNavModel, "zadsadsterra")
+                    AdsClickWebView(homeNavModel, "zadsexoclick")
 
 
-                     if (notificationPermissionDialog) AlertDialogView(
+                    if (notificationPermissionDialog) AlertDialogView(
                         R.string.need_notification_permission,
                         R.string.need_notification_permission_desc,
                         R.string.grant
@@ -276,8 +278,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        ShowAdsOnAppOpen(this).showAds()
-
+        lifecycleScope.launch {
+            delay(2.seconds)
+            if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
+                ShowAdsOnAppOpen(this@MainActivity).showAds()
+        }
         homeViewModel.userArtistsList()
 
         startMusicService()

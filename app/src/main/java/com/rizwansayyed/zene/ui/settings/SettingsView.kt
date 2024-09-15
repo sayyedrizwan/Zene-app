@@ -80,6 +80,8 @@ fun SettingsView() {
     val context = LocalContext.current as Activity
     val needPermission = stringResource(R.string.need_overlay_permission_to_show_song)
 
+    val openURLOnBrowser = stringResource(R.string.open_url_on_browser)
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -160,7 +162,8 @@ fun SettingsView() {
         item {
             Spacer(Modifier.height(30.dp))
             CardItems(R.string.privacy_policy) {
-                shareTxtImage(PRIVACY_POLICY, "Open URL on Browser")
+                shareTxtImage(PRIVACY_POLICY, openURLOnBrowser)
+                openURLOnBrowser.toast()
             }
         }
 

@@ -116,6 +116,7 @@ dependencies {
 
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.moshi)
     implementation(libs.browser)

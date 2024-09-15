@@ -47,7 +47,7 @@ fun PlaylistsView(id: String?, close: () -> Unit) {
     val isThreeGrid = isScreenBig()
     val context = LocalContext.current as Activity
 
-    var isUserOwner = remember { mutableStateOf(false) }
+    val isUserOwner = remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),

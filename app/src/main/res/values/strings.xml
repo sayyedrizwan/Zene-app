@@ -150,4 +150,7 @@
     <string name="premium_quality">Premium Quality</string>
     <string name="song_quality_updated_successfully">Song Quality updated successfully. Restarting the song.</string>
     <string name="define_song_deletion">Zene saves your song history from the last two weeks and also keep history of your top listened songs. By storing only the most recent listening data, Zene reduces database costs, allowing us to offer the app for free. This doesn\'t impact your song suggestions or overall experience.</string>
+    <string name="free_music_with_zene_web">Enjoy Free Music Anytime on Your Laptop and Other Devices with Zene Web</string>
+    <string name="open_url_on_browser">Open URL on Browser</string>
+    <string name="open_zene_web">Open Zene Web</string>
 </resources>
