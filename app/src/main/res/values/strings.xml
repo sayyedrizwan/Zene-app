@@ -73,11 +73,11 @@
     <string name="try_after_a_seconds_fetching_video_details">Try after a seconds. Fetching video details....</string>
     <string name="playlists_for_your_mood">Playlist for your mood</string>
     <string name="empty" />
-    <string name="artists_merchandise">Artists Merchandises</string>
+    <string name="artists_merchandise">Artist Merchandises</string>
     <string name="followed_by">Followed by</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
-    <string name="cannot_follow_more_then_40_artists">Currently you cannot follow more then 40 artists at a time.</string>
+    <string name="cannot_follow_more_then_40_artists">Currently you cannot follow more than 40 artists at a time.</string>
     <string name="radio">Radio</string>
     <string name="playback_duration">Playback \nDuration</string>
     <string name="hours">Hours</string>
@@ -93,7 +93,7 @@
     <string name="you_have_no_song_history">You have no song history.</string>
     <string name="you_have_not_created_or_saved_a_playlists">You have not saved or created a playlists.</string>
     <string name="are_you_sure_want_to_remove">Are you sure want to remove?</string>
-    <string name="are_you_sure_want_to_remove_desc">This playlists will be remove from your music library. Do you want to continue!!</string>
+    <string name="are_you_sure_want_to_remove_desc">This playlist will be remove from your music library. Do you want to continue!!</string>
     <string name="are_you_sure_want_to_remove_song_desc">This song will be remove from this playlist. Do you want to continue!!</string>
     <string name="cancel">Cancel</string>
     <string name="play">Play</string>
