@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.model.IpJsonResponse
+import com.rizwansayyed.zene.data.api.model.ZeneSponsorsItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.APP_REVIEW_STATUS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
@@ -23,6 +24,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PI
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PLAYING_SONG_ON_LOCK_SCREEN
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SONG_QUALITY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SPONSORS_ADS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_IP_INFO
@@ -46,6 +48,7 @@ object DataStoreManager {
         const val ARRAY_EMPTY = "[]"
         const val TS_LAST_DATA = 1721759124000
         val USER_INFOS = stringPreferencesKey("user_info")
+        val SPONSORS_ADS = stringPreferencesKey("sponsors_ads")
         val SEARCH_HISTORY = stringPreferencesKey("search_history")
         val MUSIC_PLAYER = stringPreferencesKey("music_player")
         val MUSIC_SPEED = stringPreferencesKey("music_speed")
@@ -67,6 +70,16 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(UserInfoData::class.java).toJson(value.first())
             context.dataStore.edit { it[USER_INFOS] = json }
+        }
+
+
+    var sponsorsAdsDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(ZeneSponsorsItems::class.java).fromJson(it[SPONSORS_ADS] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(ZeneSponsorsItems::class.java).toJson(value.first())
+            context.dataStore.edit { it[SPONSORS_ADS] = json }
         }
 
     var searchHistoryDB

@@ -79,6 +79,8 @@ class HomeViewModel @Inject constructor(
         songsYouMayLike()
         suggestedSongsForYou()
         favArtistsData()
+
+        zeneAPI.sponsorsAds()
     }
 
     private fun recommendedPlaylists() = viewModelScope.launch(Dispatchers.IO) {

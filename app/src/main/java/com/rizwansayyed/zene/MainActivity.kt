@@ -205,8 +205,8 @@ class MainActivity : ComponentActivity() {
 
                     LoginView()
 
-                    AdsClickWebView(homeNavModel, "zadsadsterra")
-                    AdsClickWebView(homeNavModel, "zadsexoclick")
+//                    AdsClickWebView(homeNavModel, "zadsadsterra")
+//                    AdsClickWebView(homeNavModel, "zadsexoclick")
 
 
                     if (notificationPermissionDialog) AlertDialogView(

@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.api.ip.IpAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
 import com.rizwansayyed.zene.data.db.DataStoreManager.ipDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.sponsorsAdsDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class ZeneAPIImpl @Inject constructor(
     private val zeneAPI: ZeneAPIService, private val ipAPI: IpAPIService
 ) : ZeneAPIInterface {
+
     override suspend fun ip() = flow {
         val ip = ipAPI.ip()
         ipDB = flowOf(ip)
@@ -61,6 +63,15 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun getUser(email: String) = flow {
         emit(zeneAPI.getUser(email))
+    }
+
+    override suspend fun sponsorsAds() {
+        try {
+            val ads = zeneAPI.sponsors().android
+            sponsorsAdsDB = flowOf(ads)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override suspend fun moodLists() = flow {
