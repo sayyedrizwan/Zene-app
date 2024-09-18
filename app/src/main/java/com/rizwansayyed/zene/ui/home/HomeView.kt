@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.ui.home.view.HorizontalArtistsView
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
 import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
 import com.rizwansayyed.zene.ui.home.view.ReviewAppDialog
+import com.rizwansayyed.zene.ui.home.view.SponsorsAdsBottomView
 import com.rizwansayyed.zene.ui.home.view.SponsorsAdsView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
@@ -160,6 +161,10 @@ fun HomeView(
                         showGrid = true
                     )
                 }
+            }
+
+            item(2004, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                SponsorsAdsBottomView()
             }
 
             item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {

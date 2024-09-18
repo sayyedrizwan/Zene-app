@@ -11,14 +11,10 @@ data class ZeneSponsorsItems(
         val top: Top?
     ) {
         data class Bottom(
-            val imgs: List<Img?>?,
+            val media: String?,
+            val link: String?,
             val title: String?
-        ) {
-            data class Img(
-                val img: String?,
-                val link: String?
-            )
-        }
+        )
 
         data class Top(
             val imgs: List<Img?>?,
