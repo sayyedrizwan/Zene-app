@@ -150,4 +150,9 @@
     <string name="premium_quality">프리미엄품질</string>
     <string name="song_quality_updated_successfully">노래 품질이 성공적으로 업데이트되었습니다. 노래를 재생합니다.</string>
     <string name="define_song_deletion">제네 은 지난 2주 동안의 노래 기록을 저장하고 가장 많이 들은 노래 기록도 보관합니다. 제네 은 가장 최근의 청취 데이터만 저장하여 데이터베이스 비용을 줄이고 앱을 무료로 제공할 수 있습니다. 이는 노래 추천이나 전반적인 경험에 영향을 미치지 않습니다.</string>
+    <string name="free_music_with_zene_web">제네웹 으로 노트북 및 기타 장치에서 언제든지 무료 음악을 즐기세요</string>
+    <string name="open_url_on_browser">브라우저에서 URL 열기</string>
+    <string name="open_zene_web">제네 웹 오픈</string>
+    <string name="today_sponsor">오늘의 후원자</string>
+    <string name="app_update_available">앱 업데이트 가능</string>
 </resources>

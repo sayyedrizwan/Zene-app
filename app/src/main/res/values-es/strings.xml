@@ -151,4 +151,9 @@
     <string name="premium_quality">Calidad premium</string>
     <string name="song_quality_updated_successfully">Se actualizó correctamente la calidad de la canción. Reiniciando la canción.</string>
     <string name="define_song_deletion">Zené guarda tu historial de canciones de las últimas dos semanas y también conserva el historial de las canciones que más escuchas. Al almacenar solo los datos de escucha más recientes, Zené reduce los costos de la base de datos, lo que nos permite ofrecer la aplicación de forma gratuita. Esto no afecta tus sugerencias de canciones ni tu experiencia general.</string>
+    <string name="free_music_with_zene_web">Disfruta de música gratis en cualquier momento en tu computadora portátil y otros dispositivos con Zené Web</string>
+    <string name="open_url_on_browser">Abrir URL en el navegador</string>
+    <string name="open_zene_web">Abrir Zené Web</string>
+    <string name="today_sponsor">Patrocinador de hoy</string>
+    <string name="app_update_available">Actualización de la aplicación disponible</string>
 </resources>

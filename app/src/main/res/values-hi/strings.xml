@@ -150,4 +150,9 @@
     <string name="premium_quality">प्रीमियम गुणवत्ता</string>
     <string name="song_quality_updated_successfully">गाने की गुणवत्ता सफलतापूर्वक अपडेट हो गई है। गाने को पुनः प्रारंभ कर रहा हूँ।</string>
     <string name="define_song_deletion">ज़ेन आपके पिछले दो हफ़्तों के गानों का इतिहास सहेजता है और आपके सबसे ज़्यादा सुने गए गानों का इतिहास भी रखता है। सिर्फ़ सबसे हाल ही में सुने गए गानों का डेटा स्टोर करके, ज़ेन डेटाबेस की लागत कम करता है, जिससे हम ऐप को मुफ़्त में ऑफ़र कर पाते हैं। इससे आपके गानों के सुझाव या समग्र अनुभव पर कोई असर नहीं पड़ता।</string>
+    <string name="free_music_with_zene_web">ज़ेन Web के साथ अपने लैपटॉप और अन्य उपकरणों पर कभी भी मुफ्त संगीत का आनंद लें</string>
+    <string name="open_url_on_browser">ब्राउज़र पर URL खोलें</string>
+    <string name="open_zene_web">ज़ेन वेब खोलें</string>
+    <string name="today_sponsor">आज का प्रायोजक</string>
+    <string name="app_update_available">ऐप अपडेट उपलब्ध है</string>
 </resources>

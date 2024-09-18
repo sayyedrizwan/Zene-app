@@ -150,4 +150,9 @@
     <string name="premium_quality">جودة ممتازة</string>
     <string name="song_quality_updated_successfully">تم تحديث جودة الأغنية بنجاح. إعادة تشغيل الأغنية.</string>
     <string name="define_song_deletion">يحفظ تطبيق زين سجل أغانيك من الأسبوعين الماضيين ويحتفظ أيضًا بسجل لأغانيك الأكثر استماعًا. من خلال تخزين أحدث بيانات الاستماع فقط، يقلل تطبيق زين من تكاليف قاعدة البيانات، مما يسمح لنا بتقديم التطبيق مجانًا. لا يؤثر هذا على اقتراحات الأغاني أو تجربتك العامة.</string>
+    <string name="free_music_with_zene_web">استمتع بالموسيقى المجانية في أي وقت على جهاز الكمبيوتر المحمول والأجهزة الأخرى باستخدام a</string>
+    <string name="open_url_on_browser">افتح URL على المتصفح</string>
+    <string name="open_zene_web">زين ويب</string>
+    <string name="today_sponsor">راعي اليوم</string>
+    <string name="app_update_available">تحديث التطبيق متوفر</string>
 </resources>

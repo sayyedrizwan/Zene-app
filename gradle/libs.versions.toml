@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "118"
-versionname = "3.2.721"
+appversion = "119"
+versionname = "3.2.724"
 
 agp = "8.5.2"
 datastorePreferences = "1.1.1"
@@ -26,6 +26,7 @@ kotlinxCoroutinesAndroid = "1.8.1"
 moshi = "1.15.1"
 browser = "1.8.0"
 spotify = "1.2.5"
+exo-player = "1.4.1"
 facebook = "latest.release"
 firebase-bom = "33.3.0"
 googleid = "1.1.1"
@@ -63,6 +64,9 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
 spotify = { module = "com.spotify.android:auth", version.ref = "spotify" }
+
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "exo-player" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "exo-player" }
 
 
 facebook-login = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebook" }

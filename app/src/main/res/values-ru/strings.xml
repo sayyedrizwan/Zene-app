@@ -1,6 +1,6 @@
 <resources><!--Russian-->
-    <string name="app_name">Zène</string>
-    <string name="app_name_premium">Zène Premium</string>
+    <string name="app_name">Зене</string>
+    <string name="app_name_premium">Зене Premium</string>
     <string name="a_music_app">Бесплатное музыкальное приложение</string>
     <string name="login_to_continue">Войти, чтобы продолжить</string>
     <string name="error_while_login">Ошибка входа</string>
@@ -17,7 +17,7 @@
     <string name="similar_songs_you_may_like">Похожие песни, которые могут вам понравиться</string>
     <string name="pick_your_mood">Выберите настроение</string>
     <string name="latest_release">Последние релизы</string>
-    <string name="most_listening_songs_zene">Самые прослушиваемые песни на Zène</string>
+    <string name="most_listening_songs_zene">Самые прослушиваемые песни на Зене</string>
     <string name="listeners">Слушатели</string>
     <string name="listening___">Слушаю…</string>
     <string name="import_from_spotify">Импорт из Spotify</string>
@@ -38,13 +38,13 @@
     <string name="playlists_albums">Плейлисты/Альбомы</string>
     <string name="recommended">Рекомендовано</string>
     <string name="join_premium_community">Присоединиться к премиум-сообществу</string>
-    <string name="join_zene_premium">Присоединиться к Zène Premium</string>
-    <string name="join_premium_community_desc">Zène — это бесплатное музыкальное приложение, предоставляющее неограниченный доступ к вашим любимым мелодиям без каких-либо затрат. Хотя наши основные функции остаются бесплатными, Premium предназначен для меломанов, желающих получить эксклюзивные преимущества. Поддержка меломанов помогает поддерживать Zène бесплатным для всех. Присоединяйтесь к нашей премиум-семье и улучшите свой музыкальный опыт сегодня!</string>
+    <string name="join_zene_premium">Присоединиться к Зене Premium</string>
+    <string name="join_premium_community_desc">Зене — это бесплатное музыкальное приложение, предоставляющее неограниченный доступ к вашим любимым мелодиям без каких-либо затрат. Хотя наши основные функции остаются бесплатными, Premium предназначен для меломанов, желающих получить эксклюзивные преимущества. Поддержка меломанов помогает поддерживать Зене бесплатным для всех. Присоединяйтесь к нашей премиум-семье и улучшите свой музыкальный опыт сегодня!</string>
     <string name="upgrade_if_you_are_a_music_enthusiasts">Обновиться, если вы меломан</string>
-    <string name="share_zene_friends_family">Поделитесь Zène с друзьями и семьей</string>
-    <string name="zene_premium_is_for_music_enthusiast">Zène Premium больше подходит для меломанов</string>
-    <string name="zene_premium_is_for_music_enthusiast_desc">В Zène мы считаем, что музыка должна быть доступна всем, поэтому наше приложение предоставляет неограниченный доступ к вашим любимым мелодиям абсолютно бесплатно. Мы стремимся никогда не взимать с вас ни копейки за наслаждение музыкой на нашей платформе. Наша цель — создать пространство, где каждый может испытать радость музыки без каких-либо препятствий. \n\n Однако для истинных меломанов, желающих вывести свои музыкальные впечатления на новый уровень, мы предлагаем премиум-опцию. Premium разработан для тех, кто ищет эксклюзивные преимущества и более захватывающий опыт. Обновившись до Premium, вы не только открываете для себя расширенные функции, но и поддерживаете Zène в поддержании и улучшении наших услуг. Ваш вклад помогает нам сохранять приложение бесплатным для всех пользователей, гарантируя, что каждый может наслаждаться высококачественной музыкой без каких-либо затрат.</string>
-    <string name="upgrade_to_zene_premium">Обновиться до Zène Premium</string>
+    <string name="share_zene_friends_family">Поделитесь Зене с друзьями и семьей</string>
+    <string name="zene_premium_is_for_music_enthusiast">Зене Premium больше подходит для меломанов</string>
+    <string name="zene_premium_is_for_music_enthusiast_desc">В Зене мы считаем, что музыка должна быть доступна всем, поэтому наше приложение предоставляет неограниченный доступ к вашим любимым мелодиям абсолютно бесплатно. Мы стремимся никогда не взимать с вас ни копейки за наслаждение музыкой на нашей платформе. Наша цель — создать пространство, где каждый может испытать радость музыки без каких-либо препятствий. \n\n Однако для истинных меломанов, желающих вывести свои музыкальные впечатления на новый уровень, мы предлагаем премиум-опцию. Premium разработан для тех, кто ищет эксклюзивные преимущества и более захватывающий опыт. Обновившись до Premium, вы не только открываете для себя расширенные функции, но и поддерживаете Зене в поддержании и улучшении наших услуг. Ваш вклад помогает нам сохранять приложение бесплатным для всех пользователей, гарантируя, что каждый может наслаждаться высококачественной музыкой без каких-либо затрат.</string>
+    <string name="upgrade_to_zene_premium">Обновиться до Зене Premium</string>
     <string name="make_and_sync_playlists">Создавать и синхронизировать плейлисты</string>
     <string name="monthly">Ежемесячно</string>
     <string name="one_month">1 месяц</string>
@@ -53,13 +53,13 @@
     <string name="available_plans">Доступные планы</string>
     <string name="upgrade">Обновить</string>
     <string name="search">Поиск</string>
-    <string name="search_zene">Поиск на Zène</string>
+    <string name="search_zene">Поиск на Зене</string>
     <string name="search_images">Поиск изображений</string>
     <string name="search_history">История поиска</string>
     <string name="no_search_history">История поиска отсутствует</string>
     <string name="music_player">Музыкальный плеер</string>
     <string name="music_player_desc">Отображает текущую воспроизводимую музыку, включая название песни, имя исполнителя и обложку альбома, обеспечивая приятный визуальный опыт во время прослушивания любимых треков.</string>
-    <string name="zene_music_player">Музыкальный плеер Zène</string>
+    <string name="zene_music_player">Музыкальный плеер Зене</string>
     <string name="song_video">Видеоклип</string>
     <string name="lyrics_video">Видео с текстом песни</string>
     <string name="loop_same_song">Повторять песню</string>
@@ -111,7 +111,7 @@
     <string name="settings">Настройки</string>
     <string name="clear">Очистить</string>
     <string name="equalizer">Эквалайзер</string>
-    <string name="equalizer_not_found">Эквалайзер не найден. В Zène нет встроенного эквалайзера. Пожалуйста, установите эквалайзер из Play Маркета и наслаждайтесь.</string>
+    <string name="equalizer_not_found">Эквалайзер не найден. В Зене нет встроенного эквалайзера. Пожалуйста, установите эквалайзер из Play Маркета и наслаждайтесь.</string>
     <string name="clear_cache">Очистить кэш</string>
     <string name="feedback">Отзыв</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
@@ -121,10 +121,10 @@
     <string name="clear_cache_desc">Очистка кэша удалит весь ненужный кэш, но не личные данные.</string>
     <string name="need_notification_permission">Необходимо разрешение на уведомления!</string>
     <string name="need_microphone_permission">Необходимо разрешение на микрофон!</string>
-    <string name="need_notification_permission_desc">Zène нуждается в разрешении на уведомления для отображения музыкального плеера на экране блокировки и в панели уведомлений. Пожалуйста, включите его в Разрешения приложения -> Уведомления или Уведомления -> Включить переключатель..</string>
-    <string name="need_microphone_permission_desc">Zène нуждается в разрешении на микрофон для прослушивания песни и поиска в базе данных.</string>
+    <string name="need_notification_permission_desc">Зене нуждается в разрешении на уведомления для отображения музыкального плеера на экране блокировки и в панели уведомлений. Пожалуйста, включите его в Разрешения приложения -> Уведомления или Уведомления -> Включить переключатель..</string>
+    <string name="need_microphone_permission_desc">Зене нуждается в разрешении на микрофон для прослушивания песни и поиска в базе данных.</string>
     <string name="grant">Разрешить</string>
-    <string name="zene_notification">Уведомление Zène</string>
+    <string name="zene_notification">Уведомление Зене</string>
     <string name="find_song">Найти песню</string>
     <string name="no_song_found_try_again">Песня не найдена. Пожалуйста, попробуйте еще раз!</string>
     <string name="you_haven_t_follow_artists_yet">Ой! Кажется, вы еще не подписаны ни на одного артиста. Начните следить за любимыми артистами, чтобы получать персонализированные новости в своей ленте!</string>
@@ -149,5 +149,10 @@
     <string name="high_quality">Высокое качество</string>
     <string name="premium_quality">Премиум-качество</string>
     <string name="song_quality_updated_successfully">Качество песни успешно обновлено. Перезапуск песни.</string>
-    <string name="define_song_deletion">Zène сохраняет историю ваших песен за последние две недели, а также историю ваших самых прослушиваемых песен. Сохраняя только самые последние данные о прослушивании, Zène снижает затраты на базу данных, что позволяет нам предлагать приложение бесплатно. Это не влияет на ваши предложения песен или общее впечатление.</string>
+    <string name="define_song_deletion">Зене сохраняет историю ваших песен за последние две недели, а также историю ваших самых прослушиваемых песен. Сохраняя только самые последние данные о прослушивании, Зене снижает затраты на базу данных, что позволяет нам предлагать приложение бесплатно. Это не влияет на ваши предложения песен или общее впечатление.</string>
+    <string name="free_music_with_zene_web">Наслаждайтесь бесплатной музыкой в любое время на своем ноутбуке и других устройствах с Зене Веб</string>
+    <string name="open_url_on_browser">Открыть URL в браузере</string>
+    <string name="open_zene_web">Открыть Зене Веб</string>
+    <string name="today_sponsor">Спонсор сегодняшнего дня</string>
+    <string name="app_update_available">Доступно обновление приложения</string>
 </resources>

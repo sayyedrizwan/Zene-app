@@ -151,4 +151,9 @@
     <string name="premium_quality">高级质量</string>
     <string name="song_quality_updated_successfully">歌曲质量已成功更新。重新开始歌曲。</string>
     <string name="define_song_deletion">泽内 会保存您过去两周的歌曲历史记录，还会保留您最常听的歌曲的历史记录。通过仅存储最近的收听数据，泽内 降低了数据库成本，使我们能够免费提供该应用。这不会影响您的歌曲推荐或整体体验。</string>
+    <string name="free_music_with_zene_web">使用 禅网 在笔记本电脑和其他设备上随时享受免费音乐</string>
+    <string name="open_url_on_browser">在浏览器中打开 URL</string>
+    <string name="open_zene_web">打开 禅网</string>
+    <string name="today_sponsor">今天的赞助商</string>
+    <string name="app_update_available">应用程序更新可用</string>
 </resources>
