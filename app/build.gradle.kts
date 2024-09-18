@@ -121,6 +121,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.browser)
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     implementation(libs.nav.compose)
     implementation(libs.webkit)
     implementation(libs.spotify)

@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.APIHttpService.youtubeMusicPlaylist
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
@@ -15,11 +16,13 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
+import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
+import com.rizwansayyed.zene.utils.Utils.isUpdateAvailableFunction
 import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -59,15 +62,18 @@ class HomeViewModel @Inject constructor(
     var userPlaylistsSong = mutableStateListOf<ZeneMusicDataItems>()
     var showMorePlaylistSongs by mutableStateOf(false)
     var isUserPlaylistLoading by mutableStateOf(true)
+    var isAppUpdateAvailable by mutableStateOf<APIResponse<ZeneUpdateAvailabilityItem>>(APIResponse.Empty)
 
 
     fun init(force: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         if (lastSynced != null && !force) {
             val diffInMillis = lastSynced!! - System.currentTimeMillis()
             val minutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis)
-            if (songsYouMayLike is APIResponse.Success && minutes <= 14) return@launch
+            if (songsYouMayLike is APIResponse.Success && minutes <= 3) return@launch
             lastSynced = System.currentTimeMillis()
         }
+
+        appUpdateAvailable()
         moodLists()
         latestReleases()
         topMostListeningSong()
@@ -124,6 +130,23 @@ class HomeViewModel @Inject constructor(
             recommendedVideo = APIResponse.Error(it)
         }.collectLatest {
             recommendedVideo = APIResponse.Success(it)
+        }
+    }
+
+    private fun appUpdateAvailable() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) {
+            isAppUpdateAvailable = APIResponse.Empty
+            return@launch
+        }
+        zeneAPI.updateAvailability().onStart {
+            isAppUpdateAvailable = APIResponse.Loading
+        }.catch {
+            isAppUpdateAvailable = APIResponse.Error(it)
+        }.collectLatest {
+            isAppUpdateAvailable = if (it.android != null)
+                APIResponse.Success(it.android)
+            else
+                APIResponse.Empty
         }
     }
 

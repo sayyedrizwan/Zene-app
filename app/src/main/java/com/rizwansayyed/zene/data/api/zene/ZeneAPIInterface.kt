@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneSponsorsResponse
+import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import kotlinx.coroutines.flow.Flow
@@ -108,4 +109,6 @@ interface ZeneAPIInterface {
     suspend fun songInfo(id: String): Flow<ZeneMusicDataItems>
 
     suspend fun sponsorsAds()
+
+    suspend fun updateAvailability(): Flow<ZeneUpdateAvailabilityResponse>
 }

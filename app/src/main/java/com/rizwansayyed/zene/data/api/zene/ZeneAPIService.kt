@@ -17,11 +17,13 @@ import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneSponsorsResponse
+import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_APP_UPDATE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_SPONSORS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_FEEDS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_IMPORT_PLAYLISTS_SPOTIFY_API
@@ -77,6 +79,10 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_EXTRA_SPONSORS_API)
     suspend fun sponsors(): ZeneSponsorsResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @GET(ZENE_EXTRA_APP_UPDATE_API)
+    suspend fun updateAvailability(): ZeneUpdateAvailabilityResponse
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_MOODS_API)

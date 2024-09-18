@@ -11,6 +11,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
+import com.rizwansayyed.zene.data.db.DataStoreManager.sponsorsAdsDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.IDs.AD_INTERSTITIAL_UNIT_ID
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 
@@ -62,6 +64,11 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
         val doShowAds = isMoreThanTimeAds()
         if (!doShowAds) return@launch
 
+        val showViaSponsorAds =
+            withContext(Dispatchers.IO) { sponsorsAdsDB.firstOrNull()?.showAds ?: true }
+
+        if (!showViaSponsorAds) return@launch
+
         val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(activity, AD_INTERSTITIAL_UNIT_ID, adRequest, iListener)
     }
@@ -71,6 +78,11 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
         if (BuildConfig.DEBUG) return@launch
         val doShowAds = isMoreThanTimeAds()
         if (!doShowAds) return@launch
+
+        val showViaSponsorAds =
+            withContext(Dispatchers.IO) { sponsorsAdsDB.firstOrNull()?.showAds ?: true }
+
+        if (!showViaSponsorAds) return@launch
 
         val request = AdRequest.Builder().build()
         AppOpenAd.load(activity, AD_UNIT_ID, request, listener)

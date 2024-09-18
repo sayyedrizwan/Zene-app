@@ -90,6 +90,7 @@ object Utils {
             if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val ZENE_EXTRA_SPONSORS_API = "extra/sponsors"
+        const val ZENE_EXTRA_APP_UPDATE_API = "extra/update_availability"
 
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
@@ -420,6 +421,20 @@ object Utils {
         val now = Instant.now().toEpochMilli()
         val duration = Duration.between(Instant.ofEpochMilli(timestamp), Instant.ofEpochMilli(now))
         return duration.seconds
+    }
+
+    fun isUpdateAvailableFunction(latestVersion: String): Boolean {
+        if (!latestVersion.contains(".")) return false
+        val current = BuildConfig.VERSION_NAME.split(".").map { it.toInt() }
+        val latest = latestVersion.split(".").map { it.toInt() }
+
+        for (i in current.indices) {
+            if (i >= latest.size) return false
+            if (current[i] < latest[i]) return true
+            if (current[i] > latest[i]) return false
+        }
+
+        return latest.size > current.size
     }
 
 }

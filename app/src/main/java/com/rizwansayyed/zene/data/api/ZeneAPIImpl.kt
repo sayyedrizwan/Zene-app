@@ -65,6 +65,10 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.getUser(email))
     }
 
+    override suspend fun updateAvailability() = flow {
+        emit(zeneAPI.updateAvailability())
+    }
+
     override suspend fun sponsorsAds() {
         try {
             val ads = zeneAPI.sponsors().android

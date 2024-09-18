@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.home
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.background
@@ -20,17 +19,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -42,8 +35,11 @@ import com.rizwansayyed.zene.ui.home.view.HorizontalArtistsView
 import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
 import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
 import com.rizwansayyed.zene.ui.home.view.ReviewAppDialog
+import com.rizwansayyed.zene.ui.home.view.SponsorsAdsView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
+import com.rizwansayyed.zene.ui.home.view.UpdateAvailableView
+import com.rizwansayyed.zene.ui.home.view.UpdateAvailableViewLoading
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.AdsBannerView
 import com.rizwansayyed.zene.ui.view.LoadingView
@@ -55,7 +51,7 @@ import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
-import com.rizwansayyed.zene.utils.Utils.toast
+import com.rizwansayyed.zene.utils.Utils.isUpdateAvailableFunction
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +81,17 @@ fun HomeView(
             }
         }
         item(2001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            when (val v = homeViewModel.isAppUpdateAvailable) {
+                APIResponse.Empty -> {}
+                is APIResponse.Error -> {}
+                APIResponse.Loading -> UpdateAvailableViewLoading()
+                is APIResponse.Success -> if (isUpdateAvailableFunction(v.data.appVersion ?: "")) {
+                    UpdateAvailableView(v.data)
+                }
+            }
+        }
+
+        item(2002, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             when (val v = homeViewModel.songsYouMayLike) {
                 is APIResponse.Success -> {
                     if (v.data.isEmpty()) NewUserCards()
@@ -105,6 +112,11 @@ fun HomeView(
                 )
             }
         }
+
+        item(2003, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            SponsorsAdsView()
+        }
+
         item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
                 Spacer(Modifier.height(60.dp))
