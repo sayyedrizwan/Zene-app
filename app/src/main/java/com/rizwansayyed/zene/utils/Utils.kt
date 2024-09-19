@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.utils
 
+import android.R.attr
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -13,7 +14,6 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
-import android.util.Log
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
@@ -23,7 +23,6 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
-import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -36,12 +35,14 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.OutputStream
 import java.net.URL
 import java.text.DecimalFormat
 import java.time.Duration
@@ -267,23 +268,17 @@ object Utils {
         try {
             if (bitmap == null) return null
 
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            val initialByteArray = stream.toByteArray()
-            val fileSizeInKB = initialByteArray.size / 1024
-            var compressionQuality = 100
+//            var compressionQuality = 100
+//
+//            when {
+//                fileSizeInKB in 101..400 -> compressionQuality = 60
+//                fileSizeInKB in 401..800 -> compressionQuality = 40
+//                fileSizeInKB > 800 -> compressionQuality = 20
+//            }
 
-            when {
-                fileSizeInKB in 101..400 -> compressionQuality = 60
-                fileSizeInKB in 401..800 -> compressionQuality = 40
-                fileSizeInKB > 800 -> compressionQuality = 10
-            }
-
-            stream.reset()
-
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, compressionQuality, stream)
-            }
+            val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
+            bitmap.compress(Bitmap.CompressFormat.PNG, 20, os)
+            os.close()
             return file
         } catch (e: Exception) {
             return null

@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.mymusic.playlists
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -202,7 +203,6 @@ fun AddPlaylistView(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
 
         val b = if (bitmap == null || img == IMG_PLAYLISTS) null
         else bitmap
-
         logEvents(FirebaseLogEvents.FirebaseEvents.CREATING_NEW_PLAYLISTS)
         viewModel.createNewPlaylist(playlistName, b, null)
     }
