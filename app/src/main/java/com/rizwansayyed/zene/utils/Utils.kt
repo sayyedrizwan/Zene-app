@@ -420,16 +420,12 @@ object Utils {
 
     fun isUpdateAvailableFunction(latestVersion: String): Boolean {
         if (!latestVersion.contains(".")) return false
-        val current = BuildConfig.VERSION_NAME.split(".").map { it.toInt() }
-        val latest = latestVersion.split(".").map { it.toInt() }
-
-        for (i in current.indices) {
-            if (i >= latest.size) return false
-            if (current[i] < latest[i]) return true
-            if (current[i] > latest[i]) return false
-        }
-
-        return latest.size > current.size
+        val current = BuildConfig.VERSION_NAME.replace(".", "").toIntOrNull()
+        val latest = latestVersion.replace(".", "").toIntOrNull()
+        if (current == null || latest == null) return false
+        if (current == latest) return false
+        if (latest > current) return true
+        return false
     }
 
 }
