@@ -55,6 +55,7 @@ import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
+import com.rizwansayyed.zene.ui.radio.RadioView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.subscription.SubscriptionView
@@ -72,6 +73,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOOD
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_RADIO
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
@@ -149,9 +151,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NAV_FEED) {
                             FeedView(zeneViewModel)
+                        }
+                        composable(NAV_RADIO) {
+                            RadioView()
 
                             LaunchedEffect(Unit) {
-                                homeNavModel.selectedMenuItems(NavHomeMenu.FEED)
+                                homeNavModel.selectedMenuItems(NavHomeMenu.RADIO)
                             }
                         }
                         composable(NAV_SETTINGS) {

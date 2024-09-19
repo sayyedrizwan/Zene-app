@@ -34,13 +34,14 @@ import com.rizwansayyed.zene.ui.view.NavHomeMenu.*
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_HOME
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_RADIO
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.vibratePhone
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 
 enum class NavHomeMenu {
-    HOME, FEED, SEARCH, MY_MUSIC
+    HOME, RADIO, SEARCH, MY_MUSIC
 }
 
 @Composable
@@ -71,7 +72,7 @@ fun NavHomeView(
                 MenuItems(it, homeNavModel.selectedMenuItems) {
                     when (it) {
                         HOME -> sendNavCommand(NAV_HOME)
-                        FEED -> sendNavCommand(NAV_FEED)
+                        RADIO -> sendNavCommand(NAV_RADIO)
                         SEARCH -> sendNavCommand(NAV_SEARCH)
                         MY_MUSIC -> sendNavCommand(NAV_MY_MUSIC)
                     }
@@ -90,7 +91,7 @@ fun MenuItems(nav: NavHomeMenu, selected: NavHomeMenu, click: () -> Unit) {
     Column(Modifier.clickable { click() }, Arrangement.Center, Alignment.CenterHorizontally) {
         when (nav) {
             HOME -> ImageIcon(R.drawable.ic_home, 25)
-            FEED -> ImageIcon(R.drawable.ic_scroll, 25)
+            RADIO -> ImageIcon(R.drawable.ic_radio, 25)
             SEARCH -> ImageIcon(R.drawable.ic_search, 25)
             MY_MUSIC -> ImageIcon(R.drawable.ic_music_note_square, 25)
         }
@@ -107,7 +108,7 @@ fun MenuItems(nav: NavHomeMenu, selected: NavHomeMenu, click: () -> Unit) {
             Spacer(Modifier.height(5.dp))
         } else when (nav) {
             HOME -> TextPoppins(stringResource(R.string.home), size = 13)
-            FEED -> TextPoppins(stringResource(R.string.feed), size = 13)
+            RADIO -> TextPoppins(stringResource(R.string.radio), size = 13)
             SEARCH -> TextPoppins(stringResource(R.string.search), size = 13)
             MY_MUSIC -> TextPoppins(stringResource(R.string.music), size = 13)
         }
