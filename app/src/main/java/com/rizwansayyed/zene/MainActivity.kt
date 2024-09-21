@@ -12,6 +12,8 @@ import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.webkit.WebSettings
+import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -24,6 +26,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,6 +37,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
@@ -89,6 +95,8 @@ import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
+import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
+import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInSeconds
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
@@ -212,6 +220,33 @@ class MainActivity : ComponentActivity() {
                     }
 
                     LoginView()
+
+                    AndroidView(factory = {
+                        WebView(it).apply {
+                            settings.javaScriptEnabled = true
+                            settings.cacheMode = WebSettings.LOAD_DEFAULT
+                            settings.domStorageEnabled = true
+                            settings.databaseEnabled = true
+                            settings.pluginState = WebSettings.PluginState.ON
+                            settings.mediaPlaybackRequiresUserGesture = false
+
+                            val htmls = """
+                                <!DOCTYPE html>
+                                <html>
+                                <body>
+
+                                <audio controls>
+                                  <source src="http://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8" type="audio/ogg">
+                                  Your browser does not support the audio element.
+                                </audio>
+
+                                </body>
+                                </html>
+                            """.trimIndent()
+
+                            loadDataWithBaseURL(YOUTUBE_URL, htmls, "text/html", "UTF-8", null)
+                        }
+                    }, Modifier.padding(top = 40.dp).size(300.dp))
 
 //                    AdsClickWebView(homeNavModel, "zadsadsterra")
 //                    AdsClickWebView(homeNavModel, "zadsexoclick")

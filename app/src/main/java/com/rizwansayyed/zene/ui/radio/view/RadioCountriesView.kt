@@ -36,7 +36,7 @@ fun RadioLanguagesView(radioViewModel: RadioViewModel) {
         is APIResponse.Error -> {}
         APIResponse.Loading -> {
             Spacer(Modifier.height(20.dp))
-            TextTitleHeader(Pair(TextSize.SMALL, R.string.radio_languages))
+            TextTitleHeader(Pair(TextSize.SMALL, R.string.radios_languages))
 
             LazyRow {
                 items(20) {
@@ -49,7 +49,7 @@ fun RadioLanguagesView(radioViewModel: RadioViewModel) {
             if (v.data.isNotEmpty()) {
                 Spacer(Modifier.height(20.dp))
 
-                TextTitleHeader(Pair(TextSize.SMALL, R.string.radio_languages))
+                TextTitleHeader(Pair(TextSize.SMALL, R.string.radios_languages))
 
                 LazyRow {
                     items(v.data) {

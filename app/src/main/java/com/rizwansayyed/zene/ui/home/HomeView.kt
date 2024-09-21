@@ -284,7 +284,7 @@ fun HomeView(
                         }
                     }
 
-                    items(26, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    item(50, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                         LoadingView(Modifier.size(32.dp))
                     }
                 }

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -52,6 +53,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.RADIO_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.WEB_BASE_URL
@@ -475,7 +477,7 @@ fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
                 println()
             } else if (m.type() == PLAYLIST || m.type() == ALBUMS) {
                 AlbumPlaylistInfoItemSheet(m, close)
-            } else if (m.type() == VIDEO) {
+            } else if (m.type() == VIDEO || m.type() == RADIO) {
                 SheetDialogSheet(R.drawable.ic_play, R.string.play) {
                     openSpecificIntent(m, listOf(m))
                     close()
@@ -564,11 +566,15 @@ fun shareUrl(m: ZeneMusicDataItems): String {
                 .replace("\n", "")
         }
 
+        RADIO -> {
+            logEvents(FirebaseLogEvents.FirebaseEvents.SHARE_VIDEO_URL)
+            "${WEB_BASE_URL}${RADIO_INNER}${m.id}".trim().replace("\n", "")
+        }
+
         MOOD -> WEB_BASE_URL
         STORE -> WEB_BASE_URL
         NEWS -> WEB_BASE_URL
         NONE -> WEB_BASE_URL
-        RADIO -> WEB_BASE_URL
         RADIO_LANGUAGE -> WEB_BASE_URL
     }
 }
@@ -584,7 +590,7 @@ fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
         STORE -> m.id?.let { openBrowser(it) }
         NONE -> {}
         NEWS -> m.id?.let { openBrowser(it) }
-        RADIO -> {}
+        RADIO -> sendWebViewCommand(m, list)
         RADIO_LANGUAGE -> {}
     }
 }

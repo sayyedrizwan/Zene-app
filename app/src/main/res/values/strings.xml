@@ -156,6 +156,7 @@
     <string name="today_sponsor">Today\'s Sponsor</string>
     <string name="app_update_available">App Update Available</string>
     <string name="zene_fm">Zene FM</string>
-    <string name="radio_languages">Radio by Languages</string>
-    <string name="radio_countries">Radio by Countries</string>
+    <string name="radios_languages">Radios by Languages</string>
+    <string name="radios_countries">Radios by Countries</string>
+    <string name="radios_you_may_like">Radios you may like</string>
 </resources>

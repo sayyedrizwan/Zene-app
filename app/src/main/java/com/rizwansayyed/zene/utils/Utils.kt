@@ -62,6 +62,7 @@ object Utils {
         const val ARTISTS_INNER = "/a/"
         const val PLAYLIST_ALBUM_INNER = "/p/"
         const val VIDEO_INNER = "/v/"
+        const val RADIO_INNER = "/r/"
     }
 
     object IDs {

@@ -192,18 +192,21 @@ class MusicPlayService : Service() {
 
     fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
         currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
-        val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
-            .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
-            .replace("<<Quality>>", songQualityDB.first().value)
+        if (vID.split("-").size > 2 && vID.length > 10) {
 
-        logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
+        } else {
+            val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
+                .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
+                .replace("<<Quality>>", songQualityDB.first().value)
 
-        webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
+            logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
 
-        withContext(Dispatchers.IO) {
-            if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID).catch { }.collect()
+            webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
+
+            withContext(Dispatchers.IO) {
+                if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID).catch { }.collect()
+            }
         }
-
         if (isActive) cancel()
     }
 
