@@ -25,4 +25,13 @@ class ZeneRadioAPIImpl @Inject constructor(
         emit(zeneAPI.topRadio(body))
     }
 
+    override suspend fun radioLanguages() = flow {
+        emit(zeneAPI.radioLanguages())
+    }
+
+
+    override suspend fun radioCountries() = flow {
+        emit(zeneAPI.radioCountries())
+    }
+
 }

@@ -568,6 +568,8 @@ fun shareUrl(m: ZeneMusicDataItems): String {
         STORE -> WEB_BASE_URL
         NEWS -> WEB_BASE_URL
         NONE -> WEB_BASE_URL
+        RADIO -> WEB_BASE_URL
+        RADIO_LANGUAGE -> WEB_BASE_URL
     }
 }
 
@@ -582,5 +584,7 @@ fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
         STORE -> m.id?.let { openBrowser(it) }
         NONE -> {}
         NEWS -> m.id?.let { openBrowser(it) }
+        RADIO -> {}
+        RADIO_LANGUAGE -> {}
     }
 }

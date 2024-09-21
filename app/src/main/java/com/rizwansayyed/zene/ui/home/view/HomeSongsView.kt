@@ -48,9 +48,33 @@ enum class StyleSize {
 }
 
 @Composable
+fun TextTitleHeader(header: Pair<TextSize, Any>) {
+    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+        when (header.first) {
+            TextSize.BIG ->
+                TextPoppins(
+                    if (header.second is Int) stringResource(header.second as Int) else header.second as String,
+                    size = 30,
+                    lineHeight = 35
+                )
+
+            TextSize.MEDIUM -> TextPoppins(
+                if (header.second is Int) stringResource(header.second as Int) else header.second as String,
+                size = 24
+            )
+
+            TextSize.SMALL -> TextPoppinsSemiBold(
+                if (header.second is Int) stringResource(header.second as Int) else header.second as String,
+                size = 15
+            )
+        }
+    }
+}
+
+@Composable
 fun HorizontalSongView(
     data: APIResponse<ZeneMusicDataResponse>,
-    header: Pair<TextSize, Int>,
+    header: Pair<TextSize, Any>,
     cardStyle: StyleSize,
     showGrid: Boolean
 ) {
@@ -58,15 +82,7 @@ fun HorizontalSongView(
         APIResponse.Empty -> {}
         is APIResponse.Error -> {}
         APIResponse.Loading -> {
-            Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                when (header.first) {
-                    TextSize.BIG ->
-                        TextPoppins(stringResource(header.second), size = 30, lineHeight = 35)
-
-                    TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-                    TextSize.SMALL -> TextPoppinsSemiBold(stringResource(header.second), size = 15)
-                }
-            }
+            TextTitleHeader(header)
 
             if (showGrid) LazyHorizontalGrid(
                 GridCells.Fixed(2),
@@ -96,16 +112,7 @@ fun HorizontalSongView(
 
         is APIResponse.Success -> {
             if (data.data.isNotEmpty()) {
-                Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                    when (header.first) {
-                        TextSize.BIG ->
-                            TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
-
-                        TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-                        TextSize.SMALL ->
-                            TextPoppinsSemiBold(stringResource(header.second), size = 15)
-                    }
-                }
+                TextTitleHeader(header)
 
                 if (showGrid) LazyHorizontalGrid(
                     GridCells.Fixed(2),
@@ -181,16 +188,7 @@ fun HorizontalArtistsView(
         APIResponse.Empty -> {}
         is APIResponse.Error -> {}
         APIResponse.Loading -> {
-            Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                when (header.first) {
-                    TextSize.BIG ->
-                        TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
-
-                    TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-
-                    TextSize.SMALL -> TextPoppinsSemiBold(stringResource(header.second), size = 15)
-                }
-            }
+            TextTitleHeader(header)
 
             if (showGrid) LazyHorizontalGrid(
                 GridCells.Fixed(2),
@@ -212,19 +210,7 @@ fun HorizontalArtistsView(
 
         is APIResponse.Success -> {
             if (data.data.isNotEmpty()) {
-                Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                    when (header.first) {
-                        TextSize.BIG ->
-                            TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
-
-                        TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-
-                        TextSize.SMALL -> TextPoppinsSemiBold(
-                            stringResource(header.second),
-                            size = 15
-                        )
-                    }
-                }
+                TextTitleHeader(header)
 
                 if (showGrid) LazyHorizontalGrid(
                     GridCells.Fixed(2),
@@ -256,16 +242,7 @@ fun HorizontalNewsView(
         APIResponse.Empty -> {}
         is APIResponse.Error -> {}
         APIResponse.Loading -> {
-            Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                when (header.first) {
-                    TextSize.BIG ->
-                        TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
-
-                    TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-
-                    TextSize.SMALL -> TextPoppinsSemiBold(stringResource(header.second), size = 15)
-                }
-            }
+            TextTitleHeader(header)
 
             if (showGrid) LazyHorizontalGrid(
                 GridCells.Fixed(2),
@@ -287,19 +264,7 @@ fun HorizontalNewsView(
 
         is APIResponse.Success -> {
             if (data.data.isNotEmpty()) {
-                Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                    when (header.first) {
-                        TextSize.BIG ->
-                            TextPoppins(stringResource(header.second), size = 30, lineHeight = 40)
-
-                        TextSize.MEDIUM -> TextPoppins(stringResource(header.second), size = 24)
-
-                        TextSize.SMALL -> TextPoppinsSemiBold(
-                            stringResource(header.second),
-                            size = 15
-                        )
-                    }
-                }
+                TextTitleHeader(header)
 
                 if (showGrid) LazyHorizontalGrid(
                     GridCells.Fixed(2),

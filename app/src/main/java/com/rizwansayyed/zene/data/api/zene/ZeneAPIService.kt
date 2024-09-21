@@ -24,10 +24,12 @@ import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_APP_UPDATE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_SPONSORS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_FEEDS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_IMPORT_PLAYLISTS_SPOTIFY_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_LANGUAGES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_NEW_RELEASE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_LYRICS_API
@@ -262,5 +264,14 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_TOP_RADIO_API)
     suspend fun topRadio(@Body body: RequestBody): List<MoodLists>
+
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @GET(ZENE_LANGUAGES_RADIO_API)
+    suspend fun radioLanguages(): ZeneMusicDataResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @GET(ZENE_COUNTRIES_RADIO_API)
+    suspend fun radioCountries(): ZeneMusicDataResponse
 
 }

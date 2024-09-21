@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
+import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -63,6 +64,7 @@ import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 
+@UnstableApi
 @Composable
 fun HomeView(
     notificationPermission: ManagedActivityResultLauncher<String, Boolean>,

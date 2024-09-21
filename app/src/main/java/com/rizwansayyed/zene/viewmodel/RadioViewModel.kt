@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.MoodLists
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneRadioAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
@@ -26,9 +27,13 @@ import javax.inject.Inject
 class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterface) : ViewModel() {
 
     var topRadios by mutableStateOf<APIResponse<List<MoodLists>>>(APIResponse.Empty)
+    var radioLanguages by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var radioCountries by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
 
     fun init() {
         topRadios()
+        radioLanguages()
+        radioCountries()
     }
 
     private fun topRadios() = viewModelScope.launch(Dispatchers.IO) {
@@ -40,6 +45,30 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
             topRadios = APIResponse.Error(it)
         }.collectLatest {
             topRadios = APIResponse.Success(it)
+        }
+    }
+
+    private fun radioLanguages() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) return@launch
+
+        zeneAPI.radioLanguages().onStart {
+            radioLanguages = APIResponse.Loading
+        }.catch {
+            radioLanguages = APIResponse.Error(it)
+        }.collectLatest {
+            radioLanguages = APIResponse.Success(it)
+        }
+    }
+
+    private fun radioCountries() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) return@launch
+
+        zeneAPI.radioCountries().onStart {
+            radioCountries = APIResponse.Loading
+        }.catch {
+            radioCountries = APIResponse.Error(it)
+        }.collectLatest {
+            radioCountries = APIResponse.Success(it)
         }
     }
 

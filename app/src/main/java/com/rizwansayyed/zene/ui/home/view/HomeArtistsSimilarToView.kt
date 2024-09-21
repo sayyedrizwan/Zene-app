@@ -72,7 +72,7 @@ fun HomeArtistsSimilarToView(m: ZeneArtistsDataList) {
                         .padding(horizontal = 5.dp)
                         .clickable { }
                 ) {
-                    TextPoppins(m.artists.name ?: "", size = 17, limit = 1)
+                        TextPoppins(m.artists.name ?: "", size = 17, limit = 1)
                 }
 
             }

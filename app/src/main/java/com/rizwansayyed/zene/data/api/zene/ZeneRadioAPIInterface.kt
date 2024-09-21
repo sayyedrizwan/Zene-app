@@ -27,4 +27,6 @@ import java.io.File
 interface ZeneRadioAPIInterface {
 
     suspend fun topRadio(): Flow<List<MoodLists>>
+    suspend fun radioLanguages(): Flow<ZeneMusicDataResponse>
+    suspend fun radioCountries(): Flow<ZeneMusicDataResponse>
 }
