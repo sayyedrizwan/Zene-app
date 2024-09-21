@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.api.model.MoodLists
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
@@ -45,6 +46,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ARTISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_GLOBAL_ARTISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_LISTEN_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
@@ -55,15 +57,12 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_UPDATE_ARTISTS_API
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.json.JSONObject
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
-import retrofit2.http.PartMap
 import retrofit2.http.Query
 
 interface ZeneAPIService {
@@ -258,5 +257,10 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SONG_INFO_API)
     suspend fun songInfo(@Query("id") id: String): ZeneMusicDataItems
+
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_TOP_RADIO_API)
+    suspend fun topRadio(@Body body: RequestBody): List<MoodLists>
 
 }

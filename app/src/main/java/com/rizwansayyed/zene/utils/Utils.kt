@@ -93,6 +93,9 @@ object Utils {
         const val ZENE_EXTRA_SPONSORS_API = "extra/sponsors"
         const val ZENE_EXTRA_APP_UPDATE_API = "extra/update_availability"
 
+        const val ZENE_TOP_RADIO_API = "radio/top"
+
+
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
         const val ZENE_USER_PLAYLISTS_API = "zuser/playlists"
