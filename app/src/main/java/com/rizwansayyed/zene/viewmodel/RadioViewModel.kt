@@ -29,11 +29,13 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     var topRadios by mutableStateOf<APIResponse<List<MoodLists>>>(APIResponse.Empty)
     var radioLanguages by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var radioCountries by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var radiosYouMayLike by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
 
     fun init() {
         topRadios()
         radioLanguages()
         radioCountries()
+        radiosYouMayLike()
     }
 
     private fun topRadios() = viewModelScope.launch(Dispatchers.IO) {
@@ -69,6 +71,18 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
             radioCountries = APIResponse.Error(it)
         }.collectLatest {
             radioCountries = APIResponse.Success(it)
+        }
+    }
+
+    private fun radiosYouMayLike() = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) return@launch
+
+        zeneAPI.radiosYouMayLike().onStart {
+            radiosYouMayLike = APIResponse.Loading
+        }.catch {
+            radiosYouMayLike = APIResponse.Error(it)
+        }.collectLatest {
+            radiosYouMayLike = APIResponse.Success(it)
         }
     }
 

@@ -25,6 +25,17 @@ class ZeneRadioAPIImpl @Inject constructor(
         emit(zeneAPI.topRadio(body))
     }
 
+    override suspend fun radiosYouMayLike() = flow {
+        val ip = ipAPI.ip()
+
+        val json = JSONObject().apply {
+            put("countryID", ip.countryCode)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.radiosYouMayLike(body))
+    }
+
     override suspend fun radioLanguages() = flow {
         emit(zeneAPI.radioLanguages())
     }
