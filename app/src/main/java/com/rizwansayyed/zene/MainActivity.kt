@@ -223,28 +223,41 @@ class MainActivity : ComponentActivity() {
 
                     AndroidView(factory = {
                         WebView(it).apply {
-                            settings.javaScriptEnabled = true
-                            settings.cacheMode = WebSettings.LOAD_DEFAULT
-                            settings.domStorageEnabled = true
-                            settings.databaseEnabled = true
-                            settings.pluginState = WebSettings.PluginState.ON
-                            settings.mediaPlaybackRequiresUserGesture = false
+                            enable()
 
                             val htmls = """
                                 <!DOCTYPE html>
-                                <html>
-                                <body>
+<html>
+  <head>
+     <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+  </head>
 
-                                <audio controls>
-                                  <source src="http://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8" type="audio/ogg">
-                                  Your browser does not support the audio element.
-                                </audio>
+  <body>
+     <video id="video" height="800px" width="1200px" controls></video>
+  <body>
 
-                                </body>
-                                </html>
+  <script>
+     var video = document.getElementById('video');
+     if(Hls.isSupported()){
+        var hls = new Hls();
+        hls.loadSource('https://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8');
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+              video.play();
+         });
+      }
+      else if (video.canPlayType('application/vnd.apple.mpegurl')){
+         video.src = 'https://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8';
+         video.addEventListener('loadedmetadata',function() {
+              video.play();
+         });
+      }
+   </script>
+</html>
+
                             """.trimIndent()
 
-                            loadDataWithBaseURL(YOUTUBE_URL, htmls, "text/html", "UTF-8", null)
+                            loadDataWithBaseURL(null, htmls, "text/html", "UTF-8", null)
                         }
                     }, Modifier.padding(top = 40.dp).size(300.dp))
 
@@ -328,7 +341,7 @@ class MainActivity : ComponentActivity() {
         }
         homeViewModel.userArtistsList()
 
-        startMusicService()
+//        startMusicService()
 
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
         logEvents(
