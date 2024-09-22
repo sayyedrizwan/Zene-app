@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "121"
-versionname = "3.02.729"
+appversion = "122"
+versionname = "3.02.732"
 
 agp = "8.5.2"
 datastorePreferences = "1.1.1"
@@ -36,7 +36,7 @@ lifecycle-compose = "2.8.6"
 coil = "2.7.0"
 ads = "23.3.0"
 nav = "2.8.1"
-billing = "7.0.0"
+billing = "7.1.0"
 webkit = "1.12.0"
 jsoup = "1.18.1"
 
