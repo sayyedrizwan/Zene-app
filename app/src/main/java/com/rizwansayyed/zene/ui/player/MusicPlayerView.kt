@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -45,6 +46,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.OPEN_PLAYER
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
@@ -126,9 +128,11 @@ fun MusicPlayerView(
             }
         }
 
-        item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                SongSliderData(playerInfo)
+        if (playerInfo?.player?.type() == MusicType.SONGS) {
+            item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    SongSliderData(playerInfo)
+                }
             }
         }
 
@@ -138,80 +142,82 @@ fun MusicPlayerView(
             }
         }
 
-        item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                ExtraButtonsData(musicPlayerViewModel, playerInfo)
+        if (playerInfo?.player?.type() == MusicType.SONGS) {
+            item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    ExtraButtonsData(musicPlayerViewModel, playerInfo)
+                }
             }
-        }
 
-        item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            when (val v = musicPlayerViewModel.lyrics) {
+            item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                when (val v = musicPlayerViewModel.lyrics) {
+                    APIResponse.Empty -> {}
+                    is APIResponse.Error -> {}
+                    APIResponse.Loading -> CardRoundLoading()
+                    is APIResponse.Success -> Column {
+                        LyricsView(v.data, playerInfo)
+                    }
+                }
+            }
+
+            item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(40.dp))
+                }
+            }
+
+
+            item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Column {
+                        HorizontalSongView(
+                            musicPlayerViewModel.storeData,
+                            Pair(TextSize.SMALL, R.string.artists_merchandise),
+                            StyleSize.SHOW_AUTHOR,
+                            showGrid = true
+                        )
+                    }
+                }
+            }
+
+            item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(40.dp))
+                }
+            }
+
+            when (val v = musicPlayerViewModel.similarSongs) {
                 APIResponse.Empty -> {}
                 is APIResponse.Error -> {}
-                APIResponse.Loading -> CardRoundLoading()
-                is APIResponse.Success -> Column {
-                    LyricsView(v.data, playerInfo)
-                }
-            }
-        }
+                APIResponse.Loading -> {
+                    item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                            TextPoppinsSemiBold(
+                                stringResource(R.string.similar_songs_you_may_like), size = 15
+                            )
 
-        item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(40.dp))
-            }
-        }
+                        }
+                    }
 
-
-        item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Column {
-                    HorizontalSongView(
-                        musicPlayerViewModel.storeData,
-                        Pair(TextSize.SMALL, R.string.artists_merchandise),
-                        StyleSize.SHOW_AUTHOR,
-                        showGrid = true
-                    )
-                }
-            }
-        }
-
-        item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(40.dp))
-            }
-        }
-
-        when (val v = musicPlayerViewModel.similarSongs) {
-            APIResponse.Empty -> {}
-            is APIResponse.Error -> {}
-            APIResponse.Loading -> {
-                item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                        TextPoppinsSemiBold(
-                            stringResource(R.string.similar_songs_you_may_like), size = 15
-                        )
-
+                    items(1, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        LoadingView(Modifier.size(32.dp))
                     }
                 }
 
-                items(1, key = { UUID.randomUUID() }, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    LoadingView(Modifier.size(32.dp))
-                }
-            }
+                is APIResponse.Success -> {
+                    if (v.data.isNotEmpty()) item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
+                            TextPoppinsSemiBold(
+                                stringResource(R.string.similar_songs_you_may_like), size = 15
+                            )
 
-            is APIResponse.Success -> {
-                if (v.data.isNotEmpty()) item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                        TextPoppinsSemiBold(
-                            stringResource(R.string.similar_songs_you_may_like), size = 15
-                        )
-
+                        }
                     }
-                }
 
-                items(v.data,
-                    span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                    SongDynamicCards(it, v.data)
+                    items(v.data,
+                        span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                        SongDynamicCards(it, v.data)
+                    }
                 }
             }
         }
@@ -240,11 +246,13 @@ fun MusicPlayerView(
     }
 
     LaunchedEffect(playerInfo?.player?.id) {
-        playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
-        playerInfo?.player?.let {
-            musicPlayerViewModel.lyrics(it)
-            musicPlayerViewModel.videoPlayerData(it)
-            musicPlayerViewModel.storeData(it)
+        if (playerInfo?.player?.type() == MusicType.SONGS) {
+            playerInfo.player.id?.let { musicPlayerViewModel.similarSongs(it) }
+            playerInfo.player.let {
+                musicPlayerViewModel.lyrics(it)
+                musicPlayerViewModel.videoPlayerData(it)
+                musicPlayerViewModel.storeData(it)
+            }
         }
         delay(1.seconds)
         scrollThumbnailCard()
@@ -254,12 +262,14 @@ fun MusicPlayerView(
         if (lifecycleState == Lifecycle.State.RESUMED || lifecycleState == Lifecycle.State.STARTED) {
             sendWebViewCommand(OPEN_PLAYER)
             scrollThumbnailCard()
-            playerInfo?.player?.id?.let { musicPlayerViewModel.similarSongs(it) }
-            playerInfo?.player?.let {
-                logEvents(FirebaseLogEvents.FirebaseEvents.MUSIC_PLAYER_STARTED)
-                musicPlayerViewModel.lyrics(it)
-                musicPlayerViewModel.videoPlayerData(it)
-                musicPlayerViewModel.storeData(it)
+            if (playerInfo?.player?.type() == MusicType.SONGS) {
+                playerInfo.player.id?.let { musicPlayerViewModel.similarSongs(it) }
+                playerInfo.player.let {
+                    logEvents(FirebaseLogEvents.FirebaseEvents.MUSIC_PLAYER_STARTED)
+                    musicPlayerViewModel.lyrics(it)
+                    musicPlayerViewModel.videoPlayerData(it)
+                    musicPlayerViewModel.storeData(it)
+                }
             }
         }
 
@@ -270,7 +280,6 @@ fun MusicPlayerView(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicListCards(
     pagerState: PagerState,
@@ -294,19 +303,20 @@ fun MusicListCards(
                     .size((screenWidth.value / 1.3).dp)
             )
 
-            if (playerInfo?.player?.id != playerInfo?.list?.get(page)?.id) Row(Modifier
-                .align(
-                    Alignment.BottomEnd
-                )
-                .padding(9.dp)
-                .clickable {
-                    sendWebViewCommand(playerInfo?.list?.get(page)!!, playerInfo.list!!)
+            if (playerInfo?.player?.id != playerInfo?.list?.get(page)?.id)
+                Row(Modifier
+                    .align(
+                        Alignment.BottomEnd
+                    )
+                    .padding(9.dp)
+                    .clickable {
+                        sendWebViewCommand(playerInfo?.list?.get(page)!!, playerInfo.list!!)
+                    }
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(MainColor)
+                    .padding(8.dp)) {
+                    ImageIcon(R.drawable.ic_play, 24)
                 }
-                .clip(RoundedCornerShape(14.dp))
-                .background(MainColor)
-                .padding(8.dp)) {
-                ImageIcon(R.drawable.ic_play, 24)
-            }
         }
     }
 
@@ -314,27 +324,36 @@ fun MusicListCards(
     TextPoppins(name, true, size = 22)
     Spacer(Modifier.height(5.dp))
 
-    LazyRow(
-        Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        items(artists.split(",", " & ", " and ")) {
-            if (it.trim() == "," && it.trim() == "&" && it.trim() == " and ")
-                Spacer(Modifier.size(0.dp))
-            else if (it.trim().isNotEmpty()) Row(
-                Modifier
-                    .padding(4.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Black)
-                    .clickable {
-                        close()
-                        sendNavCommand(NAV_ARTISTS.replace("{id}", it.trim()))
-                    }
-                    .padding(vertical = 5.dp, horizontal = 14.dp)
-            ) {
-                TextPoppins(it, false, size = 15)
+    if (playerInfo?.player?.type() == MusicType.SONGS) {
+        LazyRow(
+            Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            items(artists.split(",", " & ", " and ")) {
+                if (it.trim() == "," && it.trim() == "&" && it.trim() == " and ")
+                    Spacer(Modifier.size(0.dp))
+                else if (it.trim().isNotEmpty()) Row(
+                    Modifier
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.Black)
+                        .clickable {
+                            close()
+                            sendNavCommand(NAV_ARTISTS.replace("{id}", it.trim()))
+                        }
+                        .padding(vertical = 5.dp, horizontal = 14.dp)
+                ) {
+                    TextPoppins(it, false, size = 15)
+                }
             }
+        }
+    } else {
+        Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
+            TextPoppins(artists, false, size = 15)
+            Spacer(Modifier.height(2.dp))
+            TextPoppins(stringResource(R.string.live_broadcasting), false, size = 15)
+            Spacer(Modifier.height(7.dp))
         }
     }
 }

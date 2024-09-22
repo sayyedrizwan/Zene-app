@@ -582,8 +582,7 @@ fun shareUrl(m: ZeneMusicDataItems): String {
 fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     when (m.type()) {
         SONGS -> sendWebViewCommand(m, list)
-        PLAYLIST -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
-        ALBUMS -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
+        PLAYLIST, ALBUMS -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
         ARTISTS -> m.name?.let { sendNavCommand(NAV_ARTISTS.replace("{id}", it)) }
         VIDEO -> openVideoPlayer(m.extra)
         MOOD -> m.id?.let { sendNavCommand(NAV_MOOD.replace("{id}", it)) }

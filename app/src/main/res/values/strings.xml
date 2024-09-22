@@ -159,4 +159,5 @@
     <string name="radios_languages">Radios by Languages</string>
     <string name="radios_countries">Radios by Countries</string>
     <string name="radios_you_may_like">Radios you may like</string>
+    <string name="live_broadcasting">Live Broadcasting</string>
 </resources>

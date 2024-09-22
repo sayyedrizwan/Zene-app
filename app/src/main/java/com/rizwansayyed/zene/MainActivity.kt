@@ -221,48 +221,47 @@ class MainActivity : ComponentActivity() {
 
                     LoginView()
 
-                    AndroidView(factory = {
-                        WebView(it).apply {
-                            enable()
-
-                            val htmls = """
-                                <!DOCTYPE html>
-<html>
-  <head>
-     <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-  </head>
-
-  <body>
-     <video id="video" height="800px" width="1200px" controls></video>
-  <body>
-
-  <script>
-     var video = document.getElementById('video');
-     if(Hls.isSupported()){
-        var hls = new Hls();
-        hls.loadSource('https://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8');
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED,function() {
-              video.play();
-         });
-      }
-      else if (video.canPlayType('application/vnd.apple.mpegurl')){
-         video.src = 'https://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8';
-         video.addEventListener('loadedmetadata',function() {
-              video.play();
-         });
-      }
-   </script>
-</html>
-
-                            """.trimIndent()
-
-                            loadDataWithBaseURL(null, htmls, "text/html", "UTF-8", null)
-                        }
-                    }, Modifier.padding(top = 40.dp).size(300.dp))
-
-//                    AdsClickWebView(homeNavModel, "zadsadsterra")
-//                    AdsClickWebView(homeNavModel, "zadsexoclick")
+//                    AndroidView(factory = {
+//                        WebView(it).apply {
+//                            enable()
+//
+//                            val htmls = """
+//                               <!DOCTYPE html>
+//                                <html>
+//                                  <head>
+//                                     <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+//                                  </head>
+//
+//                                  <body>
+//                                     <video id="video" height="800px" width="1200px" controls></video>
+//                                  <body>
+//
+//                                  <script>
+//                                     var video = document.getElementById('video');
+//                                     if(Hls.isSupported()){
+//                                        var hls = new Hls();
+//                                        hls.loadSource('http://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8');
+//                                        hls.attachMedia(video);
+//                                        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+//                                           setTimeout(() => {
+//                                            video.play();
+//                                           }, 500)
+//                                         });
+//                                      }
+//                                      else if (video.canPlayType('application/vnd.apple.mpegurl')){
+//                                         video.src = 'http://voa-ingest.akamaized.net/hls/live/2035206/151_124L/playlist.m3u8';
+//                                         video.addEventListener('loadedmetadata',function() {
+//                                              video.play();
+//                                         });
+//                                      }
+//                                   </script>
+//                                </html>
+//
+//                            """.trimIndent()
+//
+//                            loadDataWithBaseURL(null, htmls, "text/html", "UTF-8", null)
+//                        }
+//                    }, Modifier.padding(top = 40.dp).size(300.dp))
 
 
                     if (notificationPermissionDialog) AlertDialogView(
@@ -341,7 +340,7 @@ class MainActivity : ComponentActivity() {
         }
         homeViewModel.userArtistsList()
 
-//        startMusicService()
+        startMusicService()
 
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
         logEvents(

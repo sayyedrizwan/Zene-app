@@ -18,6 +18,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.rizwansayyed.zene.MainActivity
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.MusicType
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -45,9 +47,7 @@ import java.net.URL
 class MusicPlayerNotifications(
     private val context: MusicPlayService,
     private val isPlaying: Boolean = false,
-    private val name: String? = null,
-    private val artists: String? = null,
-    private val art: String? = null,
+    private val player: ZeneMusicDataItems? = null,
     private val duration: Int? = 0,
     private val currentDuration: Int? = 0
 ) {
@@ -104,15 +104,16 @@ class MusicPlayerNotifications(
 
     @SuppressLint("MissingPermission")
     fun generate() = CoroutineScope(Dispatchers.IO).launch {
-        val imageBitmap: Bitmap? = art?.let { downloadImage(it) }
+        val imageBitmap: Bitmap? = player?.thumbnail?.let { downloadImage(it) }
 
-        val v = when (musicSpeedSettings.first()) {
+        val v = if (player?.type() == MusicType.SONGS) when (musicSpeedSettings.first()) {
             MusicSpeed.`025` -> 0.25
             MusicSpeed.`05` -> 0.5
             MusicSpeed.`1` -> 1.0
             MusicSpeed.`15` -> 1.5
             MusicSpeed.`20` -> 2.0
         }
+        else 1.0
 
         val mediaSession = prepareMediaSession(imageBitmap, v.toFloat()).sessionToken
         val style =
@@ -120,9 +121,10 @@ class MusicPlayerNotifications(
                 .setShowCancelButton(false).setMediaSession(mediaSession)
 
         val notification = NotificationCompat.Builder(context, NOTIFICATION_M_P_CHANNEL_ID).apply {
-            addAction(
+            if (player?.type() == MusicType.SONGS) addAction(
                 R.drawable.ic_go_backward_5sec, back5sTxt, pendingIntent(MUSIC_BACKWARD_5S)
             )
+
             addAction(
                 R.drawable.ic_previous, previousSongTxt, pendingIntent(GO_TO_THE_PREVIOUS_MUSIC)
             )
@@ -133,16 +135,18 @@ class MusicPlayerNotifications(
                 else pendingIntent(PLAY_THE_MUSIC)
             )
             addAction(R.drawable.ic_next, nextSongTxt, pendingIntent(GO_TO_THE_NEXT_MUSIC))
-            addAction(R.drawable.ic_go_forward_5sec, forward5sTxt, pendingIntent(MUSIC_FORWARD_5S))
+            if (player?.type() == MusicType.SONGS) addAction(
+                R.drawable.ic_go_forward_5sec, forward5sTxt, pendingIntent(MUSIC_FORWARD_5S)
+            )
             setStyle(style)
             setSmallIcon(R.drawable.ic_zene_logo_round)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setSilent(true)
             priority = NotificationCompat.PRIORITY_MAX
             setContentIntent(openMusicPlayerIntent)
-            setContentTitle(name)
-            setContentText(artists)
-            setSubText(name)
+            setContentTitle(player?.name)
+            setContentText(player?.artists)
+            setSubText(player?.name)
             setLargeIcon(imageBitmap)
         }
 
@@ -200,23 +204,26 @@ class MusicPlayerNotifications(
             val state =
                 if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
 
-            val stateBuilder = PlaybackStateCompat.Builder()
-                .setState(state, (currentDuration?.toLong() ?: 0) * 1000, v)
-                .setActions(allActions())
+            val stateBuilder = PlaybackStateCompat.Builder().apply {
+                setState(state, (currentDuration?.toLong() ?: 0) * 1000, v)
+                setActions(allActions())
+            }
 
             mediaSession.setCallback(callback)
             mediaSession.setPlaybackState(stateBuilder.build())
 
             val mediaData = MediaMetadataCompat.Builder()
-                .putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, name)
-                .putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, art)
-                .putString(MediaMetadata.METADATA_KEY_TITLE, name)
-                .putString(MediaMetadata.METADATA_KEY_ARTIST, artists)
+                .putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, player?.name)
+                .putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, player?.thumbnail)
+                .putString(MediaMetadata.METADATA_KEY_TITLE, player?.name)
+                .putString(MediaMetadata.METADATA_KEY_ARTIST, player?.artists)
                 .putBitmap(MediaMetadata.METADATA_KEY_ART, imageBitmap)
-                .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, imageBitmap).putLong(
-                    MediaMetadataCompat.METADATA_KEY_DURATION, (duration?.toLong() ?: 0) * 1000
-                ).build()
-            mediaSession.setMetadata(mediaData)
+
+            mediaData.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, imageBitmap).putLong(
+                MediaMetadataCompat.METADATA_KEY_DURATION, (duration?.toLong() ?: 0) * 1000
+            )
+
+            mediaSession.setMetadata(mediaData.build())
             return@withContext mediaSession
         }
 
@@ -235,7 +242,8 @@ class MusicPlayerNotifications(
     private suspend fun downloadImage(path: String) = withContext(Dispatchers.IO) {
         try {
             val compressPath = path.substringBeforeLast("=w")
-            val url = URL("$compressPath=w120-h120-l90-rj")
+            val url =
+                if (player?.type() == MusicType.RADIO) URL(player.thumbnail) else URL("$compressPath=w120-h120-l90-rj")
             val connection = url.openConnection()
                     as java.net.HttpURLConnection
             connection.requestMethod = "GET"
@@ -253,11 +261,17 @@ class MusicPlayerNotifications(
     }
 
     private fun allActions(): Long {
-        return PlaybackStateCompat.ACTION_SEEK_TO or
-                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                PlaybackStateCompat.ACTION_PLAY or
-                PlaybackStateCompat.ACTION_PAUSE or
-                PlaybackStateCompat.ACTION_STOP
+        return if (player?.type() == MusicType.RADIO)
+            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                    PlaybackStateCompat.ACTION_PLAY or
+                    PlaybackStateCompat.ACTION_PAUSE
+        else
+            PlaybackStateCompat.ACTION_SEEK_TO or
+                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                    PlaybackStateCompat.ACTION_PLAY or
+                    PlaybackStateCompat.ACTION_PAUSE or
+                    PlaybackStateCompat.ACTION_STOP
     }
 }

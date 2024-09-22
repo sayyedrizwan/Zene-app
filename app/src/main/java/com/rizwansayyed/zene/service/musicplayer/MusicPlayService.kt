@@ -3,22 +3,13 @@ package com.rizwansayyed.zene.service.musicplayer
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.media.MediaMetadata
-import android.media.session.MediaSession
-import android.media.session.PlaybackState
 import android.os.IBinder
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -26,19 +17,17 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.media.app.NotificationCompat
-import com.rizwansayyed.zene.MainActivity
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
+import com.rizwansayyed.zene.data.api.model.MusicType
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
 import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
-import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -59,7 +48,6 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
-import com.rizwansayyed.zene.utils.Utils.NotificationIDS.NOTIFICATION_CHANNEL_ID
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
@@ -142,8 +130,7 @@ class MusicPlayService : Service() {
 
             if (player?.id != null)
                 MusicPlayerNotifications(
-                    this@MusicPlayService, false, player.name,
-                    player.artists, player.thumbnail, 0, 0
+                    this@MusicPlayService, false, player, 0, 0
                 ).generate()
         }
         return START_STICKY
@@ -184,24 +171,32 @@ class MusicPlayService : Service() {
         durationUpdateJob()
 
         CoroutineScope(Dispatchers.IO).launch {
-            musicPlayerDB.firstOrNull()?.player?.id?.let {
+            musicPlayerDB.firstOrNull()?.player?.let {
                 loadURL(it)
             }
         }
     }
 
-    fun loadURL(vID: String) = CoroutineScope(Dispatchers.Main).launch {
+    fun loadURL(player: ZeneMusicDataItems) = CoroutineScope(Dispatchers.Main).launch {
+        val vID = player.id ?: ""
         currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
-        if (vID.split("-").size > 2 && vID.length > 10) {
+        if (player.type() == MusicType.RADIO) {
+            val resource =
+                if (player.extra?.contains(".m3u8") == true) resources.openRawResource(R.raw.hls_audio_player)
+                else resources.openRawResource(R.raw.radio_audio_player)
 
+            logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_RADIO)
+
+            val html = readHTMLFromUTF8File(resource).replace("<<AudioURL>>", player.extra ?: "")
+            webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
         } else {
-            val player = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
+            val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
                 .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
                 .replace("<<Quality>>", songQualityDB.first().value)
 
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
 
-            webView.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
+            webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
 
             withContext(Dispatchers.IO) {
                 if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID).catch { }.collect()
@@ -256,7 +251,7 @@ class MusicPlayService : Service() {
                 clearCache()
                 isNewPlay = false
                 val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)
-                d?.player?.id?.let { loadURL(it) }
+                d?.player?.let { loadURL(it) }
                 currentVideoID = d?.player?.id ?: ""
                 musicPlayerDB = flowOf(d)
             }
@@ -337,9 +332,7 @@ class MusicPlayService : Service() {
                 MusicPlayerNotifications(
                     this@MusicPlayService,
                     v == VIDEO_PLAYING,
-                    d?.player?.name,
-                    d?.player?.artists,
-                    d?.player?.thumbnail,
+                    d?.player,
                     duration,
                     currentDuration
                 ).generate()
@@ -395,7 +388,7 @@ class MusicPlayService : Service() {
     }
 
     private fun checkAndPlayNextSong() = CoroutineScope(Dispatchers.IO).launch {
-        val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
+        val id = musicPlayerDB.firstOrNull()?.player ?: return@launch
         if (musicLoopSettings.firstOrNull() == true) {
             loadURL(id)
             return@launch
@@ -409,19 +402,17 @@ class MusicPlayService : Service() {
 
 
     private fun forwardAndRewindSong(nextSong: Boolean) = CoroutineScope(Dispatchers.IO).launch {
-        val id = musicPlayerDB.firstOrNull()?.player?.id ?: return@launch
+        val id = musicPlayerDB.firstOrNull()?.player ?: return@launch
         try {
             val player = musicPlayerDB.firstOrNull()
-            val index = player?.list?.indexOfFirst { it.id == id } ?: -1
+            val index = player?.list?.indexOfFirst { it.id == id.id } ?: -1
             if (index < 0) return@launch
 
             val p = if (nextSong) index + 1 else index - 1
             val data = player?.list?.get(p) ?: return@launch
-            data.id?.let {
-                loadURL(it)
-                val new = MusicPlayerData(player.list, data, VIDEO_BUFFERING, 0, false, 0, true)
-                musicPlayerDB = flowOf(new)
-            }
+            loadURL(data)
+            val new = MusicPlayerData(player.list, data, VIDEO_BUFFERING, 0, false, 0, true)
+            musicPlayerDB = flowOf(new)
         } catch (e: Exception) {
             e.message
         }
