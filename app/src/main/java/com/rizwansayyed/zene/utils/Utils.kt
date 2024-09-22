@@ -98,6 +98,7 @@ object Utils {
         const val ZENE_TOP_RADIO_API = "radio/top"
         const val ZENE_LANGUAGES_RADIO_API = "radio/languages"
         const val ZENE_COUNTRIES_RADIO_API = "radio/countries"
+        const val ZENE_COUNTRIES_BY_LANGUAGES_RADIO_API = "radio/radiosbylanguages"
 
 
         const val ZENE_USER_API = "zuser/users"

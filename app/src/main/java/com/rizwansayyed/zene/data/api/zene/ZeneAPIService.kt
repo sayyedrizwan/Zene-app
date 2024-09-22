@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_BY_LANGUAGES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_APP_UPDATE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_SPONSORS_API
@@ -270,7 +271,6 @@ interface ZeneAPIService {
     @POST(ZENE_RADIOS_Y_M_L_API)
     suspend fun radiosYouMayLike(@Body body: RequestBody): ZeneMusicDataResponse
 
-
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_LANGUAGES_RADIO_API)
     suspend fun radioLanguages(): ZeneMusicDataResponse
@@ -278,5 +278,9 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_COUNTRIES_RADIO_API)
     suspend fun radioCountries(): ZeneMusicDataResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_COUNTRIES_BY_LANGUAGES_RADIO_API)
+    suspend fun radioViaLanguages(@Body body: RequestBody): ZeneMusicDataResponse
 
 }

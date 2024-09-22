@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.radio
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,14 +9,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,12 +39,13 @@ import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.RadioViewModel
-import java.util.UUID
 
 @Composable
 fun RadioView() {
     val radioViewModel: RadioViewModel = hiltViewModel()
     val isThreeGrid = isScreenBig()
+
+    var languages by remember { mutableStateOf("") }
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -87,7 +91,9 @@ fun RadioView() {
 
         item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
-                RadioLanguagesView(radioViewModel)
+                RadioLanguagesView(radioViewModel) {
+                    languages = it
+                }
             }
         }
 
@@ -138,7 +144,16 @@ fun RadioView() {
         }
     }
 
+    if (languages.length > 2) RadioLanguagesListView(languages)
+
     LaunchedEffect(Unit) {
         radioViewModel.init()
+    }
+
+    BackHandler {
+        if (languages.length > 2) {
+            languages = ""
+            return@BackHandler
+        }
     }
 }

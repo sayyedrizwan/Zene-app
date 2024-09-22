@@ -64,6 +64,7 @@ import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -141,6 +142,20 @@ fun MusicPlayerView(
                 ButtonsView(playerInfo)
             }
         }
+
+
+        item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            if (playerInfo?.player?.type() == MusicType.RADIO && playerInfo.isBuffering == true)
+                Column(
+                    Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally
+                ) {
+                    Spacer(Modifier.height(40.dp))
+                    TextPoppins(
+                        stringResource(R.string.issue_with_radio_buffering), true, size = 13
+                    )
+                }
+        }
+
 
         if (playerInfo?.player?.type() == MusicType.SONGS) {
             item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -356,4 +371,5 @@ fun MusicListCards(
             Spacer(Modifier.height(7.dp))
         }
     }
+
 }

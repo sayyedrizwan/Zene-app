@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -30,6 +31,10 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     var radioLanguages by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var radioCountries by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var radiosYouMayLike by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+    var radiosLanguagesList by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+
+    var seeMoreButton by mutableStateOf(false)
+    var isLoading by mutableStateOf(false)
 
     fun init() {
         topRadios()
@@ -83,6 +88,18 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
             radiosYouMayLike = APIResponse.Error(it)
         }.collectLatest {
             radiosYouMayLike = APIResponse.Success(it)
+        }
+    }
+
+    fun languagesRadioList(language: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) return@launch
+
+        zeneAPI.radiosViaLanguages(language).onStart {
+            radiosLanguagesList = APIResponse.Loading
+        }.catch {
+            radiosLanguagesList = APIResponse.Error(it)
+        }.collectLatest {
+            radiosLanguagesList = APIResponse.Success(it)
         }
     }
 

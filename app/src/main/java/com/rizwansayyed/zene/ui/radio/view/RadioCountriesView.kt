@@ -30,7 +30,7 @@ import com.rizwansayyed.zene.viewmodel.RadioViewModel
 
 
 @Composable
-fun RadioLanguagesView(radioViewModel: RadioViewModel) {
+fun RadioLanguagesView(radioViewModel: RadioViewModel, openLanguage: (String) -> Unit) {
     when (val v = radioViewModel.radioLanguages) {
         APIResponse.Empty -> {}
         is APIResponse.Error -> {}
@@ -53,7 +53,7 @@ fun RadioLanguagesView(radioViewModel: RadioViewModel) {
 
                 LazyRow {
                     items(v.data) {
-                        RadioLanguagesItems(it)
+                        RadioLanguagesItems(it, openLanguage)
                     }
                 }
             }
@@ -62,12 +62,12 @@ fun RadioLanguagesView(radioViewModel: RadioViewModel) {
 }
 
 @Composable
-fun RadioLanguagesItems(items: ZeneMusicDataItems) {
+fun RadioLanguagesItems(items: ZeneMusicDataItems, openLanguage: (String) -> Unit) {
     Column(
         Modifier
             .padding(horizontal = 10.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable { }
+            .clickable { items.name?.let { openLanguage(it) } }
             .background(Color.White)
             .padding(20.dp)
             .padding(horizontal = 20.dp),
