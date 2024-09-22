@@ -160,5 +160,6 @@
     <string name="radios_countries">Radios by Countries</string>
     <string name="radios_you_may_like">Radios you may like</string>
     <string name="live_broadcasting">Live Broadcasting</string>
+    <string name="no_radio_of_this_lang">No radio of this language in your country</string>
     <string name="issue_with_radio_buffering">Frequent buffering and delay is caused by the radio station, not the Zene app.</string>
 </resources>

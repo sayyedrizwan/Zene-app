@@ -58,6 +58,7 @@ import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.WEB_BASE_URL
 import com.rizwansayyed.zene.utils.Utils.convertItToMoney
+import com.rizwansayyed.zene.utils.Utils.getItemsAroundPosition
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -580,8 +581,11 @@ fun shareUrl(m: ZeneMusicDataItems): String {
 }
 
 fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
+    val position = list.indexOfFirst { it.id == m.id }
+    val lists = if (list.size < 100) list else getItemsAroundPosition(list, position)
+
     when (m.type()) {
-        SONGS -> sendWebViewCommand(m, list)
+        SONGS -> sendWebViewCommand(m, lists)
         PLAYLIST, ALBUMS -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
         ARTISTS -> m.name?.let { sendNavCommand(NAV_ARTISTS.replace("{id}", it)) }
         VIDEO -> openVideoPlayer(m.extra)
@@ -589,7 +593,7 @@ fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
         STORE -> m.id?.let { openBrowser(it) }
         NONE -> {}
         NEWS -> m.id?.let { openBrowser(it) }
-        RADIO -> sendWebViewCommand(m, list)
+        RADIO -> sendWebViewCommand(m, lists)
         RADIO_LANGUAGE -> {}
     }
 }

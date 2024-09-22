@@ -35,7 +35,7 @@ import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.viewmodel.RadioViewModel
 
 @Composable
-fun RadioCountriesView(radioViewModel: RadioViewModel) {
+fun RadioCountriesView(radioViewModel: RadioViewModel, openLanguage: (String) -> Unit) {
     when (val v = radioViewModel.radioCountries) {
         APIResponse.Empty -> {}
         is APIResponse.Error -> {}
@@ -58,7 +58,7 @@ fun RadioCountriesView(radioViewModel: RadioViewModel) {
 
                 LazyRow {
                     items(v.data) {
-                        RadiCountriesItems(it)
+                        RadiCountriesItems(it, openLanguage)
                     }
                 }
             }
@@ -67,12 +67,12 @@ fun RadioCountriesView(radioViewModel: RadioViewModel) {
 }
 
 @Composable
-fun RadiCountriesItems(items: ZeneMusicDataItems) {
+fun RadiCountriesItems(items: ZeneMusicDataItems, openLanguage: (String) -> Unit) {
     Column(
         Modifier
             .padding(horizontal = 10.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable { }
+            .clickable { items.name?.let { openLanguage(it) } }
             .background(Color.White)
             .padding(20.dp)
             .padding(horizontal = 20.dp),

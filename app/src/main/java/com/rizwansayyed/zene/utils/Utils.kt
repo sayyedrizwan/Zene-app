@@ -98,7 +98,8 @@ object Utils {
         const val ZENE_TOP_RADIO_API = "radio/top"
         const val ZENE_LANGUAGES_RADIO_API = "radio/languages"
         const val ZENE_COUNTRIES_RADIO_API = "radio/countries"
-        const val ZENE_COUNTRIES_BY_LANGUAGES_RADIO_API = "radio/radiosbylanguages"
+        const val ZENE_LANGUAGES_BY_RADIO_API = "radio/radiosbylanguages"
+        const val ZENE_COUNTRIES_BY_RADIO_API = "radio/radiosbycountries"
 
 
         const val ZENE_USER_API = "zuser/users"
@@ -275,15 +276,6 @@ object Utils {
 
         try {
             if (bitmap == null) return null
-
-//            var compressionQuality = 100
-//
-//            when {
-//                fileSizeInKB in 101..400 -> compressionQuality = 60
-//                fileSizeInKB in 401..800 -> compressionQuality = 40
-//                fileSizeInKB > 800 -> compressionQuality = 20
-//            }
-
             val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
             bitmap.compress(Bitmap.CompressFormat.PNG, 20, os)
             os.close()
@@ -436,4 +428,11 @@ object Utils {
         return false
     }
 
+    fun getItemsAroundPosition(
+        arr: List<ZeneMusicDataItems>, position: Int, range: Int = 100
+    ): List<ZeneMusicDataItems> {
+        val start = (position - range).coerceAtLeast(0)
+        val end = (position + range).coerceAtMost(arr.size - 1)
+        return arr.slice(start..end)
+    }
 }

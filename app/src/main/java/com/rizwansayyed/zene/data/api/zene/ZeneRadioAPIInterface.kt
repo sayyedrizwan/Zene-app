@@ -31,4 +31,5 @@ interface ZeneRadioAPIInterface {
     suspend fun radioCountries(): Flow<ZeneMusicDataResponse>
     suspend fun radiosYouMayLike(): Flow<ZeneMusicDataResponse>
     suspend fun radiosViaLanguages(language: String): Flow<ZeneMusicDataResponse>
+    suspend fun radioViaCountries(page: Int): Flow<ZeneMusicDataResponse>
 }

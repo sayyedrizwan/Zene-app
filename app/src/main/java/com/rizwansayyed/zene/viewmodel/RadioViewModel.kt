@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.MoodLists
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneRadioAPIInterface
@@ -32,6 +33,8 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     var radioCountries by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var radiosYouMayLike by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var radiosLanguagesList by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
+
+    var radiosCountriesList = mutableStateListOf<ZeneMusicDataItems>()
 
     var seeMoreButton by mutableStateOf(false)
     var isLoading by mutableStateOf(false)
@@ -100,6 +103,22 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
             radiosLanguagesList = APIResponse.Error(it)
         }.collectLatest {
             radiosLanguagesList = APIResponse.Success(it)
+        }
+    }
+
+    fun countriesRadioList(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        if (!internetIsConnected()) return@launch
+
+        if (page == 0) radiosCountriesList.clear()
+
+        zeneAPI.radioViaCountries(page).onStart {
+            isLoading = true
+        }.catch {
+            isLoading = false
+        }.collectLatest {
+            isLoading = false
+            seeMoreButton = it.size > 100
+            radiosCountriesList.addAll(it)
         }
     }
 

@@ -41,11 +41,12 @@ import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.viewmodel.RadioViewModel
 
 @Composable
-fun RadioView() {
+fun RadioView(close: () -> Unit) {
     val radioViewModel: RadioViewModel = hiltViewModel()
     val isThreeGrid = isScreenBig()
 
     var languages by remember { mutableStateOf("") }
+    var country by remember { mutableStateOf("") }
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -99,7 +100,9 @@ fun RadioView() {
 
         item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
-                RadioCountriesView(radioViewModel)
+                RadioCountriesView(radioViewModel) {
+                    country = it
+                }
             }
         }
 
@@ -126,7 +129,7 @@ fun RadioView() {
                 item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
                         TextPoppinsSemiBold(
-                            stringResource(R.string.songs_for_you), size = 15
+                            stringResource(R.string.radios_you_may_like), size = 15
                         )
                     }
                 }
@@ -145,6 +148,7 @@ fun RadioView() {
     }
 
     if (languages.length > 2) RadioLanguagesListView(languages)
+    if (country.length > 2) RadioCountryListView(country)
 
     LaunchedEffect(Unit) {
         radioViewModel.init()
@@ -155,5 +159,11 @@ fun RadioView() {
             languages = ""
             return@BackHandler
         }
+        if (country.length > 2) {
+            country = ""
+            return@BackHandler
+        }
+
+        close()
     }
 }

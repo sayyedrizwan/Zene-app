@@ -53,6 +53,18 @@ class ZeneRadioAPIImpl @Inject constructor(
         emit(zeneAPI.radioViaLanguages(body))
     }
 
+    override suspend fun radioViaCountries(page: Int) = flow {
+        val ip = ipAPI.ip()
+
+        val json = JSONObject().apply {
+            put("countryID", ip.countryCode)
+            put("page", page)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.radioViaCountries(body))
+    }
+
     override suspend fun radioCountries() = flow {
         emit(zeneAPI.radioCountries())
     }

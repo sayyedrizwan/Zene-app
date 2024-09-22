@@ -73,7 +73,10 @@ fun RadioLanguagesListView(languages: String) {
                     span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
                     SongDynamicCards(it, v.data)
                 }
-            }
+            } else
+                item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    TextPoppinsSemiBold(stringResource(R.string.no_radio_of_this_lang), true, size = 16)
+                }
 
         }
 

@@ -164,7 +164,9 @@ class MainActivity : ComponentActivity() {
                             FeedView(zeneViewModel)
                         }
                         composable(NAV_RADIO) {
-                            RadioView()
+                            RadioView {
+                                navController.popBackStack()
+                            }
 
                             LaunchedEffect(Unit) {
                                 homeNavModel.selectedMenuItems(NavHomeMenu.RADIO)
