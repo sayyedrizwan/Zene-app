@@ -226,8 +226,7 @@ fun AlbumPlaylistInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
             val i = v.data
             if (i.isAdded == true) SheetDialogSheet(R.drawable.ic_tick, R.string.added_to_library) {
                 removeDialog = true
-            }
-            else SheetDialogSheet(R.drawable.ic_folder_library, R.string.add_to_library) {
+            } else SheetDialogSheet(R.drawable.ic_folder_library, R.string.add_to_library) {
                 CoroutineScope(Dispatchers.IO).launch {
                     val image = loadBitmap(i.info?.thumbnail.toString())
                     zeneViewModel.createNewPlaylist(i.info?.name ?: "", image, i.info?.id)
