@@ -11,10 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
@@ -30,13 +36,20 @@ import com.rizwansayyed.zene.ui.home.view.HorizontalSongView
 import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
+import com.rizwansayyed.zene.ui.home.view.TextTitleHeader
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
+import com.rizwansayyed.zene.ui.view.SongDynamicCards
+import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
+import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
+import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
@@ -44,19 +57,23 @@ import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 fun ArtistsView(id: String?, close: () -> Unit) {
     val viewModel: ZeneViewModel = hiltViewModel()
     val context = LocalContext.current as Activity
+    val isThreeGrid = isScreenBig()
 
-    LazyColumn(
+    LazyVerticalGrid(
+        GridCells.Fixed(TOTAL_GRID_SIZE),
         Modifier
             .fillMaxSize()
             .background(DarkCharcoal)
     ) {
-        item(1) {
-            Row(Modifier.padding(top = 50.dp, start = 8.dp, bottom = 25.dp)) {
-                ImageIcon(R.drawable.ic_arrow_left) {
-                    close()
-                }
+        item(1, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Row(Modifier.padding(top = 50.dp, start = 8.dp, bottom = 25.dp)) {
+                    ImageIcon(R.drawable.ic_arrow_left) {
+                        close()
+                    }
 
-                Spacer(Modifier.weight(1f))
+                    Spacer(Modifier.weight(1f))
+                }
             }
         }
 
@@ -64,10 +81,12 @@ fun ArtistsView(id: String?, close: () -> Unit) {
             APIResponse.Empty -> {}
             is APIResponse.Error -> v.error.message?.toast()
             APIResponse.Loading -> {
-                item(300) {
-                    ArtistsTopViewLoading()
+                item(300, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        ArtistsTopViewLoading()
+                    }
                 }
-                item(301) {
+                item(301, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     LazyRow(Modifier.padding(top = 20.dp)) {
                         items(9) {
                             LoadingCardView()
@@ -77,23 +96,31 @@ fun ArtistsView(id: String?, close: () -> Unit) {
             }
 
             is APIResponse.Success -> {
-                item(3) {
-                    ArtistsTopView(v.data)
+                item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        ArtistsTopView(v.data)
+                    }
                 }
-                item(4) {
-                    FollowArtists(v.data, viewModel)
+                item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        FollowArtists(v.data, viewModel)
+                    }
                 }
-                item(5) {
-                    ArtistsSocialButton(v.data.socialMedia)
+                item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        ArtistsSocialButton(v.data.socialMedia)
+                    }
                 }
-                item(6) {
-                    Spacer(Modifier.height(90.dp))
+                item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(90.dp))
 
-                    if (v.data.topSongs != null) HorizontalSongView(
-                        APIResponse.Success(v.data.topSongs.filterNotNull()),
-                        Pair(TextSize.SMALL, R.string.top_songs),
-                        StyleSize.SONG_WITH_LISTENER, showGrid = true
-                    )
+                        if (v.data.topSongs != null) HorizontalSongView(
+                            APIResponse.Success(v.data.topSongs.filterNotNull()),
+                            Pair(TextSize.SMALL, R.string.top_songs),
+                            StyleSize.SONG_WITH_LISTENER, showGrid = true
+                        )
+                    }
                 }
             }
         }
@@ -103,66 +130,80 @@ fun ArtistsView(id: String?, close: () -> Unit) {
             is APIResponse.Error -> {}
             APIResponse.Loading -> {}
             is APIResponse.Success -> {
-                item(7) {
-                    Spacer(Modifier.height(90.dp))
+                item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(90.dp))
 
-                    if (v.data.news != null) HorizontalNewsView(
-                        APIResponse.Success(v.data.news.filterNotNull()),
-                        Pair(TextSize.SMALL, R.string.news), showGrid = false
-                    )
+                        if (v.data.news != null) HorizontalNewsView(
+                            APIResponse.Success(v.data.news.filterNotNull()),
+                            Pair(TextSize.SMALL, R.string.news), showGrid = false
+                        )
+                    }
                 }
 
-                item(8) {
-                    Spacer(Modifier.height(90.dp))
+                item(8, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(90.dp))
 
-                    HorizontalVideoView(
-                        APIResponse.Success(v.data.videos), R.string.videos
-                    )
+                        HorizontalVideoView(
+                            APIResponse.Success(v.data.videos), R.string.videos
+                        )
+                    }
                 }
 
-                item(9) {
-                    Spacer(Modifier.height(90.dp))
+                item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(90.dp))
 
-                    HorizontalSongView(
-                        APIResponse.Success(v.data.playlists),
-                        Pair(TextSize.SMALL, R.string.playlists),
-                        StyleSize.HIDE_AUTHOR, showGrid = true
-                    )
+                        HorizontalSongView(
+                            APIResponse.Success(v.data.playlists),
+                            Pair(TextSize.SMALL, R.string.playlists),
+                            StyleSize.HIDE_AUTHOR, showGrid = true
+                        )
+                    }
                 }
 
-                item(10) {
-                    Spacer(Modifier.height(90.dp))
+                item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(90.dp))
 
-                    HorizontalSongView(
-                        APIResponse.Success(v.data.albums),
-                        Pair(TextSize.SMALL, R.string.albums),
-                        StyleSize.SHOW_AUTHOR, showGrid = true
-                    )
+                        HorizontalSongView(
+                            APIResponse.Success(v.data.albums),
+                            Pair(TextSize.SMALL, R.string.albums),
+                            StyleSize.SHOW_AUTHOR, showGrid = true
+                        )
+                    }
                 }
 
-                item(11) {
-                    Spacer(Modifier.height(90.dp))
+                if (v.data.songs.isNotEmpty()) {
+                    item(11, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                        Column {
+                            Spacer(Modifier.height(90.dp))
+                            TextTitleHeader(Pair(TextSize.SMALL, R.string.songs))
+                        }
+                    }
 
-                    HorizontalSongView(
-                        APIResponse.Success(v.data.songs),
-                        Pair(TextSize.SMALL, R.string.songs),
-                        StyleSize.SHOW_AUTHOR, showGrid = true
-                    )
+                    items(v.data.songs,
+                        span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                        SongDynamicCards(it, v.data.songs)
+                    }
                 }
 
-                item(12) {
-                    Spacer(Modifier.height(90.dp))
+                item(12, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(90.dp))
 
-                    HorizontalArtistsView(
-                        APIResponse.Success(v.data.artists),
-                        Pair(TextSize.SMALL, R.string.similar_artists), showGrid = true
-                    )
+                        HorizontalArtistsView(
+                            APIResponse.Success(v.data.artists),
+                            Pair(TextSize.SMALL, R.string.similar_artists), showGrid = true
+                        )
+                    }
                 }
 
             }
         }
 
-        item(1000) {
+        item(1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(260.dp))
         }
     }
