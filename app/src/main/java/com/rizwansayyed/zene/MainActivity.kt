@@ -93,12 +93,14 @@ import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
+import com.rizwansayyed.zene.utils.Utils.Share.RADIO_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInSeconds
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
@@ -348,8 +350,19 @@ class MainActivity : ComponentActivity() {
             if (appLinkData.toString().contains(SONG_INNER)) {
                 val songLink = decryptData(appLinkData.toString().substringAfterLast(SONG_INNER))
                 val info = homeViewModel.getSongInfo(songLink)
-                if (info == null) {
-                    resources.getString(R.string.sorry_no_song_found)
+                if (info?.id == null) {
+                    resources.getString(R.string.sorry_no_song_found).toast()
+                    return@launch
+                }
+
+                sendWebViewCommand(info, listOf(info))
+                delay(1.seconds)
+                homeNavModel.showMusicPlayer(true)
+            } else if (appLinkData.toString().contains(RADIO_INNER)) {
+                val radioID = appLinkData.toString().substringAfterLast(RADIO_INNER)
+                val info = homeViewModel.getRadioInfo(radioID)
+                if (info?.id == null) {
+                    resources.getString(R.string.no_radio_found).toast()
                     return@launch
                 }
 

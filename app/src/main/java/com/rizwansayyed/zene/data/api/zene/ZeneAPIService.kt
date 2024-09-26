@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYER_VIDEO_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_RADIOS_Y_M_L_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_RADIO_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_REMOVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_IMG_API
@@ -263,6 +264,9 @@ interface ZeneAPIService {
     @GET(ZENE_SONG_INFO_API)
     suspend fun songInfo(@Query("id") id: String): ZeneMusicDataItems
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @GET(ZENE_RADIO_INFO_API)
+    suspend fun radioInfo(@Query("id") id: String): ZeneMusicDataItems
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_TOP_RADIO_API)
