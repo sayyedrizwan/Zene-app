@@ -10,17 +10,13 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.MoodLists
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
-import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneRadioAPIInterface
-import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
-import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -106,12 +102,12 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
         }
     }
 
-    fun countriesRadioList(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun countriesRadioList(country: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
         if (!internetIsConnected()) return@launch
 
         if (page == 0) radiosCountriesList.clear()
 
-        zeneAPI.radioViaCountries(page).onStart {
+        zeneAPI.radioViaCountries(country, page).onStart {
             isLoading = true
         }.catch {
             isLoading = false
@@ -122,4 +118,11 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
         }
     }
 
+    suspend fun getRadioInfo(id: String): ZeneMusicDataItems? {
+        return try {
+            zeneAPI.radioInfo(id).firstOrNull()
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

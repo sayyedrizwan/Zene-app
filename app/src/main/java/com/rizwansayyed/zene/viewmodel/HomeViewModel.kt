@@ -380,12 +380,4 @@ class HomeViewModel @Inject constructor(
             null
         }
     }
-
-    suspend fun getRadioInfo(id: String): ZeneMusicDataItems? {
-        return try {
-            zeneAPI.radioInfo(id).firstOrNull()
-        } catch (e: Exception) {
-            null
-        }
-    }
 }

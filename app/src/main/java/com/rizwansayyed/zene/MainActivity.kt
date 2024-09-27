@@ -104,6 +104,7 @@ import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
+import com.rizwansayyed.zene.viewmodel.RadioViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -122,6 +123,7 @@ class MainActivity : ComponentActivity() {
     private val homeNavModel: HomeNavModel by viewModels()
     private val musicPlayerViewModel: MusicPlayerViewModel by viewModels()
     private val zeneViewModel: ZeneViewModel by viewModels()
+    private val radioViewModel: RadioViewModel by viewModels()
 
     private var jobCurrent: Job? = null
 
@@ -360,7 +362,7 @@ class MainActivity : ComponentActivity() {
                 homeNavModel.showMusicPlayer(true)
             } else if (appLinkData.toString().contains(RADIO_INNER)) {
                 val radioID = appLinkData.toString().substringAfterLast(RADIO_INNER)
-                val info = homeViewModel.getRadioInfo(radioID)
+                val info = radioViewModel.getRadioInfo(radioID)
                 if (info?.id == null) {
                     resources.getString(R.string.no_radio_found).toast()
                     return@launch

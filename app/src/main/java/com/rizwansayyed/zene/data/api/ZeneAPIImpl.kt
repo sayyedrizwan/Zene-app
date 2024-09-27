@@ -306,9 +306,4 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.songInfo(id))
     }
 
-
-    override suspend fun radioInfo(id: String) = flow {
-        emit(zeneAPI.radioInfo(id))
-    }
-
 }

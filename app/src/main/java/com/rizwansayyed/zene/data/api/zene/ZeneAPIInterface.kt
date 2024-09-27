@@ -111,5 +111,4 @@ interface ZeneAPIInterface {
     suspend fun sponsorsAds()
 
     suspend fun updateAvailability(): Flow<ZeneUpdateAvailabilityResponse>
-    suspend fun radioInfo(id: String): Flow<ZeneMusicDataItems>
 }

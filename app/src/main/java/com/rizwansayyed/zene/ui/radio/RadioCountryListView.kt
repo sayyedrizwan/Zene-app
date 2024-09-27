@@ -100,7 +100,7 @@ fun RadioCountryListView(country: String) {
                             .background(Color.Black)
                             .clickable {
                                 page += 1
-                                radioViewModel.countriesRadioList(page)
+                                radioViewModel.countriesRadioList(country, page)
                             }
                             .border(1.dp, Color.White, RoundedCornerShape(100))
                             .padding(vertical = 9.dp, horizontal = 18.dp)) {
@@ -116,6 +116,6 @@ fun RadioCountryListView(country: String) {
     }
 
     LaunchedEffect(Unit) {
-        radioViewModel.countriesRadioList(page)
+        radioViewModel.countriesRadioList(country, page)
     }
 }

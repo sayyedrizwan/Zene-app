@@ -6,7 +6,6 @@ import com.rizwansayyed.zene.data.api.zene.ZeneRadioAPIInterface
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.intellij.lang.annotations.Language
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -53,7 +52,12 @@ class ZeneRadioAPIImpl @Inject constructor(
         emit(zeneAPI.radioViaLanguages(body))
     }
 
-    override suspend fun radioViaCountries(page: Int) = flow {
+
+    override suspend fun radioInfo(id: String) = flow {
+        emit(zeneAPI.radioInfo(id))
+    }
+
+    override suspend fun radioViaCountries(country: String, page: Int) = flow {
         val ip = ipAPI.ip()
 
         val json = JSONObject().apply {
