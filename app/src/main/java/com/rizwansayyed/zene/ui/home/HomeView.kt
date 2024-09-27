@@ -19,8 +19,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
@@ -47,8 +53,10 @@ import com.rizwansayyed.zene.ui.view.AdsBannerView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.NewUserCards
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
+import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.HeaderDialogRequest
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
@@ -70,6 +78,9 @@ fun HomeView(
     notificationPermission: ManagedActivityResultLauncher<String, Boolean>,
     homeViewModel: HomeViewModel, isNotificationOff: () -> Unit
 ) {
+    val coroutines = rememberCoroutineScope()
+    var topHeaderDialog by remember { mutableStateOf<String?>(null) }
+
     val isThreeGrid = isScreenBig()
 
     LazyVerticalGrid(
@@ -81,6 +92,12 @@ fun HomeView(
         item(1, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
                 HomeHeaderView()
+
+                if (topHeaderDialog != null) {
+                    Spacer(Modifier.height(20.dp))
+                    TextPoppins(topHeaderDialog!!, true, Color.Red, size = 20)
+                    Spacer(Modifier.height(30.dp))
+                }
             }
         }
         item(2001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -331,6 +348,11 @@ fun HomeView(
         homeViewModel.init(false)
         checkNotificationPermissionAndAsk(notificationPermission, isNotificationOff)
 
+        coroutines.launch {
+            val txt = HeaderDialogRequest.getAlertHeader()
+            if ((txt?.length ?: 0) > 4) topHeaderDialog = txt
+            else topHeaderDialog = null
+        }
         if (!homeViewModel.loadFirstUI) {
             delay(5.seconds)
             homeViewModel.loadFirstUI = true
