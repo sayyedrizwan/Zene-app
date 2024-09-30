@@ -88,8 +88,8 @@ object Utils {
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
-        val BASE_URL =
-            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+        val BASE_URL = BuildConfig.DOMAIN_BASE_URL
+//            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val ZENE_EXTRA_SPONSORS_API = "extra/sponsors"
         const val ZENE_EXTRA_APP_UPDATE_API = "extra/update_availability"

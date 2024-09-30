@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
@@ -73,7 +72,6 @@ val loopSong = listOf(SettingsData(R.string.enable, true), SettingsData(R.string
 @Composable
 fun SettingsView() {
     val loopSettings by musicLoopSettings.collectAsState(initial = false)
-    val autoplaySettings by musicAutoplaySettings.collectAsState(initial = true)
     val lockscreenSettings by playingSongOnLockScreen.collectAsState(initial = false)
     var clearCache by remember { mutableStateOf(false) }
 
@@ -104,14 +102,6 @@ fun SettingsView() {
             SettingsCardViews(R.string.loop_same_song, loopSong, loopSettings) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.MUSIC_LOOP_SETTINGS)
                 musicLoopSettings = flowOf(it)
-            }
-        }
-
-        item {
-            Spacer(Modifier.height(30.dp))
-            SettingsCardViews(R.string.autoplay_next_song, loopSong, autoplaySettings) {
-                logEvents(FirebaseLogEvents.FirebaseEvents.AUTOPLAY_NEXT_SONG_SETTINGS)
-                musicAutoplaySettings = flowOf(it)
             }
         }
 

@@ -22,7 +22,6 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
-import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
@@ -391,10 +390,6 @@ class MusicPlayService : Service() {
         val id = musicPlayerDB.firstOrNull()?.player ?: return@launch
         if (musicLoopSettings.firstOrNull() == true) {
             loadURL(id)
-            return@launch
-        }
-        if (musicAutoplaySettings.firstOrNull() == false) {
-            pause()
             return@launch
         }
         forwardAndRewindSong(true)

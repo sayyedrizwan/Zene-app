@@ -44,12 +44,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
-import com.rizwansayyed.zene.data.db.DataStoreManager.musicAutoplaySettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
@@ -63,7 +60,6 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
-import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AddSongToPlaylist
 import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -167,7 +163,6 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
     var addToPlaylistSongs by remember { mutableStateOf(false) }
     val musicSpeed by musicSpeedSettings.collectAsState(initial = `1`)
     val musicLoop by musicLoopSettings.collectAsState(initial = false)
-    val musicAutoplay by musicAutoplaySettings.collectAsState(initial = false)
 
     if (playerInfo?.player?.id?.contains(RADIO_ARTISTS) == false) {
         Spacer(Modifier.height(30.dp))
@@ -231,33 +226,6 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
 
                 AnimatedVisibility(
                     musicLoop, Modifier
-                        .padding(top = 27.dp)
-                        .align(Alignment.BottomCenter)
-                ) {
-                    Spacer(
-                        Modifier
-                            .size(4.dp)
-                            .clip(RoundedCornerShape(100))
-                            .background(White)
-                    )
-                }
-            }
-        }
-
-        item {
-            val autoplayEnabled = stringResource(R.string.autoplay_song_enabled)
-            val autoplayDisabled = stringResource(R.string.autoplay_song_disabled)
-
-            Box {
-                ImgButton(R.drawable.ic_go_forward) {
-                    logEvents(FirebaseLogEvents.FirebaseEvents.AUTOPLAY_NEXT_SONG_SETTINGS)
-                    if (musicAutoplay) autoplayDisabled.toast()
-                    else autoplayEnabled.toast()
-                    musicAutoplaySettings = flowOf(!musicAutoplay)
-                }
-
-                AnimatedVisibility(
-                    musicAutoplay, Modifier
                         .padding(top = 27.dp)
                         .align(Alignment.BottomCenter)
                 ) {
