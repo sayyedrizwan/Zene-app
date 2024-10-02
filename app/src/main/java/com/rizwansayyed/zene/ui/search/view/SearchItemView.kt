@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.ui.home.view.HorizontalVideoView
 import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.view.AdsBannerView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
@@ -100,6 +101,14 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
                     }
                 }
 
+                item(key = 1001, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(60.dp))
+                        AdsBannerView()
+                        Spacer(Modifier.height(60.dp))
+                    }
+                }
+
                 item(key = 59, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     Spacer(Modifier.height(70.dp))
                 }
@@ -143,7 +152,7 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
                 }
 
                 item(key = 1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                   Spacer(Modifier.height(240.dp))
+                    Spacer(Modifier.height(240.dp))
                 }
             }
         }

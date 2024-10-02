@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.ui.home.view.StyleSize
 import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.home.view.TextTitleHeader
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.view.AdsBannerView
 import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
@@ -111,6 +112,15 @@ fun ArtistsView(id: String?, close: () -> Unit) {
                         ArtistsSocialButton(v.data.socialMedia)
                     }
                 }
+
+                item(1001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(60.dp))
+                        AdsBannerView()
+                        Spacer(Modifier.height(60.dp))
+                    }
+                }
+
                 item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                     Column {
                         Spacer(Modifier.height(90.dp))
@@ -172,6 +182,14 @@ fun ArtistsView(id: String?, close: () -> Unit) {
                             Pair(TextSize.SMALL, R.string.albums),
                             StyleSize.SHOW_AUTHOR, showGrid = true
                         )
+                    }
+                }
+
+                item(1002, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                    Column {
+                        Spacer(Modifier.height(60.dp))
+                        AdsBannerView()
+                        Spacer(Modifier.height(60.dp))
                     }
                 }
 

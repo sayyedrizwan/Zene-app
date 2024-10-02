@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.radio.view.RadioCountriesView
 import com.rizwansayyed.zene.ui.radio.view.RadioLanguagesView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.view.AdsBannerView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
@@ -76,7 +78,8 @@ fun RadioView(close: () -> Unit) {
                 }
             }
 
-            is APIResponse.Success -> items(v.data, span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            is APIResponse.Success -> itemsIndexed(
+                v.data, span = { _, _ -> GridItemSpan(TOTAL_GRID_SIZE) }) { i, it ->
                 if (it.list.isNotEmpty()) {
                     Column(Modifier.padding(top = 50.dp)) {
                         HorizontalSongView(
@@ -85,6 +88,12 @@ fun RadioView(close: () -> Unit) {
                             StyleSize.SHOW_AUTHOR,
                             showGrid = false
                         )
+
+                        if (i % 2 == 0) {
+                            Spacer(Modifier.height(60.dp))
+                            AdsBannerView()
+                            Spacer(Modifier.height(60.dp))
+                        }
                     }
                 }
             }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -142,6 +143,7 @@ fun HomeView(
                 Spacer(Modifier.height(60.dp))
             }
         }
+
         item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
                 HorizontalSongView(
@@ -152,6 +154,15 @@ fun HomeView(
                 )
             }
         }
+
+        item(2005, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column {
+                Spacer(Modifier.height(60.dp))
+                AdsBannerView()
+                Spacer(Modifier.height(60.dp))
+            }
+        }
+
 
         if (homeViewModel.loadFirstUI) {
             item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -274,10 +285,17 @@ fun HomeView(
                     HomeArtistsSimilarLoading()
                 }
 
-                is APIResponse.Success -> items(v.data,
-                    { it.artists.id ?: UUID.randomUUID() },
-                    span = { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    HomeArtistsSimilarToView(it)
+                is APIResponse.Success -> itemsIndexed(v.data,
+                    span = { _, _ -> GridItemSpan(TOTAL_GRID_SIZE) }) { i, item ->
+                    Column {
+                        HomeArtistsSimilarToView(item)
+
+                        if (i % 2 == 0) {
+                            Spacer(Modifier.height(60.dp))
+                            AdsBannerView()
+                            Spacer(Modifier.height(60.dp))
+                        }
+                    }
                 }
             }
         }
@@ -297,7 +315,10 @@ fun HomeView(
                 APIResponse.Loading -> {
                     item(19, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                         Row(Modifier.padding(start = 5.dp, bottom = 7.dp)) {
-                            TextPoppinsSemiBold(stringResource(R.string.songs_for_you), size = 15)
+                            TextPoppinsSemiBold(
+                                stringResource(R.string.songs_for_you),
+                                size = 15
+                            )
                         }
                     }
 
