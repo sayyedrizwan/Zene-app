@@ -23,7 +23,7 @@ object RetrofitAPI {
     @Provides
     fun zeneAPIService(): ZeneAPIService {
         val okHttpClient = OkHttpClient.Builder().readTimeout(3, TimeUnit.MINUTES)
-            .connectTimeout(3, TimeUnit.MINUTES)
+            .connectTimeout(3, TimeUnit.MINUTES).writeTimeout(3, TimeUnit.MINUTES)
 
         return Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi)).build()
