@@ -101,6 +101,7 @@ fun HomeView(
                 }
             }
         }
+
         item(2001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             when (val v = homeViewModel.isAppUpdateAvailable) {
                 APIResponse.Empty -> {}
@@ -371,8 +372,8 @@ fun HomeView(
 
         coroutines.launch {
             val txt = HeaderDialogRequest.getAlertHeader()
-            if ((txt?.length ?: 0) > 4) topHeaderDialog = txt
-            else topHeaderDialog = null
+            topHeaderDialog = if ((txt?.length ?: 0) > 4) txt
+            else null
         }
         if (!homeViewModel.loadFirstUI) {
             delay(5.seconds)

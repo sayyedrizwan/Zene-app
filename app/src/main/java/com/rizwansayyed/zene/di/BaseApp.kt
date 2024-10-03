@@ -21,6 +21,6 @@ class BaseApp : Application() {
         context = this
         FacebookSdk.sdkInitialize(this)
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG)
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
     }
 }
