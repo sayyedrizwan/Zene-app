@@ -12,9 +12,11 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.sponsorsAdsDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
 import com.rizwansayyed.zene.utils.Utils.toast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -34,7 +36,7 @@ class ZeneAPIImpl @Inject constructor(
         val ip = ipAPI.ip()
         ipDB = flowOf(ip)
         emit(ip)
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun updateUser() = flow {
         val ip = ip().firstOrNull()
@@ -59,15 +61,15 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.updateUser(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun getUser(email: String) = flow {
         emit(zeneAPI.getUser(email))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun updateAvailability() = flow {
         emit(zeneAPI.updateAvailability())
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun sponsorsAds() {
         try {
@@ -80,7 +82,7 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun moodLists() = flow {
         emit(zeneAPI.moodLists())
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun moodLists(id: String) = flow {
         val json = JSONObject().apply {
@@ -88,7 +90,7 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.moodLists(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun latestReleases(id: String) = flow {
         emit(zeneAPI.latestReleases(id))
@@ -96,31 +98,31 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun lyrics(id: String, name: String, artists: String) = flow {
         emit(zeneAPI.lyrics(id, name, artists))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun playerVideoData(name: String, artists: String) = flow {
         emit(zeneAPI.playerVideoData(name, artists))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun merchandise(name: String, artists: String) = flow {
         emit(zeneAPI.merchandise("${artists.substringBefore("-").substringBefore("&")} - $name"))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun topMostListeningSong() = flow {
         emit(zeneAPI.topMostListeningSong())
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun topMostListeningArtists() = flow {
         emit(zeneAPI.topMostListeningArtists())
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun searchData(s: String) = flow {
         emit(zeneAPI.searchData(s))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun searchSuggestions(s: String) = flow {
         emit(zeneAPI.searchSuggestions(s))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun favArtistsData() = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -129,7 +131,7 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.favArtistsData(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun suggestedSongs() = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -138,11 +140,11 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.suggestedSongs(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun suggestedSongs(id: String) = flow {
         emit(zeneAPI.suggestedSongs(id))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun recommendedPlaylists() = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -151,7 +153,7 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedPlaylists(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun recommendedAlbums() = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -160,7 +162,7 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedAlbums(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun recommendedVideo() = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -169,7 +171,7 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.recommendedVideo(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun suggestTopSongs() = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -178,7 +180,7 @@ class ZeneAPIImpl @Inject constructor(
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.suggestTopSongs(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun addMusicHistory(songID: String) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -191,7 +193,7 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.addSongHistory(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun artistsInfo(name: String) = flow {
         val json = JSONObject().apply {
@@ -200,12 +202,12 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.artistsInfo(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun playlistAlbums(id: String) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
         emit(zeneAPI.playlistAlbums(id, email))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun updateArtists(list: Array<String>) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
@@ -220,7 +222,7 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.updateArtists(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun artistsData(name: String) = flow {
         val json = JSONObject().apply {
@@ -229,17 +231,17 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.artistsData(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun getMusicHistory(page: Int) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
         emit(zeneAPI.getSongHistory(email, page))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun savedPlaylists(page: Int) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
         emit(zeneAPI.savedPlaylists(email, page))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun createNewPlaylists(name: String, file: File?, id: String?) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
@@ -253,26 +255,26 @@ class ZeneAPIImpl @Inject constructor(
         val idForm = id?.trim()?.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
         emit(zeneAPI.playlistCreate(fileForm, nameForm, emailForm, idForm))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun searchImg(q: String) = flow {
         emit(zeneAPI.searchImg(q))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun deletePlaylists(id: String) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
         emit(zeneAPI.deletePlaylists(email, id))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun checkIfSongPresentInPlaylists(songId: String, page: Int) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
         emit(zeneAPI.checkIfSongPresentInPlaylists(email, page, songId))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun addRemoveSongFromPlaylists(songId: String, pID: String, doAdd: Boolean) =
         flow {
             emit(zeneAPI.addRemoveSongFromPlaylists(pID, songId, doAdd))
-        }
+        }.flowOn(Dispatchers.IO)
 
 
     override suspend fun userPlaylistData(playlistID: String) = flow {
@@ -282,7 +284,7 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.userPlaylistData(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun artistsPosts() = flow {
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
@@ -292,18 +294,17 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.artistsPosts(body))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun userPlaylistSongs(playlistID: String, page: Int) = flow {
         emit(zeneAPI.userPlaylistSongs(playlistID, page))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun importSpotifyPlaylists(token: String, path: String?) = flow {
         emit(zeneAPI.importSpotifyPlaylists(token, path))
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun songInfo(id: String) = flow {
         emit(zeneAPI.songInfo(id))
-    }
-
+    }.flowOn(Dispatchers.IO)
 }
