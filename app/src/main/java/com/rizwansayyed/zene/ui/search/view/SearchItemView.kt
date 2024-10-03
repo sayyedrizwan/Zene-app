@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -46,6 +47,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 @Composable
 fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Unit) {
     val isThreeGrid = isScreenBig()
+    val focusManager = LocalFocusManager.current
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -162,6 +164,7 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
     LaunchedEffect(Unit) {
         homeViewModel.search(search)
         enterUniqueSearchHistory(search)
+        focusManager.clearFocus()
     }
 }
 
