@@ -12,6 +12,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.model.IpJsonResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSponsorsItems
+import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityItem
+import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.APP_REVIEW_STATUS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
@@ -25,6 +27,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SE
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SONG_QUALITY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SPONSORS_ADS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.UPDATE_AVAILABILITY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_IP_INFO
 import com.rizwansayyed.zene.data.db.model.AppReviewData
@@ -36,6 +39,7 @@ import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
 import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
@@ -48,6 +52,7 @@ object DataStoreManager {
         const val TS_LAST_DATA = 1721759124000
         val USER_INFOS = stringPreferencesKey("user_info")
         val SPONSORS_ADS = stringPreferencesKey("sponsors_ads")
+        val UPDATE_AVAILABILITY = stringPreferencesKey("update_availability")
         val SEARCH_HISTORY = stringPreferencesKey("search_history")
         val MUSIC_PLAYER = stringPreferencesKey("music_player")
         val MUSIC_SPEED = stringPreferencesKey("music_speed")
@@ -78,6 +83,16 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(ZeneSponsorsItems::class.java).toJson(value.first())
             context.dataStore.edit { it[SPONSORS_ADS] = json }
+        }
+
+    var updateAvailabilityDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(ZeneUpdateAvailabilityResponse::class.java)
+                .fromJson(it[UPDATE_AVAILABILITY] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(ZeneUpdateAvailabilityResponse::class.java).toJson(value.first())
+            context.dataStore.edit { it[UPDATE_AVAILABILITY] = json }
         }
 
     var searchHistoryDB
@@ -162,4 +177,14 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[SONG_QUALITY] = value.first().name }
         }
+
+    suspend fun setCustomTimestamp(key: String) {
+        val keyInfo = longPreferencesKey(key)
+        context.dataStore.edit { it[keyInfo] = System.currentTimeMillis() }
+    }
+
+    suspend fun getCustomTimestamp(key: String): Long? {
+        val keyInfo = longPreferencesKey(key)
+        return context.dataStore.data.map { it[keyInfo] }.firstOrNull()
+    }
 }

@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
+import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
@@ -143,6 +144,7 @@ class HomeViewModel @Inject constructor(
         }.catch {
             isAppUpdateAvailable = APIResponse.Error(it)
         }.collectLatest {
+            updateAvailabilityDB = flowOf(it)
             isAppUpdateAvailable = if (it.android != null)
                 APIResponse.Success(it.android)
             else

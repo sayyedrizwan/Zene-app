@@ -4,15 +4,34 @@ import android.os.Build
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.LATEST_RELEASES_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.MOOD_LIST_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.RECOMMENDED_ALBUMS_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.RECOMMENDED_PLAYLISTS_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.RECOMMENDED_VIDEOS_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.SPONSORS_ADS_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.SUGGESTED_SONGS_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.SUGGESTED_TOP_SONGS_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.TOP_MOST_LISTENING_ARTISTS_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.TOP_MOST_LISTENING_SONG_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.UPDATE_AVAILABILITY_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.getAPICache
+import com.rizwansayyed.zene.data.api.ApiCache.setAPICache
 import com.rizwansayyed.zene.data.api.ip.IpAPIService
+import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
+import com.rizwansayyed.zene.data.db.DataStoreManager.getCustomTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.ipDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.setCustomTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.sponsorsAdsDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
+import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -68,20 +87,36 @@ class ZeneAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun updateAvailability() = flow {
-        emit(zeneAPI.updateAvailability())
+        val ts = getCustomTimestamp(UPDATE_AVAILABILITY_CACHE)
+        if (timeDifferenceInMinutes(ts) > 720) {
+            val response = zeneAPI.updateAvailability()
+            emit(response)
+        } else updateAvailabilityDB.first()?.let { emit(it) }
     }.flowOn(Dispatchers.IO)
 
     override suspend fun sponsorsAds() {
-        try {
-            val ads = zeneAPI.sponsors().android
-            sponsorsAdsDB = flowOf(ads)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        val ts = getCustomTimestamp(SPONSORS_ADS_CACHE)
+        if (timeDifferenceInMinutes(ts) > 720) {
+            try {
+                val ads = zeneAPI.sponsors().android
+                setCustomTimestamp(SPONSORS_ADS_CACHE)
+                sponsorsAdsDB = flowOf(ads)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     override suspend fun moodLists() = flow {
-        emit(zeneAPI.moodLists())
+        val cache = getAPICache(MOOD_LIST_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
+        val response = zeneAPI.moodLists()
+        setAPICache(MOOD_LIST_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun moodLists(id: String) = flow {
@@ -93,7 +128,15 @@ class ZeneAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun latestReleases(id: String) = flow {
-        emit(zeneAPI.latestReleases(id))
+        val cache = getAPICache(LATEST_RELEASES_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
+        val response = zeneAPI.latestReleases(id)
+        setAPICache(LATEST_RELEASES_CACHE, response)
+        emit(response)
     }
 
     override suspend fun lyrics(id: String, name: String, artists: String) = flow {
@@ -109,11 +152,26 @@ class ZeneAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun topMostListeningSong() = flow {
-        emit(zeneAPI.topMostListeningSong())
+        val cache = getAPICache(TOP_MOST_LISTENING_SONG_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
+        val response = zeneAPI.topMostListeningSong()
+        setAPICache(TOP_MOST_LISTENING_SONG_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun topMostListeningArtists() = flow {
-        emit(zeneAPI.topMostListeningArtists())
+        val cache = getAPICache(TOP_MOST_LISTENING_ARTISTS_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+        val response = zeneAPI.topMostListeningArtists()
+        setAPICache(TOP_MOST_LISTENING_ARTISTS_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun searchData(s: String) = flow {
@@ -134,12 +192,21 @@ class ZeneAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun suggestedSongs() = flow {
+        val cache = getAPICache(SUGGESTED_SONGS_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.suggestedSongs(body))
+
+        val response = zeneAPI.suggestedSongs(body)
+        setAPICache(SUGGESTED_SONGS_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun suggestedSongs(id: String) = flow {
@@ -147,39 +214,71 @@ class ZeneAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun recommendedPlaylists() = flow {
+        val cache = getAPICache(RECOMMENDED_PLAYLISTS_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.recommendedPlaylists(body))
+        val response = zeneAPI.recommendedPlaylists(body)
+        setAPICache(RECOMMENDED_PLAYLISTS_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun recommendedAlbums() = flow {
+        val cache = getAPICache(RECOMMENDED_ALBUMS_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.recommendedAlbums(body))
+        val response = zeneAPI.recommendedAlbums(body)
+        setAPICache(RECOMMENDED_ALBUMS_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun recommendedVideo() = flow {
+        val cache = getAPICache(RECOMMENDED_VIDEOS_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.recommendedVideo(body))
+        val response = zeneAPI.recommendedVideo(body)
+        setAPICache(RECOMMENDED_VIDEOS_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun suggestTopSongs() = flow {
+        val cache = getAPICache(SUGGESTED_TOP_SONGS_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.suggestTopSongs(body))
+        val response = zeneAPI.suggestTopSongs(body)
+        setAPICache(SUGGESTED_TOP_SONGS_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun addMusicHistory(songID: String) = flow {
