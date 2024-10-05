@@ -138,6 +138,8 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.ads)
 
+    implementation(libs.billing)
+
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
