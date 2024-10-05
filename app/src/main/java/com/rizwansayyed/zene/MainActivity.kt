@@ -66,7 +66,6 @@ import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
 import com.rizwansayyed.zene.ui.radio.RadioView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
-import com.rizwansayyed.zene.ui.subscription.SubscriptionView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.AdsClickWebView
 import com.rizwansayyed.zene.ui.view.AlertDialogView
@@ -207,9 +206,6 @@ class MainActivity : ComponentActivity() {
                             ArtistsView(it.arguments?.getString("id")) {
                                 navController.popBackStack()
                             }
-                        }
-                        composable(NAV_SUBSCRIPTION) {
-                            SubscriptionView()
                         }
                     }
 

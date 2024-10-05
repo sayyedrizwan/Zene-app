@@ -1,5 +1,14 @@
 package com.rizwansayyed.zene.data.api
 
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.MOOD_LIST_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.RADIO_COUNTRIES_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.RADIO_LANGUAGES_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.RADIO_MOOD_LIST_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.RADIO_YOU_MAY_LIKE_CACHE
+import com.rizwansayyed.zene.data.api.ApiCache.getAPICache
+import com.rizwansayyed.zene.data.api.ApiCache.getAPICacheMood
+import com.rizwansayyed.zene.data.api.ApiCache.setAPICache
+import com.rizwansayyed.zene.data.api.ApiCache.setAPICacheMood
 import com.rizwansayyed.zene.data.api.ip.IpAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
 import com.rizwansayyed.zene.data.api.zene.ZeneRadioAPIInterface
@@ -17,6 +26,12 @@ class ZeneRadioAPIImpl @Inject constructor(
 ) : ZeneRadioAPIInterface {
 
     override suspend fun topRadio() = flow {
+        val cache = getAPICacheMood(RADIO_MOOD_LIST_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
         val ip = ipAPI.ip()
 
         val json = JSONObject().apply {
@@ -24,10 +39,18 @@ class ZeneRadioAPIImpl @Inject constructor(
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.topRadio(body))
+        val response = zeneAPI.topRadio(body)
+        setAPICacheMood(RADIO_MOOD_LIST_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun radiosYouMayLike() = flow {
+        val cache = getAPICache(RADIO_YOU_MAY_LIKE_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
         val ip = ipAPI.ip()
 
         val json = JSONObject().apply {
@@ -35,11 +58,21 @@ class ZeneRadioAPIImpl @Inject constructor(
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.radiosYouMayLike(body))
+        val response = zeneAPI.radiosYouMayLike(body)
+        setAPICache(RADIO_YOU_MAY_LIKE_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun radioLanguages() = flow {
-        emit(zeneAPI.radioLanguages())
+        val cache = getAPICache(RADIO_LANGUAGES_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
+        val response = zeneAPI.radioLanguages()
+        setAPICache(RADIO_LANGUAGES_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun radiosViaLanguages(language: String) = flow {
@@ -72,7 +105,15 @@ class ZeneRadioAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun radioCountries() = flow {
-        emit(zeneAPI.radioCountries())
+        val cache = getAPICache(RADIO_COUNTRIES_CACHE)
+        if (cache != null) {
+            emit(cache)
+            return@flow
+        }
+
+        val response = zeneAPI.radioCountries()
+        setAPICache(RADIO_COUNTRIES_CACHE, response)
+        emit(response)
     }.flowOn(Dispatchers.IO)
 
 }

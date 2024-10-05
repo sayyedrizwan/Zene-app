@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "130"
-versionname = "3.02.747"
+appversion = "131"
+versionname = "3.02.757"
 
 agp = "8.5.2"
 datastorePreferences = "1.1.1"
@@ -36,7 +36,6 @@ lifecycle-compose = "2.8.6"
 coil = "2.7.0"
 ads = "23.4.0"
 nav = "2.8.2"
-billing = "7.1.0"
 webkit = "1.12.1"
 jsoup = "1.18.1"
 
@@ -89,9 +88,6 @@ lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
-
-
-billing-client = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
 
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-gif = { group = "io.coil-kt", name = "coil-gif", version.ref = "coil" }

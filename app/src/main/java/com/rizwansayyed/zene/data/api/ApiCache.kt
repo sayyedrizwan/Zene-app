@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.api
 
 import android.util.Log
+import com.rizwansayyed.zene.data.api.model.MoodLists
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.getCustomTimestamp
@@ -20,6 +21,7 @@ object ApiCache {
     object ApiCacheKeys {
         const val UPDATE_AVAILABILITY_CACHE = "update_availability_cache"
         const val SPONSORS_ADS_CACHE = "sponsors_ads_cache"
+        const val RADIO_MOOD_LIST_CACHE = "radio_mood_list_cache"
         const val MOOD_LIST_CACHE = "mood_list_cache"
         const val LATEST_RELEASES_CACHE = "latest_releases_cache"
         const val TOP_MOST_LISTENING_SONG_CACHE = "top_most_listening_song_cache"
@@ -29,10 +31,46 @@ object ApiCache {
         const val RECOMMENDED_ALBUMS_CACHE = "recommended_albums_cache"
         const val RECOMMENDED_VIDEOS_CACHE = "recommended_videos_cache"
         const val SUGGESTED_TOP_SONGS_CACHE = "suggested_top_songs_cache"
+        const val RADIO_YOU_MAY_LIKE_CACHE = "radio_you_may_like_cache"
+        const val RADIO_LANGUAGES_CACHE = "radio_languages_cache"
+        const val RADIO_COUNTRIES_CACHE = "radio_countries_cache"
     }
 
     private val pathFolder = File(context.cacheDir, "api_cache").apply {
         mkdir()
+    }
+
+    suspend fun getAPICacheMood(key: String): List<MoodLists>? {
+        val path = File(pathFolder, "${key}.json")
+
+        if (!path.exists()) return null
+        val content = withContext(Dispatchers.IO) { path.readText() }
+        val data = moshi.adapter(Array<MoodLists>::class.java).fromJson(content)
+            ?: return null
+
+        if (data.isEmpty()) return null
+
+        val ts = getCustomTimestamp(key) ?: return null
+        if (timeDifferenceInMinutes(ts) > (45..50).random()) return null
+
+        return data.toList()
+    }
+
+
+    suspend fun setAPICacheMood(key: String, data: List<MoodLists>) {
+        val path = File(pathFolder, "${key}.json")
+        val json =
+            moshi.adapter(Array<MoodLists>::class.java).toJson(data.toTypedArray())
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val writer = FileWriter(path)
+                writer.write(json)
+                writer.close()
+                setCustomTimestamp(key)
+            } catch (e: Exception) {
+                Log.d("TAG", "setAPICache: Writing Error ${e.message}")
+            }
+        }
     }
 
     suspend fun getAPICache(key: String): ZeneMusicDataResponse? {
