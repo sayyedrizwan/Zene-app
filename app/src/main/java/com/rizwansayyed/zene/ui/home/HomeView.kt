@@ -370,7 +370,7 @@ fun HomeView(
         homeViewModel.init(false)
         checkNotificationPermissionAndAsk(notificationPermission, isNotificationOff)
 
-        coroutines.launch {
+        coroutines.launch(Dispatchers.IO) {
             val txt = HeaderDialogRequest.getAlertHeader()
             topHeaderDialog = if ((txt?.length ?: 0) > 4) txt
             else null
