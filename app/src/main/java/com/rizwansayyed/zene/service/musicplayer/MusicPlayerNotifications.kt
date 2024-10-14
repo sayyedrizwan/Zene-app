@@ -169,9 +169,9 @@ class MusicPlayerNotifications(
             setSmallIcon(R.drawable.ic_zene_logo_round)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setSilent(true)
-            priority = NotificationCompat.PRIORITY_MAX
+            priority = NotificationCompat.PRIORITY_LOW
             setContentIntent(openMusicPlayerIntent)
-            setContentTitle("")
+            setContentTitle(" - ")
         }
 
         generateChannel()

@@ -84,12 +84,15 @@ object Utils {
         const val BASE_URL_IP = "http://ip-api.com/"
         const val JSON_IP = "json"
 
+        const val GOOGLE_DOCS_HEADER_ALERT_URL =
+            "https://docs.google.com/document/d/1fQdKLy33taRrqcXGOrFCRApuQacLL0wFrHTkQCmRHDg/edit?usp=sharing"
+
         const val IMG_PLAYLISTS = "https://www.zenemusic.co/monthly-playlist.jpg"
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
-        val BASE_URL = BuildConfig.DOMAIN_BASE_URL
-//            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+        val BASE_URL =
+            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val ZENE_EXTRA_SPONSORS_API = "extra/sponsors"
         const val ZENE_EXTRA_APP_UPDATE_API = "extra/update_availability"
@@ -172,8 +175,12 @@ object Utils {
     }
 
     fun userAlphabetsImg(n: String): String {
-        return "https://ui-avatars.com/api/?name=${n.replace(" ", "+")}" +
-                "&background=2F3C7E&color=fff&size=128&length=2"
+        return "https://ui-avatars.com/api/?name=${
+            n.replace(
+                " ",
+                "+"
+            )
+        }" + "&background=2F3C7E&color=fff&size=128&length=2"
     }
 
     fun openBrowser(url: String) = CoroutineScope(Dispatchers.Main).launch {

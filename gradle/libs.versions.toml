@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "134"
-versionname = "3.02.760"
+appversion = "135"
+versionname = "3.02.762"
 
 agp = "8.5.2"
 datastorePreferences = "1.1.1"

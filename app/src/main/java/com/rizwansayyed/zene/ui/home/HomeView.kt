@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
@@ -57,12 +58,12 @@ import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
-import com.rizwansayyed.zene.utils.HeaderDialogRequest
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
 import com.rizwansayyed.zene.utils.Utils.isUpdateAvailableFunction
+import com.rizwansayyed.zene.viewmodel.HomeNavModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +80,7 @@ fun HomeView(
     notificationPermission: ManagedActivityResultLauncher<String, Boolean>,
     homeViewModel: HomeViewModel, isNotificationOff: () -> Unit
 ) {
-    val coroutines = rememberCoroutineScope()
+    val homeNavModel: HomeNavModel = hiltViewModel()
     var topHeaderDialog by remember { mutableStateOf<String?>(null) }
 
     val isThreeGrid = isScreenBig()
@@ -366,15 +367,17 @@ fun HomeView(
 
     }
 
+
+    LaunchedEffect(homeNavModel.topAlertHeader) {
+        topHeaderDialog = if (homeNavModel.topAlertHeader.length > 4) homeNavModel.topAlertHeader
+        else null
+    }
+
     LaunchedEffect(Unit) {
         homeViewModel.init(false)
         checkNotificationPermissionAndAsk(notificationPermission, isNotificationOff)
+        homeNavModel.getAlertHeader()
 
-        coroutines.launch(Dispatchers.IO) {
-            val txt = HeaderDialogRequest.getAlertHeader()
-            topHeaderDialog = if ((txt?.length ?: 0) > 4) txt
-            else null
-        }
         if (!homeViewModel.loadFirstUI) {
             delay(5.seconds)
             homeViewModel.loadFirstUI = true

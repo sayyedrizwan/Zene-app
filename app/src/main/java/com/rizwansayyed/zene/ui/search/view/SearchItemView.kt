@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -43,11 +44,12 @@ import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.enterUniqueSearchHistory
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Unit) {
     val isThreeGrid = isScreenBig()
-    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LazyVerticalGrid(
         GridCells.Fixed(TOTAL_GRID_SIZE),
@@ -164,7 +166,8 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
     LaunchedEffect(Unit) {
         homeViewModel.search(search)
         enterUniqueSearchHistory(search)
-        focusManager.clearFocus()
+        delay(500)
+        keyboardController?.hide()
     }
 }
 
