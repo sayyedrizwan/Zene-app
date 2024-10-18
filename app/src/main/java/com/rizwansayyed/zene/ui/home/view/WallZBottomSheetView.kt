@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.home.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -46,19 +50,22 @@ fun WallZBottomSheetView(close: () -> Unit) {
     val context = LocalContext.current
 
 
-    ModalBottomSheet(close, sheetState = SheetState(true, Density(context), SheetValue.Expanded)) {
-        Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
-            HorizontalPager(state = pagerState) { page ->
+    ModalBottomSheet(close, containerColor = MainColor, contentColor = MainColor) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            wallzImg.forEach {
                 AsyncImage(
-                    wallzImg[page],
-                    "",
+                    it, "",
                     Modifier
                         .fillMaxWidth()
-                        .height(500.dp),
-                    contentScale = ContentScale.Crop
+                        .height(500.dp), contentScale = ContentScale.Crop
                 )
             }
-
             Spacer(Modifier.height(20.dp))
             Row(
                 Modifier
@@ -69,10 +76,8 @@ fun WallZBottomSheetView(close: () -> Unit) {
                     }
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(13.dp))
-                    .background(MainColor)
-                    .padding(vertical = 15.dp),
-                Arrangement.Center, Alignment.CenterVertically
-            ) {
+                    .background(Color.Black)
+                    .padding(vertical = 15.dp), Arrangement.Center, Alignment.CenterVertically) {
                 TextPoppinsSemiBold(stringResource(R.string.open_on_play_store), true, size = 14)
             }
             Spacer(Modifier.height(20.dp))
