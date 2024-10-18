@@ -156,4 +156,14 @@
     <string name="open_zene_web">Abrir Zené Web</string>
     <string name="today_sponsor">Patrocinador de hoje</string>
     <string name="app_update_available">Atualização do aplicativo disponível</string>
+    <string name="zene_fm">Zené FM</string>
+    <string name="radios_languages">Rádios por idiomas</string>
+    <string name="radios_countries">Rádios por países</string>
+    <string name="radios_you_may_like">Rádios que você pode gostar</string>
+    <string name="live_broadcasting">Transmissão ao vivo</string>
+    <string name="no_radio_of_this_lang">Não há rádio desta língua em seu país</string>
+    <string name="issue_with_radio_buffering">O buffering frequente e o atraso são causados pela estação de rádio, não pelo aplicativo Zené.</string>
+    <string name="no_radio_found">Nenhuma rádio encontrada</string>
+    <string name="pause">Pausa</string>
+    <string name="pip_app_settings_desc">Ative o modo de imagem em imagem nas configurações do aplicativo. Para reproduzir em segundo plano.</string>
 </resources>

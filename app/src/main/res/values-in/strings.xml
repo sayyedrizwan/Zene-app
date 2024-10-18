@@ -155,4 +155,14 @@
     <string name="open_zene_web">Buka Zene Jaringan</string>
     <string name="today_sponsor">Sponsor Hari Ini</string>
     <string name="app_update_available">Pembaruan Aplikasi Tersedia</string>
+    <string name="zene_fm">Zene FM</string>
+    <string name="radios_languages">Radio Berdasarkan Bahasa</string>
+    <string name="radios_countries">Radio Berdasarkan Negara</string>
+    <string name="radios_you_may_like">Radio yang Mungkin Anda Sukai</string>
+    <string name="live_broadcasting">Siaran Langsung</string>
+    <string name="no_radio_of_this_lang">Tidak ada radio bahasa ini di negara Anda</string>
+    <string name="issue_with_radio_buffering">Penyangga dan penundaan yang sering disebabkan oleh stasiun radio, bukan aplikasi Zene.</string>
+    <string name="no_radio_found">Tidak ditemukan radio</string>
+    <string name="pause">Jeda</string>
+    <string name="pip_app_settings_desc">Aktifkan mode gambar dalam gambar dari pengaturan Aplikasi. Untuk bermain di latar belakang.</string>
 </resources>

@@ -156,4 +156,14 @@
     <string name="open_zene_web">Zene Web を開く</string>
     <string name="today_sponsor">本日のスポンサー</string>
     <string name="app_update_available">アプリのアップデートが利用可能です</string>
+    <string name="zene_fm">ゼネ FM</string>
+    <string name="radios_languages">言語によるラジオ</string>
+    <string name="radios_countries">国別のラジオ</string>
+    <string name="radios_you_may_like">気に入るかもしれないラジオ</string>
+    <string name="live_broadcasting">ライブ放送</string>
+    <string name="no_radio_of_this_lang">この言語のラジオはあなたの国にはありません</string>
+    <string name="issue_with_radio_buffering">頻繁なバッファリングと遅延は、ラジオ局によるものであり、Zeneアプリによるものではありません。</string>
+    <string name="no_radio_found">ラジオが見つかりません</string>
+    <string name="pause">一時停止</string>
+    <string name="pip_app_settings_desc">アプリの設定からピクチャーインピクチャーモードを有効にします。バックグラウンドで再生します。</string>
 </resources>

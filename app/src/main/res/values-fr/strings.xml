@@ -155,4 +155,14 @@
     <string name="open_zene_web">Ouvrir Zène francés</string>
     <string name="today_sponsor">Parrain d\'aujourd\'hui</string>
     <string name="app_update_available">Mise à jour de l\'application disponible</string>
+    <string name="zene_fm">Zène FM</string>
+    <string name="radios_languages">Radios par langues</string>
+    <string name="radios_countries">Radios par pays</string>
+    <string name="radios_you_may_like">Radios qui pourraient vous plaire</string>
+    <string name="live_broadcasting">Diffusion en direct</string>
+    <string name="no_radio_of_this_lang">Aucune radio de cette langue dans votre pays</string>
+    <string name="issue_with_radio_buffering">Le buffering et le délai fréquents sont dus à la station de radio, pas à l\'application Zène.</string>
+    <string name="no_radio_found">Aucune radio trouvée</string>
+    <string name="pause">Pause</string>
+    <string name="pip_app_settings_desc">Activez le mode image dans l\'image dans les paramètres de l\'application. Pour jouer en arrière-plan.</string>
 </resources>

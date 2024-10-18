@@ -149,7 +149,7 @@ fun LoadingNewsCardView() {
 }
 
 @Composable
-fun shimmerEffectBrush(): ShaderBrush {
+fun shimmerEffectBrush(color: Color = Color.DarkGray): ShaderBrush {
     val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
 
     val offset by infiniteTransition.animateFloat(
@@ -167,9 +167,9 @@ fun shimmerEffectBrush(): ShaderBrush {
                 val heightOffset = size.height * offset
                 return LinearGradientShader(
                     colors = listOf(
-                        Color.DarkGray.copy(alpha = 0.4f),
-                        Color.DarkGray.copy(alpha = 0.6f),
-                        Color.DarkGray.copy(alpha = 0.4f),
+                        color.copy(alpha = 0.4f),
+                        color.copy(alpha = 0.6f),
+                        color.copy(alpha = 0.4f),
                     ),
                     from = Offset(widthOffset, heightOffset),
                     to = Offset(widthOffset + size.width, heightOffset + size.height),

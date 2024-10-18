@@ -403,6 +403,24 @@ object Utils {
         }
     }
 
+    fun openWallZAppPageOnPlayStore() {
+        val playStoreURL = "market://details?id=com.rizwansayyed.zenewallz"
+        val playStoreBrowser =
+            "https://play.google.com/store/apps/details?id=com.rizwansayyed.zenewallz"
+        try {
+            Intent(Intent.ACTION_VIEW, Uri.parse(playStoreURL)).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            }
+        } catch (e: Exception) {
+            Intent(Intent.ACTION_VIEW, Uri.parse(playStoreBrowser)).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            }
+
+        }
+    }
+
     fun internetIsConnected(): Boolean {
         try {
             val command = "ping -c 1 google.com"

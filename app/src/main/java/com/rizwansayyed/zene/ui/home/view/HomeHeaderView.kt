@@ -5,12 +5,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -28,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,6 +60,7 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.shareUrl
+import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
@@ -79,6 +83,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun HomeHeaderView() {
     var findSongDialog by remember { mutableStateOf(false) }
+    var showWallzInstall by remember { mutableStateOf(false) }
     var microphonePermissionDialog by remember { mutableStateOf(false) }
 
     val permission =
@@ -102,6 +107,7 @@ fun HomeHeaderView() {
         Spacer(Modifier.weight(1f))
 
         Row(Modifier.height(65.dp), Arrangement.Center, Alignment.CenterVertically) {
+
             ImageIcon(R.drawable.ic_scroll) {
                 sendNavCommand(NAV_FEED)
             }
@@ -122,10 +128,30 @@ fun HomeHeaderView() {
         }
     }
 
+    Spacer(Modifier.height(20.dp))
+
+    Row(Modifier.fillMaxWidth()) {
+        Spacer(Modifier.weight(1f))
+
+        Row(
+            Modifier
+                .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
+                .background(shimmerEffectBrush())
+                .clickable { showWallzInstall = true }
+                .padding(vertical = 13.dp, horizontal = 16.dp)
+        ) {
+            TextPoppins(stringResource(R.string.get_wallz_now), size = 18)
+        }
+    }
+
     Spacer(Modifier.height(30.dp))
 
     if (findSongDialog) SearchSongDialog {
         findSongDialog = false
+    }
+
+    if (showWallzInstall) WallZBottomSheetView {
+        showWallzInstall = false
     }
 
     if (microphonePermissionDialog) AlertDialogView(
@@ -166,8 +192,7 @@ fun SearchSongDialog(close: () -> Unit) {
     }
 
     Dialog(
-        { notFound(false) },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        { notFound(false) }, properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Column(
             modifier = Modifier
@@ -175,7 +200,8 @@ fun SearchSongDialog(close: () -> Unit) {
                 .padding(16.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.Black),
-            Arrangement.Center, Alignment.CenterHorizontally
+            Arrangement.Center,
+            Alignment.CenterHorizontally
         ) {
             if (startSearch == null) {
                 Box(Modifier.size(0.dp)) {
@@ -207,7 +233,8 @@ fun SearchSongDialog(close: () -> Unit) {
                     Spacer(Modifier.height(10.dp))
                     TextPoppins(
                         v = stringResource(R.string.loading_make_sure_your_device_can_hear_song_properly),
-                        true, size = 14
+                        true,
+                        size = 14
                     )
                 }
 
@@ -227,8 +254,7 @@ fun SearchSongDialog(close: () -> Unit) {
                         LoadingCardView()
                     }
 
-                    is APIResponse.Success ->
-                        CardsViewDesc(v.data, listOf(v.data))
+                    is APIResponse.Success -> CardsViewDesc(v.data, listOf(v.data))
 
                 }
                 LaunchedEffect(Unit) {

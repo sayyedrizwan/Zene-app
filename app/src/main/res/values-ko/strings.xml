@@ -155,4 +155,14 @@
     <string name="open_zene_web">제네 웹 오픈</string>
     <string name="today_sponsor">오늘의 후원자</string>
     <string name="app_update_available">앱 업데이트 가능</string>
+    <string name="zene_fm">제네 FM</string>
+    <string name="radios_languages">언어별 라디오</string>
+    <string name="radios_countries">국가별 라디오</string>
+    <string name="radios_you_may_like">좋아할 수도 있는 라디오</string>
+    <string name="live_broadcasting">라이브 방송</string>
+    <string name="no_radio_of_this_lang">귀하의 국가에서 이 언어의 라디오가 없습니다</string>
+    <string name="issue_with_radio_buffering">빈번한 버퍼링 및 지연은 라디오 방송국 때문이며 제네 앱 때문이 아닙니다.</string>
+    <string name="no_radio_found">라디오를 찾을 수 없습니다</string>
+    <string name="pause">일시 중지</string>
+    <string name="pip_app_settings_desc">앱 설정에서 그림-in-picture 모드를 활성화합니다. 백그라운드에서 재생합니다.</string>
 </resources>
