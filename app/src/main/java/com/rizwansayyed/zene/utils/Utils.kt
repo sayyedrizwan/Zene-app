@@ -404,6 +404,7 @@ object Utils {
     }
 
     fun openWallZAppPageOnPlayStore() {
+        FirebaseLogEvents.logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_ZENE_WALLZ)
         val playStoreURL = "market://details?id=com.rizwansayyed.zenewallz"
         val playStoreBrowser =
             "https://play.google.com/store/apps/details?id=com.rizwansayyed.zenewallz"

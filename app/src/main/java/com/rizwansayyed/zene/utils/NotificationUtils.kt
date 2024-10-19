@@ -49,9 +49,9 @@ class NotificationUtils(title: String, body: String, img: Uri?) {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setOngoing(true)
                 .setSound(soundAudio, AudioManager.STREAM_NOTIFICATION)
 
             if (img != null) {
