@@ -17,11 +17,26 @@
               width: 100%;
               height: 100%;
             }
+
+            .youtube-container {
+                overflow: hidden;
+                width: 100%;
+                aspect-ratio: 16/9;
+                pointer-events: none;
+            }
+
+            .youtube-container iframe {
+                width: 300%;
+                height: 100%;
+                margin-left: -100%;
+            }
         </style>
     </head>
 
     <body>
-        <div id="player" class="player"></div>
+        <div class="youtube-container">
+            <div id="player" class="player"></div>
+        </div>
 
         <script>
             var tag = document.createElement("script");
@@ -38,7 +53,7 @@
                   autoplay: 1,
                   playsinline: 1,
                   mute: 0,
-                  controls: 1,
+                  controls: 0,
                   showinfo: 0,
                   modestbranding: 1,
                   loop: 1,
@@ -60,6 +75,7 @@
                 event.target.unMute();
               }, 500);
             }
+
         </script>
     </body>
 </html>

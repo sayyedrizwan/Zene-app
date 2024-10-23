@@ -13,9 +13,11 @@ import android.content.res.Configuration
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.Rational
 import android.view.View
 import android.view.WindowManager
+import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -62,9 +64,10 @@ class VideoPlayerActivity : ComponentActivity() {
             AndroidView({ ctx ->
                 WebView(ctx).apply {
                     webView = this
+                    setInitialScale(1)
                     enable()
                     webViewClient = webViewClientObject
-                    webChromeClient = WebChromeClient()
+                    webChromeClient = webViewChromeClientObject
                     loadWebView(videoID)
                 }
             }, Modifier.fillMaxSize())
@@ -105,6 +108,14 @@ class VideoPlayerActivity : ComponentActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean = true
+    }
+
+    private val webViewChromeClientObject = object : WebChromeClient() {
+        override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+            super.onConsoleMessage(consoleMessage)
+            Log.d("TAG", "onConsoleMessage: data ${consoleMessage?.message()}")
+            return true
+        }
     }
 
     override fun onDestroy() {
