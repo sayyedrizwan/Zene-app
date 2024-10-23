@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.model.MoodLists
+import com.rizwansayyed.zene.data.api.model.SongLikedResponse
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
@@ -57,6 +58,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_VIDEOS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_IS_SONG_IN_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_LIKED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_MY_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
@@ -232,7 +234,8 @@ interface ZeneAPIService {
     suspend fun addRemoveSongFromPlaylists(
         @Query("playlistId") playlistId: String,
         @Query("songId") songId: String,
-        @Query("doAdd") doAdd: Boolean
+        @Query("doAdd") doAdd: Boolean,
+        @Query("email") email: String
     ): ZeneBooleanResponse
 
 
@@ -259,10 +262,13 @@ interface ZeneAPIService {
         @Query("token") token: String, @Query("url") url: String?
     ): ZeneMusicImportPlaylistsDataResponse
 
-
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SONG_INFO_API)
     suspend fun songInfo(@Query("id") id: String): ZeneMusicDataItems
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_USER_LIKED_SONGS_API)
+    suspend fun isSongLiked(@Body body: RequestBody): SongLikedResponse
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_RADIO_INFO_API)

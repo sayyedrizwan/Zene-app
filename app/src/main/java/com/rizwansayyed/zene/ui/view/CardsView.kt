@@ -505,25 +505,6 @@ fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
     }
 }
 
-@Composable
-fun HorizontalCardItems(items: ZeneMusicImportPlaylistsItems) {
-//    Row(
-//        Modifier
-//            .fillMaxSize()
-//            .padding(horizontal = 4.dp, vertical = 10.dp),
-//        Arrangement.Center, Alignment.CenterVertically
-//    ) {
-//        AsyncImage(
-//            imgBuilder(items.thumbnail),
-//            posts?.name,
-//            Modifier
-//                .size(120.dp)
-//                .clip(RoundedCornerShape(14.dp))
-//                .background(Color.Gray),
-//            contentScale = ContentScale.Crop
-//        )
-//    }
-}
 
 @Composable
 fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
@@ -532,7 +513,7 @@ fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
             .padding(horizontal = 14.dp, vertical = 3.dp)
             .fillMaxWidth()
             .clickable { close() }) {
-        ImageIcon(icon, 20)
+        ImageIcon(icon, 23)
 
         Spacer(Modifier.width(9.dp))
 

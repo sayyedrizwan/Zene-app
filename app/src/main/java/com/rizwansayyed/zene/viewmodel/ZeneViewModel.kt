@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.ui.mymusic.view.spotify.ImportPlaylistActivity
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -49,9 +50,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var doShowMoreLoading by mutableStateOf(false)
     var searchFindSong by mutableStateOf<APIResponse<ZeneMusicDataItems>>(APIResponse.Empty)
     var feedItems by mutableStateOf<APIResponse<ZeneArtistsPostsResponse>>(APIResponse.Empty)
-
-    var spotifyPlaylists = mutableStateListOf<ZeneMusicImportPlaylistsItems>()
-    var isSpotifyPlaylistsLoading by mutableStateOf(false)
+    var isSongLiked by mutableStateOf<APIResponse<Boolean>>(APIResponse.Empty)
 
     fun artistsInfo(name: String) = viewModelScope.launch(Dispatchers.IO) {
         if (lastSyncedA == name && artistsInfo is APIResponse.Success) return@launch
@@ -278,26 +277,14 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }
     }
 
-    fun spotifyPlaylists(token: String, path: String?) = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) {
-            isSpotifyPlaylistsLoading = false
-            return@launch
-        }
 
-        isSpotifyPlaylistsLoading = true
-        try {
-            val list = zeneAPI.importSpotifyPlaylists(token, path).firstOrNull()
-            val nextPath = list?.firstOrNull()?.next
-            if (nextPath != null) {
-                ImportPlaylistActivity.playlistRun.spotify(token, nextPath)
-                isSpotifyPlaylistsLoading = true
-            } else {
-                isSpotifyPlaylistsLoading = false
-            }
-
-            list?.forEach { spotifyPlaylists.add(it) }
-        } catch (e: Exception) {
-            isSpotifyPlaylistsLoading = false
+    fun isSongLiked(songID: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.isSongLiked(songID).onStart {
+            isSongLiked = APIResponse.Loading
+        }.catch {
+            isSongLiked = APIResponse.Empty
+        }.collectLatest {
+            isSongLiked = APIResponse.Success(it.isLiked)
         }
     }
 }

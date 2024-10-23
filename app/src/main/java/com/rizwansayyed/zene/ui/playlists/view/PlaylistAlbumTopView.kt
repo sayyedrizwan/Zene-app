@@ -44,7 +44,10 @@ import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
+import com.rizwansayyed.zene.utils.Utils
+import com.rizwansayyed.zene.utils.Utils.URLS.LIKED_SONGS_ON_ZENE_PLAYLISTS
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -108,7 +111,7 @@ fun PlaylistAlbumTopView(
         Spacer(Modifier.height(27.dp))
 
 
-        if (isUserOwner.value) Row(
+        if (isUserOwner.value && v?.id?.contains(LIKED_SONGS_ON_ZENE_PLAYLISTS) != true) Row(
             Modifier.fillMaxWidth(),
             Arrangement.Center,
             Alignment.CenterVertically
@@ -137,11 +140,9 @@ fun PlaylistAlbumTopView(
 
     LaunchedEffect(Unit) {
         isAdded = added ?: false
-        isUserOwner.value = if (v?.id?.contains("zene_p_") == true) {
+        isUserOwner.value = if (v?.id?.contains("zene_p_") == true)
             v.artists == DataStoreManager.userInfoDB.firstOrNull()?.email
-        } else {
-            true
-        }
+        else true
     }
 
     if (removeDialog) AlertDialogView(

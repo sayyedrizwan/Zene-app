@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
@@ -63,15 +64,19 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.view.AddSongToPlaylist
 import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.LoadingText
 import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.SheetDialogSheet
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.URLS.LIKED_SONGS_ON_ZENE_PLAYLISTS
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.MusicPlayerViewModel
+import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -159,6 +164,9 @@ fun ButtonsView(playerInfo: MusicPlayerData?) {
 fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: MusicPlayerData?) {
     val tryAgain = stringResource(id = R.string.try_after_a_seconds_fetching_video_details)
 
+    val viewModel: ZeneViewModel = hiltViewModel()
+    var isLiked by remember { mutableStateOf(false) }
+
     var expanded by remember { mutableStateOf(false) }
     var addToPlaylistSongs by remember { mutableStateOf(false) }
     val musicSpeed by musicSpeedSettings.collectAsState(initial = `1`)
@@ -212,6 +220,36 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        item {
+            when (val v = viewModel.isSongLiked) {
+                APIResponse.Empty -> {}
+                is APIResponse.Error -> {}
+                APIResponse.Loading -> LoadingView(Modifier.size(12.dp))
+                is APIResponse.Success -> {
+                    AnimatedVisibility(isLiked) {
+                        ImgButton(R.drawable.ic_liked) {
+                            isLiked = !isLiked
+                            viewModel.addRemoveSongFromPlaylists(
+                                LIKED_SONGS_ON_ZENE_PLAYLISTS, playerInfo?.player?.id ?: "", false
+                            )
+                        }
+                    }
+
+                    AnimatedVisibility(!isLiked) {
+                        ImgButton(R.drawable.ic_non_liked) {
+                            isLiked = !isLiked
+                            viewModel.addRemoveSongFromPlaylists(
+                                LIKED_SONGS_ON_ZENE_PLAYLISTS, playerInfo?.player?.id ?: "", true
+                            )
+                        }
+                    }
+                    LaunchedEffect(Unit) {
+                        isLiked = v.data
+                    }
+                }
+            }
+        }
+
         item {
             val loopEnabled = stringResource(R.string.looping_song_enabled)
             val loopDisabled = stringResource(R.string.looping_song_disabled)
@@ -278,6 +316,10 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
 
     if (addToPlaylistSongs && playerInfo?.player != null) AddSongToPlaylist(playerInfo.player) {
         addToPlaylistSongs = false
+    }
+
+    LaunchedEffect(Unit) {
+        playerInfo?.player?.id?.let { viewModel.isSongLiked(it) }
     }
 }
 

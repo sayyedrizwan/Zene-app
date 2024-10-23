@@ -372,9 +372,21 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun addRemoveSongFromPlaylists(songId: String, pID: String, doAdd: Boolean) =
         flow {
-            emit(zeneAPI.addRemoveSongFromPlaylists(pID, songId, doAdd))
+            val email = userInfoDB.firstOrNull()?.email ?: return@flow
+            emit(zeneAPI.addRemoveSongFromPlaylists(pID, songId, doAdd, email))
         }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun isSongLiked(songID: String) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+        val json = JSONObject().apply {
+            put("songID", songID)
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.isSongLiked(body))
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun userPlaylistData(playlistID: String) = flow {
         val json = JSONObject().apply {

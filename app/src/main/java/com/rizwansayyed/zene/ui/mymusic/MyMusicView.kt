@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.likedMusicData
 import com.rizwansayyed.zene.ui.mymusic.view.TopHeaderSwitch
 import com.rizwansayyed.zene.ui.mymusic.view.TopMusicHeaders
 import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
@@ -94,6 +95,11 @@ fun MyMusicView(viewModel: ZeneViewModel) {
             Spacer(Modifier.height(40.dp))
         }
 
+        if (type == MyMusicType.PLAYLISTS)
+            item(25, span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+                PlaylistsDynamicCards(likedMusicData())
+            }
+
         if (viewModel.songHistory.isEmpty() && type == MyMusicType.HISTORY && !viewModel.songHistoryIsLoading) item(
             20,
             { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -127,7 +133,6 @@ fun MyMusicView(viewModel: ZeneViewModel) {
         item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(40.dp))
         }
-
 
         if (viewModel.doShowMoreLoading) item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {

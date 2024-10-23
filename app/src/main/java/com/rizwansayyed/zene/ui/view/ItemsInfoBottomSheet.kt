@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,9 +44,11 @@ import com.rizwansayyed.zene.data.api.model.MusicType.ALBUMS
 import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
 import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
+import com.rizwansayyed.zene.utils.Utils.URLS.LIKED_SONGS_ON_ZENE_PLAYLISTS
 import com.rizwansayyed.zene.utils.Utils.addSongToLast
 import com.rizwansayyed.zene.utils.Utils.addSongToNext
 import com.rizwansayyed.zene.utils.Utils.loadBitmap
@@ -53,6 +56,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -92,7 +96,9 @@ fun TopInfoItemSheet(m: ZeneMusicDataItems) {
 
 @Composable
 fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
+    val viewModel: ZeneViewModel = hiltViewModel()
     var addToPlaylistSongs by remember { mutableStateOf(false) }
+    var isLiked by remember { mutableStateOf(false) }
 
     SheetDialogSheet(R.drawable.ic_play, R.string.play) {
         openSpecificIntent(m, listOf(m))
@@ -104,6 +110,36 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
     SheetDialogSheet(R.drawable.ic_next, R.string.play_next) {
         addSongToNext(m)
         close()
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    when (val v = viewModel.isSongLiked) {
+        APIResponse.Empty -> {}
+        is APIResponse.Error -> {}
+        APIResponse.Loading -> LoadingText()
+        is APIResponse.Success -> {
+            AnimatedVisibility(isLiked) {
+                SheetDialogSheet(R.drawable.ic_liked, R.string.liked) {
+                    isLiked = !isLiked
+                    viewModel.addRemoveSongFromPlaylists(
+                        LIKED_SONGS_ON_ZENE_PLAYLISTS, m.id ?: "", false
+                    )
+                }
+            }
+
+            AnimatedVisibility(!isLiked) {
+                SheetDialogSheet(R.drawable.ic_non_liked, R.string.like_the_song) {
+                    isLiked = !isLiked
+                    viewModel.addRemoveSongFromPlaylists(
+                        LIKED_SONGS_ON_ZENE_PLAYLISTS, m.id ?: "", true
+                    )
+                }
+            }
+            LaunchedEffect(Unit) {
+                isLiked = v.data
+            }
+        }
     }
 
     Spacer(Modifier.height(20.dp))
@@ -121,6 +157,10 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
 
     if (addToPlaylistSongs) AddSongToPlaylist(m) {
         addToPlaylistSongs = false
+    }
+
+    LaunchedEffect(Unit) {
+        m.id?.let { viewModel.isSongLiked(it) }
     }
 }
 

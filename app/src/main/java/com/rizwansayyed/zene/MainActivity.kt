@@ -115,6 +115,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
+//Like song and info.
 //Sleep timer and Waker alarm timer
 
 @AndroidEntryPoint

@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.api.zene
 
 import com.rizwansayyed.zene.data.api.model.IpJsonResponse
+import com.rizwansayyed.zene.data.api.model.SongLikedResponse
 import com.rizwansayyed.zene.data.api.model.StatusResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
@@ -111,4 +112,5 @@ interface ZeneAPIInterface {
     suspend fun sponsorsAds()
 
     suspend fun updateAvailability(): Flow<ZeneUpdateAvailabilityResponse>
+    suspend fun isSongLiked(songID: String): Flow<SongLikedResponse>
 }

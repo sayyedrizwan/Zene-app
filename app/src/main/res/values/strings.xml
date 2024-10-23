@@ -167,4 +167,7 @@
     <string name="pip_app_settings_desc">Enable picture-in-picture mode from Apps settings. To play in background.</string>
     <string name="get_wallz_now">Get Wallz!! Now :)</string>
     <string name="open_on_play_store">Open on Play Store</string>
+    <string name="like_the_song">Like the song</string>
+    <string name="liked">Liked</string>
+    <string name="liked_songs">Liked Songs</string>
 </resources>

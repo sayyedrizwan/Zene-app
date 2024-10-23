@@ -25,11 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
-import com.rizwansayyed.zene.ui.view.HorizontalCardItems
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.viewmodel.SpotifyViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,7 +44,7 @@ class ImportPlaylistActivity : ComponentActivity(), PlaylistRun {
         lateinit var playlistRun: PlaylistRun
     }
 
-    private val viewModel: ZeneViewModel by viewModels()
+    private val viewModel: SpotifyViewModel by viewModels()
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +90,7 @@ class ImportPlaylistActivity : ComponentActivity(), PlaylistRun {
                         TextPoppinsSemiBold(stringResource(R.string.playlists), size = 15)
                     }
                     items(viewModel.spotifyPlaylists) {
-                        HorizontalCardItems(it)
+
                     }
                 }
             }
