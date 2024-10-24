@@ -51,6 +51,8 @@ import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_B
 import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoPlayerControls
 import com.rizwansayyed.zene.ui.videoplayer.webview.WebAppInterface
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -72,6 +74,7 @@ class VideoPlayerActivity : ComponentActivity() {
     private var webView: WebView? = null
     private var webAppInterface: WebAppInterface? = null
     private var infoJob: Job? = null
+    private var videoControl by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,8 +88,6 @@ class VideoPlayerActivity : ComponentActivity() {
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_VIDEO_VIEW)
 
         setContent {
-            var videoControl by remember { mutableStateOf(false) }
-
             Box(Modifier.fillMaxWidth()) {
                 AndroidView(
                     { ctx ->
@@ -134,10 +135,8 @@ class VideoPlayerActivity : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 ContextCompat.registerReceiver(
-                    this@VideoPlayerActivity,
-                    pipActionReceiver,
-                    IntentFilter("YT_PLAYER_LISTENER"),
-                    ContextCompat.RECEIVER_EXPORTED
+                    this@VideoPlayerActivity, pipActionReceiver,
+                    IntentFilter("YT_PLAYER_LISTENER"), ContextCompat.RECEIVER_EXPORTED
                 )?.apply {
                     setPackage(context.packageName)
                 }
@@ -184,6 +183,7 @@ class VideoPlayerActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         startJob()
+        sendWebViewCommand(PAUSE_VIDEO)
         if (!hasPermission()) resources.getString(R.string.pip_app_settings_desc).toast()
     }
 
@@ -216,13 +216,14 @@ class VideoPlayerActivity : ComponentActivity() {
         }
     }
 
-    private fun enterPIP() {
+    private fun enterPIP() = lifecycleScope.launch {
         val aspect = Rational(16, 9)
 
         val playIntent = PendingIntent.getBroadcast(
-            this, (1..999).random(), Intent("YT_PLAYER_LISTENER"), PendingIntent.FLAG_IMMUTABLE
+            this@VideoPlayerActivity, (1..999).random(),
+            Intent("YT_PLAYER_LISTENER"), PendingIntent.FLAG_IMMUTABLE
         )
-        val icon = Icon.createWithResource(this, R.drawable.ic_empty)
+        val icon = Icon.createWithResource(this@VideoPlayerActivity, R.drawable.ic_empty)
 
         val playPauseAction = RemoteAction(icon, "", "", playIntent)
 
@@ -236,7 +237,7 @@ class VideoPlayerActivity : ComponentActivity() {
         isInPictureInPictureMode: Boolean, newConfig: Configuration
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        println()
+        if (isInPictureInPictureMode) videoControl = false
     }
 
     override fun onUserLeaveHint() {

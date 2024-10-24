@@ -27,10 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.videoCaptionDB
-import com.rizwansayyed.zene.data.db.DataStoreManager.videoQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.videoSpeedSettingsDB
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
-import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.webview.WebAppInterface
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -41,11 +39,12 @@ import kotlinx.coroutines.flow.flowOf
 fun VideoSettingsCaption(webApp: WebAppInterface) {
     val caption by videoCaptionDB.collectAsState(initial = true)
 
-    if (webApp.isCaptionAvailable)
-        ImageIcon(if (caption) R.drawable.ic_open_caption else R.drawable.ic_closed_caption, 27) {
-            webApp.caption(!caption)
-            videoCaptionDB = flowOf(!caption)
-        }
+    if (webApp.isCaptionAvailable) ImageIcon(
+        if (caption) R.drawable.ic_open_caption else R.drawable.ic_closed_caption, 27
+    ) {
+        webApp.caption(!caption)
+        videoCaptionDB = flowOf(!caption)
+    }
 }
 
 @Composable
@@ -75,8 +74,7 @@ fun VideoPlaybackSettings(webApp: WebAppInterface) {
                 Spacer(Modifier.height(30.dp))
                 Row(Modifier.padding(start = 10.dp, bottom = 20.dp)) {
                     TextPoppins(
-                        stringResource(R.string.available_video_speed),
-                        false, size = 16, limit = 1
+                        stringResource(R.string.available_video_speed), false, size = 16, limit = 1
                     )
                 }
                 MusicSpeed.entries.forEach {
@@ -87,8 +85,7 @@ fun VideoPlaybackSettings(webApp: WebAppInterface) {
                                 videoSpeedSettingsDB = flowOf(it)
                                 webApp.updatePlaybackSpeed()
                                 settingsAlert = false
-                            },
-                        verticalAlignment = Alignment.CenterVertically
+                            }, verticalAlignment = Alignment.CenterVertically
                     ) {
                         TextPoppins(it.data, size = 14)
                         Spacer(Modifier.weight(1f))

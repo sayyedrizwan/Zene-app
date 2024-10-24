@@ -7,11 +7,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.MusicType
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.videoCaptionDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.videoQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.videoSpeedSettingsDB
+import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
@@ -19,6 +23,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
 import com.rizwansayyed.zene.utils.Utils.toast
+import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -35,6 +40,7 @@ class WebAppInterface(private val webView: WebView?) {
     var isPlaying by mutableStateOf(false)
     var isBuffering by mutableStateOf(false)
     var isCaptionAvailable by mutableStateOf(false)
+    var songInfo by mutableStateOf<ZeneMusicDataItems?>(null)
     var currentDuration by mutableIntStateOf(0)
     var totalDuration by mutableIntStateOf(0)
 
@@ -61,12 +67,20 @@ class WebAppInterface(private val webView: WebView?) {
 
             caption(videoCaptionDB.first())
             updatePlaybackSpeed()
+            songDetails()
         }
     }
 
     @JavascriptInterface
     fun captionAvailable(b: Boolean) {
         isCaptionAvailable = b
+    }
+
+    @JavascriptInterface
+    fun info(title: String, author: String, videoID: String) {
+        songInfo = ZeneMusicDataItems(
+            title, author, videoID, ytThumbnail(videoID), "", MusicType.VIDEO.name
+        )
     }
 
     fun caption(b: Boolean) {
@@ -92,6 +106,16 @@ class WebAppInterface(private val webView: WebView?) {
         webView?.evaluateJavascript("seekTo(${seek})") {}
     }
 
+    fun forwardVideo() = CoroutineScope(Dispatchers.Main).launch {
+        val duration = currentDuration + 10
+        webView?.evaluateJavascript("seekTo(${duration})") {}
+    }
+
+    fun backwardVideo() = CoroutineScope(Dispatchers.Main).launch {
+        val duration = currentDuration - 10
+        webView?.evaluateJavascript("seekTo(${duration})") {}
+    }
+
     fun updatePlaybackSpeed() = CoroutineScope(Dispatchers.IO).launch {
         delay(1.seconds)
         val v = when (videoSpeedSettingsDB.first()) {
@@ -104,6 +128,11 @@ class WebAppInterface(private val webView: WebView?) {
         withContext(Dispatchers.Main) {
             webView?.evaluateJavascript("playbackSpeed($v);", null)
         }
+    }
+
+    private fun songDetails() = CoroutineScope(Dispatchers.Main).launch {
+        delay(1.seconds)
+        webView?.evaluateJavascript("getSongDetails();", null)
     }
 
     fun playLastDuration() = CoroutineScope(Dispatchers.Main).launch {

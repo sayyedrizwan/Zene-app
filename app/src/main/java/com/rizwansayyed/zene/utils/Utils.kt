@@ -426,6 +426,14 @@ object Utils {
         }
     }
 
+    fun openYoutubeInfo(videoID: String) {
+        val uri = Uri.parse("https://www.youtube.com/watch?v=${videoID}")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+        intent.setPackage("com.google.android.youtube")
+        context.startActivity(intent)
+    }
+
     fun internetIsConnected(): Boolean {
         try {
             val command = "ping -c 1 google.com"

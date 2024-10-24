@@ -18,16 +18,16 @@
               height: 100%;
             }
             .youtube-container iframe {
-                overflow: hidden;
-                width: 100%;
-                aspect-ratio: 16/9;
-                pointer-events: none;
+              overflow: hidden;
+              width: 100%;
+              aspect-ratio: 16/9;
+              pointer-events: none;
             }
 
             .youtube-container iframe {
-                width: 300%;
-                height: 100%;
-                margin-left: -100%;
+              width: 300%;
+              height: 100%;
+              margin-left: -100%;
             }
         </style>
     </head>
@@ -99,20 +99,19 @@
 
             function onPlayerStateChange(event) {
               if (event.data == YT.PlayerState.PLAYING) {
-                 Video.playerState()
-                 var tracks = player.getOption('captions', 'tracklist');
-                    if (tracks && tracks.length > 0) {
-                       Video.captionAvailable(true)
-                    } else {
-                       Video.captionAvailable(false)
-                    }
+                Video.playerState();
+                var tracks = player.getOption("captions", "tracklist");
+                if (tracks && tracks.length > 0) {
+                  Video.captionAvailable(true);
+                } else {
+                  Video.captionAvailable(false);
+                }
               }
             }
 
             function playerStatus() {
-                Video.playerState(player.getPlayerState(), player.getDuration(), player.getCurrentTime());
+              Video.playerState(player.getPlayerState(), player.getDuration(), player.getCurrentTime());
             }
-
 
             function pauseSong() {
               player.pauseVideo();
@@ -129,21 +128,30 @@
 
             function enableCaption() {
               try {
-                  player.loadModule("captions");
-                  player.loadModule("cc");
-              } catch (exception) { }
+                player.loadModule("captions");
+                player.loadModule("cc");
+              } catch (exception) {}
             }
 
             function disableCaption() {
               try {
-                  player.unloadModule("captions");
-                  player.unloadModule("cc");
-              } catch (exception) { }
+                player.unloadModule("captions");
+                player.unloadModule("cc");
+              } catch (exception) {}
             }
 
             function playbackSpeed(speed) {
               player.setPlaybackRate(speed);
               playerState(player, false);
+            }
+
+            function getSongDetails() {
+              var videoData = player.getVideoData();
+              var title = videoData.title;
+              var videoID = videoData.video_id;
+              var author = videoData.author;
+
+              Video.info(title, author, videoID);
             }
         </script>
     </body>

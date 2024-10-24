@@ -172,4 +172,5 @@
     <string name="liked_songs">Liked Songs</string>
     <string name="available_video_quality">Available video quality</string>
     <string name="available_video_speed">Available video speed</string>
+    <string name="view_on_youtube">View on Youtube</string>
 </resources>

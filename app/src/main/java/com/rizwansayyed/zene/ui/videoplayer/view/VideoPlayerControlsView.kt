@@ -1,12 +1,9 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,22 +27,18 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.model.formatTotalDuration
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
-import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.webview.WebAppInterface
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.ImageView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 
@@ -68,6 +61,14 @@ fun VideoPlayerControls(
                 .padding(bottom = 30.dp)
                 .clickable { doHide() })
 
+        Row(
+            Modifier
+                .align(Alignment.TopEnd)
+                .padding(horizontal = 10.dp)
+        ) {
+            ImageView(id = R.drawable.ic_youtube_logo, Modifier.width(80.dp))
+        }
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -75,15 +76,14 @@ fun VideoPlayerControls(
                 .heightIn(min = 50.dp)
                 .height(intrinsicSize = IntrinsicSize.Min)
                 .padding(
-                    horizontal = 20.dp,
-                    vertical = 20.dp
-                ),
-            colors = CardColors(MainColor, MainColor, MainColor, MainColor)
+                    horizontal = 20.dp, vertical = 20.dp
+                ), colors = CardColors(MainColor, MainColor, MainColor, MainColor)
         ) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 9.dp), verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 9.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(Modifier.width(6.dp))
                 VideoSettingsInfoView(webApp)
@@ -107,8 +107,7 @@ fun VideoPlayerControls(
                 Spacer(Modifier.width(5.dp))
                 if (webApp.isBuffering) LoadingView(Modifier.size(23.dp))
                 else ImageIcon(
-                    if (webApp.isPlaying) R.drawable.ic_pause else R.drawable.ic_play,
-                    27
+                    if (webApp.isPlaying) R.drawable.ic_pause else R.drawable.ic_play, 27
                 ) {
                     if (webApp.isPlaying) webApp.pause()
                     else webApp.play()
@@ -152,13 +151,19 @@ fun VideoPlayerControls(
                     })
 
                 Spacer(Modifier.width(10.dp))
-                ImageIcon(R.drawable.ic_add_playlist, 24) {
+                ImageIcon(R.drawable.ic_go_backward_10sec, 27) {
+                    webApp.backwardVideo()
+                }
+                Spacer(Modifier.width(5.dp))
+                ImageIcon(R.drawable.ic_go_forward_10sec, 27) {
+                    webApp.forwardVideo()
+                }
+                Spacer(Modifier.width(5.dp))
+                ImageIcon(R.drawable.ic_add_playlist, 26) {
 
                 }
                 Spacer(Modifier.width(5.dp))
-                ImageIcon(R.drawable.ic_add_playlist, 24) {
-
-                }
+                VideoInfoPlay(webApp)
                 Spacer(Modifier.width(6.dp))
             }
         }
