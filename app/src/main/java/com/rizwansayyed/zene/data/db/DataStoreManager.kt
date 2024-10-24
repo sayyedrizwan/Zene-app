@@ -30,6 +30,9 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.UPDATE_AVAILABILITY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_IP_INFO
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VIDEO_CAPTION
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VIDEO_QUALITY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VIDEO_SPEED
 import com.rizwansayyed.zene.data.db.model.AppReviewData
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
@@ -56,6 +59,7 @@ object DataStoreManager {
         val SEARCH_HISTORY = stringPreferencesKey("search_history")
         val MUSIC_PLAYER = stringPreferencesKey("music_player")
         val MUSIC_SPEED = stringPreferencesKey("music_speed")
+        val VIDEO_SPEED = stringPreferencesKey("video_speed")
         val MUSIC_LOOP = booleanPreferencesKey("music_loop")
         val PLAYING_SONG_ON_LOCK_SCREEN = booleanPreferencesKey("playing_song_on_lock_screen")
         val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
@@ -63,6 +67,8 @@ object DataStoreManager {
         val USER_IP_INFO = stringPreferencesKey("user_ip_info")
         val APP_REVIEW_STATUS = stringPreferencesKey("app_review_status")
         val SONG_QUALITY = stringPreferencesKey("song_quality")
+        val VIDEO_QUALITY = stringPreferencesKey("video_quality")
+        val VIDEO_CAPTION = booleanPreferencesKey("video_caption")
     }
 
 
@@ -91,7 +97,8 @@ object DataStoreManager {
                 .fromJson(it[UPDATE_AVAILABILITY] ?: JSON_EMPTY)
         }
         set(value) = runBlocking(Dispatchers.IO) {
-            val json = moshi.adapter(ZeneUpdateAvailabilityResponse::class.java).toJson(value.first())
+            val json =
+                moshi.adapter(ZeneUpdateAvailabilityResponse::class.java).toJson(value.first())
             context.dataStore.edit { it[UPDATE_AVAILABILITY] = json }
         }
 
@@ -176,6 +183,29 @@ object DataStoreManager {
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[SONG_QUALITY] = value.first().name }
+        }
+
+    var videoQualityDB
+        get() = context.dataStore.data.map {
+            SongQualityTypes.valueOf(it[VIDEO_QUALITY] ?: SongQualityTypes.HIGH_QUALITY.name)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[VIDEO_QUALITY] = value.first().name }
+        }
+
+    var videoCaptionDB
+        get() = context.dataStore.data.map { it[VIDEO_CAPTION] ?: true }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[VIDEO_CAPTION] = value.first() }
+        }
+
+
+    var videoSpeedSettingsDB
+        get() = context.dataStore.data.map {
+            MusicSpeed.valueOf(it[VIDEO_SPEED] ?: MusicSpeed.`1`.name)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[VIDEO_SPEED] = value.first().name }
         }
 
     suspend fun setCustomTimestamp(key: String) {

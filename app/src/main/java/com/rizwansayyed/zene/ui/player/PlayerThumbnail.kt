@@ -79,7 +79,6 @@ fun PlayerThumbnail(modifier: Modifier = Modifier, info: MusicPlayerData?, open:
         }
     }
 
-
     LaunchedEffect(info?.currentDuration) {
         currentProgress = if (info?.currentDuration == 0) 0f
         else getPercentageLeft(info?.currentDuration, info?.totalDuration).toFloat() / 100

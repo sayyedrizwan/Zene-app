@@ -170,4 +170,6 @@
     <string name="like_the_song">Like the song</string>
     <string name="liked">Liked</string>
     <string name="liked_songs">Liked Songs</string>
+    <string name="available_video_quality">Available video quality</string>
+    <string name="available_video_speed">Available video speed</string>
 </resources>

@@ -6,13 +6,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
+import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.videoCaptionDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.videoQualityDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.videoSpeedSettingsDB
+import com.rizwansayyed.zene.data.db.model.MusicSpeed
+import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
+import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
+import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
+import com.rizwansayyed.zene.utils.Utils.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.seconds
 
 class WebAppInterface(private val webView: WebView?) {
 
+    private var lastDuration = 0
+    private var lastID = ""
+
     var isPlaying by mutableStateOf(false)
     var isBuffering by mutableStateOf(false)
+    var isCaptionAvailable by mutableStateOf(false)
     var currentDuration by mutableIntStateOf(0)
     var totalDuration by mutableIntStateOf(0)
 
@@ -28,6 +50,32 @@ class WebAppInterface(private val webView: WebView?) {
         }
     }
 
+    @JavascriptInterface
+    fun playerState() {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1.seconds)
+            if (lastDuration > 0) {
+                seekTo(lastDuration)
+                lastDuration = 0
+            }
+
+            caption(videoCaptionDB.first())
+            updatePlaybackSpeed()
+        }
+    }
+
+    @JavascriptInterface
+    fun captionAvailable(b: Boolean) {
+        isCaptionAvailable = b
+    }
+
+    fun caption(b: Boolean) {
+        if (b)
+            webView?.evaluateJavascript("enableCaption()") {}
+        else
+            webView?.evaluateJavascript("disableCaption()") {}
+    }
+
     fun getPlayStatus() {
         webView?.evaluateJavascript("playerStatus()") {}
     }
@@ -40,7 +88,36 @@ class WebAppInterface(private val webView: WebView?) {
         webView?.evaluateJavascript("pauseSong()") {}
     }
 
-    fun seekTo(seek: Int) {
+    fun seekTo(seek: Int) = CoroutineScope(Dispatchers.Main).launch {
         webView?.evaluateJavascript("seekTo(${seek})") {}
+    }
+
+    fun updatePlaybackSpeed() = CoroutineScope(Dispatchers.IO).launch {
+        delay(1.seconds)
+        val v = when (videoSpeedSettingsDB.first()) {
+            MusicSpeed.`025` -> 0.25
+            MusicSpeed.`05` -> 0.5
+            MusicSpeed.`1` -> 1
+            MusicSpeed.`15` -> 1.5
+            MusicSpeed.`20` -> 2.0
+        }
+        withContext(Dispatchers.Main) {
+            webView?.evaluateJavascript("playbackSpeed($v);", null)
+        }
+    }
+
+    fun playLastDuration() = CoroutineScope(Dispatchers.Main).launch {
+        delay(1.5.seconds)
+        lastDuration = currentDuration
+        loadWebView(lastID)
+    }
+
+    fun loadWebView(id: String) = CoroutineScope(Dispatchers.Main).launch {
+        lastID = id
+        val player = readHTMLFromUTF8File(context.resources.openRawResource(R.raw.yt_video_player))
+            .replace("<<VideoID>>", id)
+            .replace("<<Quality>>", videoQualityDB.first().value)
+
+        webView?.loadDataWithBaseURL(YOUTUBE_URL, player, "text/html", "UTF-8", null)
     }
 }
