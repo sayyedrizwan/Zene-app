@@ -113,4 +113,5 @@ interface ZeneAPIInterface {
 
     suspend fun updateAvailability(): Flow<ZeneUpdateAvailabilityResponse>
     suspend fun isSongLiked(songID: String): Flow<SongLikedResponse>
+    suspend fun relatedVideos(id: String): Flow<ZeneMusicDataResponse>
 }

@@ -415,6 +415,11 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.importSpotifyPlaylists(token, path))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun relatedVideos(id: String) = flow {
+        emit(zeneAPI.relatedVideos(id))
+    }.flowOn(Dispatchers.IO)
+
+
     override suspend fun songInfo(id: String) = flow {
         emit(zeneAPI.songInfo(id))
     }.flowOn(Dispatchers.IO)

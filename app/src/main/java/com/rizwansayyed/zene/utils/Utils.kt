@@ -125,6 +125,7 @@ object Utils {
         const val ZENE_FEEDS_API = "feeds"
         const val ZENE_MOODS_API = "moods"
         const val ZENE_SONG_INFO_API = "song_info"
+        const val ZENE_RELATED_VIDEO_API = "related_video"
         const val ZENE_PLAYLISTS_API = "playlists"
         const val ZENE_NEW_RELEASE_API = "newrelease"
         const val ZENE_SUGGESTED_SONGS_API = "suggestedsongs"

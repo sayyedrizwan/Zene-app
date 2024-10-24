@@ -238,6 +238,7 @@ class VideoPlayerActivity : ComponentActivity() {
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) videoControl = false
+        else sendWebViewCommand(PAUSE_VIDEO)
     }
 
     override fun onUserLeaveHint() {

@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryItem
 import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsItems
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
@@ -48,6 +49,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var saveSongPlaylists = mutableStateListOf<ZeneMusicDataItems>()
     var songHistoryIsLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
+    var relatedVideos by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var searchFindSong by mutableStateOf<APIResponse<ZeneMusicDataItems>>(APIResponse.Empty)
     var feedItems by mutableStateOf<APIResponse<ZeneArtistsPostsResponse>>(APIResponse.Empty)
     var isSongLiked by mutableStateOf<APIResponse<Boolean>>(APIResponse.Empty)
@@ -285,6 +287,16 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
             isSongLiked = APIResponse.Empty
         }.collectLatest {
             isSongLiked = APIResponse.Success(it.isLiked)
+        }
+    }
+
+    fun relatedVideos(songID: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.relatedVideos(songID).onStart {
+            relatedVideos = APIResponse.Loading
+        }.catch {
+            relatedVideos = APIResponse.Empty
+        }.collectLatest {
+            relatedVideos = APIResponse.Success(it)
         }
     }
 }

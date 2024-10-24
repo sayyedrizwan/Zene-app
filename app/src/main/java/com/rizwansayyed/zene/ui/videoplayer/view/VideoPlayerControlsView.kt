@@ -159,9 +159,7 @@ fun VideoPlayerControls(
                     webApp.forwardVideo()
                 }
                 Spacer(Modifier.width(5.dp))
-                ImageIcon(R.drawable.ic_add_playlist, 26) {
-
-                }
+                VideoRelated(webApp)
                 Spacer(Modifier.width(5.dp))
                 VideoInfoPlay(webApp)
                 Spacer(Modifier.width(6.dp))
