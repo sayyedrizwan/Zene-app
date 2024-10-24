@@ -67,7 +67,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-
 @AndroidEntryPoint
 class VideoPlayerActivity : ComponentActivity() {
 

@@ -143,6 +143,7 @@ class WebAppInterface(private val webView: WebView?) {
 
     fun loadWebView(id: String) = CoroutineScope(Dispatchers.Main).launch {
         lastID = id
+        lastDuration = 0
         val player = readHTMLFromUTF8File(context.resources.openRawResource(R.raw.yt_video_player))
             .replace("<<VideoID>>", id)
             .replace("<<Quality>>", videoQualityDB.first().value)

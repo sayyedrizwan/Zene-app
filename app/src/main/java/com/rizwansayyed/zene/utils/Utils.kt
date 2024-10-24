@@ -167,7 +167,7 @@ object Utils {
     }
 
     fun ytThumbnail(id: String): String {
-        return "https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
+        return "https://i.ytimg.com/vi/${id}/sddefault.jpg"
     }
 
     fun convertItToMoney(s: String): String {
