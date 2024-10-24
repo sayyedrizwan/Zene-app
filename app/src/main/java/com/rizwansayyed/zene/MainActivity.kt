@@ -297,6 +297,9 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         lifecycleScope.launch {
             delay(2.seconds)
+
+            openVideoPlayer("Qfm6nfz1QNQ")
+
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
         }

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
+import com.rizwansayyed.zene.data.db.model.formatTotalDuration
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -111,7 +112,7 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
             if (lyricsData.lyrics?.contains("<br>") == true) lyrics = lyricsData.lyrics
 
             lyricsData.lyrics?.split("<br>")?.forEachIndexed { index, s ->
-                if (s.contains(playerInfo?.formatCurrentDuration() ?: "")) {
+                if (s.contains(formatTotalDuration(playerInfo?.currentDuration))) {
                     lyricsDone = index + 1
                     if (!userIsScrolling) pager.animateScrollToPage(index + 1)
                 }

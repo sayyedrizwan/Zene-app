@@ -11,28 +11,16 @@ data class MusicPlayerData(
     var isPlaying: Boolean?,
     var totalDuration: Int?,
     var isBuffering: Boolean?,
-) {
-    fun formatCurrentDuration(): String {
-        val seconds = (currentDuration ?: 0)
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
-        val remainingSeconds = seconds % 60
-        return if (hours > 0) {
-            String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, remainingSeconds)
-        } else {
-            String.format(Locale.getDefault(), "%02d:%02d", minutes, remainingSeconds)
-        }
-    }
+)
 
-    fun formatTotalDuration(): String {
-        val seconds = (totalDuration ?: 0)
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
-        val remainingSeconds = seconds % 60
-        return if (hours > 0) {
-            String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, remainingSeconds)
-        } else {
-            String.format(Locale.getDefault(), "%02d:%02d", minutes, remainingSeconds)
-        }
+fun formatTotalDuration(totalDuration: Int?): String {
+    val seconds = (totalDuration ?: 0)
+    val hours = seconds / 3600
+    val minutes = (seconds % 3600) / 60
+    val remainingSeconds = seconds % 60
+    return if (hours > 0) {
+        String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, remainingSeconds)
+    } else {
+        String.format(Locale.getDefault(), "%02d:%02d", minutes, remainingSeconds)
     }
 }

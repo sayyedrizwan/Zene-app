@@ -53,6 +53,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.data.db.model.MusicSpeed.*
+import com.rizwansayyed.zene.data.db.model.formatTotalDuration
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PLAYBACK_RATE
@@ -93,7 +94,7 @@ fun SongSliderData(playerInfo: MusicPlayerData?) {
 
     Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
         Spacer(Modifier.width(6.dp))
-        TextPoppins(playerInfo?.formatCurrentDuration() ?: "0:00", false, size = 16)
+        TextPoppins(formatTotalDuration(playerInfo?.currentDuration), false, size = 16)
         Spacer(Modifier.width(6.dp))
 
         Slider(value = sliderPosition,
@@ -127,7 +128,7 @@ fun SongSliderData(playerInfo: MusicPlayerData?) {
             })
 
         Spacer(Modifier.width(6.dp))
-        TextPoppins(playerInfo?.formatTotalDuration() ?: "0:00", false, size = 16)
+        TextPoppins(formatTotalDuration(playerInfo?.totalDuration), false, size = 16)
         Spacer(Modifier.width(6.dp))
     }
 
@@ -263,7 +264,8 @@ fun ExtraButtonsData(musicPlayerViewModel: MusicPlayerViewModel, playerInfo: Mus
                 }
 
                 AnimatedVisibility(
-                    musicLoop, Modifier
+                    musicLoop,
+                    Modifier
                         .padding(top = 27.dp)
                         .align(Alignment.BottomCenter)
                 ) {

@@ -30,6 +30,7 @@
                 height: 100%;
                 margin-left: -100%;
             }
+
         </style>
     </head>
 
@@ -70,10 +71,29 @@
 
             function onPlayerReady(event) {
               event.target.setVolume(100);
-              event.target.playVideo();
               setTimeout(() => {
+                event.target.playVideo();
                 event.target.unMute();
               }, 500);
+            }
+
+            function playerStatus() {
+                Video.playerState(player.getPlayerState(), player.getDuration(), player.getCurrentTime());
+            }
+
+
+            function pauseSong() {
+              player.pauseVideo();
+            }
+
+            function playSong() {
+              player.setVolume(100);
+              player.playVideo();
+            }
+
+
+            function seekTo(time) {
+              player.seekTo(time, true);
             }
 
         </script>
