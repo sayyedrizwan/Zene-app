@@ -198,7 +198,8 @@ class MusicPlayService : Service() {
             webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
 
             withContext(Dispatchers.IO) {
-                if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID).catch { }.collect()
+                if (!vID.contains(RADIO_ARTISTS))
+                    zeneAPI.addMusicHistory(vID, player.artists).catch { }.collect()
             }
         }
         if (isActive) cancel()

@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
+import com.rizwansayyed.zene.data.api.model.ZeneCacheTopSongsArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
@@ -63,6 +64,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_LIKED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_MY_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_TOP_CACHE_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_UPDATE_ARTISTS_API
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -244,6 +246,9 @@ interface ZeneAPIService {
     @POST(ZENE_FEEDS_API)
     suspend fun artistsPosts(@Body body: RequestBody): ZeneArtistsPostsResponse
 
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_USER_TOP_CACHE_SONGS_API)
+    suspend fun topCacheSongsAndArtists(@Body body: RequestBody): ZeneCacheTopSongsArtistsPostsResponse
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_USER_MY_PLAYLISTS_API)

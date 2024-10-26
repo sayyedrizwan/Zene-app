@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.utils
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -23,8 +22,10 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
+import com.rizwansayyed.zene.data.db.DataStoreManager.artistsHistoryListDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.songHistoryListDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -37,7 +38,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -91,8 +91,8 @@ object Utils {
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
-        val BASE_URL = BuildConfig.DOMAIN_BASE_URL
-//            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+        val BASE_URL =
+            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val LIKED_SONGS_ON_ZENE_PLAYLISTS = "liked_songs_on_zene"
 
@@ -117,6 +117,7 @@ object Utils {
         const val ZENE_USER_IS_SONG_IN_PLAYLISTS_API = "zuser/is_song_in_playlists"
         const val ZENE_ADD_SONGS_PLAYLISTS_API = "zuser/add_song_to_playlists"
         const val ZENE_USER_UPDATE_ARTISTS_API = "zuser/updateartists"
+        const val ZENE_USER_TOP_CACHE_SONGS_API = "zuser/top-cache-song"
         const val ZENE_REMOVE_PLAYLISTS_API = "zuser/remove_playlists"
 
         const val ZENE_IMPORT_PLAYLISTS_SPOTIFY_API = "importplaylists/spotify"
@@ -474,5 +475,19 @@ object Utils {
         val start = (position - range).coerceAtLeast(0)
         val end = (position + range).coerceAtMost(arr.size - 1)
         return arr.slice(start..end)
+    }
+
+    suspend fun addSongHistoryLists(songID: String) {
+        val lists = ArrayList<String>(12)
+        lists.add(0, songID)
+        songHistoryListDB.firstOrNull()?.let { lists.addAll(it) }
+        songHistoryListDB = flowOf(lists.toMutableSet().toTypedArray())
+    }
+
+    suspend fun addArtistsHistoryLists(artists: String) {
+        val lists = ArrayList<String>(6)
+        lists.add(0, artists)
+        artistsHistoryListDB.firstOrNull()?.let { lists.addAll(it) }
+        artistsHistoryListDB = flowOf(lists.toMutableSet().toTypedArray())
     }
 }

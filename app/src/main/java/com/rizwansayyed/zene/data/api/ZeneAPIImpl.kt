@@ -18,18 +18,21 @@ import com.rizwansayyed.zene.data.api.ApiCache.ApiCacheKeys.UPDATE_AVAILABILITY_
 import com.rizwansayyed.zene.data.api.ApiCache.getAPICache
 import com.rizwansayyed.zene.data.api.ApiCache.setAPICache
 import com.rizwansayyed.zene.data.api.ip.IpAPIService
-import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIService
+import com.rizwansayyed.zene.data.db.DataStoreManager.artistsHistoryListDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.getCustomTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.ipDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.setCustomTimestamp
+import com.rizwansayyed.zene.data.db.DataStoreManager.songHistoryListDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.sponsorsAdsDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.utils.Utils.addArtistsHistoryLists
+import com.rizwansayyed.zene.utils.Utils.addSongHistoryLists
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
+import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
-import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -183,10 +186,13 @@ class ZeneAPIImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun favArtistsData() = flow {
+        val list = artistsHistoryListDB.firstOrNull() ?: emptyArray()
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
+            put("list", moshi.adapter(Array<String>::class.java).toJson(list))
         }
+
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.favArtistsData(body))
     }.flowOn(Dispatchers.IO)
@@ -198,9 +204,11 @@ class ZeneAPIImpl @Inject constructor(
             return@flow
         }
 
+        val list = songHistoryListDB.firstOrNull() ?: emptyArray()
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
+            put("list", moshi.adapter(Array<String>::class.java).toJson(list))
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
@@ -219,10 +227,11 @@ class ZeneAPIImpl @Inject constructor(
             emit(cache)
             return@flow
         }
-
+        val list = songHistoryListDB.firstOrNull() ?: emptyArray()
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
+            put("list", moshi.adapter(Array<String>::class.java).toJson(list))
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         val response = zeneAPI.recommendedPlaylists(body)
@@ -236,10 +245,11 @@ class ZeneAPIImpl @Inject constructor(
             emit(cache)
             return@flow
         }
-
+        val list = songHistoryListDB.firstOrNull() ?: emptyArray()
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
+            put("list", moshi.adapter(Array<String>::class.java).toJson(list))
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         val response = zeneAPI.recommendedAlbums(body)
@@ -254,9 +264,11 @@ class ZeneAPIImpl @Inject constructor(
             return@flow
         }
 
+        val list = songHistoryListDB.firstOrNull() ?: emptyArray()
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
+            put("list", moshi.adapter(Array<String>::class.java).toJson(list))
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         val response = zeneAPI.recommendedVideo(body)
@@ -270,10 +282,11 @@ class ZeneAPIImpl @Inject constructor(
             emit(cache)
             return@flow
         }
-
+        val list = songHistoryListDB.firstOrNull() ?: emptyArray()
         val email = userInfoDB.firstOrNull()?.email ?: ""
         val json = JSONObject().apply {
             put("email", email)
+            put("list", moshi.adapter(Array<String>::class.java).toJson(list))
         }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         val response = zeneAPI.suggestTopSongs(body)
@@ -281,7 +294,7 @@ class ZeneAPIImpl @Inject constructor(
         emit(response)
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun addMusicHistory(songID: String) = flow {
+    override suspend fun addMusicHistory(songID: String, artists: String?) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: ""
 
         val json = JSONObject().apply {
@@ -289,7 +302,8 @@ class ZeneAPIImpl @Inject constructor(
             put("email", email)
             put("device", getDeviceName())
         }
-
+        addSongHistoryLists(songID)
+        artists?.let { addArtistsHistoryLists(it) }
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.addSongHistory(body))
     }.flowOn(Dispatchers.IO)
@@ -405,6 +419,16 @@ class ZeneAPIImpl @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.artistsPosts(body))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun topCacheSongsAndArtists() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+        val json = JSONObject().apply {
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.topCacheSongsAndArtists(body))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun userPlaylistSongs(playlistID: String, page: Int) = flow {

@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityItem
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.APP_REVIEW_STATUS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARTISTS_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.LAST_ADS_TIMESTAMP
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_LOOP
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MU
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PINNED_ARTISTS_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.PLAYING_SONG_ON_LOCK_SCREEN
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SEARCH_HISTORY
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SONG_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SONG_QUALITY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SPONSORS_ADS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
@@ -60,6 +62,8 @@ object DataStoreManager {
         val MUSIC_PLAYER = stringPreferencesKey("music_player")
         val MUSIC_SPEED = stringPreferencesKey("music_speed")
         val VIDEO_SPEED = stringPreferencesKey("video_speed")
+        val SONG_HISTORY_LIST = stringPreferencesKey("song_history_list")
+        val ARTISTS_HISTORY_LIST = stringPreferencesKey("artists_history_list")
         val MUSIC_LOOP = booleanPreferencesKey("music_loop")
         val PLAYING_SONG_ON_LOCK_SCREEN = booleanPreferencesKey("playing_song_on_lock_screen")
         val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
@@ -206,6 +210,27 @@ object DataStoreManager {
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[VIDEO_SPEED] = value.first().name }
+        }
+
+
+    var songHistoryListDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<String>::class.java).fromJson(it[SONG_HISTORY_LIST] ?: ARRAY_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
+            context.dataStore.edit { it[SONG_HISTORY_LIST] = json }
+        }
+
+
+    var artistsHistoryListDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<String>::class.java)
+                .fromJson(it[ARTISTS_HISTORY_LIST] ?: ARRAY_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
+            context.dataStore.edit { it[ARTISTS_HISTORY_LIST] = json }
         }
 
     suspend fun setCustomTimestamp(key: String) {

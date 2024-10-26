@@ -6,6 +6,11 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
+data class ZeneCacheTopSongsArtistsPostsResponse(
+    val artists: List<String?>?,
+    val songs: List<String?>?
+)
+
 data class ZeneArtistsPostsResponse(
     val artists: ZeneMusicDataResponse?,
     val posts: List<ZeneArtistsPostItems?>?
@@ -39,9 +44,11 @@ data class ZeneArtistsPostItems(
         return when {
             yearsAgo > 0 -> {
                 val formatter = DateTimeFormatter.ofPattern("dd:MMM:yyyy")
-                val dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault())
+                val dateTime =
+                    LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault())
                 dateTime.format(formatter)
             }
+
             monthsAgo > 0 -> "$monthsAgo months ago"
             daysAgo > 0 -> "$daysAgo days ago"
             hoursAgo > 0 -> "$hoursAgo hours ago"

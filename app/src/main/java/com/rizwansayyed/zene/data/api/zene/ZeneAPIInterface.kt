@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneArtistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
+import com.rizwansayyed.zene.data.api.model.ZeneCacheTopSongsArtistsPostsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneLyricsData
 import com.rizwansayyed.zene.data.api.model.ZeneMoodPlaylistData
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
@@ -17,7 +18,6 @@ import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsDataResponse
 import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
-import com.rizwansayyed.zene.data.api.model.ZeneSponsorsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
@@ -62,7 +62,7 @@ interface ZeneAPIInterface {
 
     suspend fun getMusicHistory(page: Int): Flow<ZeneMusicHistoryResponse>
 
-    suspend fun addMusicHistory(songID: String): Flow<ZeneBooleanResponse>
+    suspend fun addMusicHistory(songID: String, artists: String?): Flow<ZeneBooleanResponse>
 
     suspend fun moodLists(id: String): Flow<ZeneMoodPlaylistData>
 
@@ -114,4 +114,5 @@ interface ZeneAPIInterface {
     suspend fun updateAvailability(): Flow<ZeneUpdateAvailabilityResponse>
     suspend fun isSongLiked(songID: String): Flow<SongLikedResponse>
     suspend fun relatedVideos(id: String): Flow<ZeneMusicDataResponse>
+    suspend fun topCacheSongsAndArtists(): Flow<ZeneCacheTopSongsArtistsPostsResponse>
 }
