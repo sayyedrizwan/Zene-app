@@ -97,7 +97,7 @@ fun HomeView(
 
                 if (topHeaderDialog != null) {
                     Spacer(Modifier.height(20.dp))
-                    TextPoppins(topHeaderDialog!!, true, Color.Red, size = 20)
+                    TextPoppins(topHeaderDialog!!, true, Color.Red, lineHeight = 250, size = 20)
                     Spacer(Modifier.height(30.dp))
                 }
             }
