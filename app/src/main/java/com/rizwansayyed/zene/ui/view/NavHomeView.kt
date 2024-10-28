@@ -56,7 +56,6 @@ fun NavHomeView(
             Spacer(Modifier.weight(1f))
             if (playerInfo?.player?.id != null) PlayerThumbnail(Modifier, playerInfo) {
                 homeNavModel.showMusicPlayer(true)
-                vibratePhone()
             }
         }
 

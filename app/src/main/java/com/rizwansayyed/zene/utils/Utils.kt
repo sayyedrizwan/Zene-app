@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.utils
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -17,6 +18,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
@@ -91,8 +93,8 @@ object Utils {
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
-        val BASE_URL =
-            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+        val BASE_URL = BuildConfig.DOMAIN_BASE_URL
+//            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val LIKED_SONGS_ON_ZENE_PLAYLISTS = "liked_songs_on_zene"
 
@@ -107,7 +109,6 @@ object Utils {
         const val ZENE_LANGUAGES_BY_RADIO_API = "radio/radiosbylanguages"
         const val ZENE_COUNTRIES_BY_RADIO_API = "radio/radiosbycountries"
         const val ZENE_RADIO_INFO_API = "radio/radioinfo"
-
 
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_LIKED_SONGS_API = "zuser/liked_songs"
@@ -367,9 +368,9 @@ object Utils {
     }
 
     fun openEqualizer() {
-        val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+        val intent = Intent()
+        intent.setAction("android.media.action.DISPLAY_AUDIO_EFFECT_CONTROL_PANEL")
         intent.flags = FLAG_ACTIVITY_NEW_TASK
-
         if ((intent.resolveActivity(context.packageManager) != null)) {
             context.startActivity(intent)
         } else {
@@ -381,6 +382,20 @@ object Utils {
         return ContextCompat.checkSelfPermission(
             context, permission
         ) == PackageManager.PERMISSION_DENIED
+    }
+
+    fun openAlarmPermission() {
+        Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+            data = Uri.parse("package:" + context.packageName)
+            flags = FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(this)
+        }
+        context.resources.getString(R.string.need_alarm_permission).toast()
+    }
+
+    fun checkAlarmPermission(): Boolean {
+        val alarmManager = ContextCompat.getSystemService(context, AlarmManager::class.java)
+        return alarmManager?.canScheduleExactAlarms() ?: false
     }
 
     fun startAppSettings() {

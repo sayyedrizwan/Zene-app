@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
 import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
+import com.rizwansayyed.zene.ui.settings.view.SleepTimeSheet
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -68,12 +69,14 @@ data class SettingsData(val txt: Int, val value: Boolean)
 
 val loopSong = listOf(SettingsData(R.string.enable, true), SettingsData(R.string.disabled, false))
 
-
 @Composable
 fun SettingsView() {
     val loopSettings by musicLoopSettings.collectAsState(initial = false)
     val lockscreenSettings by playingSongOnLockScreen.collectAsState(initial = false)
     var clearCache by remember { mutableStateOf(false) }
+
+    var sleepTimeSheet by remember { mutableStateOf(false) }
+    var wakeTimeSheet by remember { mutableStateOf(false) }
 
     val context = LocalContext.current as Activity
     val needPermission = stringResource(R.string.need_overlay_permission_to_show_song)
@@ -129,6 +132,22 @@ fun SettingsView() {
 
         item {
             Spacer(Modifier.height(30.dp))
+            CardItems(R.string.sleep_timer) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_SLEEP_TIMER)
+                sleepTimeSheet = true
+            }
+        }
+
+        item {
+            Spacer(Modifier.height(30.dp))
+            CardItems(R.string.wake_timer) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_WAKE_TIMER)
+                wakeTimeSheet = true
+            }
+        }
+
+        item {
+            Spacer(Modifier.height(30.dp))
             CardItems(R.string.equalizer) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_EQUALIZER)
                 openEqualizer()
@@ -179,6 +198,10 @@ fun SettingsView() {
 
     LaunchedEffect(Unit) {
         if (!Settings.canDrawOverlays(context)) playingSongOnLockScreen = flowOf(false)
+    }
+
+    if (sleepTimeSheet) SleepTimeSheet {
+        sleepTimeSheet = false
     }
 }
 

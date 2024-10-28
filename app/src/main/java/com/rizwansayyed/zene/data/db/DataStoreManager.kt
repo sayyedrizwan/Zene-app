@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SE
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SONG_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SONG_QUALITY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.SPONSORS_ADS
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TIMER_DATA_INFO
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.UPDATE_AVAILABILITY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.USER_INFOS
@@ -38,6 +39,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VI
 import com.rizwansayyed.zene.data.db.model.AppReviewData
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
+import com.rizwansayyed.zene.data.db.model.TimerData
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
@@ -63,6 +65,7 @@ object DataStoreManager {
         val MUSIC_SPEED = stringPreferencesKey("music_speed")
         val VIDEO_SPEED = stringPreferencesKey("video_speed")
         val SONG_HISTORY_LIST = stringPreferencesKey("song_history_list")
+        val TIMER_DATA_INFO = stringPreferencesKey("timer_data_info")
         val ARTISTS_HISTORY_LIST = stringPreferencesKey("artists_history_list")
         val MUSIC_LOOP = booleanPreferencesKey("music_loop")
         val PLAYING_SONG_ON_LOCK_SCREEN = booleanPreferencesKey("playing_song_on_lock_screen")
@@ -220,6 +223,16 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
             context.dataStore.edit { it[SONG_HISTORY_LIST] = json }
+        }
+
+
+    var timerDataDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(TimerData::class.java).fromJson(it[TIMER_DATA_INFO] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(TimerData::class.java).toJson(value.first())
+            context.dataStore.edit { it[TIMER_DATA_INFO] = json }
         }
 
 

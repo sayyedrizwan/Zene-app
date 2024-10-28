@@ -56,6 +56,7 @@ import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.NewUserCards
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.TextPoppinsLight
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
@@ -97,7 +98,9 @@ fun HomeView(
 
                 if (topHeaderDialog != null) {
                     Spacer(Modifier.height(20.dp))
-                    TextPoppins(topHeaderDialog!!, true, Color.Red, lineHeight = 250, size = 20)
+                    TextPoppinsLight(
+                        topHeaderDialog!!, true, Color.Red,
+                    )
                     Spacer(Modifier.height(30.dp))
                 }
             }

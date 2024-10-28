@@ -90,6 +90,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
+import com.rizwansayyed.zene.utils.SleepTimerUtils
 import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.RADIO_INNER
@@ -297,9 +298,6 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         lifecycleScope.launch {
             delay(2.seconds)
-
-//            openVideoPlayer("gdx7gN1UyX0")
-
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
         }
@@ -313,6 +311,7 @@ class MainActivity : ComponentActivity() {
         )
         homeNavModel.clearAdsTs()
         homeNavModel.webViewStatus()
+        SleepTimerUtils.setSleepAlarm()
 
         jobCurrent?.cancel()
         jobCurrent = CoroutineScope(Dispatchers.IO).launch {

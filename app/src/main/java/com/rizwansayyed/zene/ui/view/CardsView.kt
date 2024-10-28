@@ -79,7 +79,7 @@ fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
             imgBuilder(m.thumbnail),
             m.name,
             Modifier
-                .size(220.dp)
+                .size(200.dp)
                 .clip(RoundedCornerShape(14.dp))
                 .background(Color.DarkGray),
             contentScale = ContentScale.Crop
@@ -87,11 +87,11 @@ fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
 
         Row(
             Modifier
-                .width(220.dp)
+                .width(200.dp)
                 .padding(top = 9.dp)
                 .padding(horizontal = 7.dp)
         ) {
-            TextPoppins(m.name ?: " ", false, size = 16, limit = 1)
+            TextPoppins(m.name ?: " ", false, size = 15, limit = 1)
         }
     }
 
@@ -116,7 +116,7 @@ fun CardsViewDesc(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
             imgBuilder(m.thumbnail),
             m.name,
             Modifier
-                .size(220.dp)
+                .size(200.dp)
                 .clip(RoundedCornerShape(14.dp))
                 .background(Color.DarkGray),
             contentScale = ContentScale.Crop
@@ -124,11 +124,11 @@ fun CardsViewDesc(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
 
         Row(
             Modifier
-                .width(220.dp)
+                .width(200.dp)
                 .padding(top = 9.dp)
                 .padding(horizontal = 7.dp)
         ) {
-            TextPoppins(m.name ?: " ", false, size = 16, limit = 1)
+            TextPoppins(m.name ?: " ", false, size = 15, limit = 1)
         }
 
         Row(
@@ -157,13 +157,13 @@ fun VideoCardsViewWithSong(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>
                 if (it) openSpecificIntent(m, list)
                 else dialog = true
             }) {
-        Box(Modifier.size(width = 280.dp, height = 170.dp)) {
+        Box(Modifier.size(width = 240.dp, height = 150.dp)) {
             AsyncImage(
                 imgBuilder(ytThumbnail(m.extra ?: "")),
                 m.name,
                 Modifier
                     .align(Alignment.Center)
-                    .size(width = 280.dp, height = 170.dp)
+                    .size(width = 240.dp, height = 150.dp)
                     .clip(RoundedCornerShape(14.dp))
                     .background(Color.DarkGray),
                 contentScale = ContentScale.Crop
@@ -180,16 +180,16 @@ fun VideoCardsViewWithSong(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>
 
         Row(
             Modifier
-                .width(280.dp)
+                .width(240.dp)
                 .padding(top = 9.dp)
                 .padding(horizontal = 7.dp)
         ) {
-            TextPoppins(m.name ?: " ", false, size = 16, limit = 1)
+            TextPoppins(m.name ?: " ", false, size = 15, limit = 1)
         }
 
         Row(
             Modifier
-                .width(280.dp)
+                .width(240.dp)
                 .padding(horizontal = 7.dp)
         ) {
             TextPoppinsThin(m.artists ?: " ", false, size = 14, limit = 1)
@@ -208,14 +208,14 @@ fun CardRoundTextOnly(m: ZeneMusicDataItems) {
     Row(
         Modifier
             .padding(6.dp)
-            .width(200.dp)
+            .width(180.dp)
             .clip(RoundedCornerShape(10))
             .background(MainColor)
             .bouncingClickable { openSpecificIntent(m, emptyList()) },
         Arrangement.Center,
         Alignment.CenterVertically
     ) {
-        TextPoppins(m.name ?: "", true, size = 16, limit = 2)
+        TextPoppins(m.name ?: "", true, size = 14, limit = 2)
     }
 }
 
@@ -249,9 +249,9 @@ fun CardSmallWithListeningNumber(m: ZeneMusicDataItems, list: ZeneMusicDataRespo
                 .weight(1f)
                 .padding(start = 9.dp, end = 4.dp)
         ) {
-            TextPoppins(m.name ?: "", false, size = 16, limit = 1)
+            TextPoppins(m.name ?: "", false, size = 15, limit = 1)
             Spacer(Modifier.height(4.dp))
-            TextPoppinsThin(m.artists ?: "", false, size = 16, limit = 1)
+            TextPoppinsThin(m.artists ?: "", false, size = 15, limit = 1)
             Spacer(Modifier.height(4.dp))
             Row(Modifier, Arrangement.Center) {
                 Box(Modifier.offset(y = 4.dp)) {
@@ -287,7 +287,7 @@ fun ArtistsCardView(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
             imgBuilder(m.thumbnail),
             m.name,
             Modifier
-                .size(180.dp)
+                .size(140.dp)
                 .clip(RoundedCornerShape(100))
                 .background(Color.DarkGray),
             contentScale = ContentScale.Crop
@@ -295,11 +295,11 @@ fun ArtistsCardView(m: ZeneMusicDataItems, list: ZeneMusicDataResponse) {
 
         Row(
             Modifier
-                .padding(top = 8.dp)
+                .padding(top = 5.dp)
                 .padding(horizontal = 5.dp)
-                .width(170.dp)
+                .width(140.dp)
         ) {
-            TextPoppinsThin(m.name ?: "", true, size = 17, limit = 1)
+            TextPoppins(m.name ?: "", true, size = 14, limit = 1)
         }
     }
 

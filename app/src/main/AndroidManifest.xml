@@ -26,6 +26,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <queries>
         <package android:name="com.apple.android.music" />
     </queries>
@@ -140,6 +142,10 @@
         <receiver
             android:name=".service.musicplayer.MusicPlayerNotificationReceiver"
             android:exported="false" />
+
+        <receiver
+            android:name=".receiver.AlarmListenerReceiver"
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
