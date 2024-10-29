@@ -183,6 +183,10 @@
     <string name="set_timer">Set Timer</string>
     <string name="need_alarm_permission">Need permission so app can schedule alarm.</string>
     <string name="sleep_mode_activated">Sleep Mode Activated</string>
+    <string name="wake_up_alarm">Wake up Alarm</string>
+    <string name="scheduled_song_started_playing">Scheduled song started playing!</string>
     <string name="your_song_paused_as_scheduled">Your song has been paused as scheduled. Sweet dreams!</string>
     <string name="not_selected_song_wak_up_alarm">You haven\'t selected a song. If you set a wake-up alarm, the last song you played will automatically start.</string>
+    <string name="how_to_add_a_song">Long press on any song and click on "add to wake-up timer".</string>
+    <string name="add_to_wake_up_timer">Add to wake up timer</string>
 </resources>

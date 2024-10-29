@@ -11,9 +11,6 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.webkit.WebSettings
-import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -48,7 +45,9 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpDataDB
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
@@ -71,6 +70,8 @@ import com.rizwansayyed.zene.ui.view.AdsClickWebView
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.NavHomeMenu
 import com.rizwansayyed.zene.ui.view.NavHomeView
+import com.rizwansayyed.zene.utils.AlarmTimerType
+import com.rizwansayyed.zene.utils.AlarmTimerUtils
 import com.rizwansayyed.zene.utils.EncodeDecodeGlobal.decryptData
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
@@ -83,14 +84,11 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_RADIO
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SUBSCRIPTION
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_USER_PLAYLISTS
 import com.rizwansayyed.zene.utils.NavigationUtils.SYNC_DATA
 import com.rizwansayyed.zene.utils.NavigationUtils.registerNavCommand
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
-import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
-import com.rizwansayyed.zene.utils.SleepTimerUtils
 import com.rizwansayyed.zene.utils.Utils.Share.ARTISTS_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.RADIO_INNER
@@ -115,9 +113,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
-
-//Like song and info.
-//Sleep timer and Waker alarm timer
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -315,7 +310,9 @@ class MainActivity : ComponentActivity() {
         )
         homeNavModel.clearAdsTs()
         homeNavModel.webViewStatus()
-        SleepTimerUtils.setSleepAlarm()
+
+        AlarmTimerUtils(timerDataDB, AlarmTimerType.SLEEP_TIMER).setAnAlarm()
+        AlarmTimerUtils(wakeUpDataDB, AlarmTimerType.WAKE_TIMER).setAnAlarm()
 
         jobCurrent?.cancel()
         jobCurrent = CoroutineScope(Dispatchers.IO).launch {

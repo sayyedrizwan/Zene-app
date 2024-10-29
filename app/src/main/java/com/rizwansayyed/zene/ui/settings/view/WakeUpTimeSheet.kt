@@ -35,12 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.data.db.model.TimerData
@@ -48,11 +45,9 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
-import com.rizwansayyed.zene.ui.view.TextPoppinsThin
-import com.rizwansayyed.zene.ui.view.bouncingClickable
 import com.rizwansayyed.zene.ui.view.imgBuilder
-import com.rizwansayyed.zene.ui.view.openSpecificIntent
-import com.rizwansayyed.zene.utils.SleepTimerUtils
+import com.rizwansayyed.zene.utils.AlarmTimerType
+import com.rizwansayyed.zene.utils.AlarmTimerUtils
 import com.rizwansayyed.zene.utils.Utils.checkAlarmPermission
 import com.rizwansayyed.zene.utils.Utils.openAlarmPermission
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -76,13 +71,14 @@ fun WakeUpTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
             return
         }
         wakeUpDataDB = flowOf(TimerData(timePickerState.hour, timePickerState.minute))
-        SleepTimerUtils.setSleepAlarm()
+
+        AlarmTimerUtils(wakeUpDataDB, AlarmTimerType.WAKE_TIMER).setAnAlarm()
         close()
     }
 
     fun clearTimers() {
         wakeUpDataDB = flowOf(TimerData(null, null))
-        SleepTimerUtils.setSleepAlarm()
+        AlarmTimerUtils(wakeUpDataDB, AlarmTimerType.WAKE_TIMER).setAnAlarm()
         close()
     }
 
@@ -176,6 +172,8 @@ fun WakeUpSongInfo() {
     ) {
         if (wakUpSongs?.id == null) {
             TextPoppins(stringResource(R.string.not_selected_song_wak_up_alarm), true, size = 16)
+
+            TextPoppins(stringResource(R.string.how_to_add_a_song), true, size = 16)
         } else {
             AsyncImage(
                 imgBuilder(wakUpSongs!!.thumbnail), wakUpSongs!!.name,

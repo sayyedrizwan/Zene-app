@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
 import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
@@ -44,6 +45,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_UNSTARTED
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.WAKE_ALARM
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -247,6 +249,7 @@ class MusicPlayService : Service() {
                 play()
             } else if (json == OPEN_PLAYER) durationUpdateJob()
             else if (json == SLEEP_PAUSE_VIDEO) pauseSongOnSleep()
+            else if (json == WAKE_ALARM) setWakeAlarm()
             else if (json == PAUSE_VIDEO) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PAUSE)
                 pause()
@@ -268,6 +271,30 @@ class MusicPlayService : Service() {
             NotificationUtils(
                 context.resources.getString(R.string.sleep_mode_activated),
                 context.resources.getString(R.string.your_song_paused_as_scheduled),
+                null
+            )
+        }
+    }
+
+    fun setWakeAlarm() = CoroutineScope(Dispatchers.IO).launch {
+        val d = wakeUpMusicDataDB.first()
+        val m = musicPlayerDB.firstOrNull()
+        if (d?.id == null && m?.player?.id != null) {
+            currentVideoID = m.player.id
+            loadURL(m.player)
+
+            NotificationUtils(
+                context.resources.getString(R.string.wake_up_alarm),
+                context.resources.getString(R.string.scheduled_song_started_playing),
+                null
+            )
+        } else if (d?.id != null) {
+            currentVideoID = d.id
+            loadURL(d)
+
+            NotificationUtils(
+                context.resources.getString(R.string.wake_up_alarm),
+                context.resources.getString(R.string.scheduled_song_started_playing),
                 null
             )
         }

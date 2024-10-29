@@ -38,18 +38,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpDataDB
 import com.rizwansayyed.zene.data.db.model.TimerData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
-import com.rizwansayyed.zene.utils.SleepTimerUtils
+import com.rizwansayyed.zene.utils.AlarmTimerType
+import com.rizwansayyed.zene.utils.AlarmTimerUtils
 import com.rizwansayyed.zene.utils.Utils.checkAlarmPermission
 import com.rizwansayyed.zene.utils.Utils.openAlarmPermission
-import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
-import java.util.Calendar
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,13 +66,13 @@ fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
             return
         }
         timerDataDB = flowOf(TimerData(timePickerState.hour, timePickerState.minute))
-        SleepTimerUtils.setSleepAlarm()
+        AlarmTimerUtils(timerDataDB, AlarmTimerType.SLEEP_TIMER).setAnAlarm()
         close()
     }
 
     fun clearTimers() {
         timerDataDB = flowOf(TimerData(null, null))
-        SleepTimerUtils.setSleepAlarm()
+        AlarmTimerUtils(timerDataDB, AlarmTimerType.SLEEP_TIMER).setAnAlarm()
         close()
     }
 

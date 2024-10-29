@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
 import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
@@ -57,6 +58,7 @@ import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @Composable
@@ -140,6 +142,13 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
                 isLiked = v.data
             }
         }
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    SheetDialogSheet(R.drawable.ic_alarm_clock, R.string.add_to_wake_up_timer) {
+        wakeUpMusicDataDB = flowOf(m)
+        close()
     }
 
     Spacer(Modifier.height(20.dp))
