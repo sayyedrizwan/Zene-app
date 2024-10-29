@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,17 +32,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpDataDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.data.db.model.TimerData
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
+import com.rizwansayyed.zene.ui.view.TextPoppinsThin
+import com.rizwansayyed.zene.ui.view.bouncingClickable
+import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.ui.view.openSpecificIntent
 import com.rizwansayyed.zene.utils.SleepTimerUtils
 import com.rizwansayyed.zene.utils.Utils.checkAlarmPermission
 import com.rizwansayyed.zene.utils.Utils.openAlarmPermission
@@ -54,7 +64,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
+fun WakeUpTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var isTimerSet by remember { mutableStateOf(false) }
 
@@ -65,13 +75,13 @@ fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
             openAlarmPermission()
             return
         }
-        timerDataDB = flowOf(TimerData(timePickerState.hour, timePickerState.minute))
+        wakeUpDataDB = flowOf(TimerData(timePickerState.hour, timePickerState.minute))
         SleepTimerUtils.setSleepAlarm()
         close()
     }
 
     fun clearTimers() {
-        timerDataDB = flowOf(TimerData(null, null))
+        wakeUpDataDB = flowOf(TimerData(null, null))
         SleepTimerUtils.setSleepAlarm()
         close()
     }
@@ -83,14 +93,18 @@ fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
                 .padding(horizontal = 7.dp)
         ) {
             Spacer(Modifier.height(20.dp))
-            TextPoppinsSemiBold(stringResource(R.string.sleep_timer), false, Color.White, 19)
+            TextPoppinsSemiBold(stringResource(R.string.wake_up_timer), false, Color.White, 19)
             Spacer(Modifier.height(5.dp))
-            TextPoppins(stringResource(R.string.sleep_timer_desc), false, Color.White, 14)
+            TextPoppins(stringResource(R.string.wake_up_timer_desc), false, Color.White, 14)
             Spacer(Modifier.height(30.dp))
 
             Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
                 TimeInput(timePickerState)
             }
+
+            Spacer(Modifier.height(30.dp))
+
+            WakeUpSongInfo()
 
             Spacer(Modifier.height(30.dp))
 
@@ -104,8 +118,7 @@ fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
                         .clickable { clearTimers() }
                         .padding(horizontal = 7.dp),
                     Arrangement.Center,
-                    Alignment.CenterHorizontally
-                ) {
+                    Alignment.CenterHorizontally) {
                     Spacer(Modifier.height(10.dp))
                     TextPoppins(stringResource(R.string.cancel_timer), false, Color.White, 14)
                     Spacer(Modifier.height(10.dp))
@@ -121,8 +134,7 @@ fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
                         .clickable { setTimers() }
                         .padding(horizontal = 7.dp),
                     Arrangement.Center,
-                    Alignment.CenterHorizontally
-                ) {
+                    Alignment.CenterHorizontally) {
                     Spacer(Modifier.height(10.dp))
                     TextPoppins(stringResource(R.string.set_timer), false, Color.White, 14)
                     Spacer(Modifier.height(10.dp))
@@ -135,7 +147,7 @@ fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
                     return@LaunchedEffect
                 }
 
-                val td = timerDataDB.firstOrNull()
+                val td = wakeUpDataDB.firstOrNull()
                 if (td?.hour == null && td?.minutes == null) {
                     isTimerSet = false
                     return@LaunchedEffect
@@ -146,6 +158,46 @@ fun SleepTimeSheet(hour: Int, minutes: Int, close: () -> Unit) {
 
                 delay(2.seconds)
                 keyboardController?.hide()
+            }
+        }
+    }
+}
+
+
+@Composable
+fun WakeUpSongInfo() {
+    val wakUpSongs by wakeUpMusicDataDB.collectAsState(null)
+    Row(
+        Modifier
+            .padding(horizontal = 5.dp, vertical = 10.dp)
+            .fillMaxWidth(),
+        Arrangement.Center,
+        Alignment.CenterVertically
+    ) {
+        if (wakUpSongs?.id == null) {
+            TextPoppins(stringResource(R.string.not_selected_song_wak_up_alarm), true, size = 16)
+        } else {
+            AsyncImage(
+                imgBuilder(wakUpSongs!!.thumbnail), wakUpSongs!!.name,
+                Modifier
+                    .size(110.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color.DarkGray),
+                contentScale = ContentScale.Crop
+            )
+
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(horizontal = 9.dp)
+            ) {
+                TextPoppins(wakUpSongs!!.name ?: "", false, size = 16)
+                Spacer(Modifier.height(4.dp))
+                TextPoppins(wakUpSongs!!.artists ?: "", false, size = 13)
+            }
+
+            ImageIcon(R.drawable.ic_remove_circle, 19) {
+                wakeUpMusicDataDB = flowOf(null)
             }
         }
     }

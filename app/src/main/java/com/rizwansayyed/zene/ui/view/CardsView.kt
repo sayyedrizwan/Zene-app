@@ -75,6 +75,7 @@ fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
                 if (it) openSpecificIntent(m, list)
                 else dialog = true
             }) {
+
         AsyncImage(
             imgBuilder(m.thumbnail),
             m.name,

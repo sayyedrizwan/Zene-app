@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.api.model.IpJsonResponse
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneSponsorsItems
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityItem
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
@@ -36,6 +37,8 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.US
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VIDEO_CAPTION
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VIDEO_QUALITY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VIDEO_SPEED
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.WAKE_MUSIC_DATA_INFO
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.WAKE_TIMER_DATA_INFO
 import com.rizwansayyed.zene.data.db.model.AppReviewData
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
@@ -66,6 +69,8 @@ object DataStoreManager {
         val VIDEO_SPEED = stringPreferencesKey("video_speed")
         val SONG_HISTORY_LIST = stringPreferencesKey("song_history_list")
         val TIMER_DATA_INFO = stringPreferencesKey("timer_data_info")
+        val WAKE_TIMER_DATA_INFO = stringPreferencesKey("wake_timer_data_info")
+        val WAKE_MUSIC_DATA_INFO = stringPreferencesKey("wake_music_data_info")
         val ARTISTS_HISTORY_LIST = stringPreferencesKey("artists_history_list")
         val MUSIC_LOOP = booleanPreferencesKey("music_loop")
         val PLAYING_SONG_ON_LOCK_SCREEN = booleanPreferencesKey("playing_song_on_lock_screen")
@@ -233,6 +238,25 @@ object DataStoreManager {
         set(value) = runBlocking(Dispatchers.IO) {
             val json = moshi.adapter(TimerData::class.java).toJson(value.first())
             context.dataStore.edit { it[TIMER_DATA_INFO] = json }
+        }
+
+    var wakeUpDataDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(TimerData::class.java).fromJson(it[WAKE_TIMER_DATA_INFO] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(TimerData::class.java).toJson(value.first())
+            context.dataStore.edit { it[WAKE_TIMER_DATA_INFO] = json }
+        }
+
+    var wakeUpMusicDataDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(ZeneMusicDataItems::class.java)
+                .fromJson(it[WAKE_MUSIC_DATA_INFO] ?: JSON_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(ZeneMusicDataItems::class.java).toJson(value.first())
+            context.dataStore.edit { it[WAKE_MUSIC_DATA_INFO] = json }
         }
 
 

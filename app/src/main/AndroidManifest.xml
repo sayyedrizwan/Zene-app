@@ -145,7 +145,8 @@
 
         <receiver
             android:name=".receiver.AlarmListenerReceiver"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="android.permission.SCHEDULE_EXACT_ALARM" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

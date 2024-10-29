@@ -25,8 +25,8 @@ object SleepTimerUtils {
         putExtra(Intent.ACTION_MAIN, 0)
     }
 
-    private val pendingIntentSleeper = PendingIntent
-        .getBroadcast(context, 199, intent, PendingIntent.FLAG_IMMUTABLE)
+    private val pendingIntentSleeper =
+        PendingIntent.getBroadcast(context, 199, intent, PendingIntent.FLAG_IMMUTABLE)
 
     fun setSleepAlarm() = CoroutineScope(Dispatchers.IO).launch {
         delay(2.seconds)
@@ -39,15 +39,16 @@ object SleepTimerUtils {
         delay(1.seconds)
         try {
             val calendar: Calendar = Calendar.getInstance().apply {
-                timeInMillis = System.currentTimeMillis()
                 set(Calendar.HOUR_OF_DAY, info.hour!!)
                 set(Calendar.MINUTE, info.minutes!!)
                 set(Calendar.SECOND, 0)
             }
 
             alarmManager?.setInexactRepeating(
-                AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
-                AlarmManager.INTERVAL_DAY, pendingIntentSleeper
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis - 1000,
+                AlarmManager.INTERVAL_DAY,
+                pendingIntentSleeper
             )
         } catch (e: Exception) {
             e.message

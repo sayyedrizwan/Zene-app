@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.PREVIOUS_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_BACK_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_FORWARD_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SLEEP_PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
@@ -47,6 +48,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
+import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
@@ -244,6 +246,7 @@ class MusicPlayService : Service() {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PLAYING)
                 play()
             } else if (json == OPEN_PLAYER) durationUpdateJob()
+            else if (json == SLEEP_PAUSE_VIDEO) pauseSongOnSleep()
             else if (json == PAUSE_VIDEO) {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PAUSE)
                 pause()
@@ -255,6 +258,18 @@ class MusicPlayService : Service() {
                 currentVideoID = d?.player?.id ?: ""
                 musicPlayerDB = flowOf(d)
             }
+        }
+    }
+
+    fun pauseSongOnSleep() = CoroutineScope(Dispatchers.IO).launch {
+        val d = musicPlayerDB.first()
+        if (d?.isPlaying == true) {
+            pause()
+            NotificationUtils(
+                context.resources.getString(R.string.sleep_mode_activated),
+                context.resources.getString(R.string.your_song_paused_as_scheduled),
+                null
+            )
         }
     }
 
@@ -330,11 +345,8 @@ class MusicPlayService : Service() {
                 musicPlayerDB = flowOf(d)
 
                 MusicPlayerNotifications(
-                    this@MusicPlayService,
-                    v == VIDEO_PLAYING,
-                    d?.player,
-                    duration,
-                    currentDuration
+                    this@MusicPlayService, v == VIDEO_PLAYING,
+                    d?.player, duration, currentDuration
                 ).generate()
 
                 if (isActive) cancel()

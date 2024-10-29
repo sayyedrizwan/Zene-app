@@ -40,9 +40,12 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
 import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
+import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpDataDB
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
 import com.rizwansayyed.zene.ui.settings.view.SleepTimeSheet
+import com.rizwansayyed.zene.ui.settings.view.WakeUpTimeSheet
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -200,8 +203,14 @@ fun SettingsView() {
         if (!Settings.canDrawOverlays(context)) playingSongOnLockScreen = flowOf(false)
     }
 
-    if (sleepTimeSheet) SleepTimeSheet {
+    val sleepTimer by timerDataDB.collectAsState(null)
+    if (sleepTimeSheet) SleepTimeSheet(sleepTimer?.hour ?: 24, sleepTimer?.minutes ?: 54) {
         sleepTimeSheet = false
+    }
+
+    val wakeUpTimer by wakeUpDataDB.collectAsState(null)
+    if (wakeTimeSheet) WakeUpTimeSheet(wakeUpTimer?.hour ?: 9, wakeUpTimer?.minutes ?: 2) {
+        wakeTimeSheet = false
     }
 }
 
@@ -257,8 +266,7 @@ fun CardItems(txt: Int, click: () -> Unit) {
             .clickable { click() }
             .background(Color.Black)
             .padding(horizontal = 19.dp, vertical = 22.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         TextPoppins(stringResource(txt), size = 14)
 
         Spacer(Modifier.weight(1f))
@@ -289,8 +297,7 @@ fun SettingsCardViews(
             Row(
                 Modifier
                     .padding(horizontal = 10.dp, vertical = 22.dp)
-                    .clickable { click(it.value) },
-                verticalAlignment = Alignment.CenterVertically
+                    .clickable { click(it.value) }, verticalAlignment = Alignment.CenterVertically
             ) {
                 TextPoppins(stringResource(it.txt), size = 14)
                 Spacer(Modifier.weight(1f))

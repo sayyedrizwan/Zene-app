@@ -19,6 +19,7 @@ object MusicServiceUtils {
         const val OPEN_PLAYER = "open_player"
         const val PLAY_VIDEO = "play"
         const val PAUSE_VIDEO = "pause"
+        const val SLEEP_PAUSE_VIDEO = "sleep_pause"
         const val SEEK_DURATION_VIDEO = "seek_duration"
         const val SEEK_5S_BACK_VIDEO = "seek_5s_back"
         const val SEEK_5S_FORWARD_VIDEO = "seek_5s_forward"

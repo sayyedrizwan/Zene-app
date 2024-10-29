@@ -175,9 +175,14 @@
     <string name="view_on_youtube">View on Youtube</string>
     <string name="related_video">Related Video</string>
     <string name="sleep_timer">Sleep Timer</string>
+    <string name="wake_up_timer">Wak Up Timer</string>
     <string name="sleep_timer_desc">Setting a sleep timer will automatically stop the music at the selected time.</string>
+    <string name="wake_up_timer_desc">Setting a wake-up timer will automatically start playing the music at the selected time as an music alarm.</string>
     <string name="wake_timer">Wake Timer</string>
     <string name="cancel_timer">Cancel Timer</string>
     <string name="set_timer">Set Timer</string>
     <string name="need_alarm_permission">Need permission so app can schedule alarm.</string>
+    <string name="sleep_mode_activated">Sleep Mode Activated</string>
+    <string name="your_song_paused_as_scheduled">Your song has been paused as scheduled. Sweet dreams!</string>
+    <string name="not_selected_song_wak_up_alarm">You haven\'t selected a song. If you set a wake-up alarm, the last song you played will automatically start.</string>
 </resources>
