@@ -28,7 +28,7 @@ browser = "1.8.0"
 spotify = "1.2.5"
 exo-player = "1.4.1"
 facebook = "latest.release"
-firebase-bom = "33.4.0"
+firebase-bom = "33.5.1"
 googleid = "1.1.1"
 hilt = "2.52"
 retrofit = "2.11.0"
@@ -75,6 +75,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-inappmessaging-ktx = { module = "com.google.firebase:firebase-inappmessaging-display" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-perf-ktx = { module = "com.google.firebase:firebase-perf" }
 
