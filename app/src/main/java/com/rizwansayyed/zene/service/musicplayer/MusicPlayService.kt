@@ -131,10 +131,9 @@ class MusicPlayService : Service() {
             delay(2.seconds)
             val player = musicPlayerDB.firstOrNull()?.player
 
-            if (player?.id != null)
-                MusicPlayerNotifications(
-                    this@MusicPlayService, false, player, 0, 0
-                ).generate()
+            if (player?.id != null) MusicPlayerNotifications(
+                this@MusicPlayService, false, player, 0, 0
+            ).generate()
         }
         return START_STICKY
     }
@@ -193,17 +192,19 @@ class MusicPlayService : Service() {
             val html = readHTMLFromUTF8File(resource).replace("<<AudioURL>>", player.extra ?: "")
             webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
         } else {
-            val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
-                .replace("<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim())
-                .replace("<<Quality>>", songQualityDB.first().value)
+            val html =
+                readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
+                    "<<VideoID>>",
+                    vID.replace(RADIO_ARTISTS, "").trim()
+                ).replace("<<Quality>>", songQualityDB.first().value)
 
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
 
             webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
 
             withContext(Dispatchers.IO) {
-                if (!vID.contains(RADIO_ARTISTS))
-                    zeneAPI.addMusicHistory(vID, player.artists).catch { }.collect()
+                if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID, player.artists)
+                    .catch { }.collect()
             }
         }
         if (isActive) cancel()
@@ -279,10 +280,10 @@ class MusicPlayService : Service() {
     fun setWakeAlarm() = CoroutineScope(Dispatchers.IO).launch {
         val d = wakeUpMusicDataDB.first()
         val m = musicPlayerDB.firstOrNull()
+        isNewPlay = false
         if (d?.id == null && m?.player?.id != null) {
             currentVideoID = m.player.id
             loadURL(m.player)
-
             NotificationUtils(
                 context.resources.getString(R.string.wake_up_alarm),
                 context.resources.getString(R.string.scheduled_song_started_playing),
@@ -291,7 +292,8 @@ class MusicPlayService : Service() {
         } else if (d?.id != null) {
             currentVideoID = d.id
             loadURL(d)
-
+            musicPlayerDB =
+                flowOf(MusicPlayerData(listOf(d), d, VIDEO_BUFFERING, 0, false, 0, true))
             NotificationUtils(
                 context.resources.getString(R.string.wake_up_alarm),
                 context.resources.getString(R.string.scheduled_song_started_playing),
@@ -372,8 +374,7 @@ class MusicPlayService : Service() {
                 musicPlayerDB = flowOf(d)
 
                 MusicPlayerNotifications(
-                    this@MusicPlayService, v == VIDEO_PLAYING,
-                    d?.player, duration, currentDuration
+                    this@MusicPlayService, v == VIDEO_PLAYING, d?.player, duration, currentDuration
                 ).generate()
 
                 if (isActive) cancel()
