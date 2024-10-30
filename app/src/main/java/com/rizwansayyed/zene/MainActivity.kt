@@ -295,10 +295,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
-
-//            val info = musicPlayerDB.firstOrNull()?.player?.id ?: ""
-//            Log.d("TAG", "onStart: on runnneddd onnn $info")
-//            openVideoPlayer(info)
         }
         homeViewModel.userArtistsList()
 

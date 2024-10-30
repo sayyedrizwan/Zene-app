@@ -56,6 +56,7 @@ import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.player.view.ButtonsView
 import com.rizwansayyed.zene.ui.player.view.ExtraButtonsData
 import com.rizwansayyed.zene.ui.player.view.LyricsView
+import com.rizwansayyed.zene.ui.player.view.SleepTimerSheet
 import com.rizwansayyed.zene.ui.player.view.SongSliderData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CardRoundLoading
@@ -91,6 +92,7 @@ fun MusicPlayerView(
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
 
     val pagerState = rememberPagerState(pageCount = { playerInfo?.list?.size ?: 0 })
+    var alarmSheet by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf("") }
     var artists by remember { mutableStateOf("") }
 
@@ -118,6 +120,16 @@ fun MusicPlayerView(
                     }
 
                     TextPoppins(stringResource(R.string.zene_music_player), true, size = 17)
+
+                    Row(
+                        Modifier
+                            .padding(end = 9.dp)
+                            .align(Alignment.CenterEnd)
+                            .clickable {
+                                alarmSheet = true
+                            }) {
+                        ImageIcon(R.drawable.ic_alarm_clock, 22)
+                    }
                 }
                 Spacer(Modifier.height(20.dp))
             }
@@ -293,15 +305,16 @@ fun MusicPlayerView(
     BackHandler {
         close()
     }
+
+    if (alarmSheet) SleepTimerSheet {
+        alarmSheet = false
+    }
 }
 
 @Composable
 fun MusicListCards(
-    pagerState: PagerState,
-    playerInfo: MusicPlayerData?,
-    name: String,
-    artists: String,
-    close: () -> Unit
+    pagerState: PagerState, playerInfo: MusicPlayerData?, name: String,
+    artists: String, close: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     Spacer(Modifier.height(60.dp))

@@ -117,8 +117,11 @@ class MusicPlayerNotifications(
 
         val mediaSession = prepareMediaSession(imageBitmap, v.toFloat()).sessionToken
         val style =
-            androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(1, 2, 3)
-                .setShowCancelButton(false).setMediaSession(mediaSession)
+            androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession)
+
+//        val style =
+//            androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(1, 2, 3)
+//                .setShowCancelButton(false).setMediaSession(mediaSession)
 
         val notification = NotificationCompat.Builder(context, NOTIFICATION_M_P_CHANNEL_ID).apply {
             if (player?.type() == MusicType.SONGS) addAction(
