@@ -204,7 +204,7 @@ fun SettingsView() {
     }
 
     val sleepTimer by timerDataDB.collectAsState(null)
-    if (sleepTimeSheet) SleepTimeSheet(sleepTimer?.hour ?: 24, sleepTimer?.minutes ?: 54) {
+    if (sleepTimeSheet) SleepTimeSheet(sleepTimer?.hour ?: 23, sleepTimer?.minutes ?: 54) {
         sleepTimeSheet = false
     }
 

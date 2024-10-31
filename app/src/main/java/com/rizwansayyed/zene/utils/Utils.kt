@@ -400,17 +400,21 @@ object Utils {
     }
 
     fun openAlarmPermission() {
-        Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-            data = Uri.parse("package:" + context.packageName)
-            flags = FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                data = Uri.parse("package:" + context.packageName)
+                flags = FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            }
+            context.resources.getString(R.string.need_alarm_permission).toast()
         }
-        context.resources.getString(R.string.need_alarm_permission).toast()
     }
 
     fun checkAlarmPermission(): Boolean {
         val alarmManager = ContextCompat.getSystemService(context, AlarmManager::class.java)
-        return alarmManager?.canScheduleExactAlarms() ?: false
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            alarmManager?.canScheduleExactAlarms() ?: false
+        else true
     }
 
     fun startAppSettings() {
