@@ -96,5 +96,5 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
 
 suspend fun isMoreThanTimeAds(): Boolean = withContext(Dispatchers.IO) {
     val timestamp = timeDifferenceInMinutes(lastAdsTimestamp.firstOrNull())
-    return@withContext timestamp > 6
+    return@withContext timestamp >= 5
 }

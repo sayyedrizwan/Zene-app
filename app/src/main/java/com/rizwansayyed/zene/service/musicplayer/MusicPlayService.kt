@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
+import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -41,6 +42,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_BACK_VID
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_5S_FORWARD_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SLEEP_PAUSE_VIDEO
+import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SLEEP_TIMER_BG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
@@ -48,14 +50,17 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_UNSTARTED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.WAKE_ALARM
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
+import com.rizwansayyed.zene.ui.player.view.sleepTime
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
+import com.rizwansayyed.zene.utils.Utils.getTimeAfterMinutesInMillis
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -71,6 +76,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -95,6 +101,8 @@ class MusicPlayService : Service() {
     private var job: Job? = null
     private var currentVideoID = ""
     private var isNewPlay = true
+    private var sleepTimer: Job? = null
+
 
     private val phoneWake = object : BroadcastReceiver() {
         override fun onReceive(c: Context?, i: Intent?) {
@@ -194,8 +202,7 @@ class MusicPlayService : Service() {
         } else {
             val html =
                 readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
-                    "<<VideoID>>",
-                    vID.replace(RADIO_ARTISTS, "").trim()
+                    "<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim()
                 ).replace("<<Quality>>", songQualityDB.first().value)
 
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
@@ -243,6 +250,7 @@ class MusicPlayService : Service() {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TO_PREVIOUS_SONG)
                 forwardAndRewindSong(false)
             } else if (json == SEEK_DURATION_VIDEO) seekTo(int)
+            else if (json == SLEEP_TIMER_BG) runSleepTimer(int)
             else if (json == SEEK_5S_BACK_VIDEO) seek5sMinus()
             else if (json == SEEK_5S_FORWARD_VIDEO) seek5sPlus()
             else if (json == PLAY_VIDEO) {
@@ -428,6 +436,11 @@ class MusicPlayService : Service() {
     }
 
     private fun checkAndPlayNextSong() = CoroutineScope(Dispatchers.IO).launch {
+        if (sleepTime == -1L) {
+            sleepTime = 0
+            pause()
+            return@launch
+        }
         val id = musicPlayerDB.firstOrNull()?.player ?: return@launch
         if (musicLoopSettings.firstOrNull() == true) {
             loadURL(id)
@@ -451,6 +464,18 @@ class MusicPlayService : Service() {
             musicPlayerDB = flowOf(new)
         } catch (e: Exception) {
             e.message
+        }
+    }
+
+    private fun runSleepTimer(timer: Int) {
+        sleepTimer?.cancel()
+        sleepTime = getTimeAfterMinutesInMillis(timer)
+        if (timer == 0 || timer == -1) sleepTime = timer.toLong()
+        if (timer <= 0) return
+        sleepTimer = CoroutineScope(Dispatchers.IO).launch {
+            delay(timer.minutes)
+            pause()
+            sleepTime = 0
         }
     }
 }

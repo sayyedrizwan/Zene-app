@@ -190,4 +190,7 @@
     <string name="how_to_add_a_song">Long press on any song and click on "add to wake-up timer".</string>
     <string name="add_to_wake_up_timer">Add to wake up timer</string>
     <string name="end_of_track">End of track</string>
+    <string name="turn_off_timer">Turn off timer</string>
+    <string name="left">Left</string>
+    <string name="song_will_stop_when_song_ends">Song will stop when song ends</string>
 </resources>

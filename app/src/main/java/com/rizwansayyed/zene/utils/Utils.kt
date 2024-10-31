@@ -49,6 +49,7 @@ import java.net.URL
 import java.text.DecimalFormat
 import java.time.Duration
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 
 object Utils {
@@ -351,6 +352,20 @@ object Utils {
             return@withContext null
         }
 
+    }
+
+    fun getTimeDifference(start: Long = System.currentTimeMillis(), end: Long): String {
+        val remainingMillis = end - start
+        if (remainingMillis <= 0) return ""
+        val remainingMinutes = TimeUnit.MILLISECONDS.toMinutes(remainingMillis)
+        val remainingSeconds = TimeUnit.MILLISECONDS.toSeconds(remainingMillis) % 60
+
+        return "$remainingMinutes minutes and $remainingSeconds seconds"
+    }
+
+    fun getTimeAfterMinutesInMillis(ts: Int): Long {
+        val currentTimeMillis = System.currentTimeMillis()
+        return currentTimeMillis + TimeUnit.MINUTES.toMillis(ts.toLong())
     }
 
     fun feedbackMail() {

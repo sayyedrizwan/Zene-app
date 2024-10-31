@@ -48,6 +48,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.hours
 
 
 class ZeneAPIImpl @Inject constructor(
@@ -91,8 +92,10 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun updateAvailability() = flow {
         val ts = getCustomTimestamp(UPDATE_AVAILABILITY_CACHE)
-        if (timeDifferenceInMinutes(ts) > 720) {
+        if (timeDifferenceInMinutes(ts) > 10.hours.inWholeMinutes) {
             val response = zeneAPI.updateAvailability()
+            updateAvailabilityDB = flowOf(response)
+            setCustomTimestamp(UPDATE_AVAILABILITY_CACHE)
             emit(response)
         } else updateAvailabilityDB.first()?.let { emit(it) }
     }.flowOn(Dispatchers.IO)

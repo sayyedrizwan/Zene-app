@@ -51,7 +51,7 @@ object ApiCache {
         if (data.isEmpty()) return null
 
         val ts = getCustomTimestamp(key) ?: return null
-        if (timeDifferenceInMinutes(ts) > (45..50).random()) return null
+        if (timeDifferenceInMinutes(ts) > (85..90).random()) return null
 
         return data.toList()
     }
@@ -84,7 +84,7 @@ object ApiCache {
         if (data.isEmpty()) return null
 
         val ts = getCustomTimestamp(key) ?: return null
-        if (timeDifferenceInMinutes(ts) > (25..30).random()) return null
+        if (timeDifferenceInMinutes(ts) > (45..50).random()) return null
 
         return data.toList()
     }
