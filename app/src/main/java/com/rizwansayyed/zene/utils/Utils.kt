@@ -8,7 +8,8 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.audiofx.AudioEffect
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
@@ -18,7 +19,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
@@ -185,8 +185,7 @@ object Utils {
     fun userAlphabetsImg(n: String): String {
         return "https://ui-avatars.com/api/?name=${
             n.replace(
-                " ",
-                "+"
+                " ", "+"
             )
         }" + "&background=2F3C7E&color=fff&size=128&length=2"
     }
@@ -412,8 +411,8 @@ object Utils {
 
     fun checkAlarmPermission(): Boolean {
         val alarmManager = ContextCompat.getSystemService(context, AlarmManager::class.java)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            alarmManager?.canScheduleExactAlarms() ?: false
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) alarmManager?.canScheduleExactAlarms()
+            ?: false
         else true
     }
 
@@ -471,12 +470,19 @@ object Utils {
     }
 
     fun internetIsConnected(): Boolean {
-        try {
-            val command = "ping -c 1 google.com"
-            return (Runtime.getRuntime().exec(command).waitFor() == 0)
-        } catch (e: Exception) {
-            return false
+        val result: Boolean
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
         }
+
+        return result
     }
 
     fun timeDifferenceInMinutes(ts: Long?): Long {

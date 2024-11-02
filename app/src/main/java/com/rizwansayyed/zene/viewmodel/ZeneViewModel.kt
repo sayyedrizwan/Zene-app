@@ -133,6 +133,11 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }.catch {
             songHistoryIsLoading = false
         }.collectLatest {
+            if (page == 0) {
+                songHistory.clear()
+                zeneSavedPlaylists.clear()
+            }
+
             songHistoryIsLoading = false
             it.forEach { songHistory.add(it) }
 
@@ -156,6 +161,10 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }.catch {
             songHistoryIsLoading = false
         }.collectLatest {
+            if (page == 0) {
+                songHistory.clear()
+                zeneSavedPlaylists.clear()
+            }
             songHistoryIsLoading = false
             it.forEach { zeneSavedPlaylists.add(it) }
 
