@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.model.formatTotalDuration
@@ -47,6 +49,7 @@ import com.rizwansayyed.zene.ui.view.TextPoppins
 fun VideoPlayerControls(
     modifier: Modifier = Modifier, webApp: WebAppInterface, pip: () -> Unit, doHide: () -> Unit
 ) {
+    val context = LocalContext.current as Activity
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -85,6 +88,10 @@ fun VideoPlayerControls(
                     .padding(horizontal = 9.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(Modifier.width(6.dp))
+                ImageIcon(R.drawable.ic_arrow_left, 27) {
+                    context.finishAffinity()
+                }
                 Spacer(Modifier.width(6.dp))
                 VideoSettingsInfoView(webApp)
                 Spacer(Modifier.width(5.dp))
