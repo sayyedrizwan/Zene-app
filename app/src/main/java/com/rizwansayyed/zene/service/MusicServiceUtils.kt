@@ -3,6 +3,8 @@ package com.rizwansayyed.zene.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.content.IntentFilter
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -12,6 +14,7 @@ import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.Utils.moshi
+import com.rizwansayyed.zene.utils.Utils.toast
 
 object MusicServiceUtils {
 
@@ -69,7 +72,8 @@ object MusicServiceUtils {
 
     fun openVideoPlayer(videoID: String?) {
         Intent(context, VideoPlayerActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            flags =
+                Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_SINGLE_TOP or FLAG_ACTIVITY_CLEAR_TOP
             putExtra(Intent.ACTION_MAIN, videoID)
             context.startActivity(this)
         }

@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.VideoCardsViewWithSong
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 @Composable
@@ -91,10 +92,12 @@ fun VideoRelated(webApp: WebAppInterface) {
                     }
                 }
             }
-        }
 
-        LaunchedEffect(Unit) {
-            webApp.songInfo?.id?.let { viewModel.relatedVideos(it) }
+            LaunchedEffect(Unit) {
+                webApp.songInfo?.id?.let {
+                    viewModel.relatedVideos(it)
+                }
+            }
         }
     }
 }

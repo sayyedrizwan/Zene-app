@@ -170,6 +170,11 @@ class VideoPlayerActivity : ComponentActivity() {
         }
     }
 
+    private fun stopJob() {
+        infoJob?.cancel()
+        infoJob = null
+    }
+
     private fun startJob() {
         infoJob = lifecycleScope.launch {
             while (true) {
@@ -197,7 +202,7 @@ class VideoPlayerActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         enterPIP()
-        infoJob?.cancel()
+        stopJob()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -205,6 +210,7 @@ class VideoPlayerActivity : ComponentActivity() {
         val videoID = intent.getStringExtra(Intent.ACTION_MAIN) ?: return
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_VIDEO_VIEW)
         startJob()
+        videoID.toast()
         webAppInterface?.loadWebView(videoID)
     }
 
@@ -236,8 +242,13 @@ class VideoPlayerActivity : ComponentActivity() {
         isInPictureInPictureMode: Boolean, newConfig: Configuration
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if (isInPictureInPictureMode) videoControl = false
-        else sendWebViewCommand(PAUSE_VIDEO)
+        if (isInPictureInPictureMode) {
+            videoControl = false
+            stopJob()
+        } else {
+            startJob()
+            sendWebViewCommand(PAUSE_VIDEO)
+        }
     }
 
     override fun onUserLeaveHint() {
