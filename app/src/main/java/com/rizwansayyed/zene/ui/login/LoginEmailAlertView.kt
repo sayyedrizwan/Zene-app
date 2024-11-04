@@ -57,7 +57,6 @@ import kotlinx.coroutines.tasks.await
 @Composable
 fun LoginEmailAlertView(viewModel: HomeViewModel, close: () -> Unit) {
     val activity = LocalContext.current as Activity
-    val coroutine = rememberCoroutineScope()
 
     ModalBottomSheet(close, containerColor = Color.Black) {
         var emailValue by remember { mutableStateOf("") }
