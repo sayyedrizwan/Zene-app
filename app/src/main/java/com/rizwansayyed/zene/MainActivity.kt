@@ -24,8 +24,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,14 +33,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -56,17 +54,17 @@ import com.rizwansayyed.zene.ui.mymusic.MyMusicView
 import com.rizwansayyed.zene.ui.feed.FeedView
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
+import com.rizwansayyed.zene.ui.login.GlobalEmailEventProvider
 import com.rizwansayyed.zene.ui.login.LoginView
+import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
 import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
-import com.rizwansayyed.zene.ui.player.view.sleepTime
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
 import com.rizwansayyed.zene.ui.radio.RadioView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
-import com.rizwansayyed.zene.ui.view.AdsClickWebView
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.NavHomeMenu
 import com.rizwansayyed.zene.ui.view.NavHomeView
@@ -94,8 +92,6 @@ import com.rizwansayyed.zene.utils.Utils.Share.PLAYLIST_ALBUM_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.RADIO_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.SONG_INNER
 import com.rizwansayyed.zene.utils.Utils.Share.VIDEO_INNER
-import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
-import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInSeconds
 import com.rizwansayyed.zene.utils.Utils.toast
@@ -112,7 +108,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Locale
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -278,6 +273,7 @@ class MainActivity : ComponentActivity() {
         }
 
         checkAndRunWeb(intent)
+        loginEmail(intent)
     }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -290,6 +286,7 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         checkAndRunWeb(intent)
+        loginEmail(intent)
     }
 
     override fun onStart() {
@@ -340,6 +337,14 @@ class MainActivity : ComponentActivity() {
                 e.message
             }
         }
+    }
+
+    private fun loginEmail(intent: Intent) {
+        val auth = Firebase.auth
+        val emailLink = intent.data.toString()
+
+        if (!auth.isSignInWithEmailLink(emailLink)) return
+        GlobalEmailEventProvider.sendEvent(emailLink)
     }
 
     private fun checkAndRunWeb(intent: Intent) {

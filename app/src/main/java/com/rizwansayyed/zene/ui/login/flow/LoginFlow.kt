@@ -1,13 +1,10 @@
 package com.rizwansayyed.zene.ui.login.flow
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.lifecycle.viewModelScope
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -17,8 +14,8 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.actionCodeSettings
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rizwansayyed.zene.BuildConfig
@@ -72,7 +69,45 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
             LoginFlowType.GOOGLE -> startGoogleSignIn(c)
             LoginFlowType.APPLE -> startAppleSignIn(c)
             LoginFlowType.FACEBOOK -> startFBSignIn(c)
+            LoginFlowType.EMAIL -> {}
         }
+    }
+
+    fun initEmail(email: String, c: Activity, close: () -> Unit) {
+        this.close = close
+        mailSignIn(c, email)
+    }
+
+    fun emailAuth(email: String, link: String) = CoroutineScope(Dispatchers.Main).launch {
+        try {
+            val auth = Firebase.auth.signInWithEmailLink(email, link).await()
+            auth.user?.providerData?.forEach { user ->
+                if (user.email?.contains("@") == true) {
+                    logEvents(FirebaseLogEvents.FirebaseEvents.EMAIL_SIGN_IN)
+                    startLogin(user?.email, user?.displayName, user?.photoUrl.toString())
+                }
+            }
+        } catch (e: Exception) {
+            context.resources.getString(R.string.error_while_login).toast()
+        }
+    }
+
+    private fun mailSignIn(c: Activity, email: String) = CoroutineScope(Dispatchers.Main).launch {
+        val actionCodeSettings = actionCodeSettings {
+            url = "https://www.zenemusic.co"
+            handleCodeInApp = true
+            setAndroidPackageName(context.packageName, true, "12")
+        }
+
+        Firebase.auth.sendSignInLinkToEmail(email, actionCodeSettings)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    close()
+                } else {
+                    c.resources.getString(R.string.error_while_sending_email).toast()
+                }
+            }
+
     }
 
     private fun startGoogleSignIn(c: Activity) = CoroutineScope(Dispatchers.Main).launch {
@@ -111,7 +146,8 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
 
         loginManager.logIn(
             c as ActivityResultRegistryOwner,
-            callbackManager, listOf("openid", "email", "public_profile")
+            callbackManager,
+            listOf("openid", "email", "public_profile")
         )
 
         val callback = object : FacebookCallback<LoginResult> {
@@ -156,11 +192,9 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
 
     private suspend fun fbGraph(token: String) = withContext(Dispatchers.IO) {
         val client = OkHttpClient().newBuilder().connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.MINUTES)
-            .build()
+            .readTimeout(30, TimeUnit.MINUTES).build()
 
-        val httpUrl = HttpUrl.Builder().scheme("https").host(GRAPH_FB_API)
-            .addPathSegment("me")
+        val httpUrl = HttpUrl.Builder().scheme("https").host(GRAPH_FB_API).addPathSegment("me")
             .addQueryParameter("access_token", token)
             .addQueryParameter("fields", "id,name,email,picture.width(640).height(640)")
 

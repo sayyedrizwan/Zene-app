@@ -530,4 +530,5 @@ object Utils {
         artistsHistoryListDB.firstOrNull()?.let { lists.addAll(it) }
         artistsHistoryListDB = flowOf(lists.toMutableSet().toTypedArray())
     }
+
 }

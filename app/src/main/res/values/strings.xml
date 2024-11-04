@@ -193,4 +193,13 @@
     <string name="turn_off_timer">Turn off timer</string>
     <string name="left">Left</string>
     <string name="song_will_stop_when_song_ends">Song will stop when song ends</string>
+    <string name="sign_in_with_email">Sign in with Email</string>
+    <string name="enter_your_email">Enter your Email</string>
+    <string name="login_via_email">Login via Email</string>
+    <string name="enter_a_valid_email_address">Please enter a valid email address.</string>
+    <string name="error_while_sending_email">Error while sending email, Please try again.</string>
+    <string name="login_via_email_desc">Log in effortlessly with a secure link sent directly to your email. No passwords required!</string>
+    <string name="email_have_sent">We\'ve sent an email from no-reply@zenemusic.co to your inbox. Please open the email on this device and click the "Sign in to Zene" link (in blue) to complete your login. If you don’t see the email, be sure to check your spam or junk folder.</string>
+    <string name="send_to">Send to:</string>
+    <string name="keep_this_sheet_view_open">Keep this sheet/view open!!!</string>
 </resources>

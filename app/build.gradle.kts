@@ -136,7 +136,10 @@ dependencies {
     implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.firebase.perf.ktx)
     implementation(libs.firebase.auth)
+
     implementation(libs.googleid)
+
+    implementation(libs.auth)
     implementation(libs.ads)
 
     implementation(libs.billing)

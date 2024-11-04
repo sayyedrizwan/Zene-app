@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -49,6 +50,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
@@ -129,7 +131,8 @@ fun LoginZeneLogo() {
             Modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
-            Arrangement.Center, Alignment.CenterHorizontally
+            Arrangement.Center,
+            Alignment.CenterHorizontally
         ) {
             TextAntroVenctra(nameText)
 
@@ -137,7 +140,9 @@ fun LoginZeneLogo() {
                 visibleLoginButton,
                 Modifier
                     .fillMaxWidth()
-                    .offset(x = 5.dp, y = (-35).dp), fadeIn(tween(1000)), fadeOut(tween(1000))
+                    .offset(x = 5.dp, y = (-35).dp),
+                fadeIn(tween(1000)),
+                fadeOut(tween(1000))
             ) {
                 TextPoppinsLight(stringResource(R.string.a_music_app), true, size = 18)
             }
@@ -171,6 +176,7 @@ fun LoginZeneLogo() {
 fun LoginButtonView() {
     val homeViewModel: HomeViewModel = viewModel()
 
+    var emailLogin by remember { mutableStateOf(false) }
     var isLoginLoading by remember { mutableStateOf(false) }
 
     val activity = LocalContext.current as Activity
@@ -185,34 +191,34 @@ fun LoginButtonView() {
         .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(100))
         .padding(9.dp)
 
-    Row(
-        Modifier
-            .padding(bottom = 70.dp)
-            .padding(horizontal = 15.dp)
-            .clip(RoundedCornerShape(15.dp))
-            .fillMaxWidth()
-            .background(Color.White)
-            .clickable {
-                bottomSheet = true
-            }
-            .padding(5.dp),
-        Arrangement.Center, Alignment.CenterVertically
-    ) {
+    Row(Modifier
+        .padding(bottom = 70.dp)
+        .padding(horizontal = 15.dp)
+        .clip(RoundedCornerShape(15.dp))
+        .fillMaxWidth()
+        .background(Color.White)
+        .clickable {
+            bottomSheet = true
+        }
+        .padding(5.dp), Arrangement.Center, Alignment.CenterVertically) {
         Spacer(Modifier.height(40.dp))
-        if (isLoginLoading)
-            LoadingView(Modifier.size(34.dp))
-        else
-            TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
+        if (isLoginLoading) LoadingView(Modifier.size(34.dp))
+        else TextPoppinsSemiBold(stringResource(R.string.login_to_continue), true, MainColor, 17)
         Spacer(Modifier.height(40.dp))
     }
 
     fun startLogin(t: LoginFlowType) {
+        emailLogin = false
         bottomSheet = false
         isLoginLoading = true
         homeViewModel.loginFlow.init(t, activity) {
             isLoginLoading = false
             errorLogin.toast()
         }
+    }
+
+    if (emailLogin) LoginEmailAlertView(homeViewModel) {
+        emailLogin = false
     }
 
     if (bottomSheet) ModalBottomSheet({ bottomSheet = false }, containerColor = Color.Black) {
@@ -224,40 +230,53 @@ fun LoginButtonView() {
             Spacer(Modifier.height(30.dp))
 
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceAround) {
-                Image(
-                    painterResource(R.drawable.ic_google),
+                Image(painterResource(R.drawable.ic_google),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable {
                         startLogin(LoginFlowType.GOOGLE)
-                    }
-                )
+                    })
 
-                Image(
-                    painterResource(R.drawable.ic_apple),
+                Image(painterResource(R.drawable.ic_apple),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable {
                         startLogin(LoginFlowType.APPLE)
-                    }
-                )
+                    })
 
-                Image(
-                    painterResource(R.drawable.ic_facebook),
+                Image(painterResource(R.drawable.ic_facebook),
                     stringResource(R.string.login_to_continue),
                     imgBorder.clickable {
                         startLogin(LoginFlowType.FACEBOOK)
-                    }
-                )
+                    })
             }
 
-            Spacer(Modifier.height(100.dp))
+            Spacer(Modifier.height(40.dp))
+
+            Row(Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(MainColor)
+                .clickable {
+                    emailLogin = true
+                    bottomSheet = false
+                }
+                .padding(vertical = 10.dp), Arrangement.Center, Alignment.CenterVertically) {
+                Spacer(Modifier.width(6.dp))
+                TextPoppins(
+                    stringResource(R.string.sign_in_with_email), false, Color.White, 14
+                )
+                Spacer(Modifier.width(6.dp))
+                ImageIcon(R.drawable.ic_arrow_right, 21)
+            }
+
+            Spacer(Modifier.height(80.dp))
 
             Row(Modifier.clickable {
                 shareTxtImage(PRIVACY_POLICY, openURLOnBrowser)
                 openURLOnBrowser.toast()
             }) {
                 TextPoppins(
-                    stringResource(R.string.agreeing_privacy_policy),
-                    true, Color.Blue, 10
+                    stringResource(R.string.agreeing_privacy_policy), true, Color.Blue, 10
                 )
             }
 
