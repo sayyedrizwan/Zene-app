@@ -297,8 +297,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
-
-            youtubeSearchVideoRegion("Ain't No Rest for the Wicked", "")
         }
 
         homeViewModel.userArtistsList()

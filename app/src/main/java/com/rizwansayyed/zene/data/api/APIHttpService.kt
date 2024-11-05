@@ -51,43 +51,40 @@ object APIHttpService {
             }
             val mainObject = JSONObject().apply {
                 put("context", contextObject)
-                put("query", "ain't no rest for the wicked")
+                put("query", "$name - $artists")
                 put("params", "EgWKAQIIAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D")
             }
 
             val body = mainObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
-            val request = Request.Builder().url(YOUTUBE_MUSIC_SEARCH).post(body)
-                .addHeader("Cookie", "GPS=1")
-                .addHeader("User-Agent", USER_AGENT_D).build()
+            val request =
+                Request.Builder().url(YOUTUBE_MUSIC_SEARCH).post(body).addHeader("Cookie", "GPS=1")
+                    .addHeader("User-Agent", USER_AGENT_D).build()
 
             try {
+                var songID: String? = null
                 val response = client.newCall(request).execute()
                 val data = response.body?.string()
 
                 val objects = JSONObject(data!!).getJSONObject("contents")
-                    .getJSONObject("tabbedSearchResultsRenderer")
-                    .getJSONArray("tabs")
-                    .getJSONObject(0)
-                    .getJSONObject("tabRenderer")
-                    .getJSONObject("content")
-                    .getJSONObject("sectionListRenderer")
-                    .getJSONArray("contents")
-                    .getJSONObject(0)
-                    .getJSONObject("musicShelfRenderer")
-                    .getJSONArray("contents")
+                    .getJSONObject("tabbedSearchResultsRenderer").getJSONArray("tabs")
+                    .getJSONObject(0).getJSONObject("tabRenderer").getJSONObject("content")
+                    .getJSONObject("sectionListRenderer").getJSONArray("contents").getJSONObject(0)
+                    .getJSONObject("musicShelfRenderer").getJSONArray("contents")
 
                 for (i in 0 until objects.length()) {
-                    val item = objects.getJSONObject(i)
-                        .getJSONObject("musicResponsiveListItemRenderer")
-                        .getJSONObject("overlay")
-                        .getJSONObject("musicItemThumbnailOverlayRenderer")
-                        .getJSONObject("content").getJSONObject("accessibilityPlayData")
-                        .getJSONObject("accessibilityData").getString("label")
-                    println("Item $i: $item")
-                }
+                    val item =
+                        objects.getJSONObject(i).optJSONObject("musicResponsiveListItemRenderer")
+                    val label = item?.optJSONObject("overlay")
+                        ?.optJSONObject("musicItemThumbnailOverlayRenderer")
+                        ?.optJSONObject("content")?.optJSONObject("musicPlayButtonRenderer")
+                        ?.optJSONObject("accessibilityPlayData")?.optJSONObject("accessibilityData")
+                        ?.optString("label")
 
-                Log.d("TAG", "youtubeSearchVideoRegion: ${objects.toString()}")
-                return@withContext ""
+                    if (label?.lowercase()
+                            ?.contains(name.lowercase()) == true && songID == null
+                    ) songID = item.optJSONObject("playlistItemData")?.optString("videoId")
+                }
+                return@withContext songID ?: ""
             } catch (e: Exception) {
                 return@withContext ""
             }

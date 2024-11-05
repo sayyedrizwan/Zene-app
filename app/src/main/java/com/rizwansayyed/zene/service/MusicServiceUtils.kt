@@ -28,6 +28,7 @@ object MusicServiceUtils {
         const val SLEEP_TIMER_BG = "sleep_timer_bg"
         const val SEEK_5S_BACK_VIDEO = "seek_5s_back"
         const val SEEK_5S_FORWARD_VIDEO = "seek_5s_forward"
+        const val PLAY_A_VIDEO_VIDEO = "play_a_video"
         const val NEXT_SONG = "next_song"
         const val PREVIOUS_SONG = "previous_song"
         const val PLAYBACK_RATE = "playback_rate"

@@ -20,6 +20,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.APIHttpService.youtubeSearchVideoRegion
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
@@ -191,27 +192,15 @@ class MusicPlayService : Service() {
         val vID = player.id ?: ""
         currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
         if (player.type() == MusicType.RADIO) {
-            val resource =
-                if (player.extra?.contains(".m3u8") == true) resources.openRawResource(R.raw.hls_audio_player)
-                else resources.openRawResource(R.raw.radio_audio_player)
-
+            playARadio(player.extra ?: "")
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_RADIO)
-
-            val html = readHTMLFromUTF8File(resource).replace("<<AudioURL>>", player.extra ?: "")
-            webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
         } else {
-            val html =
-                readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
-                    "<<VideoID>>", vID.replace(RADIO_ARTISTS, "").trim()
-                ).replace("<<Quality>>", songQualityDB.first().value)
-
+            playAVideo(vID.replace(RADIO_ARTISTS, "").trim())
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
 
-            webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
-
             withContext(Dispatchers.IO) {
-                if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID, player.artists)
-                    .catch { }.collect()
+                if (!vID.contains(RADIO_ARTISTS))
+                    zeneAPI.addMusicHistory(vID, player.artists).catch { }.collect()
             }
         }
         if (isActive) cancel()
@@ -310,6 +299,24 @@ class MusicPlayService : Service() {
         }
     }
 
+    private fun playARadio(v: String) = CoroutineScope(Dispatchers.Main).launch {
+        val resource = if (v.contains(".m3u8")) resources.openRawResource(R.raw.hls_audio_player)
+        else resources.openRawResource(R.raw.radio_audio_player)
+
+        val html = readHTMLFromUTF8File(resource).replace("<<AudioURL>>", v)
+        webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
+        if (isActive) cancel()
+    }
+
+    private fun playAVideo(v: String) = CoroutineScope(Dispatchers.Main).launch {
+        val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
+            .replace("<<VideoID>>", v.trim())
+            .replace("<<Quality>>", songQualityDB.first().value)
+
+        webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
+        if (isActive) cancel()
+    }
+
     private fun pause() = CoroutineScope(Dispatchers.Main).launch {
         webView.evaluateJavascript("pauseSong();", null)
         if (isActive) cancel()
@@ -400,6 +407,8 @@ class MusicPlayService : Service() {
         @JavascriptInterface
         fun regionSongError() = CoroutineScope(Dispatchers.IO).launch {
             val d = musicPlayerDB.first()
+            val videoID = youtubeSearchVideoRegion(d?.player?.name ?: "", d?.player?.artists ?: "")
+            if (videoID.length > 3) playAVideo(videoID)
 
             if (isActive) cancel()
         }
