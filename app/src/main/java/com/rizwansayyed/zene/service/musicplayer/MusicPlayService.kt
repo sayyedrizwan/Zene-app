@@ -396,6 +396,13 @@ class MusicPlayService : Service() {
             musicPlayerDB = flowOf(d)
             if (isActive) cancel()
         }
+
+        @JavascriptInterface
+        fun regionSongError() = CoroutineScope(Dispatchers.IO).launch {
+            val d = musicPlayerDB.first()
+
+            if (isActive) cancel()
+        }
     }
 
 

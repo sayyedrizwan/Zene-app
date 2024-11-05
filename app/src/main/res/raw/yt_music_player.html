@@ -71,8 +71,15 @@
                 events: {
                   onReady: onPlayerReady,
                   onStateChange: onPlayerStateChange,
+                  onError: onPlayerStateChange,
                 },
               });
+            }
+
+            function onError(event) {
+               if(event.data == 150) {
+                   ZeneListener.regionSongError();
+               }
             }
 
             function onPlayerReady(event) {

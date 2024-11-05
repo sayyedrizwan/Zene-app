@@ -41,6 +41,8 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.rizwansayyed.zene.data.api.APIHttpService
+import com.rizwansayyed.zene.data.api.APIHttpService.youtubeSearchVideoRegion
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -295,11 +297,12 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
+
+            youtubeSearchVideoRegion("Ain't No Rest for the Wicked", "")
         }
+
         homeViewModel.userArtistsList()
-
         startMusicService()
-
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
         logEvents(
             FirebaseLogEvents.FirebaseEvents.APP_LANGUAGE, Locale.getDefault().displayLanguage

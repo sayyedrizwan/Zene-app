@@ -81,6 +81,7 @@ object Utils {
         const val PRIVACY_POLICY = "https://zenemusic.co/privacy-policy"
 
         const val YOUTUBE_MUSIC = "https://www.youtube.com/music"
+        const val YOUTUBE_MUSIC_SEARCH = "https://music.youtube.com/youtubei/v1/search?prettyPrint=false"
         const val YOUTUBE_URL = "https://www.youtube.com"
 
 
