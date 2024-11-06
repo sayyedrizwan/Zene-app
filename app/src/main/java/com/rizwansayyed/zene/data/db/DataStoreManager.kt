@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.db
 
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -18,6 +19,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.APP_REVIEW_STATUS
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARTISTS_HISTORY_LIST
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.EARPHONE_DEVICES_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.LAST_ADS_TIMESTAMP
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_LOOP
@@ -40,6 +42,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.VI
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.WAKE_MUSIC_DATA_INFO
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.WAKE_TIMER_DATA_INFO
 import com.rizwansayyed.zene.data.db.model.AppReviewData
+import com.rizwansayyed.zene.data.db.model.BLEDeviceData
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
 import com.rizwansayyed.zene.data.db.model.TimerData
@@ -77,6 +80,7 @@ object DataStoreManager {
         val PINNED_ARTISTS_LIST = stringPreferencesKey("pinned_artists_list")
         val LAST_ADS_TIMESTAMP = longPreferencesKey("last_ads_timestamp")
         val USER_IP_INFO = stringPreferencesKey("user_ip_info")
+        val EARPHONE_DEVICES_LIST = stringPreferencesKey("earphone_devices_list")
         val APP_REVIEW_STATUS = stringPreferencesKey("app_review_status")
         val SONG_QUALITY = stringPreferencesKey("song_quality")
         val VIDEO_QUALITY = stringPreferencesKey("video_quality")
@@ -170,6 +174,16 @@ object DataStoreManager {
             context.dataStore.edit { it[LAST_ADS_TIMESTAMP] = value.first() }
         }
 
+
+    var earphoneDevicesDB
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<BLEDeviceData>::class.java)
+                .fromJson(it[EARPHONE_DEVICES_LIST] ?: ARRAY_EMPTY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            val json = moshi.adapter(Array<BLEDeviceData>::class.java).toJson(value.first())
+            context.dataStore.edit { it[EARPHONE_DEVICES_LIST] = json }
+        }
 
     var ipDB
         get() = context.dataStore.data.map {
