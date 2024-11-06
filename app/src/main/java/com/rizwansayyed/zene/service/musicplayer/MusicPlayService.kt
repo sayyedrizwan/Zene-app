@@ -50,6 +50,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_UNSTARTED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.WAKE_ALARM
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
+import com.rizwansayyed.zene.service.bluetoothlistener.BluetoothListeners
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.ui.player.view.sleepTime
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -103,6 +104,7 @@ class MusicPlayService : Service() {
     private var currentVideoID = ""
     private var isNewPlay = true
     private var sleepTimer: Job? = null
+    private val bluetoothListeners by lazy { BluetoothListeners() }
 
 
     private val phoneWake = object : BroadcastReceiver() {
@@ -186,6 +188,8 @@ class MusicPlayService : Service() {
                 loadURL(it)
             }
         }
+
+        bluetoothListeners.start(this)
     }
 
     fun loadURL(player: ZeneMusicDataItems) = CoroutineScope(Dispatchers.Main).launch {

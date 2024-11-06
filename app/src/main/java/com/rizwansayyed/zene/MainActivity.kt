@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
 import android.net.Network
@@ -52,6 +53,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.musicplayer.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
+import com.rizwansayyed.zene.ui.earphonetracker.EarphoneTrackerActivity
 import com.rizwansayyed.zene.ui.mymusic.MyMusicView
 import com.rizwansayyed.zene.ui.feed.FeedView
 import com.rizwansayyed.zene.ui.home.HomeView
@@ -298,10 +300,14 @@ class MainActivity : ComponentActivity() {
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
 
+            Intent(this@MainActivity, EarphoneTrackerActivity::class.java).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+                startActivity(this)
+            }
         }
 
         homeViewModel.userArtistsList()
-//        startMusicService()
+        startMusicService()
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
         logEvents(
             FirebaseLogEvents.FirebaseEvents.APP_LANGUAGE, Locale.getDefault().displayLanguage

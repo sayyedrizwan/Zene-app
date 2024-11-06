@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.Context
@@ -81,7 +82,8 @@ object Utils {
         const val PRIVACY_POLICY = "https://zenemusic.co/privacy-policy"
 
         const val YOUTUBE_MUSIC = "https://www.youtube.com/music"
-        const val YOUTUBE_MUSIC_SEARCH = "https://music.youtube.com/youtubei/v1/search?prettyPrint=false"
+        const val YOUTUBE_MUSIC_SEARCH =
+            "https://music.youtube.com/youtubei/v1/search?prettyPrint=false"
         const val YOUTUBE_URL = "https://www.youtube.com"
 
 
@@ -397,6 +399,11 @@ object Utils {
         return ContextCompat.checkSelfPermission(
             context, permission
         ) == PackageManager.PERMISSION_DENIED
+    }
+
+    fun isPermissionDisabledBluetooth(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
+        return isPermissionDisabled(Manifest.permission.BLUETOOTH_CONNECT)
     }
 
     fun openAlarmPermission() {

@@ -203,4 +203,7 @@
     <string name="send_to">Send to:</string>
     <string name="keep_this_sheet_view_open">Keep this sheet/view open!!!</string>
     <string name="earphones_tracker_finder">Earphones tracker &amp; finder</string>
+    <string name="earphones_tracker_finder_">Earphones \nTracker &amp; Finder</string>
+    <string name="earphones_tracker_finder_desc">Earphones Tracker and Finder is a convenient feature designed to help you locate your misplaced or lost earphones and Bluetooth audio devices. With features like tracking, location history, and customizable alerts.</string>
+    <string name="no_devices_added">No devices have been added to tracker. Tap the 🎧 icon to add one.</string>
 </resources>

@@ -12,6 +12,7 @@ import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -24,7 +25,11 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
@@ -42,6 +48,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIHttpService
 import com.rizwansayyed.zene.data.api.APIHttpService.youtubeSearchVideoRegion
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
@@ -53,10 +60,15 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.musicplayer.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
+import com.rizwansayyed.zene.ui.earphonetracker.view.AddEarphoneView
+import com.rizwansayyed.zene.ui.earphonetracker.view.NoHeadphoneAddedView
+import com.rizwansayyed.zene.ui.earphonetracker.view.TopEarphoneHeaderView
 import com.rizwansayyed.zene.ui.mymusic.MyMusicView
 import com.rizwansayyed.zene.ui.feed.FeedView
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
+import com.rizwansayyed.zene.ui.home.view.TextSize
+import com.rizwansayyed.zene.ui.home.view.TextTitleHeader
 import com.rizwansayyed.zene.ui.login.GlobalEmailEventProvider
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
@@ -127,7 +139,21 @@ class EarphoneTrackerActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(DarkCharcoal)
                 ) {
+                    LazyColumn(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        item {
+                            TopEarphoneHeaderView()
+                        }
 
+                        item {
+                            NoHeadphoneAddedView()
+                        }
+                    }
+
+                    AddEarphoneView(Modifier.align(Alignment.BottomEnd))
                 }
             }
         }
