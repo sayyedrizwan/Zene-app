@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -304,10 +306,8 @@ fun AlbumPlaylistInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
 
 @Composable
 fun PlaylistAddComponents(
-    items: ZeneMusicDataItems,
-    viewModel: ZeneViewModel,
-    songID: String?,
-    playlistsAddStatus: SnapshotStateMap<String, Boolean>
+    items: ZeneMusicDataItems, viewModel: ZeneViewModel,
+    songID: String?, playlistsAddStatus: SnapshotStateMap<String, Boolean>
 ) {
     Row(
         Modifier
@@ -320,17 +320,18 @@ fun PlaylistAddComponents(
             items.thumbnail,
             items.name,
             Modifier
-                .size(90.dp)
+                .padding(start = 10.dp)
+                .size(70.dp)
                 .clip(RoundedCornerShape(13.dp)),
             contentScale = ContentScale.Crop
         )
 
         Row(
             Modifier
-                .padding(horizontal = 5.dp)
+                .padding(horizontal = 7.dp)
                 .weight(1f)
         ) {
-            TextPoppins(items.name ?: "", size = 15)
+            TextPoppins(items.name ?: "", size = 16, limit = 2)
         }
 
         if (playlistsAddStatus[items.id] == true) ImageIcon(R.drawable.ic_tick, 25) {
@@ -342,9 +343,17 @@ fun PlaylistAddComponents(
             viewModel.addRemoveSongFromPlaylists(items.id ?: "", songID ?: "", true)
         }
 
-    }
+        DisposableEffect(Unit) {
+            songID?.let { playlistsAddStatus[it] = items.extra == "present" }
 
-    LaunchedEffect(Unit) {
-        songID?.let { playlistsAddStatus[it] = items.extra == "present" }
+            Log.d("TAG", "PlaylistAddComponents: 11 ${items.extra}")
+            onDispose {  }
+        }
+
+        LaunchedEffect(Unit) {
+            songID?.let { playlistsAddStatus[it] = items.extra == "present" }
+
+            Log.d("TAG", "PlaylistAddComponents: 22 ${items.extra}")
+        }
     }
 }

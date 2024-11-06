@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.search.view
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -39,6 +41,7 @@ import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.utils.ShowAdsOnAppOpen
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
@@ -48,6 +51,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Unit) {
+    val activity = LocalContext.current as Activity
     val isThreeGrid = isScreenBig()
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -164,6 +168,7 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
 
 
     LaunchedEffect(Unit) {
+        ShowAdsOnAppOpen(activity).interstitialAds()
         homeViewModel.search(search)
         enterUniqueSearchHistory(search)
         delay(500)

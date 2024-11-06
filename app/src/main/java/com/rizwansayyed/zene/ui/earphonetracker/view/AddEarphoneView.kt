@@ -166,7 +166,7 @@ fun DeviceUpdatedList(device: BluetoothDevice, devices: Array<BLEDeviceData>?) {
                 .clip(RoundedCornerShape(100))
                 .background(MainColor)
                 .clickable {
-                    isAdded = !isAdded
+                    isAdded = true
                     addOrRemoveBLEDevice(device, true)
                 }
                 .padding(6.dp)

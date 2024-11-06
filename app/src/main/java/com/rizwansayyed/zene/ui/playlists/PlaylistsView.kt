@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.playlists
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -105,6 +106,8 @@ fun PlaylistsView(id: String?, close: () -> Unit) {
             logEvents(FirebaseLogEvents.FirebaseEvents.ALBUM_PLAYLIST_VIEW)
             ShowAdsOnAppOpen(context).interstitialAds()
             homeViewModel.playlistsData(id)
+
+            Log.d("TAG", "PlaylistsView: data $id")
         }
     }
 

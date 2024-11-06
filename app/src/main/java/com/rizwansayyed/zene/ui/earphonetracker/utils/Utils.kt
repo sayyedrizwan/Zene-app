@@ -67,6 +67,7 @@ object Utils {
             earphoneDevicesDB.firstOrNull()?.map {
                 if (device.address != device.address) deviceData.add(it)
             }
+            if (add) deviceData.add(0, BLEDeviceData(device.name, device.address, ""))
             earphoneDevicesDB = flowOf(deviceData.toTypedArray())
         }
 }
