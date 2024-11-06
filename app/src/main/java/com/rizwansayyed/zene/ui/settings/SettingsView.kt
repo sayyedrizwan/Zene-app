@@ -43,6 +43,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpDataDB
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.ui.earphonetracker.EarphoneTrackerActivity
 import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
 import com.rizwansayyed.zene.ui.settings.view.SleepTimeSheet
 import com.rizwansayyed.zene.ui.settings.view.WakeUpTimeSheet
@@ -130,6 +131,17 @@ fun SettingsView() {
                     return@SettingsCardViews
                 }
                 playingSongOnLockScreen = flowOf(it)
+            }
+        }
+
+        item {
+            Spacer(Modifier.height(30.dp))
+            CardItems(R.string.earphones_tracker_finder) {
+                logEvents(FirebaseLogEvents.FirebaseEvents.EARPHONE_TRACKER)
+                Intent(context, EarphoneTrackerActivity::class.java).apply {
+                    flags = FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(this)
+                }
             }
         }
 

@@ -202,4 +202,5 @@
     <string name="email_have_sent">We\'ve sent an email from no-reply@zenemusic.co to your inbox. Please open the email on this device and click the "Sign in to Zene" link (in blue) to complete your login. If you don’t see the email, be sure to check your spam or junk folder.</string>
     <string name="send_to">Send to:</string>
     <string name="keep_this_sheet_view_open">Keep this sheet/view open!!!</string>
+    <string name="earphones_tracker_finder">Earphones tracker &amp; finder</string>
 </resources>

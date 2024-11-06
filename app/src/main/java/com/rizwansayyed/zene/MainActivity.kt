@@ -297,10 +297,11 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
+
         }
 
         homeViewModel.userArtistsList()
-        startMusicService()
+//        startMusicService()
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
         logEvents(
             FirebaseLogEvents.FirebaseEvents.APP_LANGUAGE, Locale.getDefault().displayLanguage
