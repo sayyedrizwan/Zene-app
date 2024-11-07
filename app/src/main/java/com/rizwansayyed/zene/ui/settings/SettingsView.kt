@@ -207,8 +207,10 @@ fun SettingsView() {
         R.string.clear_cache, R.string.clear_cache_desc, R.string.clear,
     ) {
         clearCache = false
-        context.cacheDir.deleteRecursively()
-        clearCacheDone.toast()
+        if (it) {
+            context.cacheDir.deleteRecursively()
+            clearCacheDone.toast()
+        }
     }
 
     LaunchedEffect(Unit) {

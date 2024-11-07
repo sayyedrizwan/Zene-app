@@ -211,4 +211,7 @@
     <string name="paired_devices">Paired Devices</string>
     <string name="connected">CONNECTED</string>
     <string name="disconnected">DISCONNECTED</string>
+    <string name="enable_gps_to_track_devices">Enable GPS to let Zene track devices and display your activity records.</string>
+    <string name="need_location_permission">Enable Location Permission</string>
+    <string name="need_location_permission_desc">To register your records, we need access to your location. Please enable location access by following these steps: \n\n1. Tap \'Grant\' \n2. Navigate to \'Permissions\' \n3. Select \'Location\' \n4. Choose \'Allow All the Time\' \nOnce you\'ve done this, everything will be ready to go!</string>
 </resources>

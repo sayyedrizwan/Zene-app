@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.data.db.DataStoreManager.earphoneDevicesDB
 import com.rizwansayyed.zene.ui.earphonetracker.view.AddEarphoneView
 import com.rizwansayyed.zene.ui.earphonetracker.view.EarphonesDeviceItemsView
+import com.rizwansayyed.zene.ui.earphonetracker.view.HeaderPermissionsView
 import com.rizwansayyed.zene.ui.earphonetracker.view.NoHeadphoneAddedView
 import com.rizwansayyed.zene.ui.earphonetracker.view.TopEarphoneHeaderView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
@@ -50,6 +51,10 @@ class EarphoneTrackerActivity : ComponentActivity() {
 
                         if ((devices?.size ?: 0) <= 0) item {
                             NoHeadphoneAddedView()
+                        }
+
+                        if ((devices?.size ?: 0) > 0) item {
+                            HeaderPermissionsView()
                         }
 
                         items(devices ?: emptyArray()) {
