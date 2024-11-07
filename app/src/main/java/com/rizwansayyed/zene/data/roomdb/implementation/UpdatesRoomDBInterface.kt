@@ -4,5 +4,5 @@ import com.rizwansayyed.zene.data.roomdb.model.UpdateData
 import kotlinx.coroutines.flow.Flow
 
 interface UpdatesRoomDBInterface {
-    suspend fun insertDB(i: UpdateData): Flow<Unit>
+    suspend fun insertDB(address: String, type: Int): Flow<Unit>
 }

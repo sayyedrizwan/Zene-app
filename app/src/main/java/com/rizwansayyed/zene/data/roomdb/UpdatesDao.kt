@@ -13,7 +13,7 @@ interface UpdatesDao {
     fun getAll(): List<UpdateData>
 
     @Insert
-    fun insertAll(vararg users: UpdateData)
+    fun insert(users: UpdateData)
 
     @Delete
     fun delete(user: UpdateData)

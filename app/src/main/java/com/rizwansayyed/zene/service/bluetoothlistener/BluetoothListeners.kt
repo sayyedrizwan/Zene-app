@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.earphoneDevicesDB
@@ -15,12 +16,16 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.getEarphoneDisconnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.setCustomTimestamp
 import com.rizwansayyed.zene.data.db.model.BLEDeviceData
 import com.rizwansayyed.zene.data.roomdb.implementation.UpdatesRoomDBImpl
+import com.rizwansayyed.zene.data.roomdb.model.UPDATES_TYPE_CONNECT
+import com.rizwansayyed.zene.data.roomdb.model.UPDATES_TYPE_DISCONNECT
+import com.rizwansayyed.zene.data.roomdb.model.UpdateData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.NEW_CONNECTED_EARPHONE
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.hours
@@ -33,7 +38,11 @@ class BluetoothListeners(private val roomDB: UpdatesRoomDBImpl) {
             c ?: return
             i ?: return
 
-            val d = i.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+            val d: BluetoothDevice? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                i.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+            } else {
+                i.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice?
+            }
 
             CoroutineScope(Dispatchers.IO).launch {
                 if (i.action == BluetoothDevice.ACTION_ACL_CONNECTED) {
@@ -58,16 +67,22 @@ class BluetoothListeners(private val roomDB: UpdatesRoomDBImpl) {
         }
     }
 
-    fun connectedDevice(d: BLEDeviceData) {
+    suspend fun connectedDevice(d: BLEDeviceData) {
         val body = context.getString(R.string.set_to_listen_enjoy_audio)
         val connected = context.getString(R.string.connected)
         NotificationUtils("${d.name} $connected!!", body, null)
+
+        if (d.address == null) return
+        roomDB.insertDB(d.address, UPDATES_TYPE_CONNECT).collect()
     }
 
-    fun disconnectedDevice(d: BLEDeviceData) {
+    suspend fun disconnectedDevice(d: BLEDeviceData) {
         val body = context.getString(R.string.audio_will_play_now_on_speakers)
         val disconnected = context.getString(R.string.disconnected)
         NotificationUtils("${d.name} $disconnected!!", body, null)
+
+        if (d.address == null) return
+        roomDB.insertDB(d.address, UPDATES_TYPE_DISCONNECT).collect()
     }
 
     suspend fun checkIfANewEarphoneIsConnected(d: BluetoothDevice?) {

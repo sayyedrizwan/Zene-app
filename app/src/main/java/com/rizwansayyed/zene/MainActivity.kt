@@ -54,6 +54,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.musicplayer.isMusicServiceRunning
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.earphonetracker.EarphoneTrackerActivity
+import com.rizwansayyed.zene.ui.earphonetracker.utils.LocationManagerResponse
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.NEW_CONNECTED_EARPHONE
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.PLAYER_PLAYER
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.openEarphoneTrackerActivity
@@ -115,6 +116,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -302,8 +304,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
-
-//            openEarphoneTrackerActivity()
         }
 
         homeViewModel.userArtistsList()
@@ -356,7 +356,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkAndRunWeb(intent: Intent) {
-        Log.d("TAG", "checkAndRunWeb: data ${intent.getStringExtra(Intent.ACTION_MAIN) ?: ""}")
         if ((intent.getStringExtra(Intent.ACTION_MAIN) ?: "") == PLAYER_PLAYER) {
             homeNavModel.showMusicPlayer(true)
         } else if ((intent.getStringExtra(Intent.ACTION_MAIN) ?: "") == NEW_CONNECTED_EARPHONE) {

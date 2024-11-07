@@ -7,11 +7,14 @@ import com.rizwansayyed.zene.utils.Utils.RoomDB.UPDATE_ROOM_DB
 
 @Entity(tableName = UPDATE_ROOM_DB)
 data class UpdateData(
-    @PrimaryKey val id: Int,
-    @ColumnInfo val macAddress: String,
-    @ColumnInfo val lat: Double?,
-    @ColumnInfo val long: Double?,
-    @ColumnInfo val address: String?,
-    @ColumnInfo val ts: Long?,
-    @ColumnInfo val type: Long?,
+    @PrimaryKey(autoGenerate = true) var id: Int? = null,
+    var macAddress: String = "",
+    var lat: Double? = null,
+    var long: Double? = null,
+    var address: String? = null,
+    var ts: Long? = null,
+    var type: Int? = null,
 )
+
+const val UPDATES_TYPE_DISCONNECT = 0
+const val UPDATES_TYPE_CONNECT = 1
