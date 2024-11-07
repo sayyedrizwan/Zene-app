@@ -24,9 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-
 @SuppressLint("MissingPermission")
-class NotificationUtils(title: String, body: String, img: Uri?) {
+class NotificationUtils(title: String, body: String, img: Uri?, intentData: String? = null) {
 
     private var soundAudio: Uri =
         Uri.parse((ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName) + "/" + R.raw.custom_notification_tone)
@@ -38,11 +37,12 @@ class NotificationUtils(title: String, body: String, img: Uri?) {
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val intent = Intent(context, MainActivity::class.java).apply {
+                if (intentData != null) putExtra(Intent.ACTION_MAIN, intentData)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
 
-            val pendingIntent =
-                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent = PendingIntent
+                .getActivity(context, (1..877).random(), intent, PendingIntent.FLAG_IMMUTABLE)
 
             val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_zene_logo_round)

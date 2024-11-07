@@ -78,6 +78,10 @@ object Utils {
             if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/5224354917" else "ca-app-pub-2941808068005217/6833134797"
     }
 
+    object RoomDB {
+        const val UPDATE_ROOM_DB = "update_room_db"
+    }
+
     object URLS {
         const val PRIVACY_POLICY = "https://zenemusic.co/privacy-policy"
 

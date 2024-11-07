@@ -216,5 +216,11 @@
     <string name="need_location_permission_desc">To register your records, we need access to your location. Please enable location access by following these steps: \n\n1. Tap \'Grant\' \n2. Navigate to \'Permissions\' \n3. Select \'Location\' \n4. Choose \'Allow All the Time\' \nOnce you\'ve done this, everything will be ready to go!</string>
     <string name="battery">Battery</string>
     <string name="rm_device">Remove Device</string>
+    <string name="connection_alert">Connection Alert</string>
+    <string name="disconnection_alert">Disconnection Alert</string>
+    <string name="set_to_listen_enjoy_audio">You\'re all set to listen. Enjoy your audio!</string>
+    <string name="audio_will_play_now_on_speakers">Audio will now play through your device speakers.</string>
     <string name="rm_device_desc">Removing this device will disable all active alerts and delete any scheduled updates associated with it.</string>
+    <string name="new_earphones_detected">New Earphones Detected!</string>
+    <string name="want_to_keep_track_of_earphones">Want to keep track of your earphones? Add them to your collection now!</string>
 </resources>

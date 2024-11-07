@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
@@ -14,6 +15,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.earphoneDevicesDB
 import com.rizwansayyed.zene.data.db.model.BLEDeviceData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.ui.earphonetracker.EarphoneTrackerActivity
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
 import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +29,11 @@ object Utils {
 
     object IMG {
         const val HEADPHONE_TEMPS = "https://www.zenemusic.co/headphone_temp.png"
+    }
+
+    object INFO {
+        const val PLAYER_PLAYER = "PLAYER"
+        const val NEW_CONNECTED_EARPHONE = "NEW_CONNECTED_EARPHONE"
     }
 
     @SuppressLint("MissingPermission")
@@ -58,7 +65,7 @@ object Utils {
 
         return device?.let { bluetoothDevice ->
             (bluetoothDevice.javaClass.getMethod("getBatteryLevel")).invoke(device) as Int
-        } ?: -1
+        } ?: 0
     }
 
     private fun isConnected(device: BluetoothDevice): Boolean {
@@ -95,7 +102,7 @@ object Utils {
 
     fun openGPSActivity() {
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
         context.resources.getString(R.string.enable_gps_to_track_devices).toast()
     }
@@ -109,5 +116,12 @@ object Utils {
         val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
         val bluetoothAdapter = bluetoothManager.adapter ?: return false
         return bluetoothAdapter.isEnabled
+    }
+
+    fun openEarphoneTrackerActivity() {
+        Intent(context, EarphoneTrackerActivity::class.java).apply {
+            flags = FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(this)
+        }
     }
 }

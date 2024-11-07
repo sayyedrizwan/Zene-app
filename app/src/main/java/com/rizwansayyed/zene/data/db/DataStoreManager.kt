@@ -284,6 +284,26 @@ object DataStoreManager {
             context.dataStore.edit { it[ARTISTS_HISTORY_LIST] = json }
         }
 
+    suspend fun setEarphoneConnection(key: String, v: Boolean) {
+        val keyInfo = booleanPreferencesKey("${key}_connection_alert")
+        context.dataStore.edit { it[keyInfo] = v }
+    }
+
+    suspend fun getEarphoneConnection(key: String): Boolean {
+        val keyInfo = booleanPreferencesKey("${key}_connection_alert")
+        return context.dataStore.data.map { it[keyInfo] }.firstOrNull() ?: true
+    }
+
+    suspend fun setEarphoneDisconnection(key: String, v: Boolean) {
+        val keyInfo = booleanPreferencesKey("${key}_disconnection_alert")
+        context.dataStore.edit { it[keyInfo] = v }
+    }
+
+    suspend fun getEarphoneDisconnection(key: String): Boolean {
+        val keyInfo = booleanPreferencesKey("${key}_disconnection_alert")
+        return context.dataStore.data.map { it[keyInfo] }.firstOrNull() ?: true
+    }
+
     suspend fun setCustomTimestamp(key: String) {
         val keyInfo = longPreferencesKey(key)
         context.dataStore.edit { it[keyInfo] = System.currentTimeMillis() }

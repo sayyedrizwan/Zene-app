@@ -51,6 +51,7 @@ import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabledBluetooth
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
 import com.rizwansayyed.zene.utils.Utils.toast
+import kotlinx.coroutines.delay
 
 @Composable
 fun AddEarphoneView(modifier: Modifier = Modifier) {
@@ -177,6 +178,7 @@ fun DeviceUpdatedList(device: BluetoothDevice, devices: Array<BLEDeviceData>?) {
 
         LaunchedEffect(Unit) {
             isConnected = isBLEConnected(device.address)
+            delay(500)
             isAdded = (devices?.indexOfFirst { it.address == device.address } ?: 0) >= 0
         }
     }

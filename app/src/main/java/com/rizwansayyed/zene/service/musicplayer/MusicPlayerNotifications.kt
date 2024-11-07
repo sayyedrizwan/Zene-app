@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.MUSIC_FORWARD_5S
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.PAUSE_THE_MUSIC
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayerNotificationReceiver.Companion.PLAY_THE_MUSIC
+import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.PLAYER_PLAYER
 import com.rizwansayyed.zene.utils.Utils.NotificationIDS.NOTIFICATION_M_P_CHANNEL_ID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,7 +66,7 @@ class MusicPlayerNotifications(
     }
 
     private val openMusicPlayerIntent = Intent(context, MainActivity::class.java).let { i ->
-        i.putExtra(Intent.ACTION_MAIN, "PLAYER")
+        i.putExtra(Intent.ACTION_MAIN, PLAYER_PLAYER)
         PendingIntent.getActivity(context, 99, i, PendingIntent.FLAG_IMMUTABLE)
     }
 

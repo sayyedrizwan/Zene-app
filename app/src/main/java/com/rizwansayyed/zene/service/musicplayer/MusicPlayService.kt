@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
-import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -32,6 +31,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
+import com.rizwansayyed.zene.data.roomdb.implementation.UpdatesRoomDBImpl
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.OPEN_PLAYER
@@ -62,7 +62,6 @@ import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.getTimeAfterMinutesInMillis
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
-import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,12 +98,15 @@ class MusicPlayService : Service() {
     @Inject
     lateinit var zeneAPI: ZeneAPIImpl
 
+    @Inject
+    lateinit var updatesRoomDB: UpdatesRoomDBImpl
+
     private lateinit var webView: WebView
     private var job: Job? = null
     private var currentVideoID = ""
     private var isNewPlay = true
     private var sleepTimer: Job? = null
-    private val bluetoothListeners by lazy { BluetoothListeners() }
+    private val bluetoothListeners by lazy { BluetoothListeners(updatesRoomDB) }
 
 
     private val phoneWake = object : BroadcastReceiver() {
