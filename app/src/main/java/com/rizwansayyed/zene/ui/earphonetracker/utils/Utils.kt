@@ -25,6 +25,10 @@ import kotlinx.coroutines.launch
 
 object Utils {
 
+    object IMG {
+        const val HEADPHONE_TEMPS = "https://www.zenemusic.co/headphone_temp.png"
+    }
+
     @SuppressLint("MissingPermission")
     fun getConnectedBluetoothDevices(context: Context): List<BluetoothDevice> {
         try {
@@ -41,18 +45,20 @@ object Utils {
     fun isBLEConnected(macAddress: String): Boolean {
         try {
             val m = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-            val bluetoothAdapter = m.adapter
-
-            if (bluetoothAdapter != null && bluetoothAdapter.isEnabled) {
-                val device = bluetoothAdapter.bondedDevices.first { it.address == macAddress }
-                    ?: return false
-
-                return isConnected(device)
-            }
-            return false
+            val device = m.adapter.getRemoteDevice(macAddress)
+            return isConnected(device)
         } catch (e: Exception) {
             return false
         }
+    }
+
+    fun getBatteryLevel(address: String): Int {
+        val m = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val device = m.adapter.getRemoteDevice(address)
+
+        return device?.let { bluetoothDevice ->
+            (bluetoothDevice.javaClass.getMethod("getBatteryLevel")).invoke(device) as Int
+        } ?: -1
     }
 
     private fun isConnected(device: BluetoothDevice): Boolean {
@@ -60,15 +66,18 @@ object Utils {
             val m = device.javaClass.getMethod("isConnected")
             m.invoke(device) as Boolean
         } catch (e: Exception) {
-            throw IllegalStateException(e)
+            return false
         }
     }
 
-    fun addOrRemoveBLEDevice(device: BluetoothDevice, add: Boolean) =
+    fun addOrRemoveBLEDevice(address: String, add: Boolean) =
         CoroutineScope(Dispatchers.IO).launch {
+            val m = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+            val device = m.adapter.getRemoteDevice(address)
+
             val deviceData = ArrayList<BLEDeviceData>()
             earphoneDevicesDB.firstOrNull()?.map {
-                if (device.address != device.address) deviceData.add(it)
+                if (device?.address != device?.address) deviceData.add(it)
             }
             if (add) deviceData.add(0, BLEDeviceData(device.name, device.address, ""))
             earphoneDevicesDB = flowOf(deviceData.toTypedArray())
@@ -92,10 +101,8 @@ object Utils {
     }
 
     fun isLocationDisabled(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            isPermissionDisabled(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        else
-            isPermissionDisabled(Manifest.permission.ACCESS_FINE_LOCATION)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) isPermissionDisabled(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        else isPermissionDisabled(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     fun isBluetoothEnabled(): Boolean {

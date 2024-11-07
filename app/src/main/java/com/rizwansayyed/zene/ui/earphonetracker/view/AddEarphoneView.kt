@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -167,7 +168,7 @@ fun DeviceUpdatedList(device: BluetoothDevice, devices: Array<BLEDeviceData>?) {
                 .background(MainColor)
                 .clickable {
                     isAdded = true
-                    addOrRemoveBLEDevice(device, true)
+                    addOrRemoveBLEDevice(device.address, true)
                 }
                 .padding(6.dp)
         ) {
@@ -176,7 +177,7 @@ fun DeviceUpdatedList(device: BluetoothDevice, devices: Array<BLEDeviceData>?) {
 
         LaunchedEffect(Unit) {
             isConnected = isBLEConnected(device.address)
-            isAdded = (devices?.indexOfFirst { it.address == device.address } ?: 0) > 1
+            isAdded = (devices?.indexOfFirst { it.address == device.address } ?: 0) >= 0
         }
     }
 }
