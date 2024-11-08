@@ -6,11 +6,13 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.earphoneDevicesDB
 import com.rizwansayyed.zene.data.db.model.BLEDeviceData
@@ -120,6 +122,14 @@ object Utils {
 
     fun openEarphoneTrackerActivity() {
         Intent(context, EarphoneTrackerActivity::class.java).apply {
+            flags = FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(this)
+        }
+    }
+
+    fun openLocationOnMaps(lat: Double, lon: Double) {
+        Intent(ACTION_VIEW).apply {
+            data = "https://www.google.com/maps/search/?api=1&query=$lat%2C$lon".toUri()
             flags = FLAG_ACTIVITY_NEW_TASK
             context.startActivity(this)
         }

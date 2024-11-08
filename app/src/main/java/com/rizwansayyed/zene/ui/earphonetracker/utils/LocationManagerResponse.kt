@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.ui.earphonetracker.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
+import android.os.Build
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -35,6 +37,7 @@ class LocationManagerResponse @Inject constructor(@ApplicationContext val contex
         LocationServices.getFusedLocationProviderClient(context)
     }
 
+    @SuppressLint("MissingPermission")
     suspend fun locationUpdates() = suspendCancellableCoroutine { continuation ->
         if (isLocationDisabled()) {
             continuation.resume(LocationManagerData((-1).toDouble(), (-1).toDouble(), ""))
@@ -71,7 +74,12 @@ class LocationManagerResponse @Inject constructor(@ApplicationContext val contex
             val listener = Geocoder.GeocodeListener {
                 continuation.resume("${it.firstOrNull()?.subLocality}, ${it.firstOrNull()?.locality}")
             }
-            Geocoder(context).getFromLocation(lat, lon, 1, listener)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Geocoder(context).getFromLocation(lat, lon, 1, listener)
+            } else {
+                val a = Geocoder(context).getFromLocation(lat, lon, 1)
+                continuation.resume("${a?.firstOrNull()?.subLocality}, ${a?.firstOrNull()?.locality}")
+            }
         }
 }
 

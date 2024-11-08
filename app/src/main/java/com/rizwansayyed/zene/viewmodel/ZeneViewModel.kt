@@ -15,16 +15,15 @@ import com.rizwansayyed.zene.data.api.model.ZeneBooleanResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicHistoryItem
-import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsItems
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.ui.mymusic.view.spotify.ImportPlaylistActivity
+import com.rizwansayyed.zene.data.roomdb.implementation.UpdatesRoomDBInterface
+import com.rizwansayyed.zene.data.roomdb.model.UpdateData
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
-import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -37,7 +36,9 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
+class ZeneViewModel @Inject constructor(
+    private val zeneAPI: ZeneAPIInterface, private val updateDB: UpdatesRoomDBInterface
+) : ViewModel() {
 
     private var lastSyncedA by mutableStateOf<String?>(null)
     var artistsInfo by mutableStateOf<APIResponse<ZeneArtistsInfoResponse>>(APIResponse.Empty)
@@ -47,6 +48,7 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
     var songHistory = mutableStateListOf<ZeneMusicHistoryItem>()
     var zeneSavedPlaylists = mutableStateListOf<ZeneSavedPlaylistsResponseItem>()
     var saveSongPlaylists = mutableStateListOf<ZeneMusicDataItems>()
+    var updateLists = mutableStateListOf<UpdateData>()
     var songHistoryIsLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
     var relatedVideos by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
@@ -308,5 +310,30 @@ class ZeneViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
         }.collectLatest {
             relatedVideos = APIResponse.Success(it)
         }
+    }
+
+    fun updateLists(p: Int, address: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (p == 0) updateLists.clear()
+
+        updateDB.getLists(address, p).onStart {
+            songHistoryIsLoading = true
+            doShowMoreLoading = false
+        }.catch {
+            songHistoryIsLoading = false
+            doShowMoreLoading = false
+        }.collectLatest {
+            songHistoryIsLoading = false
+            doShowMoreLoading = it.size >= 30
+            updateLists.addAll(it)
+        }
+    }
+
+    fun removeUpdatesLists(position: Int, u: UpdateData) = viewModelScope.launch(Dispatchers.IO) {
+        updateLists.removeAt(position)
+        updateDB.remove(u).catch { }.collectLatest { }
+    }
+
+    fun removeAllEarphones(address: String) = viewModelScope.launch(Dispatchers.IO) {
+        updateDB.removeAll(address).catch { }.collectLatest { }
     }
 }

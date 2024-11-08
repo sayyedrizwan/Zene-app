@@ -1,23 +1,25 @@
 package com.rizwansayyed.zene.ui.earphonetracker.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
@@ -33,33 +35,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.DataStoreManager.earphoneDevicesDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.getEarphoneConnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.getEarphoneDisconnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.setEarphoneConnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.setEarphoneDisconnection
 import com.rizwansayyed.zene.data.db.model.BLEDeviceData
+import com.rizwansayyed.zene.data.roomdb.model.UpdateData
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.IMG.HEADPHONE_TEMPS
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.addOrRemoveBLEDevice
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.getBatteryLevel
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.isBLEConnected
+import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.openLocationOnMaps
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.SheetDialogSheet
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.utils.Utils.toast
+import com.rizwansayyed.zene.viewmodel.ZeneViewModel
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
 fun EarphonesDeviceItemsView(data: BLEDeviceData, status: Boolean) {
+    val viewModel : ZeneViewModel = hiltViewModel()
     var isConnected by remember { mutableStateOf(false) }
     var batteryLevel by remember { mutableIntStateOf(0) }
     var deleteAlert by remember { mutableStateOf(false) }
     var settingSheet by remember { mutableStateOf(false) }
+    var earphoneDialog by remember { mutableStateOf(false) }
 
     Box(
         Modifier
@@ -96,7 +112,7 @@ fun EarphonesDeviceItemsView(data: BLEDeviceData, status: Boolean) {
                     .padding(5.dp)
                     .clip(RoundedCornerShape(100))
                     .background(Color.Black)
-                    .clickable { }
+                    .clickable { earphoneDialog = true }
                     .padding(8.dp)) {
                     ImageIcon(R.drawable.ic_text_indent, 23)
                 }
@@ -134,13 +150,19 @@ fun EarphonesDeviceItemsView(data: BLEDeviceData, status: Boolean) {
             R.string.rm_device, R.string.rm_device_desc, R.string.remove
         ) {
             if (it) {
-                data.address?.let { it1 -> addOrRemoveBLEDevice(it1, false) }
+                data.address?.let { address ->
+                    addOrRemoveBLEDevice(address, false)
+                    viewModel.removeAllEarphones(address)
+                }
             }
             deleteAlert = false
         }
 
         if (settingSheet) SettingsEarphoneView(data) {
             settingSheet = false
+        }
+        if (earphoneDialog) EarphoneUpdatesView(data) {
+            earphoneDialog = false
         }
 
         LaunchedEffect(status) {
@@ -215,6 +237,154 @@ fun SettingsEarphoneView(data: BLEDeviceData, close: () -> Unit) {
         LaunchedEffect(Unit) {
             connectionAlert = getEarphoneConnection(data.address ?: "")
             disconnectionAlert = getEarphoneDisconnection(data.address ?: "")
+        }
+    }
+}
+
+@Composable
+fun EarphoneUpdatesView(device: BLEDeviceData, close: () -> Unit) {
+    val viewModel: ZeneViewModel = hiltViewModel()
+    var devices: BLEDeviceData? by remember { mutableStateOf(null) }
+    var page by remember { mutableIntStateOf(0) }
+
+    Dialog(close, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Surface(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp)
+            ) {
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    TextPoppinsSemiBold(stringResource(R.string.updates), size = 28)
+                    Spacer(Modifier.height(1.dp))
+                    TextPoppins(devices?.name ?: "", size = 13)
+                    Spacer(Modifier.height(20.dp))
+
+                    if (viewModel.updateLists.size <= 0 && !viewModel.songHistoryIsLoading) {
+                        Spacer(Modifier.height(50.dp))
+                        TextPoppins(
+                            stringResource(R.string.no_updates_found), true, Color.White, 16
+                        )
+                    }
+                }
+
+                itemsIndexed(viewModel.updateLists) { i, u ->
+                    UpdatesItems(u) {
+                        viewModel.removeUpdatesLists(i, u)
+                    }
+                }
+
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    Row(
+                        Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
+                    ) {
+                        if (viewModel.songHistoryIsLoading) {
+                            LoadingView(Modifier.size(32.dp))
+                        }
+
+                        if (!viewModel.songHistoryIsLoading && viewModel.doShowMoreLoading) {
+                            Box(
+                                Modifier
+                                    .padding(vertical = 15.dp, horizontal = 6.dp)
+                                    .clip(RoundedCornerShape(100))
+                                    .background(Color.Black)
+                                    .clickable {
+                                        page += 1
+                                        device.address?.let { viewModel.updateLists(page, it) }
+                                    }
+                                    .border(1.dp, Color.White, RoundedCornerShape(100))
+                                    .padding(vertical = 9.dp, horizontal = 18.dp)) {
+                                TextPoppins(stringResource(R.string.load_more), size = 15)
+                            }
+                        }
+                    }
+
+
+                    Spacer(Modifier.height(90.dp))
+                }
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            device.address?.let { viewModel.updateLists(page, it) }
+            devices = earphoneDevicesDB.firstOrNull()?.firstOrNull { it.address == device.address }
+        }
+    }
+}
+
+@Composable
+fun UpdatesItems(update: UpdateData, remove: () -> Unit) {
+    var dialog by remember { mutableStateOf(false) }
+    Column(Modifier
+        .padding(vertical = 15.dp, horizontal = 4.dp)
+        .fillMaxWidth()
+        .clip(RoundedCornerShape(14.dp))
+        .background(MainColor)
+        .clickable { dialog = true }
+        .padding(10.dp)) {
+        Spacer(Modifier.height(8.dp))
+        TextPoppins(update.types(), color = update.typesColor(), size = 22)
+        if ((update.address?.length ?: 0) > 2) {
+            Spacer(Modifier.height(7.dp))
+            TextPoppins("${update.address}", size = 13)
+        } else if (update.latitude == (-1).toDouble() && update.longitude == (-1).toDouble()) {
+            Spacer(Modifier.height(7.dp))
+            TextPoppins(stringResource(R.string.location_permission_app_disabled), size = 13)
+        } else if (update.latitude == (-2).toDouble() && update.longitude == (-2).toDouble()) {
+            Spacer(Modifier.height(7.dp))
+            TextPoppins(stringResource(R.string.phone_gps_was_off), size = 13)
+        }
+        Spacer(Modifier.height(7.dp))
+        TextPoppins(update.time(), size = 13)
+        Spacer(Modifier.height(8.dp))
+    }
+
+    if (dialog) EarphonesUpdatedDialog(update) {
+        if (it) remove()
+        dialog = false
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EarphonesUpdatedDialog(update: UpdateData, close: (Boolean) -> Unit) {
+    val context = LocalContext.current
+    ModalBottomSheet(
+        { close(false) },
+        Modifier.fillMaxHeight(),
+        containerColor = MainColor,
+        contentColor = MainColor
+    ) {
+        Column(Modifier.fillMaxSize()) {
+            Spacer(Modifier.height(40.dp))
+
+            SheetDialogSheet(R.drawable.ic_gps, R.string.open_location) {
+                if (update.latitude == 0.0 && update.longitude == 0.0)
+                    context.resources.getString(R.string.no_location_found).toast()
+                else if (update.latitude == -1.0 && update.longitude == -1.0)
+                    context.resources.getString(R.string.location_permission_app_disabled).toast()
+                else if (update.latitude == -2.0 && update.longitude == -2.0)
+                    context.resources.getString(R.string.phone_gps_was_off).toast()
+                else
+                    openLocationOnMaps(update.latitude ?: 0.0, update.longitude ?: 0.0)
+
+                close(false)
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            SheetDialogSheet(R.drawable.ic_delete, R.string.delete) {
+                close(true)
+            }
+
+
+            Spacer(Modifier.height(50.dp))
         }
     }
 }
