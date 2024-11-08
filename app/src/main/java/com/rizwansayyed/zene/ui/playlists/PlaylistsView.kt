@@ -106,8 +106,6 @@ fun PlaylistsView(id: String?, close: () -> Unit) {
             logEvents(FirebaseLogEvents.FirebaseEvents.ALBUM_PLAYLIST_VIEW)
             ShowAdsOnAppOpen(context).interstitialAds()
             homeViewModel.playlistsData(id)
-
-            Log.d("TAG", "PlaylistsView: data $id")
         }
     }
 

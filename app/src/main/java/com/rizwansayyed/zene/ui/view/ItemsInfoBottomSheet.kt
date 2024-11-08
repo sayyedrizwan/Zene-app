@@ -180,16 +180,16 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
-    val zeneViewModel: ZeneViewModel = hiltViewModel()
-
-    var addPlaylistItems by remember { mutableStateOf(false) }
-    var page by remember { mutableIntStateOf(0) }
-
-    val playlistsAddStatus = remember { mutableStateMapOf<String, Boolean>() }
-
     Dialog(
         close, properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
+        val zeneViewModel: ZeneViewModel = hiltViewModel()
+
+        var addPlaylistItems by remember { mutableStateOf(false) }
+        var page by remember { mutableIntStateOf(0) }
+
+        val playlistsAddStatus = remember { mutableStateMapOf<String, Boolean>() }
+
         LazyColumn(
             modifier = Modifier
                 .requiredSize(screenWidth - 10.dp, (screenHeight.value / 1.3).dp)
@@ -243,22 +243,22 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
                 }
             }
         }
-    }
 
-    if (addPlaylistItems) AddPlaylistDialog(zeneViewModel) {
-        page = 0
-        addPlaylistItems = false
-        m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
-    }
+        if (addPlaylistItems) AddPlaylistDialog(zeneViewModel) {
+            page = 0
+            addPlaylistItems = false
+            m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
+        }
 
-    LaunchedEffect(Unit) {
-        logEvents(FirebaseLogEvents.FirebaseEvents.ADDING_TO_PLAYLISTS)
-        m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
-    }
+        LaunchedEffect(Unit) {
+            logEvents(FirebaseLogEvents.FirebaseEvents.ADDING_TO_PLAYLISTS)
+            m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
+        }
 
-    LaunchedEffect(playlistsAddStatus.values) {
-        logEvents(FirebaseLogEvents.FirebaseEvents.ADDING_TO_PLAYLISTS)
-        m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
+        LaunchedEffect(playlistsAddStatus.values) {
+            logEvents(FirebaseLogEvents.FirebaseEvents.ADDING_TO_PLAYLISTS)
+            m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
+        }
     }
 }
 
@@ -343,17 +343,8 @@ fun PlaylistAddComponents(
             viewModel.addRemoveSongFromPlaylists(items.id ?: "", songID ?: "", true)
         }
 
-        DisposableEffect(Unit) {
-            songID?.let { playlistsAddStatus[it] = items.extra == "present" }
-
-            Log.d("TAG", "PlaylistAddComponents: 11 ${items.extra}")
-            onDispose {  }
-        }
-
         LaunchedEffect(Unit) {
-            songID?.let { playlistsAddStatus[it] = items.extra == "present" }
-
-            Log.d("TAG", "PlaylistAddComponents: 22 ${items.extra}")
+            items.id?.let { playlistsAddStatus[it] = items.extra == "present" }
         }
     }
 }

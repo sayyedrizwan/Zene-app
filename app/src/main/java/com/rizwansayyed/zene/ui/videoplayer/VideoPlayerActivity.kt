@@ -165,7 +165,6 @@ class VideoPlayerActivity : ComponentActivity() {
     private val webViewChromeClientObject = object : WebChromeClient() {
         override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
             super.onConsoleMessage(consoleMessage)
-            Log.d("TAG", "onConsoleMessage: data ${consoleMessage?.message()}")
             return true
         }
     }

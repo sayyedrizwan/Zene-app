@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
+import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -423,7 +424,7 @@ class MusicPlayService : Service() {
 
     private val webViewChromeClientObject = object : WebChromeClient() {
         override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-//            Log.d("TAG", "playerTotalDuration: runned 111 ${consoleMessage?.message()}")
+//            Log.d("TAG", "webview: logs ${consoleMessage?.message()}")
             return true
         }
     }

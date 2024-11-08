@@ -46,6 +46,8 @@
               setLocalStorageItem();
             });
 
+            var volumeCheckInterval;
+
             var tag = document.createElement("script");
 
             tag.src = "https://www.youtube.com/iframe_api";
@@ -77,23 +79,25 @@
             }
 
             function onError(event) {
-               if(event.data == 150) {
-                   ZeneListener.regionSongError();
-               }
+              if (event.data == 150) {
+                ZeneListener.regionSongError();
+              }
             }
 
             function onPlayerReady(event) {
               event.target.playVideo();
-              setTimeout(() => {
-                event.target.setVolume(100);
-                event.target.unMute();
-              }, 500);
-
               playerState(event.target, true);
             }
 
             function onPlayerStateChange(event) {
               playerState(event.target, true);
+
+              clearInterval(volumeCheckInterval);
+              if (event.data == YT.PlayerState.PLAYING) {
+                volumeCheckInterval = setInterval(() => {
+                  event.target.setVolume(100);
+                }, 3000);
+              }
             }
 
             function playerState(p, updatePlayback) {

@@ -68,7 +68,7 @@ object ApiCache {
                 writer.close()
                 setCustomTimestamp(key)
             } catch (e: Exception) {
-                Log.d("TAG", "setAPICache: Writing Error ${e.message}")
+                e.printStackTrace()
             }
         }
     }
@@ -100,7 +100,7 @@ object ApiCache {
                 writer.close()
                 setCustomTimestamp(key)
             } catch (e: Exception) {
-                Log.d("TAG", "setAPICache: Writing Error ${e.message}")
+               e.printStackTrace()
             }
         }
     }

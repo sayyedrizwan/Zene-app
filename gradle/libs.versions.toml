@@ -5,13 +5,13 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "146"
-versionname = "3.02.787"
+appversion = "147"
+versionname = "3.02.789"
 
 
 agp = "8.5.2"
-datastorePreferences = "1.1.1"
 kotlin = "2.0.20"
+datastorePreferences = "1.1.1"
 firebase-crashlytics = "3.0.2"
 firebase-performance = "1.4.2"
 googleservice = "4.4.2"
