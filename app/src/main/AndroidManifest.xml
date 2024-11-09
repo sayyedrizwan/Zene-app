@@ -138,6 +138,12 @@
             android:excludeFromRecents="true"
             android:exported="true" />
 
+        <activity
+            android:name=".ui.premium.PremiumActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:exported="true" />
+
         <service
             android:name=".service.musicplayer.MusicPlayService"
             android:enabled="true"

@@ -130,6 +130,7 @@ fun HomeView(
         }
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
+                Spacer(Modifier.height(30.dp))
                 HorizontalSongView(
                     homeViewModel.recommendedPlaylists,
                     Pair(TextSize.BIG, R.string.recommended_playlists),
