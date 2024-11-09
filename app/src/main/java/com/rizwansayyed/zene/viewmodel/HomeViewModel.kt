@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -360,7 +361,7 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 it.forEach { v -> userPlaylistsSong.add(v) }
             }
-            showMorePlaylistSongs = it.size >= 24
+            showMorePlaylistSongs = it.size >= 20
         }
     }
 

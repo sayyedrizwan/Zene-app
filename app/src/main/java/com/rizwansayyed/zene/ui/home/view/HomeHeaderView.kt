@@ -1,19 +1,16 @@
 package com.rizwansayyed.zene.ui.home.view
 
 import android.Manifest
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -45,7 +42,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
-import com.rizwansayyed.zene.ui.premium.PremiumActivity
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -55,7 +51,6 @@ import com.rizwansayyed.zene.ui.view.LoadingLinearView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
-import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
@@ -116,16 +111,16 @@ fun HomeHeaderView() {
                 permission.launch(Manifest.permission.RECORD_AUDIO)
             }
 
-            Spacer(Modifier.width(15.dp))
-
-            Row(Modifier.clickable {
-                Intent(context, PremiumActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(this)
-                }
-            }) {
-                ImageIcon(R.drawable.ic_crown, 30, Color.Yellow)
-            }
+//            Spacer(Modifier.width(15.dp))
+//
+//            Row(Modifier.clickable {
+//                Intent(context, PremiumActivity::class.java).apply {
+//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                    context.startActivity(this)
+//                }
+//            }) {
+//                ImageIcon(R.drawable.ic_crown, 30, Color.Yellow)
+//            }
 
             Spacer(Modifier.width(15.dp))
         }

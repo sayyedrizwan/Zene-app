@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.data.roomdb.model.UpdateData
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -143,7 +144,7 @@ class ZeneViewModel @Inject constructor(
             songHistoryIsLoading = false
             it.forEach { songHistory.add(it) }
 
-            doShowMoreLoading = it.size >= 24
+            doShowMoreLoading = it.size >= 20
         }
     }
 
@@ -168,9 +169,9 @@ class ZeneViewModel @Inject constructor(
                 zeneSavedPlaylists.clear()
             }
             songHistoryIsLoading = false
-            it.forEach { zeneSavedPlaylists.add(it) }
+            it.forEach { m -> zeneSavedPlaylists.add(m) }
 
-            doShowMoreLoading = it.size >= 24
+            doShowMoreLoading = it.size >= 20
         }
     }
 
@@ -249,7 +250,7 @@ class ZeneViewModel @Inject constructor(
                 songHistoryIsLoading = false
                 saveSongPlaylists.addAll(it)
 
-                doShowMoreLoading = it.size >= 24
+                doShowMoreLoading = it.size >= 20
             }
         }
 
@@ -323,7 +324,7 @@ class ZeneViewModel @Inject constructor(
             doShowMoreLoading = false
         }.collectLatest {
             songHistoryIsLoading = false
-            doShowMoreLoading = it.size >= 30
+            doShowMoreLoading = it.size >= 20
             updateLists.addAll(it)
         }
     }

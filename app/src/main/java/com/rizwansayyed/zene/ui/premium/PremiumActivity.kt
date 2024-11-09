@@ -41,6 +41,10 @@ class PremiumActivity : ComponentActivity() {
                         TextPoppins(stringResource(R.string.zene_pro_desc), true, size = 16)
                         Spacer(Modifier.height(10.dp))
                     }
+
+                    item {
+
+                    }
                 }
             }
         }

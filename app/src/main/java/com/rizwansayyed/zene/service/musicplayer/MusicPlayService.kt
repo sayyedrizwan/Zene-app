@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
-import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -481,7 +480,10 @@ class MusicPlayService : Service() {
             if (index < 0) return@launch
 
             val p = if (nextSong) index + 1 else index - 1
-            val data = player?.list?.get(p) ?: return@launch
+            val data = if (p >= player?.list?.size!!) player.list?.firstOrNull()
+            else player.list?.get(p)
+
+            data ?: return@launch
             loadURL(data)
             val new = MusicPlayerData(player.list, data, VIDEO_BUFFERING, 0, false, 0, true)
             musicPlayerDB = flowOf(new)
