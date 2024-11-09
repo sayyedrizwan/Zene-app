@@ -56,13 +56,20 @@ android {
 
         resValue("string", "FB_APP_ID", apikeyProperties.getProperty("FB_APP_ID"))
         resValue("string", "FB_SECRET_KEY", apikeyProperties.getProperty("FB_SECRET_KEY"))
-        resValue("string", "FB_LOGIN_PROTOCOL_SCHEME", apikeyProperties.getProperty("FB_LOGIN_PROTOCOL_SCHEME"))
+        resValue(
+            "string",
+            "FB_LOGIN_PROTOCOL_SCHEME",
+            apikeyProperties.getProperty("FB_LOGIN_PROTOCOL_SCHEME")
+        )
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -157,8 +164,6 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
 
-    val room_version = "2.6.1"
-
-    implementation("androidx.room:room-runtime:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
+    implementation(libs.room.db)
+    kapt(libs.room.db.complier)
 }

@@ -69,6 +69,7 @@ import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
+import com.rizwansayyed.zene.ui.premium.utils.PremiumUtils
 import com.rizwansayyed.zene.ui.radio.RadioView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
@@ -304,6 +305,8 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
+
+            PremiumUtils.start()
         }
 
         homeViewModel.userArtistsList()

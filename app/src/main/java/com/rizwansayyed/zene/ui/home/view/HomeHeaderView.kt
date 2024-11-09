@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.home.view
 
 import android.Manifest
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -30,8 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,13 +43,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
-import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
-import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.premium.PremiumActivity
 import com.rizwansayyed.zene.ui.view.AlertDialogView
-import com.rizwansayyed.zene.ui.view.BorderButtons
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageView
@@ -57,18 +55,12 @@ import com.rizwansayyed.zene.ui.view.LoadingLinearView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextAntroVenctra
 import com.rizwansayyed.zene.ui.view.TextPoppins
-import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
-import com.rizwansayyed.zene.ui.view.imgBuilder
-import com.rizwansayyed.zene.ui.view.shareUrl
 import com.rizwansayyed.zene.ui.view.shimmerEffectBrush
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_FEED
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_MUSIC
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SEARCH
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS
 import com.rizwansayyed.zene.utils.NavigationUtils.sendNavCommand
-import com.rizwansayyed.zene.utils.Utils.shareTxtImage
 import com.rizwansayyed.zene.utils.Utils.startAppSettings
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
@@ -77,11 +69,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HomeHeaderView() {
+    var context = LocalContext.current.applicationContext
     var findSongDialog by remember { mutableStateOf(false) }
     var showWallzInstall by remember { mutableStateOf(false) }
     var microphonePermissionDialog by remember { mutableStateOf(false) }
@@ -125,26 +117,37 @@ fun HomeHeaderView() {
             }
 
             Spacer(Modifier.width(15.dp))
+
+            Row(Modifier.clickable {
+                Intent(context, PremiumActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(this)
+                }
+            }) {
+                ImageIcon(R.drawable.ic_crown, 30, Color.Yellow)
+            }
+
+            Spacer(Modifier.width(15.dp))
         }
     }
 
     Spacer(Modifier.height(20.dp))
 
-    Row(Modifier.fillMaxWidth()) {
-        Spacer(Modifier.weight(1f))
-
-        Row(
-            Modifier
-                .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
-                .background(shimmerEffectBrush())
-                .clickable { showWallzInstall = true }
-                .padding(vertical = 13.dp, horizontal = 16.dp)
-        ) {
-            TextPoppins(stringResource(R.string.get_wallz_now), size = 18)
-        }
-    }
-
-    Spacer(Modifier.height(30.dp))
+//    Row(Modifier.fillMaxWidth()) {
+//        Spacer(Modifier.weight(1f))
+//
+//        Row(
+//            Modifier
+//                .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
+//                .background(shimmerEffectBrush())
+//                .clickable { showWallzInstall = true }
+//                .padding(vertical = 13.dp, horizontal = 16.dp)
+//        ) {
+//            TextPoppins(stringResource(R.string.get_wallz_now), size = 18)
+//        }
+//    }
+//
+//    Spacer(Modifier.height(30.dp))
 
     if (findSongDialog) SearchSongDialog {
         findSongDialog = false

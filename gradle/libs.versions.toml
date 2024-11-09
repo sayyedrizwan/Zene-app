@@ -28,6 +28,7 @@ moshi = "1.15.1"
 browser = "1.8.0"
 spotify = "1.2.5"
 exo-player = "1.4.1"
+room = "2.6.1"
 facebook = "latest.release"
 firebase-bom = "33.5.1"
 googleid = "1.1.1"
@@ -70,6 +71,9 @@ spotify = { module = "com.spotify.android:auth", version.ref = "spotify" }
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "exo-player" }
 media3-ui = { module = "androidx.media3:media3-ui", version.ref = "exo-player" }
 
+room-db = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-db-complier = { module = "androidx.room:room-compiler", version.ref = "room" }
+
 
 facebook-login = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebook" }
 
@@ -91,7 +95,7 @@ dagger-compiler = { group = "com.google.dagger", name = "hilt-android-compiler",
 lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-compose" }
 
 
-billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
+billing = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
 
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
