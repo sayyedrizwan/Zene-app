@@ -358,7 +358,7 @@ class ZeneAPIImpl @Inject constructor(
 
     override suspend fun savedPlaylists(page: Int) = flow {
         val email = userInfoDB.firstOrNull()?.email ?: return@flow
-        emit(zeneAPI.savedPlaylists("luckyracer765@gmail.com", page))
+        emit(zeneAPI.savedPlaylists(email, page))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun createNewPlaylists(name: String, file: File?, id: String?) = flow {

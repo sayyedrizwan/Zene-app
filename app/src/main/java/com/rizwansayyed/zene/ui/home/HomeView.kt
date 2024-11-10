@@ -23,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,10 +54,10 @@ import com.rizwansayyed.zene.ui.view.AdsBannerView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.NewUserCards
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
-import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsLight
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.ui.zeneconnect.ZeneConnectHomeView
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
@@ -71,7 +70,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -128,9 +126,18 @@ fun HomeView(
                 else -> {}
             }
         }
+
+        item(2050, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Column(Modifier.fillMaxWidth()) {
+                Spacer(Modifier.height(40.dp))
+                ZeneConnectHomeView()
+                Spacer(Modifier.height(30.dp))
+            }
+        }
+
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {
-                Spacer(Modifier.height(30.dp))
+                Spacer(Modifier.height(10.dp))
                 HorizontalSongView(
                     homeViewModel.recommendedPlaylists,
                     Pair(TextSize.BIG, R.string.recommended_playlists),
