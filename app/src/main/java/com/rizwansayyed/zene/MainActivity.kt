@@ -12,7 +12,6 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -42,35 +41,29 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
-import com.rizwansayyed.zene.data.api.APIHttpService
-import com.rizwansayyed.zene.data.api.APIHttpService.youtubeSearchVideoRegion
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpDataDB
-import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
+import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.musicplayer.isMusicServiceRunning
+import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerActivity
 import com.rizwansayyed.zene.ui.artists.ArtistsView
-import com.rizwansayyed.zene.ui.earphonetracker.EarphoneTrackerActivity
-import com.rizwansayyed.zene.ui.earphonetracker.utils.LocationManagerResponse
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.NEW_CONNECTED_EARPHONE
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.PLAYER_PLAYER
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.openEarphoneTrackerActivity
-import com.rizwansayyed.zene.ui.mymusic.MyMusicView
 import com.rizwansayyed.zene.ui.feed.FeedView
 import com.rizwansayyed.zene.ui.home.HomeView
 import com.rizwansayyed.zene.ui.home.checkNotificationPermissionAndAsk
 import com.rizwansayyed.zene.ui.login.GlobalEmailEventProvider
 import com.rizwansayyed.zene.ui.login.LoginView
-import com.rizwansayyed.zene.ui.login.flow.LoginFlowType
 import com.rizwansayyed.zene.ui.mood.MoodView
+import com.rizwansayyed.zene.ui.mymusic.MyMusicView
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
-import com.rizwansayyed.zene.ui.premium.utils.PremiumUtils
 import com.rizwansayyed.zene.ui.radio.RadioView
 import com.rizwansayyed.zene.ui.search.SearchView
 import com.rizwansayyed.zene.ui.settings.SettingsView
@@ -118,7 +111,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Locale
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -264,6 +256,7 @@ class MainActivity : ComponentActivity() {
                 onDispose {
                     unregisterReceiver(listener)
                 }
+
             }
 
             LaunchedEffect(Unit) {
@@ -280,6 +273,9 @@ class MainActivity : ComponentActivity() {
                 val connectivityManager =
                     getSystemService(ConnectivityManager::class.java) as ConnectivityManager
                 connectivityManager.requestNetwork(networkRequest, networkCallback)
+
+                delay(6.seconds)
+                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
             }
         }
 
@@ -306,8 +302,6 @@ class MainActivity : ComponentActivity() {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
-
-            PremiumUtils.start()
         }
 
         homeViewModel.userArtistsList()
@@ -342,7 +336,7 @@ class MainActivity : ComponentActivity() {
         delay(2.seconds)
         if (isMusicServiceRunning(this@MainActivity)) return@launch
         Intent(this@MainActivity, MusicPlayService::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            flags = FLAG_ACTIVITY_NEW_TASK
             try {
                 startForegroundService(this)
             } catch (e: Exception) {

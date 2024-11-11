@@ -127,13 +127,13 @@ fun HomeView(
             }
         }
 
-        item(2050, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column(Modifier.fillMaxWidth()) {
-                Spacer(Modifier.height(40.dp))
-                ZeneConnectHomeView()
-                Spacer(Modifier.height(30.dp))
-            }
-        }
+//        item(2050, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+//            Column(Modifier.fillMaxWidth()) {
+//                Spacer(Modifier.height(40.dp))
+//                ZeneConnectHomeView()
+//                Spacer(Modifier.height(30.dp))
+//            }
+//        }
 
         item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Column {

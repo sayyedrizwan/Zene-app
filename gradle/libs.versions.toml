@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "149"
-versionname = "3.02.793"
+appversion = "150"
+versionname = "3.02.795"
 
 
 agp = "8.5.2"
@@ -72,8 +72,7 @@ media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = 
 media3-ui = { module = "androidx.media3:media3-ui", version.ref = "exo-player" }
 
 room-db = { module = "androidx.room:room-runtime", version.ref = "room" }
-room-db-complier = { module = "androidx.room:room-compiler", version.ref = "room" }
-
+room-db-complier = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 facebook-login = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebook" }
 

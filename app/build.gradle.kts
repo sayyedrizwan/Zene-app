@@ -54,12 +54,19 @@ android {
             "String", "SPOTIFY_CLIENT_ID", apikeyProperties.getProperty("SPOTIFY_CLIENT_ID")
         )
 
+        buildConfigField(
+            "String", "TRUE_CALLER_CLIENT_ID", apikeyProperties.getProperty("TRUE_CALLER_CLIENT_ID")
+        )
+
         resValue("string", "FB_APP_ID", apikeyProperties.getProperty("FB_APP_ID"))
         resValue("string", "FB_SECRET_KEY", apikeyProperties.getProperty("FB_SECRET_KEY"))
         resValue(
-            "string",
-            "FB_LOGIN_PROTOCOL_SCHEME",
+            "string", "FB_LOGIN_PROTOCOL_SCHEME",
             apikeyProperties.getProperty("FB_LOGIN_PROTOCOL_SCHEME")
+        )
+        resValue(
+            "string", "TRUE_CALLER_CLIENT_ID_",
+            apikeyProperties.getProperty("TRUE_CALLER_CLIENT_ID")
         )
     }
 
@@ -67,8 +74,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -166,4 +172,6 @@ dependencies {
 
     implementation(libs.room.db)
     kapt(libs.room.db.complier)
+
+    implementation("com.truecaller.android.sdk:truecaller-sdk:3.1.0")
 }

@@ -91,6 +91,11 @@ object Utils {
         const val YOUTUBE_URL = "https://www.youtube.com"
 
 
+        const val TRUE_CALLER_BASE_URL = "https://oauth-account-noneu.truecaller.com/v1/"
+        const val TRUE_CALLER_TOKEN_API = "token"
+        const val TRUE_CALLER_USER_INFO_API = "userinfo"
+
+
         const val BASE_URL_IP = "http://ip-api.com/"
         const val JSON_IP = "json"
 
