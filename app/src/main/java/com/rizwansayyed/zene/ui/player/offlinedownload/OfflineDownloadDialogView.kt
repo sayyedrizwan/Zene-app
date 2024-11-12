@@ -3,7 +3,9 @@ package com.rizwansayyed.zene.ui.player.offlinedownload
 import android.graphics.Color
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +41,7 @@ import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.utils.Utils.enable
+import com.rizwansayyed.zene.utils.Utils.wvClearCache
 import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +51,8 @@ import kotlin.time.Duration.Companion.seconds
 
 fun jsRunValue(id: String?): String {
     return """
-    document.getElementById('sf_url').value = "https://www.youtube.com/watch?v=${id}"; document.getElementById('sf_form').submit();
+    document.getElementById('sf_url').value = "https://www.youtube.com/watch?v=${id}";
+    document.getElementById('sf_form').submit();
 """
 }
 
@@ -69,7 +73,9 @@ fun OfflineDownload(m: ZeneMusicDataItems, close: () -> Unit) {
         ) {
             AndroidView(factory = { ctx ->
                 WebView(ctx).apply {
+                    wvClearCache()
                     enable()
+
                     class JavaScriptInterface {
                         @JavascriptInterface
                         fun onDownloadLinkDetected(href: String) {
@@ -84,20 +90,25 @@ fun OfflineDownload(m: ZeneMusicDataItems, close: () -> Unit) {
                     setBackgroundColor(Color.TRANSPARENT)
                     addJavascriptInterface(JavaScriptInterface(), "Interface")
 
+                    webViewClient = object : WebViewClient() {
+                        override fun shouldOverrideUrlLoading(
+                            view: WebView?, request: WebResourceRequest?
+                        ): Boolean = false
+                    }
                     webChromeClient = object : WebChromeClient() {
                         override fun onProgressChanged(view: WebView?, newProgress: Int) {
                             super.onProgressChanged(view, newProgress)
                             if (newProgress == 100) CoroutineScope(Dispatchers.Main).launch {
-                                delay(1.seconds)
+                                delay(2.seconds)
                                 injectJavaScript(this@apply)
                                 delay(2.seconds)
                                 evaluateJavascript(jsRunValue(m.id)) {}
                             }
                         }
                     }
-                    loadUrl("https://en1.savefrom.net/2ol/")
+                    loadUrl("https://en1.savefrom.net/1-youtube-video-downloader-3vV/")
                 }
-            }, modifier = Modifier.size(50.dp))
+            }, modifier = Modifier.fillMaxSize())
 
             Column(
                 Modifier
@@ -115,7 +126,8 @@ fun OfflineDownload(m: ZeneMusicDataItems, close: () -> Unit) {
                     }
                 } else {
                     TextPoppins(
-                        stringResource(R.string.offline_caching_availability), true, size = 15
+                        stringResource(if (downloadLink.length > 4 && downloadLink.contains("https://")) R.string.converting_this_song_for_caching else R.string.offline_caching_availability),
+                        true, size = 15
                     )
 
                     Spacer(Modifier.height(30.dp))

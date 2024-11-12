@@ -12,6 +12,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
+import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -297,6 +298,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        WebView.setWebContentsDebuggingEnabled(true)
         lifecycleScope.launch {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)

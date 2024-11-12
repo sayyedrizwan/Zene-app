@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
+import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
@@ -30,6 +31,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.songHistoryListDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -85,6 +87,7 @@ object Utils {
         val fileCachedSongsDir = File(context.filesDir, "cached_songs").apply {
             mkdirs()
         }
+        val fileCachedSongsCacheDir = File(context.cacheDir, "cached_latest_s.mp4")
     }
 
     object URLS {
@@ -95,11 +98,9 @@ object Utils {
             "https://music.youtube.com/youtubei/v1/search?prettyPrint=false"
         const val YOUTUBE_URL = "https://www.youtube.com"
 
-
         const val TRUE_CALLER_BASE_URL = "https://oauth-account-noneu.truecaller.com/v1/"
         const val TRUE_CALLER_TOKEN_API = "token"
         const val TRUE_CALLER_USER_INFO_API = "userinfo"
-
 
         const val BASE_URL_IP = "http://ip-api.com/"
         const val JSON_IP = "json"
@@ -115,7 +116,6 @@ object Utils {
 //            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val LIKED_SONGS_ON_ZENE_PLAYLISTS = "liked_songs_on_zene"
-
 
         const val ZENE_EXTRA_SPONSORS_API = "extra/sponsors"
         const val ZENE_EXTRA_APP_UPDATE_API = "extra/update_availability"
@@ -164,7 +164,6 @@ object Utils {
         const val ZENE_TOP_ALBUMS_API = "top/albums"
         const val ZENE_TOP_VIDEOS_API = "top/videos"
         const val ZENE_TOP_SONGS_API = "top/songs"
-
 
         const val USER_AGENT_D =
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
@@ -245,6 +244,7 @@ object Utils {
     fun WebView.enable() {
         isFocusable = true
         requestFocus()
+        settings.userAgentString = USER_AGENT_D
         isFocusableInTouchMode = true
         settings.javaScriptEnabled = true
         settings.cacheMode = WebSettings.LOAD_DEFAULT
@@ -257,6 +257,17 @@ object Utils {
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
         settings.mediaPlaybackRequiresUserGesture = false
+    }
+
+    fun WebView.wvClearCache() {
+        clearCache(true)
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.removeAllCookies({})
+        clearHistory()
+        loadUrl("about:blank")
+//        onPause()
+//        pauseTimers()
+//        destroy()
     }
 
     @Suppress("DEPRECATION")
@@ -555,4 +566,11 @@ object Utils {
         artistsHistoryListDB = flowOf(lists.toMutableSet().toTypedArray())
     }
 
+    fun File.copyTo(file: File) {
+        inputStream().use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
 }

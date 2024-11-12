@@ -11,12 +11,16 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
 import android.webkit.ConsoleMessage
+import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIHttpService.youtubeSearchVideoRegion
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
@@ -26,6 +30,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
+import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
@@ -55,11 +60,14 @@ import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.Utils.RADIO_ARTISTS
+import com.rizwansayyed.zene.utils.Utils.RoomDB.fileCachedSongsCacheDir
+import com.rizwansayyed.zene.utils.Utils.RoomDB.fileCachedSongsDir
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_URL
 import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.getTimeAfterMinutesInMillis
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
+import com.rizwansayyed.zene.utils.Utils.wvClearCache
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,6 +82,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -100,8 +109,9 @@ class MusicPlayService : Service() {
     lateinit var updatesRoomDB: UpdatesRoomDBImpl
 
     private lateinit var webView: WebView
+    private var exoPlayer: ExoPlayer? = null
     private var job: Job? = null
-    private var currentVideoID = ""
+    private var playerInfo: ZeneMusicDataItems? = null
     private var isNewPlay = true
     private var sleepTimer: Job? = null
     private val bluetoothListeners by lazy { BluetoothListeners(updatesRoomDB) }
@@ -193,8 +203,13 @@ class MusicPlayService : Service() {
     }
 
     fun loadURL(player: ZeneMusicDataItems) = CoroutineScope(Dispatchers.Main).launch {
+        playerInfo = player
+        destroyExoPlayer()
+        if (player.type() == MusicType.OFFLINE_SONGS) {
+            playCachedSong(player)
+            return@launch
+        }
         val vID = player.id ?: ""
-        currentVideoID = vID.replace(RADIO_ARTISTS, "").trim()
         if (player.type() == MusicType.RADIO) {
             playARadio(player.extra ?: "")
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_RADIO)
@@ -209,6 +224,18 @@ class MusicPlayService : Service() {
         }
         if (isActive) cancel()
     }
+
+    private fun playCachedSong(info: ZeneMusicDataItems) {
+        webView.wvClearCache()
+        fileCachedSongsCacheDir.deleteRecursively()
+        File(fileCachedSongsDir, "${info.id}.cachxc").copyTo(fileCachedSongsCacheDir)
+        exoPlayer = ExoPlayer.Builder(this).build()
+        val mediaItem = MediaItem.fromUri(fileCachedSongsCacheDir.toUri())
+        exoPlayer!!.setMediaItem(mediaItem)
+        exoPlayer!!.prepare()
+        exoPlayer!!.play()
+    }
+
 
     override fun onBind(p0: Intent?): IBinder? = null
 
@@ -256,11 +283,10 @@ class MusicPlayService : Service() {
                 logEvents(FirebaseLogEvents.FirebaseEvents.TAP_PAUSE)
                 pause()
             } else if (json.contains("{\"list\":") && json.contains("\"player\":")) {
-                clearCache()
+                webView.wvClearCache()
                 isNewPlay = false
                 val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)
                 d?.player?.let { loadURL(it) }
-                currentVideoID = d?.player?.id ?: ""
                 musicPlayerDB = flowOf(d)
             }
         }
@@ -283,7 +309,6 @@ class MusicPlayService : Service() {
         val m = musicPlayerDB.firstOrNull()
         isNewPlay = false
         if (d?.id == null && m?.player?.id != null) {
-            currentVideoID = m.player.id
             loadURL(m.player)
             NotificationUtils(
                 context.resources.getString(R.string.wake_up_alarm),
@@ -291,7 +316,6 @@ class MusicPlayService : Service() {
                 null
             )
         } else if (d?.id != null) {
-            currentVideoID = d.id
             loadURL(d)
             musicPlayerDB =
                 flowOf(MusicPlayerData(listOf(d), d, VIDEO_BUFFERING, 0, false, 0, true))
@@ -315,8 +339,7 @@ class MusicPlayService : Service() {
     private fun playAVideo(v: String) = CoroutineScope(Dispatchers.Main).launch {
         val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
             .replace("<<VideoID>>", v.trim())
-            .replace("<<Quality>>", "360")
-//            .replace("<<Quality>>", songQualityDB.first().value)
+            .replace("<<Quality>>", songQualityDB.first().value)
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
         if (isActive) cancel()
@@ -343,7 +366,10 @@ class MusicPlayService : Service() {
     }
 
     private fun getDurations() {
-        webView.evaluateJavascript("playerDurations();", null)
+        if (playerInfo?.type() == MusicType.OFFLINE_SONGS) {
+
+        } else
+            webView.evaluateJavascript("playerDurations();", null)
     }
 
     private fun seekTo(v: Int) = CoroutineScope(Dispatchers.Main).launch {
@@ -450,10 +476,11 @@ class MusicPlayService : Service() {
         }
     }
 
-    private fun clearCache() {
-//        webView.clearCache(true)
-//        val cookieManager = CookieManager.getInstance()
-//        cookieManager.removeAllCookies({})
+    private fun destroyExoPlayer() {
+        exoPlayer?.stop()
+        exoPlayer?.release()
+        exoPlayer?.clearVideoSurface()
+        exoPlayer = null
     }
 
     private fun checkAndPlayNextSong() = CoroutineScope(Dispatchers.IO).launch {
