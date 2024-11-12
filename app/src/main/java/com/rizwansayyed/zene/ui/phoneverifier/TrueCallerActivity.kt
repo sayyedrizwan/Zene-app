@@ -9,25 +9,18 @@ import androidx.activity.viewModels
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
-import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerAPIUtils.getTCPhoneNumber
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.Utils.toast
-import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.PhoneVerificationViewModel
-import com.truecaller.android.sdk.oAuth.CodeVerifierUtil
+import com.truecaller.android.sdk.common.TrueException
+import com.truecaller.android.sdk.common.VerificationCallback
+import com.truecaller.android.sdk.common.VerificationDataBundle
 import com.truecaller.android.sdk.oAuth.TcOAuthCallback
 import com.truecaller.android.sdk.oAuth.TcOAuthData
 import com.truecaller.android.sdk.oAuth.TcOAuthError
 import com.truecaller.android.sdk.oAuth.TcSdk
 import com.truecaller.android.sdk.oAuth.TcSdkOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.math.BigInteger
-import java.security.SecureRandom
-import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class TrueCallerActivity : FragmentActivity() {
@@ -83,22 +76,86 @@ class TrueCallerActivity : FragmentActivity() {
 
         TcSdk.init(tcSdkOptions)
 
-        TcSdk.getInstance().setOAuthScopes(arrayOf("phone"))
+        val isUsable = TcSdk.getInstance().isOAuthFlowUsable
 
-        val stateRequested = BigInteger(130, SecureRandom()).toString(32)
-        TcSdk.getInstance().setOAuthState(stateRequested)
 
-        codeVerifier = CodeVerifierUtil.generateRandomCodeVerifier()
+        val verificationCallback = object : VerificationCallback {
+            override fun onRequestSuccess(
+                callbackType: Int,
+                verificationDataBundle: VerificationDataBundle?
+            ) {
+                when (callbackType) {
+                    VerificationCallback.TYPE_MISSED_CALL_INITIATED -> {
+                        if (verificationDataBundle != null) {
+                            verificationDataBundle.getString(VerificationDataBundle.KEY_TTL);
+                            verificationDataBundle.getString(VerificationDataBundle.KEY_REQUEST_NONCE);
+                        }
+                    }
 
-        val codeChallenge = CodeVerifierUtil.getCodeChallenge(codeVerifier!!)
-        codeChallenge?.let { TcSdk.getInstance().setCodeChallenge(it) }
-            ?: "Code challenge is Null. Can’t proceed further".toast()
+                    VerificationCallback.TYPE_MISSED_CALL_RECEIVED -> {
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            delay(2.seconds)
-            TcSdk.getInstance().getAuthorizationCode(this@TrueCallerActivity)
+                    }
+
+                    VerificationCallback.TYPE_IM_OTP_INITIATED -> {
+                        if (verificationDataBundle != null) {
+                            val ttl =
+                                verificationDataBundle.getString(VerificationDataBundle.KEY_TTL);
+                            val requestNonce =
+                                verificationDataBundle.getString(VerificationDataBundle.KEY_REQUEST_NONCE);
+                        }
+                    }
+
+                    VerificationCallback.TYPE_IM_OTP_RECEIVED -> {
+                        val otp =
+                            verificationDataBundle?.getString(VerificationDataBundle.KEY_OTP)
+                    }
+
+                    VerificationCallback.TYPE_VERIFICATION_COMPLETE -> {
+                        //verification complete
+                    }
+
+                    VerificationCallback.TYPE_PROFILE_VERIFIED_BEFORE -> {
+                        //user already verified
+
+                    }
+
+                    VerificationCallback.TYPE_OTP_INITIATED -> {
+
+                    }
+
+                    VerificationCallback.TYPE_OTP_RECEIVED -> {
+                    }
+                }
+            }
+
+            override fun onRequestFailure(p0: Int, p1: TrueException) {
+                p1.exceptionMessage.toast()
+            }
+
         }
 
+        TcSdk.getInstance()
+            .requestVerification("IN", "9323922026", verificationCallback, this);
+
+//        if (isUsable) {
+//            TcSdk.getInstance().setOAuthScopes(arrayOf("phone"))
+//
+//            val stateRequested = BigInteger(130, SecureRandom()).toString(32)
+//            TcSdk.getInstance().setOAuthState(stateRequested)
+//
+//            codeVerifier = CodeVerifierUtil.generateRandomCodeVerifier()
+//
+//            val codeChallenge = CodeVerifierUtil.getCodeChallenge(codeVerifier!!)
+//            codeChallenge?.let { TcSdk.getInstance().setCodeChallenge(it) }
+//                ?: "Code challenge is Null. Can’t proceed further".toast()
+//
+//            lifecycleScope.launch(Dispatchers.Main) {
+//                delay(2.seconds)
+//                TcSdk.getInstance().getAuthorizationCode(this@TrueCallerActivity)
+//            }
+//        } else {
+//            "no called".toast()
+//        }
 
 //        TrueCallerVerificationUtils(this).start()
     }

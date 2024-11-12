@@ -243,6 +243,8 @@ object Utils {
         isFocusableInTouchMode = true
         settings.javaScriptEnabled = true
         settings.cacheMode = WebSettings.LOAD_DEFAULT
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
+        settings.loadsImagesAutomatically = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
         settings.pluginState = WebSettings.PluginState.ON

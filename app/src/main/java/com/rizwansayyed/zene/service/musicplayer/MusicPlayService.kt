@@ -11,7 +11,6 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
 import android.webkit.ConsoleMessage
-import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -27,7 +26,6 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
-import com.rizwansayyed.zene.data.db.DataStoreManager.songQualityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
@@ -317,7 +315,8 @@ class MusicPlayService : Service() {
     private fun playAVideo(v: String) = CoroutineScope(Dispatchers.Main).launch {
         val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
             .replace("<<VideoID>>", v.trim())
-            .replace("<<Quality>>", songQualityDB.first().value)
+            .replace("<<Quality>>", "360")
+//            .replace("<<Quality>>", songQualityDB.first().value)
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
         if (isActive) cancel()
@@ -452,9 +451,9 @@ class MusicPlayService : Service() {
     }
 
     private fun clearCache() {
-        webView.clearCache(true)
-        val cookieManager = CookieManager.getInstance()
-        cookieManager.removeAllCookies({})
+//        webView.clearCache(true)
+//        val cookieManager = CookieManager.getInstance()
+//        cookieManager.removeAllCookies({})
     }
 
     private fun checkAndPlayNextSong() = CoroutineScope(Dispatchers.IO).launch {

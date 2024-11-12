@@ -208,7 +208,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     NavHomeView(Modifier.align(Alignment.BottomEnd), playerInfo, homeNavModel)
-
+                    TestWebView()
                     AnimatedVisibility(
                         visible = homeNavModel.showMusicPlayer,
                         enter = slideInVertically(initialOffsetY = { it / 2 }),
@@ -274,8 +274,8 @@ class MainActivity : ComponentActivity() {
                     getSystemService(ConnectivityManager::class.java) as ConnectivityManager
                 connectivityManager.requestNetwork(networkRequest, networkCallback)
 
-                delay(6.seconds)
-                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
+//                delay(6.seconds)
+//                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
             }
         }
 
