@@ -239,6 +239,7 @@
     <string name="saved_offline_cache">Saved in Offline Cache</string>
     <string name="cached_songs">Cached Songs</string>
     <string name="close">Close</string>
+    <string name="you_have_no_song_cached">You have no song cached</string>
     <string name="cache_error">Unable to cache this song offline. Please try again. If you\'ve already tried multiple times, caching for this song may be temporarily unavailable or experiencing issues.</string>
     <string name="offline_caching_availability">Please wait… Preparing this song for offline caching availability… Please don\'t close the dialog.</string>
 </resources>

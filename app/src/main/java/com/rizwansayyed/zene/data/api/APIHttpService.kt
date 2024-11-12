@@ -101,7 +101,7 @@ object APIHttpService {
             try {
                 val response = client.newCall(request).execute()
                 response.body?.let { responseBody ->
-                    saveToFile(responseBody, "${name}.cache", close)
+                    saveToFile(responseBody, "${name}.cachxc", close)
                 }
             } catch (e: Exception) {
                 close(false)

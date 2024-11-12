@@ -19,12 +19,11 @@ import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBInterface
-import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSongsDBInterface
+import com.rizwansayyed.zene.data.roomdb.offlinesongs.model.OfflineSongsData
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
-import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -38,7 +37,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ZeneViewModel @Inject constructor(
-    private val zeneAPI: ZeneAPIInterface, private val updateDB: UpdatesRoomDBInterface
+    private val zeneAPI: ZeneAPIInterface, private val offlineDB: OfflineSongsDBInterface
 ) : ViewModel() {
 
     private var lastSyncedA by mutableStateOf<String?>(null)
@@ -47,6 +46,7 @@ class ZeneViewModel @Inject constructor(
     var searchImg by mutableStateOf<APIResponse<List<String>>>(APIResponse.Empty)
     var createPlaylistInfo by mutableStateOf<APIResponse<ZeneBooleanResponse>>(APIResponse.Empty)
     var songHistory = mutableStateListOf<ZeneMusicHistoryItem>()
+    var offlineSongs = mutableStateListOf<OfflineSongsData>()
     var zeneSavedPlaylists = mutableStateListOf<ZeneSavedPlaylistsResponseItem>()
     var saveSongPlaylists = mutableStateListOf<ZeneMusicDataItems>()
     var songHistoryIsLoading by mutableStateOf(true)
@@ -122,6 +122,7 @@ class ZeneViewModel @Inject constructor(
         if (page == 0) {
             songHistory.clear()
             zeneSavedPlaylists.clear()
+            offlineSongs.clear()
         }
 
         if (!internetIsConnected()) {
@@ -147,10 +148,43 @@ class ZeneViewModel @Inject constructor(
         }
     }
 
+
+    fun offlineSongsLists(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        if (page == 0) {
+            songHistory.clear()
+            zeneSavedPlaylists.clear()
+            offlineSongs.clear()
+        }
+
+        if (!internetIsConnected()) {
+            songHistoryIsLoading = false
+            return@launch
+        }
+
+
+        offlineDB.getLists(page).onStart {
+            songHistoryIsLoading = true
+        }.catch {
+            songHistoryIsLoading = false
+        }.collectLatest {
+            if (page == 0) {
+                songHistory.clear()
+                zeneSavedPlaylists.clear()
+                offlineSongs.clear()
+            }
+
+            songHistoryIsLoading = false
+            it.forEach { offlineSongs.add(it) }
+
+            doShowMoreLoading = it.size >= 30
+        }
+    }
+
     fun playlists(page: Int) = viewModelScope.launch(Dispatchers.IO) {
         if (page == 0) {
             songHistory.clear()
             zeneSavedPlaylists.clear()
+            offlineSongs.clear()
         }
 
         if (!internetIsConnected()) {

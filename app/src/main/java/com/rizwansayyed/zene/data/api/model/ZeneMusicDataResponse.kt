@@ -76,6 +76,7 @@ data class ZeneMusicDataItems(
             "STORE" -> MusicType.STORE
             "NEWS" -> MusicType.NEWS
             "RADIO" -> MusicType.RADIO
+            "OFFLINE_SONGS" -> MusicType.OFFLINE_SONGS
             "RADIO_LANG" -> MusicType.RADIO_LANGUAGE
             else -> MusicType.NONE
         }
@@ -94,5 +95,5 @@ data class ZeneMusicDataItems(
 
 
 enum class MusicType {
-    SONGS, PLAYLIST, ALBUMS, ARTISTS, VIDEO, MOOD, STORE, NEWS, RADIO, RADIO_LANGUAGE, NONE
+    SONGS, PLAYLIST, ALBUMS, ARTISTS, VIDEO, MOOD, STORE, NEWS, RADIO, OFFLINE_SONGS, RADIO_LANGUAGE, NONE
 }

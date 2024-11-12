@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.likedMusicData
 import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
@@ -43,7 +42,6 @@ import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
-import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 enum class MyMusicType {
@@ -53,7 +51,6 @@ enum class MyMusicType {
 @Composable
 fun MyMusicView(viewModel: ZeneViewModel) {
     val isThreeGrid = isScreenBig()
-    val roomViewModel: RoomDBViewModel = hiltViewModel()
 
     var type by remember { mutableStateOf(MyMusicType.PLAYLISTS) }
     var page by remember { mutableIntStateOf(0) }
@@ -87,59 +84,69 @@ fun MyMusicView(viewModel: ZeneViewModel) {
             Spacer(Modifier.height(40.dp))
         }
 
-        if (type == MyMusicType.PLAYLISTS || type == MyMusicType.HISTORY) {
-            if (type == MyMusicType.PLAYLISTS)
-                item(
-                    25,
-                    span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                    PlaylistsDynamicCards(likedMusicData())
-                }
-
-            if (viewModel.songHistory.isEmpty() && type == MyMusicType.HISTORY && !viewModel.songHistoryIsLoading) item(
-                20,
-                { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                TextPoppins(stringResource(R.string.you_have_no_song_history), true, size = 16)
-            }
-            else items(viewModel.songHistory,
+        if (type == MyMusicType.PLAYLISTS)
+            item(
+                25,
                 span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
+                PlaylistsDynamicCards(likedMusicData())
             }
 
-            if (viewModel.zeneSavedPlaylists.isEmpty() && type == MyMusicType.PLAYLISTS && !viewModel.songHistoryIsLoading)
-                item(21, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    TextPoppins(
-                        stringResource(R.string.you_have_not_created_or_saved_a_playlists), true, size = 16
-                    )
-                }
-            else items(viewModel.zeneSavedPlaylists,
-                span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                PlaylistsDynamicCards(it)
-            }
-
-            item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                Spacer(Modifier.height(40.dp))
-            }
-
-            if (viewModel.songHistoryIsLoading) item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                LoadingView(Modifier.size(32.dp))
-            }
-
-            item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                Spacer(Modifier.height(40.dp))
-            }
-
-            if (viewModel.doShowMoreLoading) item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                    SmallButtonBorderText(R.string.load_more) {
-                        page += 1
-                        if (type == MyMusicType.PLAYLISTS) viewModel.playlists(page)
-                        else viewModel.songHistory(page)
-                    }
-                }
-            }
-        } else if (type == MyMusicType.OFFLINE_SONGS) {
-
+        if (viewModel.songHistory.isEmpty() && type == MyMusicType.HISTORY && !viewModel.songHistoryIsLoading) item(
+            20,
+            { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            TextPoppins(stringResource(R.string.you_have_no_song_history), true, size = 16)
         }
+        else items(viewModel.songHistory,
+            span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+            SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
+        }
+
+        if (viewModel.offlineSongs.isEmpty() && type == MyMusicType.OFFLINE_SONGS && !viewModel.songHistoryIsLoading) item(
+            20,
+            { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            TextPoppins(stringResource(R.string.you_have_no_song_cached), true, size = 16)
+        }
+        else items(viewModel.offlineSongs,
+            span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+            SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
+        }
+
+        if (viewModel.zeneSavedPlaylists.isEmpty() && type == MyMusicType.PLAYLISTS && !viewModel.songHistoryIsLoading)
+            item(21, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                TextPoppins(
+                    stringResource(R.string.you_have_not_created_or_saved_a_playlists),
+                    true,
+                    size = 16
+                )
+            }
+        else items(viewModel.zeneSavedPlaylists,
+            span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+            PlaylistsDynamicCards(it)
+        }
+
+        item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Spacer(Modifier.height(40.dp))
+        }
+
+        if (viewModel.songHistoryIsLoading) item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            LoadingView(Modifier.size(32.dp))
+        }
+
+        item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Spacer(Modifier.height(40.dp))
+        }
+
+        if (viewModel.doShowMoreLoading) item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                SmallButtonBorderText(R.string.load_more) {
+                    page += 1
+                    if (type == MyMusicType.PLAYLISTS) viewModel.playlists(page)
+                    else if (type == MyMusicType.PLAYLISTS) viewModel.playlists(page)
+                    else viewModel.songHistory(page)
+                }
+            }
+        }
+
 
         item(1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Spacer(Modifier.height(70.dp))
@@ -165,7 +172,7 @@ fun MyMusicView(viewModel: ZeneViewModel) {
             viewModel.playlists(0)
         } else if (type == MyMusicType.OFFLINE_SONGS) {
             logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_OFFLINE_SONGS)
-            roomViewModel.offlineSongsLists(0)
+            viewModel.offlineSongsLists(0)
         } else {
             logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_SONG_HISTORY)
             viewModel.songHistory(0)

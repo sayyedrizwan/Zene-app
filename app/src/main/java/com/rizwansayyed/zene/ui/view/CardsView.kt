@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.data.api.model.MusicType.ARTISTS
 import com.rizwansayyed.zene.data.api.model.MusicType.MOOD
 import com.rizwansayyed.zene.data.api.model.MusicType.NEWS
 import com.rizwansayyed.zene.data.api.model.MusicType.NONE
+import com.rizwansayyed.zene.data.api.model.MusicType.OFFLINE_SONGS
 import com.rizwansayyed.zene.data.api.model.MusicType.PLAYLIST
 import com.rizwansayyed.zene.data.api.model.MusicType.RADIO
 import com.rizwansayyed.zene.data.api.model.MusicType.RADIO_LANGUAGE
@@ -70,6 +71,7 @@ import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.getItemsAroundPosition
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
 @Composable
@@ -497,7 +499,7 @@ fun DialogSheetInfos(m: ZeneMusicDataItems, close: () -> Unit) {
 
             Spacer(Modifier.height(40.dp))
 
-            if (m.type() == SONGS) {
+            if (m.type() == SONGS || m.type() == OFFLINE_SONGS) {
                 SongInfoItemSheet(m, close)
             } else if (m.type() == ARTISTS) {
                 println()
@@ -549,7 +551,7 @@ fun SheetDialogSheet(icon: Int, txt: Int, close: () -> Unit) {
 
 fun shareUrl(m: ZeneMusicDataItems): String {
     return when (m.type()) {
-        SONGS -> {
+        SONGS, OFFLINE_SONGS -> {
             logEvents(FirebaseLogEvents.FirebaseEvents.SHARE_SONG_URL)
             "${WEB_BASE_URL}${SONG_INNER}${EncodeDecodeGlobal.encryptData(m.id ?: "-")}".trim()
                 .replace("\n", "")
@@ -591,7 +593,7 @@ fun openSpecificIntent(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {
     val lists = if (list.size < 100) list else getItemsAroundPosition(list, position)
 
     when (m.type()) {
-        SONGS -> sendWebViewCommand(m, lists)
+        SONGS, OFFLINE_SONGS -> sendWebViewCommand(m, lists)
         PLAYLIST, ALBUMS -> m.id?.let { sendNavCommand(NAV_PLAYLISTS.replace("{id}", it)) }
         ARTISTS -> m.name?.let { sendNavCommand(NAV_ARTISTS.replace("{id}", it)) }
         VIDEO -> openVideoPlayer(m.extra)
