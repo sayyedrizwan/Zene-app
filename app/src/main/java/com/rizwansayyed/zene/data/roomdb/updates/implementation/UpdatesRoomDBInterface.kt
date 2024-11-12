@@ -1,6 +1,6 @@
-package com.rizwansayyed.zene.data.roomdb.implementation
+package com.rizwansayyed.zene.data.roomdb.updates.implementation
 
-import com.rizwansayyed.zene.data.roomdb.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import kotlinx.coroutines.flow.Flow
 
 interface UpdatesRoomDBInterface {

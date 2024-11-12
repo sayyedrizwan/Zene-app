@@ -1,8 +1,8 @@
-package com.rizwansayyed.zene.data.roomdb
+package com.rizwansayyed.zene.data.roomdb.updates
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.rizwansayyed.zene.data.roomdb.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 
 
 @Database(entities = [UpdateData::class], version = 1)

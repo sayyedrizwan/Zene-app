@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageView
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.PlaylistsDynamicCards
+import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
@@ -136,19 +137,10 @@ fun MyMusicView(viewModel: ZeneViewModel) {
 
         if (viewModel.doShowMoreLoading) item(7, { GridItemSpan(TOTAL_GRID_SIZE) }) {
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .padding(vertical = 15.dp, horizontal = 6.dp)
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.Black)
-                        .clickable {
-                            page += 1
-                            if (type == MyMusicType.PLAYLISTS) viewModel.playlists(page)
-                            else viewModel.songHistory(page)
-                        }
-                        .border(1.dp, Color.White, RoundedCornerShape(100))
-                        .padding(vertical = 9.dp, horizontal = 18.dp)) {
-                    TextPoppins(stringResource(R.string.load_more), size = 15)
+                SmallButtonBorderText(R.string.load_more) {
+                    page += 1
+                    if (type == MyMusicType.PLAYLISTS) viewModel.playlists(page)
+                    else viewModel.songHistory(page)
                 }
             }
         }

@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.ui.view
 
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,11 +34,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.api.model.MusicType.*
+import com.rizwansayyed.zene.data.api.model.MusicType.ALBUMS
+import com.rizwansayyed.zene.data.api.model.MusicType.ARTISTS
+import com.rizwansayyed.zene.data.api.model.MusicType.MOOD
+import com.rizwansayyed.zene.data.api.model.MusicType.NEWS
+import com.rizwansayyed.zene.data.api.model.MusicType.NONE
+import com.rizwansayyed.zene.data.api.model.MusicType.PLAYLIST
+import com.rizwansayyed.zene.data.api.model.MusicType.RADIO
+import com.rizwansayyed.zene.data.api.model.MusicType.RADIO_LANGUAGE
+import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
+import com.rizwansayyed.zene.data.api.model.MusicType.STORE
+import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsPostItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
-import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsItems
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
@@ -61,8 +70,23 @@ import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.getItemsAroundPosition
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
+
+@Composable
+fun SmallButtonBorderText(text: Int, close: () -> Unit) {
+    Box(
+        Modifier
+            .padding(vertical = 15.dp, horizontal = 6.dp)
+            .clip(RoundedCornerShape(100))
+            .background(Color.Black)
+            .clickable {
+                close()
+            }
+            .border(1.dp, Color.White, RoundedCornerShape(100))
+            .padding(vertical = 9.dp, horizontal = 18.dp)) {
+        TextPoppins(stringResource(text), size = 15)
+    }
+}
 
 @Composable
 fun SimpleCardsView(m: ZeneMusicDataItems, list: List<ZeneMusicDataItems>) {

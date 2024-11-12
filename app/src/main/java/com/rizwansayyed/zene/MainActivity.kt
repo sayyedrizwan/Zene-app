@@ -208,7 +208,6 @@ class MainActivity : ComponentActivity() {
                     }
 
                     NavHomeView(Modifier.align(Alignment.BottomEnd), playerInfo, homeNavModel)
-                    TestWebView()
                     AnimatedVisibility(
                         visible = homeNavModel.showMusicPlayer,
                         enter = slideInVertically(initialOffsetY = { it / 2 }),

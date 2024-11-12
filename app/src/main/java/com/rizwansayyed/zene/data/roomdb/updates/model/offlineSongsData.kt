@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.data.roomdb.model
+package com.rizwansayyed.zene.data.roomdb.updates.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo

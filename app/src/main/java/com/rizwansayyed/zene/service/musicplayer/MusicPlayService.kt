@@ -29,7 +29,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.playingSongOnLockScreen
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.data.db.model.MusicPlayerData
 import com.rizwansayyed.zene.data.db.model.MusicSpeed
-import com.rizwansayyed.zene.data.roomdb.implementation.UpdatesRoomDBImpl
+import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBImpl
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.NEXT_SONG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.OPEN_PLAYER

@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.earphonetracker.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +48,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.getEarphoneDisconnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.setEarphoneConnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.setEarphoneDisconnection
 import com.rizwansayyed.zene.data.db.model.BLEDeviceData
-import com.rizwansayyed.zene.data.roomdb.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.IMG.HEADPHONE_TEMPS
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.addOrRemoveBLEDevice
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.getBatteryLevel
@@ -60,17 +59,18 @@ import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SheetDialogSheet
+import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.utils.Utils.toast
-import com.rizwansayyed.zene.viewmodel.ZeneViewModel
+import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
 fun EarphonesDeviceItemsView(data: BLEDeviceData, status: Boolean) {
-    val viewModel : ZeneViewModel = hiltViewModel()
+    val viewModel: RoomDBViewModel = hiltViewModel()
     var isConnected by remember { mutableStateOf(false) }
     var batteryLevel by remember { mutableIntStateOf(0) }
     var deleteAlert by remember { mutableStateOf(false) }
@@ -243,7 +243,7 @@ fun SettingsEarphoneView(data: BLEDeviceData, close: () -> Unit) {
 
 @Composable
 fun EarphoneUpdatesView(device: BLEDeviceData, close: () -> Unit) {
-    val viewModel: ZeneViewModel = hiltViewModel()
+    val viewModel: RoomDBViewModel = hiltViewModel()
     var devices: BLEDeviceData? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
 
@@ -265,7 +265,7 @@ fun EarphoneUpdatesView(device: BLEDeviceData, close: () -> Unit) {
                     TextPoppins(devices?.name ?: "", size = 13)
                     Spacer(Modifier.height(20.dp))
 
-                    if (viewModel.updateLists.size <= 0 && !viewModel.songHistoryIsLoading) {
+                    if (viewModel.updateLists.size <= 0 && !viewModel.isLoading) {
                         Spacer(Modifier.height(50.dp))
                         TextPoppins(
                             stringResource(R.string.no_updates_found), true, Color.White, 16
@@ -284,27 +284,16 @@ fun EarphoneUpdatesView(device: BLEDeviceData, close: () -> Unit) {
                     Row(
                         Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
                     ) {
-                        if (viewModel.songHistoryIsLoading) {
+                        if (viewModel.isLoading) {
                             LoadingView(Modifier.size(32.dp))
                         }
 
-                        if (!viewModel.songHistoryIsLoading && viewModel.doShowMoreLoading) {
-                            Box(
-                                Modifier
-                                    .padding(vertical = 15.dp, horizontal = 6.dp)
-                                    .clip(RoundedCornerShape(100))
-                                    .background(Color.Black)
-                                    .clickable {
-                                        page += 1
-                                        device.address?.let { viewModel.updateLists(page, it) }
-                                    }
-                                    .border(1.dp, Color.White, RoundedCornerShape(100))
-                                    .padding(vertical = 9.dp, horizontal = 18.dp)) {
-                                TextPoppins(stringResource(R.string.load_more), size = 15)
+                        if (!viewModel.isLoading && viewModel.doShowMoreLoading)
+                            SmallButtonBorderText(R.string.load_more) {
+                                page += 1
+                                device.address?.let { viewModel.updateLists(page, it) }
                             }
-                        }
                     }
-
 
                     Spacer(Modifier.height(90.dp))
                 }

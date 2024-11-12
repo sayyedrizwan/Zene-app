@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.ui.mymusic.MyMusicType
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
@@ -93,18 +94,9 @@ fun RadioCountryListView(country: String) {
                 }
 
                 if (radioViewModel.seeMoreButton && !radioViewModel.isLoading) {
-                    Box(
-                        Modifier
-                            .padding(vertical = 15.dp, horizontal = 6.dp)
-                            .clip(RoundedCornerShape(100))
-                            .background(Color.Black)
-                            .clickable {
-                                page += 1
-                                radioViewModel.countriesRadioList(country, page)
-                            }
-                            .border(1.dp, Color.White, RoundedCornerShape(100))
-                            .padding(vertical = 9.dp, horizontal = 18.dp)) {
-                        TextPoppins(stringResource(R.string.load_more), size = 15)
+                    SmallButtonBorderText(R.string.load_more) {
+                        page += 1
+                        radioViewModel.countriesRadioList(country, page)
                     }
                 }
             }

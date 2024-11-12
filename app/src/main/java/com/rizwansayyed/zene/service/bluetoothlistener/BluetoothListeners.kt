@@ -15,10 +15,10 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.getEarphoneConnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.getEarphoneDisconnection
 import com.rizwansayyed.zene.data.db.DataStoreManager.setCustomTimestamp
 import com.rizwansayyed.zene.data.db.model.BLEDeviceData
-import com.rizwansayyed.zene.data.roomdb.implementation.UpdatesRoomDBImpl
-import com.rizwansayyed.zene.data.roomdb.model.UPDATES_TYPE_CONNECT
-import com.rizwansayyed.zene.data.roomdb.model.UPDATES_TYPE_DISCONNECT
-import com.rizwansayyed.zene.data.roomdb.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBImpl
+import com.rizwansayyed.zene.data.roomdb.updates.model.UPDATES_TYPE_CONNECT
+import com.rizwansayyed.zene.data.roomdb.updates.model.UPDATES_TYPE_DISCONNECT
+import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.NEW_CONNECTED_EARPHONE
 import com.rizwansayyed.zene.utils.NotificationUtils

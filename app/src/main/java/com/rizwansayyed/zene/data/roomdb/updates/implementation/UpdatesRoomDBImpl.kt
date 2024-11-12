@@ -1,14 +1,12 @@
-package com.rizwansayyed.zene.data.roomdb.implementation
+package com.rizwansayyed.zene.data.roomdb.updates.implementation
 
-import android.util.Log
-import com.rizwansayyed.zene.data.roomdb.UpdatesDatabase
-import com.rizwansayyed.zene.data.roomdb.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.updates.UpdatesDatabase
+import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import com.rizwansayyed.zene.ui.earphonetracker.utils.LocationManagerResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 
 class UpdatesRoomDBImpl @Inject constructor(

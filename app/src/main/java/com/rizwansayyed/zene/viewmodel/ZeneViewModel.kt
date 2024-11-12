@@ -19,8 +19,8 @@ import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponseItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
-import com.rizwansayyed.zene.data.roomdb.implementation.UpdatesRoomDBInterface
-import com.rizwansayyed.zene.data.roomdb.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBInterface
+import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
@@ -49,7 +49,6 @@ class ZeneViewModel @Inject constructor(
     var songHistory = mutableStateListOf<ZeneMusicHistoryItem>()
     var zeneSavedPlaylists = mutableStateListOf<ZeneSavedPlaylistsResponseItem>()
     var saveSongPlaylists = mutableStateListOf<ZeneMusicDataItems>()
-    var updateLists = mutableStateListOf<UpdateData>()
     var songHistoryIsLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
     var relatedVideos by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
@@ -311,30 +310,5 @@ class ZeneViewModel @Inject constructor(
         }.collectLatest {
             relatedVideos = APIResponse.Success(it)
         }
-    }
-
-    fun updateLists(p: Int, address: String) = viewModelScope.launch(Dispatchers.IO) {
-        if (p == 0) updateLists.clear()
-
-        updateDB.getLists(address, p).onStart {
-            songHistoryIsLoading = true
-            doShowMoreLoading = false
-        }.catch {
-            songHistoryIsLoading = false
-            doShowMoreLoading = false
-        }.collectLatest {
-            songHistoryIsLoading = false
-            doShowMoreLoading = it.size >= 20
-            updateLists.addAll(it)
-        }
-    }
-
-    fun removeUpdatesLists(position: Int, u: UpdateData) = viewModelScope.launch(Dispatchers.IO) {
-        updateLists.removeAt(position)
-        updateDB.remove(u).catch { }.collectLatest { }
-    }
-
-    fun removeAllEarphones(address: String) = viewModelScope.launch(Dispatchers.IO) {
-        updateDB.removeAll(address).catch { }.collectLatest { }
     }
 }

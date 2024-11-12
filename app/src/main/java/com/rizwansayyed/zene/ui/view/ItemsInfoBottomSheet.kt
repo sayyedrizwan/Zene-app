@@ -1,12 +1,8 @@
 package com.rizwansayyed.zene.ui.view
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -46,9 +41,9 @@ import com.rizwansayyed.zene.data.api.model.MusicType.ALBUMS
 import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
 import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
-import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
 import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
+import com.rizwansayyed.zene.ui.player.offlinedownload.OfflineDownload
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.Utils.URLS.LIKED_SONGS_ON_ZENE_PLAYLISTS
@@ -59,7 +54,6 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -103,6 +97,7 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
     val viewModel: ZeneViewModel = hiltViewModel()
     var addToPlaylistSongs by remember { mutableStateOf(false) }
     var isLiked by remember { mutableStateOf(false) }
+    var offlineCache by remember { mutableStateOf(false) }
 
     SheetDialogSheet(R.drawable.ic_play, R.string.play) {
         openSpecificIntent(m, listOf(m))
@@ -114,6 +109,12 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
     SheetDialogSheet(R.drawable.ic_next, R.string.play_next) {
         addSongToNext(m)
         close()
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    SheetDialogSheet(R.drawable.ic_folder_music, R.string.offline_cache_song) {
+        offlineCache = true
     }
 
     Spacer(Modifier.height(20.dp))
@@ -168,6 +169,10 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
 
     if (addToPlaylistSongs) AddSongToPlaylist(m) {
         addToPlaylistSongs = false
+    }
+
+    if (offlineCache) OfflineDownload(m) {
+        offlineCache = false
     }
 
     LaunchedEffect(Unit) {
@@ -228,18 +233,9 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
             }
 
             if (!zeneViewModel.songHistoryIsLoading && zeneViewModel.doShowMoreLoading) item {
-                Box(
-                    Modifier
-                        .padding(vertical = 15.dp, horizontal = 6.dp)
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.Black)
-                        .clickable {
-                            page += 1
-                            m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
-                        }
-                        .border(1.dp, Color.White, RoundedCornerShape(100))
-                        .padding(vertical = 9.dp, horizontal = 18.dp)) {
-                    TextPoppins(stringResource(R.string.load_more), size = 15)
+                SmallButtonBorderText(R.string.load_more) {
+                    page += 1
+                    m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }
                 }
             }
         }
@@ -306,8 +302,10 @@ fun AlbumPlaylistInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
 
 @Composable
 fun PlaylistAddComponents(
-    items: ZeneMusicDataItems, viewModel: ZeneViewModel,
-    songID: String?, playlistsAddStatus: SnapshotStateMap<String, Boolean>
+    items: ZeneMusicDataItems,
+    viewModel: ZeneViewModel,
+    songID: String?,
+    playlistsAddStatus: SnapshotStateMap<String, Boolean>
 ) {
     Row(
         Modifier

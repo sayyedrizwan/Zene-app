@@ -1,18 +1,19 @@
 package com.rizwansayyed.zene.data.api
 
-import android.util.Log
+import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_MUSIC
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_MUSIC_SEARCH
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 
 object APIHttpService {
@@ -89,4 +90,39 @@ object APIHttpService {
                 return@withContext ""
             }
         }
+
+
+    suspend fun downloadAFile(url: String, name: String, close: (Boolean) -> Unit) =
+        withContext(Dispatchers.IO) {
+            val request = Request.Builder().url(url).build()
+            val client = OkHttpClient.Builder().readTimeout(30, TimeUnit.MINUTES)
+                .connectTimeout(30, TimeUnit.MINUTES).build()
+
+            try {
+                val response = client.newCall(request).execute()
+                response.body?.let { responseBody ->
+                    saveToFile(responseBody, "${name}.cache", close)
+                }
+            } catch (e: Exception) {
+                close(false)
+            }
+        }
+
+    private fun saveToFile(body: ResponseBody, fileName: String, close: (Boolean) -> Unit) {
+        try {
+            val fileDir = File(context.filesDir, "cached_songs").apply {
+                mkdirs()
+            }
+            val file = File(fileDir, fileName)
+            val outputStream = FileOutputStream(file)
+            outputStream.use { output ->
+                body.byteStream().use { input ->
+                    input.copyTo(output)
+                }
+            }
+            close(true)
+        } catch (e: Exception) {
+            close(false)
+        }
+    }
 }

@@ -47,6 +47,7 @@ import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.DialogSheetInfos
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
+import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.bouncingClickable
 import com.rizwansayyed.zene.ui.view.imgBuilder
@@ -111,18 +112,9 @@ fun UserPlaylistsView(id: String?, close: () -> Unit) {
 
             if (homeViewModel.showMorePlaylistSongs && !homeViewModel.isUserPlaylistLoading) {
                 Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                    Box(
-                        Modifier
-                            .padding(vertical = 15.dp, horizontal = 6.dp)
-                            .clip(RoundedCornerShape(100))
-                            .background(Color.Black)
-                            .clickable {
-                                page += 1
-                                id?.let { homeViewModel.userPlaylistsSongs(it, page) }
-                            }
-                            .border(1.dp, Color.White, RoundedCornerShape(100))
-                            .padding(vertical = 9.dp, horizontal = 18.dp)) {
-                        TextPoppins(stringResource(R.string.load_more), size = 15)
+                    SmallButtonBorderText(R.string.load_more) {
+                        page += 1
+                        id?.let { homeViewModel.userPlaylistsSongs(it, page) }
                     }
                 }
             }
