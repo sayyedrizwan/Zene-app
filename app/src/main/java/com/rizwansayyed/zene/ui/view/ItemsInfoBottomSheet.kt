@@ -51,6 +51,7 @@ import com.rizwansayyed.zene.utils.Utils.addSongToLast
 import com.rizwansayyed.zene.utils.Utils.addSongToNext
 import com.rizwansayyed.zene.utils.Utils.loadBitmap
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +96,7 @@ fun TopInfoItemSheet(m: ZeneMusicDataItems) {
 @Composable
 fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
     val viewModel: ZeneViewModel = hiltViewModel()
+    val roomViewModel: RoomDBViewModel = hiltViewModel()
     var addToPlaylistSongs by remember { mutableStateOf(false) }
     var isLiked by remember { mutableStateOf(false) }
     var offlineCache by remember { mutableStateOf(false) }
@@ -113,9 +115,14 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
 
     Spacer(Modifier.height(20.dp))
 
-    SheetDialogSheet(R.drawable.ic_folder_music, R.string.offline_cache_song) {
-        offlineCache = true
-    }
+    if (roomViewModel.isSaved)
+        SheetDialogSheet(R.drawable.ic_tick, R.string.saved_offline_cache) {
+
+        }
+    else
+        SheetDialogSheet(R.drawable.ic_folder_music, R.string.offline_cache_song) {
+            offlineCache = true
+        }
 
     Spacer(Modifier.height(20.dp))
 
@@ -172,10 +179,12 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
     }
 
     if (offlineCache) OfflineDownload(m) {
+        roomViewModel.isSongSaved(m)
         offlineCache = false
     }
 
     LaunchedEffect(Unit) {
+        roomViewModel.isSongSaved(m)
         m.id?.let { viewModel.isSongLiked(it) }
     }
 }

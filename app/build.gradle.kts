@@ -137,8 +137,6 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.nav.compose)
     implementation(libs.webkit)
-    implementation(libs.spotify)
-
 
     implementation(libs.facebook.login)
 

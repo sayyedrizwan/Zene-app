@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -33,7 +36,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
-import com.rizwansayyed.zene.utils.Utils.startAppSettings
+import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 
 @Composable
 fun TopMusicHeaders() {
@@ -67,76 +70,89 @@ fun TopMusicHeaders() {
 fun TopHeaderSwitch(type: MyMusicType, typeClick: (MyMusicType) -> Unit, addPlaylist: () -> Unit) {
     var historyInfoAlert by remember { mutableStateOf(false) }
 
-    Row {
-        Spacer(Modifier.height(6.dp))
-        Box(
-            Modifier
-                .padding(vertical = 2.dp, horizontal = 6.dp)
-                .clip(RoundedCornerShape(100))
-                .background(Color.Black)
-                .clickable { typeClick(MyMusicType.PLAYLISTS) }
-                .border(
-                    1.dp,
-                    if (type == MyMusicType.PLAYLISTS) Color.White else Color.Black,
-                    RoundedCornerShape(100)
-                )
-                .padding(vertical = 9.dp, horizontal = 18.dp)
-        ) {
-            TextPoppins(stringResource(R.string.playlists_albums), size = 15)
-        }
-
-        AnimatedVisibility(visible = type == MyMusicType.PLAYLISTS) {
+    LazyRow(Modifier.fillMaxWidth()) {
+        item {
+            Spacer(Modifier.height(6.dp))
             Box(
                 Modifier
                     .padding(vertical = 2.dp, horizontal = 6.dp)
                     .clip(RoundedCornerShape(100))
                     .background(Color.Black)
-                    .clickable { addPlaylist() }
-                    .border(1.dp, Color.White, RoundedCornerShape(100))
-                    .padding(vertical = 9.dp, horizontal = 18.dp)
-            ) {
-                ImageIcon(R.drawable.ic_add, size = 20)
+                    .clickable { typeClick(MyMusicType.PLAYLISTS) }
+                    .border(
+                        1.dp,
+                        if (type == MyMusicType.PLAYLISTS) Color.White else Color.Black,
+                        RoundedCornerShape(100)
+                    )
+                    .padding(vertical = 9.dp, horizontal = 18.dp)) {
+                TextPoppins(stringResource(R.string.playlists_albums), size = 15)
+            }
+
+            AnimatedVisibility(visible = type == MyMusicType.PLAYLISTS) {
+                Box(
+                    Modifier
+                        .padding(vertical = 2.dp, horizontal = 6.dp)
+                        .clip(RoundedCornerShape(100))
+                        .background(Color.Black)
+                        .clickable { addPlaylist() }
+                        .border(1.dp, Color.White, RoundedCornerShape(100))
+                        .padding(vertical = 9.dp, horizontal = 18.dp)) {
+                    ImageIcon(R.drawable.ic_add, size = 20)
+                }
+            }
+
+            Spacer(Modifier.height(6.dp))
+        }
+
+        item {
+            Box(
+                Modifier
+                    .padding(vertical = 2.dp, horizontal = 6.dp)
+                    .clip(RoundedCornerShape(100))
+                    .background(Color.Black)
+                    .clickable { typeClick(MyMusicType.OFFLINE_SONGS) }
+                    .border(
+                        1.dp,
+                        if (type == MyMusicType.OFFLINE_SONGS) Color.White else Color.Black,
+                        RoundedCornerShape(100)
+                    )
+                    .padding(vertical = 9.dp, horizontal = 18.dp)) {
+                TextPoppins(stringResource(R.string.cached_songs), size = 15)
             }
         }
 
-        Spacer(Modifier.height(6.dp))
-
-        Box(
-            Modifier
-                .padding(vertical = 2.dp, horizontal = 6.dp)
-                .clip(RoundedCornerShape(100))
-                .background(Color.Black)
-                .clickable { typeClick(MyMusicType.HISTORY) }
-                .border(
-                    1.dp,
-                    if (type == MyMusicType.HISTORY) Color.White else Color.Black,
-                    RoundedCornerShape(100)
-                )
-                .padding(vertical = 9.dp, horizontal = 18.dp)
-        ) {
-            TextPoppins(stringResource(R.string.songs_history), size = 15)
-        }
-
-        AnimatedVisibility(visible = type == MyMusicType.HISTORY) {
+        item {
             Box(
                 Modifier
+                    .padding(vertical = 2.dp, horizontal = 6.dp)
+                    .clip(RoundedCornerShape(100))
+                    .background(Color.Black)
+                    .clickable { typeClick(MyMusicType.HISTORY) }
+                    .border(
+                        1.dp,
+                        if (type == MyMusicType.HISTORY) Color.White else Color.Black,
+                        RoundedCornerShape(100)
+                    )
+                    .padding(vertical = 9.dp, horizontal = 18.dp)) {
+                TextPoppins(stringResource(R.string.songs_history), size = 15)
+            }
+
+            AnimatedVisibility(visible = type == MyMusicType.HISTORY) {
+                Box(Modifier
                     .padding(vertical = 2.dp, horizontal = 6.dp)
                     .clip(RoundedCornerShape(100))
                     .background(Color.Black)
                     .clickable { historyInfoAlert = true }
                     .border(1.dp, Color.White, RoundedCornerShape(100))
-                    .padding(vertical = 9.dp, horizontal = 18.dp)
-            ) {
-                ImageIcon(R.drawable.ic_information_circle, size = 20)
+                    .padding(vertical = 9.dp, horizontal = 18.dp)) {
+                    ImageIcon(R.drawable.ic_information_circle, size = 20)
+                }
             }
         }
     }
 
-
     if (historyInfoAlert) AlertDialogView(
-        R.string.empty,
-        R.string.define_song_deletion,
-        null
+        R.string.empty, R.string.define_song_deletion, null
     ) {
         historyInfoAlert = false
     }

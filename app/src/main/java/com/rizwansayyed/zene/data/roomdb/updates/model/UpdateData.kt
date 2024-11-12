@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.data.roomdb.updates.model
 
 import androidx.compose.ui.graphics.Color
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.rizwansayyed.zene.R

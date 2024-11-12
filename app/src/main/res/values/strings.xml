@@ -236,6 +236,8 @@
     <string name="zene_pro">Zene Pro</string>
     <string name="zene_pro_desc">Pro is only for music pros. As all features are free in app—Only if you\'re ready for it.</string>
     <string name="offline_cache_song">Offline Cache Song</string>
+    <string name="saved_offline_cache">Saved in Offline Cache</string>
+    <string name="cached_songs">Cached Songs</string>
     <string name="close">Close</string>
     <string name="cache_error">Unable to cache this song offline. Please try again. If you\'ve already tried multiple times, caching for this song may be temporarily unavailable or experiencing issues.</string>
     <string name="offline_caching_availability">Please wait… Preparing this song for offline caching availability… Please don\'t close the dialog.</string>

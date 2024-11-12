@@ -20,16 +20,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIHttpService.downloadAFile
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
@@ -38,6 +39,7 @@ import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.utils.Utils.enable
+import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -52,7 +54,8 @@ fun jsRunValue(id: String?): String {
 
 @Composable
 fun OfflineDownload(m: ZeneMusicDataItems, close: () -> Unit) {
-    var context = LocalContext.current.applicationContext
+    val roomViewModel: RoomDBViewModel = hiltViewModel()
+    val coroutine = rememberCoroutineScope()
 
     var downloadLink by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
@@ -132,10 +135,12 @@ fun OfflineDownload(m: ZeneMusicDataItems, close: () -> Unit) {
                     m.id?.let {
                         downloadAFile(downloadLink, it) { v ->
                             if (v) {
-
-                            } else
-                                error = true
-
+                                roomViewModel.saveOfflineSongs(m)
+                                coroutine.launch {
+                                    delay(1.seconds)
+                                    close()
+                                }
+                            } else error = true
                         }
                     } ?: run {
                         error = true

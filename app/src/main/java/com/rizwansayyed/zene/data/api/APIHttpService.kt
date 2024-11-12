@@ -1,6 +1,6 @@
 package com.rizwansayyed.zene.data.api
 
-import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.utils.Utils.RoomDB.fileCachedSongsDir
 import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_MUSIC
 import com.rizwansayyed.zene.utils.Utils.URLS.YOUTUBE_MUSIC_SEARCH
@@ -110,10 +110,7 @@ object APIHttpService {
 
     private fun saveToFile(body: ResponseBody, fileName: String, close: (Boolean) -> Unit) {
         try {
-            val fileDir = File(context.filesDir, "cached_songs").apply {
-                mkdirs()
-            }
-            val file = File(fileDir, fileName)
+            val file = File(fileCachedSongsDir, fileName)
             val outputStream = FileOutputStream(file)
             outputStream.use { output ->
                 body.byteStream().use { input ->

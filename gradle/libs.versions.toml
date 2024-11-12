@@ -26,7 +26,6 @@ hiltNavigationCompose = "1.2.0"
 kotlinxCoroutinesAndroid = "1.8.1"
 moshi = "1.15.1"
 browser = "1.8.0"
-spotify = "1.2.5"
 exo-player = "1.4.1"
 room = "2.6.1"
 facebook = "latest.release"
@@ -66,7 +65,6 @@ androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-p
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
-spotify = { module = "com.spotify.android:auth", version.ref = "spotify" }
 
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "exo-player" }
 media3-ui = { module = "androidx.media3:media3-ui", version.ref = "exo-player" }

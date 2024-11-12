@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.model.ZeneMusicImportPlaylistsItems
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
-import com.rizwansayyed.zene.ui.mymusic.view.spotify.ImportPlaylistActivity
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +34,6 @@ class SpotifyViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             val list = zeneAPI.importSpotifyPlaylists(token, path).firstOrNull()
             val nextPath = list?.firstOrNull()?.next
             if (nextPath != null) {
-                ImportPlaylistActivity.playlistRun.spotify(token, nextPath)
                 isSpotifyPlaylistsLoading = true
             } else {
                 isSpotifyPlaylistsLoading = false

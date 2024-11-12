@@ -81,6 +81,10 @@ object Utils {
     object RoomDB {
         const val UPDATE_ROOM_DB = "update_room_db"
         const val OFFLINE_SONGS_ROOM_DB = "offline_songs_room_db"
+
+        val fileCachedSongsDir = File(context.filesDir, "cached_songs").apply {
+            mkdirs()
+        }
     }
 
     object URLS {
