@@ -50,7 +50,6 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.openVideoPlayer
 import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.musicplayer.MusicPlayService
 import com.rizwansayyed.zene.service.musicplayer.isMusicServiceRunning
-import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerActivity
 import com.rizwansayyed.zene.ui.artists.ArtistsView
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.NEW_CONNECTED_EARPHONE
 import com.rizwansayyed.zene.ui.earphonetracker.utils.Utils.INFO.PLAYER_PLAYER

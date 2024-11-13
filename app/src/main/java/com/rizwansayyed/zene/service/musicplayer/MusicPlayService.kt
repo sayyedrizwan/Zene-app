@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.service.musicplayer
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.Service
@@ -11,7 +10,6 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
 import android.webkit.ConsoleMessage
-import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -19,9 +17,10 @@ import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.api.APIHttpService.youtubeSearchVideoRegion
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
@@ -47,13 +46,11 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SEEK_DURATION_VI
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SLEEP_PAUSE_VIDEO
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.SLEEP_TIMER_BG
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_BUFFERING
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_ENDED
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_PLAYING
-import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_UNSTARTED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.WAKE_ALARM
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
+import com.rizwansayyed.zene.service.MusicServiceUtils.sendWebViewCommand
 import com.rizwansayyed.zene.service.bluetoothlistener.BluetoothListeners
-import com.rizwansayyed.zene.service.musicplayer.types.PlayerWebView
+import com.rizwansayyed.zene.service.musicplayer.notifications.MusicPlayerNotifications
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.ui.player.view.sleepTime
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -115,7 +112,6 @@ class MusicPlayService : Service() {
     private var isNewPlay = true
     private var sleepTimer: Job? = null
     private val bluetoothListeners by lazy { BluetoothListeners(updatesRoomDB) }
-    private val playerWebView by lazy { PlayerWebView(webView) }
 
 
     private val phoneWake = object : BroadcastReceiver() {
@@ -183,9 +179,30 @@ class MusicPlayService : Service() {
             }
         }
 
+        val playerInterface = MusicPlayerInterface(this, {
+            checkAndPlayNextSong()
+        }, {
+            if (it) updatePlaybackSpeed()
+            else {
+                if (isNewPlay) {
+                    isNewPlay = false
+                    pause()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val d = musicPlayerDB.first()
+                        d?.currentDuration?.let { seekTo(it) }
+                    }
+                }
+            }
+        }, {
+            if (isNewPlay) pause()
+            else play()
+        }, {
+            playAVideo(it)
+        })
+
         webView = WebViewService(applicationContext).apply {
             enable()
-            addJavascriptInterface(JavaScriptInterface(), "ZeneListener")
+            addJavascriptInterface(playerInterface, "ZeneListener")
             webViewClient = webViewClientObject
             webChromeClient = webViewChromeClientObject
         }
@@ -208,6 +225,7 @@ class MusicPlayService : Service() {
         destroyExoPlayer()
         if (player.type() == MusicType.OFFLINE_SONGS) {
             playCachedSong(player)
+            player.id?.let { zeneAPI.addMusicHistory(it, player.artists).catch { }.collect() }
             return@launch
         }
         val vID = player.id ?: ""
@@ -219,22 +237,44 @@ class MusicPlayService : Service() {
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_PLAYING_SONG)
 
             withContext(Dispatchers.IO) {
-                if (!vID.contains(RADIO_ARTISTS))
-                    zeneAPI.addMusicHistory(vID, player.artists).catch { }.collect()
+                if (!vID.contains(RADIO_ARTISTS)) zeneAPI.addMusicHistory(vID, player.artists)
+                    .catch { }.collect()
             }
         }
         if (isActive) cancel()
     }
 
     private fun playCachedSong(info: ZeneMusicDataItems) = CoroutineScope(Dispatchers.IO).launch {
-        webView.wvClearCache()
+        withContext(Dispatchers.Main) { webView.wvClearCache() }
         fileCachedSongsCacheDir.deleteRecursively()
         File(fileCachedSongsDir, "${info.id}.cachxc").copyTo(fileCachedSongsCacheDir)
         exoPlayer = ExoPlayer.Builder(this@MusicPlayService).build()
         val mediaItem = MediaItem.fromUri(fileCachedSongsCacheDir.toUri())
-        exoPlayer!!.setMediaItem(mediaItem)
-        exoPlayer!!.prepare()
-        exoPlayer!!.play()
+        withContext(Dispatchers.Main) {
+            exoPlayer!!.setMediaItem(mediaItem)
+            exoPlayer!!.prepare()
+            exoPlayer!!.addListener(object : Player.Listener {
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    super.onIsPlayingChanged(isPlaying)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val d = musicPlayerDB.first()
+                        d?.isBuffering = false
+                        d?.isPlaying = isPlaying
+                        musicPlayerDB = flowOf(d)
+                        updatePlaybackSpeed()
+                    }
+                }
+
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    super.onPlaybackStateChanged(playbackState)
+                    if (playbackState == STATE_ENDED) sendWebViewCommand(NEXT_SONG)
+                }
+            })
+            exoPlayer!!.play()
+            delay(1.seconds)
+            if (isNewPlay) exoPlayer!!.pause()
+            isNewPlay = false
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder? = null
@@ -337,43 +377,57 @@ class MusicPlayService : Service() {
     }
 
     private fun playAVideo(v: String) = CoroutineScope(Dispatchers.Main).launch {
-        val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
-            .replace("<<VideoID>>", v.trim())
-            .replace("<<Quality>>", songQualityDB.first().value)
+        val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
+            "<<VideoID>>", v.trim()
+        ).replace("<<Quality>>", songQualityDB.first().value)
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
         if (isActive) cancel()
     }
 
     private fun pause() = CoroutineScope(Dispatchers.Main).launch {
-        webView.evaluateJavascript("pauseSong();", null)
+        if (playerInfo?.type() == MusicType.OFFLINE_SONGS) exoPlayer?.pause()
+        else webView.evaluateJavascript("pauseSong();", null)
         if (isActive) cancel()
     }
 
     private fun seek5sPlus() = CoroutineScope(Dispatchers.Main).launch {
-        webView.evaluateJavascript("seekTo5sForward();", null)
+        if (playerInfo?.type() == MusicType.OFFLINE_SONGS) {
+            val duration = ((exoPlayer?.currentPosition ?: 0).toInt() + 5000)
+            exoPlayer?.seekTo(duration.toLong())
+        } else webView.evaluateJavascript("seekTo5sForward();", null)
         if (isActive) cancel()
     }
 
     private fun seek5sMinus() = CoroutineScope(Dispatchers.Main).launch {
-        webView.evaluateJavascript("seekTo5sBack();", null)
+        if (playerInfo?.type() == MusicType.OFFLINE_SONGS) {
+            val duration = ((exoPlayer?.currentPosition ?: 0).toInt() - 5000)
+            exoPlayer?.seekTo(duration.toLong())
+        } else webView.evaluateJavascript("seekTo5sBack();", null)
         if (isActive) cancel()
     }
 
     private fun play() = CoroutineScope(Dispatchers.Main).launch {
-        webView.evaluateJavascript("playSong();", null)
+        if (playerInfo?.type() == MusicType.OFFLINE_SONGS) exoPlayer?.play()
+        else webView.evaluateJavascript("playSong();", null)
         if (isActive) cancel()
     }
 
-    private fun getDurations() {
+    private suspend fun getDurations() {
         if (playerInfo?.type() == MusicType.OFFLINE_SONGS) {
-
-        } else
-            webView.evaluateJavascript("playerDurations();", null)
+            val d = withContext(Dispatchers.IO) { musicPlayerDB.first() }
+            d?.totalDuration = ((exoPlayer?.duration ?: 0).toInt() / 1000)
+            d?.currentDuration = ((exoPlayer?.currentPosition ?: 0).toInt() / 1000)
+            musicPlayerDB = flowOf(d)
+            MusicPlayerNotifications(
+                this, exoPlayer?.isPlaying == true, d?.player, d?.totalDuration, d?.currentDuration
+            ).generate()
+        } else webView.evaluateJavascript("playerDurations();", null)
     }
 
     private fun seekTo(v: Int) = CoroutineScope(Dispatchers.Main).launch {
-        webView.evaluateJavascript("seekTo($v);", null)
+        if (playerInfo?.type() == MusicType.OFFLINE_SONGS) exoPlayer?.seekTo((v * 1000).toLong())
+        else webView.evaluateJavascript("seekTo($v);", null)
         if (isActive) cancel()
     }
 
@@ -381,70 +435,15 @@ class MusicPlayService : Service() {
         val v = when (musicSpeedSettings.first()) {
             MusicSpeed.`025` -> 0.25
             MusicSpeed.`05` -> 0.5
-            MusicSpeed.`1` -> 1
+            MusicSpeed.`1` -> 1.0
             MusicSpeed.`15` -> 1.5
             MusicSpeed.`20` -> 2.0
         }
         withContext(Dispatchers.Main) {
+            if (playerInfo?.type() == MusicType.OFFLINE_SONGS) exoPlayer?.setPlaybackSpeed(v.toFloat())
             webView.evaluateJavascript("playbackSpeed($v);", null)
         }
     }
-
-
-    inner class JavaScriptInterface {
-        @SuppressLint("MissingPermission")
-        @JavascriptInterface
-        fun playerState(v: Int, duration: Int, currentDuration: Int, updatePlayback: Boolean) =
-            CoroutineScope(Dispatchers.IO).launch {
-                if (v == VIDEO_ENDED) checkAndPlayNextSong()
-
-                val d = musicPlayerDB.first()
-                d?.isBuffering = v == VIDEO_BUFFERING
-                d?.isPlaying = false
-                if (v == VIDEO_PLAYING) {
-                    d?.isPlaying = true
-                    if (updatePlayback) updatePlaybackSpeed()
-
-                    if (isNewPlay) {
-                        isNewPlay = false
-                        pause()
-                        d?.currentDuration?.let { seekTo(it) }
-                    }
-                } else if (v == VIDEO_UNSTARTED) {
-                    if (isNewPlay) {
-                        d?.isBuffering = false
-                        pause()
-                    } else play()
-                }
-
-                musicPlayerDB = flowOf(d)
-
-                MusicPlayerNotifications(
-                    this@MusicPlayService, v == VIDEO_PLAYING, d?.player, duration, currentDuration
-                ).generate()
-
-                if (isActive) cancel()
-            }
-
-        @JavascriptInterface
-        fun playerDuration(current: Int, total: Int) = CoroutineScope(Dispatchers.IO).launch {
-            val d = musicPlayerDB.first()
-            d?.totalDuration = total
-            d?.currentDuration = current
-            musicPlayerDB = flowOf(d)
-            if (isActive) cancel()
-        }
-
-        @JavascriptInterface
-        fun regionSongError() = CoroutineScope(Dispatchers.IO).launch {
-            val d = musicPlayerDB.first()
-            val videoID = youtubeSearchVideoRegion(d?.player?.name ?: "", d?.player?.artists ?: "")
-            if (videoID.length > 3) playAVideo(videoID)
-
-            if (isActive) cancel()
-        }
-    }
-
 
     private val webViewChromeClientObject = object : WebChromeClient() {
         override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
@@ -508,11 +507,12 @@ class MusicPlayService : Service() {
             val p = if (nextSong) index + 1 else index - 1
             val data = if (p >= player?.list?.size!!) player.list?.firstOrNull()
             else player.list?.get(p)
-
             data ?: return@launch
-            loadURL(data)
+
             val new = MusicPlayerData(player.list, data, VIDEO_BUFFERING, 0, false, 0, true)
             musicPlayerDB = flowOf(new)
+            delay(500)
+            loadURL(data)
         } catch (e: Exception) {
             e.message
         }

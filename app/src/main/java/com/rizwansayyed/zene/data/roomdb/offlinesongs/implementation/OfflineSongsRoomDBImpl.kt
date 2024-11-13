@@ -29,4 +29,8 @@ class OfflineSongsRoomDBImpl @Inject constructor(
     override suspend fun isSaved(id: String) = flow {
         emit(offlineDB.offlineSongsDao().isSaved(id).size)
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun delete(id: String) = flow {
+        emit(offlineDB.offlineSongsDao().deleteAll(id))
+    }.flowOn(Dispatchers.IO)
 }

@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.data.api
 
 import android.os.Build
-import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
@@ -34,7 +33,6 @@ import com.rizwansayyed.zene.utils.Utils.addSongHistoryLists
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
-import com.rizwansayyed.zene.utils.Utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull

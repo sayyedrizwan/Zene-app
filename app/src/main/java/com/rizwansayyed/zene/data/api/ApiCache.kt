@@ -1,12 +1,12 @@
 package com.rizwansayyed.zene.data.api
 
-import android.util.Log
 import com.rizwansayyed.zene.data.api.model.MoodLists
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.getCustomTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.setCustomTimestamp
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
 import kotlinx.coroutines.CoroutineScope
@@ -74,19 +74,20 @@ object ApiCache {
     }
 
     suspend fun getAPICache(key: String): ZeneMusicDataResponse? {
-        val path = File(pathFolder, "${key}.json")
+        try {
+            val path = File(pathFolder, "${key}.json")
+            if (!path.exists()) return null
+            val content = withContext(Dispatchers.IO) { path.readText() }
+            val data = moshi.adapter(Array<ZeneMusicDataItems>::class.java).fromJson(content)
+                ?: return null
+            if (data.isEmpty()) return null
+            val ts = getCustomTimestamp(key) ?: return null
+            if (internetIsConnected() && timeDifferenceInMinutes(ts) > (45..50).random()) return null
 
-        if (!path.exists()) return null
-        val content = withContext(Dispatchers.IO) { path.readText() }
-        val data = moshi.adapter(Array<ZeneMusicDataItems>::class.java).fromJson(content)
-            ?: return null
-
-        if (data.isEmpty()) return null
-
-        val ts = getCustomTimestamp(key) ?: return null
-        if (timeDifferenceInMinutes(ts) > (45..50).random()) return null
-
-        return data.toList()
+            return data.toList()
+        } catch (e: Exception) {
+            return null
+        }
     }
 
     suspend fun setAPICache(key: String, data: ZeneMusicDataResponse) {
@@ -100,7 +101,7 @@ object ApiCache {
                 writer.close()
                 setCustomTimestamp(key)
             } catch (e: Exception) {
-               e.printStackTrace()
+                e.printStackTrace()
             }
         }
     }

@@ -3,8 +3,6 @@ package com.rizwansayyed.zene.data.api.model
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
-import com.rizwansayyed.zene.utils.Utils.Share.WEB_BASE_URL
-import com.rizwansayyed.zene.utils.Utils.URLS.BASE_URL
 import com.rizwansayyed.zene.utils.Utils.URLS.LIKED_SONGS_ON_ZENE_PLAYLISTS
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -28,6 +26,11 @@ data class ZeneMusicHistoryItem(
     fun asMusicData(): ZeneMusicDataItems {
         return ZeneMusicDataItems(name, artists, id, thumbnail, "", type)
     }
+}
+
+
+fun Array<ZeneMusicHistoryItem>.asMusicData(): List<ZeneMusicDataItems> {
+    return this.map { ZeneMusicDataItems(it.name, it.artists, it.id, it.thumbnail, "", it.type) }
 }
 
 

@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
 import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.wakeUpMusicDataDB
+import com.rizwansayyed.zene.ui.mymusic.GlobalRemovedCacheSongsProvider
 import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
 import com.rizwansayyed.zene.ui.player.offlinedownload.OfflineDownload
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -115,14 +116,12 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
 
     Spacer(Modifier.height(20.dp))
 
-    if (roomViewModel.isSaved)
-        SheetDialogSheet(R.drawable.ic_tick, R.string.saved_offline_cache) {
-
-        }
-    else
-        SheetDialogSheet(R.drawable.ic_folder_music, R.string.offline_cache_song) {
-            offlineCache = true
-        }
+    SheetDialogSheet(
+        if (roomViewModel.isSaved) R.drawable.ic_tick else R.drawable.ic_folder_music,
+        if (roomViewModel.isSaved) R.string.saved_offline_cache else R.string.offline_cache_song
+    ) {
+        offlineCache = true
+    }
 
     Spacer(Modifier.height(20.dp))
 
@@ -178,9 +177,22 @@ fun SongInfoItemSheet(m: ZeneMusicDataItems, close: () -> Unit) {
         addToPlaylistSongs = false
     }
 
-    if (offlineCache) OfflineDownload(m) {
-        roomViewModel.isSongSaved(m)
-        offlineCache = false
+    if (offlineCache) {
+        if (roomViewModel.isSaved) AlertDialogView(
+            R.string.remove_song_cache, R.string.remove_cache_from_offline, R.string.remove
+        ) {
+            if (it) {
+                roomViewModel.removeOfflineSong(m)
+                roomViewModel.isSongSaved(m)
+                GlobalRemovedCacheSongsProvider.sendEvent(m.id ?: "")
+            }
+            offlineCache = false
+        }
+        else OfflineDownload(m) {
+            roomViewModel.isSongSaved(m)
+            offlineCache = false
+        }
+
     }
 
     LaunchedEffect(Unit) {

@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBInt
 import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
@@ -62,9 +63,14 @@ class RoomDBViewModel @Inject constructor(
     }
 
     fun isSongSaved(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
+        delay(500)
         offlineSongsDB.isSaved(m.id ?: "").catch { }.collectLatest {
             isSaved = it > 0
         }
+    }
+
+    fun removeOfflineSong(m: ZeneMusicDataItems) = viewModelScope.launch(Dispatchers.IO) {
+        offlineSongsDB.delete(m.id ?: "").catch { }.collectLatest {}
     }
 
     fun offlineSongsLists(p: Int) = viewModelScope.launch(Dispatchers.IO) {

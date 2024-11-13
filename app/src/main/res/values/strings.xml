@@ -243,4 +243,6 @@
     <string name="converting_this_song_for_caching">Converting this song for caching… Please don\'t close the dialog.</string>
     <string name="cache_error">Unable to cache this song offline. Please try again. If you\'ve already tried multiple times, caching for this song may be temporarily unavailable or experiencing issues.</string>
     <string name="offline_caching_availability">Please wait… Preparing this song for offline caching availability… Please don\'t close the dialog.</string>
+    <string name="remove_song_cache">Remove Song Cache?</string>
+    <string name="remove_cache_from_offline">Are you sure you want to remove the cache for this song? Once removed, it won’t be available in offline mode.</string>
 </resources>

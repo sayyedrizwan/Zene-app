@@ -149,18 +149,16 @@ class ZeneViewModel @Inject constructor(
     }
 
 
+    fun removeOfflineSongsLists(songID: String) = viewModelScope.launch(Dispatchers.IO) {
+        offlineSongs.removeIf { it.id == songID }
+    }
+
     fun offlineSongsLists(page: Int) = viewModelScope.launch(Dispatchers.IO) {
         if (page == 0) {
             songHistory.clear()
             zeneSavedPlaylists.clear()
             offlineSongs.clear()
         }
-
-        if (!internetIsConnected()) {
-            songHistoryIsLoading = false
-            return@launch
-        }
-
 
         offlineDB.getLists(page).onStart {
             songHistoryIsLoading = true

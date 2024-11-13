@@ -9,4 +9,5 @@ interface OfflineSongsDBInterface {
     suspend fun save(music: ZeneMusicDataItems): Flow<Unit>
     suspend fun getLists(page: Int): Flow<List<OfflineSongsData>>
     suspend fun isSaved(id: String): Flow<Int>
+    suspend fun delete(id: String): Flow<Unit>
 }

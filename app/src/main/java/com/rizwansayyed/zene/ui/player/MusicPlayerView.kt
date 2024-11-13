@@ -1,8 +1,6 @@
 package com.rizwansayyed.zene.ui.player
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -66,7 +63,6 @@ import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
-import com.rizwansayyed.zene.ui.view.TextPoppinsThin
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -142,7 +138,7 @@ fun MusicPlayerView(
             }
         }
 
-        if (playerInfo?.player?.type() == MusicType.SONGS) {
+        if (playerInfo?.player?.type() == MusicType.SONGS || playerInfo?.player?.type() == MusicType.OFFLINE_SONGS) {
             item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     SongSliderData(playerInfo)
@@ -170,7 +166,7 @@ fun MusicPlayerView(
         }
 
 
-        if (playerInfo?.player?.type() == MusicType.SONGS) {
+        if (playerInfo?.player?.type() == MusicType.SONGS || playerInfo?.player?.type() == MusicType.OFFLINE_SONGS) {
             item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     ExtraButtonsData(musicPlayerViewModel, playerInfo)
@@ -274,7 +270,7 @@ fun MusicPlayerView(
     }
 
     LaunchedEffect(playerInfo?.player?.id) {
-        if (playerInfo?.player?.type() == MusicType.SONGS) {
+        if (playerInfo?.player?.type() == MusicType.SONGS || playerInfo?.player?.type() == MusicType.OFFLINE_SONGS) {
             playerInfo.player.id?.let { musicPlayerViewModel.similarSongs(it) }
             playerInfo.player.let {
                 musicPlayerViewModel.lyrics(it)
@@ -290,7 +286,7 @@ fun MusicPlayerView(
         if (lifecycleState == Lifecycle.State.RESUMED || lifecycleState == Lifecycle.State.STARTED) {
             sendWebViewCommand(OPEN_PLAYER)
             scrollThumbnailCard()
-            if (playerInfo?.player?.type() == MusicType.SONGS) {
+            if (playerInfo?.player?.type() == MusicType.SONGS || playerInfo?.player?.type() == MusicType.OFFLINE_SONGS) {
                 playerInfo.player.id?.let { musicPlayerViewModel.similarSongs(it) }
                 playerInfo.player.let {
                     logEvents(FirebaseLogEvents.FirebaseEvents.MUSIC_PLAYER_STARTED)
@@ -353,7 +349,7 @@ fun MusicListCards(
     TextPoppins(name, true, size = 22)
     Spacer(Modifier.height(5.dp))
 
-    if (playerInfo?.player?.type() == MusicType.SONGS) {
+    if (playerInfo?.player?.type() == MusicType.SONGS || playerInfo?.player?.type() == MusicType.OFFLINE_SONGS) {
         LazyRow(
             Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,

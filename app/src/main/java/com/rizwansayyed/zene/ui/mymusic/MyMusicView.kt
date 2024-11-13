@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -25,7 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.asMusicData
 import com.rizwansayyed.zene.data.api.model.likedMusicData
+import com.rizwansayyed.zene.data.roomdb.offlinesongs.model.asMusicData
 import com.rizwansayyed.zene.ui.mymusic.playlists.AddPlaylistDialog
 import com.rizwansayyed.zene.ui.mymusic.view.MyMusicWebCardView
 import com.rizwansayyed.zene.ui.mymusic.view.TopHeaderSwitch
@@ -84,12 +87,10 @@ fun MyMusicView(viewModel: ZeneViewModel) {
             Spacer(Modifier.height(40.dp))
         }
 
-        if (type == MyMusicType.PLAYLISTS)
-            item(
-                25,
-                span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                PlaylistsDynamicCards(likedMusicData())
-            }
+        if (type == MyMusicType.PLAYLISTS) item(25,
+            span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
+            PlaylistsDynamicCards(likedMusicData())
+        }
 
         if (viewModel.songHistory.isEmpty() && type == MyMusicType.HISTORY && !viewModel.songHistoryIsLoading) item(
             20,
@@ -98,7 +99,7 @@ fun MyMusicView(viewModel: ZeneViewModel) {
         }
         else items(viewModel.songHistory,
             span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-            SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
+            SongDynamicCards(it.asMusicData(), viewModel.songHistory.toTypedArray().asMusicData())
         }
 
         if (viewModel.offlineSongs.isEmpty() && type == MyMusicType.OFFLINE_SONGS && !viewModel.songHistoryIsLoading) item(
@@ -108,17 +109,16 @@ fun MyMusicView(viewModel: ZeneViewModel) {
         }
         else items(viewModel.offlineSongs,
             span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-            SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
+            SongDynamicCards(it.asMusicData(), viewModel.offlineSongs.toTypedArray().asMusicData())
         }
 
-        if (viewModel.zeneSavedPlaylists.isEmpty() && type == MyMusicType.PLAYLISTS && !viewModel.songHistoryIsLoading)
-            item(21, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                TextPoppins(
-                    stringResource(R.string.you_have_not_created_or_saved_a_playlists),
-                    true,
-                    size = 16
-                )
-            }
+        if (viewModel.zeneSavedPlaylists.isEmpty() && type == MyMusicType.PLAYLISTS && !viewModel.songHistoryIsLoading) item(
+            21,
+            { GridItemSpan(TOTAL_GRID_SIZE) }) {
+            TextPoppins(
+                stringResource(R.string.you_have_not_created_or_saved_a_playlists), true, size = 16
+            )
+        }
         else items(viewModel.zeneSavedPlaylists,
             span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
             PlaylistsDynamicCards(it)
@@ -140,9 +140,11 @@ fun MyMusicView(viewModel: ZeneViewModel) {
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                 SmallButtonBorderText(R.string.load_more) {
                     page += 1
-                    if (type == MyMusicType.PLAYLISTS) viewModel.playlists(page)
-                    else if (type == MyMusicType.PLAYLISTS) viewModel.playlists(page)
-                    else viewModel.songHistory(page)
+                    when (type) {
+                        MyMusicType.PLAYLISTS -> viewModel.playlists(page)
+                        MyMusicType.OFFLINE_SONGS -> viewModel.offlineSongsLists(page)
+                        else -> viewModel.songHistory(page)
+                    }
                 }
             }
         }
@@ -167,15 +169,34 @@ fun MyMusicView(viewModel: ZeneViewModel) {
 
     LaunchedEffect(type) {
         page = 0
-        if (type == MyMusicType.PLAYLISTS) {
-            logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_PERSONAL_PLAYLISTS)
-            viewModel.playlists(0)
-        } else if (type == MyMusicType.OFFLINE_SONGS) {
-            logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_OFFLINE_SONGS)
-            viewModel.offlineSongsLists(0)
-        } else {
-            logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_SONG_HISTORY)
-            viewModel.songHistory(0)
+        when (type) {
+            MyMusicType.PLAYLISTS -> {
+                logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_PERSONAL_PLAYLISTS)
+                viewModel.playlists(0)
+            }
+
+            MyMusicType.OFFLINE_SONGS -> {
+                logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_OFFLINE_SONGS)
+                viewModel.offlineSongsLists(0)
+            }
+
+            else -> {
+                logEvents(FirebaseLogEvents.FirebaseEvents.MY_MUSIC_SONG_HISTORY)
+                viewModel.songHistory(0)
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        val listener = object : RemovedCacheSongs {
+            override fun onRemoved(songID: String) {
+                if (type == MyMusicType.OFFLINE_SONGS) viewModel.removeOfflineSongsLists(songID)
+            }
+        }
+
+        GlobalRemovedCacheSongsProvider.registerListener(listener)
+        onDispose {
+            GlobalRemovedCacheSongsProvider.unregisterListener()
         }
     }
 }

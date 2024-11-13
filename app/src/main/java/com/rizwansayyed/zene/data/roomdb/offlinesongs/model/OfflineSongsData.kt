@@ -17,3 +17,10 @@ data class OfflineSongsData(
         return ZeneMusicDataItems(name, artists, id, thumbnail, "", "OFFLINE_SONGS")
     }
 }
+
+
+fun Array<OfflineSongsData>.asMusicData(): List<ZeneMusicDataItems> {
+    return this.map {
+        ZeneMusicDataItems(it.name, it.artists, it.id, it.thumbnail, "", "OFFLINE_SONGS")
+    }
+}

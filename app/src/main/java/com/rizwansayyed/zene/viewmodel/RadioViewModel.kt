@@ -11,7 +11,6 @@ import com.rizwansayyed.zene.data.api.model.MoodLists
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneRadioAPIInterface
-import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -43,8 +42,6 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     }
 
     private fun topRadios() = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) return@launch
-
         zeneAPI.topRadio().onStart {
             topRadios = APIResponse.Loading
         }.catch {
@@ -55,8 +52,6 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     }
 
     private fun radioLanguages() = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) return@launch
-
         zeneAPI.radioLanguages().onStart {
             radioLanguages = APIResponse.Loading
         }.catch {
@@ -67,8 +62,6 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     }
 
     private fun radioCountries() = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) return@launch
-
         zeneAPI.radioCountries().onStart {
             radioCountries = APIResponse.Loading
         }.catch {
@@ -79,8 +72,6 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     }
 
     private fun radiosYouMayLike() = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) return@launch
-
         zeneAPI.radiosYouMayLike().onStart {
             radiosYouMayLike = APIResponse.Loading
         }.catch {
@@ -91,8 +82,6 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     }
 
     fun languagesRadioList(language: String) = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) return@launch
-
         zeneAPI.radiosViaLanguages(language).onStart {
             radiosLanguagesList = APIResponse.Loading
         }.catch {
@@ -103,8 +92,6 @@ class RadioViewModel @Inject constructor(private val zeneAPI: ZeneRadioAPIInterf
     }
 
     fun countriesRadioList(country: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) return@launch
-
         if (page == 0) radiosCountriesList.clear()
 
         zeneAPI.radioViaCountries(country, page).onStart {
