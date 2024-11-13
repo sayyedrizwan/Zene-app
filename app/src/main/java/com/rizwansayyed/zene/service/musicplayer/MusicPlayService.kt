@@ -11,7 +11,6 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
 import android.webkit.ConsoleMessage
-import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -54,6 +53,7 @@ import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.VIDEO_UNSTARTED
 import com.rizwansayyed.zene.service.MusicServiceUtils.Commands.WAKE_ALARM
 import com.rizwansayyed.zene.service.MusicServiceUtils.registerWebViewCommand
 import com.rizwansayyed.zene.service.bluetoothlistener.BluetoothListeners
+import com.rizwansayyed.zene.service.musicplayer.types.PlayerWebView
 import com.rizwansayyed.zene.ui.lockscreen.MusicPlayerActivity
 import com.rizwansayyed.zene.ui.player.view.sleepTime
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -115,6 +115,7 @@ class MusicPlayService : Service() {
     private var isNewPlay = true
     private var sleepTimer: Job? = null
     private val bluetoothListeners by lazy { BluetoothListeners(updatesRoomDB) }
+    private val playerWebView by lazy { PlayerWebView(webView) }
 
 
     private val phoneWake = object : BroadcastReceiver() {
@@ -225,17 +226,16 @@ class MusicPlayService : Service() {
         if (isActive) cancel()
     }
 
-    private fun playCachedSong(info: ZeneMusicDataItems) {
+    private fun playCachedSong(info: ZeneMusicDataItems) = CoroutineScope(Dispatchers.IO).launch {
         webView.wvClearCache()
         fileCachedSongsCacheDir.deleteRecursively()
         File(fileCachedSongsDir, "${info.id}.cachxc").copyTo(fileCachedSongsCacheDir)
-        exoPlayer = ExoPlayer.Builder(this).build()
+        exoPlayer = ExoPlayer.Builder(this@MusicPlayService).build()
         val mediaItem = MediaItem.fromUri(fileCachedSongsCacheDir.toUri())
         exoPlayer!!.setMediaItem(mediaItem)
         exoPlayer!!.prepare()
         exoPlayer!!.play()
     }
-
 
     override fun onBind(p0: Intent?): IBinder? = null
 
