@@ -61,6 +61,7 @@ import com.rizwansayyed.zene.ui.login.GlobalEmailEventProvider
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.mymusic.MyMusicView
+import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerActivity
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
@@ -273,8 +274,8 @@ class MainActivity : ComponentActivity() {
                     getSystemService(ConnectivityManager::class.java) as ConnectivityManager
                 connectivityManager.requestNetwork(networkRequest, networkCallback)
 
-//                delay(6.seconds)
-//                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
+                delay(6.seconds)
+                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
             }
         }
 

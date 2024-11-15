@@ -6,20 +6,27 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.fragment.app.FragmentActivity
-import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerUtils.initTrueCaller
+import com.rizwansayyed.zene.ui.phoneverifier.view.TopPhoneVerifierView
+import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.PhoneVerificationViewModel
 import com.truecaller.android.sdk.common.TrueException
 import com.truecaller.android.sdk.common.VerificationCallback
 import com.truecaller.android.sdk.common.VerificationDataBundle
+import com.truecaller.android.sdk.common.models.TrueProfile
 import com.truecaller.android.sdk.oAuth.TcOAuthCallback
 import com.truecaller.android.sdk.oAuth.TcOAuthData
 import com.truecaller.android.sdk.oAuth.TcOAuthError
 import com.truecaller.android.sdk.oAuth.TcSdk
-import com.truecaller.android.sdk.oAuth.TcSdkOptions
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,18 +35,17 @@ class TrueCallerActivity : FragmentActivity() {
     private val viewModel: PhoneVerificationViewModel by viewModels()
     private var codeVerifier: String? = null
 
-    private val tcOAuthCallback: TcOAuthCallback = object : TcOAuthCallback {
+    private val tcCallback: TcOAuthCallback = object : TcOAuthCallback {
         override fun onSuccess(tcOAuthData: TcOAuthData) {
             viewModel.getNumber(tcOAuthData.authorizationCode, codeVerifier ?: "")
-            Log.d("TAG", "onSuccess: runnnedd onnn ${tcOAuthData.authorizationCode}")
         }
 
         override fun onVerificationRequired(tcOAuthError: TcOAuthError?) {
-            Log.d("TAG", "onSuccess: runnnedd verify")
+            tcOAuthError?.errorMessage?.toast()
         }
 
         override fun onFailure(tcOAuthError: TcOAuthError) {
-            Log.d("TAG", "onSuccess: runnnedd faliure ${tcOAuthError.errorMessage}")
+            tcOAuthError.errorMessage.toast()
         }
     }
 
@@ -48,7 +54,20 @@ class TrueCallerActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            ZeneTheme {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+                    Alignment.Center
+                ) {
+                    TopPhoneVerifierView()
 
+                    LaunchedEffect(Unit) {
+                        initTrueCaller(this@TrueCallerActivity, tcCallback)
+                    }
+                }
+            }
         }
     }
 
@@ -63,37 +82,29 @@ class TrueCallerActivity : FragmentActivity() {
 
     override fun onStart() {
         super.onStart()
-        val tcSdkOptions = TcSdkOptions.Builder(this, tcOAuthCallback)
-            .buttonColor(MainColor.toArgb())
-            .buttonTextColor(Color.White.toArgb())
-            .consentHeadingOption(TcSdkOptions.SDK_CONSENT_HEADING_PROCEED_WITH)
-            .loginTextPrefix(TcSdkOptions.LOGIN_TEXT_PREFIX_TO_PROCEED)
-            .ctaText(TcSdkOptions.CTA_TEXT_CONTINUE)
-            .buttonShapeOptions(TcSdkOptions.BUTTON_SHAPE_ROUNDED)
-            .footerType(TcSdkOptions.FOOTER_TYPE_SKIP)
-            .sdkOptions(TcSdkOptions.OPTION_VERIFY_ALL_USERS)
-            .build()
 
-        TcSdk.init(tcSdkOptions)
+        var verificationCallback: VerificationCallback? = null
 
-        val isUsable = TcSdk.getInstance().isOAuthFlowUsable
-
-
-        val verificationCallback = object : VerificationCallback {
+        verificationCallback = object : VerificationCallback {
             override fun onRequestSuccess(
-                callbackType: Int,
-                verificationDataBundle: VerificationDataBundle?
+                callbackType: Int, verificationDataBundle: VerificationDataBundle?
             ) {
                 when (callbackType) {
                     VerificationCallback.TYPE_MISSED_CALL_INITIATED -> {
                         if (verificationDataBundle != null) {
-                            verificationDataBundle.getString(VerificationDataBundle.KEY_TTL);
-                            verificationDataBundle.getString(VerificationDataBundle.KEY_REQUEST_NONCE);
+                            val key =
+                                verificationDataBundle.getString(VerificationDataBundle.KEY_TTL)
+                            val key2 =
+                                verificationDataBundle.getString(VerificationDataBundle.KEY_REQUEST_NONCE)
+
+                            Log.d("TAG", "onRequestSuccess: data $key $key2")
                         }
                     }
 
                     VerificationCallback.TYPE_MISSED_CALL_RECEIVED -> {
-
+                        val profile = TrueProfile.Builder("Shabnam", "Sayyed").build()
+                        TcSdk.getInstance().verifyMissedCall(profile, verificationCallback!!)
+                        Log.d("TAG", "onRequestSuccess: data on about")
                     }
 
                     VerificationCallback.TYPE_IM_OTP_INITIATED -> {
@@ -101,29 +112,33 @@ class TrueCallerActivity : FragmentActivity() {
                             val ttl =
                                 verificationDataBundle.getString(VerificationDataBundle.KEY_TTL);
                             val requestNonce =
-                                verificationDataBundle.getString(VerificationDataBundle.KEY_REQUEST_NONCE);
+                                verificationDataBundle.getString(VerificationDataBundle.KEY_REQUEST_NONCE)
+
+                            Log.d("TAG", "onRequestSuccess: data on about qq $ttl $requestNonce")
                         }
                     }
 
                     VerificationCallback.TYPE_IM_OTP_RECEIVED -> {
-                        val otp =
-                            verificationDataBundle?.getString(VerificationDataBundle.KEY_OTP)
+                        val otp = verificationDataBundle?.getString(VerificationDataBundle.KEY_OTP)
+                        val profile = TrueProfile.Builder("Shabnam", "Sayyed").build()
+                        Log.d("TAG", "onRequestSuccess: data on about xxxa $otp")
+                        TcSdk.getInstance().verifyOtp(profile, otp ?: "", verificationCallback!!)
                     }
 
                     VerificationCallback.TYPE_VERIFICATION_COMPLETE -> {
-                        //verification complete
+                        Log.d("TAG", "onRequestSuccess: data on about donne ver")
                     }
 
                     VerificationCallback.TYPE_PROFILE_VERIFIED_BEFORE -> {
-                        //user already verified
-
+                        Log.d("TAG", "onRequestSuccess: data on about donne before")
                     }
 
                     VerificationCallback.TYPE_OTP_INITIATED -> {
-
+                        Log.d("TAG", "onRequestSuccess: data on about donne before otp iin")
                     }
 
                     VerificationCallback.TYPE_OTP_RECEIVED -> {
+                        Log.d("TAG", "onRequestSuccess: data on about donne before otp rec")
                     }
                 }
             }
@@ -134,8 +149,7 @@ class TrueCallerActivity : FragmentActivity() {
 
         }
 
-        TcSdk.getInstance()
-            .requestVerification("IN", "9323922026", verificationCallback, this);
+//        TcSdk.getInstance().requestVerification("IN", "9323922026", verificationCallback, this);
 
 //        if (isUsable) {
 //            TcSdk.getInstance().setOAuthScopes(arrayOf("phone"))

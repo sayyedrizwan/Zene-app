@@ -232,8 +232,11 @@
     <string name="no_updates_found">No updates found, you can view when earphones are connected, disconnected, etc.</string>
     <string name="delete">Delete</string>
     <string name="updates">Updates</string>
+    <string name="verify_via_truecaller">Verify via TrueCaller</string>
     <string name="zene_connect">Zene Connect</string>
     <string name="zene_pro">Zene Pro</string>
+    <string name="phone_verification">Phone Verification</string>
+    <string name="phone_verification_zene_connect">Zene need to verify your phone number to enable zene connect.</string>
     <string name="zene_pro_desc">Pro is only for music pros. As all features are free in app—Only if you\'re ready for it.</string>
     <string name="offline_cache_song">Offline Cache Song</string>
     <string name="saved_offline_cache">Saved in Offline Cache</string>
