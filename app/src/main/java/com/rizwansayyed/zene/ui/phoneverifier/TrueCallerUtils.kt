@@ -17,7 +17,8 @@ import java.security.SecureRandom
 
 object TrueCallerUtils {
 
-    private var codeVerifier: String = ""
+    var codeVerifier: String = ""
+
 
     fun initTrueCaller(context: Context, tcCallback: TcOAuthCallback) {
         val tcSdkOptions =

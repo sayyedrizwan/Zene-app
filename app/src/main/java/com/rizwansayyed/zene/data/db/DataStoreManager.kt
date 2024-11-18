@@ -87,7 +87,6 @@ object DataStoreManager {
         val VIDEO_CAPTION = booleanPreferencesKey("video_caption")
     }
 
-
     var userInfoDB
         get() = context.dataStore.data.map {
             moshi.adapter(UserInfoData::class.java).fromJson(it[USER_INFOS] ?: JSON_EMPTY)

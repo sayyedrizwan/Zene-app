@@ -275,6 +275,7 @@ class HomeViewModel @Inject constructor(
         zeneAPI.getUser(email).catch {}.collectLatest {
             userInfoDB = flowOf(it.toUserInfo(email))
             pinnedArtistsList = flowOf(it.pinned_artists?.filterNotNull()?.toTypedArray())
+            zeneAPI.updateUser().catch { }.firstOrNull()
         }
     }
 

@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
+import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -24,6 +25,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.CountryCodeModel
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.artistsHistoryListDB
@@ -265,9 +267,6 @@ object Utils {
         cookieManager.removeAllCookies({})
         clearHistory()
         loadUrl("about:blank")
-//        onPause()
-//        pauseTimers()
-//        destroy()
     }
 
     @Suppress("DEPRECATION")
@@ -566,11 +565,10 @@ object Utils {
         artistsHistoryListDB = flowOf(lists.toMutableSet().toTypedArray())
     }
 
-    fun File.copyTo(file: File) {
-        inputStream().use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
+    fun getAllPhoneCode(): Array<CountryCodeModel> {
+        val resource = context.resources.openRawResource(R.raw.country_code)
+        val json = readHTMLFromUTF8File(resource)
+        val data = moshi.adapter(Array<CountryCodeModel>::class.java).fromJson(json)
+        return data ?: emptyArray()
     }
 }

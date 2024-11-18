@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.login.flow
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -123,7 +124,6 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                 try {
                     val g = GoogleIdTokenCredential.createFrom(credential!!.data)
                     val email = g.data.getString(GOOGLE_BUNDLE_EMAIL)
-
                     logEvents(FirebaseLogEvents.FirebaseEvents.LOGIN_WITH_GOOGLE)
                     startLogin(email, g.displayName, g.profilePictureUri.toString())
                 } catch (e: Exception) {

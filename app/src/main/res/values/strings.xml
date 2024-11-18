@@ -242,10 +242,15 @@
     <string name="saved_offline_cache">Saved in Offline Cache</string>
     <string name="cached_songs">Cached Songs</string>
     <string name="close">Close</string>
+    <string name="enter_a_valid_phone_number">Enter a valid phone number</string>
+    <string name="enter_your_phone_number">Enter your phone number</string>
     <string name="you_have_no_song_cached">You have no song cached</string>
     <string name="converting_this_song_for_caching">Converting this song for caching… Please don\'t close the dialog.</string>
     <string name="cache_error">Unable to cache this song offline. Please try again. If you\'ve already tried multiple times, caching for this song may be temporarily unavailable or experiencing issues.</string>
     <string name="offline_caching_availability">Please wait… Preparing this song for offline caching availability… Please don\'t close the dialog.</string>
     <string name="remove_song_cache">Remove Song Cache?</string>
+    <string name="send_opt">Send OTP</string>
+    <string name="number_is_not_verified_in_truecaller">Number is not verified in TrueCaller.</string>
+    <string name="verify">Verify</string>
     <string name="remove_cache_from_offline">Are you sure you want to remove the cache for this song? Once removed, it won’t be available in offline mode.</string>
 </resources>
