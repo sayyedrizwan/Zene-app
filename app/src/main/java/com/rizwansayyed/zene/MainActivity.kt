@@ -277,8 +277,8 @@ class MainActivity : ComponentActivity() {
                     getSystemService(ConnectivityManager::class.java) as ConnectivityManager
                 connectivityManager.requestNetwork(networkRequest, networkCallback)
 
-                delay(6.seconds)
-                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
+//                delay(6.seconds)
+//                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
             }
         }
 

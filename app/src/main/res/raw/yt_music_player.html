@@ -95,7 +95,7 @@
               clearInterval(volumeCheckInterval);
               if (event.data == YT.PlayerState.PLAYING) {
                 volumeCheckInterval = setInterval(() => {
-                  event.target.setVolume(100);
+                  event.target.setVolume(40);
                 }, 3000);
               }
             }
@@ -111,7 +111,7 @@
             }
 
             function playSong() {
-              player.setVolume(100);
+              player.setVolume(40);
               player.playVideo();
             }
 

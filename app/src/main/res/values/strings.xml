@@ -47,6 +47,7 @@
     <string name="upgrade_to_zene_premium">Upgrade to Zene Premium</string>
     <string name="make_and_sync_playlists">Make and sync playlists</string>
     <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
     <string name="one_month">1 Month</string>
     <string name="three_days_free_trial">3 days free trial</string>
     <string name="per_month">per month</string>
@@ -252,5 +253,6 @@
     <string name="send_opt">Send OTP</string>
     <string name="number_is_not_verified_in_truecaller">Number is not verified in TrueCaller.</string>
     <string name="verify">Verify</string>
+    <string name="what_our_pro_users_say">What our pro users say!</string>
     <string name="remove_cache_from_offline">Are you sure you want to remove the cache for this song? Once removed, it won’t be available in offline mode.</string>
 </resources>

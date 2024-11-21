@@ -1,10 +1,12 @@
 package com.rizwansayyed.zene.ui.home.view
 
 import android.Manifest
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +44,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.ui.premium.PremiumActivity
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -111,16 +114,16 @@ fun HomeHeaderView() {
                 permission.launch(Manifest.permission.RECORD_AUDIO)
             }
 
-//            Spacer(Modifier.width(15.dp))
-//
-//            Row(Modifier.clickable {
-//                Intent(context, PremiumActivity::class.java).apply {
-//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                    context.startActivity(this)
-//                }
-//            }) {
-//                ImageIcon(R.drawable.ic_crown, 30, Color.Yellow)
-//            }
+            Spacer(Modifier.width(15.dp))
+
+            Row(Modifier.clickable {
+                Intent(context, PremiumActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(this)
+                }
+            }) {
+                ImageIcon(R.drawable.ic_crown, 30, Color.Yellow)
+            }
 
             Spacer(Modifier.width(15.dp))
         }
