@@ -1,11 +1,13 @@
 package com.rizwansayyed.zene.ui.premium.utils
 
+import android.app.Activity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.PurchasesUpdatedListener
@@ -16,6 +18,7 @@ import com.rizwansayyed.zene.di.BaseApp.Companion.context
 class PremiumUtils : ViewModel() {
 
     var monthlyPricing by mutableStateOf("")
+    var yearlyPricing by mutableStateOf("")
     var isLoading by mutableStateOf(false)
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, _ -> }
@@ -45,15 +48,42 @@ class PremiumUtils : ViewModel() {
     fun getProductPriceDetails() {
         val monthly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
             .setProductType(BillingClient.ProductType.SUBS).build()
-        val list = QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly))
+
+        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId("yearly")
+            .setProductType(BillingClient.ProductType.SUBS).build()
+
+        val list =
+            QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly, yearly))
 
         billingClient.queryProductDetailsAsync(list.build()) { _, details ->
             details.flatMap { it.subscriptionOfferDetails ?: emptyList() }
                 .flatMap { it.pricingPhases.pricingPhaseList }.forEach {
                     if (it.billingPeriod == "P4W") monthlyPricing = it.formattedPrice
+                    if (it.billingPeriod == "P1Y") yearlyPricing = it.formattedPrice
                 }
 
             isLoading = false
+        }
+    }
+
+    fun buySubscription(context: Activity, isYearly: Boolean) {
+        val code = if (isYearly) "yearly" else "monthly"
+        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId(code)
+            .setProductType(BillingClient.ProductType.SUBS).build()
+
+        val list = QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(yearly))
+
+        billingClient.queryProductDetailsAsync(list.build()) { _, details ->
+            details.forEach {
+                val productDetailsParamsList = listOf(
+                    BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(it)
+                        .setOfferToken(code).build()
+                )
+
+                val billingFlowParams = BillingFlowParams.newBuilder()
+                    .setProductDetailsParamsList(productDetailsParamsList).build()
+                billingClient.launchBillingFlow(context, billingFlowParams)
+            }
         }
     }
 }
