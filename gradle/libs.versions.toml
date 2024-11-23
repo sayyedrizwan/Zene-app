@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "151"
-versionname = "3.02.796"
+appversion = "152"
+versionname = "3.02.797"
 
 
 agp = "8.5.2"

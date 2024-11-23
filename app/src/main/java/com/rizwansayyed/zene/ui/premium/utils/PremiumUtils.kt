@@ -49,11 +49,8 @@ class PremiumUtils : ViewModel() {
         val monthly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
             .setProductType(BillingClient.ProductType.SUBS).build()
 
-        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId("yearly")
-            .setProductType(BillingClient.ProductType.SUBS).build()
-
         val list =
-            QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly, yearly))
+            QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly))
 
         billingClient.queryProductDetailsAsync(list.build()) { _, details ->
             details.flatMap { it.subscriptionOfferDetails ?: emptyList() }
@@ -68,21 +65,29 @@ class PremiumUtils : ViewModel() {
 
     fun buySubscription(context: Activity, isYearly: Boolean) {
         val code = if (isYearly) "yearly" else "monthly"
-        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId(code)
+        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
             .setProductType(BillingClient.ProductType.SUBS).build()
 
         val list = QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(yearly))
 
         billingClient.queryProductDetailsAsync(list.build()) { _, details ->
-            details.forEach {
-                val productDetailsParamsList = listOf(
-                    BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(it)
-                        .setOfferToken(code).build()
-                )
+            details.forEach { info ->
+                info.subscriptionOfferDetails?.forEach { s ->
+                    s.pricingPhases.pricingPhaseList.forEach { p ->
+                        if (p.billingPeriod == "P1Y") {
+                            val productDetailsParamsList = listOf(
+                                BillingFlowParams.ProductDetailsParams.newBuilder()
+                                    .setOfferToken(s.offerToken)
+                                    .setProductDetails(info)
+                                    .build()
+                            )
 
-                val billingFlowParams = BillingFlowParams.newBuilder()
-                    .setProductDetailsParamsList(productDetailsParamsList).build()
-                billingClient.launchBillingFlow(context, billingFlowParams)
+                            val billingFlowParams = BillingFlowParams.newBuilder()
+                                .setProductDetailsParamsList(productDetailsParamsList).build()
+                            billingClient.launchBillingFlow(context, billingFlowParams)
+                        }
+                    }
+                }
             }
         }
     }

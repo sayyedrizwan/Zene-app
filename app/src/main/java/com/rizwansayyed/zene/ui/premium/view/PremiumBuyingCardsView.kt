@@ -115,9 +115,8 @@ fun PremiumBuyingCards(premium: PremiumUtils = hiltViewModel()) {
                     .padding(top = 15.dp)
                     .padding(vertical = 17.dp, horizontal = 14.dp)
                     .clickable {
-                        premium.buySubscription(
-                            context, selectedSubscription == PremiumBuyingType.YEARLY
-                        )
+                        val isY = selectedSubscription == PremiumBuyingType.YEARLY
+                        premium.buySubscription(context, isY)
                     }
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(13.dp))
