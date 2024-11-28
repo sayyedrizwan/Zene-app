@@ -431,6 +431,11 @@ class MusicPlayService : Service() {
         if (isActive) cancel()
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        pause()
+    }
+
     private fun updatePlaybackSpeed() = CoroutineScope(Dispatchers.IO).launch {
         val v = when (musicSpeedSettings.first()) {
             MusicSpeed.`025` -> 0.25

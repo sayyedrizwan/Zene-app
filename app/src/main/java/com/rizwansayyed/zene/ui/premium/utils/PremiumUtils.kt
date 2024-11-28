@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.premium.utils
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,7 +26,11 @@ class PremiumUtils : ViewModel() {
 
     private val billingClient =
         BillingClient.newBuilder(context).setListener(purchasesUpdatedListener)
-            .enablePendingPurchases(
+            .setListener { billingResult, purchases ->
+                purchases?.forEach { p ->
+                    Log.d("TAG", "runned ${p.orderId} ${p.purchaseToken} $p")
+                }
+            }.enablePendingPurchases(
                 PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
             ).build()
 
@@ -49,8 +54,7 @@ class PremiumUtils : ViewModel() {
         val monthly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
             .setProductType(BillingClient.ProductType.SUBS).build()
 
-        val list =
-            QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly))
+        val list = QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly))
 
         billingClient.queryProductDetailsAsync(list.build()) { _, details ->
             details.flatMap { it.subscriptionOfferDetails ?: emptyList() }
@@ -64,22 +68,21 @@ class PremiumUtils : ViewModel() {
     }
 
     fun buySubscription(context: Activity, isYearly: Boolean) {
-        val code = if (isYearly) "yearly" else "monthly"
         val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
             .setProductType(BillingClient.ProductType.SUBS).build()
 
         val list = QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(yearly))
 
+        val billingPeriod = if (isYearly) "P1Y" else "P4W"
+
         billingClient.queryProductDetailsAsync(list.build()) { _, details ->
             details.forEach { info ->
                 info.subscriptionOfferDetails?.forEach { s ->
                     s.pricingPhases.pricingPhaseList.forEach { p ->
-                        if (p.billingPeriod == "P1Y") {
+                        if (p.billingPeriod == billingPeriod) {
                             val productDetailsParamsList = listOf(
                                 BillingFlowParams.ProductDetailsParams.newBuilder()
-                                    .setOfferToken(s.offerToken)
-                                    .setProductDetails(info)
-                                    .build()
+                                    .setProductDetails(info).setOfferToken(s.offerToken).build()
                             )
 
                             val billingFlowParams = BillingFlowParams.newBuilder()
