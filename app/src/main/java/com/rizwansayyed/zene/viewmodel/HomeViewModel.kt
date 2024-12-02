@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.billingclient.api.Purchase
 import com.rizwansayyed.zene.data.api.APIHttpService.youtubeMusicPlaylist
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.ZeneArtistsData
@@ -16,11 +17,13 @@ import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityItem
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
+import com.rizwansayyed.zene.data.db.DataStoreManager.isUserPremiumDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
+import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -124,10 +127,8 @@ class HomeViewModel @Inject constructor(
             isAppUpdateAvailable = APIResponse.Error(it)
         }.collectLatest {
             updateAvailabilityDB = flowOf(it)
-            isAppUpdateAvailable = if (it.android != null)
-                APIResponse.Success(it.android)
-            else
-                APIResponse.Empty
+            isAppUpdateAvailable = if (it.android != null) APIResponse.Success(it.android)
+            else APIResponse.Empty
         }
     }
 
@@ -329,5 +330,20 @@ class HomeViewModel @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+
+
+    fun checkSubscription() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.isUserPremium().catch {
+            isUserPremiumDB = flowOf(false)
+        }.collectLatest {
+            isUserPremiumDB = flowOf(it.isPremium ?: false)
+        }
+    }
+
+
+    fun updateSubscription(p: Purchase?) = viewModelScope.launch(Dispatchers.IO) {
+        p ?: return@launch
+        zeneAPI.updateUserSubscription(p.orderId ?: "", p.purchaseToken).catch { }.collectLatest { }
     }
 }

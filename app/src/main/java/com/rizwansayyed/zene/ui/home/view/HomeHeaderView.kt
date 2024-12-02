@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.db.DataStoreManager.isUserPremiumDB
 import com.rizwansayyed.zene.ui.premium.PremiumActivity
 import com.rizwansayyed.zene.ui.view.AlertDialogView
 import com.rizwansayyed.zene.ui.view.CardsViewDesc
@@ -71,10 +73,11 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HomeHeaderView() {
-    var context = LocalContext.current.applicationContext
+    val context = LocalContext.current.applicationContext
     var findSongDialog by remember { mutableStateOf(false) }
     var showWallzInstall by remember { mutableStateOf(false) }
     var microphonePermissionDialog by remember { mutableStateOf(false) }
+    val isPremium by isUserPremiumDB.collectAsState(initial = false)
 
     val permission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -94,6 +97,7 @@ fun HomeHeaderView() {
                 }
             }
         }
+
         Spacer(Modifier.weight(1f))
 
         Row(Modifier.height(65.dp), Arrangement.Center, Alignment.CenterVertically) {
@@ -116,7 +120,7 @@ fun HomeHeaderView() {
 
             Spacer(Modifier.width(15.dp))
 
-            Row(Modifier.clickable {
+            if (!isPremium) Row(Modifier.clickable {
                 Intent(context, PremiumActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startActivity(this)

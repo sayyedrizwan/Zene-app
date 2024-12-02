@@ -41,6 +41,8 @@ nav = "2.8.4"
 webkit = "1.12.1"
 jsoup = "1.18.1"
 billing = "7.1.1"
+truecaller = "3.1.0"
+konfetti = "2.0.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,6 +70,7 @@ browser = { module = "androidx.browser:browser", version.ref = "browser" }
 
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "exo-player" }
 media3-ui = { module = "androidx.media3:media3-ui", version.ref = "exo-player" }
+media3-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "exo-player" }
 
 room-db = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-db-complier = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -104,6 +107,9 @@ coil-gif = { group = "io.coil-kt", name = "coil-gif", version.ref = "coil" }
 
 nav-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+
+truecaller = { group = "com.truecaller.android.sdk", name = "truecaller-sdk", version.ref = "truecaller" }
+konfetti = { group = "nl.dionsegijn", name = "konfetti-compose", version.ref = "konfetti" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

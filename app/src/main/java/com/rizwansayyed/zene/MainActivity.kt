@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Application.ActivityLifecycleCallbacks
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,8 +13,10 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,6 +25,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -43,6 +48,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.rizwansayyed.zene.data.db.DataStoreManager.isUserPremiumDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -109,10 +115,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
@@ -128,8 +137,7 @@ class MainActivity : ComponentActivity() {
 
     private var jobCurrent: Job? = null
 
-    @OptIn(UnstableApi::class)
-    @SuppressLint("UnspecifiedRegisterReceiverFlag", "SourceLockedOrientationActivity")
+    @UnstableApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -244,6 +252,7 @@ class MainActivity : ComponentActivity() {
 
                         if (data == SYNC_DATA) {
                             homeViewModel.init(true)
+                            homeViewModel.checkSubscription()
                             checkNotificationPermissionAndAsk(notificationPermission) {
                                 notificationPermissionDialog = true
                             }
@@ -284,11 +293,13 @@ class MainActivity : ComponentActivity() {
 
         checkAndRunWeb(intent)
         loginEmail(intent)
+
     }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
+            homeViewModel.checkSubscription()
             homeViewModel.init(true)
         }
     }
@@ -309,6 +320,7 @@ class MainActivity : ComponentActivity() {
         }
 
         homeViewModel.userArtistsList()
+        homeViewModel.checkSubscription()
         startMusicService()
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)
         logEvents(
@@ -407,10 +419,5 @@ class MainActivity : ComponentActivity() {
                 openVideoPlayer(videoLink)
             }
         }
-    }
-
-    @SuppressLint("HardwareIds")
-    fun getDeviceUniqueId(): String {
-        return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
     }
 }

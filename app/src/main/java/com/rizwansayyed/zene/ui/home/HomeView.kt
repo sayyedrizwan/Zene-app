@@ -386,6 +386,7 @@ fun HomeView(
 
     LaunchedEffect(Unit) {
         homeViewModel.init(false)
+        homeViewModel.checkSubscription()
         checkNotificationPermissionAndAsk(notificationPermission, isNotificationOff)
         homeNavModel.getAlertHeader()
 

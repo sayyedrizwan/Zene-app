@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.premium.viewmodel.PremiumViewModel
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -43,7 +43,7 @@ enum class PremiumBuyingType {
 }
 
 @Composable
-fun PremiumBuyingCards(premium: PremiumViewModel = hiltViewModel()) {
+fun PremiumBuyingCards(premium: PremiumViewModel) {
     val context = LocalContext.current as Activity
 
     var selectedSubscription by remember { mutableStateOf(PremiumBuyingType.YEARLY) }
@@ -52,7 +52,7 @@ fun PremiumBuyingCards(premium: PremiumViewModel = hiltViewModel()) {
         Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
     ) {
         LoadingView(Modifier.size(32.dp))
-    } else LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+    } else LazyVerticalGrid(GridCells.Fixed(2), Modifier.heightIn(0.dp, 300.dp)) {
         item {
             Column(
                 Modifier

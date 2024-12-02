@@ -167,13 +167,11 @@ dependencies {
 
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
+    implementation(libs.media3.dash)
 
     implementation(libs.room.db)
     kapt(libs.room.db.complier)
 
-    implementation("com.truecaller.android.sdk:truecaller-sdk:3.1.0")
-
-    implementation("androidx.media3:media3-exoplayer:1.4.1")
-    implementation("androidx.media3:media3-exoplayer-dash:1.4.1")
-    implementation("androidx.media3:media3-ui:1.4.1")
+    implementation(libs.truecaller)
+    implementation(libs.konfetti)
 }

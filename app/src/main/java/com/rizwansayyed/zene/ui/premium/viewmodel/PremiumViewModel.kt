@@ -5,22 +5,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
+import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.google.common.collect.ImmutableList
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +25,7 @@ class PremiumViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var monthlyPricing by mutableStateOf("")
     var yearlyPricing by mutableStateOf("")
     var isLoading by mutableStateOf(false)
+    var purchase by mutableStateOf<Purchase?>(null)
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, _ -> }
 
@@ -36,10 +33,7 @@ class PremiumViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         BillingClient.newBuilder(context).setListener(purchasesUpdatedListener)
             .setListener { _, purchases ->
                 purchases?.forEach { p ->
-                    viewModelScope.launch(Dispatchers.IO) {
-                        zeneAPI.updateUserSubscription(p.orderId ?: "", p.purchaseToken)
-                            .catch { }.collectLatest { }
-                    }
+                    purchase = p
                 }
             }.enablePendingPurchases(
                 PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()

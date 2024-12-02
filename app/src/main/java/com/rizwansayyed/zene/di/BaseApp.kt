@@ -30,40 +30,12 @@ class BaseApp : Application() {
         lateinit var context: BaseApp
     }
 
-    @Inject
-    lateinit var zeneAPI: ZeneAPIImpl
-
-    private val activityLifecycleCallbacks = object : ActivityLifecycleCallbacks {
-        override fun onActivityCreated(p0: Activity, p1: Bundle?) {}
-        override fun onActivityStarted(p0: Activity) {
-            CoroutineScope(Dispatchers.IO).launch {
-                delay(9.seconds)
-                zeneAPI.isUserPremium().catch {
-                    isUserPremiumDB = flowOf(false)
-                }.collectLatest {
-                    Log.d("TAG", "onActivityStarted: isPremium ${it.isPremium}")
-                    isUserPremiumDB = flowOf(it.isPremium ?: false)
-                }
-
-                if (isActive) cancel()
-            }
-        }
-
-        override fun onActivityResumed(p0: Activity) {}
-        override fun onActivityPaused(p0: Activity) {}
-        override fun onActivityStopped(p0: Activity) {}
-        override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {}
-        override fun onActivityDestroyed(p0: Activity) {}
-
-    }
-
     override fun onCreate() {
         super.onCreate()
         context = this
         FacebookSdk.sdkInitialize(this)
         FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
 
-//        registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
     }
 
 }
