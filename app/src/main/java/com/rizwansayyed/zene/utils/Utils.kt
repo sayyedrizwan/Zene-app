@@ -114,8 +114,8 @@ object Utils {
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
-        val BASE_URL = BuildConfig.DOMAIN_BASE_URL
-//            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+        val BASE_URL =
+            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val LIKED_SONGS_ON_ZENE_PLAYLISTS = "liked_songs_on_zene"
 
@@ -131,6 +131,7 @@ object Utils {
         const val ZENE_RADIO_INFO_API = "radio/radioinfo"
 
         const val ZENE_USER_API = "zuser/users"
+        const val ZENE_IS_USER_PREMIUM_API = "zuser/is_user_premium"
         const val ZENE_USER_LIKED_SONGS_API = "zuser/liked_songs"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
         const val ZENE_USER_PLAYLISTS_API = "zuser/playlists"

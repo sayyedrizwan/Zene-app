@@ -7,9 +7,7 @@ data class UserInfoData(
     var email: String?,
     var totalPlayTime: Int?,
     private var profilePhoto: String?,
-    var isReviewDone: Boolean?,
-    var subscriptionStatus: String?,
-    var subscriptionExpiryData: String?,
+    var isReviewDone: Boolean?
 ) {
     fun isLoggedIn(): Boolean {
         if (email?.contains("@") == false) return false

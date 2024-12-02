@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.data.api.model.ZenePlaylistAlbumsData
 import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
+import com.rizwansayyed.zene.data.api.model.ZeneUsersPremiumResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import kotlinx.coroutines.flow.Flow
@@ -103,8 +104,7 @@ interface ZeneAPIInterface {
     suspend fun artistsPosts(): Flow<ZeneArtistsPostsResponse>
 
     suspend fun importSpotifyPlaylists(
-        token: String,
-        path: String?
+        token: String, path: String?
     ): Flow<ZeneMusicImportPlaylistsDataResponse>
 
     suspend fun songInfo(id: String): Flow<ZeneMusicDataItems>
@@ -115,4 +115,9 @@ interface ZeneAPIInterface {
     suspend fun isSongLiked(songID: String): Flow<SongLikedResponse>
     suspend fun relatedVideos(id: String): Flow<ZeneMusicDataResponse>
     suspend fun topCacheSongsAndArtists(): Flow<ZeneCacheTopSongsArtistsPostsResponse>
+    suspend fun updateUserSubscription(
+        orderId: String, purchaseToken: String
+    ): Flow<ZeneBooleanResponse>
+
+    suspend fun isUserPremium(): Flow<ZeneUsersPremiumResponse>
 }

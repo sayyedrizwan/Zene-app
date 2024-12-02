@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.ui.premium.utils.PremiumUtils
+import com.rizwansayyed.zene.ui.premium.viewmodel.PremiumViewModel
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
@@ -43,7 +43,7 @@ enum class PremiumBuyingType {
 }
 
 @Composable
-fun PremiumBuyingCards(premium: PremiumUtils = hiltViewModel()) {
+fun PremiumBuyingCards(premium: PremiumViewModel = hiltViewModel()) {
     val context = LocalContext.current as Activity
 
     var selectedSubscription by remember { mutableStateOf(PremiumBuyingType.YEARLY) }

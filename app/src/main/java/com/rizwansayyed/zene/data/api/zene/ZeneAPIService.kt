@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneSavedPlaylistsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneSearchData
 import com.rizwansayyed.zene.data.api.model.ZeneSponsorsResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
+import com.rizwansayyed.zene.data.api.model.ZeneUsersPremiumResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
@@ -32,6 +33,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_APP_UPDATE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_SPONSORS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_FEEDS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_IMPORT_PLAYLISTS_SPOTIFY_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_IS_USER_PREMIUM_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_LANGUAGES_BY_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_LANGUAGES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_MOODS_API
@@ -85,6 +87,14 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_USER_API)
     suspend fun getUser(@Query("user") user: String): ZeneUsersResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_IS_USER_PREMIUM_API)
+    suspend fun updateUserSubscription(@Body body: RequestBody): ZeneBooleanResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @GET(ZENE_IS_USER_PREMIUM_API)
+    suspend fun isUserSubscribe(@Query("email") name: String): ZeneUsersPremiumResponse
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_EXTRA_SPONSORS_API)

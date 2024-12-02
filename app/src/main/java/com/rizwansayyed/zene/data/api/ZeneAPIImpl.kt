@@ -86,6 +86,22 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.updateUser(body))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun updateUserSubscription(orderId: String, purchaseToken: String) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
+            put("orderID", orderId)
+            put("purchaseToken", purchaseToken)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.updateUserSubscription(body))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun isUserPremium() = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: ""
+        emit(zeneAPI.isUserSubscribe(email))
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun getUser(email: String) = flow {
         emit(zeneAPI.getUser(email))
     }.flowOn(Dispatchers.IO)

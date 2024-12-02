@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.AP
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARRAY_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARTISTS_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.EARPHONE_DEVICES_LIST
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.IS_USER_PREMIUM
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.LAST_ADS_TIMESTAMP
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_LOOP
@@ -85,6 +86,7 @@ object DataStoreManager {
         val SONG_QUALITY = stringPreferencesKey("song_quality")
         val VIDEO_QUALITY = stringPreferencesKey("video_quality")
         val VIDEO_CAPTION = booleanPreferencesKey("video_caption")
+        val IS_USER_PREMIUM = booleanPreferencesKey("is_user_premium")
     }
 
     var userInfoDB
@@ -96,6 +98,12 @@ object DataStoreManager {
             context.dataStore.edit { it[USER_INFOS] = json }
         }
 
+
+    var isUserPremiumDB
+        get() = context.dataStore.data.map { it[IS_USER_PREMIUM] ?: false }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[IS_USER_PREMIUM] = value.first() }
+        }
 
     var sponsorsAdsDB
         get() = context.dataStore.data.map {

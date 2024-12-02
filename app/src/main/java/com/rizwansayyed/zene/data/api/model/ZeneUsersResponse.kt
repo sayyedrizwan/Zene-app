@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.data.api.model
 
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 
+data class ZeneUsersPremiumResponse(val isPremium: Boolean?)
+
 data class ZeneUsersResponse(
     val country: String?,
     val device_info: String?,
@@ -15,8 +17,6 @@ data class ZeneUsersResponse(
     val pinned_artists: List<String?>?,
     val profile_photo: String?,
     val sign_up_date: Long?,
-    val subscription_expiry_date: Long?,
-    val subscription_status: String?,
     val total_playtime: Int?
 ) {
     private fun isReviewDone(): Boolean {
@@ -25,9 +25,6 @@ data class ZeneUsersResponse(
 
 
     fun toUserInfo(email: String?): UserInfoData {
-        return UserInfoData(
-            name, email, total_playtime, profile_photo,
-            isReviewDone(), subscription_status, subscription_status
-        )
+        return UserInfoData(name, email, total_playtime, profile_photo, isReviewDone())
     }
 }

@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class ZeneViewModel @Inject constructor(
     private val zeneAPI: ZeneAPIInterface, private val offlineDB: OfflineSongsDBInterface

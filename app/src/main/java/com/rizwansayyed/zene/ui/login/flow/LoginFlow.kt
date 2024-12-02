@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.login.flow
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -25,7 +24,6 @@ import com.rizwansayyed.zene.data.api.model.FbLoginResponse
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
-import com.rizwansayyed.zene.data.db.model.SubscriptionType
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
@@ -231,9 +229,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                 return@withContext
             }
 
-            val u = UserInfoData(
-                n, e, 0, p, false, SubscriptionType.FREE.name, null
-            )
+            val u = UserInfoData(n, e, 0, p, false)
             DataStoreManager.userInfoDB = flowOf(u)
             delay(1.seconds)
             zeneAPIInterface.updateUser().catch { }.collect()

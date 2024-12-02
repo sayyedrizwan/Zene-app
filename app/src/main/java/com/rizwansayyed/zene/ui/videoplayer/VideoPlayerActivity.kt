@@ -209,7 +209,6 @@ class VideoPlayerActivity : ComponentActivity() {
         val videoID = intent.getStringExtra(Intent.ACTION_MAIN) ?: return
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_VIDEO_VIEW)
         startJob()
-        videoID.toast()
         webAppInterface?.loadWebView(videoID)
     }
 
