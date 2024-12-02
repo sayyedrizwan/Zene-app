@@ -466,4 +466,8 @@ class ZeneAPIImpl @Inject constructor(
     override suspend fun songInfo(id: String) = flow {
         emit(zeneAPI.songInfo(id))
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun similarSongsToPlay(id: String) = flow {
+        emit(zeneAPI.similarSongsToPlay(id))
+    }.flowOn(Dispatchers.IO)
 }

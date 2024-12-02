@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
+import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -73,6 +74,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
@@ -328,6 +330,16 @@ class MusicPlayService : Service() {
                 val d = moshi.adapter(MusicPlayerData::class.java).fromJson(json)
                 d?.player?.let { loadURL(it) }
                 musicPlayerDB = flowOf(d)
+                suggestPlaylistsSongs(d)
+            }
+        }
+    }
+
+    fun suggestPlaylistsSongs(player: MusicPlayerData?) = CoroutineScope(Dispatchers.IO).launch {
+        player ?: return@launch
+        zeneAPI.similarSongsToPlay(player.player?.id ?: "").catch { }.collectLatest {
+            it.forEach {
+                Log.d("TAG", "suggestPlaylistsSongs: data ${it.name}")
             }
         }
     }

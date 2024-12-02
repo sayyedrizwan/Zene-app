@@ -50,6 +50,7 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_REMOVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_IMG_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SEARCH_SUGGESTIONS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SIMILAR_SONGS_TO_PLAY_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SONG_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_SUGGESTED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_TOP_ALBUMS_API
@@ -281,6 +282,10 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_SONG_INFO_API)
     suspend fun songInfo(@Query("id") id: String): ZeneMusicDataItems
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @GET(ZENE_SIMILAR_SONGS_TO_PLAY_API)
+    suspend fun similarSongsToPlay(@Query("id") id: String): ZeneMusicDataResponse
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_RELATED_VIDEO_API)
