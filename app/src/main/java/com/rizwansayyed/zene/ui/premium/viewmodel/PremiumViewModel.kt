@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.premium.viewmodel
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,13 +15,10 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.google.common.collect.ImmutableList
-import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.rizwansayyed.zene.utils.Utils.toast
 
-@HiltViewModel
-class PremiumViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
+class PremiumViewModel : ViewModel() {
 
     var monthlyPricing by mutableStateOf("")
     var yearlyPricing by mutableStateOf("")
@@ -58,8 +56,11 @@ class PremiumViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun getProductPriceDetails() {
         val monthly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
             .setProductType(BillingClient.ProductType.SUBS).build()
+        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId("yearly")
+            .setProductType(BillingClient.ProductType.SUBS).build()
 
-        val list = QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly))
+        val list =
+            QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(monthly, yearly))
 
         billingClient.queryProductDetailsAsync(list.build()) { _, details ->
             details.flatMap { it.subscriptionOfferDetails ?: emptyList() }
@@ -72,11 +73,13 @@ class PremiumViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
     fun buySubscription(context: Activity, isYearly: Boolean) {
-        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
+        val monthly = QueryProductDetailsParams.Product.newBuilder().setProductId("monthly")
+            .setProductType(BillingClient.ProductType.SUBS).build()
+        val yearly = QueryProductDetailsParams.Product.newBuilder().setProductId("yearly")
             .setProductType(BillingClient.ProductType.SUBS).build()
 
-        val list = QueryProductDetailsParams.newBuilder().setProductList(ImmutableList.of(yearly))
-
+        val imList = if (isYearly) ImmutableList.of(yearly) else ImmutableList.of(monthly)
+        val list = QueryProductDetailsParams.newBuilder().setProductList(imList)
         val billingPeriod = if (isYearly) "P1Y" else "P4W"
 
         billingClient.queryProductDetailsAsync(list.build()) { _, details ->
