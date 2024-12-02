@@ -10,6 +10,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.data.db.DataStoreManager.isUserPremiumDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.lastAdsTimestamp
 import com.rizwansayyed.zene.data.db.DataStoreManager.sponsorsAdsDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -61,6 +62,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     fun interstitialAds() = CoroutineScope(Dispatchers.Main).launch {
         if (userInfoDB.firstOrNull()?.isLoggedIn() == false) return@launch
         if (BuildConfig.DEBUG) return@launch
+        if (isUserPremiumDB.firstOrNull() == true) return@launch
         val doShowAds = isMoreThanTimeAds()
         if (!doShowAds) return@launch
 
@@ -76,6 +78,7 @@ class ShowAdsOnAppOpen(private val activity: Activity) {
     fun showAds() = CoroutineScope(Dispatchers.Main).launch {
         if (userInfoDB.firstOrNull()?.isLoggedIn() == false) return@launch
         if (BuildConfig.DEBUG) return@launch
+        if (isUserPremiumDB.firstOrNull() == true) return@launch
         val doShowAds = isMoreThanTimeAds()
         if (!doShowAds) return@launch
 

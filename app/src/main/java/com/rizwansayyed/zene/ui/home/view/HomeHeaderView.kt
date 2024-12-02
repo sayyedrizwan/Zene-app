@@ -77,7 +77,7 @@ fun HomeHeaderView() {
     var findSongDialog by remember { mutableStateOf(false) }
     var showWallzInstall by remember { mutableStateOf(false) }
     var microphonePermissionDialog by remember { mutableStateOf(false) }
-    val isPremium by isUserPremiumDB.collectAsState(initial = false)
+    val isPremium by isUserPremiumDB.collectAsState(initial = true)
 
     val permission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -120,16 +120,17 @@ fun HomeHeaderView() {
 
             Spacer(Modifier.width(15.dp))
 
-            if (!isPremium) Row(Modifier.clickable {
-                Intent(context, PremiumActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(this)
+            if (!isPremium) {
+                Row(Modifier.clickable {
+                    Intent(context, PremiumActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        context.startActivity(this)
+                    }
+                }) {
+                    ImageIcon(R.drawable.ic_crown, 30, Color.Yellow)
                 }
-            }) {
-                ImageIcon(R.drawable.ic_crown, 30, Color.Yellow)
+                Spacer(Modifier.width(15.dp))
             }
-
-            Spacer(Modifier.width(15.dp))
         }
     }
 
