@@ -352,7 +352,7 @@ fun HomeView(
                         }
                         items(v.data,
                             span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                            SongDynamicCards(it, v.data)
+                            SongDynamicCards(it, listOf(it))
                         }
                     }
                 }

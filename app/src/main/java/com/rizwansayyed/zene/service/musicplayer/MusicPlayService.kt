@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.api.model.MusicType
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicLoopSettings
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicSpeedSettings
@@ -65,6 +66,7 @@ import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.getTimeAfterMinutesInMillis
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.wvClearCache
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -74,7 +76,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
@@ -337,11 +338,30 @@ class MusicPlayService : Service() {
 
     fun suggestPlaylistsSongs(player: MusicPlayerData?) = CoroutineScope(Dispatchers.IO).launch {
         player ?: return@launch
-        zeneAPI.similarSongsToPlay(player.player?.id ?: "").catch { }.collectLatest {
-            it.forEach {
-                Log.d("TAG", "suggestPlaylistsSongs: data ${it.name}")
+        if ((player.list?.size ?: 0) != 1) return@launch
+
+        var lists: ZeneMusicDataResponse = try {
+            zeneAPI.similarSongsToPlay(player.player?.id ?: "").firstOrNull() ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        }
+
+        if (lists.size < 2) {
+            lists = try {
+                zeneAPI.suggestedSongs(player.player?.id ?: "").firstOrNull() ?: emptyList()
+            } catch (e: Exception) {
+                emptyList()
             }
         }
+
+
+        if (lists.isEmpty()) return@launch
+        val info = musicPlayerDB.firstOrNull()
+        val list = lists.filter { it.id != player.player?.id }
+
+        Log.d("TAG", "suggestPlaylistsSongs: data111 ${list.size}")
+        info?.list = listOf(player.player!!) + list
+        musicPlayerDB = flowOf(info)
     }
 
     fun pauseSongOnSleep() = CoroutineScope(Dispatchers.IO).launch {

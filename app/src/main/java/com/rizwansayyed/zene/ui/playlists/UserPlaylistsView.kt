@@ -145,7 +145,7 @@ fun PlaylistFullGridSongs(
     homeViewModel: HomeViewModel,
     zeneViewModel: ZeneViewModel,
     playlistID: String?,
-    isUserOwner: MutableState<Boolean>
+    isUserOwner: MutableState<Boolean>,
 ) {
     var dialog by remember { mutableStateOf(false) }
     var removeSongDialog by remember { mutableStateOf(false) }
@@ -155,7 +155,7 @@ fun PlaylistFullGridSongs(
             .padding(horizontal = 5.dp, vertical = 10.dp)
             .fillMaxWidth()
             .bouncingClickable {
-                if (it) openSpecificIntent(m, homeViewModel.userPlaylistsSong)
+                if (it) openSpecificIntent(m, listOf(m))
                 else dialog = true
             },
         Arrangement.Center,

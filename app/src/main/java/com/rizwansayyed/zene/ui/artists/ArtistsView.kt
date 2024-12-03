@@ -203,7 +203,7 @@ fun ArtistsView(id: String?, close: () -> Unit) {
 
                     items(v.data.songs,
                         span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                        SongDynamicCards(it, v.data.songs)
+                        SongDynamicCards(it, listOf(it))
                     }
                 }
 

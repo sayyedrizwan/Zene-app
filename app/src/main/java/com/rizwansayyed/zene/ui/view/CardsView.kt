@@ -71,7 +71,6 @@ import com.rizwansayyed.zene.utils.Utils.convertItToMoney
 import com.rizwansayyed.zene.utils.Utils.getItemsAroundPosition
 import com.rizwansayyed.zene.utils.Utils.openBrowser
 import com.rizwansayyed.zene.utils.Utils.shareTxtImage
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.ytThumbnail
 
 @Composable

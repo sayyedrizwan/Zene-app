@@ -126,7 +126,7 @@ fun HorizontalSongView(
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
                             StyleSize.SONG_WITH_LISTENER ->
-                                CardSmallWithListeningNumber(it, data.data)
+                                CardSmallWithListeningNumber(it, listOf(it))
                         }
                     }
                 }
@@ -137,7 +137,7 @@ fun HorizontalSongView(
                             StyleSize.SHOW_AUTHOR -> CardsViewDesc(it, data.data)
                             StyleSize.ONLY_TEXT -> CardRoundTextOnly(it)
                             StyleSize.SONG_WITH_LISTENER ->
-                                CardSmallWithListeningNumber(it, data.data)
+                                CardSmallWithListeningNumber(it, listOf(it))
                         }
                     }
                 }

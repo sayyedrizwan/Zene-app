@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -156,7 +155,7 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
 
                 items(v.data.songs,
                     span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-                    SongDynamicCards(it, v.data.songs)
+                    SongDynamicCards(it, listOf(it))
                 }
 
                 item(key = 1000, { GridItemSpan(TOTAL_GRID_SIZE) }) {

@@ -16,7 +16,6 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
-import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -114,8 +113,8 @@ object Utils {
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
-        val BASE_URL =
-            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+        val BASE_URL = BuildConfig.DOMAIN_BASE_URL
+//            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val LIKED_SONGS_ON_ZENE_PLAYLISTS = "liked_songs_on_zene"
 

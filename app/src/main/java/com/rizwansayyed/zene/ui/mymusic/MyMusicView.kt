@@ -99,7 +99,7 @@ fun MyMusicView(viewModel: ZeneViewModel) {
         }
         else items(viewModel.songHistory,
             span = { GridItemSpan(if (isThreeGrid) THREE_GRID_SIZE else TWO_GRID_SIZE) }) {
-            SongDynamicCards(it.asMusicData(), viewModel.songHistory.toTypedArray().asMusicData())
+            SongDynamicCards(it.asMusicData(), listOf(it.asMusicData()))
         }
 
         if (viewModel.offlineSongs.isEmpty() && type == MyMusicType.OFFLINE_SONGS && !viewModel.songHistoryIsLoading) item(
