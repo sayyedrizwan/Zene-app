@@ -142,7 +142,7 @@ fun HomeView(
                     homeViewModel.recommendedPlaylists,
                     Pair(TextSize.BIG, R.string.recommended_playlists),
                     StyleSize.HIDE_AUTHOR,
-                    showGrid = false
+                    showGrid = false, true
                 )
             }
         }
@@ -163,7 +163,7 @@ fun HomeView(
                     homeViewModel.recommendedAlbums,
                     Pair(TextSize.SMALL, R.string.albums_picked_for_you),
                     StyleSize.SHOW_AUTHOR,
-                    showGrid = false
+                    showGrid = false, true
                 )
             }
         }
@@ -201,7 +201,7 @@ fun HomeView(
                         homeViewModel.songsYouMayLike,
                         Pair(TextSize.SMALL, R.string.songs_you_may_like),
                         StyleSize.SHOW_AUTHOR,
-                        showGrid = true
+                        showGrid = true, false
                     )
                 }
             }
@@ -224,7 +224,7 @@ fun HomeView(
                         homeViewModel.moodList,
                         Pair(TextSize.SMALL, R.string.pick_your_mood),
                         StyleSize.ONLY_TEXT,
-                        showGrid = true
+                        showGrid = true, false
                     )
                 }
             }
@@ -239,7 +239,7 @@ fun HomeView(
                         homeViewModel.latestReleases,
                         Pair(TextSize.MEDIUM, R.string.latest_release),
                         StyleSize.SHOW_AUTHOR,
-                        showGrid = true
+                        showGrid = true, false
                     )
                 }
             }
@@ -257,7 +257,7 @@ fun HomeView(
                         homeViewModel.topMostListeningSong,
                         Pair(TextSize.SMALL, R.string.most_listening_songs_zene),
                         StyleSize.SONG_WITH_LISTENER,
-                        showGrid = true
+                        showGrid = true, false
                     )
                 }
             }

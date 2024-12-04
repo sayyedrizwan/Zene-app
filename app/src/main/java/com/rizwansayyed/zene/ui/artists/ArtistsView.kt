@@ -128,7 +128,7 @@ fun ArtistsView(id: String?, close: () -> Unit) {
                         if (v.data.topSongs != null) HorizontalSongView(
                             APIResponse.Success(v.data.topSongs.filterNotNull()),
                             Pair(TextSize.SMALL, R.string.top_songs),
-                            StyleSize.SONG_WITH_LISTENER, showGrid = true
+                            StyleSize.SONG_WITH_LISTENER, showGrid = true, false
                         )
                     }
                 }
@@ -168,7 +168,7 @@ fun ArtistsView(id: String?, close: () -> Unit) {
                         HorizontalSongView(
                             APIResponse.Success(v.data.playlists),
                             Pair(TextSize.SMALL, R.string.playlists),
-                            StyleSize.HIDE_AUTHOR, showGrid = true
+                            StyleSize.HIDE_AUTHOR, showGrid = true, true
                         )
                     }
                 }
@@ -180,7 +180,7 @@ fun ArtistsView(id: String?, close: () -> Unit) {
                         HorizontalSongView(
                             APIResponse.Success(v.data.albums),
                             Pair(TextSize.SMALL, R.string.albums),
-                            StyleSize.SHOW_AUTHOR, showGrid = true
+                            StyleSize.SHOW_AUTHOR, showGrid = true, true
                         )
                     }
                 }

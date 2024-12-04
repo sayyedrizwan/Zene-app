@@ -91,7 +91,7 @@ fun MoodView(homeViewModel: HomeViewModel, id: String?, close: () -> Unit) {
                         APIResponse.Success(it.list),
                         Pair(TextSize.SMALL, R.string.empty),
                         StyleSize.HIDE_AUTHOR,
-                        showGrid = true
+                        showGrid = true, false
                     )
 
                     Spacer(Modifier.height(15.dp))

@@ -103,7 +103,7 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
                         HorizontalSongView(
                             APIResponse.Success(v.data.playlists),
                             Pair(TextSize.SMALL, R.string.playlists),
-                            StyleSize.HIDE_AUTHOR, showGrid = false
+                            StyleSize.HIDE_AUTHOR, showGrid = false, false
                         )
                     }
                 }
@@ -126,7 +126,7 @@ fun SearchItemView(homeViewModel: HomeViewModel, search: String, close: () -> Un
                         HorizontalSongView(
                             APIResponse.Success(v.data.albums),
                             Pair(TextSize.SMALL, R.string.albums),
-                            StyleSize.SHOW_AUTHOR, showGrid = false
+                            StyleSize.SHOW_AUTHOR, showGrid = false, true
                         )
                     }
                 }

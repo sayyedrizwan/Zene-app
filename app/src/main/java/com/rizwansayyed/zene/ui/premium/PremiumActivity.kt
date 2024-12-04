@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.MainActivity
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.isUserPremiumDB
 import com.rizwansayyed.zene.ui.premium.view.PremiumBuyingCards
+import com.rizwansayyed.zene.ui.premium.view.PremiumCouponView
 import com.rizwansayyed.zene.ui.premium.view.UsersReviewView
 import com.rizwansayyed.zene.ui.premium.viewmodel.PremiumViewModel
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
@@ -130,6 +131,8 @@ class PremiumActivity : ComponentActivity() {
                     TextPoppins(
                         stringResource(R.string.upgrade_text_subscription_text), true, size = 14
                     )
+                    Spacer(Modifier.height(35.dp))
+                    PremiumCouponView()
                     Spacer(Modifier.height(120.dp))
                 }
 

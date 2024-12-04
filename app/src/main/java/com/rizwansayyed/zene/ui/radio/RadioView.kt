@@ -73,7 +73,7 @@ fun RadioView(close: () -> Unit) {
                         APIResponse.Loading,
                         Pair(TextSize.SMALL, "Trending Now"),
                         StyleSize.SHOW_AUTHOR,
-                        showGrid = false
+                        showGrid = false, true
                     )
                 }
             }
@@ -86,7 +86,7 @@ fun RadioView(close: () -> Unit) {
                             APIResponse.Success(it.list),
                             Pair(TextSize.SMALL, it.name ?: ""),
                             StyleSize.SHOW_AUTHOR,
-                            showGrid = false
+                            showGrid = false, true
                         )
 
                         if (i % 2 == 0) {

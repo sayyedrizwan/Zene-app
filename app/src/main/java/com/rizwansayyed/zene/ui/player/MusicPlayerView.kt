@@ -198,7 +198,7 @@ fun MusicPlayerView(
                             musicPlayerViewModel.storeData,
                             Pair(TextSize.SMALL, R.string.artists_merchandise),
                             StyleSize.SHOW_AUTHOR,
-                            showGrid = true
+                            showGrid = true, true
                         )
                     }
                 }

@@ -256,6 +256,7 @@
     <string name="subscription_activated_successfully">Subscription activated successfully</string>
     <string name="start_free_trial">Start Free Trial</string>
     <string name="what_our_pro_users_say">What our pro users say!</string>
+    <string name="have_a_coupon">Have a coupon?</string>
     <string name="remove_cache_from_offline">Are you sure you want to remove the cache for this song? Once removed, it won’t be available in offline mode.</string>
     <string name="upgrade_text_subscription_text">Again, All features are free to use, by upgrading to premium it removes ads and grants you access to Zene\'s exclusive community.</string>
 </resources>
