@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
@@ -63,7 +64,7 @@ import com.rizwansayyed.zene.ui.view.InputTypes.SEARCH
 
 
 enum class InputTypes {
-    SEARCH, IMAGES, PLAYLISTS
+    SEARCH, IMAGES, PLAYLISTS, COUPON
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,6 +102,7 @@ fun SearchScreenBar(
                         SEARCH -> R.string.search_zene
                         IMAGES -> R.string.search_images
                         PLAYLISTS -> R.string.playlist_name
+                        InputTypes.COUPON -> R.string.enter_coupon_code
                     }
                     TextPoppins(
                         stringResource(placeholder), false, Color.Gray, 15
@@ -110,6 +112,7 @@ fun SearchScreenBar(
                     val icon = when (types) {
                         SEARCH, IMAGES -> Icons.Rounded.Search
                         PLAYLISTS -> Icons.Rounded.Create
+                        InputTypes.COUPON -> Icons.Rounded.ShoppingCart
                     }
                     Icon(
                         imageVector = icon,

@@ -101,4 +101,8 @@ class PremiumViewModel : ViewModel() {
             }
         }
     }
+
+    fun couponCodeVerify(code: String) {
+
+    }
 }

@@ -131,9 +131,9 @@ class PremiumActivity : ComponentActivity() {
                     TextPoppins(
                         stringResource(R.string.upgrade_text_subscription_text), true, size = 14
                     )
-                    Spacer(Modifier.height(35.dp))
-                    PremiumCouponView()
-                    Spacer(Modifier.height(120.dp))
+                    Spacer(Modifier.height(55.dp))
+                    PremiumCouponView(premiumViewModel)
+                    Spacer(Modifier.height(220.dp))
                 }
 
 
