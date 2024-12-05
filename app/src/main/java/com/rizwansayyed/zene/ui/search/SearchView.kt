@@ -25,7 +25,7 @@ fun SearchView(homeViewModel: HomeViewModel, back: () -> Unit) {
 
 
     if (search == "")
-        SearchInputView(homeViewModel, back) {
+        SearchInputView(homeViewModel) {
             if (it.trim().isEmpty()) return@SearchInputView
             logEvents(FirebaseLogEvents.FirebaseEvents.STARTED_SEARCHING)
             search = it

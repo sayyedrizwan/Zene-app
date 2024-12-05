@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.ui.mymusic.playlists
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -49,8 +48,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.ui.view.ButtonWithImage
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.InputTypes
 import com.rizwansayyed.zene.ui.view.LoadingView
-import com.rizwansayyed.zene.ui.view.PlaylistNameBar
 import com.rizwansayyed.zene.ui.view.SearchScreenBar
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsThin
@@ -142,7 +141,7 @@ fun AddPlaylistView(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
 
     if (showSearch) {
         Spacer(Modifier.height(30.dp))
-        SearchScreenBar(R.string.search_images, searchQuery, {
+        SearchScreenBar(InputTypes.IMAGES, searchQuery, {
             searchQuery = it
         }) {
             showSearch = false
@@ -183,7 +182,7 @@ fun AddPlaylistView(viewModel: ZeneViewModel, onDismiss: () -> Unit) {
 
     Spacer(Modifier.height(40.dp))
 
-    PlaylistNameBar(playlistName, {
+    SearchScreenBar(InputTypes.PLAYLISTS, playlistName, {
         playlistName = it
         showSearch = false
         viewModel.searchImages("")

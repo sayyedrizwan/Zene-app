@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.view.InputTypes
 import com.rizwansayyed.zene.ui.view.LoadingText
 import com.rizwansayyed.zene.ui.view.SearchScreenBar
 import com.rizwansayyed.zene.ui.view.SearchTexts
@@ -42,7 +43,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (String) -> Unit) {
+fun SearchInputView(homeViewModel: HomeViewModel, search: (String) -> Unit) {
     val searchHistory by searchHistoryDB.collectAsState(initial = emptyArray())
     var searchQuery by remember { mutableStateOf("") }
 
@@ -59,7 +60,7 @@ fun SearchInputView(homeViewModel: HomeViewModel, close: () -> Unit, search: (St
         item {
             Spacer(Modifier.height(20.dp))
 
-            SearchScreenBar(R.string.search_zene, searchQuery, {
+            SearchScreenBar(InputTypes.SEARCH, searchQuery, {
                 searchQuery = it
                 searchJob?.cancel()
                 searchJob = coroutine.launch {
