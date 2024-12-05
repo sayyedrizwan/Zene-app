@@ -470,4 +470,15 @@ class ZeneAPIImpl @Inject constructor(
     override suspend fun similarSongsToPlay(id: String) = flow {
         emit(zeneAPI.similarSongsToPlay(id))
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun isCouponAvailable(code: String) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+        val json = JSONObject().apply {
+            put("email", email)
+            put("coupon", code)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.isCouponAvailable(body))
+    }.flowOn(Dispatchers.IO)
 }

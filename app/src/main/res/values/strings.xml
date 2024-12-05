@@ -254,6 +254,7 @@
     <string name="send_opt">Send OTP</string>
     <string name="number_is_not_verified_in_truecaller">Number is not verified in TrueCaller.</string>
     <string name="verify">Verify</string>
+    <string name="enter_a_valid_coupon_code">Enter a valid coupon code</string>
     <string name="subscription_activated_successfully">Subscription activated successfully</string>
     <string name="start_free_trial">Start Free Trial</string>
     <string name="what_our_pro_users_say">What our pro users say!</string>

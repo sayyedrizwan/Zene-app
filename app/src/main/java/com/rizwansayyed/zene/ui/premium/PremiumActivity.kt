@@ -132,7 +132,9 @@ class PremiumActivity : ComponentActivity() {
                         stringResource(R.string.upgrade_text_subscription_text), true, size = 14
                     )
                     Spacer(Modifier.height(55.dp))
-                    PremiumCouponView(premiumViewModel)
+                    PremiumCouponView(premiumViewModel) {
+                        isPremiumNow = true
+                    }
                     Spacer(Modifier.height(220.dp))
                 }
 

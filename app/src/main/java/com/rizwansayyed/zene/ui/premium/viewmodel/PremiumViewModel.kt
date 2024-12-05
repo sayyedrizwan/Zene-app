@@ -1,11 +1,11 @@
 package com.rizwansayyed.zene.ui.premium.viewmodel
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -15,14 +15,26 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.google.common.collect.ImmutableList
+import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
-import com.rizwansayyed.zene.utils.Utils.toast
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
-class PremiumViewModel : ViewModel() {
+@HiltViewModel
+class PremiumViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
 
     var monthlyPricing by mutableStateOf("")
     var yearlyPricing by mutableStateOf("")
     var isLoading by mutableStateOf(false)
+    var couponCodeStatus by mutableStateOf<APIResponse<Boolean>>(APIResponse.Empty)
     var purchase by mutableStateOf<Purchase?>(null)
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, _ -> }
@@ -102,7 +114,19 @@ class PremiumViewModel : ViewModel() {
         }
     }
 
-    fun couponCodeVerify(code: String) {
-
+    fun couponCodeVerify(code: String) = viewModelScope.launch(Dispatchers.IO) {
+        couponCodeStatus = APIResponse.Empty
+        if (code.length < 4) {
+            delay(1.seconds)
+            couponCodeStatus = APIResponse.Success(false)
+            return@launch
+        }
+        zeneAPI.isCouponAvailable(code).onStart {
+            couponCodeStatus = APIResponse.Loading
+        }.catch {
+            couponCodeStatus = APIResponse.Success(false)
+        }.collectLatest {
+            couponCodeStatus = APIResponse.Success(it.isSuccess())
+        }
     }
 }

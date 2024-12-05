@@ -121,4 +121,5 @@ interface ZeneAPIInterface {
 
     suspend fun isUserPremium(): Flow<ZeneUsersPremiumResponse>
     suspend fun similarSongsToPlay(id: String): Flow<ZeneMusicDataResponse>
+    suspend fun isCouponAvailable(code: String): Flow<ZeneBooleanResponse>
 }
