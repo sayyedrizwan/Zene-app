@@ -42,7 +42,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
     var job by remember { mutableStateOf<Job?>(null) }
@@ -52,7 +51,7 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
     var lyricsDone by remember { mutableIntStateOf(0) }
     var userIsScrolling by remember { mutableStateOf(false) }
 
-    val pager = rememberPagerState(pageCount = { lyrics.split("<br>").size })
+    val pager = rememberPagerState(pageCount = { lyrics.split("\n[").size })
 
     if (lyrics != "") if (isSync)
         VerticalPager(
@@ -78,7 +77,7 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
             }
 
             TextPoppins(
-                lyrics.split("<br>")[page].substringAfter("]").trim(),
+                lyrics.split("\n[")[page].substringAfter("]").trim(),
                 true, if (lyricsDone > page) Color.White else Color.DarkGray,
                 if (lyricsDone > page) 19 else 16
             )
@@ -109,9 +108,9 @@ fun LyricsView(lyricsData: ZeneLyricsData, playerInfo: MusicPlayerData?) {
     LaunchedEffect(playerInfo?.currentDuration) {
         if (lyricsData.isSync == true) {
             isSync = true
-            if (lyricsData.lyrics?.contains("<br>") == true) lyrics = lyricsData.lyrics
+            if (lyricsData.lyrics?.contains("\n[") == true) lyrics = lyricsData.lyrics
 
-            lyricsData.lyrics?.split("<br>")?.forEachIndexed { index, s ->
+            lyricsData.lyrics?.split("\n[")?.forEachIndexed { index, s ->
                 if (s.contains(formatTotalDuration(playerInfo?.currentDuration))) {
                     lyricsDone = index + 1
                     if (!userIsScrolling) pager.animateScrollToPage(index + 1)

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -72,6 +73,7 @@ class MusicPlayerViewModel @Inject constructor(
         }.catch {
             lyrics = APIResponse.Error(it)
         }.collectLatest {
+            Log.d("TAG", "lyrics: running $it")
             lyricsID = m.id
             lyrics = APIResponse.Success(it)
         }
