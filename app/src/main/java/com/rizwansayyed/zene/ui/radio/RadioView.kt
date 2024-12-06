@@ -90,9 +90,7 @@ fun RadioView(close: () -> Unit) {
                         )
 
                         if (i % 2 == 0) {
-                            Spacer(Modifier.height(60.dp))
                             AdsBannerView()
-                            Spacer(Modifier.height(60.dp))
                         }
                     }
                 }

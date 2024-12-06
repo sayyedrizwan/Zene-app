@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "157"
-versionname = "3.02.807"
+appversion = "158"
+versionname = "3.02.809"
 
 
 agp = "8.5.2"
@@ -35,7 +35,7 @@ hilt = "2.52"
 retrofit = "2.11.0"
 lifecycle-compose = "2.8.7"
 coil = "2.7.0"
-ads = "23.5.0"
+ads = "23.6.0"
 auth = "21.2.0"
 nav = "2.8.4"
 webkit = "1.12.1"

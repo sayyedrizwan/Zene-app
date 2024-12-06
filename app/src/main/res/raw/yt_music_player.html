@@ -84,11 +84,11 @@
 
             function onPlayerReady(event) {
               event.target.playVideo();
+              event.target.setVolume(100);
               playerState(event.target, true);
             }
 
             function onPlayerStateChange(event) {
-              event.target.setVolume(100);
               playerState(event.target, true);
             }
 

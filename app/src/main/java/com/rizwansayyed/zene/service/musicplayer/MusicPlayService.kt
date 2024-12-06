@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.AudioAttributes
 import android.media.AudioManager
 import android.os.IBinder
 import android.util.Log
@@ -191,7 +192,7 @@ class MusicPlayService : Service() {
                     pause()
                     CoroutineScope(Dispatchers.IO).launch {
                         val d = musicPlayerDB.first()
-                        d?.currentDuration?.let { seekTo(it) }
+                        d?.currentDuration?.let { d -> seekTo(d) }
                     }
                 }
             }
@@ -202,7 +203,9 @@ class MusicPlayService : Service() {
             playAVideo(it)
         })
 
-        webView = WebViewService(applicationContext).apply {
+        audioWebViewManager(applicationContext)
+
+        webView = WebView(applicationContext).apply {
             enable()
             addJavascriptInterface(playerInterface, "ZeneListener")
             webViewClient = webViewClientObject
@@ -353,12 +356,10 @@ class MusicPlayService : Service() {
             }
         }
 
-
         if (lists.isEmpty()) return@launch
         val info = musicPlayerDB.firstOrNull()
         val list = lists.filter { it.id != player.player?.id }
 
-        Log.d("TAG", "suggestPlaylistsSongs: data111 ${list.size}")
         info?.list = listOf(player.player!!) + list
         musicPlayerDB = flowOf(info)
     }
@@ -410,8 +411,8 @@ class MusicPlayService : Service() {
     private fun playAVideo(v: String) = CoroutineScope(Dispatchers.Main).launch {
         val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
             .replace("<<VideoID>>", v.trim())
-//            .replace("<<Quality>>", songQualityDB.first().value)
-            .replace("<<Quality>>", "360")
+            .replace("<<Quality>>", songQualityDB.first().value)
+//            .replace("<<Quality>>", "360")
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
         if (isActive) cancel()

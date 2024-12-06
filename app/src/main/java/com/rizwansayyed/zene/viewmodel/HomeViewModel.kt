@@ -185,7 +185,7 @@ class HomeViewModel @Inject constructor(
         }.catch {
             topMostListeningArtists = APIResponse.Error(it)
         }.collectLatest {
-            topMostListeningArtists = APIResponse.Success(it)
+            topMostListeningArtists = APIResponse.Success(it.distinctBy { a -> a.name })
         }
     }
 

@@ -168,11 +168,7 @@ fun HomeView(
         }
 
         item(2005, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-                AdsBannerView()
-                Spacer(Modifier.height(60.dp))
-            }
+            AdsBannerView()
         }
 
 
@@ -210,11 +206,7 @@ fun HomeView(
             }
 
             item(9, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                Column {
-                    Spacer(Modifier.height(60.dp))
-                    AdsBannerView()
-                    Spacer(Modifier.height(60.dp))
-                }
+                AdsBannerView()
             }
 
             item(10, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -261,11 +253,7 @@ fun HomeView(
                 }
             }
             item(22, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                Column {
-                    Spacer(Modifier.height(60.dp))
-                    AdsBannerView()
-                    Spacer(Modifier.height(60.dp))
-                }
+                AdsBannerView()
             }
 
             item(23, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -283,11 +271,7 @@ fun HomeView(
                 }
             }
             item(15, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                Column {
-                    Spacer(Modifier.height(60.dp))
-                    AdsBannerView()
-                    Spacer(Modifier.height(60.dp))
-                }
+                AdsBannerView()
             }
 
             when (val v = homeViewModel.favArtistsLists) {
@@ -303,9 +287,7 @@ fun HomeView(
                         HomeArtistsSimilarToView(item)
 
                         if (i % 2 == 0) {
-                            Spacer(Modifier.height(60.dp))
                             AdsBannerView()
-                            Spacer(Modifier.height(60.dp))
                         }
                     }
                 }
@@ -314,11 +296,7 @@ fun HomeView(
 
         if (homeViewModel.loadThirdUI) {
             item(17, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                Column {
-                    Spacer(Modifier.height(60.dp))
-                    AdsBannerView()
-                    Spacer(Modifier.height(60.dp))
-                }
+                AdsBannerView()
             }
 
             when (val v = homeViewModel.suggestedSongsForYou) {

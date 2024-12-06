@@ -9,23 +9,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
-import com.rizwansayyed.zene.ui.artists.view.ArtistsNews
 import com.rizwansayyed.zene.ui.artists.view.ArtistsSocialButton
 import com.rizwansayyed.zene.ui.artists.view.ArtistsTopView
 import com.rizwansayyed.zene.ui.artists.view.ArtistsTopViewLoading
@@ -39,11 +35,9 @@ import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.home.view.TextTitleHeader
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.AdsBannerView
-import com.rizwansayyed.zene.ui.view.CardRoundLoading
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingCardView
 import com.rizwansayyed.zene.ui.view.SongDynamicCards
-import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
@@ -114,11 +108,7 @@ fun ArtistsView(id: String?, close: () -> Unit) {
                 }
 
                 item(1001, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    Column {
-                        Spacer(Modifier.height(60.dp))
-                        AdsBannerView()
-                        Spacer(Modifier.height(60.dp))
-                    }
+                    AdsBannerView()
                 }
 
                 item(6, { GridItemSpan(TOTAL_GRID_SIZE) }) {
@@ -186,11 +176,7 @@ fun ArtistsView(id: String?, close: () -> Unit) {
                 }
 
                 item(1002, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-                    Column {
-                        Spacer(Modifier.height(60.dp))
-                        AdsBannerView()
-                        Spacer(Modifier.height(60.dp))
-                    }
+                    AdsBannerView()
                 }
 
                 if (v.data.songs.isNotEmpty()) {
