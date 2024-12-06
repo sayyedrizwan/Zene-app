@@ -5,7 +5,7 @@ compilesdk = "35"
 minsdk = "26"
 
 
-appversion = "156"
+appversion = "157"
 versionname = "3.02.807"
 
 
@@ -29,7 +29,7 @@ browser = "1.8.0"
 exo-player = "1.5.0"
 room = "2.6.1"
 facebook = "latest.release"
-firebase-bom = "33.6.0"
+firebase-bom = "33.7.0"
 googleid = "1.1.1"
 hilt = "2.52"
 retrofit = "2.11.0"

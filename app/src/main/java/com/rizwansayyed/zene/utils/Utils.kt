@@ -97,7 +97,7 @@ object Utils {
         const val YOUTUBE_MUSIC = "https://www.youtube.com/music"
         const val YOUTUBE_MUSIC_SEARCH =
             "https://music.youtube.com/youtubei/v1/search?prettyPrint=false"
-        const val YOUTUBE_URL = "https://www.youtube.com"
+        const val YOUTUBE_URL = "https://www.music.youtube.com"
 
         const val TRUE_CALLER_BASE_URL = "https://oauth-account-noneu.truecaller.com/v1/"
         const val TRUE_CALLER_TOKEN_API = "token"

@@ -66,7 +66,6 @@ import com.rizwansayyed.zene.utils.Utils.enable
 import com.rizwansayyed.zene.utils.Utils.getTimeAfterMinutesInMillis
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.readHTMLFromUTF8File
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.utils.Utils.wvClearCache
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -409,9 +408,10 @@ class MusicPlayService : Service() {
     }
 
     private fun playAVideo(v: String) = CoroutineScope(Dispatchers.Main).launch {
-        val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player)).replace(
-            "<<VideoID>>", v.trim()
-        ).replace("<<Quality>>", songQualityDB.first().value)
+        val html = readHTMLFromUTF8File(resources.openRawResource(R.raw.yt_music_player))
+            .replace("<<VideoID>>", v.trim())
+//            .replace("<<Quality>>", songQualityDB.first().value)
+            .replace("<<Quality>>", "360")
 
         webView.loadDataWithBaseURL(YOUTUBE_URL, html, "text/html", "UTF-8", null)
         if (isActive) cancel()

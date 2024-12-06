@@ -46,8 +46,6 @@
               setLocalStorageItem();
             });
 
-            var volumeCheckInterval;
-
             var tag = document.createElement("script");
 
             tag.src = "https://www.youtube.com/iframe_api";
@@ -90,14 +88,8 @@
             }
 
             function onPlayerStateChange(event) {
+              event.target.setVolume(100);
               playerState(event.target, true);
-
-              clearInterval(volumeCheckInterval);
-              if (event.data == YT.PlayerState.PLAYING) {
-                volumeCheckInterval = setInterval(() => {
-                  event.target.setVolume(40);
-                }, 3000);
-              }
             }
 
             function playerState(p, updatePlayback) {
