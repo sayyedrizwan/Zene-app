@@ -155,7 +155,7 @@ fun PlaylistFullGridSongs(
             .padding(horizontal = 5.dp, vertical = 10.dp)
             .fillMaxWidth()
             .bouncingClickable {
-                if (it) openSpecificIntent(m, listOf(m))
+                if (it) openSpecificIntent(m, homeViewModel.userPlaylistsSong)
                 else dialog = true
             },
         Arrangement.Center,
