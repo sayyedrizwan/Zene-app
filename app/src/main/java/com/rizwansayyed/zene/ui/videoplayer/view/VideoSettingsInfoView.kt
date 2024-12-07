@@ -28,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.db.DataStoreManager.videoQualityDB
 import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
+import com.rizwansayyed.zene.ui.settings.model.VideoQualityTypes
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.webview.WebAppInterface
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -36,7 +37,7 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun VideoSettingsInfoView(webApp: WebAppInterface) {
-    val songQuality by videoQualityDB.collectAsState(initial = SongQualityTypes.HIGH_QUALITY)
+    val songQuality by videoQualityDB.collectAsState(initial = VideoQualityTypes.HIGH_QUALITY)
     var settingsAlert by remember { mutableStateOf(false) }
 
     ImageIcon(R.drawable.ic_setting, 27) {
@@ -65,7 +66,7 @@ fun VideoSettingsInfoView(webApp: WebAppInterface) {
                         false, size = 16, limit = 1
                     )
                 }
-                SongQualityTypes.entries.forEach {
+                VideoQualityTypes.entries.forEach {
                     Row(
                         Modifier
                             .padding(horizontal = 10.dp, vertical = 10.dp)

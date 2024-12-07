@@ -50,6 +50,7 @@ import com.rizwansayyed.zene.data.db.model.TimerData
 import com.rizwansayyed.zene.data.db.model.UserInfoData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.ui.settings.model.SongQualityTypes
+import com.rizwansayyed.zene.ui.settings.model.VideoQualityTypes
 import com.rizwansayyed.zene.utils.Utils.moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -83,8 +84,8 @@ object DataStoreManager {
         val USER_IP_INFO = stringPreferencesKey("user_ip_info")
         val EARPHONE_DEVICES_LIST = stringPreferencesKey("earphone_devices_list")
         val APP_REVIEW_STATUS = stringPreferencesKey("app_review_status")
-        val SONG_QUALITY = stringPreferencesKey("song_quality")
-        val VIDEO_QUALITY = stringPreferencesKey("video_quality")
+        val SONG_QUALITY = stringPreferencesKey("play_song_quality")
+        val VIDEO_QUALITY = stringPreferencesKey("play_video_quality")
         val VIDEO_CAPTION = booleanPreferencesKey("video_caption")
         val IS_USER_PREMIUM = booleanPreferencesKey("is_user_premium")
     }
@@ -212,7 +213,7 @@ object DataStoreManager {
 
     var songQualityDB
         get() = context.dataStore.data.map {
-            SongQualityTypes.valueOf(it[SONG_QUALITY] ?: SongQualityTypes.HIGH_QUALITY.name)
+            SongQualityTypes.valueOf(it[SONG_QUALITY] ?: SongQualityTypes.PREMIUM_QUALITY.name)
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[SONG_QUALITY] = value.first().name }
@@ -220,7 +221,7 @@ object DataStoreManager {
 
     var videoQualityDB
         get() = context.dataStore.data.map {
-            SongQualityTypes.valueOf(it[VIDEO_QUALITY] ?: SongQualityTypes.HIGH_QUALITY.name)
+            VideoQualityTypes.valueOf(it[VIDEO_QUALITY] ?: VideoQualityTypes.HIGH_QUALITY.name)
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit { it[VIDEO_QUALITY] = value.first().name }

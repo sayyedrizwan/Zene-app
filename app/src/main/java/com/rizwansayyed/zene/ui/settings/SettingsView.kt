@@ -229,7 +229,7 @@ fun SettingsView() {
 @Composable
 fun SongQualitySettings() {
     val coroutines = rememberCoroutineScope()
-    val songQuality by songQualityDB.collectAsState(initial = SongQualityTypes.HIGH_QUALITY)
+    val songQuality by songQualityDB.collectAsState(initial = SongQualityTypes.PREMIUM_QUALITY)
     val songRestarted = stringResource(R.string.song_quality_updated_successfully)
 
     Spacer(Modifier.height(40.dp))

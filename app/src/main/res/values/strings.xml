@@ -47,7 +47,6 @@
     <string name="upgrade_to_zene_premium">Upgrade to Zene Premium</string>
     <string name="make_and_sync_playlists">Make and sync playlists</string>
     <string name="monthly">Monthly</string>
-    <string name="yearly">Yearly</string>
     <string name="one_month">1 Month</string>
     <string name="three_days_free_trial">3 days free trial</string>
     <string name="per_month">per month</string>
@@ -233,6 +232,7 @@
     <string name="no_updates_found">No updates found, you can view when earphones are connected, disconnected, etc.</string>
     <string name="delete">Delete</string>
     <string name="updates">Updates</string>
+    <string name="yearly">Yearly</string>
     <string name="verify_via_truecaller">Verify via TrueCaller</string>
     <string name="zene_connect">Zene Connect</string>
     <string name="zene_pro">Zene Pro</string>
