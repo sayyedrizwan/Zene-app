@@ -167,7 +167,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(NAV_MY_MUSIC) {
-                            MyMusicView(zeneViewModel)
+                            MyMusicView()
 
                             LaunchedEffect(Unit) {
                                 homeNavModel.selectedMenuItems(NavHomeMenu.MY_MUSIC)

@@ -241,7 +241,7 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
                 PlaylistAddComponents(it, zeneViewModel, m.id, playlistsAddStatus)
             }
 
-            if (zeneViewModel.songHistoryIsLoading) item {
+            if (zeneViewModel.dataIsLoading) item {
                 Row(
                     Modifier
                         .padding(top = 30.dp)
@@ -253,7 +253,7 @@ fun AddSongToPlaylist(m: ZeneMusicDataItems, close: () -> Unit) {
                 }
             }
 
-            if (!zeneViewModel.songHistoryIsLoading && zeneViewModel.doShowMoreLoading) item {
+            if (!zeneViewModel.dataIsLoading && zeneViewModel.doShowMoreLoading) item {
                 SmallButtonBorderText(R.string.load_more) {
                     page += 1
                     m.id?.let { zeneViewModel.checkIfSongPresentInPlaylists(it, page) }

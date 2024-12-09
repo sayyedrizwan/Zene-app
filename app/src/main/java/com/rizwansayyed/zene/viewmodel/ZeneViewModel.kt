@@ -48,7 +48,7 @@ class ZeneViewModel @Inject constructor(
     var offlineSongs = mutableStateListOf<OfflineSongsData>()
     var zeneSavedPlaylists = mutableStateListOf<ZeneSavedPlaylistsResponseItem>()
     var saveSongPlaylists = mutableStateListOf<ZeneMusicDataItems>()
-    var songHistoryIsLoading by mutableStateOf(true)
+    var dataIsLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
     var relatedVideos by mutableStateOf<APIResponse<ZeneMusicDataResponse>>(APIResponse.Empty)
     var searchFindSong by mutableStateOf<APIResponse<ZeneMusicDataItems>>(APIResponse.Empty)
@@ -125,22 +125,22 @@ class ZeneViewModel @Inject constructor(
         }
 
         if (!internetIsConnected()) {
-            songHistoryIsLoading = false
+            dataIsLoading = false
             return@launch
         }
 
 
         zeneAPI.getMusicHistory(page).onStart {
-            songHistoryIsLoading = true
+            dataIsLoading = true
         }.catch {
-            songHistoryIsLoading = false
+            dataIsLoading = false
         }.collectLatest {
             if (page == 0) {
                 songHistory.clear()
                 zeneSavedPlaylists.clear()
             }
 
-            songHistoryIsLoading = false
+            dataIsLoading = false
             it.forEach { songHistory.add(it) }
 
             doShowMoreLoading = it.size >= 20
@@ -160,9 +160,9 @@ class ZeneViewModel @Inject constructor(
         }
 
         offlineDB.getLists(page).onStart {
-            songHistoryIsLoading = true
+            dataIsLoading = true
         }.catch {
-            songHistoryIsLoading = false
+            dataIsLoading = false
         }.collectLatest {
             if (page == 0) {
                 songHistory.clear()
@@ -170,7 +170,7 @@ class ZeneViewModel @Inject constructor(
                 offlineSongs.clear()
             }
 
-            songHistoryIsLoading = false
+            dataIsLoading = false
             it.forEach { offlineSongs.add(it) }
 
             doShowMoreLoading = it.size >= 30
@@ -185,20 +185,20 @@ class ZeneViewModel @Inject constructor(
         }
 
         if (!internetIsConnected()) {
-            songHistoryIsLoading = false
+            dataIsLoading = false
             return@launch
         }
 
         zeneAPI.savedPlaylists(page).onStart {
-            songHistoryIsLoading = true
+            dataIsLoading = true
         }.catch {
-            songHistoryIsLoading = false
+            dataIsLoading = false
         }.collectLatest {
             if (page == 0) {
                 songHistory.clear()
                 zeneSavedPlaylists.clear()
             }
-            songHistoryIsLoading = false
+            dataIsLoading = false
             it.forEach { m -> zeneSavedPlaylists.add(m) }
 
             doShowMoreLoading = it.size >= 20
@@ -266,18 +266,18 @@ class ZeneViewModel @Inject constructor(
             if (page == 0) saveSongPlaylists.clear()
 
             if (!internetIsConnected()) {
-                songHistoryIsLoading = false
+                dataIsLoading = false
                 return@launch
             }
 
 
             zeneAPI.checkIfSongPresentInPlaylists(id, page).onStart {
-                songHistoryIsLoading = true
+                dataIsLoading = true
             }.catch {
-                songHistoryIsLoading = false
+                dataIsLoading = false
             }.collectLatest {
                 if (page == 0) saveSongPlaylists.clear()
-                songHistoryIsLoading = false
+                dataIsLoading = false
                 saveSongPlaylists.addAll(it)
 
                 doShowMoreLoading = it.size >= 20

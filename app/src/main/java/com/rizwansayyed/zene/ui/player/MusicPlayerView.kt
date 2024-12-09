@@ -335,7 +335,11 @@ fun MusicListCards(
                     )
                     .padding(9.dp)
                     .clickable {
-                        sendWebViewCommand(playerInfo?.list?.get(page)!!, playerInfo.list!!)
+                        try {
+                            sendWebViewCommand(playerInfo?.list?.get(page)!!, playerInfo.list!!)
+                        } catch (e: Exception) {
+                            e.message
+                        }
                     }
                     .clip(RoundedCornerShape(14.dp))
                     .background(MainColor)
