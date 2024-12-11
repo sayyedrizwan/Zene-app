@@ -1,8 +1,5 @@
 package com.rizwansayyed.zene
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.Application.ActivityLifecycleCallbacks
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,10 +10,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -24,8 +18,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.annotation.OptIn
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -48,7 +40,6 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.rizwansayyed.zene.data.db.DataStoreManager.isUserPremiumDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.timerDataDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -68,7 +59,6 @@ import com.rizwansayyed.zene.ui.login.GlobalEmailEventProvider
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.mood.MoodView
 import com.rizwansayyed.zene.ui.mymusic.MyMusicView
-import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerActivity
 import com.rizwansayyed.zene.ui.player.MusicPlayerView
 import com.rizwansayyed.zene.ui.playlists.PlaylistsView
 import com.rizwansayyed.zene.ui.playlists.UserPlaylistsView
@@ -115,13 +105,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
@@ -285,9 +270,6 @@ class MainActivity : ComponentActivity() {
                 val connectivityManager =
                     getSystemService(ConnectivityManager::class.java) as ConnectivityManager
                 connectivityManager.requestNetwork(networkRequest, networkCallback)
-
-//                delay(6.seconds)
-//                startActivity(Intent(this@MainActivity, TrueCallerActivity::class.java))
             }
         }
 

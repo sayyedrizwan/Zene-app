@@ -66,6 +66,8 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_IS_SONG_IN_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_LIKED_SONGS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_MY_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_NUMBER_VERIFICATION_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_NUMBER_VERIFICATION_UPDATE_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_SONG_HISTORY_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_USER_TOP_CACHE_SONGS_API
@@ -299,6 +301,14 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_EXTRA_IS_COUPON_AVAILABLE_API)
     suspend fun isCouponAvailable(@Body body: RequestBody): ZeneBooleanResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_USER_NUMBER_VERIFICATION_API)
+    suspend fun numberVerification(@Body body: RequestBody): ZeneBooleanResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_USER_NUMBER_VERIFICATION_UPDATE_API)
+    suspend fun numberVerificationUpdate(@Body body: RequestBody): ZeneBooleanResponse
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_RADIO_INFO_API)

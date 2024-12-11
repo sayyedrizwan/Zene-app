@@ -229,7 +229,7 @@ class LoginFlow @Inject constructor(private val zeneAPIInterface: ZeneAPIInterfa
                 return@withContext
             }
 
-            val u = UserInfoData(n, e, 0, p, false)
+            val u = UserInfoData(n, e, 0, null, null, p, false)
             DataStoreManager.userInfoDB = flowOf(u)
             delay(1.seconds)
             zeneAPIInterface.updateUser().catch { }.collect()

@@ -122,4 +122,10 @@ interface ZeneAPIInterface {
     suspend fun isUserPremium(): Flow<ZeneUsersPremiumResponse>
     suspend fun similarSongsToPlay(id: String): Flow<ZeneMusicDataResponse>
     suspend fun isCouponAvailable(code: String): Flow<ZeneBooleanResponse>
+    suspend fun numberVerification(number: String, country: String): Flow<ZeneBooleanResponse>
+    suspend fun numberVerificationUpdate(
+        number: String,
+        country: String,
+        otp: String
+    ): Flow<ZeneBooleanResponse>
 }

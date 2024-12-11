@@ -57,6 +57,7 @@ import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppinsLight
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
+import com.rizwansayyed.zene.ui.zeneconnect.ZeneConnectHomeView
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE
@@ -125,54 +126,52 @@ fun HomeView(
                 else -> {}
             }
         }
-
-//        item(2050, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-//            Column(Modifier.fillMaxWidth()) {
-//                Spacer(Modifier.height(40.dp))
-//                ZeneConnectHomeView()
-//                Spacer(Modifier.height(30.dp))
-//            }
-//        }
-
-        item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(10.dp))
-                HorizontalSongView(
-                    homeViewModel.recommendedPlaylists,
-                    Pair(TextSize.BIG, R.string.recommended_playlists),
-                    StyleSize.HIDE_AUTHOR,
-                    showGrid = false, true
-                )
-            }
-        }
-
-        item(2003, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            SponsorsAdsView()
-        }
-
-        item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                Spacer(Modifier.height(60.dp))
-            }
-        }
-
-        item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            Column {
-                HorizontalSongView(
-                    homeViewModel.recommendedAlbums,
-                    Pair(TextSize.SMALL, R.string.albums_picked_for_you),
-                    StyleSize.SHOW_AUTHOR,
-                    showGrid = false, true
-                )
-            }
-        }
-
-        item(2005, { GridItemSpan(TOTAL_GRID_SIZE) }) {
-            AdsBannerView()
-        }
-
-
         if (homeViewModel.loadFirstUI) {
+            item(2050, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column(Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.height(40.dp))
+                    ZeneConnectHomeView()
+                    Spacer(Modifier.height(30.dp))
+                }
+            }
+
+            item(2, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(10.dp))
+                    HorizontalSongView(
+                        homeViewModel.recommendedPlaylists,
+                        Pair(TextSize.BIG, R.string.recommended_playlists),
+                        StyleSize.HIDE_AUTHOR,
+                        showGrid = false, true
+                    )
+                }
+            }
+
+            item(2003, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                SponsorsAdsView()
+            }
+
+            item(3, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    Spacer(Modifier.height(60.dp))
+                }
+            }
+
+            item(4, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                Column {
+                    HorizontalSongView(
+                        homeViewModel.recommendedAlbums,
+                        Pair(TextSize.SMALL, R.string.albums_picked_for_you),
+                        StyleSize.SHOW_AUTHOR,
+                        showGrid = false, true
+                    )
+                }
+            }
+
+            item(2005, { GridItemSpan(TOTAL_GRID_SIZE) }) {
+                AdsBannerView()
+            }
+
             item(5, { GridItemSpan(TOTAL_GRID_SIZE) }) {
                 Column {
                     Spacer(Modifier.height(60.dp))

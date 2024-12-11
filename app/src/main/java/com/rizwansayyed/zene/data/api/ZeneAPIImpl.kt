@@ -481,4 +481,30 @@ class ZeneAPIImpl @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.isCouponAvailable(body))
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun numberVerification(number: String, country: String) = flow {
+        val email = userInfoDB.firstOrNull()?.email ?: return@flow
+        val json = JSONObject().apply {
+            put("email", email)
+            put("phone_number", number)
+            put("country_number", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.numberVerification(body))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun numberVerificationUpdate(number: String, country: String, otp: String) =
+        flow {
+            val email = userInfoDB.firstOrNull()?.email ?: return@flow
+            val json = JSONObject().apply {
+                put("email", email)
+                put("phone_number", number)
+                put("country_number", country)
+                put("otp_code", otp)
+            }
+
+            val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+            emit(zeneAPI.numberVerificationUpdate(body))
+        }.flowOn(Dispatchers.IO)
 }
