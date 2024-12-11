@@ -28,7 +28,7 @@ data class ZeneUsersResponse(
 
     fun toUserInfo(email: String?): UserInfoData {
         return UserInfoData(
-            name, email, total_playtime, phone_number, country_code, profile_photo, isReviewDone()
+            name, email, total_playtime, phone_number, profile_photo, isReviewDone()
         )
     }
 }

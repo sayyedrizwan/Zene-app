@@ -7,7 +7,6 @@ data class UserInfoData(
     var email: String?,
     var totalPlayTime: Int?,
     var phonenumber: String?,
-    var countryCode: String?,
     private var profilePhoto: String?,
     var isReviewDone: Boolean?
 ) {

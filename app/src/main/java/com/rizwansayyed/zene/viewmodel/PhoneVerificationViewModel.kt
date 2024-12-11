@@ -69,7 +69,6 @@ class PhoneVerificationViewModel @Inject constructor(
                 if (it.isSuccess()) {
                     val userInfo = userInfoDB.firstOrNull()
                     userInfo?.phonenumber = phoneNumber
-                    userInfo?.countryCode = countryCode
                     userInfoDB = flowOf(userInfo)
                 } else {
                     delay(1.seconds)

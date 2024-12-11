@@ -174,4 +174,6 @@ dependencies {
 
     implementation(libs.truecaller)
     implementation(libs.konfetti)
+
+    implementation("com.github.google:libphonenumber:v8.13.51")
 }
