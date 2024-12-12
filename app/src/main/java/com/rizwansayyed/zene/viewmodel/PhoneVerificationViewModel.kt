@@ -1,15 +1,21 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.provider.ContactsContract
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.api.model.CountryCodeModel
 import com.rizwansayyed.zene.data.api.zene.TrueCallerAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
+import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.di.BaseApp.Companion.context
+import com.rizwansayyed.zene.utils.Utils.getAllPhoneCode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -23,8 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class PhoneVerificationViewModel @Inject constructor(
-    private val trueCallerAPI: TrueCallerAPIInterface,
-    private val zeneAPI: ZeneAPIInterface
+    private val trueCallerAPI: TrueCallerAPIInterface, private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
     var isError by mutableStateOf(false)
@@ -76,4 +81,41 @@ class PhoneVerificationViewModel @Inject constructor(
                 }
             }
         }
+
+
+    fun getContactsLists() = CoroutineScope(Dispatchers.IO).launch {
+        val list = ArrayList<Pair<String, String>>()
+        val countryCodes = getAllPhoneCode()
+        val address = DataStoreManager.ipDB.firstOrNull()?.countryCode ?: ""
+        val phoneNumberCode = countryCodes.first { it.iso.lowercase() == address.lowercase() }.code
+
+        val cursor = context.contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null
+        )
+        cursor?.use {
+            while (it.moveToNext()) {
+                val name =
+                    it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                val number =
+                    it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                        .replace(" ", "").replace("-", "")
+                val hasCountryCode = hasCountryCode(number, countryCodes)
+                val finalNumber = if (hasCountryCode) number else "+${phoneNumberCode}${number}"
+                if (!list.any { n -> n.second == finalNumber }) list.add(Pair(name, finalNumber))
+            }
+        }
+
+        list.chunked(100).forEach { numbers ->
+            viewModelScope.launch(Dispatchers.IO) {
+                val l = numbers.map { it.second }.toTypedArray()
+                zeneAPI.numberUserInfo(l).catch { }.collectLatest {
+
+                }
+            }
+        }
+    }
+
+    private fun hasCountryCode(number: String, allPhoneCode: Array<CountryCodeModel>): Boolean {
+        return number.contains("+") && allPhoneCode.any { number.contains("+${it.code}") }
+    }
 }

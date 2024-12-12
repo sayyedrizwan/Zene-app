@@ -507,4 +507,13 @@ class ZeneAPIImpl @Inject constructor(
             val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
             emit(zeneAPI.numberVerificationUpdate(body))
         }.flowOn(Dispatchers.IO)
+
+    override suspend fun numberUserInfo(numbers: Array<String>) = flow {
+        val list = moshi.adapter(Array<String>::class.java).toJson(numbers)
+        val json = JSONObject().apply {
+            put("numbers", list)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.numberUserInfo(body))
+    }.flowOn(Dispatchers.IO)
 }

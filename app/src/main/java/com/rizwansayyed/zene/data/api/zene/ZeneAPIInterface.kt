@@ -128,4 +128,6 @@ interface ZeneAPIInterface {
         country: String,
         otp: String
     ): Flow<ZeneBooleanResponse>
+
+    suspend fun numberUserInfo(numbers: Array<String>): Flow<ZeneBooleanResponse>
 }

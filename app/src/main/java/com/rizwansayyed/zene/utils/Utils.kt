@@ -135,6 +135,7 @@ object Utils {
         const val ZENE_USER_API = "zuser/users"
         const val ZENE_USER_NUMBER_VERIFICATION_API = "zuser/number_verification"
         const val ZENE_USER_NUMBER_VERIFICATION_UPDATE_API = "zuser/number_verification_update"
+        const val ZENE_USER_NUMBER_USER_INFO_API = "zuser/number_user_info"
         const val ZENE_IS_USER_PREMIUM_API = "zuser/is_user_premium"
         const val ZENE_USER_LIKED_SONGS_API = "zuser/liked_songs"
         const val ZENE_USER_SONG_HISTORY_API = "zuser/songhistory"
