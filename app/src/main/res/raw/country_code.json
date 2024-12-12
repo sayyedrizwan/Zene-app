@@ -16,7 +16,7 @@
   },
   {
     "country": "American Samoa",
-    "code": "1-684",
+    "code": "1684",
     "iso": "AS"
   },
   {
@@ -31,7 +31,7 @@
   },
   {
     "country": "Anguilla",
-    "code": "1-264",
+    "code": "1264",
     "iso": "AI"
   },
   {
@@ -41,7 +41,7 @@
   },
   {
     "country": "Antigua and Barbuda",
-    "code": "1-268",
+    "code": "1268",
     "iso": "AG"
   },
   {
@@ -76,7 +76,7 @@
   },
   {
     "country": "Bahamas",
-    "code": "1-242",
+    "code": "1242",
     "iso": "BS"
   },
   {
@@ -91,7 +91,7 @@
   },
   {
     "country": "Barbados",
-    "code": "1-246",
+    "code": "1246",
     "iso": "BB"
   },
   {
@@ -116,7 +116,7 @@
   },
   {
     "country": "Bermuda",
-    "code": "1-441",
+    "code": "1441",
     "iso": "BM"
   },
   {
@@ -151,7 +151,7 @@
   },
   {
     "country": "British Virgin Islands",
-    "code": "1-284",
+    "code": "1284",
     "iso": "VG"
   },
   {
@@ -196,7 +196,7 @@
   },
   {
     "country": "Cayman Islands",
-    "code": "1-345",
+    "code": "1345",
     "iso": "KY"
   },
   {
@@ -291,12 +291,12 @@
   },
   {
     "country": "Dominica",
-    "code": "1-767",
+    "code": "1767",
     "iso": "DM"
   },
   {
     "country": "Dominican Republic",
-    "code": "1-809",
+    "code": "1809",
     "iso": "DO"
   },
   {
@@ -411,12 +411,12 @@
   },
   {
     "country": "Grenada",
-    "code": "1-473",
+    "code": "1473",
     "iso": "GD"
   },
   {
     "country": "Guam",
-    "code": "1-671",
+    "code": "1671",
     "iso": "GU"
   },
   {
@@ -426,7 +426,7 @@
   },
   {
     "country": "Guernsey",
-    "code": "44-1481",
+    "code": "441481",
     "iso": "GG"
   },
   {
@@ -496,7 +496,7 @@
   },
   {
     "country": "Isle of Man",
-    "code": "44-1624",
+    "code": "441624",
     "iso": "IM"
   },
   {
@@ -516,7 +516,7 @@
   },
   {
     "country": "Jamaica",
-    "code": "1-876",
+    "code": "1876",
     "iso": "JM"
   },
   {
@@ -526,7 +526,7 @@
   },
   {
     "country": "Jersey",
-    "code": "44-1534",
+    "code": "441534",
     "iso": "JE"
   },
   {
@@ -701,7 +701,7 @@
   },
   {
     "country": "Montserrat",
-    "code": "1-664",
+    "code": "1664",
     "iso": "MS"
   },
   {
@@ -781,7 +781,7 @@
   },
   {
     "country": "Northern Mariana Islands",
-    "code": "1-670",
+    "code": "1670",
     "iso": "MP"
   },
   {
@@ -851,7 +851,7 @@
   },
   {
     "country": "Puerto Rico",
-    "code": "1-787",
+    "code": "1787",
     "iso": "PR"
   },
   {
@@ -896,12 +896,12 @@
   },
   {
     "country": "Saint Kitts and Nevis",
-    "code": "1-869",
+    "code": "1869",
     "iso": "KN"
   },
   {
     "country": "Saint Lucia",
-    "code": "1-758",
+    "code": "1758",
     "iso": "LC"
   },
   {
@@ -916,7 +916,7 @@
   },
   {
     "country": "Saint Vincent and the Grenadines",
-    "code": "1-784",
+    "code": "1784",
     "iso": "VC"
   },
   {
@@ -966,7 +966,7 @@
   },
   {
     "country": "Sint Maarten",
-    "code": "1-721",
+    "code": "1721",
     "iso": "SX"
   },
   {
@@ -1086,7 +1086,7 @@
   },
   {
     "country": "Trinidad and Tobago",
-    "code": "1-868",
+    "code": "1868",
     "iso": "TT"
   },
   {
@@ -1106,7 +1106,7 @@
   },
   {
     "country": "Turks and Caicos Islands",
-    "code": "1-649",
+    "code": "1649",
     "iso": "TC"
   },
   {
@@ -1116,7 +1116,7 @@
   },
   {
     "country": "U.S. Virgin Islands",
-    "code": "1-340",
+    "code": "1340",
     "iso": "VI"
   },
   {
