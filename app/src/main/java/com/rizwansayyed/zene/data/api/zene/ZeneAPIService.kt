@@ -313,7 +313,7 @@ interface ZeneAPIService {
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_USER_NUMBER_USER_INFO_API)
-    suspend fun numberUserInfo(@Body body: RequestBody): ZeneBooleanResponse
+    suspend fun numberUserInfo(@Body body: RequestBody): List<ZeneUsersResponse>
 
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @GET(ZENE_RADIO_INFO_API)

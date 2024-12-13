@@ -124,10 +124,8 @@ interface ZeneAPIInterface {
     suspend fun isCouponAvailable(code: String): Flow<ZeneBooleanResponse>
     suspend fun numberVerification(number: String, country: String): Flow<ZeneBooleanResponse>
     suspend fun numberVerificationUpdate(
-        number: String,
-        country: String,
-        otp: String
+        number: String, country: String, otp: String
     ): Flow<ZeneBooleanResponse>
 
-    suspend fun numberUserInfo(numbers: Array<String>): Flow<ZeneBooleanResponse>
+    suspend fun numberUserInfo(numbers: Array<String>): Flow<List<ZeneUsersResponse>>
 }

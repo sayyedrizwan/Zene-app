@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.provider.ContactsContract
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -109,7 +110,7 @@ class PhoneVerificationViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val l = numbers.map { it.second }.toTypedArray()
                 zeneAPI.numberUserInfo(l).catch { }.collectLatest {
-
+                    Log.d("TAG", "getContactsLists: data info ${it}")
                 }
             }
         }
