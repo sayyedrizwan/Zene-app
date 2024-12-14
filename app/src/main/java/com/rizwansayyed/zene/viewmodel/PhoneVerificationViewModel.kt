@@ -120,9 +120,9 @@ class PhoneVerificationViewModel @Inject constructor(
 
         list.chunked(100).parallelStream().forEach { numbers ->
             CoroutineScope(Dispatchers.IO).launch {
-                val l = numbers.map { it.number }.toTypedArray()
-                zeneAPI.numberUserInfo(l).catch { }.collectLatest {
-                    zeneConnectDB.insert(it, list, phoneNumberCode).catch { }.collectLatest { }
+                val l = numbers.map { it.number }.filter { it.length > 4 }.toTypedArray()
+                zeneAPI.numberUserInfo(l).catch {}.collectLatest {
+                    zeneConnectDB.insert(it, list, phoneNumberCode).catch {}.collectLatest { }
                 }
             }
         }

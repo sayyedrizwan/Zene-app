@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation
 
+import android.util.Log
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectContactDatabase
@@ -22,10 +23,16 @@ class ZeneConnectRoomDBImpl @Inject constructor(
         list: List<ZeneUsersResponse>, contacts: ArrayList<ContactListData>, phoneNumberCode: String
     ) = flow {
         val l = list.map {
-            val name =
-                contacts.first { it.number.contains(it.number.replace("+${phoneNumberCode}", "")) }
-            ZeneConnectContactsModel(null, it.phone_number ?: "", it.profile_photo, name.name)
+            val name = contacts.find { c ->
+                c.number.contains(it.phone_number!!.replace("+${phoneNumberCode}", ""))
+            }
+            Log.d("TAG", "getContactsLists: data ${name}")
+            ZeneConnectContactsModel(
+                null, it.phone_number ?: "", it.email, it.profile_photo, name?.name
+            )
         }
+
+        Log.d("TAG", "getContactsLists: data $l")
         l.forEach { contactDB.contactsDao().insert(it) }
         emit(null)
     }.flowOn(Dispatchers.IO)

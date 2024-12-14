@@ -5,15 +5,17 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_CONTACT_DB
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ZeneConnectContactsDao {
 
     @Query("SELECT * FROM $ZENE_CONNECT_CONTACT_DB ORDER BY ts DESC")
-    fun get(): LiveData<List<ZeneConnectContactsModel>>
+    fun get(): List<ZeneConnectContactsModel>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     fun insert(vararg contacts: ZeneConnectContactsModel)
 }

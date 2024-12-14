@@ -7,8 +7,10 @@ import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsMo
 import kotlinx.coroutines.flow.Flow
 
 interface ZeneConnectRoomDBInterface {
-    suspend fun get(): Flow<LiveData<List<ZeneConnectContactsModel>>>
+
     suspend fun insert(
         list: List<ZeneUsersResponse>, contacts: ArrayList<ContactListData>, phoneNumberCode: String
     ): Flow<Nothing?>
+
+    suspend fun get(): Flow<List<ZeneConnectContactsModel>>
 }

@@ -68,8 +68,9 @@ fun ZeneConnectHomeView() {
             }
         }
     } else {
+        val list by roomDB.contactsLists.collectAsState(initial = emptyList())
         LazyRow(Modifier.fillMaxWidth()) {
-            items(roomDB.contactsLists) {
+            items(list) {
                 Column(Modifier, Arrangement.Center, Alignment.CenterHorizontally) {
                     AsyncImage(
                         imgBuilder(it.profilePhoto),
