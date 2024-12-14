@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.OfflineSongsDatabase
 import com.rizwansayyed.zene.data.roomdb.updates.UpdatesDatabase
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectContactDatabase
 import com.rizwansayyed.zene.utils.Utils.RoomDB.OFFLINE_SONGS_ROOM_DB
 import com.rizwansayyed.zene.utils.Utils.RoomDB.UPDATE_ROOM_DB
+import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_CONTACT_DB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,12 +21,23 @@ object RoomDBModule {
 
     @Provides
     fun earphoneUpdatedDB(@ApplicationContext context: Context): UpdatesDatabase {
-        return Room.databaseBuilder(context, UpdatesDatabase::class.java, UPDATE_ROOM_DB).build()
+        return Room.databaseBuilder(
+            context, UpdatesDatabase::class.java, UPDATE_ROOM_DB
+        ).build()
     }
 
     @Provides
     fun offlineSongsDB(@ApplicationContext context: Context): OfflineSongsDatabase {
-        return Room.databaseBuilder(context, OfflineSongsDatabase::class.java, OFFLINE_SONGS_ROOM_DB ).build()
+        return Room.databaseBuilder(
+            context, OfflineSongsDatabase::class.java, OFFLINE_SONGS_ROOM_DB
+        ).build()
+    }
+
+    @Provides
+    fun connectContactsDB(@ApplicationContext context: Context): ZeneConnectContactDatabase {
+        return Room.databaseBuilder(
+            context, ZeneConnectContactDatabase::class.java, ZENE_CONNECT_CONTACT_DB
+        ).build()
     }
 
 }

@@ -15,9 +15,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.provider.ContactsContract
 import android.provider.Settings
-import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -84,6 +82,7 @@ object Utils {
     }
 
     object RoomDB {
+        const val ZENE_CONNECT_CONTACT_DB = "zene_connect_contact_db"
         const val UPDATE_ROOM_DB = "update_room_db"
         const val OFFLINE_SONGS_ROOM_DB = "offline_songs_room_db"
 
@@ -115,8 +114,8 @@ object Utils {
 
         const val GRAPH_FB_API = "graph.facebook.com"
 
-        val BASE_URL = BuildConfig.DOMAIN_BASE_URL
-//            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
+        val BASE_URL =
+            if (BuildConfig.DEBUG) BuildConfig.IP_BASE_URL else BuildConfig.DOMAIN_BASE_URL
 
         const val LIKED_SONGS_ON_ZENE_PLAYLISTS = "liked_songs_on_zene"
 

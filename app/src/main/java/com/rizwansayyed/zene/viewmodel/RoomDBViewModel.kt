@@ -8,9 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSongsDBInterface
-import com.rizwansayyed.zene.data.roomdb.offlinesongs.model.OfflineSongsData
 import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBInterface
 import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -25,10 +26,11 @@ import javax.inject.Inject
 class RoomDBViewModel @Inject constructor(
     private val updateDB: UpdatesRoomDBInterface,
     private val offlineSongsDB: OfflineSongsDBInterface,
+    private val zeneConnectDB: ZeneConnectRoomDBInterface,
 ) : ViewModel() {
 
-    var offlineSongsLists = mutableStateListOf<OfflineSongsData>()
     var updateLists = mutableStateListOf<UpdateData>()
+    var contactsLists = mutableStateListOf<ZeneConnectContactsModel>()
     var isSaved by mutableStateOf(false)
     var isLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
@@ -73,20 +75,10 @@ class RoomDBViewModel @Inject constructor(
         offlineSongsDB.delete(m.id ?: "").catch { }.collectLatest {}
     }
 
-    fun offlineSongsLists(p: Int) = viewModelScope.launch(Dispatchers.IO) {
-        if (p == 0) offlineSongsLists.clear()
-
-        offlineSongsDB.getLists(p).onStart {
-            isLoading = true
-            doShowMoreLoading = false
-        }.catch {
-            isLoading = false
-            doShowMoreLoading = false
-        }.collectLatest {
-            if (p == 0) offlineSongsLists.clear()
-            isLoading = false
-            doShowMoreLoading = it.size >= 30
-            offlineSongsLists.addAll(it)
+    fun getAllContacts() = viewModelScope.launch(Dispatchers.IO) {
+        zeneConnectDB.get().catch { }.collectLatest {
+            contactsLists.clear()
+            it.value?.let { it1 -> contactsLists.addAll(it1) }
         }
     }
 }
