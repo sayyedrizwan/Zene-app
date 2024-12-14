@@ -101,7 +101,6 @@ fun HomeHeaderView() {
         Spacer(Modifier.weight(1f))
 
         Row(Modifier.height(65.dp), Arrangement.Center, Alignment.CenterVertically) {
-
             ImageIcon(R.drawable.ic_scroll) {
                 sendNavCommand(NAV_FEED)
             }

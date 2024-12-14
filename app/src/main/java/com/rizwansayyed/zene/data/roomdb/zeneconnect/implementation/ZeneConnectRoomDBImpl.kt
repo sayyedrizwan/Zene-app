@@ -26,13 +26,10 @@ class ZeneConnectRoomDBImpl @Inject constructor(
             val name = contacts.find { c ->
                 c.number.contains(it.phone_number!!.replace("+${phoneNumberCode}", ""))
             }
-            Log.d("TAG", "getContactsLists: data ${name}")
             ZeneConnectContactsModel(
                 null, it.phone_number ?: "", it.email, it.profile_photo, name?.name
             )
         }
-
-        Log.d("TAG", "getContactsLists: data $l")
         l.forEach { contactDB.contactsDao().insert(it) }
         emit(null)
     }.flowOn(Dispatchers.IO)

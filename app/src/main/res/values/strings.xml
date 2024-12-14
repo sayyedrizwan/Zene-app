@@ -266,5 +266,7 @@
     <string name="enter_the_otp">Enter the OTP</string>
     <string name="enter_a_valid_otp">Enter a valid OTP</string>
     <string name="resend_otp">Resend OTP</string>
+    <string name="send_invite">Send Invite</string>
     <string name="need_contact_permission_to_continue">Need contact permission to continue</string>
+    <string name="sms_invitation">Join me on Zene – the ultimate music social network! 🎵 Share songs, images, and your favorites Vibes effortlessly. Let’s vibe together! 🌟 Download now: https://www.zenemusic.co/</string>
 </resources>

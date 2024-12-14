@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.artistsHistoryListDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.searchHistoryDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.songHistoryListDB
+import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.URLS.USER_AGENT_D
 import com.squareup.moshi.Moshi
@@ -576,5 +577,14 @@ object Utils {
         val json = readHTMLFromUTF8File(resource)
         val data = moshi.adapter(Array<CountryCodeModel>::class.java).fromJson(json)
         return data ?: emptyArray()
+    }
+
+    fun sendZeneConnect(contacts: ContactListData) {
+        val smsIntent = Intent(Intent.ACTION_VIEW)
+        smsIntent.flags = FLAG_ACTIVITY_NEW_TASK
+        smsIntent.setData(Uri.parse("smsto:"))
+        smsIntent.putExtra("address", contacts.number)
+        smsIntent.putExtra("sms_body", context.resources.getString(R.string.app_name))
+        context.startActivity(smsIntent)
     }
 }

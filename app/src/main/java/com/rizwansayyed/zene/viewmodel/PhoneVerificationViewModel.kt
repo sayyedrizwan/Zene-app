@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.viewmodel
 import android.provider.ContactsContract
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -15,18 +16,21 @@ import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.getAllPhoneCode
 import com.rizwansayyed.zene.utils.Utils.moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -47,6 +51,7 @@ class PhoneVerificationViewModel @Inject constructor(
     var isOTPSendLoading by mutableStateOf(false)
     var isOTPSend by mutableStateOf(false)
     var otpTimeout by mutableStateOf(false)
+    var contactsLists = mutableStateListOf<ContactListData>()
 
     var otpSuccess by mutableStateOf<APIResponse<Boolean>>(APIResponse.Empty)
 
@@ -118,12 +123,16 @@ class PhoneVerificationViewModel @Inject constructor(
             }
         }
 
+        contactsLists.clear()
+        contactsLists.addAll(list)
+
         list.chunked(100).parallelStream().forEach { numbers ->
             CoroutineScope(Dispatchers.IO).launch {
                 val l = numbers.map { it.number }.filter { it.length > 4 }.toTypedArray()
                 zeneAPI.numberUserInfo(l).catch {}.collectLatest {
                     zeneConnectDB.insert(it, list, phoneNumberCode).catch {}.collectLatest { }
                 }
+                if (isActive) cancel()
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,15 +12,12 @@ import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBInt
 import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
-import com.rizwansayyed.zene.utils.Utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +31,7 @@ class RoomDBViewModel @Inject constructor(
 ) : ViewModel() {
 
     var updateLists = mutableStateListOf<UpdateData>()
-    var contactsLists : Flow<List<ZeneConnectContactsModel>> = flowOf(emptyList())
+    var contactsLists = mutableStateListOf<ZeneConnectContactsModel>()
     var isSaved by mutableStateOf(false)
     var isLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
@@ -81,12 +77,9 @@ class RoomDBViewModel @Inject constructor(
     }
 
     fun getAllContacts() = viewModelScope.launch(Dispatchers.IO) {
-        zeneConnectDB.get().catch {
-            Log.d("TAG", "getAllContacts: data ${it.message}")
-        }.collectLatest {
-            Log.d("TAG", "getAllContacts: data ${it}")
-//            it.firstOrNull()?.size?.toast()
-//            contactsLists = it
+        zeneConnectDB.get().catch {}.collectLatest {
+            contactsLists.clear()
+            contactsLists.addAll(it.firstOrNull() ?: emptyList())
         }
     }
 }
