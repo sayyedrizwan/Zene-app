@@ -43,6 +43,7 @@ jsoup = "1.18.1"
 billing = "7.1.1"
 truecaller = "3.1.0"
 konfetti = "2.0.4"
+emoji2Emojipicker = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -110,6 +111,7 @@ jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 
 truecaller = { group = "com.truecaller.android.sdk", name = "truecaller-sdk", version.ref = "truecaller" }
 konfetti = { group = "nl.dionsegijn", name = "konfetti-compose", version.ref = "konfetti" }
+androidx-emoji2-emojipicker = { group = "androidx.emoji2", name = "emoji2-emojipicker", version.ref = "emoji2Emojipicker" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
