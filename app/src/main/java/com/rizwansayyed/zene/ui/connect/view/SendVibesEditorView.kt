@@ -1,21 +1,22 @@
 package com.rizwansayyed.zene.ui.connect.view
 
 import android.app.Activity
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
+import android.net.Uri
 import android.util.Size
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.Surface.ROTATION_0
 import android.view.View
 import android.widget.FrameLayout
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.FocusMeteringAction
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -52,27 +53,9 @@ import com.rizwansayyed.zene.utils.Utils.toast
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class FilterAnalyzer(private val applyFilter: Boolean) : ImageAnalysis.Analyzer {
-    override fun analyze(image: ImageProxy) {
-
-        if (applyFilter) {
-            val matrix = ColorMatrix()
-            matrix.setSaturation(0f)  // Convert to grayscale as an example
-
-            val colorFilter = ColorMatrixColorFilter(matrix)
-
-            // Apply the filter to the image (you need to use GPUImage or similar for actual effect)
-            // In this case, we're simulating a grayscale filter.
-        }
-
-        // Close the image proxy once processed
-        image.close()
-    }
-}
-
 
 @Composable
-fun SendVibesEditorView() {
+fun SendVibesEditorView(data: (Uri) -> Unit) {
     val context = LocalContext.current as Activity
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -82,29 +65,27 @@ fun SendVibesEditorView() {
     var camera by remember { mutableStateOf<Camera?>(null) }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
 
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let { data(it) }
+        }
 
     fun startCamera(view: PreviewView) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            val preview = Preview.Builder().setMaxResolution(Size(3840, 2160)).build()
+            val preview = Preview.Builder().build()
                 .also { it.surfaceProvider = view.surfaceProvider }
 
             val cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(if (cameraBack) CameraSelector.LENS_FACING_BACK else CameraSelector.LENS_FACING_FRONT)
                 .build()
 
-            val imageAnalysis = ImageAnalysis.Builder()
-                .build()
-                .also {
-                    it.setAnalyzer(
-                        ContextCompat.getMainExecutor(previewView!!.context), FilterAnalyzer(true)
-                    )
-                }
-
             imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .setTargetResolution(Size(1200, 1600))
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                .setTargetRotation(ROTATION_0)
                 .build()
 
             try {
@@ -112,9 +93,7 @@ fun SendVibesEditorView() {
                 camera = cameraProvider.bindToLifecycle(
                     lifecycleOwner, cameraSelector, preview, imageCapture
                 )
-
                 addTapToFocus(view, camera!!.cameraControl)
-
                 camera!!.cameraControl.enableTorch(cameraTorch)
             } catch (e: Exception) {
                 e.message
@@ -151,10 +130,7 @@ fun SendVibesEditorView() {
                 camera?.cameraControl?.enableTorch(cameraTorch)
             }
 
-            ImageIcon(R.drawable.ic_add) {
-            }
-
-//            Spacer(Modifier.size(30.dp))
+            Spacer(Modifier.size(30.dp))
         }
 
         Row(
@@ -167,13 +143,13 @@ fun SendVibesEditorView() {
             Alignment.CenterVertically
         ) {
             ImageIcon(R.drawable.ic_image_gallery) {
-
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
 
             Spacer(
                 Modifier
                     .clickable {
-                        takePhoto(imageCapture, context)
+                        takePhoto(imageCapture, context, data)
                     }
                     .size(60.dp)
                     .clip(RoundedCornerShape(100))
@@ -221,21 +197,21 @@ fun showTapIndicatorWithAnimation(parentView: FrameLayout, x: Float, y: Float) {
         .withEndAction { parentView.removeView(tapIndicator) }.start()
 }
 
-private fun takePhoto(camera: ImageCapture?, context: Activity) {
+private fun takePhoto(camera: ImageCapture?, context: Activity, data: (Uri) -> Unit) {
     val imageCapture = camera ?: return
 
-    val outputDir = File(context.filesDir, "vibes_img.png")
+    val outputDir = File(context.filesDir, "vibes_img.png").apply { delete() }
     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputDir).build()
 
     imageCapture.takePicture(
         outputOptions, ContextCompat.getMainExecutor(context),
         object : ImageCapture.OnImageSavedCallback {
             override fun onError(exc: ImageCaptureException) {
-                "error".toast()
+                "error capturing image".toast()
             }
 
             override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                "done".toast()
+                output.savedUri?.let { data(it) }
             }
         }
     )

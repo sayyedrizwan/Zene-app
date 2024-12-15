@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.connect
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.rizwansayyed.zene.ui.connect.view.SendVibesEditorView
 import com.rizwansayyed.zene.ui.connect.view.ZeneConnectButtonView
+import com.rizwansayyed.zene.ui.connect.view.ZeneImageEditorView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,6 +30,7 @@ class ZeneConnectActivity : ComponentActivity() {
         setContent {
             ZeneTheme {
                 var sendVibesView by remember { mutableStateOf(false) }
+                var image by remember { mutableStateOf<Uri?>(null) }
 
                 Box(
                     Modifier
@@ -43,7 +46,12 @@ class ZeneConnectActivity : ComponentActivity() {
                     }
                 }
 
-                if (sendVibesView) SendVibesEditorView()
+                if (sendVibesView) SendVibesEditorView {
+                    sendVibesView = false
+                    image = it
+                }
+
+                if (image != null) ZeneImageEditorView(image!!)
             }
         }
     }
