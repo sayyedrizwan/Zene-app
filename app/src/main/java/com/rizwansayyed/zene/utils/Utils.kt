@@ -54,6 +54,7 @@ import java.net.URL
 import java.text.DecimalFormat
 import java.time.Duration
 import java.time.Instant
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 
@@ -586,5 +587,13 @@ object Utils {
         smsIntent.putExtra("address", contacts.number)
         smsIntent.putExtra("sms_body", context.resources.getString(R.string.app_name))
         context.startActivity(smsIntent)
+    }
+
+    fun uniqueDeviceUID(): String {
+        val androidId =
+            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+        val deviceInfo = "${Build.MANUFACTURER}-${Build.MODEL}-${Build.ID}"
+        val uid = UUID.nameUUIDFromBytes(deviceInfo.toByteArray()).toString()
+        return "${androidId}_${uid}"
     }
 }

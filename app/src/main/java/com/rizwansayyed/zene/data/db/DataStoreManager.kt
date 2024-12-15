@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.AR
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.ARTISTS_HISTORY_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.EARPHONE_DEVICES_LIST
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.IS_USER_PREMIUM
+import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.IS_ZENE_CONNECT_USED_ON_OTHER_DEVICE
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.JSON_EMPTY
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.LAST_ADS_TIMESTAMP
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.MUSIC_LOOP
@@ -88,6 +89,7 @@ object DataStoreManager {
         val VIDEO_QUALITY = stringPreferencesKey("play_video_quality")
         val VIDEO_CAPTION = booleanPreferencesKey("video_caption")
         val IS_USER_PREMIUM = booleanPreferencesKey("is_user_premium")
+        val IS_ZENE_CONNECT_USED_ON_OTHER_DEVICE = booleanPreferencesKey("is_zene_connect_used_on_other_device")
     }
 
     var userInfoDB
@@ -291,6 +293,15 @@ object DataStoreManager {
             val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
             context.dataStore.edit { it[ARTISTS_HISTORY_LIST] = json }
         }
+
+
+    var isZeneConnectUsedOnOtherDeviceDB
+        get() = context.dataStore.data.map { it[IS_ZENE_CONNECT_USED_ON_OTHER_DEVICE] ?: false }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit { it[IS_ZENE_CONNECT_USED_ON_OTHER_DEVICE] = value.first() }
+        }
+
+
 
     suspend fun setEarphoneConnection(key: String, v: Boolean) {
         val keyInfo = booleanPreferencesKey("${key}_connection_alert")

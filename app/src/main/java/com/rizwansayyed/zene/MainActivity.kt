@@ -11,6 +11,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -294,14 +295,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        WebView.setWebContentsDebuggingEnabled(true)
         lifecycleScope.launch {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
                 ShowAdsOnAppOpen(this@MainActivity).showAds()
         }
 
-        homeViewModel.userArtistsList()
+        homeViewModel.syncUserData()
         homeViewModel.checkSubscription()
         startMusicService()
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)

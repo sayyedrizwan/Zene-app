@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,15 +28,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.db.DataStoreManager.isZeneConnectUsedOnOtherDeviceDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
+import com.rizwansayyed.zene.ui.connect.ZeneConnectActivity
 import com.rizwansayyed.zene.ui.home.view.TextSize
 import com.rizwansayyed.zene.ui.home.view.TextTitleHeader
 import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerActivity
@@ -63,15 +67,8 @@ fun ZeneConnectHomeView() {
             contactPermission = !it
         }
 
-    Row(Modifier.padding(horizontal = 7.dp), Arrangement.Center, Alignment.CenterVertically) {
-        TextTitleHeader(Pair(TextSize.BIG, R.string.zene_connect))
+    TextTitleHeader(Pair(TextSize.BIG, R.string.zene_connect))
 
-        Spacer(Modifier.weight(1f))
-
-        ImageIcon(R.drawable.ic_setting, 25) {
-//            sendNavCommand(NAV_SETTINGS)
-        }
-    }
     if (info?.phonenumber == null) {
         Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
             SmallButtonBorderText(R.string.verify_phone_number_to_continue) {
@@ -81,6 +78,11 @@ fun ZeneConnectHomeView() {
                 }
             }
         }
+
+        val zeneConnectEnabled by isZeneConnectUsedOnOtherDeviceDB.collectAsState(initial = false)
+        if (zeneConnectEnabled) {
+            TextPoppins(stringResource(R.string.connect_on_other_device), true, size = 15)
+        }
     } else if (contactPermission) {
         Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
             SmallButtonBorderText(R.string.need_contact_permission_to_continue) {
@@ -89,6 +91,10 @@ fun ZeneConnectHomeView() {
         }
     } else {
         LazyRow(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            item {
+                AddVibeCircle()
+            }
+
             items(roomDB.contactsLists) {
                 ZeneConnectUsers(it)
             }
@@ -137,6 +143,7 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
     }
 }
 
+
 @Composable
 fun ContactsUsers(contacts: ContactListData) {
     Column(
@@ -144,9 +151,7 @@ fun ContactsUsers(contacts: ContactListData) {
             .padding(horizontal = 12.dp)
             .clickable {
                 sendZeneConnect(contacts)
-            },
-        Arrangement.Center,
-        Alignment.CenterHorizontally
+            }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         ImageView(
             R.drawable.ic_user_circle,
@@ -160,5 +165,30 @@ fun ContactsUsers(contacts: ContactListData) {
             TextPoppins(contacts.number, false, size = 13, limit = 1)
             TextPoppins(stringResource(R.string.send_invite), false, size = 14, limit = 1)
         }
+    }
+}
+
+@Composable
+fun AddVibeCircle() {
+    val context = LocalContext.current.applicationContext
+    Column(
+        Modifier
+            .padding(horizontal = 12.dp)
+            .clickable {
+                Intent(context, ZeneConnectActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(this)
+                }
+            }, Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+        Column(
+            Modifier
+                .padding(bottom = 4.dp)
+                .border(3.dp, Color.White, RoundedCornerShape(100))
+                .size(90.dp), Arrangement.Center, Alignment.CenterHorizontally
+        ) {
+            ImageIcon(R.drawable.ic_dancing_people, 40)
+        }
+        TextPoppins(stringResource(R.string.send_vibes), false, size = 15, limit = 1)
     }
 }

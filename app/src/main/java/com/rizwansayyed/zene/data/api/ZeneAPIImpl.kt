@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.utils.Utils.addSongHistoryLists
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
 import com.rizwansayyed.zene.utils.Utils.moshi
 import com.rizwansayyed.zene.utils.Utils.timeDifferenceInMinutes
+import com.rizwansayyed.zene.utils.Utils.uniqueDeviceUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -502,6 +503,7 @@ class ZeneAPIImpl @Inject constructor(
                 put("phone_number", number)
                 put("country_number", country)
                 put("otp_code", otp)
+                put("device_uid", uniqueDeviceUID())
             }
 
             val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

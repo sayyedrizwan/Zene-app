@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
+import com.rizwansayyed.zene.utils.Utils.uniqueDeviceUID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -267,13 +268,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun userArtistsList() = viewModelScope.launch(Dispatchers.IO) {
-        if (!internetIsConnected()) return@launch
-
+    fun syncUserData() = viewModelScope.launch(Dispatchers.IO) {
         val email = userInfoDB.firstOrNull()?.email ?: ""
         if (email == "") return@launch
 
-        zeneAPI.getUser(email).catch {}.collectLatest {
+        zeneAPI.getUser(email).catch {
+        }.collectLatest {
             userInfoDB = flowOf(it.toUserInfo(email))
             pinnedArtistsList = flowOf(it.pinned_artists?.filterNotNull()?.toTypedArray())
             zeneAPI.updateUser().catch { }.firstOrNull()
