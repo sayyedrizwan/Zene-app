@@ -51,6 +51,7 @@ import com.rizwansayyed.zene.ui.view.ImageView
 import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
 import com.rizwansayyed.zene.ui.view.SongWaveView
 import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
 import com.rizwansayyed.zene.utils.Utils.sendZeneConnect
@@ -160,6 +161,16 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
                 )
 
                 SongWaveView(Modifier.align(Alignment.BottomCenter))
+            }
+
+            Column(
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .clip(RoundedCornerShape(100))
+                    .background(Color.Red)
+                    .padding(horizontal = 7.dp, vertical = 3.dp)
+            ) {
+                TextPoppinsSemiBold("4", false, size = 17)
             }
         }
 

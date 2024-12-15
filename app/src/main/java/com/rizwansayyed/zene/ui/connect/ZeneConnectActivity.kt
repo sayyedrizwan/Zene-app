@@ -7,8 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.rizwansayyed.zene.ui.connect.view.SendVibesEditorView
+import com.rizwansayyed.zene.ui.connect.view.ZeneConnectButtonView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,13 +27,23 @@ class ZeneConnectActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ZeneTheme {
+                var sendVibesView by remember { mutableStateOf(false) }
+
                 Box(
                     Modifier
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    
+                    LazyColumn(Modifier.fillMaxSize()) {
+                        item {
+                            ZeneConnectButtonView {
+                                sendVibesView = true
+                            }
+                        }
+                    }
                 }
+
+                if (sendVibesView) SendVibesEditorView()
             }
         }
     }

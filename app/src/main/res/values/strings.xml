@@ -270,5 +270,6 @@
     <string name="need_contact_permission_to_continue">Need contact permission to continue</string>
     <string name="sms_invitation">Join me on Zene – the ultimate music social network! 🎵Share songs, images, and your favorites Vibes effortlessly. Let’s vibe together! 🌟 Download now: https://www.zenemusic.co/</string>
     <string name="send_vibes">Send Vibes</string>
+    <string name="vibes_settings">Vibes Settings</string>
     <string name="connect_on_other_device">Zene Connect is active on another device. Verify your phone number to enable it here.</string>
 </resources>
