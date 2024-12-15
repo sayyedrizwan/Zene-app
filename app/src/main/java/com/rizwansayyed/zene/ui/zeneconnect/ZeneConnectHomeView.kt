@@ -8,10 +8,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -47,10 +49,12 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageView
 import com.rizwansayyed.zene.ui.view.SmallButtonBorderText
+import com.rizwansayyed.zene.ui.view.SongWaveView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
 import com.rizwansayyed.zene.utils.Utils.sendZeneConnect
+import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.PhoneVerificationViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 
@@ -95,7 +99,7 @@ fun ZeneConnectHomeView() {
                 AddVibeCircle()
             }
 
-            items(roomDB.contactsLists) {
+            items(roomDB.contactsLists, key = { it.number }) {
                 ZeneConnectUsers(it)
             }
 
@@ -129,14 +133,36 @@ fun ZeneConnectHomeView() {
 @Composable
 fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
     Column(Modifier.padding(horizontal = 12.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-        AsyncImage(
-            imgBuilder(user.profilePhoto),
-            user.contactName,
-            Modifier
-                .padding(bottom = 4.dp)
-                .size(90.dp)
-                .clip(RoundedCornerShape(100))
-        )
+        Box {
+            AsyncImage(
+                imgBuilder(user.profilePhoto),
+                user.contactName,
+                Modifier
+                    .padding(bottom = 4.dp)
+                    .size(90.dp)
+                    .clip(RoundedCornerShape(100))
+            )
+
+            Box(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .clickable {
+                        "play_song".toast()
+                    }) {
+                AsyncImage(
+                    imgBuilder("https://lh3.googleusercontent.com/_YrGlG1r1LWNgS78199Cv2R8HZEl_o4l7DeyTaTPGkpGQHcaBI9UCMwoecf2HyEWbAyPqsqcf_L9mSw=w544-h544-l90-rj"),
+                    user.contactName,
+                    Modifier
+                        .offset(x = 10.dp, y = (-5).dp)
+                        .align(Alignment.Center)
+                        .size(35.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                )
+
+                SongWaveView(Modifier.align(Alignment.BottomCenter))
+            }
+        }
+
         Column(Modifier.widthIn(max = 200.dp), Arrangement.Center, Alignment.CenterHorizontally) {
             TextPoppins(user.contactName ?: "", false, size = 16, limit = 1)
         }
