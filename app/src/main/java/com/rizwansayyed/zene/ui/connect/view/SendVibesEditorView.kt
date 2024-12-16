@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.connect.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.net.Uri
 import android.util.Size
@@ -83,7 +84,7 @@ fun SendVibesEditorView(data: (Uri) -> Unit) {
                 .build()
 
             imageCapture = ImageCapture.Builder()
-                .setTargetResolution(Size(1200, 1600))
+                .setTargetResolution(Size(1080, 1920))
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .setTargetRotation(ROTATION_0)
                 .build()
@@ -167,6 +168,7 @@ fun SendVibesEditorView(data: (Uri) -> Unit) {
     }
 }
 
+@SuppressLint("ClickableViewAccessibility")
 fun addTapToFocus(previewView: PreviewView, cameraControl: CameraControl) {
     previewView.setOnTouchListener { _, motionEvent ->
         if (motionEvent.action == MotionEvent.ACTION_UP) {

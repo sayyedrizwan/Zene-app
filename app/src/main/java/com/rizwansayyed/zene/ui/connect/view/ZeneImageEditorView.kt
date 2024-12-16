@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.connect.view
 
+import android.app.Activity
 import android.net.Uri
 import android.view.ViewGroup
 import androidx.compose.foundation.background
@@ -16,13 +17,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +33,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -42,24 +45,25 @@ import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.view.ImageIcon
-import kotlin.random.Random
+import com.rizwansayyed.zene.ui.view.TextPoppins
+import com.rizwansayyed.zene.ui.view.imgBuilder
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ZeneImageEditorView(image: Uri) {
-    var offsets: List<Pair<Float, Float>> by remember {
-        mutableStateOf(List(800) {
-            Pair(Random.nextFloat() * 300 - 150, Random.nextFloat() * 100 - 50)
-        }.shuffled())
-    }
+    val context = LocalContext.current as Activity
 
     var bgColor by remember { mutableStateOf(Color.Black) }
+    var songView by remember { mutableStateOf<ZeneMusicDataItems?>(null) }
+
     var bgColorAlert by remember { mutableStateOf(false) }
+    var songAlert by remember { mutableStateOf(false) }
     var emojiAlert by remember { mutableStateOf(false) }
     var emojis by remember { mutableStateOf("\uD83E\uDD41") }
-
     val controller = rememberColorPickerController()
+
 
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(0f) }
@@ -70,23 +74,31 @@ fun ZeneImageEditorView(image: Uri) {
         offset += offsetChange
     }
 
+
+    var scaleMusic by remember { mutableStateOf(1f) }
+    var rotationMusic by remember { mutableStateOf(0f) }
+    var offsetMusic by remember { mutableStateOf(Offset.Zero) }
+    val stateMusic = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+        scaleMusic *= zoomChange
+        rotationMusic += rotationChange
+        offsetMusic += offsetChange
+    }
+
     Box(Modifier.fillMaxSize()) {
         Box(
             Modifier
                 .fillMaxWidth()
+                .graphicsLayer(scaleX = 1.2f, scaleY = 1.1f)
                 .background(bgColor)
         ) {
             FlowColumn(Modifier.fillMaxWidth()) {
-                repeat(800) { index ->
+                repeat(800) {
                     Text(
-                        emojis,
-                        fontSize = 40.sp,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .offset(offsets[index].first.dp, offsets[index].second.dp)
+                        emojis, fontSize = 27.sp, modifier = Modifier.padding(8.dp)
                     )
                 }
             }
+
             AsyncImage(
                 image, "",
                 Modifier
@@ -101,6 +113,47 @@ fun ZeneImageEditorView(image: Uri) {
                     )
                     .transformable(state = state)
             )
+
+            if (songView != null) Row(
+                Modifier
+                    .graphicsLayer(
+                        scaleX = scaleMusic,
+                        scaleY = scaleMusic,
+                        rotationZ = rotationMusic,
+                        translationX = offsetMusic.x,
+                        translationY = offsetMusic.y
+                    )
+                    .transformable(state = stateMusic)
+                    .padding(bottom = 30.dp)
+                    .widthIn(max = 300.dp)
+                    .align(Alignment.BottomEnd)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.Black)
+                    .padding(5.dp)
+            ) {
+                AsyncImage(
+                    imgBuilder(songView!!.thumbnail),
+                    songView!!.name,
+                    Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color.DarkGray),
+                    contentScale = ContentScale.Crop
+                )
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = 9.dp),
+                    Arrangement.Center,
+                    Alignment.Start
+                ) {
+                    TextPoppins(v = songView!!.name ?: "", false, size = 16, limit = 1)
+                    Spacer(Modifier.height(4.dp))
+                    TextPoppins(v = songView!!.artists ?: "", false, size = 13, limit = 1)
+                    TextPoppins(stringResource(R.string.listen_now), false, size = 13, limit = 1)
+                }
+            }
+
         }
 
         Row(
@@ -113,13 +166,13 @@ fun ZeneImageEditorView(image: Uri) {
             Column(
                 Modifier
                     .padding(horizontal = 5.dp)
+                    .clickable {
+                        context.finish()
+                    }
                     .size(35.dp)
                     .clip(RoundedCornerShape(100))
                     .background(Color.Black.copy(0.3f))
-                    .padding(4.dp),
-                Arrangement.Center,
-                Alignment.CenterHorizontally
-            ) {
+                    .padding(4.dp), Arrangement.Center, Alignment.CenterHorizontally) {
                 ImageIcon(R.drawable.ic_arrow_left, 25)
             }
 
@@ -142,13 +195,13 @@ fun ZeneImageEditorView(image: Uri) {
             Column(
                 Modifier
                     .padding(horizontal = 5.dp)
+                    .clickable {
+                        songAlert = true
+                    }
                     .size(35.dp)
                     .clip(RoundedCornerShape(100))
                     .background(Color.Black.copy(0.3f))
-                    .padding(4.dp),
-                Arrangement.Center,
-                Alignment.CenterHorizontally
-            ) {
+                    .padding(4.dp), Arrangement.Center, Alignment.CenterHorizontally) {
                 ImageIcon(R.drawable.ic_music, 25)
             }
 
@@ -165,25 +218,30 @@ fun ZeneImageEditorView(image: Uri) {
                     .padding(4.dp), Arrangement.Center, Alignment.CenterHorizontally) {
                 ImageIcon(R.drawable.ic_colors, 25)
             }
+
         }
 
+        SendButtonView(Modifier.align(Alignment.BottomEnd))
 
         if (bgColorAlert) HsvColorPicker(modifier = Modifier
             .align(Alignment.Center)
             .fillMaxWidth()
             .height(450.dp)
             .padding(10.dp),
-            controller = controller,
+            controller,
             onColorChanged = { colorEnvelope: ColorEnvelope ->
                 bgColor = colorEnvelope.color
             })
 
         if (emojiAlert) EmojisStripe(Modifier.align(Alignment.BottomCenter)) {
             emojis = it
-            offsets = List(800) {
-                Pair(Random.nextFloat() * 300 - 150, Random.nextFloat() * 100 - 50)
-            }.shuffled()
         }
+    }
+
+
+    if (songAlert) ZeneConnectSongSearchView {
+        songAlert = false
+        songView = it
     }
 }
 
@@ -206,7 +264,7 @@ fun EmojisStripe(modifier: Modifier = Modifier, emoji: (String) -> Unit) {
         modifier
             .padding(bottom = 40.dp)
             .fillMaxWidth()
-            .height(150.dp)
+            .height(170.dp)
             .background(Color.White)
     )
 }
