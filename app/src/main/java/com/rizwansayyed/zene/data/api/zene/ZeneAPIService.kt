@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_CONNECT_ADD_STATUS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_BY_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_APP_UPDATE_API
@@ -343,4 +344,14 @@ interface ZeneAPIService {
     @POST(ZENE_COUNTRIES_BY_RADIO_API)
     suspend fun radioViaCountries(@Body body: RequestBody): ZeneMusicDataResponse
 
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @Multipart
+    @POST(ZENE_CONNECT_ADD_STATUS_API)
+    suspend fun sendConnectVibes(
+        @Part file: MultipartBody.Part?,
+        @Part("from_number") fromNumber: RequestBody,
+        @Part("to_number") toNumber: RequestBody,
+        @Part("song_data") songData: RequestBody,
+    ): ZeneBooleanResponse
 }

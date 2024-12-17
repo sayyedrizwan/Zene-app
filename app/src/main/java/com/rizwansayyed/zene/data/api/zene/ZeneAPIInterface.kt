@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersPremiumResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 
@@ -128,4 +129,7 @@ interface ZeneAPIInterface {
     ): Flow<ZeneBooleanResponse>
 
     suspend fun numberUserInfo(numbers: Array<String>): Flow<List<ZeneUsersResponse>>
+    suspend fun sendConnectVibes(
+        connect: ZeneConnectContactsModel, song: ZeneMusicDataItems?
+    ): Flow<ZeneBooleanResponse>
 }

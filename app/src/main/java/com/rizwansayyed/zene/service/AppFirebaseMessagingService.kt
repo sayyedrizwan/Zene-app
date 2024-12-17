@@ -44,17 +44,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        CoroutineScope(Dispatchers.IO).launch {
-            message.notification?.let {
-                if (it.title != null) {
-                    val name =
-                        if (DataStoreManager.userInfoDB.firstOrNull()?.name == null) "Zene user" else DataStoreManager.userInfoDB.firstOrNull()?.name
-                    val title = it.title!!.replace("[[user]]", name ?: "Zene user")
-                    val body = it.body ?: "".replace("[[user]]", name ?: "Zene user")
-                    logEvents(FirebaseLogEvents.FirebaseEvents.RECEIVED_NOTIFICATION)
-                    NotificationUtils(title, body, it.imageUrl)
-                }
-            }
-        }
+
+        Log.d("TAG", "onMessageReceived: data ${message.data}")
     }
 }

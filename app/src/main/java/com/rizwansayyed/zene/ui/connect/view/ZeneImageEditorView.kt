@@ -30,9 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -87,10 +90,18 @@ fun ZeneImageEditorView(image: Uri) {
         offsetMusic += offsetChange
     }
 
+    val graphicsLayer = rememberGraphicsLayer()
+
     Box(Modifier.fillMaxSize()) {
         Box(
             Modifier
                 .fillMaxWidth()
+                .drawWithContent {
+                    graphicsLayer.record {
+                        this@drawWithContent.drawContent()
+                    }
+                    drawLayer(graphicsLayer)
+                }
                 .graphicsLayer(scaleX = 1.2f, scaleY = 1.1f)
                 .background(bgColor)
         ) {
@@ -165,6 +176,7 @@ fun ZeneImageEditorView(image: Uri) {
                         VIDEO -> TextPoppins(
                             stringResource(R.string.play_video), false, size = 13, limit = 1
                         )
+
                         else -> {}
                     }
 
@@ -208,7 +220,6 @@ fun ZeneImageEditorView(image: Uri) {
                 ImageIcon(R.drawable.ic_relieved, 25)
             }
 
-
             Column(
                 Modifier
                     .padding(horizontal = 5.dp)
@@ -238,7 +249,7 @@ fun ZeneImageEditorView(image: Uri) {
 
         }
 
-        SendButtonView(Modifier.align(Alignment.BottomEnd))
+        SendButtonView(Modifier.align(Alignment.BottomEnd), graphicsLayer, songView)
 
         if (bgColorAlert) HsvColorPicker(modifier = Modifier
             .align(Alignment.Center)

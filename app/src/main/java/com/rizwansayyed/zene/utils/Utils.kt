@@ -134,6 +134,8 @@ object Utils {
         const val ZENE_RADIO_INFO_API = "radio/radioinfo"
 
         const val ZENE_USER_API = "zuser/users"
+
+        const val ZENE_CONNECT_ADD_STATUS_API = "connect/add_status"
         const val ZENE_USER_NUMBER_VERIFICATION_API = "zuser/number_verification"
         const val ZENE_USER_NUMBER_VERIFICATION_UPDATE_API = "zuser/number_verification_update"
         const val ZENE_USER_NUMBER_USER_INFO_API = "zuser/number_user_info"
@@ -322,6 +324,7 @@ object Utils {
 
 
     val savePlaylistFilePath = File(context.filesDir, "playlist_img.png")
+    val saveConnectImage = File(context.filesDir, "connect_image.png")
 
     fun saveBitmap(file: File, bitmap: Bitmap?): File? {
         file.deleteRecursively()
@@ -589,6 +592,7 @@ object Utils {
         context.startActivity(smsIntent)
     }
 
+    @SuppressLint("HardwareIds")
     fun uniqueDeviceUID(): String {
         val androidId =
             Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
@@ -596,4 +600,9 @@ object Utils {
         val uid = UUID.nameUUIDFromBytes(deviceInfo.toByteArray()).toString()
         return "${androidId}_${uid}"
     }
+
+    fun saveFilesImagePath(bitmap: Bitmap) {
+
+    }
+
 }

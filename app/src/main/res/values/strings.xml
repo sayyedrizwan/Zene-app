@@ -279,4 +279,6 @@
     <string name="once_send_vibes_cannot_undo">Once send you cannot undo or delete the vibe.</string>
     <string name="no_users_to_vibe">No user in your contacts to vibe. Invite them from home screen.</string>
     <string name="contacts">Contacts</string>
+    <string name="listening_too">Listening to</string>
+    <string name="play_now">Play Now</string>
 </resources>

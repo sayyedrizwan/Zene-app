@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,17 +40,25 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.utils.Utils.saveBitmap
+import com.rizwansayyed.zene.utils.Utils.saveConnectImage
 import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
+import com.rizwansayyed.zene.viewmodel.ZeneViewModel
 
 
 @Composable
-fun SendButtonView(modifier: Modifier = Modifier) {
+fun SendButtonView(
+    modifier: Modifier = Modifier,
+    layer: GraphicsLayer,
+    songView: ZeneMusicDataItems?
+) {
     var showSendAlert by remember { mutableStateOf(false) }
     val sendStatusContact = remember { mutableStateMapOf<String, Boolean>() }
 
@@ -66,8 +76,14 @@ fun SendButtonView(modifier: Modifier = Modifier) {
         ImageIcon(R.drawable.ic_sent, size = 35)
     }
 
-    if (showSendAlert) ZeneConnectVibesSendView(sendStatusContact) {
-        showSendAlert = false
+    if (showSendAlert) {
+        ZeneConnectVibesSendView(sendStatusContact, songView) {
+            showSendAlert = false
+        }
+        LaunchedEffect(Unit) {
+            val imgBitmap = layer.toImageBitmap().asAndroidBitmap()
+            saveBitmap(saveConnectImage, imgBitmap)
+        }
     }
 }
 
@@ -75,7 +91,8 @@ fun SendButtonView(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ZeneConnectVibesSendView(
-    sendStatusContact: SnapshotStateMap<String, Boolean>, click: () -> Unit
+    sendStatusContact: SnapshotStateMap<String, Boolean>,
+    song: ZeneMusicDataItems?, click: () -> Unit
 ) {
     val context = LocalContext.current as Activity
     val roomDB: RoomDBViewModel = hiltViewModel()
@@ -111,7 +128,7 @@ fun ZeneConnectVibesSendView(
                 }
             }
             items(roomDB.contactsLists) {
-                SendUserInfo(it, sendStatusContact)
+                SendUserInfo(it, sendStatusContact, song)
             }
 
             item {
@@ -128,8 +145,12 @@ fun ZeneConnectVibesSendView(
 
 @Composable
 fun SendUserInfo(
-    contacts: ZeneConnectContactsModel, sendStatusContact: SnapshotStateMap<String, Boolean>
+    contacts: ZeneConnectContactsModel,
+    sendStatusContact: SnapshotStateMap<String, Boolean>,
+    song: ZeneMusicDataItems?
 ) {
+    val viewModel: ZeneViewModel = hiltViewModel()
+
     Row(
         Modifier
             .padding(vertical = 10.dp)
@@ -154,10 +175,16 @@ fun SendUserInfo(
         ) {
             TextPoppins(v = contacts.contactName ?: "", false, size = 16)
             Spacer(Modifier.height(4.dp))
-            TextPoppins(v = "Listening to Sanam teri Kasam", false, size = 13)
+            if (contacts.currentPlayingSongName != null) TextPoppins(
+                v = "${stringResource(R.string.listening_too)} ${contacts.currentPlayingSongName}",
+                false, size = 13
+            )
         }
 
         Box(Modifier.clickable {
+            if (!sendStatusContact.containsKey(contacts.number)) {
+                viewModel.sendConnectVibes(contacts, song)
+            }
             sendStatusContact[contacts.number] = true
         }) {
             ImageIcon(

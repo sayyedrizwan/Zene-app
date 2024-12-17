@@ -25,10 +25,10 @@ data class ZeneUsersResponse(
     val profile_photo: String?,
     val sign_up_date: Long?,
     val total_playtime: Int?,
-    val song_name: String,
-    val song_artists: String,
-    val song_id: String,
-    val song_thumbnail: String,
+    val song_name: String?,
+    val song_artists: String?,
+    val song_id: String?,
+    val song_thumbnail: String?,
 ) {
     private fun isReviewDone(): Boolean {
         return is_review_done == 1

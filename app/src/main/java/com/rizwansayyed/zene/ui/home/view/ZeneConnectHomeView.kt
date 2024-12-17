@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.zeneconnect
+package com.rizwansayyed.zene.ui.home.view
 
 import android.Manifest
 import android.content.Intent
@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,6 +22,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,19 +35,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.db.DataStoreManager.isZeneConnectUsedOnOtherDeviceDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.ui.connect.ZeneConnectActivity
-import com.rizwansayyed.zene.ui.home.view.TextSize
-import com.rizwansayyed.zene.ui.home.view.TextTitleHeader
 import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -53,9 +57,9 @@ import com.rizwansayyed.zene.ui.view.SongWaveView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.ui.view.openSpecificIntent
 import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
 import com.rizwansayyed.zene.utils.Utils.sendZeneConnect
-import com.rizwansayyed.zene.utils.Utils.toast
 import com.rizwansayyed.zene.viewmodel.PhoneVerificationViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 
@@ -133,6 +137,7 @@ fun ZeneConnectHomeView() {
 
 @Composable
 fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
+    var userSongs by remember { mutableStateOf<ZeneConnectContactsModel?>(null) }
     Column(Modifier.padding(horizontal = 12.dp), Arrangement.Center, Alignment.CenterHorizontally) {
         Box {
             AsyncImage(
@@ -148,7 +153,7 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
                 Modifier
                     .align(Alignment.TopEnd)
                     .clickable {
-                        "play_song".toast()
+                        userSongs = user
                     }) {
                 AsyncImage(
                     imgBuilder(user.currentPlayingSongThumbnail),
@@ -177,6 +182,10 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
         Column(Modifier.widthIn(max = 200.dp), Arrangement.Center, Alignment.CenterHorizontally) {
             TextPoppins(user.contactName ?: "", false, size = 16, limit = 1)
         }
+    }
+
+    if (userSongs != null) ConnectSongListeningSheet(user) {
+        userSongs = null
     }
 }
 
@@ -227,5 +236,63 @@ fun AddVibeCircle() {
             ImageIcon(R.drawable.ic_dancing_people, 40)
         }
         TextPoppins(stringResource(R.string.send_vibes), false, size = 15, limit = 1)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConnectSongListeningSheet(user: ZeneConnectContactsModel, close: () -> Unit) {
+    ModalBottomSheet(close, containerColor = MainColor) {
+        Column(
+            Modifier
+                .padding(4.dp)
+                .fillMaxSize()
+                .padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(20.dp))
+
+            Box {
+                AsyncImage(
+                    imgBuilder(user.currentPlayingSongThumbnail),
+                    user.currentPlayingSongName,
+                    Modifier
+                        .align(Alignment.Center)
+                        .size(150.dp)
+                        .clip(RoundedCornerShape(13.dp)),
+                    contentScale = ContentScale.Crop
+                )
+
+                AsyncImage(
+                    imgBuilder(user.profilePhoto),
+                    user.contactName,
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(y = 20.dp, x = 20.dp)
+                        .size(50.dp)
+                        .clip(RoundedCornerShape(100)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Spacer(Modifier.height(40.dp))
+            TextPoppins(stringResource(R.string.listening_too), true, size = 13)
+            Spacer(Modifier.height(10.dp))
+            TextPoppinsSemiBold(user.currentPlayingSongName ?: "", true, size = 15)
+            Spacer(Modifier.height(10.dp))
+            TextPoppins(user.currentPlayingSongArtists ?: "", true, size = 13)
+            Spacer(Modifier.height(10.dp))
+            SmallButtonBorderText(R.string.play_now) {
+                close()
+                user.currentPlayingSongID ?: return@SmallButtonBorderText
+                val u = ZeneMusicDataItems(
+                    user.currentPlayingSongName, user.currentPlayingSongArtists,
+                    user.currentPlayingSongID, user.currentPlayingSongThumbnail, "", "SONGS"
+                )
+                openSpecificIntent(u, listOf(u))
+            }
+
+            Spacer(Modifier.height(100.dp))
+        }
     }
 }

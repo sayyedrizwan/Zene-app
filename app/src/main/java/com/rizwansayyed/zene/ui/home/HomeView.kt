@@ -3,15 +3,7 @@ package com.rizwansayyed.zene.ui.home
 import android.Manifest
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -66,7 +57,7 @@ import com.rizwansayyed.zene.ui.view.SongDynamicCards
 import com.rizwansayyed.zene.ui.view.TextPoppinsLight
 import com.rizwansayyed.zene.ui.view.TextPoppinsSemiBold
 import com.rizwansayyed.zene.ui.view.isScreenBig
-import com.rizwansayyed.zene.ui.zeneconnect.ZeneConnectHomeView
+import com.rizwansayyed.zene.ui.home.view.ZeneConnectHomeView
 import com.rizwansayyed.zene.utils.Utils.THREE_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TOTAL_GRID_SIZE
 import com.rizwansayyed.zene.utils.Utils.TWO_GRID_SIZE

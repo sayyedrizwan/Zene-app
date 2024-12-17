@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSongsDBInterface
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.model.OfflineSongsData
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
 import com.rizwansayyed.zene.utils.Utils.savePlaylistFilePath
@@ -342,4 +343,9 @@ class ZeneViewModel @Inject constructor(
             relatedVideos = APIResponse.Success(it)
         }
     }
+
+    fun sendConnectVibes(connect: ZeneConnectContactsModel, song: ZeneMusicDataItems?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.sendConnectVibes(connect, song).onStart {}.catch {}.collectLatest {}
+        }
 }
