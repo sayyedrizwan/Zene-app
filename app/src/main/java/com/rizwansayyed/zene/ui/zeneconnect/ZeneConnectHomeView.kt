@@ -144,15 +144,15 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
                     .clip(RoundedCornerShape(100))
             )
 
-            Box(
+            if (user.currentPlayingSongID != null) Box(
                 Modifier
                     .align(Alignment.TopEnd)
                     .clickable {
                         "play_song".toast()
                     }) {
                 AsyncImage(
-                    imgBuilder("https://lh3.googleusercontent.com/_YrGlG1r1LWNgS78199Cv2R8HZEl_o4l7DeyTaTPGkpGQHcaBI9UCMwoecf2HyEWbAyPqsqcf_L9mSw=w544-h544-l90-rj"),
-                    user.contactName,
+                    imgBuilder(user.currentPlayingSongThumbnail),
+                    user.currentPlayingSongName,
                     Modifier
                         .offset(x = 10.dp, y = (-5).dp)
                         .align(Alignment.Center)

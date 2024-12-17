@@ -15,8 +15,10 @@ data class ZeneConnectContactsModel(
     var email: String? = "",
     var profilePhoto: String? = "",
     var contactName: String? = "",
-    var currentPlayingSong: String? = "",
-    var currentPlayingSongTime: Long? = null,
+    var currentPlayingSongName: String? = null,
+    var currentPlayingSongArtists: String? = null,
+    var currentPlayingSongID: String? = null,
+    var currentPlayingSongThumbnail: String? = null,
     var numberOfPosts: Int? = null,
     var ts: Long? = null,
 )

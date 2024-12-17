@@ -87,7 +87,7 @@ fun ZeneConnectSongSearchView(click: (ZeneMusicDataItems?) -> Unit) {
                         v.data.artists.forEach { s ->
                             ConnectSearchItems(s, click)
                         }
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(30.dp))
                     }
 
                     if (v.data.videos.isNotEmpty()) {
@@ -95,7 +95,7 @@ fun ZeneConnectSongSearchView(click: (ZeneMusicDataItems?) -> Unit) {
                         v.data.videos.forEach { s ->
                             ConnectSearchItems(s, click)
                         }
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(30.dp))
                     }
 
                     if (v.data.songs.isNotEmpty()) {

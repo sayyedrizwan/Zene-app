@@ -16,7 +16,6 @@ import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
-import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.getAllPhoneCode
 import com.rizwansayyed.zene.utils.Utils.moshi

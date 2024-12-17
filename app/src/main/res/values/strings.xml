@@ -272,6 +272,8 @@
     <string name="send_vibes">Send Vibes</string>
     <string name="vibes_settings">Vibes Settings</string>
     <string name="listen_now">Listen Now</string>
+    <string name="view_artists">View Artists</string>
+    <string name="play_video">Play Video</string>
     <string name="error_while_getting_song_try_again">Error while getting song. Try again!</string>
     <string name="connect_on_other_device">Zene Connect is active on another device. Verify your phone number to enable it here.</string>
     <string name="once_send_vibes_cannot_undo">Once send you cannot undo or delete the vibe.</string>

@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation
 
-import android.util.Log
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectContactDatabase
@@ -27,7 +26,8 @@ class ZeneConnectRoomDBImpl @Inject constructor(
                 c.number.contains(it.phone_number!!.replace("+${phoneNumberCode}", ""))
             }
             ZeneConnectContactsModel(
-                null, it.phone_number ?: "", it.email, it.profile_photo, name?.name
+                null, it.phone_number ?: "", it.email, it.profile_photo, name?.name,
+                it.song_name, it.song_artists, it.song_id, it.song_thumbnail
             )
         }
         l.forEach { contactDB.contactsDao().insert(it) }

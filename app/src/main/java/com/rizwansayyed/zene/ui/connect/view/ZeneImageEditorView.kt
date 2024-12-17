@@ -45,6 +45,9 @@ import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.api.model.MusicType.ARTISTS
+import com.rizwansayyed.zene.data.api.model.MusicType.SONGS
+import com.rizwansayyed.zene.data.api.model.MusicType.VIDEO
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextPoppins
@@ -150,7 +153,21 @@ fun ZeneImageEditorView(image: Uri) {
                     TextPoppins(v = songView!!.name ?: "", false, size = 16, limit = 1)
                     Spacer(Modifier.height(4.dp))
                     TextPoppins(v = songView!!.artists ?: "", false, size = 13, limit = 1)
-                    TextPoppins(stringResource(R.string.listen_now), false, size = 13, limit = 1)
+                    when (songView!!.type()) {
+                        SONGS -> TextPoppins(
+                            stringResource(R.string.listen_now), false, size = 13, limit = 1
+                        )
+
+                        ARTISTS -> TextPoppins(
+                            stringResource(R.string.view_artists), false, size = 13, limit = 1
+                        )
+
+                        VIDEO -> TextPoppins(
+                            stringResource(R.string.play_video), false, size = 13, limit = 1
+                        )
+                        else -> {}
+                    }
+
                 }
             }
 

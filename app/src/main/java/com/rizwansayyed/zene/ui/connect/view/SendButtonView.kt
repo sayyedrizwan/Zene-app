@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.connect.view
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,13 +77,14 @@ fun SendButtonView(modifier: Modifier = Modifier) {
 fun ZeneConnectVibesSendView(
     sendStatusContact: SnapshotStateMap<String, Boolean>, click: () -> Unit
 ) {
+    val context = LocalContext.current as Activity
     val roomDB: RoomDBViewModel = hiltViewModel()
 
     ModalBottomSheet(click, containerColor = MainColor, contentColor = MainColor) {
         LazyColumn(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp)
         ) {
             item {
                 Spacer(Modifier.height(10.dp))
@@ -95,7 +98,15 @@ fun ZeneConnectVibesSendView(
                         stringResource(R.string.no_users_to_vibe), true, size = 15
                     )
                 } else {
-                    TextPoppinsSemiBold(stringResource(R.string.contacts), false, size = 15)
+                    Spacer(Modifier.height(25.dp))
+                    Row {
+                        TextPoppinsSemiBold(stringResource(R.string.contacts), false, size = 15)
+                        Spacer(Modifier.weight(1f))
+
+                        ImageIcon(R.drawable.ic_tick) {
+                            context.finish()
+                        }
+                    }
                     Spacer(Modifier.height(5.dp))
                 }
             }
@@ -121,7 +132,7 @@ fun SendUserInfo(
 ) {
     Row(
         Modifier
-            .padding(horizontal = 5.dp, vertical = 10.dp)
+            .padding(vertical = 10.dp)
             .fillMaxWidth(),
         Arrangement.Center,
         Alignment.CenterVertically
