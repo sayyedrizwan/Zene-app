@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.provider.ContactsContract
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -12,13 +11,13 @@ import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.api.model.CountryCodeModel
 import com.rizwansayyed.zene.data.api.zene.TrueCallerAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
-import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
 import com.rizwansayyed.zene.di.BaseApp.Companion.context
 import com.rizwansayyed.zene.utils.Utils.getAllPhoneCode
-import com.rizwansayyed.zene.utils.Utils.moshi
+import com.rizwansayyed.zene.utils.Utils.getCurrentPhoneCountryCode
+import com.rizwansayyed.zene.utils.Utils.hasCountryCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,12 +30,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -101,8 +94,7 @@ class PhoneVerificationViewModel @Inject constructor(
     fun getContactsLists() = CoroutineScope(Dispatchers.IO).launch {
         val list = ArrayList<ContactListData>()
         val countryCodes = getAllPhoneCode()
-        val address = DataStoreManager.ipDB.firstOrNull()?.countryCode ?: ""
-        val phoneNumberCode = countryCodes.first { it.iso.lowercase() == address.lowercase() }.code
+        val phoneNumberCode = getCurrentPhoneCountryCode()
 
         val cursor = context.contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null
@@ -134,28 +126,5 @@ class PhoneVerificationViewModel @Inject constructor(
                 if (isActive) cancel()
             }
         }
-    }
-
-    private fun getUserInfo(number: Array<String>) {
-        val client = OkHttpClient.Builder().readTimeout(30, TimeUnit.MINUTES)
-            .connectTimeout(30, TimeUnit.MINUTES).build()
-
-        val list = moshi.adapter(Array<String>::class.java).toJson(number)
-        val json = JSONObject().apply {
-            put("numbers", list)
-        }
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-
-        val request = Request.Builder()
-            .url("http://192.168.0.105:3419/-api-/zuser/number_user_info")
-            .post(body)
-            .addHeader("Content-Type", "application/json")
-            .build()
-        val response = client.newCall(request).execute()
-        Log.d("TAG", "getUserInfo: ${response.body?.string()}")
-    }
-
-    private fun hasCountryCode(number: String, allPhoneCode: Array<CountryCodeModel>): Boolean {
-        return number.contains("+") && allPhoneCode.any { number.contains("+${it.code}") }
     }
 }

@@ -5,9 +5,11 @@ import androidx.room.Room
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.OfflineSongsDatabase
 import com.rizwansayyed.zene.data.roomdb.updates.UpdatesDatabase
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectContactDatabase
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectVibesDatabase
 import com.rizwansayyed.zene.utils.Utils.RoomDB.OFFLINE_SONGS_ROOM_DB
 import com.rizwansayyed.zene.utils.Utils.RoomDB.UPDATE_ROOM_DB
 import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_CONTACT_DB
+import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_VIBES_DB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +39,13 @@ object RoomDBModule {
     fun connectContactsDB(@ApplicationContext context: Context): ZeneConnectContactDatabase {
         return Room.databaseBuilder(
             context, ZeneConnectContactDatabase::class.java, ZENE_CONNECT_CONTACT_DB
+        ).build()
+    }
+
+    @Provides
+    fun connectVibesDB(@ApplicationContext context: Context): ZeneConnectVibesDatabase {
+        return Room.databaseBuilder(
+            context, ZeneConnectVibesDatabase::class.java, ZENE_CONNECT_VIBES_DB
         ).build()
     }
 

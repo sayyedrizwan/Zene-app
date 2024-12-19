@@ -121,7 +121,6 @@ fun ZeneConnectHomeView() {
             items(phoneViewModel.contactsLists) {
                 ContactsUsers(it)
             }
-
         }
 
         LaunchedEffect(Unit) {

@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.provider.ContactsContract
 import android.provider.Settings
 import android.webkit.CookieManager
 import android.webkit.WebSettings
@@ -26,6 +27,7 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.model.CountryCodeModel
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
+import com.rizwansayyed.zene.data.db.DataStoreManager
 import com.rizwansayyed.zene.data.db.DataStoreManager.DataStoreManagerObjects.TS_LAST_DATA
 import com.rizwansayyed.zene.data.db.DataStoreManager.artistsHistoryListDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.musicPlayerDB
@@ -42,6 +44,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
@@ -85,6 +88,7 @@ object Utils {
 
     object RoomDB {
         const val ZENE_CONNECT_CONTACT_DB = "zene_connect_contact_db"
+        const val ZENE_CONNECT_VIBES_DB = "zene_connect_vibes_db"
         const val UPDATE_ROOM_DB = "update_room_db"
         const val OFFLINE_SONGS_ROOM_DB = "offline_songs_room_db"
 
@@ -601,8 +605,32 @@ object Utils {
         return "${androidId}_${uid}"
     }
 
-    fun saveFilesImagePath(bitmap: Bitmap) {
+    fun getContactName(phoneNumber: String): String? {
+        val contentResolver = context.contentResolver
+        val uri = Uri.withAppendedPath(
+            ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+            Uri.encode(phoneNumber)
+        )
+        val projection = arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME)
 
+        var contactName: String? = null
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                contactName =
+                    it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME))
+            }
+        }
+        return contactName
     }
 
+    fun getCurrentPhoneCountryCode() = runBlocking(Dispatchers.IO) {
+        val countryCodes = getAllPhoneCode()
+        val address = DataStoreManager.ipDB.firstOrNull()?.countryCode ?: ""
+        return@runBlocking countryCodes.first { it.iso.lowercase() == address.lowercase() }.code
+    }
+
+    fun hasCountryCode(number: String, allPhoneCode: Array<CountryCodeModel>): Boolean {
+        return number.contains("+") && allPhoneCode.any { number.contains("+${it.code}") }
+    }
 }

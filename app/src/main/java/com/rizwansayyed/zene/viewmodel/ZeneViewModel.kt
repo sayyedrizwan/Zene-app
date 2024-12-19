@@ -348,4 +348,5 @@ class ZeneViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             zeneAPI.sendConnectVibes(connect, song).onStart {}.catch {}.collectLatest {}
         }
+
 }
