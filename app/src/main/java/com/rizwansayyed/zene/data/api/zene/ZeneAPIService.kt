@@ -24,10 +24,12 @@ import com.rizwansayyed.zene.data.api.model.ZeneUpdateAvailabilityResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersPremiumResponse
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.api.model.ZeneVideosMusicData
+import com.rizwansayyed.zene.data.db.model.ZeneConnectVibesResponse
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ADD_SONGS_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_CONNECT_ADD_STATUS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_CONNECT_GET_STATUS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_BY_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_APP_UPDATE_API
@@ -344,7 +346,6 @@ interface ZeneAPIService {
     @POST(ZENE_COUNTRIES_BY_RADIO_API)
     suspend fun radioViaCountries(@Body body: RequestBody): ZeneMusicDataResponse
 
-
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @Multipart
     @POST(ZENE_CONNECT_ADD_STATUS_API)
@@ -354,4 +355,9 @@ interface ZeneAPIService {
         @Part("to_number") toNumber: RequestBody,
         @Part("song_data") songData: RequestBody,
     ): ZeneBooleanResponse
+
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_CONNECT_GET_STATUS_API)
+    suspend fun getConnectVibes(@Body body: RequestBody): ZeneConnectVibesResponse
 }

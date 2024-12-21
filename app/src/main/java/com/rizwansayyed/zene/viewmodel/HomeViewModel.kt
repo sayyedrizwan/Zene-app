@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +23,6 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
-import com.rizwansayyed.zene.utils.Utils.uniqueDeviceUID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -328,6 +326,11 @@ class HomeViewModel @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+
+
+    fun getConnectVibes() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.getVibes().catch {}.collectLatest {}
     }
 
 

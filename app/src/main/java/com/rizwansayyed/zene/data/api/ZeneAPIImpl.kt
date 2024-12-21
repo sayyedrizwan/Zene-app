@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.data.api
 
 import android.os.Build
-import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
@@ -30,7 +29,9 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.songHistoryListDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.sponsorsAdsDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectVibesDatabase
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectVibesModel
 import com.rizwansayyed.zene.utils.Utils.addArtistsHistoryLists
 import com.rizwansayyed.zene.utils.Utils.addSongHistoryLists
 import com.rizwansayyed.zene.utils.Utils.getDeviceName
@@ -57,7 +58,9 @@ import kotlin.time.Duration.Companion.hours
 
 
 class ZeneAPIImpl @Inject constructor(
-    private val zeneAPI: ZeneAPIService, private val ipAPI: IpAPIService
+    private val zeneAPI: ZeneAPIService,
+    private val ipAPI: IpAPIService,
+    private val zeneConnectDB: ZeneConnectVibesDatabase
 ) : ZeneAPIInterface {
 
     override suspend fun ip() = flow {
@@ -527,15 +530,41 @@ class ZeneAPIImpl @Inject constructor(
         connect: ZeneConnectContactsModel, song: ZeneMusicDataItems?
     ) = flow {
         val requestFile = saveConnectImage.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-        val fileForm =
-            MultipartBody.Part.createFormData("file", saveConnectImage.name, requestFile)
-        val pn = (userInfoDB.firstOrNull()?.phonenumber?.trim() ?: "")
-            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
-        val toPN =
-            connect.number.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val fileForm = MultipartBody.Part.createFormData("file", saveConnectImage.name, requestFile)
+        val pn = (userInfoDB.firstOrNull()?.phonenumber?.trim()
+            ?: "").toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val toPN = connect.number.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
         val songJson = moshi.adapter(ZeneMusicDataItems::class.java).toJson(song)
         val songData = songJson.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         emit(zeneAPI.sendConnectVibes(fileForm, pn, toPN, songData))
     }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun getVibes() = flow {
+        val number = (userInfoDB.firstOrNull()?.phonenumber?.trim() ?: "")
+        val json = JSONObject().apply {
+            put("number", number)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        val list = zeneAPI.getConnectVibes(body)
+        list.forEach {
+            it.from_number?.let { num ->
+                val insert = ZeneConnectVibesModel(
+                    null,
+                    num,
+                    it.timestamp,
+                    it.image_path,
+                    it.songid,
+                    it.atists,
+                    it.name,
+                    it.type,
+                    true
+                )
+                zeneConnectDB.vibesDao().insert(insert)
+            }
+        }
+        emit(Unit)
+    }.flowOn(Dispatchers.IO)
+
 }

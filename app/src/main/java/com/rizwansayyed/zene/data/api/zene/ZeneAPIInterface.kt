@@ -132,4 +132,6 @@ interface ZeneAPIInterface {
     suspend fun sendConnectVibes(
         connect: ZeneConnectContactsModel, song: ZeneMusicDataItems?
     ): Flow<ZeneBooleanResponse>
+
+    suspend fun getVibes(): Flow<Unit>
 }

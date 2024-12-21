@@ -64,9 +64,10 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             val name = getContactName(finalNumber) ?: dbName
             NotificationUtils(
                 "${message["title"]?.replace("{contact_name}", name)}",
-                message["body"] ?: "",
-                message["photo"]?.toUri()
+                message["body"] ?: "", message["photo"]?.toUri()
             )
         }
+
+        zeneAPI.getVibes().catch { }.collectLatest { }
     }
 }

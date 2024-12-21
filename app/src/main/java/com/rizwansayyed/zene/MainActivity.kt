@@ -295,8 +295,8 @@ class MainActivity : ComponentActivity() {
         loginEmail(intent)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         lifecycleScope.launch {
             delay(2.seconds)
             if (userInfoDB.firstOrNull()?.isLoggedIn() == true)
@@ -304,6 +304,7 @@ class MainActivity : ComponentActivity() {
         }
 
         homeViewModel.syncUserData()
+        homeViewModel.getConnectVibes()
         homeViewModel.checkSubscription()
         startMusicService()
         logEvents(FirebaseLogEvents.FirebaseEvents.OPEN_APP)

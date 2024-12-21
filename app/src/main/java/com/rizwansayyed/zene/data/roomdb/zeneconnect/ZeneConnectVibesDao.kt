@@ -10,7 +10,7 @@ import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_VIBES_DB
 @Dao
 interface ZeneConnectVibesDao {
 
-    @Query("SELECT * FROM $ZENE_CONNECT_VIBES_DB ORDER BY ts DESC")
+    @Query("SELECT * FROM $ZENE_CONNECT_VIBES_DB ORDER BY timestamp DESC")
     fun get(): List<ZeneConnectVibesModel>
 
     @Query("SELECT * FROM $ZENE_CONNECT_VIBES_DB WHERE number = :number")
