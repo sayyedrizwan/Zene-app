@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.roomdb.zeneconnect
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface ZeneConnectContactsDao {
 
     @Query("SELECT * FROM $ZENE_CONNECT_CONTACT_DB ORDER BY ts DESC")
-    fun get(): Flow<List<ZeneConnectContactsModel>>
+    fun get(): LiveData<List<ZeneConnectContactsModel>>
 
     @Query("SELECT * FROM $ZENE_CONNECT_CONTACT_DB WHERE number = :number")
     suspend fun get(number: String): ZeneConnectContactsModel?

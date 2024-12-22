@@ -12,5 +12,5 @@ interface ZeneConnectRoomDBInterface {
         list: List<ZeneUsersResponse>, contacts: ArrayList<ContactListData>, phoneNumberCode: String
     ): Flow<Nothing?>
 
-    suspend fun get(): Flow<Flow<List<ZeneConnectContactsModel>>>
+    suspend fun get(): LiveData<List<ZeneConnectContactsModel>>
 }

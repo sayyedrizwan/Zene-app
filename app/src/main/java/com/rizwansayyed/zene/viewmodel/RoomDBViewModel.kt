@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -76,10 +75,10 @@ class RoomDBViewModel @Inject constructor(
         offlineSongsDB.delete(m.id ?: "").catch { }.collectLatest {}
     }
 
-    fun getAllContacts() = viewModelScope.launch(Dispatchers.IO) {
-        zeneConnectDB.get().catch {}.collectLatest {
+    fun getAllContacts() = viewModelScope.launch(Dispatchers.Main) {
+        zeneConnectDB.get().observeForever {
             contactsLists.clear()
-            contactsLists.addAll(it.firstOrNull() ?: emptyList())
+            contactsLists.addAll(it ?: emptyList())
         }
     }
 }

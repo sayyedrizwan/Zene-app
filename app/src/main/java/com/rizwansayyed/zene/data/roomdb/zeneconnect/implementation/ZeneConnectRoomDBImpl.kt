@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation
 
+import androidx.lifecycle.LiveData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectContactDatabase
@@ -13,9 +14,9 @@ class ZeneConnectRoomDBImpl @Inject constructor(
     private val contactDB: ZeneConnectContactDatabase
 ) : ZeneConnectRoomDBInterface {
 
-    override suspend fun get() = flow {
-        emit(contactDB.contactsDao().get())
-    }.flowOn(Dispatchers.IO)
+    override suspend fun get(): LiveData<List<ZeneConnectContactsModel>> {
+       return contactDB.contactsDao().get()
+    }
 
 
     override suspend fun insert(
@@ -27,7 +28,8 @@ class ZeneConnectRoomDBImpl @Inject constructor(
             }
             ZeneConnectContactsModel(
                 null, it.phone_number ?: "", it.email, it.profile_photo, name?.name,
-                it.song_name, it.song_artists, it.song_id, it.song_thumbnail
+                it.song_name, it.song_artists, it.song_id, it.song_thumbnail,
+                0, System.currentTimeMillis()
             )
         }
         l.forEach { contactDB.contactsDao().insert(it) }

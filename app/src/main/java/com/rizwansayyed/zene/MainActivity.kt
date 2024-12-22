@@ -278,7 +278,6 @@ class MainActivity : ComponentActivity() {
 
         checkAndRunWeb(intent)
         loginEmail(intent)
-
     }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
