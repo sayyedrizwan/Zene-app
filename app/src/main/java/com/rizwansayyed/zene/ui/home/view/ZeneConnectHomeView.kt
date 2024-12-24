@@ -167,14 +167,17 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
                 SongWaveView(Modifier.align(Alignment.BottomCenter))
             }
 
-            Column(
+            if ((user.numberOfPosts ?: 0) > 0) Column(
                 Modifier
                     .align(Alignment.BottomStart)
                     .clip(RoundedCornerShape(100))
-                    .background(Color.Red)
+                    .background(if (user.isNew == true) Color.Red else Color.Gray)
                     .padding(horizontal = 7.dp, vertical = 3.dp)
             ) {
-                TextPoppinsSemiBold("4", false, size = 17)
+                TextPoppinsSemiBold(
+                    "${user.numberOfPosts} ${if (user.isNew == true) "+" else ""}",
+                    false, size = 17
+                )
             }
         }
 

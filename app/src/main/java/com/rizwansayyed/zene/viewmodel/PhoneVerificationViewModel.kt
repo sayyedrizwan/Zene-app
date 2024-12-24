@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
-import com.rizwansayyed.zene.data.api.model.CountryCodeModel
 import com.rizwansayyed.zene.data.api.zene.TrueCallerAPIInterface
 import com.rizwansayyed.zene.data.api.zene.ZeneAPIInterface
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
@@ -117,12 +116,22 @@ class PhoneVerificationViewModel @Inject constructor(
         contactsLists.clear()
         contactsLists.addAll(list)
 
+        suspend fun init(l: Array<String>) {
+            zeneAPI.numberUserInfo(l).catch {}.collectLatest {
+                zeneConnectDB.insert(it, list, phoneNumberCode).catch {}.collectLatest { }
+            }
+        }
+
+        val listFav = zeneConnectDB.getList().firstOrNull()
+        if (listFav != null) {
+            val l = listFav.map { it.number }.filter { it.length > 4 }.toTypedArray()
+            init(l)
+        }
+
         list.chunked(100).parallelStream().forEach { numbers ->
             CoroutineScope(Dispatchers.IO).launch {
                 val l = numbers.map { it.number }.filter { it.length > 4 }.toTypedArray()
-                zeneAPI.numberUserInfo(l).catch {}.collectLatest {
-                    zeneConnectDB.insert(it, list, phoneNumberCode).catch {}.collectLatest { }
-                }
+                init(l)
                 if (isActive) cancel()
             }
         }

@@ -5,13 +5,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_CONTACT_DB
 
-@Entity(
-    tableName = ZENE_CONNECT_CONTACT_DB,
-    indices = [Index(value = ["number"], unique = true)]
-)
+@Entity(tableName = ZENE_CONNECT_CONTACT_DB)
 data class ZeneConnectContactsModel(
-    @PrimaryKey(autoGenerate = true) var id: Int? = null,
-    var number: String = "",
+    @PrimaryKey var number: String = "",
     var email: String? = "",
     var profilePhoto: String? = "",
     var contactName: String? = "",
@@ -20,5 +16,6 @@ data class ZeneConnectContactsModel(
     var currentPlayingSongID: String? = null,
     var currentPlayingSongThumbnail: String? = null,
     var numberOfPosts: Int? = null,
+    var isNew: Boolean? = false,
     var ts: Long? = null,
 )

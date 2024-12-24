@@ -14,10 +14,13 @@ import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectR
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -78,7 +81,21 @@ class RoomDBViewModel @Inject constructor(
     fun getAllContacts() = viewModelScope.launch(Dispatchers.Main) {
         zeneConnectDB.get().observeForever {
             contactsLists.clear()
-            contactsLists.addAll(it ?: emptyList())
+            it?.forEach { c ->
+                viewModelScope.launch(Dispatchers.IO) {
+                    val i = zeneConnectDB.newPostsCounts(c.number).firstOrNull() ?: 0
+                    if (i > 0) {
+                        c.numberOfPosts = i
+                        c.isNew = true
+                    } else {
+                        val num = zeneConnectDB.postsCounts(c.number).firstOrNull() ?: 0
+                        c.numberOfPosts = num
+                        c.isNew = false
+                    }
+                    contactsLists.add(c)
+                    if (isActive) cancel()
+                }
+            }
         }
     }
 }

@@ -13,4 +13,7 @@ interface ZeneConnectRoomDBInterface {
     ): Flow<Nothing?>
 
     suspend fun get(): LiveData<List<ZeneConnectContactsModel>>
+    suspend fun newPostsCounts(number: String): Flow<Int>
+    suspend fun postsCounts(number: String): Flow<Int>
+    suspend fun getList(): Flow<List<ZeneConnectContactsModel>>
 }
