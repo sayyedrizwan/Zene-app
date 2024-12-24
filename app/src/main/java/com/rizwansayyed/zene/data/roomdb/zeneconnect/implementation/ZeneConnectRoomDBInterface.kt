@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.rizwansayyed.zene.data.api.model.ZeneUsersResponse
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectVibesModel
 import kotlinx.coroutines.flow.Flow
 
 interface ZeneConnectRoomDBInterface {
@@ -16,4 +17,5 @@ interface ZeneConnectRoomDBInterface {
     suspend fun newPostsCounts(number: String): Flow<Int>
     suspend fun postsCounts(number: String): Flow<Int>
     suspend fun getList(): Flow<List<ZeneConnectContactsModel>>
+    suspend fun getAllVibes(number: String): Flow<List<ZeneConnectVibesModel>>
 }

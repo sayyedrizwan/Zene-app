@@ -6,12 +6,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.api.APIResponse
+import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSongsDBInterface
 import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBInterface
 import com.rizwansayyed.zene.data.roomdb.updates.model.UpdateData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectVibesModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -34,6 +37,7 @@ class RoomDBViewModel @Inject constructor(
 
     var updateLists = mutableStateListOf<UpdateData>()
     var contactsLists = mutableStateListOf<ZeneConnectContactsModel>()
+    var vibesListsData by mutableStateOf<APIResponse<List<ZeneConnectVibesModel>>>(APIResponse.Empty)
     var isSaved by mutableStateOf(false)
     var isLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
@@ -79,9 +83,9 @@ class RoomDBViewModel @Inject constructor(
     }
 
     fun getAllContacts() = viewModelScope.launch(Dispatchers.Main) {
-        zeneConnectDB.get().observeForever {
+        zeneConnectDB.getList().catch { }.collectLatest {
             contactsLists.clear()
-            it?.forEach { c ->
+            it.forEach { c ->
                 viewModelScope.launch(Dispatchers.IO) {
                     val i = zeneConnectDB.newPostsCounts(c.number).firstOrNull() ?: 0
                     if (i > 0) {
@@ -98,4 +102,16 @@ class RoomDBViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun contactsAllVibes(number: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneConnectDB.getAllVibes(number).onStart {
+            vibesListsData = APIResponse.Loading
+        }.catch {
+            vibesListsData = APIResponse.Error(it)
+        }.collectLatest {
+            vibesListsData = APIResponse.Success(it)
+        }
+    }
+
 }

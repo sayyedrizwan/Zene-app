@@ -22,6 +22,9 @@ interface ZeneConnectVibesDao {
     @Query("SELECT COUNT(id) FROM $ZENE_CONNECT_VIBES_DB WHERE number = :number")
     suspend fun allPostsNumber(number: String): Int
 
+    @Query("SELECT * FROM $ZENE_CONNECT_VIBES_DB WHERE number = :number ORDER BY isNew DESC")
+    suspend fun allVibesNumberSortNew(number: String): List<ZeneConnectVibesModel>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg contacts: ZeneConnectVibesModel)
 }

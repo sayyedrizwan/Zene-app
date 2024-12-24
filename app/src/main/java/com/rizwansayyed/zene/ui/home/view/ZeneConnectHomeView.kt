@@ -25,11 +25,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +50,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.db.model.ContactListData
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.ui.connect.ZeneConnectActivity
+import com.rizwansayyed.zene.ui.connect.view.HomeConnectVibes
 import com.rizwansayyed.zene.ui.phoneverifier.TrueCallerActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -62,13 +65,20 @@ import com.rizwansayyed.zene.utils.Utils.isPermissionDisabled
 import com.rizwansayyed.zene.utils.Utils.sendZeneConnect
 import com.rizwansayyed.zene.viewmodel.PhoneVerificationViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ZeneConnectHomeView() {
     val phoneViewModel: PhoneVerificationViewModel = hiltViewModel()
     val roomDB: RoomDBViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
+    val coroutines = rememberCoroutineScope()
     var contactPermission by remember { mutableStateOf(false) }
+    var jobs by remember { mutableStateOf<Job?>(null) }
     val info by userInfoDB.collectAsState(initial = null)
 
     val permission =
@@ -124,8 +134,19 @@ fun ZeneConnectHomeView() {
         }
 
         LaunchedEffect(Unit) {
-            roomDB.getAllContacts()
             phoneViewModel.getContactsLists()
+        }
+
+        DisposableEffect(Unit) {
+            jobs = coroutines.launch(Dispatchers.IO) {
+                while (true) {
+                    roomDB.getAllContacts()
+                    delay(15.seconds)
+                }
+            }
+            onDispose {
+                jobs?.cancel()
+            }
         }
     }
 
@@ -137,7 +158,15 @@ fun ZeneConnectHomeView() {
 @Composable
 fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
     var userSongs by remember { mutableStateOf<ZeneConnectContactsModel?>(null) }
-    Column(Modifier.padding(horizontal = 12.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+    var showVibes by remember { mutableStateOf(false) }
+
+    Column(
+        Modifier
+            .padding(horizontal = 12.dp)
+            .clickable {
+                showVibes = true
+            }, Arrangement.Center, Alignment.CenterHorizontally
+    ) {
         Box {
             AsyncImage(
                 imgBuilder(user.profilePhoto),
@@ -188,6 +217,10 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
 
     if (userSongs != null) ConnectSongListeningSheet(user) {
         userSongs = null
+    }
+
+    if (showVibes) HomeConnectVibes(user) {
+        showVibes = false
     }
 }
 

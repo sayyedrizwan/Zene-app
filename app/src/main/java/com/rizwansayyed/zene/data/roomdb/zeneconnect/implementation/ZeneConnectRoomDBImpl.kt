@@ -20,8 +20,8 @@ class ZeneConnectRoomDBImpl @Inject constructor(
         return contactDB.contactsDao().get()
     }
 
-    override suspend fun getList()= flow {
-       emit(contactDB.contactsDao().getList())
+    override suspend fun getList() = flow {
+        emit(contactDB.contactsDao().getList())
     }.flowOn(Dispatchers.IO)
 
     override suspend fun newPostsCounts(number: String) = flow {
@@ -30,6 +30,10 @@ class ZeneConnectRoomDBImpl @Inject constructor(
 
     override suspend fun postsCounts(number: String) = flow {
         emit(vibesDB.vibesDao().allPostsNumber(number))
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getAllVibes(number: String) = flow {
+        emit(vibesDB.vibesDao().allVibesNumberSortNew(number))
     }.flowOn(Dispatchers.IO)
 
 
@@ -41,9 +45,17 @@ class ZeneConnectRoomDBImpl @Inject constructor(
                 c.number.contains(it.phone_number!!.replace("+${phoneNumberCode}", ""))
             }
             ZeneConnectContactsModel(
-                it.phone_number ?: "", it.email, it.profile_photo, name?.name,
-                it.song_name, it.song_artists, it.song_id, it.song_thumbnail,
-                0, true, System.currentTimeMillis()
+                it.phone_number ?: "",
+                it.email,
+                it.profile_photo,
+                name?.name,
+                it.song_name,
+                it.song_artists,
+                it.song_id,
+                it.song_thumbnail,
+                0,
+                true,
+                System.currentTimeMillis()
             )
         }
         l.forEach { contactDB.contactsDao().insert(it) }
