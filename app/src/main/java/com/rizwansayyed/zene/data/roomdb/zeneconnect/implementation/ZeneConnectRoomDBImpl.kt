@@ -36,6 +36,10 @@ class ZeneConnectRoomDBImpl @Inject constructor(
         emit(vibesDB.vibesDao().allVibesNumberSortNew(number))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun resetNewVibes(id: Int) = flow {
+        emit(vibesDB.vibesDao().resetNewVibes(id))
+    }.flowOn(Dispatchers.IO)
+
 
     override suspend fun insert(
         list: List<ZeneUsersResponse>, contacts: ArrayList<ContactListData>, phoneNumberCode: String

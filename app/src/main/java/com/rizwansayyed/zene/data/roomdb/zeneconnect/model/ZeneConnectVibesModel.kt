@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.data.roomdb.zeneconnect.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_VIBES_DB
+import java.util.concurrent.TimeUnit
 
 @Entity(tableName = ZENE_CONNECT_VIBES_DB)
 data class ZeneConnectVibesModel(
@@ -15,4 +16,23 @@ data class ZeneConnectVibesModel(
     var songName: String? = null,
     var type: String? = null,
     var isNew: Boolean = true,
-)
+) {
+    fun timeAgo(): String {
+        timestamp ?: return ""
+        val currentMillis = System.currentTimeMillis()
+        val differenceMillis = currentMillis - timestamp!!
+
+        if (differenceMillis < 0) return ""
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(differenceMillis)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis)
+        val hours = TimeUnit.MILLISECONDS.toHours(differenceMillis)
+        val days = TimeUnit.MILLISECONDS.toDays(differenceMillis)
+
+        return when {
+            seconds < 60 -> "${seconds}s ago"
+            minutes < 60 -> "${minutes}m ago"
+            hours < 24 -> "${hours}h ago"
+            else -> "${days}d ago"
+        }
+    }
+}

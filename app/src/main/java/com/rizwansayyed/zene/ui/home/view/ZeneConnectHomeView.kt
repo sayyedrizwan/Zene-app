@@ -138,12 +138,13 @@ fun ZeneConnectHomeView() {
         }
 
         DisposableEffect(Unit) {
-            jobs = coroutines.launch(Dispatchers.IO) {
-                while (true) {
-                    roomDB.getAllContacts()
-                    delay(15.seconds)
-                }
-            }
+            roomDB.getAllContacts()
+//            jobs = coroutines.launch(Dispatchers.IO) {
+//                while (true) {
+//                    roomDB.getAllContacts()
+//                    delay(15.seconds)
+//                }
+//            }
             onDispose {
                 jobs?.cancel()
             }

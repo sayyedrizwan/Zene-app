@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.api.APIResponse
-import com.rizwansayyed.zene.data.api.model.ZeneArtistsInfoResponse
 import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSongsDBInterface
 import com.rizwansayyed.zene.data.roomdb.updates.implementation.UpdatesRoomDBInterface
@@ -112,6 +111,11 @@ class RoomDBViewModel @Inject constructor(
         }.collectLatest {
             vibesListsData = APIResponse.Success(it)
         }
+    }
+
+
+    fun resetNewVibes(id: Int) = viewModelScope.launch(Dispatchers.IO) {
+        zeneConnectDB.resetNewVibes(id).onStart { }.catch { }.collectLatest { }
     }
 
 }
