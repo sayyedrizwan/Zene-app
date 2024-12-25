@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.roomdb.zeneconnect.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.rizwansayyed.zene.data.api.model.ZeneMusicDataItems
 import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_VIBES_DB
 import java.util.concurrent.TimeUnit
 
@@ -13,10 +14,19 @@ data class ZeneConnectVibesModel(
     var imagePath: String? = "",
     var songId: String? = null,
     var songArtists: String? = null,
+    var songThumbnail: String? = null,
     var songName: String? = null,
     var type: String? = null,
     var isNew: Boolean = true,
 ) {
+    fun getExtraDetails(): ZeneMusicDataItems? {
+        return try {
+            ZeneMusicDataItems(songName, songArtists, songId, songThumbnail, "", type)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     fun timeAgo(): String {
         timestamp ?: return ""
         val currentMillis = System.currentTimeMillis()

@@ -61,6 +61,7 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.InputTypes.IMAGES
 import com.rizwansayyed.zene.ui.view.InputTypes.PLAYLISTS
 import com.rizwansayyed.zene.ui.view.InputTypes.SEARCH
+import com.rizwansayyed.zene.utils.Utils.enterUniqueSearchHistory
 
 
 enum class InputTypes {
@@ -135,13 +136,19 @@ fun SearchScreenBar(
     }
 
 }
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchTexts(txt: String, showIcon: Boolean, clicked: (Boolean) -> Unit) {
+    var deleteSearchTerm by remember { mutableStateOf(false) }
+
     Row(
         Modifier
             .padding(top = 17.dp)
             .padding(horizontal = 7.dp)
-            .clickable { clicked(true) },
+            .combinedClickable(
+                onClick = { clicked(true) },
+                onLongClick = { deleteSearchTerm = true }),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -163,6 +170,15 @@ fun SearchTexts(txt: String, showIcon: Boolean, clicked: (Boolean) -> Unit) {
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(Color.White)
         )
+    }
+
+    if (deleteSearchTerm) AlertDialogView(
+        R.string.delete_from_search_history, R.string.delete_from_search_history_desc,
+        R.string.remove
+    ) {
+        if (it) enterUniqueSearchHistory(txt, true)
+
+        deleteSearchTerm = false
     }
 }
 

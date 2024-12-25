@@ -248,15 +248,17 @@ object Utils {
         }
     }
 
-    fun enterUniqueSearchHistory(txt: String) = CoroutineScope(Dispatchers.IO).launch {
-        val array = ArrayList<String>()
-        val list = searchHistoryDB.first()?.toList() ?: emptyList()
-        array.add(txt.trim())
-        list.forEach {
-            if (array.size <= 100 && it.trim() != txt.trim()) array.add(it)
+    fun enterUniqueSearchHistory(txt: String, rm: Boolean = false) =
+        CoroutineScope(Dispatchers.IO).launch {
+            val array = ArrayList<String>()
+            val list = searchHistoryDB.first()?.toList() ?: emptyList()
+            array.add(txt.trim())
+            list.forEach {
+                if (array.size <= 100 && it.trim() != txt.trim()) array.add(it)
+            }
+            if (rm) array.removeIf { it == txt }
+            searchHistoryDB = flowOf(array.toTypedArray())
         }
-        searchHistoryDB = flowOf(array.toTypedArray())
-    }
 
     @Suppress("DEPRECATION")
     @SuppressLint("SetJavaScriptEnabled")

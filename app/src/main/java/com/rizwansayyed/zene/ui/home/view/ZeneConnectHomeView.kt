@@ -205,7 +205,7 @@ fun ZeneConnectUsers(user: ZeneConnectContactsModel) {
                     .padding(horizontal = 7.dp, vertical = 3.dp)
             ) {
                 TextPoppinsSemiBold(
-                    "${user.numberOfPosts} ${if (user.isNew == true) "+" else ""}",
+                    "${user.numberOfPosts} ${if (user.isNew == true) "+" else ""}".trim(),
                     false, size = 17
                 )
             }

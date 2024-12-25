@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.connect.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,13 +32,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.api.APIResponse
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectVibesModel
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.imgBuilder
+import com.rizwansayyed.zene.ui.view.openSpecificIntent
 import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 
 @Composable
@@ -59,7 +63,7 @@ fun HomeConnectVibes(user: ZeneConnectContactsModel, close: () -> Unit) {
                     if (v.data.isNotEmpty()) {
                         Column(Modifier.fillMaxSize()) {
                             HorizontalPager(state = pagerState) { page ->
-                                VibesImagesView(v.data, page) {
+                                VibesImagesView(v.data, page, close) {
                                     v.data[page].id?.let { it1 -> roomDB.resetNewVibes(it1) }
                                 }
                             }
@@ -78,7 +82,7 @@ fun HomeConnectVibes(user: ZeneConnectContactsModel, close: () -> Unit) {
 }
 
 @Composable
-fun VibesImagesView(data: List<ZeneConnectVibesModel>, page: Int, success: () -> Unit) {
+fun VibesImagesView(data: List<ZeneConnectVibesModel>, page: Int,  close: () -> Unit, success: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
@@ -106,6 +110,43 @@ fun VibesImagesView(data: List<ZeneConnectVibesModel>, page: Int, success: () ->
                 .padding(vertical = 5.dp, horizontal = 10.dp)
         ) {
             TextPoppins(data[page].timeAgo(), size = 15)
+        }
+
+        Row(
+            Modifier
+                .align(Alignment.BottomEnd)
+                .padding(vertical = 5.dp, horizontal = 10.dp)
+        ) {
+            Spacer(Modifier.weight(1f))
+
+            data[page].getExtraDetails()?.let { d ->
+                Row(
+                    Modifier
+                        .padding(vertical = 6.dp, horizontal = 5.dp)
+                        .clickable {
+                            close()
+                            openSpecificIntent(d, listOf(d))
+                        }
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color.DarkGray)
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                ) {
+                    ImageIcon(R.drawable.ic_copy_link, 27)
+                }
+            }
+
+            Row(
+                Modifier
+                    .padding(vertical = 6.dp, horizontal = 5.dp)
+                    .clickable {
+
+                    }
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color.DarkGray)
+                    .padding(vertical = 5.dp, horizontal = 10.dp)
+            ) {
+                ImageIcon(R.drawable.ic_relieved, 27)
+            }
         }
 
         Row(

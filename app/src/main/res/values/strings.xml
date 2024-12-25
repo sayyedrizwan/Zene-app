@@ -281,4 +281,6 @@
     <string name="contacts">Contacts</string>
     <string name="listening_too">Listening to</string>
     <string name="play_now">Play Now</string>
+    <string name="delete_from_search_history">Delete from Search History</string>
+    <string name="delete_from_search_history_desc">Are you sure you want to remove this item from your search history? This action cannot be undone."</string>
 </resources>

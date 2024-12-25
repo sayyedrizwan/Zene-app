@@ -557,6 +557,7 @@ class ZeneAPIImpl @Inject constructor(
                     it.image_path,
                     it.songid,
                     it.atists,
+                    it.thumbnail,
                     it.name,
                     it.type,
                     true
