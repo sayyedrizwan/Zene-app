@@ -134,4 +134,10 @@ interface ZeneAPIInterface {
     ): Flow<ZeneBooleanResponse>
 
     suspend fun getVibes(): Flow<Unit>
+    suspend fun seenVibes(toNumber: String, photoURL: String): Flow<ZeneBooleanResponse>
+    suspend fun reactToVibes(
+        toNumber: String,
+        photoURL: String,
+        emoji: String
+    ): Flow<ZeneBooleanResponse>
 }

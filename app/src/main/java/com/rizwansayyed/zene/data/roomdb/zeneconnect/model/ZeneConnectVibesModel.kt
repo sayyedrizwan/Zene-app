@@ -21,7 +21,8 @@ data class ZeneConnectVibesModel(
 ) {
     fun getExtraDetails(): ZeneMusicDataItems? {
         return try {
-            ZeneMusicDataItems(songName, songArtists, songId, songThumbnail, "", type)
+            if (songName == null || songArtists == null || songId == null) null
+            else ZeneMusicDataItems(songName, songArtists, songId, songThumbnail, songId, type)
         } catch (e: Exception) {
             null
         }

@@ -19,6 +19,9 @@ interface ZeneConnectVibesDao {
     @Query("SELECT COUNT(id) FROM $ZENE_CONNECT_VIBES_DB WHERE number = :number AND isNew = 1")
     suspend fun newPosts(number: String): Int
 
+    @Query("SELECT * FROM $ZENE_CONNECT_VIBES_DB WHERE id = :id LIMIT 1")
+    suspend fun getPosts(id: Int): ZeneConnectVibesModel?
+
     @Query("SELECT COUNT(id) FROM $ZENE_CONNECT_VIBES_DB WHERE number = :number")
     suspend fun allPostsNumber(number: String): Int
 

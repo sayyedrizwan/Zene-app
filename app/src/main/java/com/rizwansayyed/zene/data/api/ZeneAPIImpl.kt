@@ -568,4 +568,28 @@ class ZeneAPIImpl @Inject constructor(
         emit(Unit)
     }.flowOn(Dispatchers.IO)
 
+
+    override suspend fun seenVibes(toNumber: String, photoURL: String) = flow {
+        val number = (userInfoDB.firstOrNull()?.phonenumber?.trim() ?: "")
+        val json = JSONObject().apply {
+            put("fromnumber", number)
+            put("tonumber", toNumber)
+            put("photo", photoURL)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.seenVibes(body))
+    }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun reactToVibes(toNumber: String, photoURL: String, emoji: String) = flow {
+        val number = (userInfoDB.firstOrNull()?.phonenumber?.trim() ?: "")
+        val json = JSONObject().apply {
+            put("fromnumber", number)
+            put("tonumber", toNumber)
+            put("photo", photoURL)
+            put("emoji", emoji)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.reactToVibes(body))
+    }.flowOn(Dispatchers.IO)
 }

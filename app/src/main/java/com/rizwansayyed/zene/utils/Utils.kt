@@ -141,6 +141,8 @@ object Utils {
 
         const val ZENE_CONNECT_ADD_STATUS_API = "connect/add_status"
         const val ZENE_CONNECT_GET_STATUS_API = "connect/get_status"
+        const val ZENE_CONNECT_SEEN_STATUS_API = "connect/seen_status"
+        const val ZENE_CONNECT_REACT_STATUS_API = "connect/react_status"
 
 
         const val ZENE_USER_NUMBER_VERIFICATION_API = "zuser/number_verification"

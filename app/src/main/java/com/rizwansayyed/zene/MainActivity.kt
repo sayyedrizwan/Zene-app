@@ -325,6 +325,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            val token = task.result
+            Log.d("TAG", "onResume: data $token")
+        })
     }
 
     override fun onPause() {

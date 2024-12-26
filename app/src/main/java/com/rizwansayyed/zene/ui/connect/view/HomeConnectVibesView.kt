@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.ui.connect.view
 
+import android.util.Log
+import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -15,6 +18,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,9 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.emoji2.emojipicker.EmojiPickerView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rizwansayyed.zene.R
@@ -42,11 +50,15 @@ import com.rizwansayyed.zene.ui.view.LoadingView
 import com.rizwansayyed.zene.ui.view.TextPoppins
 import com.rizwansayyed.zene.ui.view.imgBuilder
 import com.rizwansayyed.zene.ui.view.openSpecificIntent
+import com.rizwansayyed.zene.utils.Utils.toast
+import com.rizwansayyed.zene.viewmodel.PhoneVerificationViewModel
 import com.rizwansayyed.zene.viewmodel.RoomDBViewModel
 
 @Composable
 fun HomeConnectVibes(user: ZeneConnectContactsModel, close: () -> Unit) {
     val roomDB: RoomDBViewModel = hiltViewModel()
+    val viewModel: PhoneVerificationViewModel = hiltViewModel()
+    val sendingReaction = stringResource(R.string.sending_the_reaction)
 
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         Box(
@@ -63,8 +75,18 @@ fun HomeConnectVibes(user: ZeneConnectContactsModel, close: () -> Unit) {
                     if (v.data.isNotEmpty()) {
                         Column(Modifier.fillMaxSize()) {
                             HorizontalPager(state = pagerState) { page ->
-                                VibesImagesView(v.data, page, close) {
-                                    v.data[page].id?.let { it1 -> roomDB.resetNewVibes(it1) }
+                                VibesImagesView(v.data, page, close, {
+                                    v.data[page].id?.let { it1 ->
+                                        viewModel.sendSeenConnect(
+                                            v.data[page].number, v.data[page].imagePath ?: "", it1
+                                        )
+                                        roomDB.resetNewVibes(it1)
+                                    }
+                                }) {
+                                    sendingReaction.toast()
+                                    viewModel.sendReactionConnect(
+                                        v.data[page].number, v.data[page].imagePath ?: "", it
+                                    )
                                 }
                             }
                         }
@@ -82,8 +104,12 @@ fun HomeConnectVibes(user: ZeneConnectContactsModel, close: () -> Unit) {
 }
 
 @Composable
-fun VibesImagesView(data: List<ZeneConnectVibesModel>, page: Int,  close: () -> Unit, success: () -> Unit) {
+fun VibesImagesView(
+    data: List<ZeneConnectVibesModel>, page: Int, close: () -> Unit, success: () -> Unit,
+    reactEmoji: (String) -> Unit
+) {
     var isLoading by remember { mutableStateOf(false) }
+    var emojiDialog by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
         AsyncImage(imgBuilder(data[page].imagePath),
@@ -129,8 +155,7 @@ fun VibesImagesView(data: List<ZeneConnectVibesModel>, page: Int,  close: () -> 
                         }
                         .clip(RoundedCornerShape(14.dp))
                         .background(Color.DarkGray)
-                        .padding(vertical = 5.dp, horizontal = 10.dp)
-                ) {
+                        .padding(vertical = 5.dp, horizontal = 10.dp)) {
                     ImageIcon(R.drawable.ic_copy_link, 27)
                 }
             }
@@ -139,12 +164,11 @@ fun VibesImagesView(data: List<ZeneConnectVibesModel>, page: Int,  close: () -> 
                 Modifier
                     .padding(vertical = 6.dp, horizontal = 5.dp)
                     .clickable {
-
+                        emojiDialog = true
                     }
                     .clip(RoundedCornerShape(14.dp))
                     .background(Color.DarkGray)
-                    .padding(vertical = 5.dp, horizontal = 10.dp)
-            ) {
+                    .padding(vertical = 5.dp, horizontal = 10.dp)) {
                 ImageIcon(R.drawable.ic_relieved, 27)
             }
         }
@@ -167,8 +191,55 @@ fun VibesImagesView(data: List<ZeneConnectVibesModel>, page: Int,  close: () -> 
             color = MainColor,
             trackColor = Color.White,
         )
+
+        if (emojiDialog) EmojiSelectorDialog {
+            emojiDialog = false
+            it?.let { it1 -> reactEmoji(it1) }
+        }
     }
 }
+
+@Composable
+fun EmojiSelectorDialog(emojiSelector: (String?) -> Unit) {
+    Dialog(onDismissRequest = { emojiSelector(null) }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardColors(MainColor, MainColor, MainColor, MainColor)
+        ) {
+            Column(Modifier.fillMaxWidth()) {
+                AndroidView(
+                    factory = {
+                        EmojiPickerView(it).apply {
+                            emojiGridRows = 1.5f
+                            emojiGridColumns = 7
+                            layoutParams = ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                            setOnEmojiPickedListener { e ->
+                                emojiSelector(e.emoji)
+                            }
+                        }
+
+                    },
+                    Modifier
+                        .fillMaxWidth()
+                        .height(350.dp)
+                        .background(Color.White)
+                )
+                Spacer(Modifier.height(18.dp))
+                TextPoppins(
+                    stringResource(R.string.reaction_will_be_send_to_the_sender), true, size = 16
+                )
+                Spacer(Modifier.height(20.dp))
+            }
+        }
+    }
+}
+
 
 @Composable
 fun ExtraInfoOnVibes(modifier: Modifier = Modifier, pagerState: PagerState) {

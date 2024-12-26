@@ -24,6 +24,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
@@ -136,4 +137,17 @@ class PhoneVerificationViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun sendSeenConnect(phoneNumber: String, photo: String, id: Int) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val posts = zeneConnectDB.getPosts(id).first()
+            if (posts?.isNew == true)
+                zeneAPI.seenVibes(phoneNumber, photo).catch {}.collectLatest {}
+        }
+
+    fun sendReactionConnect(phoneNumber: String, photo: String, emoji: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.reactToVibes(phoneNumber, photo, emoji).catch {}.collectLatest {}
+        }
 }

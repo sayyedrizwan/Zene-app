@@ -30,6 +30,8 @@ import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_DATA_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_ARTISTS_INFO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_CONNECT_ADD_STATUS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_CONNECT_GET_STATUS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_CONNECT_REACT_STATUS_API
+import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_CONNECT_SEEN_STATUS_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_BY_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_COUNTRIES_RADIO_API
 import com.rizwansayyed.zene.utils.Utils.URLS.ZENE_EXTRA_APP_UPDATE_API
@@ -360,4 +362,12 @@ interface ZeneAPIService {
     @Headers("auth: ${BuildConfig.AUTH_HEADER}")
     @POST(ZENE_CONNECT_GET_STATUS_API)
     suspend fun getConnectVibes(@Body body: RequestBody): ZeneConnectVibesResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_CONNECT_SEEN_STATUS_API)
+    suspend fun seenVibes(@Body body: RequestBody): ZeneBooleanResponse
+
+    @Headers("auth: ${BuildConfig.AUTH_HEADER}")
+    @POST(ZENE_CONNECT_REACT_STATUS_API)
+    suspend fun reactToVibes(@Body body: RequestBody): ZeneBooleanResponse
 }

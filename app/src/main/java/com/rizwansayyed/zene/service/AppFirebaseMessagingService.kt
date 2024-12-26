@@ -8,10 +8,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NotificationUtils
-import com.rizwansayyed.zene.utils.Utils.getAllPhoneCode
 import com.rizwansayyed.zene.utils.Utils.getContactName
-import com.rizwansayyed.zene.utils.Utils.getCurrentPhoneCountryCode
-import com.rizwansayyed.zene.utils.Utils.hasCountryCode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,30 +40,24 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        if (message.data["type"] == "vibes") CoroutineScope(Dispatchers.IO).launch {
-            generateVibes(message.data)
-            if (isActive) cancel()
-        }
+        if (message.data["type"] == "vibes" || message.data["type"] == "vibes_seen" || message.data["type"] == "vibes_react")
+            CoroutineScope(Dispatchers.IO).launch {
+                generateVibes(message.data)
+                if (isActive) cancel()
+            }
     }
-
 
     private suspend fun generateVibes(message: MutableMap<String, String>) {
         val number = message["number"] ?: ""
         val toNumber = message["tonumber"] ?: ""
 
         if (toNumber != (userInfoDB.firstOrNull()?.phonenumber ?: "")) return
-        val countryCodes = getAllPhoneCode()
-        val phoneNumberCode = getCurrentPhoneCountryCode()
-        val hasCountryCode = hasCountryCode(number, countryCodes)
-        val finalNumber = if (hasCountryCode) number else "+${phoneNumberCode}${number}"
-        if (number.length > 2) {
-            val dbName = JSONObject(message["info"] ?: "{}").optString("name")
-            val name = getContactName(finalNumber) ?: dbName
-            NotificationUtils(
-                "${message["title"]?.replace("{contact_name}", name)}",
-                message["body"] ?: "", message["photo"]?.toUri()
-            )
-        }
+        val dbName = JSONObject(message["info"] ?: "{}").optString("name")
+        val name = getContactName(number) ?: dbName
+        NotificationUtils(
+            "${message["title"]?.replace("{contact_name}", name)}",
+            message["body"]?.replace("{contact_name}", name) ?: "", message["photo"]?.toUri()
+        )
 
         zeneAPI.getVibes().catch { }.collectLatest { }
     }

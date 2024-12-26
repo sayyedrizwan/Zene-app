@@ -24,6 +24,10 @@ class ZeneConnectRoomDBImpl @Inject constructor(
         emit(contactDB.contactsDao().getList())
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun getPosts(id: Int) = flow {
+        emit(vibesDB.vibesDao().getPosts(id))
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun newPostsCounts(number: String) = flow {
         emit(vibesDB.vibesDao().newPosts(number))
     }.flowOn(Dispatchers.IO)

@@ -19,4 +19,5 @@ interface ZeneConnectRoomDBInterface {
     suspend fun getList(): Flow<List<ZeneConnectContactsModel>>
     suspend fun getAllVibes(number: String): Flow<List<ZeneConnectVibesModel>>
     suspend fun resetNewVibes(id: Int): Flow<Unit>
+    suspend fun getPosts(id: Int): Flow<ZeneConnectVibesModel?>
 }
