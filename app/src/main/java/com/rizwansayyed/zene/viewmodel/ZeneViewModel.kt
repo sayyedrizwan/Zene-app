@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSongsDBInterface
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.model.OfflineSongsData
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.model.ZeneConnectContactsModel
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import com.rizwansayyed.zene.utils.Utils.saveBitmap
@@ -37,7 +38,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ZeneViewModel @Inject constructor(
-    private val zeneAPI: ZeneAPIInterface, private val offlineDB: OfflineSongsDBInterface
+    private val zeneAPI: ZeneAPIInterface, private val offlineDB: OfflineSongsDBInterface,
+    private val zeneConnectDB: ZeneConnectRoomDBInterface
 ) : ViewModel() {
 
     private var lastSyncedA by mutableStateOf<String?>(null)
@@ -346,7 +348,7 @@ class ZeneViewModel @Inject constructor(
 
     fun sendConnectVibes(connect: ZeneConnectContactsModel, song: ZeneMusicDataItems?) =
         viewModelScope.launch(Dispatchers.IO) {
-            zeneAPI.sendConnectVibes(connect, song).onStart {}.catch {}.collectLatest {}
+            zeneConnectDB.sendConnectVibes(connect, song).onStart {}.catch {}.collectLatest {}
         }
 
 }

@@ -36,7 +36,7 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class PhoneVerificationViewModel @Inject constructor(
     private val trueCallerAPI: TrueCallerAPIInterface, private val zeneAPI: ZeneAPIInterface,
-    private val zeneConnectDB: ZeneConnectRoomDBInterface,
+    private val zeneConnectDB: ZeneConnectRoomDBInterface
 ) : ViewModel() {
 
     var isError by mutableStateOf(false)
@@ -143,11 +143,11 @@ class PhoneVerificationViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val posts = zeneConnectDB.getPosts(id).first()
             if (posts?.isNew == true)
-                zeneAPI.seenVibes(phoneNumber, photo).catch {}.collectLatest {}
+                zeneConnectDB.seenVibes(phoneNumber, photo).catch {}.collectLatest {}
         }
 
     fun sendReactionConnect(phoneNumber: String, photo: String, emoji: String) =
         viewModelScope.launch(Dispatchers.IO) {
-            zeneAPI.reactToVibes(phoneNumber, photo, emoji).catch {}.collectLatest {}
+            zeneConnectDB.reactToVibes(phoneNumber, photo, emoji).catch {}.collectLatest {}
         }
 }

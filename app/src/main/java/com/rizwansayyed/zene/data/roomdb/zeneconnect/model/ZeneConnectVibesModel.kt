@@ -18,6 +18,8 @@ data class ZeneConnectVibesModel(
     var songName: String? = null,
     var type: String? = null,
     var isNew: Boolean = true,
+    var isSeen: Boolean = false,
+    var emoji: String? = "",
 ) {
     fun getExtraDetails(): ZeneMusicDataItems? {
         return try {

@@ -31,6 +31,12 @@ interface ZeneConnectVibesDao {
     @Query("UPDATE $ZENE_CONNECT_VIBES_DB SET isNew = 0 WHERE id = :id")
     suspend fun resetNewVibes(id: Int)
 
+    @Query("UPDATE $ZENE_CONNECT_VIBES_DB SET isSeen = 1 WHERE number = :number AND imagePath = :photo")
+    suspend fun updateSeenVibes(number: String, photo: String)
+
+    @Query("UPDATE $ZENE_CONNECT_VIBES_DB SET emoji = :emoji WHERE number = :number AND imagePath = :photo")
+    suspend fun updateEmojiVibes(number: String, photo: String, emoji: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg contacts: ZeneConnectVibesModel)
 }

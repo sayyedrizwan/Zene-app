@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.rizwansayyed.zene.data.api.ZeneAPIImpl
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBImpl
 import com.rizwansayyed.zene.utils.FirebaseLogEvents
 import com.rizwansayyed.zene.utils.FirebaseLogEvents.logEvents
 import com.rizwansayyed.zene.utils.NotificationUtils
@@ -29,6 +30,9 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var zeneAPI: ZeneAPIImpl
 
+    @Inject
+    lateinit var zeneConnectAPI: ZeneConnectRoomDBImpl
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         CoroutineScope(Dispatchers.IO).launch {
@@ -40,11 +44,26 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        if (message.data["type"] == "vibes" || message.data["type"] == "vibes_seen" || message.data["type"] == "vibes_react")
-            CoroutineScope(Dispatchers.IO).launch {
-                generateVibes(message.data)
-                if (isActive) cancel()
+        if (message.data["type"] == "vibes" || message.data["type"] == "vibes_seen"
+            || message.data["type"] == "vibes_react"
+        ) CoroutineScope(Dispatchers.IO).launch {
+            generateVibes(message.data)
+
+            if (message.data["type"] == "vibes_seen") {
+                val number = message.data["number"] ?: ""
+                val photo = message.data["photo"] ?: ""
+
+                zeneConnectAPI.updateSeenVibes(number, photo).catch { }.collectLatest { }
+            } else if (message.data["type"] == "vibes_react") {
+                val number = message.data["number"] ?: ""
+                val photo = message.data["photo"] ?: ""
+                val emoji = message.data["extra"] ?: ""
+
+                zeneConnectAPI.updateEmojiVibes(number, photo, emoji).catch { }
+                    .collectLatest { }
             }
+            if (isActive) cancel()
+        }
     }
 
     private suspend fun generateVibes(message: MutableMap<String, String>) {
@@ -59,6 +78,6 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             message["body"]?.replace("{contact_name}", name) ?: "", message["photo"]?.toUri()
         )
 
-        zeneAPI.getVibes().catch { }.collectLatest { }
+        zeneConnectAPI.getVibes().catch { }.collectLatest { }
     }
 }

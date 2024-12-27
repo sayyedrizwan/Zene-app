@@ -129,15 +129,4 @@ interface ZeneAPIInterface {
     ): Flow<ZeneBooleanResponse>
 
     suspend fun numberUserInfo(numbers: Array<String>): Flow<List<ZeneUsersResponse>>
-    suspend fun sendConnectVibes(
-        connect: ZeneConnectContactsModel, song: ZeneMusicDataItems?
-    ): Flow<ZeneBooleanResponse>
-
-    suspend fun getVibes(): Flow<Unit>
-    suspend fun seenVibes(toNumber: String, photoURL: String): Flow<ZeneBooleanResponse>
-    suspend fun reactToVibes(
-        toNumber: String,
-        photoURL: String,
-        emoji: String
-    ): Flow<ZeneBooleanResponse>
 }

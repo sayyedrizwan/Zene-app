@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.data.db.DataStoreManager.isUserPremiumDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.pinnedArtistsList
 import com.rizwansayyed.zene.data.db.DataStoreManager.updateAvailabilityDB
 import com.rizwansayyed.zene.data.db.DataStoreManager.userInfoDB
+import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
 import com.rizwansayyed.zene.ui.login.flow.LoginFlow
 import com.rizwansayyed.zene.utils.Utils.internetIsConnected
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +37,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val loginFlow: LoginFlow, private val zeneAPI: ZeneAPIInterface
+    val loginFlow: LoginFlow,
+    private val zeneAPI: ZeneAPIInterface,
+    private val zeneConnectAPI: ZeneConnectRoomDBInterface
 ) : ViewModel() {
 
     var loadFirstUI by mutableStateOf(false)
@@ -330,7 +333,7 @@ class HomeViewModel @Inject constructor(
 
 
     fun getConnectVibes() = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.getVibes().catch {}.collectLatest {}
+        zeneConnectAPI.getVibes().catch {}.collectLatest {}
     }
 
 

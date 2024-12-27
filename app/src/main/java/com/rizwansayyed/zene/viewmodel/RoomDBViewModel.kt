@@ -95,7 +95,8 @@ class RoomDBViewModel @Inject constructor(
                         c.numberOfPosts = num
                         c.isNew = false
                     }
-                    contactsLists.add(c)
+                    if (!contactsLists.any { it.number == c.number }) contactsLists.add(c)
+
                     if (isActive) cancel()
                 }
             }

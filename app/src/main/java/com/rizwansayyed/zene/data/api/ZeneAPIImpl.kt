@@ -60,7 +60,6 @@ import kotlin.time.Duration.Companion.hours
 class ZeneAPIImpl @Inject constructor(
     private val zeneAPI: ZeneAPIService,
     private val ipAPI: IpAPIService,
-    private val zeneConnectDB: ZeneConnectVibesDatabase
 ) : ZeneAPIInterface {
 
     override suspend fun ip() = flow {
@@ -526,70 +525,4 @@ class ZeneAPIImpl @Inject constructor(
         emit(zeneAPI.numberUserInfo(body))
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun sendConnectVibes(
-        connect: ZeneConnectContactsModel, song: ZeneMusicDataItems?
-    ) = flow {
-        val requestFile = saveConnectImage.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-        val fileForm = MultipartBody.Part.createFormData("file", saveConnectImage.name, requestFile)
-        val pn = (userInfoDB.firstOrNull()?.phonenumber?.trim()
-            ?: "").toRequestBody("multipart/form-data".toMediaTypeOrNull())
-        val toPN = connect.number.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-        val songJson = moshi.adapter(ZeneMusicDataItems::class.java).toJson(song)
-        val songData = songJson.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
-        emit(zeneAPI.sendConnectVibes(fileForm, pn, toPN, songData))
-    }.flowOn(Dispatchers.IO)
-
-
-    override suspend fun getVibes() = flow {
-        val number = (userInfoDB.firstOrNull()?.phonenumber?.trim() ?: "")
-        val json = JSONObject().apply {
-            put("number", number)
-        }
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        val list = zeneAPI.getConnectVibes(body)
-        list.forEach {
-            it.from_number?.let { num ->
-                val insert = ZeneConnectVibesModel(
-                    null,
-                    num,
-                    it.timestamp,
-                    it.image_path,
-                    it.songid,
-                    it.atists,
-                    it.thumbnail,
-                    it.name,
-                    it.type,
-                    true
-                )
-                zeneConnectDB.vibesDao().insert(insert)
-            }
-        }
-        emit(Unit)
-    }.flowOn(Dispatchers.IO)
-
-
-    override suspend fun seenVibes(toNumber: String, photoURL: String) = flow {
-        val number = (userInfoDB.firstOrNull()?.phonenumber?.trim() ?: "")
-        val json = JSONObject().apply {
-            put("fromnumber", number)
-            put("tonumber", toNumber)
-            put("photo", photoURL)
-        }
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.seenVibes(body))
-    }.flowOn(Dispatchers.IO)
-
-
-    override suspend fun reactToVibes(toNumber: String, photoURL: String, emoji: String) = flow {
-        val number = (userInfoDB.firstOrNull()?.phonenumber?.trim() ?: "")
-        val json = JSONObject().apply {
-            put("fromnumber", number)
-            put("tonumber", toNumber)
-            put("photo", photoURL)
-            put("emoji", emoji)
-        }
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.reactToVibes(body))
-    }.flowOn(Dispatchers.IO)
 }

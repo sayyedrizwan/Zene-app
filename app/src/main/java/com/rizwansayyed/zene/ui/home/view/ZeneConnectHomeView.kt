@@ -141,7 +141,7 @@ fun ZeneConnectHomeView() {
             roomDB.getAllContacts()
 //            jobs = coroutines.launch(Dispatchers.IO) {
 //                while (true) {
-//                    roomDB.getAllContacts()
+                    roomDB.getAllContacts()
 //                    delay(15.seconds)
 //                }
 //            }
