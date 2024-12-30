@@ -88,7 +88,7 @@ fun ZeneConnectHomeView() {
 
     TextTitleHeader(Pair(TextSize.BIG, R.string.zene_connect))
 
-    if (info?.phonenumber == null) {
+    if ((info?.phonenumber ?: "").trim().length < 4) {
         Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
             SmallButtonBorderText(R.string.verify_phone_number_to_continue) {
                 Intent(context, TrueCallerActivity::class.java).apply {

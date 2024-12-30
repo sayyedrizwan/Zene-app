@@ -6,9 +6,11 @@ import com.rizwansayyed.zene.data.roomdb.offlinesongs.OfflineSongsDatabase
 import com.rizwansayyed.zene.data.roomdb.updates.UpdatesDatabase
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectContactDatabase
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.ZeneConnectVibesDatabase
+import com.rizwansayyed.zene.data.roomdb.zeneconnectupdates.ZeneConnectUpdateDatabase
 import com.rizwansayyed.zene.utils.Utils.RoomDB.OFFLINE_SONGS_ROOM_DB
 import com.rizwansayyed.zene.utils.Utils.RoomDB.UPDATE_ROOM_DB
 import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_CONTACT_DB
+import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_UPDATES_DB
 import com.rizwansayyed.zene.utils.Utils.RoomDB.ZENE_CONNECT_VIBES_DB
 import dagger.Module
 import dagger.Provides
@@ -46,6 +48,13 @@ object RoomDBModule {
     fun connectVibesDB(@ApplicationContext context: Context): ZeneConnectVibesDatabase {
         return Room.databaseBuilder(
             context, ZeneConnectVibesDatabase::class.java, ZENE_CONNECT_VIBES_DB
+        ).build()
+    }
+
+    @Provides
+    fun connectUpdatesDB(@ApplicationContext context: Context): ZeneConnectUpdateDatabase {
+        return Room.databaseBuilder(
+            context, ZeneConnectUpdateDatabase::class.java, ZENE_CONNECT_UPDATES_DB
         ).build()
     }
 

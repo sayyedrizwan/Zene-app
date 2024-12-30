@@ -36,11 +36,12 @@ data class ZeneUsersResponse(
 
 
     fun toUserInfo(email: String?): UserInfoData {
-        Log.d("TAG", "toUserInfo: get Users ${uniqueDeviceUID()} $zene_connect_device")
         val number = if (uniqueDeviceUID() == zene_connect_device) phone_number
         else null
 
-        isZeneConnectUsedOnOtherDeviceDB = flowOf((zene_connect_device?.length ?: 0) >= 6)
+        val isSame = if ((number ?: "").length > 3) uniqueDeviceUID() == zene_connect_device
+        else false
+        isZeneConnectUsedOnOtherDeviceDB = flowOf(isSame)
 
         return UserInfoData(
             name, email, total_playtime, number, profile_photo, isReviewDone()

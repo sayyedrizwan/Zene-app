@@ -4,6 +4,8 @@ import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSong
 import com.rizwansayyed.zene.data.roomdb.offlinesongs.implementation.OfflineSongsRoomDBImpl
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBImpl
 import com.rizwansayyed.zene.data.roomdb.zeneconnect.implementation.ZeneConnectRoomDBInterface
+import com.rizwansayyed.zene.data.roomdb.zeneconnectupdates.implementation.ZeneConnectUpdateRoomDBImpl
+import com.rizwansayyed.zene.data.roomdb.zeneconnectupdates.implementation.ZeneConnectUpdateRoomDBInterface
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,7 @@ abstract class ZeneConnectRoomDBModule {
 
     @Binds
     abstract fun zeneConnectRoomDBImplementation(impl: ZeneConnectRoomDBImpl): ZeneConnectRoomDBInterface
+
+    @Binds
+    abstract fun zeneConnectUpdateRoomDBImplementation(impl: ZeneConnectUpdateRoomDBImpl): ZeneConnectUpdateRoomDBInterface
 }

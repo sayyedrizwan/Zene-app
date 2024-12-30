@@ -66,7 +66,6 @@ class ZeneConnectRoomDBImpl @Inject constructor(
         emit(vibesDB.vibesDao().updateEmojiVibes(number, photo, emoji))
     }.flowOn(Dispatchers.IO)
 
-
     override suspend fun insert(
         list: List<ZeneUsersResponse>, contacts: ArrayList<ContactListData>, phoneNumberCode: String
     ) = flow {

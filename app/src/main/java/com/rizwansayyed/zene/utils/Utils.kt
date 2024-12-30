@@ -89,6 +89,7 @@ object Utils {
     object RoomDB {
         const val ZENE_CONNECT_CONTACT_DB = "zene_connect_contact_db"
         const val ZENE_CONNECT_VIBES_DB = "zene_connect_vibes_db"
+        const val ZENE_CONNECT_UPDATES_DB = "zene_connect_updates_db"
         const val UPDATE_ROOM_DB = "update_room_db"
         const val OFFLINE_SONGS_ROOM_DB = "offline_songs_room_db"
 

@@ -37,6 +37,7 @@ class RoomDBViewModel @Inject constructor(
     var updateLists = mutableStateListOf<UpdateData>()
     var contactsLists = mutableStateListOf<ZeneConnectContactsModel>()
     var vibesListsData by mutableStateOf<APIResponse<List<ZeneConnectVibesModel>>>(APIResponse.Empty)
+    var vibesUserListsData by mutableStateOf<APIResponse<List<ZeneConnectVibesModel>>>(APIResponse.Empty)
     var isSaved by mutableStateOf(false)
     var isLoading by mutableStateOf(true)
     var doShowMoreLoading by mutableStateOf(false)
@@ -95,7 +96,7 @@ class RoomDBViewModel @Inject constructor(
                         c.numberOfPosts = num
                         c.isNew = false
                     }
-                    if (!contactsLists.any { it.number == c.number }) contactsLists.add(c)
+                    if (!contactsLists.any { m -> m.number == c.number }) contactsLists.add(c)
 
                     if (isActive) cancel()
                 }
@@ -111,6 +112,16 @@ class RoomDBViewModel @Inject constructor(
             vibesListsData = APIResponse.Error(it)
         }.collectLatest {
             vibesListsData = APIResponse.Success(it)
+        }
+    }
+
+    fun getAllVibes() = viewModelScope.launch(Dispatchers.IO) {
+        zeneConnectDB.getVibes().onStart {
+            vibesUserListsData = APIResponse.Loading
+        }.catch {
+            vibesUserListsData = APIResponse.Error(it)
+        }.collectLatest {
+            vibesUserListsData = APIResponse.Success(it)
         }
     }
 

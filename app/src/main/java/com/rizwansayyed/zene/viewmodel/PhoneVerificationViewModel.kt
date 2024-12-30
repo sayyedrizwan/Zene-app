@@ -51,7 +51,7 @@ class PhoneVerificationViewModel @Inject constructor(
         trueCallerAPI.userInfo(code, codeVerifier).onStart {}.catch {
             isError = true
         }.collectLatest {
-            if (it.phone_number_verified) updateNumber(it.phone_number, "91", "1445")
+            if (it.phone_number_verified) updateNumber(it.phone_number, "", "1445")
             else isError = true
         }
     }

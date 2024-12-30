@@ -43,6 +43,12 @@ class ZeneConnectActivity : ComponentActivity() {
                                 sendVibesView = true
                             }
                         }
+
+                        item {
+                            ZeneConnectButtonView {
+                                sendVibesView = true
+                            }
+                        }
                     }
                 }
 

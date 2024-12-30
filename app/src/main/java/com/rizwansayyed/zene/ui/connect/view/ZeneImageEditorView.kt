@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,8 +72,8 @@ fun ZeneImageEditorView(image: Uri) {
     val controller = rememberColorPickerController()
 
 
-    var scale by remember { mutableStateOf(1f) }
-    var rotation by remember { mutableStateOf(0f) }
+    var scale by remember { mutableFloatStateOf(1f) }
+    var rotation by remember { mutableFloatStateOf(0f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
         scale *= zoomChange
@@ -81,8 +82,8 @@ fun ZeneImageEditorView(image: Uri) {
     }
 
 
-    var scaleMusic by remember { mutableStateOf(1f) }
-    var rotationMusic by remember { mutableStateOf(0f) }
+    var scaleMusic by remember { mutableFloatStateOf(1f) }
+    var rotationMusic by remember { mutableFloatStateOf(0f) }
     var offsetMusic by remember { mutableStateOf(Offset.Zero) }
     val stateMusic = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
         scaleMusic *= zoomChange
