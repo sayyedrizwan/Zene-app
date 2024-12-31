@@ -16,8 +16,4 @@ class ZeneConnectUpdateRoomDBImpl @Inject constructor(
         emit(zeneUpdateDB.dao().getList())
     }.flowOn(Dispatchers.IO)
 
-
-    override suspend fun getAll() = flow {
-        emit(zeneUpdateDB.dao().getList())
-    }.flowOn(Dispatchers.IO)
 }

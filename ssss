@@ -1,0 +1,202 @@
+//
+//  ContentView.swift
+//  TestWebView
+//
+//  Created by Rizwan Sayyed on 31/12/24.
+//
+
+import SwiftUI
+import WebKit
+import AVFoundation
+
+
+class WebViewController: UIViewController, WKNavigationDelegate {
+    var webView: WKWebView!
+    var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Configure the WKWebView
+        let webViewConfiguration = WKWebViewConfiguration()
+        webViewConfiguration.allowsInlineMediaPlayback = true
+        webViewConfiguration.mediaPlaybackRequiresUserAction = false
+        webViewConfiguration.mediaTypesRequiringUserActionForPlayback = []
+
+        webView = WKWebView(frame: view.bounds, configuration: webViewConfiguration)
+        webView.navigationDelegate = self
+        webView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Add WebView to the view hierarchy
+        view.addSubview(webView)
+
+        // Constrain WebView to fill the view
+        NSLayoutConstraint.activate([
+            webView.topAnchor.constraint(equalTo: view.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+
+        // Load the YouTube video
+        loadYouTubeVideo()
+
+        // Start background task
+        startBackgroundTask()
+    }
+
+    private func loadYouTubeVideo() {
+        let html = """
+                    <!DOCTYPE html>
+                            <html>
+                              <body>
+                                <div id="player"></div>
+                                <script>
+                                  var tag = document.createElement('script');
+                                  tag.src = "https://www.youtube.com/iframe_api";
+                                  var firstScriptTag = document.getElementsByTagName('script')[0];
+                                  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                                  var player;
+                                  function onYouTubeIframeAPIReady() {
+                                    player = new YT.Player('player', {
+                                      height: '390',
+                                      width: '640',
+                                      videoId: 'ekr2nIex040',
+                                      playerVars: {
+                                        'playsinline': 1
+                                      },
+                                      events: {
+                                        'onReady': onPlayerReady
+                                      }
+                                    });
+                                  }
+
+                                  function onPlayerReady(event) {
+                                    event.target.playVideo();
+                                    document.getElementById('metadata').innerHTML = "Title: Meta <br>Artist: aaa";
+                                  }
+                                </script>
+                              </body>
+                            </html>
+        """
+        webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube.com"))
+    }
+
+    private func startBackgroundTask() {
+        backgroundTask = UIApplication.shared.beginBackgroundTask {
+            UIApplication.shared.endBackgroundTask(self.backgroundTask)
+            self.backgroundTask = .invalid
+        }
+    }
+
+    private func endBackgroundTask() {
+        if backgroundTask != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("disappear onn")
+        endBackgroundTask()
+    }
+}
+
+
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        configureAudioSession()
+
+        // Create the main window
+        window = UIWindow(frame: UIScreen.main.bounds)
+
+        // Initialize the WebViewController
+        let webViewController = WebViewController()
+
+        // Set it as the root view controller
+        window?.rootViewController = webViewController
+        window?.makeKeyAndVisible()
+
+        return true
+    }
+
+    private func configureAudioSession() {
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback, mode: .default, options: [])
+            try session.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error)")
+        }
+    }
+}
+
+struct ContentView: View {
+
+    var body: some View {
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundStyle(.tint)
+
+            YouTubeWebViewSS(videoId: "ekr2nIex040")
+
+        }
+        .padding()
+    }
+}
+
+#Preview {
+    ContentView()
+}
+
+
+
+struct YouTubeWebViewSS: UIViewRepresentable {
+    let videoId: String // YouTube video ID
+
+    func makeUIView(context: Context) -> WKWebView {
+        let configuration = WKWebViewConfiguration()
+        configuration.allowsInlineMediaPlayback = true
+        configuration.mediaPlaybackRequiresUserAction = false
+
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.navigationDelegate = context.coordinator
+
+        // Load the YouTube video
+        let html = """
+        <!DOCTYPE html>
+        <html>
+        <body style="margin:0px;padding:0px;overflow:hidden;">
+
+        </body>
+        </html>
+        """
+        webView.loadHTMLString(html, baseURL: nil)
+
+        return webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        // No update required for this use case
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, WKNavigationDelegate {
+        var parent: YouTubeWebViewSS
+
+        init(_ parent: YouTubeWebViewSS) {
+            self.parent = parent
+        }
+
+        // Handle navigation actions or errors here if needed
+    }
+}
