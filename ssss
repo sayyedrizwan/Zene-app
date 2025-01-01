@@ -8,7 +8,18 @@
 import SwiftUI
 import WebKit
 import AVFoundation
+import MediaPlayer
 
+func updateNowPlayingInfo(artwork: UIImage) {
+    var nowPlayingInfo = [String: Any]()
+
+    nowPlayingInfo[MPMediaItemPropertyTitle] = "My name isss"
+    nowPlayingInfo[MPMediaItemPropertyArtist] = "artists iof"
+    nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = "MY albums"
+    nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: artwork.size) { _ in artwork }
+
+    MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+}
 
 class WebViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
@@ -20,8 +31,8 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         // Configure the WKWebView
         let webViewConfiguration = WKWebViewConfiguration()
         webViewConfiguration.allowsInlineMediaPlayback = true
-        webViewConfiguration.mediaPlaybackRequiresUserAction = false
         webViewConfiguration.mediaTypesRequiringUserActionForPlayback = []
+        webViewConfiguration.userContentController.add(LoggingMessageHandler(), name: "logging")
 
         webView = WKWebView(frame: view.bounds, configuration: webViewConfiguration)
         webView.navigationDelegate = self
@@ -43,45 +54,114 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
         // Start background task
         startBackgroundTask()
+
+    }
+
+    class LoggingMessageHandler: NSObject, WKScriptMessageHandler {
+        func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            print(message.body)
+        }
+    }
+
+    func fetchAndUpdateMetadata() {
+
+        if let url = URL(string: "https://lh3.googleusercontent.com/mPnnCSQfTd25JRPuOWY-tik-HoBm6BW7lgO5kD5_7eu-QF87dB3KIE46-O_SQne_k7DrXbi-x48Ab4s") {
+            URLSession.shared.dataTask(with: url) { data, _, _ in
+                if let data = data, let artworkImage = UIImage(data: data) {
+                    updateNowPlayingInfo(artwork: artworkImage)
+                }
+            }.resume()
+        }
     }
 
     private func loadYouTubeVideo() {
         let html = """
-                    <!DOCTYPE html>
-                            <html>
-                              <body>
-                                <div id="player"></div>
-                                <script>
-                                  var tag = document.createElement('script');
-                                  tag.src = "https://www.youtube.com/iframe_api";
-                                  var firstScriptTag = document.getElementsByTagName('script')[0];
-                                  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                   <!DOCTYPE html>
+                   <html>
+                     <body>
+                       <div id="player"></div>
+                       <script>
+                         var tag = document.createElement("script");
+                         tag.src = "https://www.youtube.com/iframe_api";
+                         var firstScriptTag = document.getElementsByTagName("script")[0];
+                         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-                                  var player;
-                                  function onYouTubeIframeAPIReady() {
-                                    player = new YT.Player('player', {
-                                      height: '390',
-                                      width: '640',
-                                      videoId: 'ekr2nIex040',
-                                      playerVars: {
-                                        'playsinline': 1
-                                      },
-                                      events: {
-                                        'onReady': onPlayerReady
-                                      }
-                                    });
-                                  }
+                         var player;
+                         function onYouTubeIframeAPIReady() {
+                           player = new YT.Player("player", {
+                             height: "390",
+                             width: "640",
+                             videoId: "M7lc1UVf-VE",
+                             playerVars: {
+                               playsinline: 1,
+                             },
+                             events: {
+                               onReady: onPlayerReady,
+                               onStateChange: onPlayerStateChange,
+                             },
+                           });
+                         }
 
-                                  function onPlayerReady(event) {
-                                    event.target.playVideo();
-                                    document.getElementById('metadata').innerHTML = "Title: Meta <br>Artist: aaa";
-                                  }
-                                </script>
-                              </body>
-                            </html>
+                         function onPlayerReady(event) {
+                           event.target.playVideo();
+                         }
+
+                         function onPlayerStateChange(event) {
+                           if (event.data == YT.PlayerState.PLAYING) {
+                               var iframe = document.getElementById("player");
+                               var iframeWindow = (iframe.contentWindow || iframe.contentDocument);
+                               iframeWindow.navigator.mediaSession.metadata = new MediaMetadata({
+                                 title: "sooooo",
+                                 artist: "aq122222",
+                                 artwork: [
+                                   {
+                                     src: `https://lh3.googleusercontent.com/O5Na8BhQvdaKYVsMY-9TnXfWFms96H6lXubsNURvoJ54Ti8LzNsK-UglhXlKh9EZomfokuzPK6N-HAI`,
+                                     type: "image/jpeg",
+                                   },
+                                 ],
+                               });
+
+                               iframeWindow.navigator.mediaSession.setActionHandler("previoustrack", (details) => {
+
+                               });
+
+                               iframeWindow.navigator.mediaSession.setActionHandler("nexttrack", (details) => {
+
+                               });
+
+                               console.log(navigator.mediaSession)
+                               console.log(iframeWindow.navigator.mediaSession)
+                           }
+                         }
+                       </script>
+                     </body>
+                   </html>
+
+
         """
         webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube.com"))
+
+        //
+        //        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+        //
+        //            let url = URL(string:"http://www.apple.com/euro/ios/ios8/a/generic/images/og.png")
+        //            if let data = try? Data(contentsOf: url!) {
+        //                if let image: UIImage = UIImage(data: data) {
+        //
+        //                    let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
+        //                    var nowPlayingInfo = [String: Any]()
+        //
+        //                    nowPlayingInfo[MPMediaItemPropertyTitle] = "sbdhbdhdbhd" // Get title from YouTube video
+        //
+        //                    nowPlayingInfo[MPMediaItemPropertyArtist] = "778dbhdhdbdh" // Get channel name as artist
+        //
+        //                    nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image) // Set thumbnail image
+        //                }
+        //            }
+        //        }
     }
+
+
 
     private func startBackgroundTask() {
         backgroundTask = UIApplication.shared.beginBackgroundTask {
@@ -111,7 +191,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureAudioSession()
-
+        application.beginReceivingRemoteControlEvents()
         // Create the main window
         window = UIWindow(frame: UIScreen.main.bounds)
 
