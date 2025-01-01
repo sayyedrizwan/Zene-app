@@ -1,8 +1,12 @@
-# 🎵 Zene - Your Free Music Companion 🎵
+# 🎵 Zene - A ad-free music app! 🎵
 
-![Zene Logo](https://via.placeholder.com/600x150.png?text=Zene+Logo)
+<p align="center">
+  <img src="https://lh3.googleusercontent.com/kNcjCoWlWN9ohcV145udy7RRxbYthsyj9KYo6aoZbZrH7K2Ubr2hHFStNpXCq2dneFQ" alt="Zene Logo" width="300">
+</p>
 
-**Zene** is a free music app designed to bring your favorite tunes to life. Stream music, explore curated playlists, and enjoy a seamless listening experience—all for free.
+**Zene** - Your Ultimate Ad-Free Music Experience 🎶 Are you ready to immerse yourself in a world of unlimited music, all without a single ad? Zene is a FREE music app built for passionate music lovers like you, offering an unmatched listening experience. Say goodbye to annoying interruptions and hello to over 1 billion songs, playlists, albums, podcasts, remixes, and much more - all ad-free!
+
+
 
 ---
 
@@ -11,7 +15,7 @@
 - 🎧 **Unlimited Streaming**: Access a vast library of songs across genres.
 - 📜 **Curated Playlists**: Enjoy expertly crafted playlists for every mood.
 - 🔍 **Smart Recommendations**: Get personalized suggestions based on your listening history.
-- 🎶 **Custom Equalizer**: Tailor your music experience with a built-in equalizer.
+- 🎶 **Music & Lyrics Videos**: Watch official music videos and lyric videos right in the app.
 - 🌐 **Global Reach**: Stream music from anywhere, anytime.
 - 🔔 **Quirky Notifications**: Fun, mood-based notifications to brighten your day.
 - 📱 **Cross-Platform Support**: Available on iOS, Android, and the Web.
@@ -20,20 +24,25 @@
 
 ## 📸 Screenshots
 
-| Home Screen                  | Playlist View               | Equalizer                  |
+| Music Player                  | Radio FM               | Hot Albums                  |
 |------------------------------|-----------------------------|----------------------------|
-| ![Home](https://via.placeholder.com/200x400.png?text=Home) | ![Playlist](https://via.placeholder.com/200x400.png?text=Playlist) | ![Equalizer](https://via.placeholder.com/200x400.png?text=Equalizer) |
+| ![Music Player](https://play-lh.googleusercontent.com/nttdwDX2WDMJjWM3h8oO42iaVnCdpq3ziCZN4pVBlZaybDSZQlgBUMngWFsxPom1lR3G=w5120-h2880-rw) | ![Radio FM](https://play-lh.googleusercontent.com/c8aHbqe-46ioeWYXzsDbMGE3mpuQhnd2V0i3d6YxkBvYegMc2fia06Kfgx9ZMEizCUmb=w5120-h2880-rw) | ![Hot Albums](https://play-lh.googleusercontent.com/3k1FMDMoByXFH023dUlZUIdG31o5clFCLKXLz2gve4jzosVeGJEf_i3LzaQzA4ZE_3yw=w5120-h2880-rw) |
 
 ---
 
 ## 🔗 Tech Stack
 
-- **Frontend**: SwiftUI, Jetpack Compose, React
-- **Backend**: Node.js, MongoDB
-- **APIs Used**:
-  - YouTube IFrame API
-  - Spotify API
-  - Custom Zene API
+- **Frontend**: Jetpack Compose, Kotlin
+- **Database**: Room DB, Node.js, Firebase
+- **Libraries**:
+  - Glide
+  - Retrofit
+  - OkHttp
+  - Moshi
+  - Hilt
+  - Work Manager
+  - Coroutines
+  - LeakCanary
 
 ---
 
@@ -41,25 +50,22 @@
 <h3>Prerequisites</h3>
 <ul>
     <li>Android Studio or Xcode (depending on your platform)</li>
-    <li>Node.js (for backend setup, if applicable)</li>
 </ul>
 
 <h3>Run the App</h3>
 <ul>
     <li><strong>Android:</strong> Open the project in Android Studio, build, and run the app.</li>
-    <li><strong>iOS:</strong> Open the project in Xcode, build, and run the app.</li>
 </ul>
 
 <h2>⚙️ Tech Stack</h2>
 <ul>
-    <li><strong>Frontend:</strong> SwiftUI, Jetpack Compose</li>
-    <li><strong>Backend:</strong> Node.js (Express), Firebase</li>
-    <li><strong>Database:</strong> MongoDB</li>
-    <li><strong>API Integrations:</strong> YouTube IFrame API, Spotify API</li>
+    <li><strong>Frontend:</strong> Jetpack Compose, Kotlin, Firebase</li>
+    <li><strong>Backend:</strong> Room DB, Node.js, Firebase</li>
+    <li><strong>API Integrations:</strong> Glide, Retrofit, OkHttp, Moshi, Hilt, Work Manager, Coroutines, LeakCanary</li>
 </ul>
 
 <h2>🎨 Design Philosophy</h2>
-<p>Zene is designed with simplicity and user experience in mind. From quirky notifications to seamless background playback, every feature is crafted to keep the music flowing without interruptions.</p>
+<p>Zene is designed with simplicity and user experience in mind. From background playback to video player, every feature is crafted to keep the music flowing without interruptions.</p>
 
 <h2>🌐 Website</h2>
 <p>Visit our website: <a href="https://zenemusic.co" target="_blank">zenemusic.co</a></p>
@@ -78,11 +84,11 @@
 </ol>
 
 <h2>🛠 Support</h2>
-<p>For issues or feature requests, feel free to <a href="https://github.com/your-username/zene/issues" target="_blank">open an issue</a> on GitHub.</p>
+<p>For issues or feature requests, feel free to <a href="https://github.com/sayyedrizwan/Zene-app/issues" target="_blank">open an issue</a> on GitHub.</p>
 
 <h2>📧 Contact</h2>
 <p>Email: <a href="mailto:knocknock@zenemusic.co">knocknock@zenemusic.co</a><br>
-GitHub: <a href="https://github.com/your-username" target="_blank">your-username</a></p>
+GitHub: <a href="https://github.com/sayyedrizwan" target="_blank">From Rizwan Sayyed</a></p>
 
 <h3>Thank You for Checking Out Zene! 🎶</h3>
 <blockquote>*"Where words fail, music speaks."*</blockquote>
