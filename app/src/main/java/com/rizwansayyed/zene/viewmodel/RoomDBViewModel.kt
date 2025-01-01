@@ -121,7 +121,7 @@ class RoomDBViewModel @Inject constructor(
         }.catch {
             vibesUserListsData = APIResponse.Error(it)
         }.collectLatest {
-            vibesUserListsData = APIResponse.Success(it)
+//            vibesUserListsData = APIResponse.Success(it)
         }
     }
 

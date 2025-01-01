@@ -59,11 +59,13 @@ class ZeneConnectRoomDBImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun updateSeenVibes(number: String, photo: String) = flow {
-        emit(vibesDB.vibesDao().updateSeenVibes(number, photo))
+        emit(Unit)
+//        emit(vibesDB.vibesDao().updateSeenVibes(number, photo))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun updateEmojiVibes(number: String, photo: String, emoji: String) = flow {
-        emit(vibesDB.vibesDao().updateEmojiVibes(number, photo, emoji))
+        emit(Unit)
+//        emit(vibesDB.vibesDao().updateEmojiVibes(number, photo, emoji))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun insert(
