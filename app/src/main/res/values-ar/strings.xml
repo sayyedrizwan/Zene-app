@@ -1,264 +1,0 @@
-<resources> <!-- Arabic -->
-    <string name="app_name">زين</string>
-    <string name="app_name_premium">زين بريميوم</string>
-    <string name="a_music_app">تطبيق موسيقى مجاني</string>
-    <string name="login_to_continue">تسجيل الدخول للمتابعة</string>
-    <string name="error_while_login">خطأ أثناء تسجيل الدخول</string>
-    <string name="login_to_enjoy_free_music">تسجيل الدخول للاستمتاع بالموسيقى المجانية</string>
-    <string name="agreeing_privacy_policy">بالتسجيل ، فإنك توافق على سياسة الخصوصية الخاصة بنا</string>
-    <string name="recommended_playlists">قوائم التشغيل الموصى بها</string>
-    <string name="albums_picked_for_you">الألبومات المختارة لك</string>
-    <string name="videos_you_may_like">فيديوهات قد تعجبك</string>
-    <string name="videos">فيديوهات</string>
-    <string name="play_as_song">تشغيل كأغنية</string>
-    <string name="songs_you_may_like">الأغاني التي قد تعجبك</string>
-    <string name="songs_history">تاريخ الأغاني</string>
-    <string name="songs_for_you">أغاني لك</string>
-    <string name="similar_songs_you_may_like">أغاني مشابهة قد تعجبك</string>
-    <string name="pick_your_mood">اختر مزاجك</string>
-    <string name="latest_release">أحدث إصدار</string>
-    <string name="most_listening_songs_zene">الأغاني الأكثر استماعًا على زين</string>
-    <string name="listeners">المدونون</string>
-    <string name="listening___">استماع…</string>
-    <string name="import_from_spotify">استيراد من Spotify</string>
-    <string name="import_from_apple_music">استيراد من Apple Music</string>
-    <string name="import_playlists">استيراد قوائم التشغيل</string>
-    <string name="global_top_artists">أفضل الفنانين العالميين</string>
-    <string name="top_songs">أفضل الأغاني</string>
-    <string name="news">أخبار</string>
-    <string name="artists">فنانون</string>
-    <string name="similar_artists">فنانون متشابهون</string>
-    <string name="songs">أغاني</string>
-    <string name="albums">البومات</string>
-    <string name="enable">مكّن</string>
-    <string name="disabled">معطل</string>
-    <string name="playlists">قوائم التشغيل</string>
-    <string name="create_playlist">إنشاء قائمة تشغيل</string>
-    <string name="playlist_name">اسم قائمة التشغيل</string>
-    <string name="playlists_albums">قوائم التشغيل/الألبومات</string>
-    <string name="recommended">موصى به</string>
-    <string name="join_premium_community">انضم إلى مجتمع بريميوم</string>
-    <string name="join_zene_premium">انضم إلى زين بريميوم</string>
-    <string name="join_premium_community_desc">زين هو تطبيق موسيقى مجاني يوفر لك إمكانية الوصول غير المحدود إلى الألحان المفضلة لديك بدون أي تكلفة. بينما تظل ميزاتنا الأساسية مجانية ، فإن بريميوم مخصص لعشاق الموسيقى الذين يرغبون في الحصول على مزايا حصرية. يدعم عشاق الموسيقى الحفاظ على زين مجانيًا للجميع. انضم إلى عائلتنا بريميوم وارفع مستوى تجربتك الموسيقية اليوم!</string>
-    <string name="upgrade_if_you_are_a_music_enthusiasts">قم بالترقية إذا كنت من عشاق الموسيقى</string>
-    <string name="share_zene_friends_family">شارك زين مع الأصدقاء والعائلة</string>
-    <string name="zene_premium_is_for_music_enthusiast">زين بريميوم مخصص أكثر لعشاق الموسيقى</string>
-    <string name="zene_premium_is_for_music_enthusiast_desc">في زين ، نعتقد أن الموسيقى يجب أن تكون في متناول الجميع ، وهذا هو السبب في أن تطبيقنا يوفر إمكانية الوصول غير المحدود إلى الألحان المفضلة لديك مجانًا تمامًا. نحن ملتزمون بعدم احتساب أي رسوم للاستمتاع بالموسيقى على نظامنا الأساسي. هدفنا هو إنشاء مساحة يمكن للجميع فيها تجربة متعة الموسيقى بدون أي عوائق. \ n \ n ومع ذلك ، بالنسبة لعشاق الموسيقى الحقيقيين الذين يرغبون في الارتقاء بتجربة الاستماع إلى المستوى التالي ، فإننا نقدم خيار بريميوم. تم تصميم بريميوم لأولئك الذين يبحثون عن مزايا حصرية وتجربة غامرة أكثر. من خلال الترقية إلى بريميوم ، لا تقوم فقط بإلغاء قفل الميزات المتقدمة ، ولكنك تدعم أيضًا زين في الحفاظ على خدماتنا وتحسينها. تساعد مساهمتك في الحفاظ على التطبيق مجانيًا لجميع المستخدمين ، مما يضمن تمتع الجميع بالموسيقى عالية الجودة بدون أي تكلفة.</string>
-    <string name="upgrade_to_zene_premium">ترقية إلى زين بريميوم</string>
-    <string name="make_and_sync_playlists">إنشاء ومزامنة قوائم التشغيل</string>
-    <string name="monthly">شهريا</string>
-    <string name="one_month">1 شهر</string>
-    <string name="three_days_free_trial">تجربة مجانية لمدة 3 أيام</string>
-    <string name="per_month">لكل شهر</string>
-    <string name="available_plans">الخطط المتاحة</string>
-    <string name="upgrade">ترقية</string>
-    <string name="search">بحث</string>
-    <string name="search_zene">بحث زين</string>
-    <string name="search_images">بحث الصور</string>
-    <string name="search_history">تاريخ البحث</string>
-    <string name="no_search_history">لا يوجد تاريخ بحث</string>
-    <string name="music_player">مشغل الموسيقى</string>
-    <string name="music_player_desc">يعرض الموسيقى التي يتم تشغيلها حاليًا ، بما في ذلك عنوان الأغنية واسم الفنان وغلاف الألبوم ، مما يوفر تجربة بصرية جذابة أثناء الاستمتاع بمقطوعاتك المفضلة.</string>
-    <string name="zene_music_player">مشغل موسيقى زين</string>
-    <string name="song_video">فيديو الأغنية</string>
-    <string name="lyrics_video">فيديو الكلمات</string>
-    <string name="loop_same_song">تكرار نفس الأغنية</string>
-    <string name="looping_song_enabled">تم تمكين تكرار الأغنية</string>
-    <string name="looping_song_disabled">تم تعطيل تكرار الأغنية</string>
-    <string name="autoplay_song_enabled">تم تمكين التشغيل التلقائي للأغنية التالية</string>
-    <string name="autoplay_song_disabled">تم تعطيل التشغيل التلقائي للأغنية التالية</string>
-    <string name="autoplay_next_song">تشغيل الأغنية التالية تلقائيًا</string>
-    <string name="show_play_song_on_lock_screen">إظهار الأغنية قيد التشغيل على شاشة القفل</string>
-    <string name="lyrics">كلمات الأغنية</string>
-    <string name="try_after_a_seconds_fetching_video_details">جرب بعد ثوانٍ. جلب تفاصيل الفيديو...</string>
-    <string name="playlists_for_your_mood">قائمة تشغيل لمزاجك</string>
-    <string name="empty" />
-    <string name="artists_merchandise">بضائع الفنانين</string>
-    <string name="followed_by">يتبعه</string>
-    <string name="follow">تابع</string>
-    <string name="following">متابعة</string>
-    <string name="cannot_follow_more_then_40_artists">لا يمكنك متابعة أكثر من 40 فنانًا في المرة الواحدة حاليًا.</string>
-    <string name="radio">راديو</string>
-    <string name="playback_duration">مدة التشغيل</string>
-    <string name="hours">ساعات</string>
-    <string name="minutes">دقائق</string>
-    <string name="update_profile">تحديث الملف الشخصي</string>
-    <string name="edit_profile">تحرير الملف الشخصي</string>
-    <string name="load_more">تحميل المزيد</string>
-    <string name="new_playlists">قوائم تشغيل جديدة</string>
-    <string name="no_img_found">لم يتم العثور على صورة</string>
-    <string name="remove">إزالة</string>
-    <string name="enter_a_valid_playlists">أدخل اسم قائمة تشغيل صالح</string>
-    <string name="error_creating_a_new_playlists">خطأ في إنشاء قائمة تشغيل جديدة.</string>
-    <string name="you_have_no_song_history">ليس لديك سجل أغاني.</string>
-    <string name="you_have_not_created_or_saved_a_playlists">لم تقم بحفظ أو إنشاء قوائم تشغيل.</string>
-    <string name="are_you_sure_want_to_remove">هل أنت متأكد من الرغبة في حذف؟</string>
-    <string name="are_you_sure_want_to_remove_desc">سيتم حذف هذه القائمة التشغيل من مكتبة الموسيقى الخاصة بك. هل تريد المتابعة؟ !!</string>
-    <string name="are_you_sure_want_to_remove_song_desc">سيتم حذف هذه الأغنية من هذه القائمة التشغيل. هل تريد المتابعة؟ !!</string>
-    <string name="cancel">إلغاء</string>
-    <string name="play">لعب</string>
-    <string name="play_previous">تشغيل السابق</string>
-    <string name="play_next">تشغيل التالي</string>
-    <string name="back_5s">رجوع 5 ثواني</string>
-    <string name="forward_5s">أمام 5 ثواني</string>
-    <string name="add_in_queue">أضف إلى قائمة الانتظار</string>
-    <string name="add_to_playlist">أضف إلى قائمة التشغيل</string>
-    <string name="add_to_library">أضف إلى المكتبة</string>
-    <string name="added_to_library">تم الإضافة إلى المكتبة</string>
-    <string name="share">مشاركة</string>
-    <string name="open">افتح</string>
-    <string name="no_song_found_in_this_playlists">لم يتم العثور على أغنية في هذه القوائم التشغيل</string>
-    <string name="settings">إعدادات</string>
-    <string name="clear">واضح</string>
-    <string name="equalizer">معادل الصوت</string>
-    <string name="equalizer_not_found">لم يتم العثور على معادل الصوت. لا يحتوي زين على معادل صوت مضمن. يرجى تثبيت معادل صوت من متجر Play والاستمتاع به.</string>
-    <string name="clear_cache">مسح ذاكرة التخزين المؤقت</string>
-    <string name="feedback">ردود الفعل</string>
-    <string name="privacy_policy">سياسة الخصوصية</string>
-    <string name="no_song_listening">ليس لديك سجل استماع حاليًا. ابدأ في تشغيل بعض الأغاني ، وسنتمكن من اقتراح قوائم تشغيل وأغاني وألبومات وفنانين مصممة حسب تفضيلاتك.</string>
-    <string name="clear_cache_successfully">تم مسح ذاكرة التخزين المؤقت بنجاح</string>
-    <string name="need_overlay_permission_to_show_song">أحتاج إلى إذن تراكب لإظهار عرض الأغنية قيد التشغيل على شاشة القفل.</string>
-    <string name="clear_cache_desc">سيؤدي مسح ذاكرة التخزين المؤقت إلى إزالة جميع ذاكرة التخزين المؤقت غير المرغوب فيها المخزنة وليس أي بيانات شخصية.</string>
-    <string name="need_notification_permission">أحتاج إلى إذن الإشعارات !!</string>
-    <string name="need_microphone_permission">أحتاج إلى إذن الميكروفون !!</string>
-    <string name="need_notification_permission_desc">يحتاج زين إلى إذن الإشعارات لعرض مشغل الموسيقى على شاشة القفل وفي شريط الإشعارات. يرجى تمكينه في إذن التطبيق -> الإشعارات أو الإشعار -> تمكين المفتاح ..</string>
-    <string name="need_microphone_permission_desc">يحتاج زين إلى إذن الميكروفون للاستماع إلى الأغنية والبحث في قاعدة البيانات.</string>
-    <string name="grant">منح</string>
-    <string name="zene_notification">إشعار زين</string>
-    <string name="find_song">البحث عن أغنية</string>
-    <string name="no_song_found_try_again">لم يتم العثور على أغنية. يرجى المحاولة مرة أخرى!</string>
-    <string name="you_haven_t_follow_artists_yet">اوو! يبدو أنك لم تتابع أي فنانين بعد. ابدأ في متابعة الفنانين المفضلين لديك للحصول على تحديثات الأخبار المخصصة في خلاصتك!</string>
-    <string name="loading_make_sure_your_device_can_hear_song_properly">جار التحميل يرجى الانتظار .. تأكد من أن جهازك يمكنه سماع الأغنية بوضوح. تريد البحث ..</string>
-    <string name="no_playlists_found_on_spotify">لم يتم العثور على قوائم تشغيل على Spotify.</string>
-    <string name="download_this_ad_free_music_app">قم بتنزيل تطبيق الموسيقى هذا الخالي من الإعلانات</string>
-    <string name="having_issue_please_mail_us_help">هل لديك أي مشكلة؟ 😔\nيرجى مراسلتنا بملاحظاتك / اقتراحاتك حتى نتمكن من مساعدتك!</string>
-    <string name="sorry_no_song_found">عذرًا ، لم يتم العثور على أغنية.</string>
-    <string name="loop_song">تكرار الأغنية</string>
-    <string name="play_pause">تشغيل / إيقاف</string>
-    <string name="do_you_like_the_app">هل أعجبك التطبيق؟ n\ يرجى تقييمنا 🥹</string>
-    <string name="mail_us">راسلنا</string>
-    <string name="seem_enjoyed_the_app">يبدو أنك استمتعت باستخدام التطبيق!</string>
-    <string name="post_a_review_on_play_store">انشر مراجعة على Play Store</string>
-    <string name="help_us_by_sharing_your_thoughts">لا توجد 5 نجوم ، ساعدنا في التحسين من خلال مشاركة أفكارك وتعليقاتك.</string>
-    <string name="home">الرئيسية</string>
-    <string name="feed">يٌطعم</string>
-    <string name="music">الموسيقى</string>
-    <string name="song_quality">جودة الأغنية</string>
-    <string name="low_quality">جودة منخفضة</string>
-    <string name="standard_quality">جودة قياسية</string>
-    <string name="high_quality">جودة عالية</string>
-    <string name="premium_quality">جودة ممتازة</string>
-    <string name="song_quality_updated_successfully">تم تحديث جودة الأغنية بنجاح. إعادة تشغيل الأغنية.</string>
-    <string name="define_song_deletion">يحفظ تطبيق زين سجل أغانيك من الأسبوعين الماضيين ويحتفظ أيضًا بسجل لأغانيك الأكثر استماعًا. من خلال تخزين أحدث بيانات الاستماع فقط، يقلل تطبيق زين من تكاليف قاعدة البيانات، مما يسمح لنا بتقديم التطبيق مجانًا. لا يؤثر هذا على اقتراحات الأغاني أو تجربتك العامة.</string>
-    <string name="free_music_with_zene_web">استمتع بالموسيقى المجانية في أي وقت على جهاز الكمبيوتر المحمول والأجهزة الأخرى باستخدام a</string>
-    <string name="open_url_on_browser">افتح URL على المتصفح</string>
-    <string name="open_zene_web">زين ويب</string>
-    <string name="today_sponsor">راعي اليوم</string>
-    <string name="app_update_available">تحديث التطبيق متوفر</string>
-    <string name="zene_fm">زين اف ام</string>
-    <string name="radios_languages">راديوهات حسب اللغات</string>
-    <string name="radios_countries">راديوهات حسب البلدان</string>
-    <string name="radios_you_may_like">راديوهات قد تعجبك</string>
-    <string name="live_broadcasting">البث المباشر</string>
-    <string name="no_radio_of_this_lang">لا يوجد راديو بهذه اللغة في بلدك</string>
-    <string name="issue_with_radio_buffering">التأخير والتقطيع المتكرر بسبب محطة الراديو وليس تطبيق زينة.</string>
-    <string name="no_radio_found">لم يتم العثور على الراديو</string>
-    <string name="pause">يوقف</string>
-    <string name="pip_app_settings_desc">قم بتمكين وضع الصورة داخل الصورة من إعدادات التطبيقات. لتشغيله في الخلفية.</string>
-    <string name="get_wallz_now">احصل على Wallz !! الآن :)</string>
-    <string name="open_on_play_store">افتح على متجر Play</string>
-    <string name="like_the_song">أعجبني الأغنية</string>
-    <string name="liked">أعجبني</string>
-    <string name="liked_songs">الأغاني المفضلة</string>
-    <string name="available_video_quality">جودة الفيديو المتاحة</string>
-    <string name="available_video_speed">سرعة الفيديو المتاحة</string>
-    <string name="view_on_youtube">شاهد على YouTube</string>
-    <string name="related_video">فيديوهات ذات صلة</string>
-    <string name="sleep_timer">مؤقت النوم</string>
-    <string name="wake_up_timer">مؤقت الاستيقاظ</string>
-    <string name="sleep_timer_desc">سيؤدي تعيين مؤقت النوم إلى إيقاف الموسيقى تلقائيًا في الوقت المحدد.</string>
-    <string name="wake_up_timer_desc">سيؤدي تعيين مؤقت الاستيقاظ إلى بدء تشغيل الموسيقى تلقائيًا في الوقت المحدد كمنبه موسيقي.</string>
-    <string name="wake_timer">مؤقت الاستيقاظ</string>
-    <string name="cancel_timer">إلغاء المؤقت</string>
-    <string name="set_timer">ضبط المؤقت</string>
-    <string name="need_alarm_permission">نحتاج إلى إذن حتى يتمكن التطبيق من جدولة المنبه.</string>
-    <string name="sleep_mode_activated">تم تنشيط وضع النوم</string>
-    <string name="wake_up_alarm">منبه الاستيقاظ</string>
-    <string name="scheduled_song_started_playing">بدأت الأغنية المجدولة في التشغيل!</string>
-    <string name="your_song_paused_as_scheduled">تم إيقاف تشغيل الأغنية الخاصة بك كما هو مجدول. أحلام سعيدة!</string>
-    <string name="not_selected_song_wak_up_alarm">لم تقم بتحديد أغنية. إذا قمت بتعيين منبه استيقاظ ، فستبدأ الأغنية الأخيرة التي لعبتها تلقائيًا.</string>
-    <string name="how_to_add_a_song">اضغط لفترة طويلة على أي أغنية وانقر على "إضافة إلى منبه الاستيقاظ".</string>
-    <string name="add_to_wake_up_timer">أضف إلى منبه الاستيقاظ</string>
-    <string name="end_of_track">نهاية المسار</string>
-    <string name="turn_off_timer">إيقاف تشغيل المؤقت</string>
-    <string name="left">باقي</string>
-    <string name="song_will_stop_when_song_ends">سيتم إيقاف الأغنية عند انتهاء الأغنية</string>
-    <string name="sign_in_with_email">تسجيل الدخول بالبريد الإلكتروني</string>
-    <string name="enter_your_email">أدخل البريد الإلكتروني الخاص بك</string>
-    <string name="login_via_email">تسجيل الدخول عبر البريد الإلكتروني</string>
-    <string name="enter_a_valid_email_address">الرجاء إدخال عنوان بريد إلكتروني صالح.</string>
-    <string name="error_while_sending_email">حدث خطأ أثناء إرسال البريد الإلكتروني ، الرجاء المحاولة مرة أخرى.</string>
-    <string name="login_via_email_desc">تسجيل الدخول بسهولة باستخدام رابط آمن يتم إرساله مباشرة إلى بريدك الإلكتروني. لا حاجة إلى كلمات مرور!</string>
-    <string name="email_have_sent">لقد أرسلنا بريدًا إلكترونيًا من no-reply@zenemusic.co إلى صندوق الوارد الخاص بك. يرجى فتح البريد الإلكتروني على هذا الجهاز والنقر فوق رابط "تسجيل الدخول إلى زين" (باللون الأزرق) لإكمال عملية تسجيل الدخول. إذا لم تشاهد البريد الإلكتروني ، فتأكد من التحقق من مجلد الرسائل غير المرغوب فيها.</string>
-    <string name="send_to">إرسال إلى:</string>
-    <string name="keep_this_sheet_view_open">ابقِ ورقة / العرض مفتوحًا !!!</string>
-    <string name="earphones_tracker_finder">تتبع واعثر على سماعات الأذن</string>
-    <string name="earphones_tracker_finder_">سماعات الأذن\nالتتبع والعثور</string>
-    <string name="please_grant_all_permissions">الرجاء منح جميع الأذونات.</string>
-    <string name="earphones_tracker_finder_desc">أداة تعقب والعثور على سماعات الأذن هي ميزة مريحة مصممة لمساعدتك على تحديد موقع سماعات الأذن أو أجهزة الصوت Bluetooth المفقودة. مع ميزات مثل التتبع وسجل المواقع والتنبيهات القابلة للتخصيص.</string>
-    <string name="no_devices_added">لم يتم إضافة أي أجهزة إلى المتعقب. اضغط على أيقونة  لإضافة واحدة.</string>
-    <string name="need_ble_permission">مطلوب إذن Bluetooth للكشف عن جميع سماعات الرأس المتصلة وأجهزة بلوتوث وإدراجها.</string>
-    <string name="paired_devices">الأجهزة المقترنة</string>
-    <string name="connected">متصل</string>
-    <string name="got_connected">متصل</string>
-    <string name="got_disconnected">فُصِلَ الاتصال</string>
-    <string name="disconnected">غير متصل</string>
-    <string name="enable_gps_to_track_devices">قم بتشغيل GPS للسماح لـ زين بتتبع الأجهزة وعرض سجلات نشاطك.</string>
-    <string name="need_location_permission">تفعيل إذن الموقع</string>
-    <string name="need_location_permission_desc">لتسجيل سجلاتك ، نحتاج إلى الوصول إلى موقعك. يرجى تمكين الوصول إلى الموقع باتباع هذه الخطوات: \n\n1. اضغط على "منح" \n2. انتقل إلى "الأذونات" \n3. حدد "الموقع" \n4. اختر "السماح طوال الوقت" \nبمجرد الانتهاء من هذا ، سيكون كل شيء جاهزًا للعمل!</string>
-    <string name="battery">بطارية</string>
-    <string name="rm_device">إزالة سماعة الأذن</string>
-    <string name="connection_alert">تنبيه الاتصال</string>
-    <string name="disconnection_alert">تنبيه الانقطاع</string>
-    <string name="set_to_listen_enjoy_audio">أنت جاهز للاستماع. استمتع بالصوت الخاص بك!</string>
-    <string name="audio_will_play_now_on_speakers">سيتم تشغيل الصوت الآن عبر مكبرات صوت الجهاز.</string>
-    <string name="rm_device_desc">إزالة هذا الجهاز ستؤدي إلى تعطيل جميع التنبيهات النشطة وحذف أي تحديثات مجدولة مرتبطة به.</string>
-    <string name="new_earphones_detected">تم اكتشاف سماعات أذن جديدة!</string>
-    <string name="want_to_keep_track_of_earphones">تريد تتبع سماعات الأذن الخاصة بك؟ أضفها إلى مجموعتك الآن!</string>
-    <string name="location_permission_app_disabled">تم تعطيل إذن الموقع في التطبيق</string>
-    <string name="no_location_found">لم يتم العثور على موقع</string>
-    <string name="phone_gps_was_off">كان نظام تحديد المواقع العالمي (GPS) بالهاتف مغلقًا</string>
-    <string name="open_location">فتح الموقع</string>
-    <string name="no_updates_found">لم يتم العثور على تحديثات ، يمكنك عرض متى يتم توصيل سماعات الأذن وفصلها ، وما إلى ذلك.</string>
-    <string name="delete">حذف</string>
-    <string name="updates">التحديثات</string>
-    <string name="yearly">سنويًا</string>
-    <string name="verify_via_truecaller">التحقق عبر TrueCaller</string>
-    <string name="zene_connect">اتصال زين</string>
-    <string name="zene_pro">زين برو</string>
-    <string name="phone_verification">التحقق برقم الهاتف</string>
-    <string name="phone_verification_zene_connect">يتطلب زين التحقق من رقم هاتفك لتمكين الاتصال بزين.</string>
-    <string name="zene_pro_desc">برو مخصص فقط للمحترفين الموسيقيين. نظرًا لأن جميع الميزات مجانية في التطبيق - فقط إذا كنت مستعدًا لذلك.</string>
-    <string name="offline_cache_song">أغنية ذاكرة التخزين المؤقت غير المتصلة بالإنترنت</string>
-    <string name="saved_offline_cache">تم حفظها في ذاكرة التخزين المؤقت غير المتصلة بالإنترنت</string>
-    <string name="cached_songs">الأغاني المخزنة مؤقتًا</string>
-    <string name="close">إغلاق</string>
-    <string name="enter_coupon_code">أدخل رمز القسيمة</string>
-    <string name="enter_a_valid_phone_number">أدخل رقم هاتف صالح</string>
-    <string name="enter_your_phone_number">أدخل رقم هاتفك</string>
-    <string name="you_have_no_song_cached">ليس لديك أي أغنية مخزنة مؤقتًا</string>
-    <string name="converting_this_song_for_caching">جاري تحويل هذه الأغنية للتخزين المؤقت… يرجى عدم إغلاق مربع الحوار.</string>
-    <string name="cache_error">تعذر تخزين هذه الأغنية مؤقتًا. يرجى المحاولة مرة أخرى. إذا كنت قد حاولت عدة مرات بالفعل، فقد يكون التخزين المؤقت لهذه الأغنية غير متوفر مؤقتًا أو يواجه مشكلات.</string>
-    <string name="offline_caching_availability">يرجى الانتظار… إعداد هذه الأغنية للتوافر للتخزين المؤقت غير المتصل بالإنترنت… يرجى عدم إغلاق مربع الحوار.</string>
-    <string name="remove_song_cache">إزالة ذاكرة التخزين المؤقت للأغنية؟</string>
-    <string name="send_opt">إرسال رمز التحقق</string>
-    <string name="number_is_not_verified_in_truecaller">الرقم غير مؤكد في TrueCaller.</string>
-    <string name="verify">التحقق</string>
-    <string name="enter_a_valid_coupon_code">أدخل رمز قسيمة صالح</string>
-    <string name="subscription_activated_successfully">تم تنشيط الاشتراك بنجاح</string>
-    <string name="start_free_trial">ابدأ التجربة المجانية</string>
-    <string name="what_our_pro_users_say">ماذا يقول مستخدمونا المحترفون!</string>
-    <string name="have_a_coupon">هل لديك قسيمة؟</string>
-    <string name="remove_cache_from_offline">هل أنت متأكد من رغبتك في إزالة ذاكرة التخزين المؤقت لهذه الأغنية؟ بمجرد الإزالة، لن تكون متاحة في وضع عدم الاتصال بالإنترنت.</string>
-    <string name="upgrade_text_subscription_text">مرة أخرى، جميع الميزات مجانية للاستخدام، من خلال الترقية إلى الإصدار المميز، تتم إزالة الإعلانات ومنحك حق الوصول إلى مجتمع زين الحصري.</string>
-</resources>

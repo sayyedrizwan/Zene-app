@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="Theme.Zene" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowAllowReturnTransitionOverlap">true</item>
-        <item name="android:windowAllowEnterTransitionOverlap">true</item>
-    </style>
-</resources>
