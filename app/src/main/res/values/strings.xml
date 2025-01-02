@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Zene</string>
     <string name="app_desc">Entertainment. Everything You Love, All in One Place.</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_apple">Continue with Apple</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="continue_with_email">Continue with Email</string>
 </resources>

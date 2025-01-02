@@ -1,26 +1,36 @@
 package com.rizwansayyed.zene.ui.view
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ButtonWithImageAndBorder(border: Color = Color.White) {
+fun ButtonWithImageAndBorder(img: Int, txt: Int, border: Color = Color.White, click: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(horizontal = 10.dp)
-            .fillMaxSize()
-            .border(1.dp, border, RoundedCornerShape(14.dp)),
+            .fillMaxWidth()
+            .border(0.5.dp, border, RoundedCornerShape(14.dp))
+            .padding(vertical = 14.dp)
+            .clickable {
+                click()
+            },
         Arrangement.Center, Alignment.CenterVertically
     ) {
-
+        ImageIcon(img, 27, null)
+        Spacer(Modifier.width(14.dp))
+        TextViewNormal(stringResource(txt), 16, center = false)
     }
 }

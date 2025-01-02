@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     alias(libs.plugins.android.hilt)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -70,4 +71,12 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(platform(libs.firebase.bom))
+//    implementation(libs.firebase.analytics)
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.services)
+    implementation(libs.androidx.credentials.googleid)
+//    implementation(libs.androidx.credentials.identity)
 }
