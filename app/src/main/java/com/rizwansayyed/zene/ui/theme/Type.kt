@@ -2,9 +2,11 @@ package com.rizwansayyed.zene.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.rizwansayyed.zene.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -31,4 +33,12 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
+)
+
+val proximanOverFamily = FontFamily(
+    Font(R.font.proximanovarlight, FontWeight.Light),
+    Font(R.font.proximanovaregular, FontWeight.Normal),
+    Font(R.font.proximanovarbold, FontWeight.Bold),
+    Font(R.font.proximanovarsemibold, FontWeight.SemiBold),
+    Font(R.font.proximanovarextrabold, FontWeight.ExtraBold)
 )
