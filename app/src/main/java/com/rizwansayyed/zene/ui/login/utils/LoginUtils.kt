@@ -15,6 +15,8 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +37,11 @@ class LoginUtils {
 
     private val loginManager = LoginManager.getInstance()
     private val facebookLoginList = listOf("email", "public_profile")
+
+    val appleProvider = OAuthProvider.newBuilder("apple.com").apply {
+        scopes = arrayOf("email", "name").toMutableList()
+        addCustomParameter("locale", "en")
+    }
 
 
     fun startGoogleLogin(activity: Activity) {
@@ -76,7 +83,7 @@ class LoginUtils {
         }
 
         override fun onSuccess(result: LoginResult) {
-           result.accessToken.token.toast()
+            result.accessToken.token.toast()
         }
     }
 
@@ -87,5 +94,19 @@ class LoginUtils {
         )
 
         loginManager.registerCallback(callbackManager, facebookCallback)
+    }
+
+
+    fun startAppleLogin(activity: Activity) {
+        isLoading = true
+        FirebaseAuth.getInstance()
+            .startActivityForSignInWithProvider(activity, appleProvider.build())
+            .addOnSuccessListener { authResult ->
+                val user = authResult.user
+                user?.email?.toast()
+            }.addOnFailureListener { e ->
+                e.message?.toast()
+                isLoading = false
+            }
     }
 }

@@ -57,11 +57,11 @@ fun LoginView(loginUtils: LoginUtils = LoginUtils()) {
                 }
                 Spacer(Modifier.height(24.dp))
                 ButtonWithImageAndBorder(R.drawable.ic_apple, R.string.continue_with_apple) {
-                    loginUtils.startFacebookLogin(activity)
+                    loginUtils.startAppleLogin(activity)
                 }
                 Spacer(Modifier.height(24.dp))
                 ButtonWithImageAndBorder(R.drawable.ic_facebook, R.string.continue_with_facebook) {
-
+                    loginUtils.startFacebookLogin(activity)
                 }
                 Spacer(Modifier.height(24.dp))
                 Row(Modifier.clickable { }) {
