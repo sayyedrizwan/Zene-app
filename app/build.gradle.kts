@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.rizwansayyed.zene"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -73,10 +73,13 @@ dependencies {
     kapt(libs.hilt.android.compiler)
 
     implementation(platform(libs.firebase.bom))
-//    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.services)
     implementation(libs.androidx.credentials.googleid)
-//    implementation(libs.androidx.credentials.identity)
+
+    implementation(libs.facebook.login)
+
 }

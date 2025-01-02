@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.ui.login
 
+import android.app.Activity
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,15 +14,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
 @Composable
-fun LoginView() {
+fun LoginView(loginUtils: LoginUtils = LoginUtils()) {
+    val activity = LocalContext.current as Activity
     Column(
         Modifier
             .padding(bottom = 100.dp)
@@ -40,20 +46,28 @@ fun LoginView() {
             TextViewNormal(stringResource(R.string.app_desc), 14, center = true)
         }
 
-        ButtonWithImageAndBorder(R.drawable.ic_google, R.string.continue_with_google) {
-
+        AnimatedVisibility(loginUtils.isLoading) {
+            CircularLoadingView()
         }
-        Spacer(Modifier.height(24.dp))
-        ButtonWithImageAndBorder(R.drawable.ic_apple, R.string.continue_with_apple) {
 
-        }
-        Spacer(Modifier.height(24.dp))
-        ButtonWithImageAndBorder(R.drawable.ic_facebook, R.string.continue_with_facebook) {
+        AnimatedVisibility(!loginUtils.isLoading) {
+            Column(Modifier.fillMaxWidth()) {
+                ButtonWithImageAndBorder(R.drawable.ic_google, R.string.continue_with_google) {
+                    loginUtils.startGoogleLogin(activity)
+                }
+                Spacer(Modifier.height(24.dp))
+                ButtonWithImageAndBorder(R.drawable.ic_apple, R.string.continue_with_apple) {
+                    loginUtils.startFacebookLogin(activity)
+                }
+                Spacer(Modifier.height(24.dp))
+                ButtonWithImageAndBorder(R.drawable.ic_facebook, R.string.continue_with_facebook) {
 
-        }
-        Spacer(Modifier.height(24.dp))
-        Row(Modifier.clickable { }) {
-            TextViewNormal(stringResource(R.string.continue_with_email), 16, center = true)
+                }
+                Spacer(Modifier.height(24.dp))
+                Row(Modifier.clickable { }) {
+                    TextViewNormal(stringResource(R.string.continue_with_email), 16, center = true)
+                }
+            }
         }
     }
 }
