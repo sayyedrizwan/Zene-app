@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class LoginUtils {
 
@@ -96,17 +97,26 @@ class LoginUtils {
         loginManager.registerCallback(callbackManager, facebookCallback)
     }
 
-
-    fun startAppleLogin(activity: Activity) {
+    fun startAppleLogin(activity: Activity) = CoroutineScope(Dispatchers.IO).launch {
         isLoading = true
-        FirebaseAuth.getInstance()
-            .startActivityForSignInWithProvider(activity, appleProvider.build())
-            .addOnSuccessListener { authResult ->
-                val user = authResult.user
-                user?.email?.toast()
-            }.addOnFailureListener { e ->
-                e.message?.toast()
-                isLoading = false
-            }
+
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        var email = ""
+        var name = ""
+
+        val result =
+            auth.startActivityForSignInWithProvider(activity, appleProvider.build()).await()
+                ?: return@launch
+
+        result.user?.providerData?.forEach {
+            email = it.email ?: ""
+            name = it.email ?: ""
+        }
     }
+
+
+    fun serverLogin() {
+
+    }
+
 }
