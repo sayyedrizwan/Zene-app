@@ -35,8 +35,6 @@ fun LoginView() {
     val loginUtils = viewModel.loginUtils
     val activity = LocalContext.current as Activity
 
-    var showEmailSheet by remember { mutableStateOf(false) }
-
     Column(
         Modifier
             .padding(bottom = 100.dp)
@@ -74,12 +72,7 @@ fun LoginView() {
                     loginUtils.startFacebookLogin(activity)
                 }
                 Spacer(Modifier.height(24.dp))
-                Row(Modifier.clickable { showEmailSheet = true }) {
-                    TextViewNormal(stringResource(R.string.continue_with_email), 16, center = true)
-                }
             }
         }
-
-        if (showEmailSheet) ContinueWithEmailView()
     }
 }

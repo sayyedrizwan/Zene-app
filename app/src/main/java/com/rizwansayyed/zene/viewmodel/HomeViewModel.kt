@@ -8,8 +8,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val loginUtils: LoginUtils,
-    private val zeneAPI: ZeneAPIInterface
+    val loginUtils: LoginUtils, private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
 

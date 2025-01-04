@@ -59,7 +59,6 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         addCustomParameter("locale", "en")
     }
 
-
     fun startGoogleLogin(activity: Activity) {
         val credentialManager = CredentialManager.create(activity)
         isLoading = true
@@ -158,13 +157,14 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         serverLogin(email, name, photo)
     }
 
-
     private suspend fun serverLogin(email: String, name: String, photo: String) {
         if (email.length < 5 || !email.contains("@")) {
             isLoading = false
             return
         }
-        zeneAPI.updateUser(email, name, photo).catch {}.collectLatest {
+        zeneAPI.updateUser(email, name, photo).catch {
+            isLoading = false
+        }.collectLatest {
             userInfo = flowOf(it)
         }
     }

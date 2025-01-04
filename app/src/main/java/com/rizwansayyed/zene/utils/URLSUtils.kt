@@ -2,6 +2,9 @@ package com.rizwansayyed.zene.utils
 
 object URLSUtils {
 
+    const val ZENE_URL = "https://www.zenemusic.co/"
+
+
     const val FB_GRAPH_ID = "https://graph.facebook.com/me"
 
 
