@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,13 +18,26 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
-import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.utils.URLSUtils.FB_GRAPH_ID
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
+import javax.inject.Inject
 
-class LoginUtils {
+@Module
+@InstallIn(SingletonComponent::class)
+class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
 
     var isLoading by mutableStateOf(false)
 
@@ -39,7 +53,7 @@ class LoginUtils {
     private val loginManager = LoginManager.getInstance()
     private val facebookLoginList = listOf("email", "public_profile")
 
-    val appleProvider = OAuthProvider.newBuilder("apple.com").apply {
+    private val appleProvider = OAuthProvider.newBuilder("apple.com").apply {
         scopes = arrayOf("email", "name").toMutableList()
         addCustomParameter("locale", "en")
     }
@@ -51,22 +65,26 @@ class LoginUtils {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = credentialManager.getCredential(activity, request)
-                when (val credential = result.credential) {
-                    is CustomCredential -> {
-                        if (credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                            isLoading = false
-                            return@launch
-                        }
-                        try {
-                            val googleIdTokenCredential =
-                                GoogleIdTokenCredential.createFrom(credential.data)
-                            googleIdTokenCredential.displayName?.toast()
-                        } catch (e: Exception) {
-                            isLoading = false
-                        }
-                    }
+                if (result.credential !is CustomCredential) {
+                    isLoading = false
+                    return@launch
+                }
+                val credential = result.credential
+                if (credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    isLoading = false
+                    return@launch
+                }
 
-                    else -> isLoading = false
+                try {
+                    val info = GoogleIdTokenCredential.createFrom(credential.data)
+                    val email =
+                        info.data.getString("com.google.android.libraries.identity.googleid.BUNDLE_KEY_ID")
+
+                    serverLogin(
+                        email ?: "", info.displayName ?: "", info.profilePictureUri.toString()
+                    )
+                } catch (e: Exception) {
+                    isLoading = false
                 }
             } catch (e: Exception) {
                 isLoading = false
@@ -84,7 +102,28 @@ class LoginUtils {
         }
 
         override fun onSuccess(result: LoginResult) {
-            result.accessToken.token.toast()
+            getFacebookInfo(result.accessToken.token)
+        }
+    }
+
+    fun getFacebookInfo(token: String) = CoroutineScope(Dispatchers.IO).launch {
+        val urlBuilder = FB_GRAPH_ID.toHttpUrlOrNull()?.newBuilder()?.apply {
+            addQueryParameter("fields", "email,name")
+            addQueryParameter("access_token", token)
+        }
+
+        try {
+            val client = OkHttpClient()
+            val request = Request.Builder().url(urlBuilder?.build().toString()).build()
+            val call = client.newCall(request).execute()
+            val json = JSONObject(call.body?.string() ?: "")
+            val name = json.optString("name")
+            val email = json.optString("email")
+            val photo = " https://graph.facebook.com/${json.optString("id")}/picture?type=large"
+
+            serverLogin(email, name, photo)
+        } catch (e: Exception) {
+            isLoading = false
         }
     }
 
@@ -103,6 +142,7 @@ class LoginUtils {
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
         var email = ""
         var name = ""
+        var photo = ""
 
         val result =
             auth.startActivityForSignInWithProvider(activity, appleProvider.build()).await()
@@ -110,13 +150,24 @@ class LoginUtils {
 
         result.user?.providerData?.forEach {
             email = it.email ?: ""
-            name = it.email ?: ""
+            name = it.displayName ?: ""
+            photo = it.photoUrl.toString()
         }
+
+        serverLogin(email, name, photo)
     }
 
 
-    fun serverLogin() {
-
+    private suspend fun serverLogin(email: String, name: String, photo: String) {
+        if (email.length < 5 || !email.contains("@")) {
+            isLoading = false
+            return
+        }
+        zeneAPI.updateUser(email, name, photo).catch {
+            Log.d("TAG", "serverLogin: runne ${it.message}")
+        }.collectLatest {
+            Log.d("TAG", "serverLogin: runne ${it}")
+        }
     }
 
 }

@@ -17,15 +17,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
-fun LoginView(loginUtils: LoginUtils = LoginUtils()) {
+fun LoginView() {
+    val viewModel : HomeViewModel = hiltViewModel()
+    val loginUtils = viewModel.loginUtils
     val activity = LocalContext.current as Activity
     Column(
         Modifier
