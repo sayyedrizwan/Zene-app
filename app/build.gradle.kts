@@ -94,5 +94,5 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
 
-
+    implementation(libs.androidx.datastore.preferences)
 }

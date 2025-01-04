@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewNormal
@@ -28,9 +31,12 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
 fun LoginView() {
-    val viewModel : HomeViewModel = hiltViewModel()
+    val viewModel: HomeViewModel = hiltViewModel()
     val loginUtils = viewModel.loginUtils
     val activity = LocalContext.current as Activity
+
+    var showEmailSheet by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .padding(bottom = 100.dp)
@@ -68,10 +74,12 @@ fun LoginView() {
                     loginUtils.startFacebookLogin(activity)
                 }
                 Spacer(Modifier.height(24.dp))
-                Row(Modifier.clickable { }) {
+                Row(Modifier.clickable { showEmailSheet = true }) {
                     TextViewNormal(stringResource(R.string.continue_with_email), 16, center = true)
                 }
             }
         }
+
+        if (showEmailSheet) ContinueWithEmailView()
     }
 }

@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +18,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.utils.URLSUtils.FB_GRAPH_ID
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -163,10 +164,8 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
             isLoading = false
             return
         }
-        zeneAPI.updateUser(email, name, photo).catch {
-            Log.d("TAG", "serverLogin: runne ${it.message}")
-        }.collectLatest {
-            Log.d("TAG", "serverLogin: runne ${it}")
+        zeneAPI.updateUser(email, name, photo).catch {}.collectLatest {
+            userInfo = flowOf(it)
         }
     }
 

@@ -1,20 +1,37 @@
 package com.rizwansayyed.zene.data.implementation
 
 import com.google.firebase.messaging.FirebaseMessaging
+import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
-import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import javax.inject.Inject
 
+
 class ZeneAPIImplementation @Inject constructor(
-    private val zeneAPI: ZeneAPIService
+    private val zeneAPI: ZeneAPIService,
+    private val ipAPI: IPAPIService
 ) : ZeneAPIInterface {
 
     override suspend fun updateUser(email: String, name: String, photo: String) = flow {
+        val ip = ipAPI.get()
         val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
-        val info = UserInfoResponse(email, name, photo, fcm, "", "", "")
-        emit(zeneAPI.updateUser(info))
+        val json = JSONObject().apply {
+            put("email", email)
+            put("name", name)
+            put("photo", photo)
+            put("fcm_token", fcm)
+            put("ip", ip.query)
+            put("device", "Android ${getDeviceInfo()}")
+            put("country", "${ip.city}, ${ip.regionName}, ${ip.country}")
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.updateUser(body))
     }
 
 }
