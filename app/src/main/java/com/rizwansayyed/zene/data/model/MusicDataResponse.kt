@@ -22,7 +22,8 @@ data class ZeneMusicData(
     val name: String?,
     val path: String?,
     val thumbnail: String?,
-    val type: String?
+    val type: String?,
+    val extra: String?
 ) {
     fun type(): MusicDataTypes {
         return when (type) {

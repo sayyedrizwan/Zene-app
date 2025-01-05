@@ -9,7 +9,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MUSIC
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MY_LIBRARY
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.PODCAST
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.RADIO
 import com.rizwansayyed.zene.ui.main.home.view.HomeMusicView
+import com.rizwansayyed.zene.ui.main.home.view.HomePodcastView
 import com.rizwansayyed.zene.ui.main.home.view.HomeRadioView
 import com.rizwansayyed.zene.ui.main.home.view.HomeScreenTopView
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -33,10 +38,11 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 .weight(8.8f)
                 .fillMaxWidth()
         ) {
-            if (viewModel.homeSection == HomeSectionSelector.MUSIC) {
-                HomeMusicView(homeViewModel)
-            } else if (viewModel.homeSection == HomeSectionSelector.RADIO) {
-                HomeRadioView(homeViewModel)
+            when (viewModel.homeSection) {
+                MUSIC -> HomeMusicView(homeViewModel)
+                RADIO -> HomeRadioView(homeViewModel)
+                PODCAST -> HomePodcastView(homeViewModel)
+                MY_LIBRARY -> {}
             }
         }
     }
