@@ -26,25 +26,25 @@ fun TextViewNormal(
 
 @Composable
 fun TextViewBold(
-    txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false
+    txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
 ) {
     Text(
         txt,
         if (center) Modifier.fillMaxWidth() else Modifier,
         color, size.sp, null, FontWeight.Bold, proximanOverFamily,
-        textAlign = if (center) TextAlign.Center else null
+        textAlign = if (center) TextAlign.Center else null, maxLines = line
     )
 }
 
 @Composable
 fun TextViewSemiBold(
-    txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false
+    txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
 ) {
     Text(
         txt,
         if (center) Modifier.fillMaxWidth() else Modifier,
         color, size.sp, null, FontWeight.SemiBold, proximanOverFamily,
-        textAlign = if (center) TextAlign.Center else null
+        textAlign = if (center) TextAlign.Center else null, maxLines = line
     )
 }
 

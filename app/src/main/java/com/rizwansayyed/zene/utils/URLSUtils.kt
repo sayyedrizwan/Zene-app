@@ -9,7 +9,8 @@ object URLSUtils {
 
 
     const val ZENE_BASE_URL_API = "http://192.168.0.111:3000"
-    const val ZENE_RECENT_HOME_API = "recent/home"
+    const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
+    const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
     const val ZENE_USER_UPDATE_API = "users/user-info"
 
 

@@ -10,4 +10,9 @@
     <string name="radio">Radio</string>
     <string name="my_library">My Library</string>
     <string name="your_mixes">Your mixes</string>
+    <string name="recommended_playlists">Recommended playlists</string>
+    <string name="albums_for_your_vibe">Albums for your Vibe</string>
+    <string name="songs_for_you">Songs for you</string>
+    <string name="your_favourite_artists">Your favourite artists</string>
+    <string name="explore_tunes">Explore Tunes</string>
 </resources>
