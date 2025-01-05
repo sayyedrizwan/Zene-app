@@ -56,4 +56,9 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        homeViewModel.userInfo()
+    }
 }
