@@ -26,6 +26,34 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
+fun ItemSmallCardView(data: ZeneMusicData?) {
+    Column(
+        Modifier
+            .padding(horizontal = 9.dp)
+            .width(105.dp)
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            Spacer(
+                Modifier
+                    .size(100.dp)
+                    .background(Color.DarkGray)
+            )
+
+            GlideImage(
+                data?.thumbnail,
+                data?.name,
+                Modifier.size(105.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
+        Spacer(Modifier.height(4.dp))
+        TextViewNormal(data?.name ?: "", 14, line = 1)
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
 fun ItemCardView(data: ZeneMusicData?) {
     Column(
         Modifier
@@ -39,7 +67,12 @@ fun ItemCardView(data: ZeneMusicData?) {
                     .background(Color.DarkGray)
             )
 
-            GlideImage(data?.thumbnail, data?.name, Modifier.fillMaxWidth())
+            GlideImage(
+                data?.thumbnail,
+                data?.name,
+                Modifier.size(175.dp),
+                contentScale = ContentScale.Crop
+            )
         }
         Spacer(Modifier.height(9.dp))
         TextViewNormal(data?.name ?: "", 16, line = 1)
