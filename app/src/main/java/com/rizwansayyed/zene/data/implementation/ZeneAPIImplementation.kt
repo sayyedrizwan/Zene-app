@@ -57,4 +57,18 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.homePodcast(token, body))
     }
 
+    override suspend fun recentRadio() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipAPI.get()
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", ip.countryCode)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.homeRadio(token, body))
+    }
+
 }

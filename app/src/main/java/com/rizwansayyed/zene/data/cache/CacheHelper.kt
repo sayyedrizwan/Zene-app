@@ -13,7 +13,7 @@ class CacheHelper {
         val data: T, val timestamp: Long
     )
 
-    val expiryTime = 10.minutes.inWholeMilliseconds
+    val expiryTime = 17.minutes.inWholeMilliseconds
 
     val cacheFilesDir = File(context.filesDir, "api-cache-files").apply {
         mkdirs()

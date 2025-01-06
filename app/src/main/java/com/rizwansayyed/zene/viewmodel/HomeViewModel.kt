@@ -10,10 +10,12 @@ import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
+import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -29,11 +31,12 @@ class HomeViewModel @Inject constructor(
     val loginUtils: LoginUtils, private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
-    val cacheHelper = CacheHelper()
+    private val cacheHelper = CacheHelper()
     var homeRecent by mutableStateOf<ResponseResult<MusicDataResponse>>(ResponseResult.Empty)
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
+    var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
 
-    fun homeRecentData() = viewModelScope.launch(Dispatchers.IO) {
+    fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
         if (data != null) {
             homeRecent = ResponseResult.Success(data)
@@ -46,7 +49,7 @@ class HomeViewModel @Inject constructor(
             homeRecent = ResponseResult.Error(it)
         }.collectLatest {
             if (it.isExpire == true) {
-                homeRecent = ResponseResult.Loading
+                expireToken()
                 return@collectLatest
             }
             cacheHelper.save(ZENE_RECENT_HOME_MUSIC_API, it)
@@ -70,6 +73,24 @@ class HomeViewModel @Inject constructor(
             homePodcast = ResponseResult.Success(it)
         }
     }
+
+    fun homeRadioData() = viewModelScope.launch(Dispatchers.IO) {
+        val data: RadioDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_RADIO_API)
+        if (data != null) {
+            homeRadio = ResponseResult.Success(data)
+            return@launch
+        }
+
+        zeneAPI.recentRadio().onStart {
+            homeRadio = ResponseResult.Loading
+        }.catch {
+            homeRadio = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_RECENT_HOME_RADIO_API, it)
+            homeRadio = ResponseResult.Success(it)
+        }
+    }
+
 
     fun userInfo() = viewModelScope.launch(Dispatchers.IO) {
         val data = DataStorageManager.userInfo.firstOrNull()

@@ -51,7 +51,7 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                     PodcastViewItems(it)
                 }
 
-                item(span = { GridItemSpan(maxLineSpan) }) {
+                if (v.data.latest?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {
                         Spacer(Modifier.height(50.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
@@ -59,14 +59,14 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.latest ?: emptyList()) {
+                            items(v.data.latest) {
                                 ItemCardView(it)
                             }
                         }
                     }
                 }
 
-                item(span = { GridItemSpan(maxLineSpan) }) {
+                if (v.data.categories?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {
                         Spacer(Modifier.height(50.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
@@ -74,7 +74,7 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         FlowRow(Modifier.fillMaxWidth()) {
-                            v.data.categories?.forEach {
+                            v.data.categories.forEach {
                                 TextViewBorder(it?.name ?: "") {
 
                                 }
@@ -83,22 +83,23 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Column(Modifier.fillMaxWidth()) {
-                        Spacer(Modifier.height(50.dp))
-                        Box(Modifier.padding(horizontal = 6.dp)) {
-                            TextViewBold(stringResource(R.string.podcast_for_you), 23)
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.podcastYouMayLike ?: emptyList()) {
-                                ItemCardView(it)
+                if (v.data.podcastYouMayLike?.isNotEmpty() == true)
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Column(Modifier.fillMaxWidth()) {
+                            Spacer(Modifier.height(50.dp))
+                            Box(Modifier.padding(horizontal = 6.dp)) {
+                                TextViewBold(stringResource(R.string.podcast_for_you), 23)
+                            }
+                            Spacer(Modifier.height(12.dp))
+                            LazyRow(Modifier.fillMaxWidth()) {
+                                items(v.data.podcastYouMayLike) {
+                                    ItemCardView(it)
+                                }
                             }
                         }
                     }
-                }
 
-                item(span = { GridItemSpan(maxLineSpan) }) {
+                if (v.data.explore?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {
                         Spacer(Modifier.height(50.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
@@ -112,7 +113,6 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                 items(v.data.explore ?: emptyList(), span = { GridItemSpan(1) }) {
                     GlideImage(it?.thumbnail, it?.name, Modifier.fillMaxWidth())
                 }
-
             }
         }
 
