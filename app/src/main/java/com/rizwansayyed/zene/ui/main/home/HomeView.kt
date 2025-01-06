@@ -49,5 +49,6 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
 
     LaunchedEffect(Unit) {
         homeViewModel.homeRecentData()
+        homeViewModel.homePodcastData()
     }
 }

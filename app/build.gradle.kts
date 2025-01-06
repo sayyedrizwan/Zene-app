@@ -97,4 +97,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.glide)
+
+    implementation("com.google.code.gson:gson:2.11.0")
 }

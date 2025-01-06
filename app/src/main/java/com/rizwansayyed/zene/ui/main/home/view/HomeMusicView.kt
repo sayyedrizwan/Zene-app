@@ -37,81 +37,81 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
             }
 
             is ResponseResult.Success -> {
-                item {
+                if (v.data.topSongs?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.topSongs ?: emptyList()) {
+                        items(v.data.topSongs) {
                             ItemCardView(it)
                         }
                     }
                 }
 
-                item {
+                if (v.data.topPlaylists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.your_mixes), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.topPlaylists ?: emptyList()) {
+                        items(v.data.topPlaylists) {
                             ItemCardView(it)
                         }
                     }
                 }
 
-                item {
+                if (v.data.playlists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.recommended_playlists), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.playlists ?: emptyList()) {
+                        items(v.data.playlists) {
                             ItemCardView(it)
                         }
                     }
                 }
 
-                item {
+                if (v.data.albums?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.albums_for_your_vibe), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.albums ?: emptyList()) {
+                        items(v.data.albums) {
                             ItemCardView(it)
                         }
                     }
                 }
 
-                item {
+                if (v.data.songsYouMayLike?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.songs_for_you), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.songsYouMayLike ?: emptyList()) {
+                        items(v.data.songsYouMayLike) {
                             ItemCardView(it)
                         }
                     }
                 }
 
-                item {
+                if (v.data.favouriteArtists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.your_favourite_artists), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.favouriteArtists ?: emptyList()) {
+                        items(v.data.favouriteArtists) {
                             ItemArtistsCardView(it)
                         }
                     }
                 }
 
-                item {
+                if (v.data.songsToExplore?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.explore_tunes), 23)
@@ -123,7 +123,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             .fillMaxWidth()
                             .heightIn(max = 800.dp)
                     ) {
-                        items(v.data.songsToExplore ?: emptyList()) {
+                        items(v.data.songsToExplore) {
                             ItemCardView(it)
                         }
                     }

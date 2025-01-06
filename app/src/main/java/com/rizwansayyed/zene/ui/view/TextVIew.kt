@@ -1,13 +1,20 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 
@@ -59,4 +66,18 @@ fun TextViewLight(
         textAlign = if (center) TextAlign.Center else null,
         maxLines = line, overflow = TextOverflow.Ellipsis
     )
+}
+
+@Composable
+fun TextViewBorder(text: String, click: () -> Unit) {
+    Row(
+        Modifier
+            .padding(4.dp)
+            .clip(RoundedCornerShape(80))
+            .background(Color.Black)
+            .clickable { click() }
+            .padding(horizontal = 15.dp, vertical = 9.dp),
+    ) {
+        TextViewSemiBold(text, size = 14)
+    }
 }
