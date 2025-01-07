@@ -14,10 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.login.LoginView
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.HOME
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SETTINGS
 import com.rizwansayyed.zene.ui.main.home.HomeView
+import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -44,9 +50,18 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(DarkCharcoal)
                 ) {
-                    if ((userInfo?.email ?: "").contains("@"))
-                        HomeView(navigationViewModel, userInfo)
-                    else if (showLogin) LoginView()
+                    if ((userInfo?.email ?: "").contains("@")) {
+                        when (navigationViewModel.homeNavSection) {
+                            HOME -> HomeView(navigationViewModel, userInfo)
+                            CONNECT -> {}
+                            ENT -> {}
+                            SETTINGS -> {}
+                        }
+
+                        HomeBottomNavigationView(
+                            Modifier.align(Alignment.BottomCenter), navigationViewModel
+                        )
+                    } else if (showLogin) LoginView()
                 }
 
                 LaunchedEffect(Unit) {

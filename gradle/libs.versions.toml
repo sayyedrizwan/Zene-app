@@ -5,6 +5,7 @@ credentials = "1.5.0-beta01"
 datastorePreferences = "1.1.1"
 facebookLogin = "17.0.2"
 firebaseBom = "33.7.0"
+gson = "2.11.0"
 hiltAndroid = "2.52"
 googleServices = "4.4.2"
 hiltNavigationCompose = "1.2.0"
@@ -19,6 +20,7 @@ composeBom = "2024.12.01"
 googleid = "1.1.1"
 moshiKotlin = "1.15.2"
 okhttpBom = "4.12.0"
+processPhoenix = "3.0.0"
 retrofit = "2.11.0"
 
 [libraries]
@@ -68,6 +70,9 @@ converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.r
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 glide = { module = "com.github.bumptech.glide:compose", version.ref = "glide" }
+
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+process-phoenix = { module = "com.jakewharton:process-phoenix", version.ref = "processPhoenix" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,8 +26,10 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.ItemSmallCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewBorder
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeRadioView(homeViewModel: HomeViewModel) {
     LazyColumn(Modifier.fillMaxSize()) {
@@ -66,6 +71,24 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                         }
                     }
                     Spacer(Modifier.height(30.dp))
+                }
+
+
+                item {
+                    Column(Modifier.fillMaxWidth()) {
+                        Spacer(Modifier.height(50.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.categories), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        FlowRow(Modifier.fillMaxWidth()) {
+                            v.data.countries?.forEach {
+                                TextViewBorder(it?.name ?: "") {
+
+                                }
+                            }
+                        }
+                    }
                 }
 
                 item {

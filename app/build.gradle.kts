@@ -98,6 +98,6 @@ dependencies {
 
     implementation(libs.glide)
 
-    implementation("com.google.code.gson:gson:2.11.0")
-    implementation("com.jakewharton:process-phoenix:3.0.0")
+    implementation(libs.gson)
+    implementation(libs.process.phoenix)
 }
