@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.login.LoginView
+import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.HOME
@@ -26,10 +27,12 @@ import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.utils.MainUtils.startAppService
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -53,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     if ((userInfo?.email ?: "").contains("@")) {
                         when (navigationViewModel.homeNavSection) {
                             HOME -> HomeView(navigationViewModel, userInfo)
-                            CONNECT -> {}
+                            CONNECT -> HomeConnectView()
                             ENT -> {}
                             SETTINGS -> {}
                         }
@@ -67,6 +70,9 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     delay(500)
                     showLogin = true
+
+                    delay(2.seconds)
+                    startAppService(this@MainActivity)
                 }
             }
         }

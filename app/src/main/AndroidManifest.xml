@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"
@@ -76,6 +81,12 @@
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
             android:value="e38db482e05b57ef2a92b3b6c7e30678" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAFR5zPlsuPYHHKaNX7_U-FvWb18gr3RkA" />
+
+        <service android:name=".service.ForegroundService" />
 
     </application>
 

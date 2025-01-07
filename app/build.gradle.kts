@@ -100,4 +100,6 @@ dependencies {
 
     implementation(libs.gson)
     implementation(libs.process.phoenix)
+
+    implementation(libs.maps.compose)
 }

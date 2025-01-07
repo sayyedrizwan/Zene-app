@@ -6,9 +6,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.rizwansayyed.zene.data.model.IPResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_STORE_KEY
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.moshi
@@ -28,6 +30,7 @@ object DataStorageManager {
         const val EMPTY_JSON = "{}"
 
         val USER_INFO_DB = stringPreferencesKey("user_info_db")
+        val IP_DB = stringPreferencesKey("ip_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -38,6 +41,18 @@ object DataStorageManager {
             context.dataStore.edit {
                 val json = moshi.adapter(UserInfoResponse::class.java).toJson(value.first())
                 it[USER_INFO_DB] = json
+            }
+            if (isActive) cancel()
+        }
+
+    var ipDB: Flow<IPResponse?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(IPResponse::class.java).fromJson(it[IP_DB] ?: EMPTY_JSON)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                val json = moshi.adapter(IPResponse::class.java).toJson(value.first())
+                it[IP_DB] = json
             }
             if (isActive) cancel()
         }
