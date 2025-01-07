@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
                     delay(500)
                     showLogin = true
 
-                    delay(2.seconds)
+                    delay(1.seconds)
                     startAppService(this@MainActivity)
                 }
             }

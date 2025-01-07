@@ -86,8 +86,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAFR5zPlsuPYHHKaNX7_U-FvWb18gr3RkA" />
 
-        <service android:name=".service.ForegroundService" />
-
+        <service
+            android:name=".service.ForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"
+            android:stopWithTask="false" />
     </application>
 
 </manifest>
