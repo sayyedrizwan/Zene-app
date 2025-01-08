@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.implementation
 
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
+import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
@@ -13,4 +14,5 @@ interface ZeneAPIInterface {
     suspend fun recentPodcast(): Flow<PodcastDataResponse>
     suspend fun recentRadio(): Flow<RadioDataResponse>
     suspend fun entertainmentNews(): Flow<EntertainmentDataResponse>
+    suspend fun entertainmentMovies(): Flow<MoviesDataResponse>
 }

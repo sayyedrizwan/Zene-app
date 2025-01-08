@@ -113,7 +113,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
         }
 
         item {
-            Spacer(Modifier.height(150.dp))
+            Spacer(Modifier.height(200.dp))
         }
     }
 }

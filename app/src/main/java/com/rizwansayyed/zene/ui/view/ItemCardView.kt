@@ -40,10 +40,7 @@ fun ItemSmallCardView(data: ZeneMusicData?) {
             )
 
             GlideImage(
-                data?.thumbnail,
-                data?.name,
-                Modifier.size(105.dp),
-                contentScale = ContentScale.Crop
+                data?.thumbnail, data?.name, Modifier.size(105.dp), contentScale = ContentScale.Crop
             )
         }
         Spacer(Modifier.height(4.dp))
@@ -61,10 +58,33 @@ fun ItemYoutubeCardView(data: ZeneMusicData?) {
             .width(255.dp)
     ) {
         Box(Modifier.fillMaxWidth()) {
-            GlideImage(data?.thumbnail, data?.name, Modifier.width(250.dp).clip(RoundedCornerShape(13.dp)))
+            GlideImage(
+                data?.thumbnail, data?.name,
+                Modifier
+                    .width(250.dp)
+                    .clip(RoundedCornerShape(13.dp))
+            )
         }
         Spacer(Modifier.height(4.dp))
         TextViewNormal(data?.name ?: "", 14, line = 1)
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
+    Box {
+        GlideImage(
+            data?.thumbnail, data?.name,
+            Modifier
+                .padding(horizontal = 10.dp)
+                .width(250.dp)
+                .clip(RoundedCornerShape(13.dp))
+        )
+        if (p != null) Row(Modifier.align(Alignment.BottomStart)) {
+            TextViewBold("${p + 1}", 100)
+        }
     }
 }
 
@@ -85,10 +105,7 @@ fun ItemCardView(data: ZeneMusicData?) {
             )
 
             GlideImage(
-                data?.thumbnail,
-                data?.name,
-                Modifier.size(175.dp),
-                contentScale = ContentScale.Crop
+                data?.thumbnail, data?.name, Modifier.size(175.dp), contentScale = ContentScale.Crop
             )
         }
         Spacer(Modifier.height(9.dp))

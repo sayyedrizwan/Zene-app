@@ -14,6 +14,10 @@
     <string name="recommended_playlists">Recommended playlists</string>
     <string name="albums_for_your_vibe">Albums for your Vibe</string>
     <string name="latest_news_videos">Latest News Videos</string>
+    <string name="latest_movie_trailers">Latest Movie Trailers</string>
+    <string name="entertainment_news">Entertainment News</string>
+    <string name="movies_trending_today">Movies Trending Today</string>
+    <string name="top_10_movies_show_in">Top 10 Movies/Show in</string>
     <string name="songs_for_you">Songs for you</string>
     <string name="your_favourite_artists">Your favourite artists</string>
     <string name="explore_tunes">Explore Tunes</string>

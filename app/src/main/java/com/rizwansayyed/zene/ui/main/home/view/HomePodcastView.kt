@@ -117,7 +117,7 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Spacer(Modifier.height(150.dp))
+            Spacer(Modifier.height(200.dp))
         }
     }
 }

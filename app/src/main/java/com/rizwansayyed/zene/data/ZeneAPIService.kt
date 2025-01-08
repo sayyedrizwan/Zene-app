@@ -1,11 +1,13 @@
 package com.rizwansayyed.zene.data
 
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
+import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
@@ -45,4 +47,10 @@ interface ZeneAPIService {
     suspend fun entertainmentNews(
         @Header("token") token: String, @Body data: RequestBody
     ): EntertainmentDataResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
+    suspend fun entertainmentMovies(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MoviesDataResponse
 }

@@ -9,12 +9,14 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
+import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
@@ -38,6 +40,9 @@ class HomeViewModel @Inject constructor(
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
     var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
     var entertainmentData by mutableStateOf<ResponseResult<EntertainmentDataResponse>>(
+        ResponseResult.Empty
+    )
+    var entertainmentMoviesData by mutableStateOf<ResponseResult<MoviesDataResponse>>(
         ResponseResult.Empty
     )
 
@@ -111,6 +116,23 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             cacheHelper.save(ZENE_RECENT_HOME_ENTERTAINMENT_API, it)
             entertainmentData = ResponseResult.Success(it)
+        }
+    }
+
+    fun entertainmentMovies() = viewModelScope.launch(Dispatchers.IO) {
+        val data: MoviesDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
+        if ((data?.trendingMovies?.size ?: 0) > 0) {
+            entertainmentMoviesData = ResponseResult.Success(data!!)
+            return@launch
+        }
+
+        zeneAPI.entertainmentMovies().onStart {
+            entertainmentMoviesData = ResponseResult.Loading
+        }.catch {
+            entertainmentMoviesData = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API, it)
+            entertainmentMoviesData = ResponseResult.Success(it)
         }
     }
 
