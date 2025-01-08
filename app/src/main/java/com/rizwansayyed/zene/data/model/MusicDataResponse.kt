@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.data.model
 
 enum class MusicDataTypes {
-    NONE, SONGS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_CATEGORIES
+    NONE, SONGS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_CATEGORIES, NEWS
 }
 
 data class MusicDataResponse(
@@ -40,6 +40,7 @@ data class ZeneMusicData(
             "ARTISTS" -> MusicDataTypes.ARTISTS
             "PODCAST_CATEGORIES" -> MusicDataTypes.PODCAST_CATEGORIES
             "PODCAST" -> MusicDataTypes.PODCAST
+            "NEWS" -> MusicDataTypes.NEWS
             else -> MusicDataTypes.NONE
         }
     }

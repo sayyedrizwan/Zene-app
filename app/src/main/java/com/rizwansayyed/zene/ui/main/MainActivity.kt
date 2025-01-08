@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
+import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.HOME
@@ -57,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         when (navigationViewModel.homeNavSection) {
                             HOME -> HomeView(navigationViewModel, userInfo)
                             CONNECT -> HomeConnectView()
-                            ENT -> {}
+                            ENT -> EntertainmentNewsView()
                             SETTINGS -> {}
                         }
 

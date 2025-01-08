@@ -10,8 +10,10 @@
     <string name="radio">Radio</string>
     <string name="my_library">My Library</string>
     <string name="your_mixes">Your mixes</string>
+    <string name="entertainment_">Entertainment</string>
     <string name="recommended_playlists">Recommended playlists</string>
     <string name="albums_for_your_vibe">Albums for your Vibe</string>
+    <string name="latest_news_videos">Latest News Videos</string>
     <string name="songs_for_you">Songs for you</string>
     <string name="your_favourite_artists">Your favourite artists</string>
     <string name="explore_tunes">Explore Tunes</string>
@@ -28,6 +30,7 @@
     <string name="entertainment">entertainment</string>
     <string name="entertainment_short">ent.</string>
     <string name="grant">Grant</string>
+    <string name="play">Play</string>
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_desc">To stream and share on Connect, we need your location permission. Rest assured, your location will never be shared with anyone unless you choose to share it yourself. \n\n Click on Grant -> Permissions -> Location -> \'Allow all the time\'.</string>
 </resources>

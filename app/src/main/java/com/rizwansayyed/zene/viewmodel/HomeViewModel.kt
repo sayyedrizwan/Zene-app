@@ -8,11 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
@@ -35,11 +37,14 @@ class HomeViewModel @Inject constructor(
     var homeRecent by mutableStateOf<ResponseResult<MusicDataResponse>>(ResponseResult.Empty)
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
     var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
+    var entertainmentData by mutableStateOf<ResponseResult<EntertainmentDataResponse>>(
+        ResponseResult.Empty
+    )
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
-        if (data != null) {
-            homeRecent = ResponseResult.Success(data)
+        if ((data?.topSongs?.size ?: 0) > 0) {
+            homeRecent = ResponseResult.Success(data!!)
             return@launch
         }
 
@@ -59,8 +64,8 @@ class HomeViewModel @Inject constructor(
 
     fun homePodcastData() = viewModelScope.launch(Dispatchers.IO) {
         val data: PodcastDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_PODCAST_API)
-        if (data != null) {
-            homePodcast = ResponseResult.Success(data)
+        if ((data?.latest?.size ?: 0) > 0) {
+            homePodcast = ResponseResult.Success(data!!)
             return@launch
         }
 
@@ -76,8 +81,8 @@ class HomeViewModel @Inject constructor(
 
     fun homeRadioData() = viewModelScope.launch(Dispatchers.IO) {
         val data: RadioDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_RADIO_API)
-        if (data != null) {
-            homeRadio = ResponseResult.Success(data)
+        if ((data?.recent?.size ?: 0) > 0) {
+            homeRadio = ResponseResult.Success(data!!)
             return@launch
         }
 
@@ -92,12 +97,31 @@ class HomeViewModel @Inject constructor(
     }
 
 
+    fun entertainmentNewsData() = viewModelScope.launch(Dispatchers.IO) {
+        val data: EntertainmentDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_API)
+        if ((data?.topNews?.size ?: 0) > 0) {
+            entertainmentData = ResponseResult.Success(data!!)
+            return@launch
+        }
+
+        zeneAPI.entertainmentNews().onStart {
+            entertainmentData = ResponseResult.Loading
+        }.catch {
+            entertainmentData = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_RECENT_HOME_ENTERTAINMENT_API, it)
+            entertainmentData = ResponseResult.Success(it)
+        }
+    }
+
+
     fun userInfo() = viewModelScope.launch(Dispatchers.IO) {
         val data = DataStorageManager.userInfo.firstOrNull()
         if (data?.isLoggedIn() == false) return@launch
         data?.email ?: return@launch
         data.name ?: return@launch
         data.photo ?: return@launch
+
         zeneAPI.updateUser(data.email, data.name, data.photo).catch {}.collectLatest {
             DataStorageManager.userInfo = flowOf(it)
         }

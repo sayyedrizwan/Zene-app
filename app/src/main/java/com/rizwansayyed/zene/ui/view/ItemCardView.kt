@@ -54,6 +54,23 @@ fun ItemSmallCardView(data: ZeneMusicData?) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
+fun ItemYoutubeCardView(data: ZeneMusicData?) {
+    Column(
+        Modifier
+            .padding(horizontal = 4.dp)
+            .width(255.dp)
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            GlideImage(data?.thumbnail, data?.name, Modifier.width(250.dp).clip(RoundedCornerShape(13.dp)))
+        }
+        Spacer(Modifier.height(4.dp))
+        TextViewNormal(data?.name ?: "", 14, line = 1)
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
 fun ItemCardView(data: ZeneMusicData?) {
     Column(
         Modifier

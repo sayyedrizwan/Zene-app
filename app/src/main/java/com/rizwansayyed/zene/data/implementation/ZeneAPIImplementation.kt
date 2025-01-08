@@ -1,14 +1,18 @@
 package com.rizwansayyed.zene.data.implementation
 
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -22,7 +26,9 @@ class ZeneAPIImplementation @Inject constructor(
 
     override suspend fun updateUser(email: String, name: String, photo: String) = flow {
         val ip = ipAPI.get()
-        ipDB = flowOf(ip)
+        CoroutineScope(Dispatchers.IO).launch {
+            ipDB = flowOf(ip)
+        }
 
         val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
         val json = JSONObject().apply {
@@ -73,6 +79,20 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.homeRadio(token, body))
+    }
+
+    override suspend fun entertainmentNews() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipAPI.get()
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", ip.countryCode)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.entertainmentNews(token, body))
     }
 
 }
