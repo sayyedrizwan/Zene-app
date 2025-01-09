@@ -23,6 +23,7 @@ moshiKotlin = "1.15.2"
 okhttpBom = "4.12.0"
 processPhoenix = "3.0.0"
 retrofit = "2.11.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -75,6 +76,7 @@ glide = { module = "com.github.bumptech.glide:compose", version.ref = "glide" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 process-phoenix = { module = "com.jakewharton:process-phoenix", version.ref = "processPhoenix" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

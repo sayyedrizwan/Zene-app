@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
@@ -82,5 +83,6 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         homeViewModel.userInfo()
+        BackgroundLocationTracking.backgroundTracking?.onDataReceived()
     }
 }

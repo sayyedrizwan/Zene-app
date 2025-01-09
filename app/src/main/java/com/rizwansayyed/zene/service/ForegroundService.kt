@@ -13,14 +13,24 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.main.MainActivity
 
 class ForegroundService : Service() {
+
+    private val backgroundLocation by lazy { BackgroundLocationTracking(this) }
+
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
         startForegroundNotification()
+        backgroundLocation.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        backgroundLocation.stop()
     }
 
     private fun startForegroundNotification() {

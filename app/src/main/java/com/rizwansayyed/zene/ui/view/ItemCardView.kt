@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -76,7 +77,8 @@ fun ItemYoutubeCardView(data: ZeneMusicData?) {
 fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
     Box {
         GlideImage(
-            data?.thumbnail, data?.name,
+            data?.thumbnail,
+            data?.name,
             Modifier
                 .padding(horizontal = 10.dp)
                 .width(250.dp)
@@ -84,6 +86,34 @@ fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
         )
         if (p != null) Row(Modifier.align(Alignment.BottomStart)) {
             TextViewBold("${p + 1}", 100)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun NewsItemCard(data: ZeneMusicData?) {
+    Row(
+        Modifier
+            .padding(vertical = 20.dp)
+            .fillMaxWidth(),
+        Arrangement.Center,
+        Alignment.CenterVertically
+    ) {
+        GlideImage(
+            data?.thumbnail,
+            data?.name,
+            Modifier
+                .padding(horizontal = 10.dp)
+                .size(100.dp)
+                .clip(RoundedCornerShape(13.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(Modifier.fillMaxWidth()) {
+            TextViewNormal(data?.name ?: "", 15)
+            TextViewNormal(data?.extra ?: "", 12)
         }
     }
 }
