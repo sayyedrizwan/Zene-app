@@ -59,7 +59,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
     LaunchedEffect(Unit) {
         homeViewModel.homeRecentData {
             CoroutineScope(Dispatchers.IO).launch {
-                delay(3.seconds)
+                delay(5.seconds)
                 ProcessPhoenix.triggerRebirth(context)
             }
         }
