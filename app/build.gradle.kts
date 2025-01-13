@@ -103,4 +103,6 @@ dependencies {
     implementation(libs.process.phoenix)
 
     implementation(libs.maps.compose)
+
+    implementation("com.truecaller.android.sdk:truecaller-sdk:3.1.0")
 }

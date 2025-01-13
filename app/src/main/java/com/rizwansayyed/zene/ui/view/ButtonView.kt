@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +13,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.ui.theme.MainColor
 
 @Composable
 fun ButtonWithImageAndBorder(img: Int, txt: Int, border: Color = Color.White, click: () -> Unit) {
@@ -32,5 +35,23 @@ fun ButtonWithImageAndBorder(img: Int, txt: Int, border: Color = Color.White, cl
         ImageIcon(img, 27, null)
         Spacer(Modifier.width(14.dp))
         TextViewNormal(stringResource(txt), 16, center = false)
+    }
+}
+
+@Composable
+fun ButtonHeavy(text: Int, click: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth()
+            .clickable {
+                click()
+            }
+            .clip(RoundedCornerShape(14.dp))
+            .background(MainColor)
+            .padding(vertical = 13.dp, horizontal = 5.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextViewNormal(stringResource(text), 16, center = false)
     }
 }

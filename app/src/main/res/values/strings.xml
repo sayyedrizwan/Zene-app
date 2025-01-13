@@ -44,4 +44,6 @@
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_desc">To stream and share on Connect, we need your location permission. Rest assured, your location will never be shared with anyone unless you choose to share it yourself.</string>
     <string name="verify_your_phone_number_to_enjoy_connect">Verify your phone number to enjoy zene connect :)</string>
+    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="verify_phone_number_desc">Verify your phone number via truecaller to enable connect.</string>
 </resources>
