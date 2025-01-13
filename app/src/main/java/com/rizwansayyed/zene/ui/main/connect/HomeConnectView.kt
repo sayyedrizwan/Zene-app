@@ -44,6 +44,7 @@ import kotlin.time.Duration.Companion.seconds
 fun HomeConnectView() {
     val coroutines = rememberCoroutineScope()
     var locationPermission by remember { mutableStateOf(false) }
+    var isEveryShownLocationPermission by remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
 
     var locationZoom by remember { mutableFloatStateOf(9f) }
@@ -69,7 +70,7 @@ fun HomeConnectView() {
                 cameraPositionState = cameraPositionState,
                 properties = properties
             ) {
-                MainMarkerView(currentLatLngUser!!)
+                currentLatLngUser?.let { it1 -> MainMarkerView(it1) }
             }
 
 
@@ -101,7 +102,7 @@ fun HomeConnectView() {
                 val ip = ipDB.firstOrNull()
                 currentLatLng = LatLng(ip?.lat ?: 0.0, ip?.lon ?: 0.0)
                 locationZoom = 11f
-                locationPermission = true
+                if (!isEveryShownLocationPermission) locationPermission = true
                 if (isActive) cancel()
             }
             onPauseOrDispose {
@@ -110,7 +111,10 @@ fun HomeConnectView() {
         }
     }
 
-    if (locationPermission) LocationPermissionView {
-        locationPermission = false
+    if (locationPermission) {
+        isEveryShownLocationPermission = true
+        LocationPermissionView {
+            locationPermission = false
+        }
     }
 }

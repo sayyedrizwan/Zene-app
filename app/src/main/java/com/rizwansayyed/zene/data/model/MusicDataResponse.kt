@@ -15,6 +15,8 @@ data class MusicDataResponse(
     val topSongs: List<ZeneMusicData?>?
 )
 
+typealias ZeneMusicDataList = List<ZeneMusicData>
+
 data class ZeneMusicData(
     val artists: String?,
     val id: String?,

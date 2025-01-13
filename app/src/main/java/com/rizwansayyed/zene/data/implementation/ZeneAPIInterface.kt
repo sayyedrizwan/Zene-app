@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import kotlinx.coroutines.flow.Flow
 
 interface ZeneAPIInterface {
@@ -15,4 +16,5 @@ interface ZeneAPIInterface {
     suspend fun recentRadio(): Flow<RadioDataResponse>
     suspend fun entertainmentNews(): Flow<EntertainmentDataResponse>
     suspend fun entertainmentMovies(): Flow<MoviesDataResponse>
+    suspend fun connectNearMusic(): Flow<ZeneMusicDataList>
 }

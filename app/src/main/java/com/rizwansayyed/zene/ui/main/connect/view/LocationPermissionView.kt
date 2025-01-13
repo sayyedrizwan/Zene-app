@@ -1,8 +1,8 @@
 package com.rizwansayyed.zene.ui.main.connect.view
 
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,18 +15,27 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
+import com.rizwansayyed.zene.utils.MainUtils.toast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationPermissionView(close: () -> Unit) {
-    val context = LocalContext.current.applicationContext
+    val rejected = stringResource(R.string.location_permission_reject)
+    val permission =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (!it) {
+                rejected.toast()
+                close()
+                openAppSettings()
+            }
+        }
     ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
         Column(
             Modifier
@@ -40,11 +49,7 @@ fun LocationPermissionView(close: () -> Unit) {
 
             Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
                 FilledTonalButton(onClick = {
-                    close()
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    intent.data = Uri.parse("package:" + context.packageName)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
+                    permission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }) {
                     TextViewNormal(stringResource(R.string.grant), 16)
                 }

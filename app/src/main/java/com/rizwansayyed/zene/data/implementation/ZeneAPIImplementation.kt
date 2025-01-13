@@ -109,4 +109,18 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.entertainmentMovies(token, body))
     }
 
+    override suspend fun connectNearMusic() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipAPI.get()
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", ip.countryCode)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.connectNearMusic(token, body))
+    }
+
 }

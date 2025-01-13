@@ -13,8 +13,10 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
@@ -45,6 +47,8 @@ class HomeViewModel @Inject constructor(
     var entertainmentMoviesData by mutableStateOf<ResponseResult<MoviesDataResponse>>(
         ResponseResult.Empty
     )
+
+    var nearMusic by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -137,15 +141,31 @@ class HomeViewModel @Inject constructor(
     }
 
 
+    fun connectNearMusic() = viewModelScope.launch(Dispatchers.IO) {
+        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_CONNECT_NEAR_MUSIC_API)
+        if ((data?.size ?: 0) > 0) {
+            nearMusic = ResponseResult.Success(data!!)
+            return@launch
+        }
+
+        zeneAPI.connectNearMusic().onStart {
+            nearMusic = ResponseResult.Loading
+        }.catch {
+            nearMusic = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_CONNECT_NEAR_MUSIC_API, it)
+            nearMusic = ResponseResult.Success(it)
+        }
+    }
+
+
     fun userInfo() = viewModelScope.launch(Dispatchers.IO) {
         val data = DataStorageManager.userInfo.firstOrNull()
         if (data?.isLoggedIn() == false) return@launch
-        data?.email ?: return@launch
-        data.name ?: return@launch
-        data.photo ?: return@launch
 
-        zeneAPI.updateUser(data.email, data.name, data.photo).catch {}.collectLatest {
-            DataStorageManager.userInfo = flowOf(it)
-        }
+        zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch {}
+            .collectLatest {
+                DataStorageManager.userInfo = flowOf(it)
+            }
     }
 }

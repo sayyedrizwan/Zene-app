@@ -38,7 +38,8 @@
     <string name="entertainment_short">ent.</string>
     <string name="grant">Grant</string>
     <string name="play">Play</string>
+    <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>
     <string name="location_permission">Location Permission</string>
-    <string name="location_permission_desc">To stream and share on Connect, we need your location permission. Rest assured, your location will never be shared with anyone unless you choose to share it yourself. \n\n Click on Grant -> Permissions -> Location -> \'Allow all the time\'.</string>
+    <string name="location_permission_desc">To stream and share on Connect, we need your location permission. Rest assured, your location will never be shared with anyone unless you choose to share it yourself.</string>
 </resources>
