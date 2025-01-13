@@ -32,6 +32,7 @@
     <string name="podcast_for_you">Podcasts for you</string>
     <string name="explore_podcasts">Explore Podcasts</string>
     <string name="home">home</string>
+    <string name="verify">Verify</string>
     <string name="settings">settings</string>
     <string name="connect">connect</string>
     <string name="entertainment">entertainment</string>
@@ -42,4 +43,5 @@
     <string name="songs_trending_near_you">Songs trending near you</string>
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_desc">To stream and share on Connect, we need your location permission. Rest assured, your location will never be shared with anyone unless you choose to share it yourself.</string>
+    <string name="verify_your_phone_number_to_enjoy_connect">Verify your phone number to enjoy zene connect :)</string>
 </resources>
