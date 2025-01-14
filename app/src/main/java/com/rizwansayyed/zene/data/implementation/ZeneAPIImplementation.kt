@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.data.implementation
 
-import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
@@ -107,6 +106,20 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.entertainmentMovies(token, body))
+    }
+
+    override suspend fun updateTrueCallerNumber(codeVerifier: String, code: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("codeVerifier", codeVerifier)
+            put("code", code)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.updateTrueCallerPhone(token, body))
     }
 
     override suspend fun connectNearMusic() = flow {

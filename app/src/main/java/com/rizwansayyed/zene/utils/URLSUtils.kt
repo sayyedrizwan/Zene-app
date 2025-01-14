@@ -18,6 +18,7 @@ object URLSUtils {
     const val ZENE_CONNECT_NEAR_MUSIC_API = "connect/near-music"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
+    const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"
 
 
     const val IP_BASE_URL = "http://ip-api.com/"

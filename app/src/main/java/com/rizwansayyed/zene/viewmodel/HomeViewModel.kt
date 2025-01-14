@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
+import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
@@ -34,7 +35,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val loginUtils: LoginUtils, private val zeneAPI: ZeneAPIInterface
+    val loginUtils: LoginUtils, val trueCallerUtils: TrueCallerUtils, private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
     private val cacheHelper = CacheHelper()

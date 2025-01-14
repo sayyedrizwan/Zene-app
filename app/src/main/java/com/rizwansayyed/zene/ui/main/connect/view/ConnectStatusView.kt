@@ -65,7 +65,7 @@ fun ConnectStatusView() {
             }
 
             item {
-                if ((userInfo?.phoneNumber?.length ?: 0) < 4) PhoneNumberVerificationView()
+                if ((userInfo?.phoneNumber?.length ?: 0) > 4) PhoneNumberVerificationView()
             }
         }
     }

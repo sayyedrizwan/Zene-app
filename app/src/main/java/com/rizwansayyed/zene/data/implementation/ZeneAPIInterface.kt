@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import kotlinx.coroutines.flow.Flow
@@ -17,4 +18,5 @@ interface ZeneAPIInterface {
     suspend fun entertainmentNews(): Flow<EntertainmentDataResponse>
     suspend fun entertainmentMovies(): Flow<MoviesDataResponse>
     suspend fun connectNearMusic(): Flow<ZeneMusicDataList>
+    suspend fun updateTrueCallerNumber(codeVerifier: String, code: String): Flow<StatusTypeResponse>
 }

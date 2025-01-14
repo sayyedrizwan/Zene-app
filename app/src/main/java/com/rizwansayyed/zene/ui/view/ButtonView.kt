@@ -39,7 +39,7 @@ fun ButtonWithImageAndBorder(img: Int, txt: Int, border: Color = Color.White, cl
 }
 
 @Composable
-fun ButtonHeavy(text: Int, click: () -> Unit) {
+fun ButtonHeavy(text: String, click: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(horizontal = 10.dp)
@@ -52,6 +52,6 @@ fun ButtonHeavy(text: Int, click: () -> Unit) {
             .padding(vertical = 13.dp, horizontal = 5.dp),
         Arrangement.Center, Alignment.CenterVertically
     ) {
-        TextViewNormal(stringResource(text), 16, center = false)
+        TextViewNormal(text, 16, center = false)
     }
 }

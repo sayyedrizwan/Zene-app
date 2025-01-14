@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
@@ -14,6 +15,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -55,6 +57,12 @@ interface ZeneAPIService {
     suspend fun entertainmentMovies(
         @Header("token") token: String, @Body data: RequestBody
     ): MoviesDataResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_UPDATE_TRUE_CALLER_API)
+    suspend fun updateTrueCallerPhone(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_NEAR_MUSIC_API)
