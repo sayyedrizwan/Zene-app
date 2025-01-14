@@ -13,13 +13,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentActivity
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.ui.main.connect.view.VerifyPhoneNumberOTPView
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerVerifyView
 import com.rizwansayyed.zene.ui.phoneverification.view.VerifyPhoneNumberView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.PhoneNumberVerificationViewModel
 import com.truecaller.android.sdk.oAuth.TcSdk
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PhoneVerificationActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
+    private val viewModel: PhoneNumberVerificationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +43,7 @@ class PhoneVerificationActivity : FragmentActivity() {
         setContent {
             ZeneTheme {
                 var isTrueCaller by remember { mutableStateOf(true) }
+                val tooManyAttempt = stringResource(R.string.too_many_attempts_to_phone_number)
 
                 Box(
                     Modifier
@@ -46,7 +56,28 @@ class PhoneVerificationActivity : FragmentActivity() {
                             isTrueCaller = false
                         }
                     } else {
-                        VerifyPhoneNumberView(homeViewModel)
+                        when (val v = viewModel.phoneNumberVerify) {
+                            ResponseResult.Empty -> VerifyPhoneNumberView(viewModel)
+                            is ResponseResult.Error -> {}
+                            ResponseResult.Loading -> Box(
+                                Modifier.fillMaxSize(), Alignment.Center
+                            ) {
+                                CircularLoadingView()
+                            }
+
+                            is ResponseResult.Success -> {
+                                if (v.data.status == true)
+                                    VerifyPhoneNumberOTPView(viewModel)
+                                else
+                                    VerifyPhoneNumberView(viewModel)
+
+                                LaunchedEffect(Unit) {
+                                    if (v.data.status == false && v.data.message?.contains("too many attempts. ") == true) {
+                                        tooManyAttempt.toast()
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     LaunchedEffect(Unit) {

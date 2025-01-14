@@ -49,4 +49,5 @@
     <string name="error_while_verifying_phone_number_via_truecaller">Error while verifying phone number via truecaller. Please verify your phone number.</string>
     <string name="verify_phone_number_via_truecaller_desc">Verify your phone number via truecaller to enable connect.</string>
     <string name="verify_phone_number_desc">Verify your phone number to enable connect.</string>
+    <string name="too_many_attempts_to_phone_number">You have tried too many attempts to verify phone number.</string>
 </resources>

@@ -5,12 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,8 +24,11 @@ class PhoneNumberVerificationViewModel @Inject constructor(
     private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
+    var phoneNumber by mutableStateOf("")
     var countryCode by mutableStateOf("1")
     var countryCodeLists = mutableListOf<String>()
+
+    var phoneNumberVerify by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
 
     fun getUserCountryCode() = viewModelScope.launch(Dispatchers.IO) {
         countryCodeLists.addAll(countryCodeMap.map { it.value }.sortedDescending())
@@ -34,14 +42,17 @@ class PhoneNumberVerificationViewModel @Inject constructor(
         countryCode = v
     }
 
-    fun connectNearMusic() = viewModelScope.launch(Dispatchers.IO) {
-//        zeneAPI.connectNearMusic().onStart {
-//            nearMusic = ResponseResult.Loading
-//        }.catch {
-//            nearMusic = ResponseResult.Error(it)
-//        }.collectLatest {
-//            cacheHelper.save(ZENE_CONNECT_NEAR_MUSIC_API, it)
-//            nearMusic = ResponseResult.Success(it)
-//        }
+    fun setUserPhoneNumber(v: String) = viewModelScope.launch(Dispatchers.IO) {
+        phoneNumber = v
+    }
+
+    fun sendNumberVerification(phoneNumber: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.sendVerifyPhoneNumber(phoneNumber).onStart {
+            phoneNumberVerify = ResponseResult.Loading
+        }.catch {
+            phoneNumberVerify = ResponseResult.Error(it)
+        }.collectLatest {
+            phoneNumberVerify = ResponseResult.Success(it)
+        }
     }
 }

@@ -28,21 +28,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.PhoneNumberVerificationViewModel
 
 @Composable
-fun VerifyPhoneNumberView(homeViewModel: HomeViewModel) {
-    val viewModel: PhoneNumberVerificationViewModel = hiltViewModel()
+fun VerifyPhoneNumberView(viewModel: PhoneNumberVerificationViewModel) {
     var menuPick by remember { mutableStateOf(false) }
-    var phoneNumber by remember { mutableStateOf("") }
 
     Box(
         Modifier
@@ -62,14 +58,17 @@ fun VerifyPhoneNumberView(homeViewModel: HomeViewModel) {
                     DropdownMenu(menuPick, { menuPick = false }) {
                         viewModel.countryCodeLists.forEach {
                             DropdownMenuItem({ TextViewNormal("+${it}", 14) },
-                                { viewModel.setUserCountryCode(it) })
+                                {
+                                    viewModel.setUserCountryCode(it)
+                                    menuPick = false
+                                })
                         }
                     }
                 }
 
                 TextField(
-                    phoneNumber,
-                    { if (it.length <= 15) phoneNumber = it },
+                    viewModel.phoneNumber,
+                    { if (it.length <= 15) viewModel.setUserPhoneNumber(it) },
                     Modifier
                         .weight(8f)
                         .padding(vertical = 4.dp),
@@ -78,8 +77,8 @@ fun VerifyPhoneNumberView(homeViewModel: HomeViewModel) {
                         TextViewNormal(stringResource(R.string.enter_your_phone_number), 14)
                     },
                     trailingIcon = {
-                        if (phoneNumber.length > 6) {
-                            IconButton({ }) {
+                        if (viewModel.phoneNumber.length > 6) {
+                            IconButton({ viewModel.sendNumberVerification(viewModel.phoneNumber) }) {
                                 ImageIcon(R.drawable.ic_arrow_right, 24)
                             }
                         }

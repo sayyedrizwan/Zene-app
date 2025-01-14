@@ -43,7 +43,7 @@ class TrueCallerUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface)
                 ).catch {
                     info = ResponseResult.Error(it)
                 }.collectLatest {
-                    info = ResponseResult.Success(it.status)
+                    info = ResponseResult.Success(it.status ?: false)
                 }
 
                 if (isActive) cancel()

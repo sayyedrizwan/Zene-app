@@ -136,4 +136,17 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.connectNearMusic(token, body))
     }
 
+    override suspend fun sendVerifyPhoneNumber(number: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("number", number)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.sendVerifyPhoneNumber(token, body))
+    }
+
 }

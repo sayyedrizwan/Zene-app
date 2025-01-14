@@ -19,4 +19,5 @@ interface ZeneAPIInterface {
     suspend fun entertainmentMovies(): Flow<MoviesDataResponse>
     suspend fun connectNearMusic(): Flow<ZeneMusicDataList>
     suspend fun updateTrueCallerNumber(codeVerifier: String, code: String): Flow<StatusTypeResponse>
+    suspend fun sendVerifyPhoneNumber(number: String): Flow<StatusTypeResponse>
 }
