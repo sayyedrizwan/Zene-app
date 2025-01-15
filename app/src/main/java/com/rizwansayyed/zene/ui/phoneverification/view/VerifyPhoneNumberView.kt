@@ -71,7 +71,7 @@ fun VerifyPhoneNumberView(viewModel: PhoneNumberVerificationViewModel) {
                     phoneNumberText, {
                         if (it.length <= 15) {
                             phoneNumberText = it
-                            viewModel.setUserPhoneNumber(it)
+                            viewModel.setPhoneNumber(phoneNumberText)
                         }
                     },
                     Modifier
@@ -103,6 +103,7 @@ fun VerifyPhoneNumberView(viewModel: PhoneNumberVerificationViewModel) {
     }
 
     LaunchedEffect(Unit) {
+        phoneNumberText = viewModel.phoneNumber
         viewModel.getUserCountryCode()
     }
 }

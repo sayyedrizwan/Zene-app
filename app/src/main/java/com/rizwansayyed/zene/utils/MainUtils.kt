@@ -32,6 +32,7 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 
 object MainUtils {
@@ -362,5 +363,11 @@ object MainUtils {
             val icon = BitmapFactory.decodeResource(context.resources, R.drawable.zusers_img)
             return@runBlocking icon
         }
+    }
+
+    fun timeDifferenceInMinutes(ts: Long): Long {
+        val currentTime = System.currentTimeMillis()
+        val timeDifferenceInMinutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - ts)
+        return timeDifferenceInMinutes
     }
 }

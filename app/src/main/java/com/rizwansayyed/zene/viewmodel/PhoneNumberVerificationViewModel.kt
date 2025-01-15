@@ -8,27 +8,32 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class PhoneNumberVerificationViewModel @Inject constructor(
     private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
-    var phoneNumber by mutableStateOf("")
     var countryCode by mutableStateOf("1")
     var countryCodeLists = mutableListOf<String>()
+    var phoneNumber by mutableStateOf("")
 
     var phoneNumberVerify by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
+    var optVerify by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
 
     fun getUserCountryCode() = viewModelScope.launch(Dispatchers.IO) {
         countryCodeLists.addAll(countryCodeMap.map { it.value }.sortedDescending())
@@ -42,12 +47,18 @@ class PhoneNumberVerificationViewModel @Inject constructor(
         countryCode = v
     }
 
-    fun setUserPhoneNumber(v: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun setPhoneNumber(v: String) = viewModelScope.launch(Dispatchers.IO) {
         phoneNumber = v
     }
 
+    fun resetVerify() = viewModelScope.launch(Dispatchers.IO) {
+        phoneNumberVerify = ResponseResult.Empty
+    }
+
+
     fun sendNumberVerification(phoneNumber: String) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.sendVerifyPhoneNumber(phoneNumber).onStart {
+        val fullPhoneNumber = "$countryCode$phoneNumber"
+        zeneAPI.sendVerifyPhoneNumber(fullPhoneNumber).onStart {
             phoneNumberVerify = ResponseResult.Loading
         }.catch {
             phoneNumberVerify = ResponseResult.Error(it)
@@ -58,11 +69,21 @@ class PhoneNumberVerificationViewModel @Inject constructor(
 
     fun verifyOTPNumber(code: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.verifyPhoneNumber(code).onStart {
-            phoneNumberVerify = ResponseResult.Loading
+            optVerify = ResponseResult.Loading
         }.catch {
-            phoneNumberVerify = ResponseResult.Error(it)
+            optVerify = ResponseResult.Error(it)
         }.collectLatest {
-            phoneNumberVerify = ResponseResult.Success(it)
+            if (it.status == true) {
+                val data = DataStorageManager.userInfo.firstOrNull()
+
+                zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch {}
+                    .collectLatest {
+                        DataStorageManager.userInfo = flowOf(it)
+                    }
+            }
+
+            delay(1.seconds)
+            optVerify = ResponseResult.Success(it)
         }
     }
 }
