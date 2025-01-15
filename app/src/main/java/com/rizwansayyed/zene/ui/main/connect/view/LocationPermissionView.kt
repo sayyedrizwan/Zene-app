@@ -30,9 +30,9 @@ fun LocationPermissionView(close: () -> Unit) {
     val rejected = stringResource(R.string.location_permission_reject)
     val permission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            close()
             if (!it) {
                 rejected.toast()
-                close()
                 openAppSettings()
             }
         }

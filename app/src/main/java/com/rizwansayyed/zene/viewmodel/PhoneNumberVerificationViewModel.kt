@@ -55,4 +55,14 @@ class PhoneNumberVerificationViewModel @Inject constructor(
             phoneNumberVerify = ResponseResult.Success(it)
         }
     }
+
+    fun verifyOTPNumber(code: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.verifyPhoneNumber(code).onStart {
+            phoneNumberVerify = ResponseResult.Loading
+        }.catch {
+            phoneNumberVerify = ResponseResult.Error(it)
+        }.collectLatest {
+            phoneNumberVerify = ResponseResult.Success(it)
+        }
+    }
 }

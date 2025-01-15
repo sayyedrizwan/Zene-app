@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.viewmodel.PhoneNumberVerificationViewModel
 @Composable
 fun VerifyPhoneNumberView(viewModel: PhoneNumberVerificationViewModel) {
     var menuPick by remember { mutableStateOf(false) }
+    var phoneNumberText by remember { mutableStateOf("") }
 
     Box(
         Modifier
@@ -67,8 +68,12 @@ fun VerifyPhoneNumberView(viewModel: PhoneNumberVerificationViewModel) {
                 }
 
                 TextField(
-                    viewModel.phoneNumber,
-                    { if (it.length <= 15) viewModel.setUserPhoneNumber(it) },
+                    phoneNumberText, {
+                        if (it.length <= 15) {
+                            phoneNumberText = it
+                            viewModel.setUserPhoneNumber(it)
+                        }
+                    },
                     Modifier
                         .weight(8f)
                         .padding(vertical = 4.dp),
@@ -77,8 +82,8 @@ fun VerifyPhoneNumberView(viewModel: PhoneNumberVerificationViewModel) {
                         TextViewNormal(stringResource(R.string.enter_your_phone_number), 14)
                     },
                     trailingIcon = {
-                        if (viewModel.phoneNumber.length > 6) {
-                            IconButton({ viewModel.sendNumberVerification(viewModel.phoneNumber) }) {
+                        if (phoneNumberText.length > 6) {
+                            IconButton({ viewModel.sendNumberVerification(phoneNumberText) }) {
                                 ImageIcon(R.drawable.ic_arrow_right, 24)
                             }
                         }

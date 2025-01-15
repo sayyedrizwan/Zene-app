@@ -20,6 +20,7 @@ object URLSUtils {
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"
     const val ZENE_USER_SEND_NUMBER_OTP_API = "users/send-number-otp"
+    const val ZENE_USER_VERIFY_NUMBER_OTP_API = "users/verify-number-otp"
 
 
     const val IP_BASE_URL = "http://ip-api.com/"

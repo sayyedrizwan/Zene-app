@@ -34,6 +34,7 @@
     <string name="home">home</string>
     <string name="verify">Verify</string>
     <string name="enter_your_phone_number">Enter your phone number</string>
+    <string name="enter_otp_send_to_your_phone_number">Enter otp send to your phone number</string>
     <string name="settings">settings</string>
     <string name="connect">connect</string>
     <string name="entertainment">entertainment</string>
@@ -49,5 +50,6 @@
     <string name="error_while_verifying_phone_number_via_truecaller">Error while verifying phone number via truecaller. Please verify your phone number.</string>
     <string name="verify_phone_number_via_truecaller_desc">Verify your phone number via truecaller to enable connect.</string>
     <string name="verify_phone_number_desc">Verify your phone number to enable connect.</string>
+    <string name="otp_send_to_phone_number">OTP is send to your phone number. Please enter to verify it.</string>
     <string name="too_many_attempts_to_phone_number">You have tried too many attempts to verify phone number.</string>
 </resources>

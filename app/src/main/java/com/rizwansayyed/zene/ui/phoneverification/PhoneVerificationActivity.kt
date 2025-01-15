@@ -72,7 +72,7 @@ class PhoneVerificationActivity : FragmentActivity() {
                                     VerifyPhoneNumberView(viewModel)
 
                                 LaunchedEffect(Unit) {
-                                    if (v.data.status == false && v.data.message?.contains("too many attempts. ") == true) {
+                                    if (v.data.status == false && v.data.message?.contains("too many attempts") == true) {
                                         tooManyAttempt.toast()
                                     }
                                 }

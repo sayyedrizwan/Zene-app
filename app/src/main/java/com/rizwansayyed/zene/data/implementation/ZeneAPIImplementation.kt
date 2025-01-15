@@ -149,4 +149,17 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sendVerifyPhoneNumber(token, body))
     }
 
+    override suspend fun verifyPhoneNumber(code: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("code", code)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.verifyPhoneNumber(token, body))
+    }
+
 }
