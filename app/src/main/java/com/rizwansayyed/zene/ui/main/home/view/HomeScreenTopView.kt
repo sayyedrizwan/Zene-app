@@ -60,8 +60,15 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         ) {
             viewModel.setHomeSections(HomeSectionSelector.PODCAST)
         }
+
         TextSimpleCards(
-            viewModel.homeSection == HomeSectionSelector.RADIO, stringResource(R.string.radio)
+            viewModel.homeSection == HomeSectionSelector.VIDEO, stringResource(R.string.videos)
+        ) {
+            viewModel.setHomeSections(HomeSectionSelector.VIDEO)
+        }
+
+        TextSimpleCards(
+            viewModel.homeSection == HomeSectionSelector.RADIO, stringResource(R.string.radios)
         ) {
             viewModel.setHomeSections(HomeSectionSelector.RADIO)
         }

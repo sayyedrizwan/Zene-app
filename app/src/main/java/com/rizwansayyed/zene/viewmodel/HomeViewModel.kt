@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
@@ -23,6 +24,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVI
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -41,6 +43,7 @@ class HomeViewModel @Inject constructor(
     private val cacheHelper = CacheHelper()
     var homeRecent by mutableStateOf<ResponseResult<MusicDataResponse>>(ResponseResult.Empty)
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
+    var homeVideos by mutableStateOf<ResponseResult<VideoDataResponse>>(ResponseResult.Empty)
     var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
     var entertainmentData by mutableStateOf<ResponseResult<EntertainmentDataResponse>>(
         ResponseResult.Empty
@@ -87,6 +90,23 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             cacheHelper.save(ZENE_RECENT_HOME_PODCAST_API, it)
             homePodcast = ResponseResult.Success(it)
+        }
+    }
+
+    fun homeVideosData() = viewModelScope.launch(Dispatchers.IO) {
+//        val data: VideoDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_VIDEOS_API)
+//        if ((data?.recommended?.size ?: 0) > 0) {
+//            homeVideos = ResponseResult.Success(data!!)
+//            return@launch
+//        }
+
+        zeneAPI.homeVideos().onStart {
+            homeVideos = ResponseResult.Loading
+        }.catch {
+            homeVideos = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_RECENT_HOME_VIDEOS_API, it)
+            homeVideos = ResponseResult.Success(it)
         }
     }
 

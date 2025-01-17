@@ -19,8 +19,7 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 class ZeneAPIImplementation @Inject constructor(
-    private val zeneAPI: ZeneAPIService,
-    private val ipAPI: IPAPIService
+    private val zeneAPI: ZeneAPIService, private val ipAPI: IPAPIService
 ) : ZeneAPIInterface {
 
     override suspend fun updateUser(email: String, name: String, photo: String) = flow {
@@ -47,8 +46,11 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun recentHome() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipAPI.get()
+
         val json = JSONObject().apply {
             put("email", email)
+            put("country", ip.countryCode)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -78,6 +80,20 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.homeRadio(token, body))
+    }
+
+    override suspend fun homeVideos() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipAPI.get()
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", ip.countryCode)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.homeVideos(token, body))
     }
 
     override suspend fun entertainmentNews() = flow {

@@ -202,3 +202,90 @@ fun PodcastViewItems(data: ZeneMusicData?) {
         }
     }
 }
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun VideoCardView(data: ZeneMusicData?) {
+    Column(
+        Modifier
+            .padding(horizontal = 9.dp)
+            .padding(bottom = 19.dp)
+            .width(245.dp)
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .width(245.dp)
+        ) {
+            GlideImage(
+                data?.thumbnail,
+                data?.name,
+                Modifier
+                    .size(240.dp, 150.dp)
+                    .clip(RoundedCornerShape(5.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Box(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(5.dp)
+                    .padding(end = 5.dp)
+            ) {
+                TextViewBold(data?.extra ?: "", 13, line = 1)
+            }
+        }
+        Spacer(Modifier.height(9.dp))
+        TextViewNormal(data?.name ?: "", 15, line = 1)
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .offset(y = (-3).dp)
+        ) {
+            TextViewLight(data?.artists ?: "", 12, line = 1)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun FullVideoCardView(data: ZeneMusicData?) {
+    Row(
+        Modifier.padding(horizontal = 5.dp, vertical = 10.dp)
+    ) {
+        Box(
+            Modifier
+                .weight(3f)
+                .width(145.dp)
+        ) {
+            GlideImage(
+                data?.thumbnail, data?.name,
+                Modifier
+                    .size(140.dp, 100.dp)
+                    .clip(RoundedCornerShape(5.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Box(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(5.dp)
+                    .padding(end = 5.dp)
+            ) {
+                TextViewBold(data?.extra ?: "", 13, line = 1)
+            }
+        }
+
+        Column(
+            Modifier
+                .weight(7f)
+                .padding(start = 10.dp, end = 10.dp)
+                .height(100.dp), Arrangement.Center
+        ) {
+            TextViewNormal(data?.name ?: "", 15, line = 2)
+            TextViewLight(data?.artists ?: "", 13, line = 1)
+        }
+    }
+}

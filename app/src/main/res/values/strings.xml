@@ -7,11 +7,13 @@
     <string name="continue_with_email">Continue with Email</string>
     <string name="music">Music</string>
     <string name="podcasts">Podcasts</string>
-    <string name="radio">Radio</string>
+    <string name="radios">Radios</string>
+    <string name="videos">Videos</string>
     <string name="my_library">My Library</string>
     <string name="your_mixes">Your mixes</string>
     <string name="entertainment_">Entertainment</string>
     <string name="recommended_playlists">Recommended playlists</string>
+    <string name="recommended_videos">Recommended videos</string>
     <string name="albums_for_your_vibe">Albums for your Vibe</string>
     <string name="latest_news_videos">Latest News Videos</string>
     <string name="latest_movie_trailers">Latest Movie Trailers</string>
@@ -30,6 +32,7 @@
     <string name="top_recent">Top recent</string>
     <string name="categories">Categories</string>
     <string name="podcast_for_you">Podcasts for you</string>
+    <string name="videos_for_you">Videos for you</string>
     <string name="explore_podcasts">Explore Podcasts</string>
     <string name="home">home</string>
     <string name="verify">Verify</string>

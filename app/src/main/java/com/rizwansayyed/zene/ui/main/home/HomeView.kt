@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.ui.main.home.view.HomeMusicView
 import com.rizwansayyed.zene.ui.main.home.view.HomePodcastView
 import com.rizwansayyed.zene.ui.main.home.view.HomeRadioView
 import com.rizwansayyed.zene.ui.main.home.view.HomeScreenTopView
+import com.rizwansayyed.zene.ui.main.home.view.HomeVideoView
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -51,6 +52,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 MUSIC -> HomeMusicView(homeViewModel)
                 RADIO -> HomeRadioView(homeViewModel)
                 PODCAST -> HomePodcastView(homeViewModel)
+                HomeSectionSelector.VIDEO -> HomeVideoView(homeViewModel)
                 MY_LIBRARY -> {}
             }
         }
