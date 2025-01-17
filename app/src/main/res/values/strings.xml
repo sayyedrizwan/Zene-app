@@ -14,6 +14,9 @@
     <string name="entertainment_">Entertainment</string>
     <string name="recommended_playlists">Recommended playlists</string>
     <string name="recommended_videos">Recommended videos</string>
+    <string name="trending_music_videos">Trending music videos</string>
+    <string name="trending_films_videos">Trending films videos</string>
+    <string name="trending_gaming_videos">Trending gaming videos</string>
     <string name="albums_for_your_vibe">Albums for your Vibe</string>
     <string name="latest_news_videos">Latest News Videos</string>
     <string name="latest_movie_trailers">Latest Movie Trailers</string>
@@ -44,6 +47,7 @@
     <string name="entertainment_short">ent.</string>
     <string name="grant">Grant</string>
     <string name="play">Play</string>
+    <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>

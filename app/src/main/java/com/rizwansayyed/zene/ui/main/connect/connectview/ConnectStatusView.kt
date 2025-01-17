@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.main.connect.view
+package com.rizwansayyed.zene.ui.main.connect.connectview
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.main.connect.view.PhoneNumberVerificationView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
@@ -66,6 +67,10 @@ fun ConnectStatusView() {
 
             item {
                 if ((userInfo?.phoneNumber?.length ?: 0) < 4) PhoneNumberVerificationView()
+            }
+
+            if ((userInfo?.phoneNumber?.length ?: 0) > 4) item {
+                ConnectRecentContactsView()
             }
         }
     }

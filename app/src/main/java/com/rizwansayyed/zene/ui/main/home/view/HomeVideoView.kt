@@ -56,6 +56,80 @@ fun HomeVideoView(homeViewModel: HomeViewModel) {
                 }
 
 
+                if (v.data.trendingMusic?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.trending_music_videos), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyHorizontalGrid(
+                        GridCells.Fixed(2),
+                        Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 440.dp)
+                    ) {
+                        items(v.data.trendingMusic) {
+                            VideoCardView(it)
+                        }
+                    }
+                }
+
+
+                if (v.data.trendingFilm?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.trending_films_videos), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyHorizontalGrid(
+                        GridCells.Fixed(2),
+                        Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 440.dp)
+                    ) {
+                        items(v.data.trendingFilm) {
+                            VideoCardView(it)
+                        }
+                    }
+                }
+
+
+                if (v.data.trendingGaming?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.trending_gaming_videos), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyHorizontalGrid(
+                        GridCells.Fixed(2),
+                        Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 440.dp)
+                    ) {
+                        items(v.data.trendingGaming) {
+                            VideoCardView(it)
+                        }
+                    }
+                }
+
+                if (v.data.suggestions?.isNotEmpty() == true) items(v.data.suggestions) {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(it.name ?: "", 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyHorizontalGrid(
+                        GridCells.Fixed(2),
+                        Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 440.dp)
+                    ) {
+                        items(it.videos ?: emptyList()) {
+                            VideoCardView(it)
+                        }
+                    }
+                }
+
                 if (v.data.forYou?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {

@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
@@ -103,6 +104,7 @@ class HomeViewModel @Inject constructor(
         zeneAPI.homeVideos().onStart {
             homeVideos = ResponseResult.Loading
         }.catch {
+            it.message?.toast()
             homeVideos = ResponseResult.Error(it)
         }.collectLatest {
             cacheHelper.save(ZENE_RECENT_HOME_VIDEOS_API, it)

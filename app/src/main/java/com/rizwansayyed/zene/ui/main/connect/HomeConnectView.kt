@@ -25,7 +25,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking.Companion.updateLocationLat
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking.Companion.updateLocationLon
-import com.rizwansayyed.zene.ui.main.connect.view.ConnectStatusView
+import com.rizwansayyed.zene.ui.main.connect.connectview.ConnectStatusView
 import com.rizwansayyed.zene.ui.main.connect.view.LocationPermissionView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.MainUtils.isLocationPermissionGranted
