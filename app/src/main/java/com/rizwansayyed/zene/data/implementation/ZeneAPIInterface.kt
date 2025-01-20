@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.implementation
 
+import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
@@ -9,6 +10,7 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
 
 interface ZeneAPIInterface {
@@ -23,4 +25,5 @@ interface ZeneAPIInterface {
     suspend fun updateTrueCallerNumber(codeVerifier: String, code: String): Flow<StatusTypeResponse>
     suspend fun sendVerifyPhoneNumber(number: String): Flow<StatusTypeResponse>
     suspend fun verifyPhoneNumber(code: String): Flow<StatusTypeResponse>
+    suspend fun connectUsersSearch(contacts: List<ContactData>): Flow<ConnectUserResponse>
 }

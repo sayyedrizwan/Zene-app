@@ -49,6 +49,7 @@
     <string name="play">Play</string>
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
+    <string name="need_location_permission_to_read_contact">Need location permission to read contact.</string>
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>
     <string name="location_permission">Location Permission</string>

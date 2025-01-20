@@ -40,10 +40,10 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.viewmodel.PhoneNumberVerificationViewModel
+import com.rizwansayyed.zene.viewmodel.PhoneNumberViewModel
 
 @Composable
-fun VerifyPhoneNumberOTPView(viewModel: PhoneNumberVerificationViewModel) {
+fun VerifyPhoneNumberOTPView(viewModel: PhoneNumberViewModel) {
     val context = LocalContext.current as Activity
     val focusManager = LocalFocusManager.current
     val verificationSendOn by remember { mutableLongStateOf(System.currentTimeMillis()) }

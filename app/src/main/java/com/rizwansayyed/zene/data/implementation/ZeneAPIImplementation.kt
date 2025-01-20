@@ -5,7 +5,10 @@ import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.utils.ContactData
+import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
+import com.rizwansayyed.zene.utils.MainUtils.moshi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -150,6 +153,26 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.connectNearMusic(token, body))
+    }
+
+    override suspend fun connectUsersSearch(contacts: List<ContactData>) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipDB.firstOrNull()
+
+        val numbers = contacts.map { n ->
+            if (n.number.contains("+")) n.number
+            else "${countryCodeMap.get(ip?.countryCode)}${n.number}"
+        }
+        val lists = moshi.adapter(Array<String>::class.java).toJson(numbers.toTypedArray())
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("contacts", lists)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.connectUsersSearch(token, body))
     }
 
     override suspend fun sendVerifyPhoneNumber(number: String) = flow {

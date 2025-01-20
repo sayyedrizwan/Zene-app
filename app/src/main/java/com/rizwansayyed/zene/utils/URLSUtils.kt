@@ -17,6 +17,7 @@ object URLSUtils {
     const val ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API = "recent/home-entertainment-movies"
 
     const val ZENE_CONNECT_NEAR_MUSIC_API = "connect/near-music"
+    const val ZENE_CONNECT_USERS_SEARCH_API = "connect/connect-users-search"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"

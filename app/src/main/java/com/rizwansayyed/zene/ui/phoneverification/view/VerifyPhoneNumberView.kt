@@ -34,10 +34,10 @@ import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.viewmodel.PhoneNumberVerificationViewModel
+import com.rizwansayyed.zene.viewmodel.PhoneNumberViewModel
 
 @Composable
-fun VerifyPhoneNumberView(viewModel: PhoneNumberVerificationViewModel) {
+fun VerifyPhoneNumberView(viewModel: PhoneNumberViewModel) {
     var menuPick by remember { mutableStateOf(false) }
     var phoneNumberText by remember { mutableStateOf("") }
 

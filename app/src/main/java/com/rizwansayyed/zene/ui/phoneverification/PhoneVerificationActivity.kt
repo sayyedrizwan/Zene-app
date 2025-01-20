@@ -27,7 +27,7 @@ import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import com.rizwansayyed.zene.viewmodel.PhoneNumberVerificationViewModel
+import com.rizwansayyed.zene.viewmodel.PhoneNumberViewModel
 import com.truecaller.android.sdk.oAuth.TcSdk
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,7 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PhoneVerificationActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private val viewModel: PhoneNumberVerificationViewModel by viewModels()
+    private val viewModel: PhoneNumberViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

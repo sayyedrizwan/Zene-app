@@ -10,7 +10,9 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.utils.GetAllContactsUtils
 import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,7 +26,7 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
-class PhoneNumberVerificationViewModel @Inject constructor(
+class PhoneNumberViewModel @Inject constructor(
     private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
@@ -84,6 +86,14 @@ class PhoneNumberVerificationViewModel @Inject constructor(
 
             delay(1.seconds)
             optVerify = ResponseResult.Success(it)
+        }
+    }
+
+    fun syncAllContacts() = viewModelScope.launch(Dispatchers.IO) {
+        val contacts = GetAllContactsUtils().getContactList()
+        contacts.size.toast()
+        contacts.chunked(45).forEach { c ->
+            zeneAPI.connectUsersSearch(c).catch { it.message?.toast() }.collectLatest { it.toast()  }
         }
     }
 }
