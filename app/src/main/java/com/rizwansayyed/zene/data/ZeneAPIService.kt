@@ -98,5 +98,5 @@ interface ZeneAPIService {
     @POST(ZENE_CONNECT_USERS_SEARCH_API)
     suspend fun connectUsersSearch(
         @Header("token") token: String, @Body data: RequestBody
-    ): ConnectUserResponse
+    ): List<ConnectUserResponse>
 }

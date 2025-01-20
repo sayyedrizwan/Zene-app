@@ -6,13 +6,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.data.model.ConnectUsersResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.utils.GetAllContactsUtils
 import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
-import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONTACT_CACHE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,9 +33,14 @@ class PhoneNumberViewModel @Inject constructor(
     private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
+    private val cacheHelper = CacheHelper()
+
     var countryCode by mutableStateOf("1")
     var countryCodeLists = mutableListOf<String>()
     var phoneNumber by mutableStateOf("")
+
+    var usersUsingZene by mutableStateOf<ResponseResult<ConnectUsersResponse>>(ResponseResult.Empty)
+
 
     var phoneNumberVerify by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
     var optVerify by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
@@ -90,10 +98,21 @@ class PhoneNumberViewModel @Inject constructor(
     }
 
     fun syncAllContacts() = viewModelScope.launch(Dispatchers.IO) {
+//        val data: ConnectUsersResponse? = cacheHelper.get(ZENE_CONTACT_CACHE)
+//        if ((data?.contacts?.size ?: 0) > 0) {
+//            usersUsingZene = ResponseResult.Success(data!!)
+//            return@launch
+//        }
+
         val contacts = GetAllContactsUtils().getContactList()
-        contacts.size.toast()
-        contacts.chunked(45).forEach { c ->
-            zeneAPI.connectUsersSearch(c).catch { it.message?.toast() }.collectLatest { it.toast()  }
+        val contactLists = ArrayList<ConnectUserResponse>()
+        contacts.distinctBy { it.number }.chunked(50).forEach { c ->
+            viewModelScope.launch(Dispatchers.IO) {
+                zeneAPI.connectUsersSearch(c).catch { }.collectLatest { contactLists.addAll(it) }
+            }
         }
+
+
+        usersUsingZene = ResponseResult.Success(ConnectUsersResponse(contactLists, contacts))
     }
 }

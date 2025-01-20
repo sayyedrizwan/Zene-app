@@ -38,7 +38,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val loginUtils: LoginUtils, val trueCallerUtils: TrueCallerUtils, private val zeneAPI: ZeneAPIInterface
+    val loginUtils: LoginUtils,
+    val trueCallerUtils: TrueCallerUtils,
+    private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
     private val cacheHelper = CacheHelper()
@@ -95,11 +97,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun homeVideosData() = viewModelScope.launch(Dispatchers.IO) {
-//        val data: VideoDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_VIDEOS_API)
-//        if ((data?.recommended?.size ?: 0) > 0) {
-//            homeVideos = ResponseResult.Success(data!!)
-//            return@launch
-//        }
+        val data: VideoDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_VIDEOS_API)
+        if ((data?.recommended?.size ?: 0) > 0) {
+            homeVideos = ResponseResult.Success(data!!)
+            return@launch
+        }
 
         zeneAPI.homeVideos().onStart {
             homeVideos = ResponseResult.Loading

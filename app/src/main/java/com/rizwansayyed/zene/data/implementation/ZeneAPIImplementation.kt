@@ -161,8 +161,8 @@ class ZeneAPIImplementation @Inject constructor(
         val ip = ipDB.firstOrNull()
 
         val numbers = contacts.map { n ->
-            if (n.number.contains("+")) n.number
-            else "${countryCodeMap.get(ip?.countryCode)}${n.number}"
+            if (n.number?.contains("+") == true) n.number
+            else "+${countryCodeMap[ip?.countryCode]}${n.number}"
         }
         val lists = moshi.adapter(Array<String>::class.java).toJson(numbers.toTypedArray())
 

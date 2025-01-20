@@ -7,7 +7,7 @@ import androidx.core.database.getStringOrNull
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 
 
-data class ContactData(val name: String, val number: String)
+data class ContactData(val name: String?, val number: String?)
 
 class GetAllContactsUtils {
 
