@@ -1,0 +1,70 @@
+package com.rizwansayyed.zene.ui.view
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.utils.ContactData
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun UserSearchInfo(user: ConnectUserResponse) {
+    Row(
+        Modifier
+            .padding(horizontal = 13.dp, vertical = 10.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        GlideImage(
+            user.profile_photo, user.name,
+            Modifier
+                .size(60.dp)
+                .clip(RoundedCornerShape(20))
+        )
+
+        Column(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .weight(1f), Arrangement.Center, Alignment.Start
+        ) {
+            TextViewSemiBold(user.name ?: "", 16, line = 1)
+            TextViewNormal(user.username ?: "", 13, line = 1)
+        }
+
+        ButtonWithBorder(R.string.view) {}
+    }
+}
+
+
+@Composable
+fun UserContactInfo(user: ContactData) {
+    Row(
+        Modifier
+            .padding(horizontal = 13.dp, vertical = 10.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .weight(1f), Arrangement.Center, Alignment.Start
+        ) {
+            TextViewSemiBold(user.name ?: "", 16, line = 1)
+            TextViewNormal(user.number ?: "", 13, line = 1)
+        }
+
+        ButtonWithBorder(R.string.invite) {}
+    }
+}

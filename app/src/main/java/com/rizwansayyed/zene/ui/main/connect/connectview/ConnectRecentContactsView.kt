@@ -6,10 +6,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,11 +29,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.ui.view.UserContactInfo
+import com.rizwansayyed.zene.ui.view.UserSearchInfo
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.PhoneNumberViewModel
@@ -53,10 +54,10 @@ fun ConnectRecentContactsView() {
 
     Spacer(Modifier.height(52.dp))
     Row(Modifier.padding(horizontal = 9.dp)) {
-        TextViewBold(stringResource(R.string.recent), 18)
+        TextViewBold(stringResource(R.string.friends), 18)
         Spacer(Modifier.weight(1f))
         Box(Modifier.clickable { contactPermission.launch(Manifest.permission.READ_CONTACTS) }) {
-            ImageIcon(R.drawable.ic_contact, 23)
+            ImageIcon(R.drawable.ic_user_search, 23)
         }
     }
     Spacer(Modifier.height(12.dp))
@@ -78,19 +79,38 @@ fun ContactListsInfo(close: () -> Unit) {
                     .fillMaxSize()
                     .background(Color.Black)
             ) {
-                when (val v = viewModel.usersUsingZene) {
-                    ResponseResult.Empty -> {}
-                    is ResponseResult.Error -> {}
-                    ResponseResult.Loading -> item { CircularLoadingView() }
-                    is ResponseResult.Success -> {
-                        items(v.data.users ?: emptyList()) {
-                            TextViewSemiBold(it.name ?: "", 10, center = true)
-                        }
-
-                        items(v.data.contacts ?: emptyList()) {
-                            TextViewSemiBold(it.name ?: "", 10, center = true)
-                        }
+                if (viewModel.usersOfZene.isNotEmpty()) item {
+                    Spacer(Modifier.height(10.dp))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 9.dp, vertical = 25.dp)
+                    ) {
+                        TextViewSemiBold(stringResource(R.string.in_your_contacts), 19)
                     }
+                }
+
+                items(viewModel.usersOfZene) {
+                    UserSearchInfo(it)
+                }
+
+                if (viewModel.isUsersLoading) item {
+                    CircularLoadingView()
+                }
+
+                if (viewModel.contactsUsers.isNotEmpty()) item {
+                    Spacer(Modifier.height(10.dp))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 9.dp, vertical = 25.dp)
+                    ) {
+                        TextViewSemiBold(stringResource(R.string.contacts), 19)
+                    }
+                }
+
+                items(viewModel.contactsUsers) {
+                    UserContactInfo(it)
                 }
             }
         }

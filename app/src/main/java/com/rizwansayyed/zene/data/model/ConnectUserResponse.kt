@@ -6,12 +6,7 @@ data class ConnectUserResponse(
     val email: String?,
     val name: String?,
     val profile_photo: String?,
+    val username: String?,
     val last_seen: String?,
     val connect_status: String?
-)
-
-
-data class ConnectUsersResponse(
-    val users: List<ConnectUserResponse>?,
-    val contacts: List<ContactData>?,
 )

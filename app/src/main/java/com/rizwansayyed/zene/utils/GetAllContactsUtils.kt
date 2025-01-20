@@ -4,15 +4,19 @@ import android.content.ContentResolver
 import android.provider.ContactsContract
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
+import kotlinx.coroutines.flow.firstOrNull
 
 
 data class ContactData(val name: String?, val number: String?)
 
 class GetAllContactsUtils {
 
-    fun getContactList(): ArrayList<ContactData> {
+    suspend fun getContactList(): ArrayList<ContactData> {
         val list = ArrayList<ContactData>()
+        val ip = ipDB.firstOrNull()
 
         val cr: ContentResolver = context.contentResolver
         val cur = cr.query(
@@ -40,7 +44,10 @@ class GetAllContactsUtils {
                             pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
                         )
 
-                        phoneNo?.let { p -> list.add(ContactData(name ?: "", phoneNo)) }
+                        val numbers = if (phoneNo?.contains("+") == true) phoneNo
+                        else "+${countryCodeMap[ip?.countryCode]}${phoneNo}"
+
+                        phoneNo?.let { p -> list.add(ContactData(name ?: "", numbers)) }
                     }
                     pCur.close()
                 }

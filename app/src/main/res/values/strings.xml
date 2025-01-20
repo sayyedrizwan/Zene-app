@@ -47,11 +47,16 @@
     <string name="entertainment_short">ent.</string>
     <string name="grant">Grant</string>
     <string name="play">Play</string>
+    <string name="friends">Friends</string>
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
+    <string name="view">View</string>
+    <string name="invite">Invite</string>
     <string name="need_location_permission_to_read_contact">Need location permission to read contact.</string>
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>
+    <string name="in_your_contacts">In your contacts</string>
+    <string name="contacts">Contacts</string>
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_desc">To stream and share on Connect, we need your location permission. Rest assured, your location will never be shared with anyone unless you choose to share it yourself.</string>
     <string name="verify_your_phone_number_to_enjoy_connect">Verify your phone number to enjoy zene connect :)</string>
