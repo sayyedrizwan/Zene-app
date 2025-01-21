@@ -104,5 +104,8 @@ dependencies {
 
     implementation(libs.maps.compose)
 
-    implementation("com.truecaller.android.sdk:truecaller-sdk:3.1.0")
+    implementation(libs.emoji)
+    implementation(libs.emoji.picker)
+
+    implementation(libs.truecaller)
 }

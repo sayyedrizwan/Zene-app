@@ -379,4 +379,10 @@ object MainUtils {
         smsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(smsIntent)
     }
+
+
+    fun String.removeSpecialChars(): String {
+        val combinedRegex = Regex("[^a-zA-Z0-9_. ]|[\\p{So}\\p{Cn}]+")
+        return this.replace(combinedRegex, "").replace(" ", "")
+    }
 }

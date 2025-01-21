@@ -41,6 +41,9 @@
     <string name="verify">Verify</string>
     <string name="enter_your_phone_number">Enter your phone number</string>
     <string name="search_email_name_username">Enter email, name or username to search</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_your_username">Enter your username</string>
+    <string name="update_status">Update status</string>
     <string name="enter_otp_send_to_your_phone_number">Enter otp send to your phone number</string>
     <string name="settings">settings</string>
     <string name="connect">connect</string>
