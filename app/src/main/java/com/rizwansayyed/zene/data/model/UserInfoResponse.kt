@@ -4,6 +4,7 @@ data class UserInfoResponse(
     val email: String?,
     val name: String?,
     val photo: String?,
+    val username: String?,
     val phoneNumber: String?,
     val authToken: String?,
 ) {

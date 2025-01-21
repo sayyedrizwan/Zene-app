@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +17,16 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.ContactData
+import com.rizwansayyed.zene.utils.MainUtils.openShareConnectShareSMS
+import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -65,6 +75,13 @@ fun UserContactInfo(user: ContactData) {
             TextViewNormal(user.number ?: "", 13, line = 1)
         }
 
-        ButtonWithBorder(R.string.invite) {}
+        ButtonWithBorder(R.string.invite) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val username = DataStorageManager.userInfo.firstOrNull()?.username
+                openShareConnectShareSMS(connectShareURL(username!!), user.number)
+
+                if (isActive) cancel()
+            }
+        }
     }
 }

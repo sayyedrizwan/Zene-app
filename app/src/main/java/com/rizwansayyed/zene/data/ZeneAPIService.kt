@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
@@ -97,6 +98,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_USERS_SEARCH_API)
     suspend fun connectUsersSearch(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<ConnectUserResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_SEARCH_API)
+    suspend fun connectSearch(
         @Header("token") token: String, @Body data: RequestBody
     ): List<ConnectUserResponse>
 }

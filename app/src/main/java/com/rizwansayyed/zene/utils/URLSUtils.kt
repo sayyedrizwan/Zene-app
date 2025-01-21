@@ -2,7 +2,11 @@ package com.rizwansayyed.zene.utils
 
 object URLSUtils {
 
-    const val ZENE_URL = "https://www.zenemusic.co/"
+    private const val ZENE_URL = "https://www.zenemusic.co/"
+
+    fun connectShareURL(username: String): String {
+        return "$ZENE_URL/connect/$username"
+    }
 
 
     const val FB_GRAPH_ID = "https://graph.facebook.com/me"
@@ -18,6 +22,7 @@ object URLSUtils {
 
     const val ZENE_CONNECT_NEAR_MUSIC_API = "connect/near-music"
     const val ZENE_CONNECT_USERS_SEARCH_API = "connect/connect-users-search"
+    const val ZENE_CONNECT_SEARCH_API = "connect/connect-search"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"

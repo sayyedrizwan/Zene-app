@@ -26,4 +26,5 @@ interface ZeneAPIInterface {
     suspend fun sendVerifyPhoneNumber(number: String): Flow<StatusTypeResponse>
     suspend fun verifyPhoneNumber(code: String): Flow<StatusTypeResponse>
     suspend fun connectUsersSearch(contacts: List<ContactData>): Flow<List<ConnectUserResponse>>
+    suspend fun searchConnect(query: String): Flow<List<ConnectUserResponse>>
 }

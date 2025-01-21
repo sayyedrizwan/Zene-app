@@ -371,11 +371,12 @@ object MainUtils {
         return timeDifferenceInMinutes
     }
 
-    fun openShareConnectShareSMS(url: String, number: String) {
+    fun openShareConnectShareSMS(url: String, number: String?) {
         val uri = Uri.parse(java.lang.String.format("smsto:%s", number))
         val smsIntent = Intent(Intent.ACTION_SENDTO, uri)
         smsIntent.putExtra("sms_body", url)
         smsIntent.setPackage("com.google.android.apps.messaging")
+        smsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(smsIntent)
     }
 }

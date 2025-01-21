@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -99,26 +100,22 @@ class PhoneNumberViewModel @Inject constructor(
     }
 
     fun syncAllContacts() = viewModelScope.launch(Dispatchers.IO) {
-//        val data: ConnectUsersResponse? = cacheHelper.get(ZENE_CONTACT_CACHE)
-//        if ((data?.contacts?.size ?: 0) > 0) {
-//            usersUsingZene = ResponseResult.Success(data!!)
-//            return@launch
-//        }
+        isUsersLoading = true
+        var number = 0
+        val contacts = GetAllContactsUtils().getContactList().distinctBy { it.number }
 
         suspend fun run(c: List<ContactData>) {
             usersOfZene.clear()
-            zeneAPI.connectUsersSearch(c).onStart { isUsersLoading = true }.catch {
-                isUsersLoading = false
-            }.collectLatest {
-                isUsersLoading = false
+            zeneAPI.connectUsersSearch(c).onStart { }.catch {}.collectLatest {
                 usersOfZene.addAll(it)
+                number += c.size
+                if (contacts.size == number) isUsersLoading = false
             }
         }
 
-        val contacts = GetAllContactsUtils().getContactList()
         contactsUsers.clear()
-        contactsUsers.addAll(contacts.distinctBy { it.number }.sortedBy { it.name })
-        contacts.distinctBy { it.number }.chunked(50).forEach { c ->
+        contactsUsers.addAll(contacts.sortedBy { it.name })
+        contacts.chunked(50).forEach { c ->
             viewModelScope.launch(Dispatchers.IO) {
                 run(c)
             }
