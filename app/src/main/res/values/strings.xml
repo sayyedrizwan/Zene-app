@@ -40,7 +40,7 @@
     <string name="home">home</string>
     <string name="verify">Verify</string>
     <string name="enter_your_phone_number">Enter your phone number</string>
-    <string name="search_email_name_username">Enter email, name or username to search</string>
+    <string name="search_email_name_username">Enter name or username to search</string>
     <string name="enter_your_name">Enter your name</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>
@@ -56,6 +56,7 @@
     <string name="resend">Resend</string>
     <string name="view">View</string>
     <string name="invite">Invite</string>
+    <string name="no_user_found">No User found :(</string>
     <string name="need_location_permission_to_read_contact">Need location permission to read contact.</string>
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>
@@ -72,4 +73,5 @@
     <string name="otp_send_to_phone_number">OTP is send to your phone number. Please enter to verify it.</string>
     <string name="too_many_attempts_to_phone_number">You have tried too many attempts to verify phone number. Try again later.</string>
     <string name="otp_already_send_please_try_again">OTP is already send please wait for a minute and then try again.</string>
+    <string name="enter_a_valid_name_or_username">Enter a valid name or username</string>
 </resources>

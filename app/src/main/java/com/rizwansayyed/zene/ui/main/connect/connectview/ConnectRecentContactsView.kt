@@ -18,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -52,10 +54,14 @@ fun ConnectRecentContactsView() {
     }
     Spacer(Modifier.height(12.dp))
 
-    if (contactsView) ContactListsInfo {
-        contactsView = false
+    if (contactsView) Dialog(
+        { contactsView = false }, DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        ContactListsInfo()
     }
-    if (editUserView) EditProfileView {
-        contactsView = false
+    if (editUserView) Dialog(
+        { editUserView = false }, DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        ConnectEditProfileView()
     }
 }
