@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
 
     var connectSearch by mutableStateOf<ResponseResult<List<ConnectUserResponse>>>(ResponseResult.Empty)
+    var connectUserInfo by mutableStateOf<ResponseResult<ConnectUserInfoResponse>>(ResponseResult.Empty)
 
     fun searchConnectUsers(q: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.searchConnect(q).onStart {
@@ -32,12 +34,12 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
     fun connectUserInfo(email: String) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.searchConnect(q).onStart {
-            connectSearch = ResponseResult.Loading
+        zeneAPI.connectUserInfo(email).onStart {
+            connectUserInfo = ResponseResult.Loading
         }.catch {
-            connectSearch = ResponseResult.Error(it)
+            connectUserInfo = ResponseResult.Error(it)
         }.collectLatest {
-            connectSearch = ResponseResult.Success(it)
+            connectUserInfo = ResponseResult.Success(it)
         }
     }
 }

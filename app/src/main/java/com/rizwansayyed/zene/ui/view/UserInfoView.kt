@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -64,7 +64,7 @@ fun UserSearchInfo(user: ConnectUserResponse) {
                 .weight(1f), Arrangement.Center, Alignment.Start
         ) {
             TextViewSemiBold(user.name ?: "", 16, line = 1)
-            TextViewNormal(user.username ?: "", 13, line = 1)
+            TextViewNormal("@${user.username}", 13, line = 1)
         }
 
         ButtonWithBorder(R.string.view) {
@@ -75,20 +75,44 @@ fun UserSearchInfo(user: ConnectUserResponse) {
     if (showUserInfo) ModalBottomSheet(
         { showUserInfo = false }, contentColor = MainColor, containerColor = MainColor
     ) {
-        UserInfoDialog(user)
+        user.email?.let { UserInfoDialog(it) }
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun UserInfoDialog(user: ConnectUserResponse) {
+fun UserInfoDialog(email: String) {
     val connectViewModel: ConnectViewModel = hiltViewModel()
 
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .padding(bottom = 50.dp)
+            .fillMaxWidth(),
+        Arrangement.Center, Alignment.CenterHorizontally
+    ) {
+        when (val v = connectViewModel.connectUserInfo) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> CircularLoadingView()
+            is ResponseResult.Success -> {
+                GlideImage(
+                    v.data.user?.profile_photo,
+                    v.data.user?.name,
+                    Modifier
+                        .padding(bottom = 10.dp)
+                        .size(110.dp)
+                        .clip(RoundedCornerShape(20))
+                )
 
+                TextViewSemiBold(v.data.user?.name ?: "", 16, line = 1)
+                TextViewNormal("@${v.data.user?.username}", 13, line = 1)
+                TextViewNormal(v.data.user?.country ?: "", 13, line = 1)
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
-        user.email?.let { connectViewModel.connectUserInfo(it) }
+        connectViewModel.connectUserInfo(email)
     }
 }
 

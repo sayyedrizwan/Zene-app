@@ -209,4 +209,17 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.connectSearch(token, body))
     }
 
+    override suspend fun connectUserInfo(toEmail: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toemail", toEmail)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.connectUserInfo(token, body))
+    }
+
 }

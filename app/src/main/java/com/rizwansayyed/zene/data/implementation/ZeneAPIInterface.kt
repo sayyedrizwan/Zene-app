@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.implementation
 
+import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
@@ -27,4 +28,5 @@ interface ZeneAPIInterface {
     suspend fun verifyPhoneNumber(code: String): Flow<StatusTypeResponse>
     suspend fun connectUsersSearch(contacts: List<ContactData>): Flow<List<ConnectUserResponse>>
     suspend fun searchConnect(query: String): Flow<List<ConnectUserResponse>>
+    suspend fun connectUserInfo(toEmail: String): Flow<ConnectUserInfoResponse>
 }
