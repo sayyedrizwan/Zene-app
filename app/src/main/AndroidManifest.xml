@@ -70,6 +70,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.main.connect.connectview.ConnectUserProfileActivity" />
+
         <activity android:name=".ui.phoneverification.PhoneVerificationActivity" />
 
         <activity

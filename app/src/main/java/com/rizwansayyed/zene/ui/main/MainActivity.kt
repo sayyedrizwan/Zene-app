@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
+import com.rizwansayyed.zene.ui.main.connect.connectview.ConnectUserProfileActivity
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
@@ -84,5 +86,11 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
+
+        Intent(this, ConnectUserProfileActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
+            startActivity(this)
+        }
     }
 }

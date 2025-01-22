@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,30 +9,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.main.connect.connectview.ConnectUserProfileActivity
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.openShareConnectShareSMS
 import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
-import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -39,16 +31,24 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun UserSearchInfo(user: ConnectUserResponse) {
-    var showUserInfo by remember { mutableStateOf(false) }
+    val context = LocalContext.current.applicationContext
+
+    fun showProfile() {
+        Intent(context, ConnectUserProfileActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(Intent.ACTION_MAIN, user.email)
+            context.startActivity(this)
+        }
+    }
 
     Row(
         Modifier
             .padding(horizontal = 13.dp, vertical = 10.dp)
             .fillMaxWidth()
-            .clickable { },
+            .clickable { showProfile() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
@@ -68,54 +68,10 @@ fun UserSearchInfo(user: ConnectUserResponse) {
         }
 
         ButtonWithBorder(R.string.view) {
-            showUserInfo = true
+            showProfile()
         }
     }
-
-    if (showUserInfo) ModalBottomSheet(
-        { showUserInfo = false }, contentColor = MainColor, containerColor = MainColor
-    ) {
-        user.email?.let { UserInfoDialog(it) }
-    }
 }
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun UserInfoDialog(email: String) {
-    val connectViewModel: ConnectViewModel = hiltViewModel()
-
-    Column(
-        Modifier
-            .padding(bottom = 50.dp)
-            .fillMaxWidth(),
-        Arrangement.Center, Alignment.CenterHorizontally
-    ) {
-        when (val v = connectViewModel.connectUserInfo) {
-            ResponseResult.Empty -> {}
-            is ResponseResult.Error -> {}
-            ResponseResult.Loading -> CircularLoadingView()
-            is ResponseResult.Success -> {
-                GlideImage(
-                    v.data.user?.profile_photo,
-                    v.data.user?.name,
-                    Modifier
-                        .padding(bottom = 10.dp)
-                        .size(110.dp)
-                        .clip(RoundedCornerShape(20))
-                )
-
-                TextViewSemiBold(v.data.user?.name ?: "", 16, line = 1)
-                TextViewNormal("@${v.data.user?.username}", 13, line = 1)
-                TextViewNormal(v.data.user?.country ?: "", 13, line = 1)
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        connectViewModel.connectUserInfo(email)
-    }
-}
-
 
 @Composable
 fun UserContactInfo(user: ContactData) {
