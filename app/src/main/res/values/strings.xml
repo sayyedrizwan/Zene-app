@@ -10,6 +10,8 @@
     <string name="radios">Radios</string>
     <string name="videos">Videos</string>
     <string name="my_library">My Library</string>
+    <string name="most_played_songs_this_month">Most Played Songs This Month</string>
+    <string name="top_podcasts_you_listened_to_this_month">Top Podcasts Listened This Month</string>
     <string name="your_mixes">Your mixes</string>
     <string name="entertainment_">Entertainment</string>
     <string name="recommended_playlists">Recommended playlists</string>

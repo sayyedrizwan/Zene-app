@@ -385,4 +385,14 @@ object MainUtils {
         val combinedRegex = Regex("[^a-zA-Z0-9_. ]|[\\p{So}\\p{Cn}]+")
         return this.replace(combinedRegex, "").replace(" ", "")
     }
+
+    fun openGoogleMapLocation(showDirection: Boolean, lat: String, lon: String, name: String) {
+        val d =
+            if (showDirection) Uri.parse("http://maps.google.com/maps?daddr=$lat,$lon")
+            else Uri.parse("geo:0,0?q=$lat,$lon(${name} Location)")
+        val intent = Intent(Intent.ACTION_VIEW, d)
+        intent.setPackage("com.google.android.apps.maps")
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
+    }
 }

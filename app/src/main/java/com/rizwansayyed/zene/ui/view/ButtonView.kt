@@ -66,7 +66,7 @@ fun ImageWithBorder(img: Int, border: Color = Color.White, click: () -> Unit) {
             },
         Arrangement.Center, Alignment.CenterVertically
     ) {
-       ImageIcon(img, 15)
+       ImageIcon(img, 17)
     }
 }
 
