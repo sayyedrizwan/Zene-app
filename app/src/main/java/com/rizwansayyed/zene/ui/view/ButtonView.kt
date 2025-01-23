@@ -55,6 +55,22 @@ fun ButtonWithBorder(txt: Int, border: Color = Color.White, click: () -> Unit) {
 }
 
 @Composable
+fun ImageWithBorder(img: Int, border: Color = Color.White, click: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .border(0.8.dp, border, RoundedCornerShape(14.dp))
+            .padding(vertical = 7.dp, horizontal = 14.dp)
+            .clickable {
+                click()
+            },
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+       ImageIcon(img, 15)
+    }
+}
+
+@Composable
 fun ButtonHeavy(text: String, click: () -> Unit) {
     Row(
         modifier = Modifier

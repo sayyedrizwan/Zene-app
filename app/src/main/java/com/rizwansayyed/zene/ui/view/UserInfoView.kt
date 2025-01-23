@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -20,7 +21,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.ui.main.connect.connectview.ConnectUserProfileActivity
+import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileActivity
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.openShareConnectShareSMS
 import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
@@ -55,7 +56,8 @@ fun UserSearchInfo(user: ConnectUserResponse) {
             user.profile_photo, user.name,
             Modifier
                 .size(60.dp)
-                .clip(RoundedCornerShape(20))
+                .clip(RoundedCornerShape(20)),
+            contentScale = ContentScale.Crop
         )
 
         Column(
