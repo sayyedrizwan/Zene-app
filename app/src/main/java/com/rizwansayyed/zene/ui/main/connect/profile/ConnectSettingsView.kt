@@ -9,4 +9,5 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 @Composable
 fun ConnectSettingsView() {
     TextViewBold(stringResource(R.string.settings_), 20)
+
 }
