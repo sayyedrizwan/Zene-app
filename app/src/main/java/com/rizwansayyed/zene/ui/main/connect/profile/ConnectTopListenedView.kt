@@ -28,13 +28,14 @@ fun ConnectTopListenedView() {
         is ResponseResult.Error -> {}
         ResponseResult.Loading -> {}
         is ResponseResult.Success -> {
-            Box(Modifier.padding(horizontal = 6.dp)) {
-                TextViewBold(stringResource(R.string.most_played_songs_this_month), 23)
-            }
-            Spacer(Modifier.height(12.dp))
-            LazyRow(Modifier.fillMaxWidth()) {
-                items(v.data.topSongs ?: emptyList()) {
-                    ItemCardView(it)
+            if (v.data.topSongs?.isNotEmpty() == true) {
+                TextViewBold(stringResource(R.string.most_played_songs_this_month), 20)
+
+                Spacer(Modifier.height(12.dp))
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(v.data.topSongs) {
+                        ItemCardView(it)
+                    }
                 }
             }
         }

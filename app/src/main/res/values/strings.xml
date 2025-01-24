@@ -48,6 +48,7 @@
     <string name="update_status">Update status</string>
     <string name="enter_otp_send_to_your_phone_number">Enter otp send to your phone number</string>
     <string name="settings">settings</string>
+    <string name="settings_">Settings</string>
     <string name="connect">connect</string>
     <string name="entertainment">entertainment</string>
     <string name="entertainment_short">ent.</string>

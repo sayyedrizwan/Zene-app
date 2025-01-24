@@ -31,7 +31,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse) {
     LazyColumn(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 9.dp)
+            .padding(horizontal = 6.dp)
     ) {
         item {
             TopSheetView(data)
@@ -63,6 +63,10 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse) {
         }
         item {
             ConnectTopListenedView()
+            Spacer(Modifier.height(60.dp))
+        }
+        item {
+            ConnectSettingsView()
             Spacer(Modifier.height(150.dp))
         }
     }
