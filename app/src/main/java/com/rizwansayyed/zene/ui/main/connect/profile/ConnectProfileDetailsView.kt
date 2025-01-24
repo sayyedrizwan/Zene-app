@@ -31,7 +31,9 @@ import com.rizwansayyed.zene.data.model.ConnectedUserStatus
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.view.AlertDialogWithImage
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
+import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
@@ -146,6 +148,7 @@ fun SongListeningTo(song: ZeneMusicData) {
 fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
     val context = LocalContext.current.applicationContext
     var areaName by remember { mutableStateOf("") }
+    var showRequestSentAlert by remember { mutableStateOf(false) }
 
     Row(
         Modifier
@@ -165,20 +168,37 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             }
 
             ConnectedUserStatus.REQUESTED -> {
-                if (data.didRequestToYou == true) ButtonWithBorder(R.string.accept) {
-
-                }
-                else ButtonWithBorder(R.string.sent) {
-
+                if (data.didRequestToYou == true) {
+                    Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
+                        ButtonWithBorder(R.string.accept) {
+                            viewModel.acceptConnectRequest(data.user?.email)
+                        }
+                        Row(Modifier.clickable {
+                            data.user?.email?.let { viewModel.doRemove(it, true) }
+                        }) {
+                            ImageIcon(R.drawable.ic_delete, 20)
+                        }
+                    }
+                } else ButtonWithBorder(R.string.sent) {
+                    showRequestSentAlert = true
                 }
 
             }
 
             ConnectedUserStatus.NONE, null -> ButtonWithBorder(R.string.add) {
-                viewModel.updateAddStatus(data)
+                viewModel.updateAddStatus(data, false)
             }
         }
     }
+
+    if (showRequestSentAlert) TextAlertDialog(
+        R.string.cancel_request,
+        R.string.are_you_sure_want_to_cancel_add_request,
+        { showRequestSentAlert = false }, {
+            showRequestSentAlert = false
+            viewModel.updateAddStatus(data, true)
+        }
+    )
 
     LaunchedEffect(Unit) {
         areaName = withContext(Dispatchers.IO) {

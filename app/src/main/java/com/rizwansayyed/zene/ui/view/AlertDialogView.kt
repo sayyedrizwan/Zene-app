@@ -53,18 +53,18 @@ fun AlertDialogWithImage(
 
 
 @Composable
-fun TextAlertDialog(title: Int, name: String?, dismiss: () -> Unit, click: () -> Unit) {
+fun TextAlertDialog(title: Int, name: Int, dismiss: () -> Unit, click: () -> Unit) {
     AlertDialog(title = {
-        TextViewNormal(name ?: "", 17, line = 2, center = true)
+        TextViewNormal(stringResource(title), 17, line = 2, center = false)
     }, text = {
-        TextViewNormal(stringResource(R.string.do_you_want_to_play_this_song), 16, center = true)
+        TextViewNormal(stringResource(name), 16, center = false)
     }, onDismissRequest = {
         dismiss()
     }, confirmButton = {
         TextButton(onClick = {
             click()
         }) {
-            TextViewLight(stringResource(R.string.play), 13)
+            TextViewLight(stringResource(R.string.confirm), 13)
         }
     }, dismissButton = {
         TextButton(onClick = {

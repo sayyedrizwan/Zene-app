@@ -43,10 +43,27 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
-    fun updateAddStatus(data: ConnectUserInfoResponse) = viewModelScope.launch(Dispatchers.IO) {
-        connectUserInfo = ResponseResult.Empty
-        data.status?.isConnected = false
-        data.didRequestToYou = false
-        connectUserInfo = ResponseResult.Success(data)
+    fun updateAddStatus(data: ConnectUserInfoResponse, remove: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            connectUserInfo = ResponseResult.Empty
+            data.status?.isConnected = if (remove) null else false
+            data.didRequestToYou = false
+            connectUserInfo = ResponseResult.Success(data)
+            data.user?.email ?: return@launch
+            doRemove(data.user.email, remove, false)
+        }
+
+    fun doRemove(email: String, remove: Boolean, loadAgain: Boolean = true) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.connectSendRequest(email, remove).catch { }.collectLatest {
+                if (loadAgain) connectUserInfo(email)
+            }
+        }
+
+    fun acceptConnectRequest(email: String?) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.connectAcceptRequest(email).catch { }.collectLatest {
+            connectUserInfo(email)
+        }
     }
 }

@@ -11,8 +11,10 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
@@ -114,4 +116,16 @@ interface ZeneAPIService {
     suspend fun connectUserInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): ConnectUserInfoResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_SEND_API)
+    suspend fun connectSendRequest(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_ACCEPT_API)
+    suspend fun connectAcceptRequest(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
 }

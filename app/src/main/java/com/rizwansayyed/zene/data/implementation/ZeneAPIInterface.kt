@@ -29,4 +29,6 @@ interface ZeneAPIInterface {
     suspend fun connectUsersSearch(contacts: List<ContactData>): Flow<List<ConnectUserResponse>>
     suspend fun searchConnect(query: String): Flow<List<ConnectUserResponse>>
     suspend fun connectUserInfo(toEmail: String): Flow<ConnectUserInfoResponse>
+    suspend fun connectSendRequest(toEmail: String, remove: Boolean): Flow<StatusTypeResponse>
+    suspend fun connectAcceptRequest(toEmail: String): Flow<StatusTypeResponse>
 }

@@ -24,6 +24,8 @@ object URLSUtils {
     const val ZENE_CONNECT_USERS_SEARCH_API = "connect/connect-users-search"
     const val ZENE_CONNECT_SEARCH_API = "connect/connect-search"
     const val ZENE_CONNECT_USER_INFO_API = "connect/connect-user-info"
+    const val ZENE_CONNECT_SEND_API = "connect/connect-send"
+    const val ZENE_CONNECT_ACCEPT_API = "connect/connect-accept"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"
