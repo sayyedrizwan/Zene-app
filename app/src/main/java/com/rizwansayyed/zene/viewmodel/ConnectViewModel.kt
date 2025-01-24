@@ -42,4 +42,11 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             connectUserInfo = ResponseResult.Success(it)
         }
     }
+
+    fun updateAddStatus(data: ConnectUserInfoResponse) = viewModelScope.launch(Dispatchers.IO) {
+        connectUserInfo = ResponseResult.Empty
+        data.status?.isConnected = false
+        data.didRequestToYou = false
+        connectUserInfo = ResponseResult.Success(data)
+    }
 }

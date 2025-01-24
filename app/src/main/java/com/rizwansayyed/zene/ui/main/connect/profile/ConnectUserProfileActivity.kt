@@ -57,7 +57,7 @@ class ConnectUserProfileActivity : ComponentActivity() {
                         ResponseResult.Loading -> ConnectUserLoading()
                         is ResponseResult.Success -> {
                             BottomSheetScaffold(
-                                { ConnectProfileDetailsView(v.data) },
+                                { ConnectProfileDetailsView(v.data, connectViewModel) },
                                 Modifier.fillMaxSize(),
                                 sheetPeekHeight = (screenHeight * 0.6f),
                                 sheetContentColor = Color.Black,

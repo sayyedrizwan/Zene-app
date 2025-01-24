@@ -1,26 +1,46 @@
 package com.rizwansayyed.zene.data.model
 
-data class ConnectUserResponse(
-    val email: String?,
-    val name: String?,
-    val profile_photo: String?,
-    val username: String?,
-    val country: String?,
-    val last_seen: String?,
-    val status: String?,
-    val connect_status: String?
-)
-
 
 data class ConnectUserInfoResponse(
-    val user: ConnectUserResponse?, val status: ConnectUserStatusResponse?
-)
-
-data class ConnectUserStatusResponse(
-    val email: String?, val to_email: String?, val timestamp: Long?, val is_connected: Int?
+    val songDetails: ZeneMusicData?,
+    var didRequestToYou: Boolean?,
+    val status: Status?,
+    val topSongs: List<ZeneMusicData>?,
+    val user: ConnectUserResponse?
 ) {
-    fun isConnected(): Boolean? {
-        if (is_connected == null) return null
-        return is_connected == 1
+    data class Status(
+        var isConnected: Boolean?,
+        val lastListeningSong: Boolean?,
+        val locationSharing: Boolean?,
+        val silentNotification: Boolean?
+    ) {
+        fun isConnected(): ConnectedUserStatus {
+            if (isConnected == null) return ConnectedUserStatus.NONE
+            return if (isConnected == true) ConnectedUserStatus.FRIENDS else ConnectedUserStatus.REQUESTED
+        }
+    }
+}
+
+enum class ConnectedUserStatus {
+    FRIENDS, REQUESTED, NONE
+}
+
+data class ConnectUserResponse(
+    val country: String?,
+    val email: String?,
+    val last_seen: Long?,
+    val location: String?,
+    val name: String?,
+    val profile_photo: String?,
+    val username: String?
+) {
+    fun isUserLocation(): Boolean {
+        try {
+            val lat = location?.substringBefore(",")?.trim()?.toDouble() ?: 0.0
+            val lon = location?.substringAfter(",")?.trim()?.toDouble() ?: 0.0
+            return lat > 0.0 && lon > 0.0
+        } catch (e: Exception) {
+            return false
+        }
     }
 }
