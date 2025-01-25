@@ -87,6 +87,12 @@
     <string name="to_location">To Location</string>
     <string name="direction">Direction</string>
     <string name="view_on_map">View On Map</string>
-    <string name="canel">Cancel</string>
+    <string name="cancel">Cancel</string>
     <string name="do_you_want_to_play_this_song">Do you want to play the song?</string>
+    <string name="share_notification">Silent Notifications</string>
+    <string name="share_notification_desc">Need some quiet time? Mute notifications from this friend without letting them know.</string>
+    <string name="share_your_location">Share Your Location</string>
+    <string name="share_your_location_desc">Keep your friends in the loop! Share your current location with someone you trust whenever needed.</string>
+    <string name="share_your_music">Share Your Music</string>
+    <string name="share_your_music_desc">Let your friends know what you’re vibing to! Share your currently playing song or top tracks with them.</string>
 </resources>

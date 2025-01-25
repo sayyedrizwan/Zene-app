@@ -99,7 +99,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         }
         item {
             if (data.status?.isConnected() == ConnectedUserStatus.FRIENDS) {
-                ConnectSettingsView()
+                ConnectSettingsView(data, viewModel)
                 Spacer(Modifier.height(150.dp))
             }
         }

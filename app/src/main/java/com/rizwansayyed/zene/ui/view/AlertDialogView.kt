@@ -46,7 +46,7 @@ fun AlertDialogWithImage(
         TextButton(onClick = {
             dismiss()
         }) {
-            TextViewLight(stringResource(R.string.canel), 13)
+            TextViewLight(stringResource(R.string.cancel), 13)
         }
     })
 }
@@ -70,7 +70,7 @@ fun TextAlertDialog(title: Int, name: Int, dismiss: () -> Unit, click: () -> Uni
         TextButton(onClick = {
             dismiss()
         }) {
-            TextViewLight(stringResource(R.string.canel), 13)
+            TextViewLight(stringResource(R.string.cancel), 13)
         }
     })
 }

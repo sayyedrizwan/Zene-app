@@ -10,9 +10,9 @@ data class ConnectUserInfoResponse(
 ) {
     data class Status(
         var isConnected: Boolean?,
-        val lastListeningSong: Boolean?,
-        val locationSharing: Boolean?,
-        val silentNotification: Boolean?
+        var lastListeningSong: Boolean?,
+        var locationSharing: Boolean?,
+        var silentNotification: Boolean?
     ) {
         fun isConnected(): ConnectedUserStatus {
             if (isConnected == null) return ConnectedUserStatus.NONE

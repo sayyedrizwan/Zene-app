@@ -53,6 +53,12 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             doRemove(data.user.email, remove, false)
         }
 
+    fun updateSettingsStatus(data: ConnectUserInfoResponse) =
+        viewModelScope.launch(Dispatchers.IO) {
+            connectUserInfo = ResponseResult.Empty
+            connectUserInfo = ResponseResult.Success(data)
+        }
+
     fun doRemove(email: String, remove: Boolean, loadAgain: Boolean = true) =
         viewModelScope.launch(Dispatchers.IO) {
             zeneAPI.connectSendRequest(email, remove).catch { }.collectLatest {
