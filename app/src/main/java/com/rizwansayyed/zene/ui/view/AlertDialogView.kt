@@ -64,13 +64,13 @@ fun TextAlertDialog(title: Int, name: Int, dismiss: () -> Unit, click: () -> Uni
         TextButton(onClick = {
             click()
         }) {
-            TextViewLight(stringResource(R.string.confirm), 13)
+            TextViewLight(stringResource(R.string.confirm), 15)
         }
     }, dismissButton = {
         TextButton(onClick = {
             dismiss()
         }) {
-            TextViewLight(stringResource(R.string.cancel), 13)
+            TextViewLight(stringResource(R.string.cancel), 15)
         }
     })
 }

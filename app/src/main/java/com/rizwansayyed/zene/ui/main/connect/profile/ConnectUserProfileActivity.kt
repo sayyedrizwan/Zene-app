@@ -17,26 +17,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.FullUsersShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class ConnectUserProfileActivity : ComponentActivity() {
 
     private val connectViewModel: ConnectViewModel by viewModels()
+    private var job: Job? = null
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,8 +84,17 @@ class ConnectUserProfileActivity : ComponentActivity() {
                         ImageIcon(R.drawable.ic_arrow_down, size = 25)
                     }
                 }
-                LaunchedEffect(Unit) {
-                    connectViewModel.connectUserInfo(email)
+                LifecycleResumeEffect(Unit) {
+                    job?.cancel()
+                    job = lifecycleScope.launch {
+                        while (true) {
+                            connectViewModel.connectUserInfo(email)
+                            delay(15.seconds)
+                        }
+                    }
+                    onPauseOrDispose {
+                        job?.cancel()
+                    }
                 }
             }
         }

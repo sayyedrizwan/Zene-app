@@ -28,7 +28,7 @@ fun ConnectTopListenedView(topSongs: List<ZeneMusicData>) {
         ResponseResult.Loading -> {}
         is ResponseResult.Success -> {
             if (v.data.topSongs?.isNotEmpty() == true) {
-                TextViewBold(stringResource(R.string.most_played_songs_this_month), 20)
+                TextViewBold(stringResource(R.string.top_played_songs_this_month), 20)
 
                 Spacer(Modifier.height(12.dp))
                 LazyRow(Modifier.fillMaxWidth()) {

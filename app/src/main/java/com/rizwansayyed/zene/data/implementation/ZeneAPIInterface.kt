@@ -31,4 +31,10 @@ interface ZeneAPIInterface {
     suspend fun connectUserInfo(toEmail: String): Flow<ConnectUserInfoResponse>
     suspend fun connectSendRequest(toEmail: String, remove: Boolean): Flow<StatusTypeResponse>
     suspend fun connectAcceptRequest(toEmail: String): Flow<StatusTypeResponse>
+    suspend fun updateConnectSettings(
+        toEmail: String,
+        lastListenSongs: Boolean,
+        locationSharing: Boolean,
+        silentNotification: Boolean
+    ): Flow<StatusTypeResponse>
 }

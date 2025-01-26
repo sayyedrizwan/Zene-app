@@ -386,7 +386,7 @@ object MainUtils {
         return this.replace(combinedRegex, "").replace(" ", "")
     }
 
-    fun openGoogleMapLocation(showDirection: Boolean, lat: String, lon: String, name: String) {
+    fun openGoogleMapLocation(showDirection: Boolean, lat: Double, lon: Double, name: String) {
         val d =
             if (showDirection) Uri.parse("http://maps.google.com/maps?daddr=$lat,$lon")
             else Uri.parse("geo:0,0?q=$lat,$lon(${name} Location)")

@@ -10,8 +10,10 @@
     <string name="radios">Radios</string>
     <string name="videos">Videos</string>
     <string name="my_library">My Library</string>
-    <string name="most_played_songs_this_month">Most Played Songs This Month</string>
+    <string name="top_played_songs_this_month">Top Played Songs This Month</string>
     <string name="are_you_sure_want_to_cancel_add_request">Are you sure want to cancel the add request. Sometime it takes a while to get your request accepted!</string>
+    <string name="remove_as_friend">Remove as Friend</string>
+    <string name="remove_as_friend_desc">Are you sure want to remove them as a friend?</string>
     <string name="cancel_request">Cancel request?</string>
     <string name="top_podcasts_you_listened_to_this_month">Top Podcasts Listened This Month</string>
     <string name="your_mixes">Your mixes</string>

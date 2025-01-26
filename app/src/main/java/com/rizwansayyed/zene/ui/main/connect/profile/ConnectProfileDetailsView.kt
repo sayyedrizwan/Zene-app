@@ -149,6 +149,7 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
     val context = LocalContext.current.applicationContext
     var areaName by remember { mutableStateOf("") }
     var showRequestSentAlert by remember { mutableStateOf(false) }
+    var unFriendAlert by remember { mutableStateOf(false) }
 
     Row(
         Modifier
@@ -164,7 +165,7 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
         }
         when (data.status?.isConnected()) {
             ConnectedUserStatus.FRIENDS -> ButtonWithBorder(R.string.friends) {
-
+                unFriendAlert = true
             }
 
             ConnectedUserStatus.REQUESTED -> {
@@ -173,6 +174,7 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                         ButtonWithBorder(R.string.accept) {
                             viewModel.acceptConnectRequest(data.user?.email)
                         }
+
                         Row(Modifier.clickable {
                             data.user?.email?.let { viewModel.doRemove(it, true) }
                         }) {
@@ -182,7 +184,6 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                 } else ButtonWithBorder(R.string.sent) {
                     showRequestSentAlert = true
                 }
-
             }
 
             ConnectedUserStatus.NONE, null -> ButtonWithBorder(R.string.add) {
@@ -196,6 +197,15 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
         R.string.are_you_sure_want_to_cancel_add_request,
         { showRequestSentAlert = false }, {
             showRequestSentAlert = false
+            data.user?.email?.let { viewModel.doRemove(it, true) }
+        }
+    )
+
+    if (unFriendAlert) TextAlertDialog(
+        R.string.remove_as_friend,
+        R.string.remove_as_friend_desc,
+        { unFriendAlert = false }, {
+            unFriendAlert = false
             viewModel.updateAddStatus(data, true)
         }
     )

@@ -17,7 +17,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -80,7 +79,8 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
                 .horizontalScroll(rememberScrollState())
         ) {
             ImageWithBorder(R.drawable.ic_location) {
-                currentLatLng = LatLng(18.942506, 72.823120)
+                currentLatLng =
+                    LatLng(currentLatLng?.latitude ?: 0.0, currentLatLng?.longitude ?: 0.0)
                 locationZoom = 18f
                 coroutine.launch {
                     val p = CameraUpdateFactory.newCameraPosition(
@@ -91,11 +91,21 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
             }
 
             ImageWithBorder(R.drawable.ic_maps_location) {
-                openGoogleMapLocation(false, "18.942506", "72.823120", user?.name ?: "")
+                openGoogleMapLocation(
+                    false,
+                    currentLatLng?.latitude ?: 0.0,
+                    currentLatLng?.longitude ?: 0.0,
+                    user?.name ?: ""
+                )
             }
 
             ImageWithBorder(R.drawable.ic_directions) {
-                openGoogleMapLocation(true, "18.942506", "72.823120", user?.name ?: "")
+                openGoogleMapLocation(
+                    true,
+                    currentLatLng?.latitude ?: 0.0,
+                    currentLatLng?.longitude ?: 0.0,
+                    user?.name ?: ""
+                )
             }
 
             ImageWithBorder(R.drawable.ic_bookmark) {
@@ -104,7 +114,13 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
         }
     }
     LaunchedEffect(Unit) {
-        currentLatLng = LatLng(18.942506, 72.823120)
-        locationZoom = 18f
+        try {
+            val lat = user?.location?.substringBefore(",")?.trim()?.toDouble() ?: 0.0
+            val lon = user?.location?.substringAfter(",")?.trim()?.toDouble() ?: 0.0
+            currentLatLng = LatLng(lat, lon)
+            locationZoom = 18f
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

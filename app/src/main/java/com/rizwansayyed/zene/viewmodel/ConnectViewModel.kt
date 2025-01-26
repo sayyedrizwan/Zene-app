@@ -35,9 +35,10 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
     fun connectUserInfo(email: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.connectUserInfo(email).onStart {
-            connectUserInfo = ResponseResult.Loading
+            if (connectUserInfo is ResponseResult.Empty) connectUserInfo = ResponseResult.Loading
         }.catch {
-            connectUserInfo = ResponseResult.Error(it)
+            if (connectUserInfo is ResponseResult.Loading || connectUserInfo is ResponseResult.Empty)
+                connectUserInfo = ResponseResult.Error(it)
         }.collectLatest {
             connectUserInfo = ResponseResult.Success(it)
         }
@@ -57,6 +58,12 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         viewModelScope.launch(Dispatchers.IO) {
             connectUserInfo = ResponseResult.Empty
             connectUserInfo = ResponseResult.Success(data)
+            zeneAPI.updateConnectSettings(
+                data.user?.email ?: "",
+                data.status?.lastListeningSong ?: false,
+                data.status?.locationSharing ?: false,
+                data.status?.silentNotification ?: false
+            ).catch { }.collectLatest { }
         }
 
     fun doRemove(email: String, remove: Boolean, loadAgain: Boolean = true) =

@@ -249,4 +249,23 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.connectAcceptRequest(token, body))
     }
 
+    override suspend fun updateConnectSettings(
+        toEmail: String, lastListenSongs: Boolean,
+        locationSharing: Boolean, silentNotification: Boolean
+    ) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toEmail", toEmail)
+            put("lastListenSongs", lastListenSongs)
+            put("locationSharing", locationSharing)
+            put("silentNotification", silentNotification)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.updateConnectSettings(token, body))
+    }
+
 }
