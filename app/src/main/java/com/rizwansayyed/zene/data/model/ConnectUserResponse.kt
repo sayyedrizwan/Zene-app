@@ -6,7 +6,8 @@ data class ConnectUserInfoResponse(
     var didRequestToYou: Boolean?,
     val status: Status?,
     val topSongs: List<ZeneMusicData>?,
-    val user: ConnectUserResponse?
+    val user: ConnectUserResponse?,
+    val message: UserMessage?,
 ) {
     data class Status(
         var isConnected: Boolean?,
@@ -20,6 +21,9 @@ data class ConnectUserInfoResponse(
         }
     }
 }
+
+data class UserMessage(var fromCurrentUser: Boolean?, var message: String?)
+
 
 enum class ConnectedUserStatus {
     FRIENDS, REQUESTED, NONE

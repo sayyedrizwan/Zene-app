@@ -10,6 +10,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,31 +21,34 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 
 @Composable
-fun ConnectProfileMessageButton(user: ConnectUserResponse?) {
+fun ConnectProfileMessageButton(
+    user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
+) {
     var messageText by remember { mutableStateOf("") }
 
     TextViewBold(stringResource(R.string.chats), 19, Color.White)
-    Spacer(Modifier.height(6.dp))
+    Spacer(Modifier.height(25.dp))
 
-    TextViewNormal(
-        "${user?.name}: sbhsbshsbs dhdddhd duhduhdd dhdudhd dudhduduhdhdhdud ch  cggycgd duhddhddydydgd duhdudhudhduhdud dhudhdyduududuhcbhc cudygddgdygdygd",
-        14,
-        Color.White
-    )
+    if (user.message?.message != null) {
+        if (user.message.fromCurrentUser == true) {
+            TextViewNormal("Me: ${user.message.message}", 15, Color.White)
+        } else TextViewNormal("${user.user?.name}: ${user.message.message}", 15, Color.White)
+    }
 
-    Spacer(Modifier.height(6.dp))
+    Spacer(Modifier.height(15.dp))
 
-    TextField(
-        messageText, {
-            if (it.length <= 140) {
-                messageText = it
-            }
+    if (user.message?.fromCurrentUser != true) TextField(
+        messageText,
+        {
+            if (it.length <= 140) messageText = it
         },
         Modifier
             .padding(top = 20.dp)
@@ -58,7 +62,10 @@ fun ConnectProfileMessageButton(user: ConnectUserResponse?) {
         },
         trailingIcon = {
             if (messageText.length > 3) {
-                IconButton({ }) {
+                IconButton({
+                    viewModel.sendConnectMessage(user.user?.email, messageText)
+                    close()
+                }) {
                     ImageIcon(R.drawable.ic_sent, 24, Color.Black)
                 }
             }

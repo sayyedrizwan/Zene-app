@@ -37,4 +37,6 @@ interface ZeneAPIInterface {
         locationSharing: Boolean,
         silentNotification: Boolean
     ): Flow<StatusTypeResponse>
+
+    suspend fun sendConnectMessage(toEmail: String, message: String): Flow<StatusTypeResponse>
 }

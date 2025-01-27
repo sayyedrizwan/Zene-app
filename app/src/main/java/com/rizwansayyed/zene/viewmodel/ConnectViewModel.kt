@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -76,6 +77,13 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun acceptConnectRequest(email: String?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
         zeneAPI.connectAcceptRequest(email).catch { }.collectLatest {
+            connectUserInfo(email)
+        }
+    }
+
+    fun sendConnectMessage(email: String?, message: String) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.sendConnectMessage(email, message).catch { }.collectLatest {
             connectUserInfo(email)
         }
     }

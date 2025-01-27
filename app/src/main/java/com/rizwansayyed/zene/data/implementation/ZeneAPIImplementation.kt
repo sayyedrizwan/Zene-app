@@ -268,4 +268,18 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.updateConnectSettings(token, body))
     }
 
+    override suspend fun sendConnectMessage(toEmail: String, message: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toEmail", toEmail)
+            put("message", message)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.sendConnectMessage(token, body))
+    }
+
 }
