@@ -81,7 +81,6 @@ fun ConnectEditProfileView() {
                 it, CropImageOptions(fixAspectRatio = true)
             )
         )
-//        it?.toString()?.let { p -> profilePic = p }
     }
 
 

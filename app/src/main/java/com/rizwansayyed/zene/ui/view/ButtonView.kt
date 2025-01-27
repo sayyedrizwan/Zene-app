@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.ui.theme.MainColor
 
 @Composable
-fun ButtonWithImageAndBorder(img: Int, txt: Int, border: Color = Color.White, click: () -> Unit) {
+fun ButtonWithImageAndBorder(
+    img: Int, txt: Int, border: Color = Color.White, tint: Color? = null, click: () -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 10.dp)
@@ -32,7 +34,7 @@ fun ButtonWithImageAndBorder(img: Int, txt: Int, border: Color = Color.White, cl
             },
         Arrangement.Center, Alignment.CenterVertically
     ) {
-        ImageIcon(img, 27, null)
+        ImageIcon(img, 27, tint)
         Spacer(Modifier.width(14.dp))
         TextViewNormal(stringResource(txt), 16, center = false)
     }

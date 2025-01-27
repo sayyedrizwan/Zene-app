@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
+import android.location.Geocoder
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,23 +11,28 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
-import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
+import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.Locale
 
 @Composable
 fun ConnectProfileMessageButton(
@@ -37,15 +43,15 @@ fun ConnectProfileMessageButton(
     TextViewBold(stringResource(R.string.chats), 19, Color.White)
     Spacer(Modifier.height(25.dp))
 
-    if (user.message?.message != null) {
-        if (user.message.fromCurrentUser == true) {
+    if ((user.message?.message?.length ?: 0) > 3) {
+        if (user.message?.fromCurrentUser == true) {
             TextViewNormal("Me: ${user.message.message}", 15, Color.White)
-        } else TextViewNormal("${user.user?.name}: ${user.message.message}", 15, Color.White)
+        } else TextViewNormal("${user.user?.name}: ${user.message?.message}", 15, Color.White)
     }
 
     Spacer(Modifier.height(15.dp))
 
-    if (user.message?.fromCurrentUser != true) TextField(
+    if (user.message?.fromCurrentUser != true || (user.message.message?.length ?: 0) < 3) TextField(
         messageText,
         {
             if (it.length <= 140) messageText = it
@@ -83,6 +89,52 @@ fun ConnectProfileMessageButton(
         ),
         singleLine = true
     )
+
+    Spacer(Modifier.height(50.dp))
+
+    TextViewNormal(
+        stringResource(R.string.you_cant_send_a_new_message_until_you_got_reply),
+        15, Color.White, true
+    )
+
+
+    Spacer(Modifier.height(80.dp))
+}
+
+@Composable
+fun ConnectLocationButton(
+    user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
+) {
+    val context = LocalContext.current.applicationContext
+    var areaName by remember { mutableStateOf("") }
+
+    TextViewBold(stringResource(R.string.send_location), 19, Color.White)
+    Spacer(Modifier.height(25.dp))
+
+    TextViewNormal(areaName, 16, Color.White, true)
+    Spacer(Modifier.height(45.dp))
+
+    ButtonWithImageAndBorder(R.drawable.ic_location, R.string.send_location, Color.White, Color.White) {
+
+    }
+
+    LaunchedEffect(Unit) {
+        areaName = withContext(Dispatchers.IO) {
+            try {
+                val lat = BackgroundLocationTracking.updateLocationLat
+                val lon = BackgroundLocationTracking.updateLocationLon
+                val geocoder = Geocoder(context, Locale.getDefault())
+                val addresses = geocoder.getFromLocation(lat, lon, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    addresses[0].getAddressLine(0)
+                } else {
+                    ""
+                }
+            } catch (e: Exception) {
+                ""
+            }
+        }
+    }
 
     Spacer(Modifier.height(80.dp))
 }

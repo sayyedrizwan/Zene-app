@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
+import android.Manifest
 import android.location.Geocoder
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +39,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AlertDialogWithImage
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
@@ -55,6 +59,15 @@ import java.util.Locale
 @Composable
 fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
     var showSendMessage by remember { mutableStateOf(false) }
+    var sendLocation by remember { mutableStateOf(false) }
+
+    val locationPermission =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                sendLocation = true
+                BackgroundLocationTracking.backgroundTracking?.onDataReceived()
+            }
+        }
 
     LazyColumn(
         Modifier
@@ -78,7 +91,9 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                             ImageWithBorder(R.drawable.ic_message_multiple) {
                                 showSendMessage = true
                             }
-                            if (data.message?.message != null && data.message.fromCurrentUser == false) Spacer(
+                            if ((data.message?.message?.length
+                                    ?: 0) > 3 && data.message?.fromCurrentUser == false
+                            ) Spacer(
                                 Modifier
                                     .align(Alignment.TopEnd)
                                     .size(10.dp)
@@ -92,7 +107,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                         }
 
                         ImageWithBorder(R.drawable.ic_location) {
-
+                            locationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                         }
                     }
                     Spacer(Modifier.height(50.dp))
@@ -134,7 +149,21 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 .padding(horizontal = 10.dp)
         ) {
             ConnectProfileMessageButton(data, viewModel) {
+                showSendMessage = false
+            }
+        }
+    }
 
+    if (sendLocation) ModalBottomSheet(
+        { sendLocation = false }, contentColor = MainColor, containerColor = MainColor
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
+            ConnectLocationButton(data, viewModel) {
+                showSendMessage = false
             }
         }
     }
