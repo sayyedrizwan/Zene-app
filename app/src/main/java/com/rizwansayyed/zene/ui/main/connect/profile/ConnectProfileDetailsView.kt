@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AlertDialogWithImage
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -43,8 +46,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
+    var showSendMessage by remember { mutableStateOf(false) }
+
     LazyColumn(
         Modifier
             .fillMaxWidth()
@@ -64,7 +70,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                         Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically
                     ) {
                         ImageWithBorder(R.drawable.ic_message_multiple) {
-
+                            showSendMessage = true
                         }
 
                         ImageWithBorder(R.drawable.ic_music_note) {
@@ -104,8 +110,19 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             }
         }
     }
-}
 
+    if (showSendMessage) ModalBottomSheet(
+        { showSendMessage = false }, contentColor = MainColor, containerColor = MainColor
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
+            ConnectProfileMessageButton(data.user)
+        }
+    }
+}
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -192,23 +209,21 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
         }
     }
 
-    if (showRequestSentAlert) TextAlertDialog(
-        R.string.cancel_request,
+    if (showRequestSentAlert) TextAlertDialog(R.string.cancel_request,
         R.string.are_you_sure_want_to_cancel_add_request,
-        { showRequestSentAlert = false }, {
+        { showRequestSentAlert = false },
+        {
             showRequestSentAlert = false
             data.user?.email?.let { viewModel.doRemove(it, true) }
-        }
-    )
+        })
 
-    if (unFriendAlert) TextAlertDialog(
-        R.string.remove_as_friend,
+    if (unFriendAlert) TextAlertDialog(R.string.remove_as_friend,
         R.string.remove_as_friend_desc,
-        { unFriendAlert = false }, {
+        { unFriendAlert = false },
+        {
             unFriendAlert = false
             viewModel.updateAddStatus(data, true)
-        }
-    )
+        })
 
     LaunchedEffect(Unit) {
         areaName = withContext(Dispatchers.IO) {
@@ -227,5 +242,4 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             }
         }
     }
-
 }

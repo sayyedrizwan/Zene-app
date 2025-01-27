@@ -60,13 +60,13 @@ fun ImageWithBorder(img: Int, border: Color = Color.White, click: () -> Unit) {
         modifier = Modifier
             .padding(horizontal = 10.dp)
             .border(0.8.dp, border, RoundedCornerShape(14.dp))
-            .padding(vertical = 7.dp, horizontal = 14.dp)
             .clickable {
                 click()
-            },
+            }
+            .padding(vertical = 7.dp, horizontal = 14.dp),
         Arrangement.Center, Alignment.CenterVertically
     ) {
-       ImageIcon(img, 17)
+        ImageIcon(img, 17)
     }
 }
 

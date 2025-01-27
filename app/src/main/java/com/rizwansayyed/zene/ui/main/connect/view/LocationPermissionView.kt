@@ -36,6 +36,7 @@ fun LocationPermissionView(close: () -> Unit) {
                 openAppSettings()
             }
         }
+
     ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
         Column(
             Modifier
