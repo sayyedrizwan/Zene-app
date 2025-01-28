@@ -39,4 +39,5 @@ interface ZeneAPIInterface {
     ): Flow<StatusTypeResponse>
 
     suspend fun sendConnectMessage(toEmail: String, message: String): Flow<StatusTypeResponse>
+    suspend fun sendConnectLocation(toEmail: String): Flow<StatusTypeResponse>
 }

@@ -5,7 +5,9 @@ import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.utils.ContactData
+import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import kotlinx.coroutines.CoroutineScope
@@ -280,6 +282,23 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.sendConnectMessage(token, body))
+    }
+
+    override suspend fun sendConnectLocation(toEmail: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val lat = BackgroundLocationTracking.updateLocationLat
+        val lon = BackgroundLocationTracking.updateLocationLon
+        val address = getAddressFromLatLong(lat, lon) ?: ""
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toEmail", toEmail)
+            put("address", address)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.sendConnectLocation(token, body))
     }
 
 }

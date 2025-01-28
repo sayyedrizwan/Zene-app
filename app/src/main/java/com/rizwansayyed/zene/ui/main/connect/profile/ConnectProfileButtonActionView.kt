@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
-import android.location.Geocoder
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,10 +28,8 @@ import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.util.Locale
 
 @Composable
 fun ConnectProfileMessageButton(
@@ -105,7 +102,6 @@ fun ConnectProfileMessageButton(
 fun ConnectLocationButton(
     user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
 ) {
-    val context = LocalContext.current.applicationContext
     var areaName by remember { mutableStateOf("") }
 
     TextViewBold(stringResource(R.string.send_location), 19, Color.White)
@@ -114,25 +110,20 @@ fun ConnectLocationButton(
     TextViewNormal(areaName, 16, Color.White, true)
     Spacer(Modifier.height(45.dp))
 
-    ButtonWithImageAndBorder(R.drawable.ic_location, R.string.send_location, Color.White, Color.White) {
-
+    ButtonWithImageAndBorder(
+        R.drawable.ic_location, R.string.send_location, Color.White, Color.White
+    ) {
+        viewModel.sendConnectLocation(user.user?.email)
+        close()
     }
 
     LaunchedEffect(Unit) {
-        areaName = withContext(Dispatchers.IO) {
-            try {
-                val lat = BackgroundLocationTracking.updateLocationLat
-                val lon = BackgroundLocationTracking.updateLocationLon
-                val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(lat, lon, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    addresses[0].getAddressLine(0)
-                } else {
-                    ""
-                }
-            } catch (e: Exception) {
-                ""
-            }
+        areaName = try {
+            val lat = BackgroundLocationTracking.updateLocationLat
+            val lon = BackgroundLocationTracking.updateLocationLon
+            getAddressFromLatLong(lat, lon) ?: ""
+        } catch (e: Exception) {
+            ""
         }
     }
 

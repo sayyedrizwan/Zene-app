@@ -163,7 +163,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 .padding(horizontal = 10.dp)
         ) {
             ConnectLocationButton(data, viewModel) {
-                showSendMessage = false
+                sendLocation = false
             }
         }
     }
@@ -275,6 +275,7 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             try {
                 val lat = data.user?.location?.substringBefore(",")?.trim()?.toDouble() ?: 0.0
                 val lon = data.user?.location?.substringAfter(",")?.trim()?.toDouble() ?: 0.0
+
                 val geocoder = Geocoder(context, Locale.getDefault())
                 val addresses = geocoder.getFromLocation(lat, lon, 1)
                 if (!addresses.isNullOrEmpty()) {

@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -86,5 +87,10 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         zeneAPI.sendConnectMessage(email, message).catch { }.collectLatest {
             connectUserInfo(email)
         }
+    }
+
+    fun sendConnectLocation(email: String?) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.sendConnectLocation(email).catch { }.collectLatest { }
     }
 }
