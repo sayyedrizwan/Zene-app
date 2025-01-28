@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -389,9 +390,8 @@ object MainUtils {
     }
 
     fun openGoogleMapLocation(showDirection: Boolean, lat: Double, lon: Double, name: String) {
-        val d =
-            if (showDirection) Uri.parse("http://maps.google.com/maps?daddr=$lat,$lon")
-            else Uri.parse("geo:0,0?q=$lat,$lon(${name} Location)")
+        val d = if (showDirection) Uri.parse("http://maps.google.com/maps?daddr=$lat,$lon")
+        else Uri.parse("geo:0,0?q=$lat,$lon(${name} Location)")
         val intent = Intent(Intent.ACTION_VIEW, d)
         intent.setPackage("com.google.android.apps.maps")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -412,4 +412,8 @@ object MainUtils {
                 ""
             }
         }
+
+    fun isNotificationEnabled(): Boolean {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled()
+    }
 }

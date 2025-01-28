@@ -26,12 +26,16 @@ import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.HOME
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SETTINGS
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
+import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.MainUtils.startAppService
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,18 +67,25 @@ class MainActivity : ComponentActivity() {
                             CONNECT -> HomeConnectView()
                             ENT -> EntertainmentNewsView()
                             SETTINGS -> {}
+                            NOTIFICATION -> NotificationViewScreenView(navigationViewModel)
                         }
 
                         HomeBottomNavigationView(
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )
+                        LaunchedEffect(Unit) {
+                            "runnned ".toast()
+                            delay(3.seconds)
+                            if (!isNotificationEnabled())
+                                navigationViewModel.setHomeNavSections(NOTIFICATION)
+                        }
                     } else if (showLogin) LoginView()
                 }
 
                 LaunchedEffect(Unit) {
                     delay(500)
                     showLogin = true
-
+                    "runnned ".toast()
                     delay(1.seconds)
                     startAppService(this@MainActivity)
                 }
@@ -87,10 +98,11 @@ class MainActivity : ComponentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
 
-        Intent(this, ConnectUserProfileActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
-            startActivity(this)
-        }
+//        Intent(this, ConnectUserProfileActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
+//            startActivity(this)
+//        }
+
     }
 }
