@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -73,21 +74,18 @@ class MainActivity : ComponentActivity() {
                         HomeBottomNavigationView(
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )
-                        LaunchedEffect(Unit) {
-                            "runnned ".toast()
-                            delay(3.seconds)
-                            if (!isNotificationEnabled())
-                                navigationViewModel.setHomeNavSections(NOTIFICATION)
-                        }
                     } else if (showLogin) LoginView()
                 }
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(userInfo?.email) {
                     delay(500)
                     showLogin = true
-                    "runnned ".toast()
                     delay(1.seconds)
                     startAppService(this@MainActivity)
+
+                    delay(4.seconds)
+                    if (!isNotificationEnabled() && userInfo?.isLoggedIn() == true)
+                        navigationViewModel.setHomeNavSections(NOTIFICATION)
                 }
             }
         }
@@ -98,11 +96,17 @@ class MainActivity : ComponentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
 
-//        Intent(this, ConnectUserProfileActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
-//            startActivity(this)
+//        val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
+//            putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+//            putExtra(Settings.EXTRA_CHANNEL_ID, 1)
 //        }
+//        startActivity(intent)
+
+        Intent(this, ConnectUserProfileActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
+            startActivity(this)
+        }
 
     }
 }

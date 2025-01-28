@@ -50,11 +50,11 @@ class ForegroundService : Service() {
 
             val mainIntent = Intent(this, MainActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(
-                this, 1011, mainIntent, PendingIntent.FLAG_IMMUTABLE
+                this, 2, mainIntent, PendingIntent.FLAG_IMMUTABLE
             )
             val notificationBuilder = NotificationCompat.Builder(this, packageManager.toString())
             val notification: Notification = notificationBuilder.setOngoing(true)
-                .setSmallIcon(R.mipmap.logo)
+                .setSmallIcon(R.drawable.zene_logo)
                 .setContentTitle("Zene is running..")
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setContentIntent(pendingIntent)
@@ -65,7 +65,7 @@ class ForegroundService : Service() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
                 else 0
 
-            ServiceCompat.startForeground(this, 1011, notification, serviceType)
+            ServiceCompat.startForeground(this, 1, notification, serviceType)
         } catch (e: Exception) {
             e.printStackTrace()
         }

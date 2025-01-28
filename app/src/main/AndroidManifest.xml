@@ -116,7 +116,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_white_logo" />
+            android:resource="@drawable/zene_logo" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"

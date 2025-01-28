@@ -22,11 +22,15 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun NotificationViewScreenView(navViewModel: NavigationViewModel) {
+    val notificationInfo = stringResource(R.string.click_on_notification_enable_switch)
+
     Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
         Spacer(Modifier.height(6.dp))
         TextViewSemiBold(
@@ -45,7 +49,10 @@ fun NotificationViewScreenView(navViewModel: NavigationViewModel) {
         )
         Spacer(Modifier.height(45.dp))
         ButtonHeavy(stringResource(R.string.enable_notification)) {
-
+            notificationInfo.toast()
+            notificationInfo.toast()
+            openAppSettings()
+            navViewModel.setHomeNavSections(HomeNavSelector.HOME)
         }
         Spacer(Modifier.height(20.dp))
         Box(Modifier.clickable { navViewModel.setHomeNavSections(HomeNavSelector.HOME) }) {
