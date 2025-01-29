@@ -323,28 +323,6 @@ object MainUtils {
         }
     }
 
-    fun loadIcon(context: Context, url: String?, placeHolder: Int): BitmapDescriptor? {
-        try {
-            var bitmap: Bitmap? = null
-            Glide.with(context).asBitmap().load(url).error(placeHolder)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap, transition: Transition<in Bitmap>?
-                    ) {
-                        bitmap = resource
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-
-                    }
-                })
-            return BitmapDescriptorFactory.fromBitmap(bitmap!!)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
 
     fun openAppSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

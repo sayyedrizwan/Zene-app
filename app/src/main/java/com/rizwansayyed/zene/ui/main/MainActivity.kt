@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -31,17 +30,21 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SETTINGS
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
+import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.MainUtils.startAppService
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
+
+var info = true
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -74,11 +77,16 @@ class MainActivity : ComponentActivity() {
                         HomeBottomNavigationView(
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )
+
+                        if (navigationViewModel.homeNotificationSection != null)
+                            NotificationConnectLocationShare(navigationViewModel)
+
                     } else if (showLogin) LoginView()
                 }
 
                 LaunchedEffect(userInfo?.email) {
                     delay(500)
+                    IntentCheckUtils(intent, navigationViewModel)
                     showLogin = true
                     delay(1.seconds)
                     startAppService(this@MainActivity)
@@ -89,6 +97,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        IntentCheckUtils(intent, navigationViewModel)
     }
 
     override fun onStart() {
@@ -102,11 +115,13 @@ class MainActivity : ComponentActivity() {
 //        }
 //        startActivity(intent)
 
-        Intent(this, ConnectUserProfileActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
-            startActivity(this)
-        }
-
+//        if (info) {
+//            info = false
+//            Intent(this, ConnectUserProfileActivity::class.java).apply {
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
+//                startActivity(this)
+//            }
+//        }
     }
 }

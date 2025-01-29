@@ -18,11 +18,13 @@ import com.rizwansayyed.zene.ui.main.MainActivity
 
 
 class NotificationUtils(
-    private val title: String, private val desc: String, private val intent: Intent? = null
+    private val title: String, private val desc: String
 ) {
 
     companion object {
         val channelIdForUpdates = "${context.packageName}_zene_update_alert"
+
+        val updateNameAlert = context.resources.getString(R.string.zene_update_alerts)
     }
 
     private val notificationManager by lazy {
@@ -32,19 +34,21 @@ class NotificationUtils(
     private var sound =
         Uri.parse((ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName) + "/" + R.raw.notification_sound)
 
-    private var attributes = AudioAttributes.Builder()
-        .setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
+    private var attributes =
+        AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
 
-    init {
-        start()
-    }
+    private var channelID = ""
+    private var notificationIntent: Intent? = null
+    private var notificationName: String? = null
+
+    fun channelID(v: String) = apply { channelID = v }
+    fun setIntent(i: Intent) = apply { notificationIntent = i }
+    fun setName(v: String) = apply { notificationName = v }
 
     fun start() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = context.resources.getString(R.string.zene_update_alerts)
-            val importance = NotificationManager.IMPORTANCE_MAX
-            val mChannel = NotificationChannel(channelIdForUpdates, name, importance)
-            mChannel.description = name
+
+            val mChannel = NotificationChannel(channelID, notificationName, NotificationManager.IMPORTANCE_HIGH)
             mChannel.enableLights(true)
             mChannel.enableVibration(true)
             mChannel.setSound(sound, attributes)
@@ -55,13 +59,11 @@ class NotificationUtils(
         }
 
         val builder = NotificationCompat.Builder(context, channelIdForUpdates)
-            .setSmallIcon(R.drawable.zene_logo)
-            .setContentTitle(title).setContentText(desc)
+            .setSmallIcon(R.drawable.zene_logo).setContentTitle(title).setContentText(desc)
             .setStyle(NotificationCompat.BigTextStyle().bigText(desc))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH).setAutoCancel(true)
 
-        val mainIntent = intent ?: Intent(context, MainActivity::class.java)
+        val mainIntent = notificationIntent ?: Intent(context, MainActivity::class.java)
 
         val pendingIntent = PendingIntent.getActivity(
             context, (11..999).random(), mainIntent, PendingIntent.FLAG_IMMUTABLE

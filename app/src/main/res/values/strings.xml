@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Zene</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
+    <string name="zene_music_player">Zene Music Player</string>
     <string name="app_desc">Free Music, Podcast, Video, Entertainment. Everything You Love, All in One Place.</string>
     <string name="keep_up_with_your_entertainment">Keep up with your Entertainment</string>
     <string name="enable_push_notification_to_get_update">Enable push notification to get news/updates about your favourite musics, news, movies and many more</string>
@@ -68,6 +69,7 @@
     <string name="friends">Friends</string>
     <string name="chats">Chats</string>
     <string name="send_location">Send Location</string>
+    <string name="open_location">Open Location</string>
     <string name="accept">Accept</string>
     <string name="sent">Sent</string>
     <string name="add">Add</string>

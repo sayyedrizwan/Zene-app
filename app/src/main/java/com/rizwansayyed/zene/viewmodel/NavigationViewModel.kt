@@ -6,10 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
+import com.rizwansayyed.zene.utils.IntentFCMNotification
 
 class NavigationViewModel : ViewModel() {
     var homeSection by mutableStateOf(HomeSectionSelector.MUSIC)
     var homeNavSection by mutableStateOf(HomeNavSelector.HOME)
+    var homeNotificationSection by mutableStateOf<IntentFCMNotification?>(null)
 
     fun setHomeSections(v: HomeSectionSelector) {
         homeSection = v
@@ -17,5 +19,9 @@ class NavigationViewModel : ViewModel() {
 
     fun setHomeNavSections(v: HomeNavSelector) {
         homeNavSection = v
+    }
+
+    fun setHomeInfoNavigation(v: IntentFCMNotification?) {
+        homeNotificationSection = v
     }
 }

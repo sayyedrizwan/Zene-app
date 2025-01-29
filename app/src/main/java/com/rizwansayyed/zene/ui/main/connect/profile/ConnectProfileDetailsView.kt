@@ -218,38 +218,41 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             .fillMaxWidth()
             .padding(top = 10.dp), Arrangement.Center, Alignment.CenterVertically
     ) {
-        Column(Modifier.weight(1f)) {
-            TextViewSemiBold(data.user?.name ?: "", 25)
-            TextViewNormal("@${data.user?.username}", 14)
+        if (data.user?.email != null && data.user.username != null) {
+            Column(Modifier.weight(1f)) {
+                TextViewSemiBold(data.user.name ?: "", 25)
+                TextViewNormal("@${data.user.username}", 14)
 
-            if (data.user?.isUserLocation() == true) TextViewNormal(areaName, 14)
-            else TextViewNormal(data.user?.country ?: "", 14)
-        }
-        when (data.status?.isConnected()) {
-            ConnectedUserStatus.FRIENDS -> ButtonWithBorder(R.string.friends) {
-                unFriendAlert = true
+                if (data.user.isUserLocation()) TextViewNormal(areaName, 14)
+                else TextViewNormal(data.user.country ?: "", 14)
             }
 
-            ConnectedUserStatus.REQUESTED -> {
-                if (data.didRequestToYou == true) {
-                    Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
-                        ButtonWithBorder(R.string.accept) {
-                            viewModel.acceptConnectRequest(data.user?.email)
-                        }
-
-                        Row(Modifier.clickable {
-                            data.user?.email?.let { viewModel.doRemove(it, true) }
-                        }) {
-                            ImageIcon(R.drawable.ic_delete, 20)
-                        }
-                    }
-                } else ButtonWithBorder(R.string.sent) {
-                    showRequestSentAlert = true
+            when (data.status?.isConnected()) {
+                ConnectedUserStatus.FRIENDS -> ButtonWithBorder(R.string.friends) {
+                    unFriendAlert = true
                 }
-            }
 
-            ConnectedUserStatus.NONE, null -> ButtonWithBorder(R.string.add) {
-                viewModel.updateAddStatus(data, false)
+                ConnectedUserStatus.REQUESTED -> {
+                    if (data.didRequestToYou == true) {
+                        Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
+                            ButtonWithBorder(R.string.accept) {
+                                viewModel.acceptConnectRequest(data.user?.email)
+                            }
+
+                            Row(Modifier.clickable {
+                                data.user?.email?.let { viewModel.doRemove(it, true) }
+                            }) {
+                                ImageIcon(R.drawable.ic_delete, 20)
+                            }
+                        }
+                    } else ButtonWithBorder(R.string.sent) {
+                        showRequestSentAlert = true
+                    }
+                }
+
+                ConnectedUserStatus.NONE, null -> ButtonWithBorder(R.string.add) {
+                    viewModel.updateAddStatus(data, false)
+                }
             }
         }
     }

@@ -13,6 +13,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.main.MainActivity
 
@@ -35,7 +36,7 @@ class ForegroundService : Service() {
 
     private fun startForegroundNotification() {
         try {
-            val channelName = "My Background Service"
+            val channelName = context.resources.getString(R.string.zene_music_player)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel(
                     packageManager.toString(), channelName, NotificationManager.IMPORTANCE_NONE
@@ -43,7 +44,6 @@ class ForegroundService : Service() {
                     lightColor = Color.BLUE
                     lockscreenVisibility = Notification.VISIBILITY_PRIVATE
                     val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                    checkNotNull(manager)
                     manager.createNotificationChannel(this)
                 }
             }
