@@ -43,9 +43,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
-var info = true
-
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -108,20 +105,5 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
-
-//        val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
-//            putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-//            putExtra(Settings.EXTRA_CHANNEL_ID, 1)
-//        }
-//        startActivity(intent)
-
-//        if (info) {
-//            info = false
-//            Intent(this, ConnectUserProfileActivity::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                putExtra(Intent.ACTION_MAIN, "shabnamsayyed9323@gmail.com")
-//                startActivity(this)
-//            }
-//        }
     }
 }

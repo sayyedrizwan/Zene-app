@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,10 +27,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberMarkerState
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.utils.MainUtils.getBitmapFromURL
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
@@ -38,6 +45,30 @@ fun MainMarkerView(currentLatLng: LatLng) {
         keys = arrayOf(1), state = mainUserMarker, title = userInfo?.name
     ) {
         MapMarkerUI(userInfo?.photo, true)
+    }
+}
+
+@Composable
+fun UsersMainMarkerView(user: ConnectUserResponse) {
+    var latLon by remember { mutableStateOf<LatLng?>(null) }
+    if (latLon != null) {
+        val mainUserMarker = rememberMarkerState(position = latLon!!)
+
+        MarkerComposable(
+            keys = arrayOf(user.email ?: ""), state = mainUserMarker, title = user.name
+        ) {
+            MapMarkerUI(user.profile_photo, false)
+        }
+    }
+    LaunchedEffect(Unit) {
+        delay((3..7).random().seconds)
+        try {
+            val lat = user.location?.substringBefore(",")?.trim()?.toDouble() ?: 0.0
+            val lon = user.location?.substringAfter(",")?.trim()?.toDouble() ?: 0.0
+            latLon = LatLng(lat, lon)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
 

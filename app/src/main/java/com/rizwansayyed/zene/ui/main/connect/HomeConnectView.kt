@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -21,6 +22,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking.Companion.updateLocationLat
@@ -29,6 +31,7 @@ import com.rizwansayyed.zene.ui.main.connect.connectview.ConnectStatusView
 import com.rizwansayyed.zene.ui.main.connect.view.LocationPermissionView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.MainUtils.isLocationPermissionGranted
+import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -43,6 +46,8 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun HomeConnectView() {
     val coroutines = rememberCoroutineScope()
+    val connectViewModel: ConnectViewModel = hiltViewModel()
+
     var locationPermission by remember { mutableStateOf(false) }
     var isEveryShownLocationPermission by remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
@@ -52,7 +57,7 @@ fun HomeConnectView() {
     var currentLatLng by remember { mutableStateOf<LatLng?>(null) }
 
     BottomSheetScaffold(
-        { ConnectStatusView() },
+        { ConnectStatusView(connectViewModel) },
         Modifier.fillMaxSize(),
         sheetPeekHeight = 280.dp,
         sheetContentColor = MainColor,
@@ -71,6 +76,14 @@ fun HomeConnectView() {
                 properties = properties
             ) {
                 currentLatLngUser?.let { it1 -> MainMarkerView(it1) }
+                when (val v = connectViewModel.connectUserList) {
+                    ResponseResult.Empty -> {}
+                    is ResponseResult.Error -> {}
+                    ResponseResult.Loading -> {}
+                    is ResponseResult.Success -> v.data.forEach { u ->
+                        if (u.user?.isUserLocation() == true) UsersMainMarkerView(u.user)
+                    }
+                }
             }
 
 

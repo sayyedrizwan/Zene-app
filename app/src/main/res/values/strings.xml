@@ -77,6 +77,7 @@
     <string name="resend">Resend</string>
     <string name="view">View</string>
     <string name="invite">Invite</string>
+    <string name="you_have_no_friends">You have no friends</string>
     <string name="click_on_notification_enable_switch">Click on Notifications -> Enable Switch.</string>
     <string name="no_user_found">No User found :(</string>
     <string name="need_location_permission_to_read_contact">Need location permission to read contact.</string>

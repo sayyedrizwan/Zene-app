@@ -57,6 +57,19 @@ fun HorizontalShimmerLoadingCard() {
 }
 
 @Composable
+fun HorizontalCircleShimmerLoadingCard() {
+    LazyRow(Modifier.fillMaxSize()) {
+        items(9) {
+            ShimmerEffect(
+                modifier = Modifier
+                    .padding(horizontal = 9.dp)
+                    .size(170.dp).clip(RoundedCornerShape(100)), durationMillis = 1000
+            )
+        }
+    }
+}
+
+@Composable
 fun FullUsersShimmerLoadingCard() {
     Row(
         Modifier

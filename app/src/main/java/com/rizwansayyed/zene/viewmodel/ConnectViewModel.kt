@@ -9,8 +9,6 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
-import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -24,6 +22,9 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
     var connectSearch by mutableStateOf<ResponseResult<List<ConnectUserResponse>>>(ResponseResult.Empty)
     var connectUserInfo by mutableStateOf<ResponseResult<ConnectUserInfoResponse>>(ResponseResult.Empty)
+    var connectUserList by mutableStateOf<ResponseResult<List<ConnectUserInfoResponse>>>(
+        ResponseResult.Empty
+    )
 
     fun searchConnectUsers(q: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.searchConnect(q).onStart {
@@ -32,6 +33,17 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             connectSearch = ResponseResult.Error(it)
         }.collectLatest {
             connectSearch = ResponseResult.Success(it)
+        }
+    }
+
+    fun connectFriendsList() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.connectFriendsList().onStart {
+            if (connectUserList !is ResponseResult.Success)
+                connectUserList = ResponseResult.Loading
+        }.catch {
+            connectUserList = ResponseResult.Error(it)
+        }.collectLatest {
+            connectUserList = ResponseResult.Success(it)
         }
     }
 
@@ -82,12 +94,13 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
-    fun sendConnectMessage(email: String?, message: String) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
-        zeneAPI.sendConnectMessage(email, message).catch { }.collectLatest {
-            connectUserInfo(email)
+    fun sendConnectMessage(email: String?, message: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            email ?: return@launch
+            zeneAPI.sendConnectMessage(email, message).catch { }.collectLatest {
+                connectUserInfo(email)
+            }
         }
-    }
 
     fun sendConnectLocation(email: String?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
