@@ -32,6 +32,7 @@ enum class ConnectedUserStatus {
 data class ConnectUserResponse(
     val country: String?,
     val email: String?,
+    val connect_status: String?,
     val last_seen: Long?,
     val location: String?,
     val name: String?,

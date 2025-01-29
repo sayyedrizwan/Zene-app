@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -219,12 +220,18 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             .padding(top = 10.dp), Arrangement.Center, Alignment.CenterVertically
     ) {
         if (data.user?.email != null && data.user.username != null) {
-            Column(Modifier.weight(1f)) {
+            Column(Modifier.weight(1f).padding(bottom = 5.dp)) {
                 TextViewSemiBold(data.user.name ?: "", 25)
                 TextViewNormal("@${data.user.username}", 14)
 
                 if (data.user.isUserLocation()) TextViewNormal(areaName, 14)
                 else TextViewNormal(data.user.country ?: "", 14)
+
+                if (data.user.connect_status != null) {
+                    Spacer(Modifier.height(5.dp))
+                    TextViewBold("\uD83E\uDD14 \uD83D\uDC49  '${data.user.connect_status}'", 20)
+                    Spacer(Modifier.height(10.dp))
+                }
             }
 
             when (data.status?.isConnected()) {
@@ -236,11 +243,11 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                     if (data.didRequestToYou == true) {
                         Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
                             ButtonWithBorder(R.string.accept) {
-                                viewModel.acceptConnectRequest(data.user?.email)
+                                viewModel.acceptConnectRequest(data.user.email)
                             }
 
                             Row(Modifier.clickable {
-                                data.user?.email?.let { viewModel.doRemove(it, true) }
+                                data.user.email.let { viewModel.doRemove(it, true) }
                             }) {
                                 ImageIcon(R.drawable.ic_delete, 20)
                             }

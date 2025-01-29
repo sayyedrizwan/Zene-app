@@ -67,6 +67,8 @@ fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
             )
             Spacer(Modifier.height(5.dp))
             TextViewNormal(user.user?.name ?: "", 15, line = 1)
+            Spacer(Modifier.height(2.dp))
+            TextViewNormal(user.user?.connect_status ?: "", 15, line = 1)
             Spacer(Modifier.height(10.dp))
         }
 

@@ -67,6 +67,7 @@
     <string name="play">Play</string>
     <string name="confirm">Confirm</string>
     <string name="friends">Friends</string>
+    <string name="status">Status</string>
     <string name="chats">Chats</string>
     <string name="send_location">Send Location</string>
     <string name="open_location">Open Location</string>
