@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.connect_status.view
 
+import android.graphics.PointF
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -53,6 +55,7 @@ fun ConnectVibingSnapAlert() {
     var isCameraBack by remember { mutableStateOf(true) }
     var isFlashLight by remember { mutableStateOf(false) }
     var isVideo by remember { mutableStateOf(false) }
+
     val lifecycleOwner = LocalLifecycleOwner.current
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -93,8 +96,7 @@ fun ConnectVibingSnapAlert() {
 
             Spacer(Modifier.height(10.dp))
             Box(Modifier.clickable {
-                isFlashLight = !isFlashLight
-                cameraUtils?.cameraFlash(isFlashLight)
+                isVideo = !isVideo
             }) {
                 if (isVideo) ImageIcon(R.drawable.ic_camera, size = 20)
                 else ImageIcon(R.drawable.ic_camera_video, size = 20)

@@ -1,24 +1,36 @@
 package com.rizwansayyed.zene.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.os.Build
+import android.os.Looper
+import android.view.MotionEvent
 import android.view.Surface
+import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.DisplayOrientedMeteringPointFactory
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import androidx.camera.core.SurfaceOrientedMeteringPointFactory
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toFile
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LifecycleOwner
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -56,6 +68,67 @@ class ImageCapturingView(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    fun startFocus() {
+        previewMain.afterMeasured {
+            previewMain.setOnTouchListener { _, event ->
+                return@setOnTouchListener when (event.action) {
+                    MotionEvent.ACTION_DOWN -> true
+                    MotionEvent.ACTION_UP -> {
+                        val factory = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            DisplayOrientedMeteringPointFactory(
+                                ctx.display,
+                                camera?.cameraInfo!!,
+                                previewMain.width.toFloat(),
+                                previewMain.height.toFloat()
+                            )
+                        } else {
+                            SurfaceOrientedMeteringPointFactory(
+                                previewMain.width.toFloat(), previewMain.height.toFloat()
+                            )
+                        }
+
+                        val autoFocusPoint = factory.createPoint(event.x, event.y)
+                        try {
+                            camera?.cameraControl?.startFocusAndMetering(
+                                FocusMeteringAction.Builder(
+                                    autoFocusPoint, FocusMeteringAction.FLAG_AF
+                                ).apply {
+                                    disableAutoCancel()
+                                }.build()
+                            )
+                            showFocusCircle(event.x, event.y)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }
+    }
+
+    private val circle = View(ctx)
+    private fun showFocusCircle(x: Float, y: Float) {
+        previewMain.removeView(circle)
+        val params = FrameLayout.LayoutParams(100, 100)
+        params.leftMargin = (x - 75).toInt()
+        params.topMargin = (y - 75).toInt()
+
+        circle.layoutParams = params
+        circle.background =
+            ResourcesCompat.getDrawable(ctx.resources, R.drawable.rounded_circle_border, null)
+        circle.visibility = View.VISIBLE
+        previewMain.addView(circle)
+
+        android.os.Handler(Looper.getMainLooper()).postDelayed({
+            previewMain.removeView(circle)
+        }, 1000)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     fun generateCameraPreview() {
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
@@ -78,7 +151,7 @@ class ImageCapturingView(
                 camera = cameraProvider.bindToLifecycle(
                     lifecycleOwner, cameraSelector, preview, imageCapture, imageAnalysis
                 )
-
+                startFocus()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -112,7 +185,11 @@ class ImageCapturingView(
     }
 
     fun compressImageHighQuality(
-        imageFile: File, targetFile: File, maxWidth: Int = 3048, maxHeight: Int = 3048, quality: Int = 50
+        imageFile: File,
+        targetFile: File,
+        maxWidth: Int = 3048,
+        maxHeight: Int = 3048,
+        quality: Int = 50
     ): Boolean {
         try {
             val exifInterface = ExifInterface(imageFile)
@@ -162,5 +239,21 @@ class ImageCapturingView(
             e.printStackTrace()
             return false
         }
+    }
+}
+
+inline fun View.afterMeasured(crossinline block: () -> Unit) {
+    if (measuredWidth > 0 && measuredHeight > 0) {
+        block()
+    } else {
+        viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                if (measuredWidth > 0 && measuredHeight > 0) {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    block()
+                }
+            }
+        })
     }
 }
