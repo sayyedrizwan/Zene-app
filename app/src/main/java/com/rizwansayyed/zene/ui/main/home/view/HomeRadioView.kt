@@ -46,27 +46,27 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                     Spacer(Modifier.height(30.dp))
                 }
 
-                item {
+                if (v.data.recent?.isNotEmpty() == true) item {
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.top_recent), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.recent ?: emptyList()) {
+                        items(v.data.recent) {
                             ItemSmallCardView(it)
                         }
                     }
                     Spacer(Modifier.height(30.dp))
                 }
 
-                item {
+                if (v.data.countryRadio?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.radio_in_your_country), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.countryRadio ?: emptyList()) {
+                        items(v.data.countryRadio) {
                             ItemCardView(it)
                         }
                     }
@@ -74,7 +74,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                 }
 
 
-                item {
+                if (v.data.countries?.isNotEmpty() == true) item {
                     Column(Modifier.fillMaxWidth()) {
                         Spacer(Modifier.height(50.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
@@ -82,7 +82,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         FlowRow(Modifier.fillMaxWidth()) {
-                            v.data.countries?.forEach {
+                            v.data.countries.forEach {
                                 TextViewBorder(it?.name ?: "") {
 
                                 }
@@ -91,7 +91,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                item {
+                if (v.data.exploreRadio?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.explore_more_radios), 23)
@@ -104,7 +104,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                             .fillMaxWidth()
                             .heightIn(max = 500.dp)
                     ) {
-                        items(v.data.exploreRadio ?: emptyList()) {
+                        items(v.data.exploreRadio) {
                             ItemCardView(it)
                         }
                     }

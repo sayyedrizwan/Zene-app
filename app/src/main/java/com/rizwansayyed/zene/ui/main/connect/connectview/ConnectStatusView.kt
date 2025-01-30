@@ -32,7 +32,7 @@ fun ConnectStatusTopView() {
                 context.startActivity(this)
             }
         }) {
-            ImageIcon(R.drawable.ic_layer_add, 23)
+            ImageIcon(R.drawable.ic_layer_add, 25)
         }
     }
     Spacer(Modifier.height(12.dp))

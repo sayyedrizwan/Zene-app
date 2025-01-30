@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
+import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileActivity
@@ -105,5 +106,10 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
+
+        Intent(this, ConnectStatusActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(this)
+        }
     }
 }
