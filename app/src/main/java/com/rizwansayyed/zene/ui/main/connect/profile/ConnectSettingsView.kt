@@ -1,11 +1,14 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -15,6 +18,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -22,6 +26,7 @@ import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 
@@ -31,7 +36,7 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
     TextViewBold(stringResource(R.string.settings_), 20)
 
     Spacer(Modifier.height(30.dp))
-    SettingsViewItems(
+    SettingsViewSwitchItems(
         R.drawable.ic_music_note,
         R.string.share_your_music,
         R.string.share_your_music_desc,
@@ -42,7 +47,7 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
     }
 
     Spacer(Modifier.height(30.dp))
-    SettingsViewItems(
+    SettingsViewSwitchItems(
         R.drawable.ic_location,
         R.string.share_your_location,
         R.string.share_your_location_desc,
@@ -54,7 +59,7 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
     }
 
     Spacer(Modifier.height(30.dp))
-    SettingsViewItems(
+    SettingsViewSwitchItems(
         R.drawable.ic_notification_off,
         R.string.share_notification,
         R.string.share_notification_desc,
@@ -68,7 +73,13 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
 }
 
 @Composable
-fun SettingsViewItems(img: Int, title: Int, desc: Int, value: Boolean?, change: (Boolean) -> Unit) {
+fun SettingsViewSwitchItems(
+    img: Int,
+    title: Int,
+    desc: Int,
+    value: Boolean?,
+    change: (Boolean) -> Unit
+) {
     Row(
         Modifier
             .padding(2.dp)
@@ -99,5 +110,32 @@ fun SettingsViewItems(img: Int, title: Int, desc: Int, value: Boolean?, change: 
         } else {
             null
         })
+    }
+}
+
+
+@Composable
+fun SettingsViewSimpleItems(img: Int, title: Int, click: () -> Unit) {
+    Row(
+        Modifier
+            .padding(2.dp)
+            .fillMaxWidth()
+            .clickable { click() }, Arrangement.Center, Alignment.CenterVertically
+    ) {
+        ImageIcon(img, 24)
+
+        Column(
+            Modifier
+                .padding(horizontal = 10.dp)
+                .weight(1f)
+                .offset(y = 2.dp),
+            Arrangement.Center, Alignment.Start
+        ) {
+            TextViewLight(stringResource(title), 16)
+        }
+
+        Box(Modifier.rotate(-90f)) {
+            ImageIcon(R.drawable.ic_arrow_down, 20)
+        }
     }
 }

@@ -109,5 +109,12 @@ dependencies {
 
     implementation(libs.truecaller)
 
+
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera2)
+    implementation(libs.camera.view)
+    implementation(libs.camera.core)
+
     implementation("com.vanniktech:android-image-cropper:4.6.0")
+    implementation("androidx.exifinterface:exifinterface:1.3.3")
 }

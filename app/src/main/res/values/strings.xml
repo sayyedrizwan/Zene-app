@@ -53,6 +53,7 @@
     <string name="enter_your_message">Enter your message</string>
     <string name="search_email_name_username">Enter name or username to search</string>
     <string name="enter_your_name">Enter your name</string>
+    <string name="add_a_caption">Add a caption…</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>
     <string name="enable_notification">Enable notification</string>
@@ -60,6 +61,11 @@
     <string name="enter_otp_send_to_your_phone_number">Enter otp send to your phone number</string>
     <string name="settings">settings</string>
     <string name="settings_">Settings</string>
+    <string name="attach_photo_video">Attach Photo/Video</string>
+    <string name="add_a_jam">Add a Jam</string>
+    <string name="add_a_emoji">Add a Emoji</string>
+    <string name="add_location">Add Location</string>
+    <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
     <string name="entertainment">entertainment</string>
     <string name="entertainment_short">ent.</string>
