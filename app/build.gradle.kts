@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.rizwansayyed.zene"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -117,4 +117,5 @@ dependencies {
 
     implementation("com.vanniktech:android-image-cropper:4.6.0")
     implementation("androidx.exifinterface:exifinterface:1.3.3")
+    implementation("com.arthenica:ffmpeg-kit-full:6.0-2")
 }

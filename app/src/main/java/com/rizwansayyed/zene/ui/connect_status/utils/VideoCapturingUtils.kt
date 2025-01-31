@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import android.view.MotionEvent
 import android.view.Surface
+import androidx.annotation.OptIn
 import androidx.camera.camera2.interop.Camera2CameraInfo
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -28,14 +29,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
+import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.ReturnCode
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.afterMeasured
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.selectorHD
+import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeCompressedVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInSeconds
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 class VideoCapturingUtils(
     private val previewMain: PreviewView,
@@ -48,9 +55,9 @@ class VideoCapturingUtils(
     private var videoCaptureCamera: VideoCapture<Recorder>? = null
 
     private var vidRecording: Recording? = null
-    private var isBack: Boolean = true
+    private var isBack: Boolean = false
     var videoRecordEvent by mutableStateOf<VideoRecordEvent?>(null)
-    var currentRecordingDuration by mutableStateOf(System.currentTimeMillis())
+    private var currentRecordingDuration by mutableStateOf(System.currentTimeMillis())
     var currentRecordingDifference by mutableStateOf(0L)
     var isFlashLight by mutableStateOf(false)
 
@@ -110,23 +117,27 @@ class VideoCapturingUtils(
         }
     }
 
+    @OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
     @SuppressLint("ClickableViewAccessibility")
     fun generateVideoPreview() {
         stopVideo()
         clearCamera()
         val cameraProvider = cameraProviderFuture.get()
         val cameraInfo = cameraProvider.availableCameraInfos.filter {
-            if (isBack)
-                Camera2CameraInfo.from(it)
-                    .getCameraCharacteristic(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_BACK
-            else
-                Camera2CameraInfo.from(it)
-                    .getCameraCharacteristic(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_FRONT
+            if (isBack) Camera2CameraInfo.from(it)
+                .getCameraCharacteristic(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_BACK
+            else Camera2CameraInfo.from(it)
+                .getCameraCharacteristic(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_FRONT
         }
-        val supportedQualities = QualitySelector.getSupportedQualities(cameraInfo[0])
-        val filteredQualities =
-            arrayListOf(Quality.FHD, Quality.HD, Quality.SD).filter { supportedQualities.contains(it) }
 
+        val supportedQualities = QualitySelector.getSupportedQualities(cameraInfo[0])
+        val filteredQualities = arrayListOf(
+            Quality.FHD, Quality.HD, Quality.SD
+        ).filter { supportedQualities.contains(it) }
+
+        filteredQualities.forEach {
+            Log.d("TAG", "generateVideoPreview: ${it}")
+        }
         cameraProviderFuture.addListener({
             val qualitySelector = QualitySelector.from(filteredQualities[0])
 
@@ -170,7 +181,37 @@ class VideoCapturingUtils(
             else if (it is VideoRecordEvent.Status) {
                 currentRecordingDifference = timeDifferenceInSeconds(currentRecordingDuration)
                 if (timeDifferenceInSeconds(currentRecordingDuration) >= 15) stopVideo()
+            } else if (it is VideoRecordEvent.Finalize && !it.hasError()) {
+                compressVideo(it.outputResults.outputUri.toFile(), vibeCompressedVideoFile)
             }
+        }
+    }
+
+    fun compressVideo(inputFile: File, outputFile: File) {
+        val cmd =
+            "-i ${inputFile.absolutePath} -c:v libx264 -preset ultrafast -crf 18 -c:a aac -b:a 128k ${outputFile.absolutePath}"
+
+        val session = FFmpegKit.execute(cmd)
+        if (ReturnCode.isSuccess(session.getReturnCode())) {
+            "done".toast()
+            // SUCCESS
+
+        } else if (ReturnCode.isCancel(session.getReturnCode())) {
+            "cancel".toast()
+            // CANCEL
+
+        } else {
+            Log.d(
+                "TAG",
+                String.format(
+                    "Command failed with state %s and rc %s.%s",
+                    session.getState(),
+                    session.getReturnCode(),
+                    session.getFailStackTrace()
+                )
+            );
+
+            "failed".toast()
         }
     }
 
