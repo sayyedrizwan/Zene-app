@@ -112,6 +112,7 @@ class VideoCapturingUtils(
 
     @SuppressLint("ClickableViewAccessibility")
     fun generateVideoPreview() {
+        stopVideo()
         clearCamera()
         val cameraProvider = cameraProviderFuture.get()
         val cameraInfo = cameraProvider.availableCameraInfos.filter {
@@ -124,7 +125,7 @@ class VideoCapturingUtils(
         }
         val supportedQualities = QualitySelector.getSupportedQualities(cameraInfo[0])
         val filteredQualities =
-            arrayListOf(Quality.FHD, Quality.HD).filter { supportedQualities.contains(it) }
+            arrayListOf(Quality.FHD, Quality.HD, Quality.SD).filter { supportedQualities.contains(it) }
 
         cameraProviderFuture.addListener({
             val qualitySelector = QualitySelector.from(filteredQualities[0])
