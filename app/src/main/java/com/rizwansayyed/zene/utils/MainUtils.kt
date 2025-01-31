@@ -352,6 +352,12 @@ object MainUtils {
         return timeDifferenceInMinutes
     }
 
+    fun timeDifferenceInSeconds(ts: Long): Long {
+        val currentTime = System.currentTimeMillis()
+        val timeDifferenceInSec = TimeUnit.MILLISECONDS.toSeconds(currentTime - ts)
+        return timeDifferenceInSec
+    }
+
     fun openShareConnectShareSMS(url: String, number: String?) {
         val uri = Uri.parse(java.lang.String.format("smsto:%s", number))
         val smsIntent = Intent(Intent.ACTION_SENDTO, uri)

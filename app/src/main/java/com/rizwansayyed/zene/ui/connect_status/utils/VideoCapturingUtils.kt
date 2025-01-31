@@ -1,9 +1,11 @@
 package com.rizwansayyed.zene.ui.connect_status.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraMetadata
 import android.os.Build
+import android.util.Log
 import android.view.MotionEvent
 import android.view.Surface
 import androidx.camera.camera2.interop.Camera2CameraInfo
@@ -30,13 +32,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.afterMeasured
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.selectorHD
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
-import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInSeconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 class VideoCapturingUtils(
     private val previewMain: PreviewView,
@@ -49,10 +48,10 @@ class VideoCapturingUtils(
     private var videoCaptureCamera: VideoCapture<Recorder>? = null
 
     private var vidRecording: Recording? = null
-    private var recordingJob: Job? = null
     private var isBack: Boolean = true
     var videoRecordEvent by mutableStateOf<VideoRecordEvent?>(null)
-    var currentRecordingDuration by mutableStateOf(0)
+    var currentRecordingDuration by mutableStateOf(System.currentTimeMillis())
+    var currentRecordingDifference by mutableStateOf(0L)
     var isFlashLight by mutableStateOf(false)
 
     fun changeCameraLens() {
@@ -73,7 +72,6 @@ class VideoCapturingUtils(
             e.printStackTrace()
         }
     }
-
 
     private fun startFocus(event: MotionEvent): Boolean {
         return when (event.action) {
@@ -112,11 +110,17 @@ class VideoCapturingUtils(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun generateVideoPreview() {
+        clearCamera()
         val cameraProvider = cameraProviderFuture.get()
         val cameraInfo = cameraProvider.availableCameraInfos.filter {
-            Camera2CameraInfo.from(it)
-                .getCameraCharacteristic(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_BACK
+            if (isBack)
+                Camera2CameraInfo.from(it)
+                    .getCameraCharacteristic(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_BACK
+            else
+                Camera2CameraInfo.from(it)
+                    .getCameraCharacteristic(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_FRONT
         }
         val supportedQualities = QualitySelector.getSupportedQualities(cameraInfo[0])
         val filteredQualities =
@@ -151,31 +155,26 @@ class VideoCapturingUtils(
     }
 
 
+    @SuppressLint("MissingPermission")
     fun captureVideo() {
-        "reeee".toast()
+        vibeVideoFile.delete()
         val outputOptions = FileOutputOptions.Builder(vibeVideoFile).build()
 
         vidRecording = videoCaptureCamera?.output?.prepareRecording(ctx, outputOptions)?.apply {
             withAudioEnabled()
         }?.start(ContextCompat.getMainExecutor(ctx)) {
-            it.recordingStats.toString().toast()
             videoRecordEvent = it
 
-            if (it is VideoRecordEvent.Start) {
-                recordingJob?.cancel()
-                currentRecordingDuration = 0
-                recordingJob = CoroutineScope(Dispatchers.IO).launch {
-                    while (true) {
-                        delay(1.seconds)
-                        currentRecordingDuration += 1
-                        if (currentRecordingDuration >= 15) stopVideo()
-                    }
-                }
-            } else recordingJob?.cancel()
+            if (it is VideoRecordEvent.Start) currentRecordingDuration = System.currentTimeMillis()
+            else if (it is VideoRecordEvent.Status) {
+                currentRecordingDifference = timeDifferenceInSeconds(currentRecordingDuration)
+                if (timeDifferenceInSeconds(currentRecordingDuration) >= 15) stopVideo()
+            }
         }
     }
 
-    private fun stopVideo() = CoroutineScope(Dispatchers.Main).launch {
+    fun stopVideo() = CoroutineScope(Dispatchers.Main).launch {
+        vidRecording?.stop()
         vidRecording?.close()
     }
 }

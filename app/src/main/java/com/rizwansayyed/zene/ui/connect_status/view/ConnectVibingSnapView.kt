@@ -2,6 +2,9 @@ package com.rizwansayyed.zene.ui.connect_status.view
 
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,10 +12,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -82,29 +87,47 @@ fun ConnectVibingSnapAlertNew(close: () -> Unit) {
 
             if (isRecordingStarted) {
                 var currentProgress by remember { mutableStateOf(0f) }
-
-                Box(Modifier.align(Alignment.BottomCenter)) {
-                    LinearProgressIndicator(
-                        progress = { currentProgress },
-                        modifier = Modifier.size(100.dp),
+                val progressAnimate by animateFloatAsState(
+                    targetValue = currentProgress, animationSpec = tween(
+                        durationMillis = 300, delayMillis = 50, easing = LinearOutSlowInEasing
+                    ), label = ""
+                )
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .clickable { videoCameraUtils?.stopVideo() }) {
+                    CircularProgressIndicator(
+                        progress = { progressAnimate },
+                        strokeWidth = 5.dp,
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .padding(bottom = 25.dp)
+                            .width(70.dp),
                         color = MainColor,
                         trackColor = Color.White,
                     )
+
+                    Box(
+                        Modifier
+                            .align(Alignment.Center)
+                            .offset(y = 2.dp)
+                    ) {
+                        ImageIcon(R.drawable.ic_stop, size = 25)
+                    }
                 }
 
-                LaunchedEffect(videoCameraUtils?.currentRecordingDuration) {
-                    currentProgress = (videoCameraUtils?.currentRecordingDuration?.toFloat()
-                        ?: (0 / 16 * 100)).toFloat()
+                LaunchedEffect(videoCameraUtils?.currentRecordingDifference) {
+                    currentProgress = ((videoCameraUtils?.currentRecordingDifference
+                        ?: 0).toFloat() / 15 * 100) / 100
                 }
             } else {
-                Spacer(
-                    Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(20.dp)
-                        .size(70.dp)
-                        .clip(RoundedCornerShape(100))
-                        .clickable { videoCameraUtils?.captureVideo() }
-                        .background(Color.White))
+                Spacer(Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(20.dp)
+                    .size(70.dp)
+                    .clip(RoundedCornerShape(100))
+                    .clickable { videoCameraUtils?.captureVideo() }
+                    .background(Color.White))
             }
 
             DisposableEffect(Unit) {
@@ -113,10 +136,10 @@ fun ConnectVibingSnapAlertNew(close: () -> Unit) {
 
             LaunchedEffect(videoCameraUtils?.videoRecordEvent) {
                 isRecordingStarted = when (videoCameraUtils?.videoRecordEvent) {
-                    is VideoRecordEvent.Start -> true
+                    is VideoRecordEvent.Status -> true
+                    is VideoRecordEvent.Finalize -> false
                     else -> false
                 }
-                "ssss".toast()
             }
         } else {
             AndroidView(
@@ -128,14 +151,13 @@ fun ConnectVibingSnapAlertNew(close: () -> Unit) {
                 }, modifier = Modifier.fillMaxSize()
             )
 
-            Spacer(
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(20.dp)
-                    .size(70.dp)
-                    .clip(RoundedCornerShape(100))
-                    .clickable { imageCameraUtils?.captureImage({}, {}) }
-                    .background(Color.White))
+            Spacer(Modifier
+                .align(Alignment.BottomCenter)
+                .padding(20.dp)
+                .size(70.dp)
+                .clip(RoundedCornerShape(100))
+                .clickable { imageCameraUtils?.captureImage({}, {}) }
+                .background(Color.White))
 
             DisposableEffect(Unit) {
                 onDispose { imageCameraUtils!!.clearCamera() }

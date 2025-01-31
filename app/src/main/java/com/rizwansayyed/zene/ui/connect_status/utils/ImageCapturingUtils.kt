@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Build
-import android.util.Log
 import android.view.MotionEvent
 import android.view.Surface
 import androidx.camera.core.Camera
@@ -30,7 +29,6 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.image
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.selectorHD
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeCompressedImageFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeImageFile
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -103,6 +101,7 @@ class ImageCapturingUtils(
 
     @SuppressLint("ClickableViewAccessibility")
     fun generateCameraPreview() {
+        clearCamera()
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder().setTargetRotation(Surface.ROTATION_0)
@@ -130,6 +129,7 @@ class ImageCapturingUtils(
     }
 
     fun captureImage(done: (File) -> Unit, error: () -> Unit) {
+        vibeImageFile.delete()
         val outputOptions = ImageCapture.OutputFileOptions.Builder(vibeImageFile).build()
 
         val callback = object : ImageCapture.OnImageSavedCallback {
@@ -151,7 +151,8 @@ class ImageCapturingUtils(
     }
 
     fun compressImageHighQuality(
-        imageFile: File, targetFile: File,
+        imageFile: File,
+        targetFile: File,
         maxWidth: Int = 3048,
         maxHeight: Int = 3048,
         quality: Int = 50
