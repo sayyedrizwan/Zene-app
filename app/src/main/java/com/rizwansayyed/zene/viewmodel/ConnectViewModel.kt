@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,8 +39,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
     fun connectFriendsList() = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.connectFriendsList().onStart {
-            if (connectUserList !is ResponseResult.Success)
-                connectUserList = ResponseResult.Loading
+            if (connectUserList !is ResponseResult.Success) connectUserList = ResponseResult.Loading
         }.catch {
             connectUserList = ResponseResult.Error(it)
         }.collectLatest {
@@ -51,8 +51,8 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         zeneAPI.connectUserInfo(email).onStart {
             if (connectUserInfo is ResponseResult.Empty) connectUserInfo = ResponseResult.Loading
         }.catch {
-            if (connectUserInfo is ResponseResult.Loading || connectUserInfo is ResponseResult.Empty)
-                connectUserInfo = ResponseResult.Error(it)
+            if (connectUserInfo is ResponseResult.Loading || connectUserInfo is ResponseResult.Empty) connectUserInfo =
+                ResponseResult.Error(it)
         }.collectLatest {
             connectUserInfo = ResponseResult.Success(it)
         }
@@ -105,5 +105,12 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun sendConnectLocation(email: String?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
         zeneAPI.sendConnectLocation(email).catch { }.collectLatest { }
+    }
+
+
+    var connectFileSelected by mutableStateOf<File?>(null)
+
+    fun updateVibeFileInfo(file: File?) = viewModelScope.launch(Dispatchers.IO) {
+        connectFileSelected = file
     }
 }

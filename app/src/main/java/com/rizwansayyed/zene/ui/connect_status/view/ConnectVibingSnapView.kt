@@ -42,11 +42,10 @@ import com.rizwansayyed.zene.ui.connect_status.utils.VideoCapturingUtils
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
-import com.rizwansayyed.zene.utils.ImageCapturingView
-import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 
 @Composable
-fun ConnectVibingSnapView() {
+fun ConnectVibingSnapView(viewModel: ConnectViewModel) {
     var showAlert by remember { mutableStateOf(false) }
     Spacer(Modifier.height(45.dp))
     SettingsViewSimpleItems(R.drawable.ic_camera, R.string.add_vibing_snap) {
@@ -56,14 +55,14 @@ fun ConnectVibingSnapView() {
     if (showAlert) Dialog(
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        ConnectVibingSnapAlertNew {
+        ConnectVibingSnapAlertNew(viewModel) {
             showAlert = false
         }
     }
 }
 
 @Composable
-fun ConnectVibingSnapAlertNew(close: () -> Unit) {
+fun ConnectVibingSnapAlertNew(viewModel: ConnectViewModel, close: () -> Unit) {
     var imageCameraUtils by remember { mutableStateOf<ImageCapturingUtils?>(null) }
     var videoCameraUtils by remember { mutableStateOf<VideoCapturingUtils?>(null) }
     var isVideoRecording by remember { mutableStateOf(false) }
@@ -132,7 +131,12 @@ fun ConnectVibingSnapAlertNew(close: () -> Unit) {
             }
 
             DisposableEffect(Unit) {
-                onDispose { videoCameraUtils?.clearCamera() }
+                onDispose {
+                    if (videoCameraUtils != null) {
+                        videoCameraUtils?.clearCamera()
+                        videoCameraUtils = null
+                    }
+                }
             }
 
             LaunchedEffect(videoCameraUtils?.videoRecordEvent) {
@@ -157,11 +161,16 @@ fun ConnectVibingSnapAlertNew(close: () -> Unit) {
                 .padding(20.dp)
                 .size(70.dp)
                 .clip(RoundedCornerShape(100))
-                .clickable { imageCameraUtils?.captureImage({}, {}) }
+                .clickable { imageCameraUtils?.captureImage() }
                 .background(Color.White))
 
             DisposableEffect(Unit) {
-                onDispose { imageCameraUtils!!.clearCamera() }
+                onDispose {
+                    if (imageCameraUtils != null) {
+                        imageCameraUtils?.clearCamera()
+                        imageCameraUtils = null
+                    }
+                }
             }
         }
 
@@ -178,7 +187,7 @@ fun ConnectVibingSnapAlertNew(close: () -> Unit) {
                     imageCameraUtils!!.changeCameraLens()
                     imageCameraUtils!!.generateCameraPreview()
                 } else if (videoCameraUtils != null) {
-                    videoCameraUtils?.changeCameraLens()
+                    videoCameraUtils!!.changeCameraLens()
                     videoCameraUtils!!.generateVideoPreview()
                 }
             }) {
@@ -212,109 +221,12 @@ fun ConnectVibingSnapAlertNew(close: () -> Unit) {
         else if (videoCameraUtils != null) isCameraTorch = videoCameraUtils!!.isFlashLight
     }
 
+    LaunchedEffect(imageCameraUtils?.vibeFiles, videoCameraUtils?.vibeFiles) {
+        if (imageCameraUtils?.vibeFiles != null) viewModel.updateVibeFileInfo(imageCameraUtils!!.vibeFiles)
+        else if (videoCameraUtils?.vibeFiles != null) viewModel.updateVibeFileInfo(videoCameraUtils!!.vibeFiles)
+    }
+
     LifecycleResumeEffect(Unit) {
         onPauseOrDispose { close() }
-    }
-}
-
-@Composable
-fun ConnectVibingSnapAlert() {
-    var cameraUtils by remember { mutableStateOf<ImageCapturingView?>(null) }
-    var isCameraBack by remember { mutableStateOf(true) }
-    var isFlashLight by remember { mutableStateOf(false) }
-    var isVideo by remember { mutableStateOf(false) }
-
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        AndroidView(
-            factory = { ctx ->
-                val previewView = PreviewView(ctx)
-                cameraUtils = ImageCapturingView(previewView, ctx, lifecycleOwner)
-                cameraUtils?.generateCameraPreview()
-                previewView
-            }, modifier = Modifier.fillMaxSize()
-        )
-
-
-        Column(
-            Modifier
-                .align(Alignment.TopEnd)
-                .padding(10.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Gray)
-                .padding(vertical = 10.dp, horizontal = 5.dp)
-        ) {
-            Box(Modifier.clickable {
-                isCameraBack = !isCameraBack
-                cameraUtils?.changeCamera(isCameraBack)
-                cameraUtils?.clearCamera()
-                if (isVideo) cameraUtils?.generateVideoPreview()
-                else cameraUtils?.generateCameraPreview()
-            }) {
-                ImageIcon(R.drawable.ic_camera_rotated, size = 20)
-            }
-
-            Spacer(Modifier.height(10.dp))
-            Box(Modifier.clickable {
-                isFlashLight = !isFlashLight
-                cameraUtils?.cameraFlash(isFlashLight)
-            }) {
-                if (isFlashLight) ImageIcon(R.drawable.ic_flash, size = 20)
-                else ImageIcon(R.drawable.ic_flash_off, size = 20)
-            }
-
-            Spacer(Modifier.height(10.dp))
-            Box(Modifier.clickable {
-                isVideo = !isVideo
-                cameraUtils?.clearCamera()
-                if (isVideo) cameraUtils?.generateVideoPreview()
-                else cameraUtils?.generateCameraPreview()
-            }) {
-                if (isVideo) ImageIcon(R.drawable.ic_camera, size = 20)
-                else ImageIcon(R.drawable.ic_camera_video, size = 20)
-            }
-        }
-
-
-        if (isVideo) {
-            var recordingEvents by remember { mutableStateOf<VideoRecordEvent?>(null) }
-
-            when (val v = recordingEvents) {
-                is VideoRecordEvent.Start -> {
-
-                }
-
-                is VideoRecordEvent.Finalize -> {
-                    recordingEvents = null
-                    if (!v.hasError()) {
-                        val msg = "Video capture succeeded: " + "${v.outputResults.outputUri}"
-
-                        msg.toast()
-                    }
-                }
-            }
-
-            fun clickVideo() {
-                cameraUtils?.captureVideo { recordingEvents = it }
-            }
-
-            if (recordingEvents == null) {
-                Spacer(
-                    Modifier
-                        .clickable { clickVideo() }
-                        .size(100.dp)
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.White))
-            }
-        } else {
-            Spacer(
-                Modifier
-                    .clickable { cameraUtils?.captureImage({ it.absoluteFile.toast() }, {}) }
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(100))
-                    .background(Color.White))
-        }
     }
 }

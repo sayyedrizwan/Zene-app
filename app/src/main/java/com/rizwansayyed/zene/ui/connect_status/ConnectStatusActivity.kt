@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -18,14 +20,18 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusCaptionView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopColumView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopHeaderView
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapView
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ConnectStatusActivity : ComponentActivity() {
+
+    private val connectViewModel: ConnectViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +48,12 @@ class ConnectStatusActivity : ComponentActivity() {
                 ) {
                     ConnectStatusTopColumView {
                         ConnectStatusTopHeaderView()
+                        if (connectViewModel.connectFileSelected != null)
+                            ConnectVibeItemView(connectViewModel)
+
                         ConnectStatusCaptionView(caption)
 
-                        ConnectVibingSnapView()
+                        ConnectVibingSnapView(connectViewModel)
 
                         Spacer(Modifier.height(30.dp))
                         SettingsViewSimpleItems(R.drawable.ic_folder, R.string.attach_photo_video) {
@@ -62,8 +71,10 @@ class ConnectStatusActivity : ComponentActivity() {
                         SettingsViewSimpleItems(R.drawable.ic_location, R.string.add_location) {
 
                         }
-
                     }
+                }
+                LaunchedEffect(Unit) {
+
                 }
             }
         }

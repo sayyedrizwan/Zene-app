@@ -40,9 +40,11 @@ class ImageCapturingUtils(
 ) {
     private val cameraUtils = CameraUtils(ctx, previewMain)
     private val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
+    private val cameraProvider = cameraProviderFuture.get()
     private var camera: Camera? = null
     private var isBack: Boolean = true
     var isFlashLight by mutableStateOf(false)
+    var vibeFiles by mutableStateOf<File?>(null)
 
     fun changeCameraLens() {
         isBack = !isBack
@@ -55,7 +57,6 @@ class ImageCapturingUtils(
 
     fun clearCamera() {
         try {
-            val cameraProvider = cameraProviderFuture.get()
             cameraProvider.unbindAll()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -103,7 +104,6 @@ class ImageCapturingUtils(
     fun generateCameraPreview() {
         clearCamera()
         cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder().setTargetRotation(Surface.ROTATION_0)
                 .setResolutionSelector(selectorHD).build().also {
                     it.surfaceProvider = previewMain.surfaceProvider
@@ -128,7 +128,7 @@ class ImageCapturingUtils(
         }, ContextCompat.getMainExecutor(ctx))
     }
 
-    fun captureImage(done: (File) -> Unit, error: () -> Unit) {
+    fun captureImage() {
         vibeImageFile.delete()
         val outputOptions = ImageCapture.OutputFileOptions.Builder(vibeImageFile).build()
 
@@ -136,15 +136,14 @@ class ImageCapturingUtils(
             override fun onImageSaved(file: ImageCapture.OutputFileResults?) {
                 file?.savedUri?.toFile()?.let {
                     val compressed = compressImageHighQuality(it, vibeCompressedImageFile)
-                    if (compressed) done(vibeCompressedImageFile)
-                    else done(it)
+                    if (compressed) vibeFiles = vibeCompressedImageFile
+                    else vibeFiles = it
                 }
             }
 
             override fun onError(p0: ImageCaptureException) {
-                error()
+                vibeFiles = null
             }
-
         }
 
         imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(ctx), callback)
