@@ -136,14 +136,12 @@ class ImageCapturingUtils(
             override fun onImageSaved(file: ImageCapture.OutputFileResults?) {
                 file?.savedUri?.toFile()?.let {
                     val compressed = compressImageHighQuality(it, vibeCompressedImageFile)
-                    compressed.toast()
                     if (compressed) done(vibeCompressedImageFile)
                     else done(it)
                 }
             }
 
             override fun onError(p0: ImageCaptureException) {
-                p0.message?.toast()
                 error()
             }
 

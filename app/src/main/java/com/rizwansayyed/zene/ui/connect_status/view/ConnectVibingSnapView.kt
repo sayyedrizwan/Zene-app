@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -27,11 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.connect_status.utils.ImageCapturingUtils
 import com.rizwansayyed.zene.ui.connect_status.utils.VideoCapturingUtils
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.utils.ImageCapturingView
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -47,12 +50,14 @@ fun ConnectVibingSnapView() {
     if (showAlert) Dialog(
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        ConnectVibingSnapAlertNew()
+        ConnectVibingSnapAlertNew {
+            showAlert = false
+        }
     }
 }
 
 @Composable
-fun ConnectVibingSnapAlertNew() {
+fun ConnectVibingSnapAlertNew(close: () -> Unit) {
     var imageCameraUtils by remember { mutableStateOf<ImageCapturingUtils?>(null) }
     var videoCameraUtils by remember { mutableStateOf<VideoCapturingUtils?>(null) }
     var isVideoRecording by remember { mutableStateOf(false) }
@@ -65,6 +70,7 @@ fun ConnectVibingSnapAlertNew() {
             .background(Color.Black)
     ) {
         if (isVideoRecording) {
+            var isRecordingStarted by remember { mutableStateOf(false) }
             AndroidView(
                 factory = { ctx ->
                     PreviewView(ctx).apply {
@@ -74,8 +80,43 @@ fun ConnectVibingSnapAlertNew() {
                 }, modifier = Modifier.fillMaxSize()
             )
 
+            if (isRecordingStarted) {
+                var currentProgress by remember { mutableStateOf(0f) }
+
+                Box(Modifier.align(Alignment.BottomCenter)) {
+                    LinearProgressIndicator(
+                        progress = { currentProgress },
+                        modifier = Modifier.size(100.dp),
+                        color = MainColor,
+                        trackColor = Color.White,
+                    )
+                }
+
+                LaunchedEffect(videoCameraUtils?.currentRecordingDuration) {
+                    currentProgress = (videoCameraUtils?.currentRecordingDuration?.toFloat()
+                        ?: (0 / 16 * 100)).toFloat()
+                }
+            } else {
+                Spacer(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(20.dp)
+                        .size(70.dp)
+                        .clip(RoundedCornerShape(100))
+                        .clickable { videoCameraUtils?.captureVideo() }
+                        .background(Color.White))
+            }
+
             DisposableEffect(Unit) {
                 onDispose { videoCameraUtils?.clearCamera() }
+            }
+
+            LaunchedEffect(videoCameraUtils?.videoRecordEvent) {
+                isRecordingStarted = when (videoCameraUtils?.videoRecordEvent) {
+                    is VideoRecordEvent.Start -> true
+                    else -> false
+                }
+                "ssss".toast()
             }
         } else {
             AndroidView(
@@ -146,6 +187,10 @@ fun ConnectVibingSnapAlertNew() {
     LaunchedEffect(imageCameraUtils?.isFlashLight, videoCameraUtils?.isFlashLight) {
         if (imageCameraUtils != null) isCameraTorch = imageCameraUtils!!.isFlashLight
         else if (videoCameraUtils != null) isCameraTorch = videoCameraUtils!!.isFlashLight
+    }
+
+    LifecycleResumeEffect(Unit) {
+        onPauseOrDispose { close() }
     }
 }
 

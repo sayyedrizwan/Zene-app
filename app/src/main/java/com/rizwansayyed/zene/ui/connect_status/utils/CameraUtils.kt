@@ -49,6 +49,9 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         val vibeImageFile = File(vibeFolder, "temp_vibe_img.jpg")
         val vibeCompressedImageFile = File(vibeFolder, "temp_vibe_img_compressed.jpg")
 
+        val vibeVideoFile = File(vibeFolder, "temp_vibe_vid.mp4")
+        val vibeCompressedVideoFile = File(vibeFolder, "temp_vibe_vid_compressed.mp4")
+
 
         inline fun View.afterMeasured(crossinline block: () -> Unit) {
             if (measuredWidth > 0 && measuredHeight > 0) {

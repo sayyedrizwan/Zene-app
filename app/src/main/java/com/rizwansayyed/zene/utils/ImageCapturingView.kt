@@ -13,7 +13,9 @@ import android.view.Surface
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import androidx.annotation.OptIn
 import androidx.camera.camera2.interop.Camera2CameraInfo
+import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.DisplayOrientedMeteringPointFactory
@@ -215,6 +217,7 @@ class ImageCapturingView(
         imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(ctx), callback)
     }
 
+    @OptIn(ExperimentalCamera2Interop::class)
     fun generateVideoPreview() {
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
