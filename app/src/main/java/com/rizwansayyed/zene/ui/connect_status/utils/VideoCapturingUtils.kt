@@ -34,6 +34,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.afterMeasured
+import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.selectorHD
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeCompressedVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
@@ -186,13 +187,9 @@ class VideoCapturingUtils(
     }
 
     private fun compressVideo(inputFile: File) = CoroutineScope(Dispatchers.IO).launch {
-        vibeCompressedVideoFile.delete()
-        val cmd =
-            "-i ${inputFile.absolutePath} -preset fast -crf 23 -c:a aac -b:a 128k -movflags +faststart ${vibeCompressedVideoFile.absolutePath}"
-
-        val session = FFmpegKit.execute(cmd)
-        if (ReturnCode.isSuccess(session.returnCode)) vibeFiles = vibeCompressedVideoFile
-        else vibeFiles = inputFile
+        compressVideoFile(inputFile) {
+            vibeFiles = it
+        }
     }
 
     fun stopVideo() = CoroutineScope(Dispatchers.Main).launch {

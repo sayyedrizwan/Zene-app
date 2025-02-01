@@ -13,6 +13,8 @@ import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.PreviewView
 import androidx.core.content.res.ResourcesCompat
+import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.ReturnCode
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -51,6 +53,7 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
 
         val vibeVideoFile = File(vibeFolder, "temp_vibe_vid.mp4")
         val vibeVideoCroppedFile = File(vibeFolder, "temp_vibe_vid_cropped.mp4")
+        val vibeVideoCroppedTempsFile = File(vibeFolder, "temp_vibe_vid_cropped_temp.mp4")
         val vibeCompressedVideoFile = File(vibeFolder, "temp_vibe_vid_compressed.mp4")
 
         fun isFileExtensionVideo(mimeType: String?): Boolean {
@@ -80,6 +83,17 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                 })
             }
         }
+
+        fun compressVideoFile(inputFile: File, d: (File) -> Unit) =
+            CoroutineScope(Dispatchers.IO).launch {
+                vibeCompressedVideoFile.delete()
+                val cmd = "-i ${inputFile.absolutePath} -preset fast -crf 23 -c:a aac " +
+                        "-b:a 128k -movflags +faststart ${vibeCompressedVideoFile.absolutePath}"
+
+                val session = FFmpegKit.execute(cmd)
+                if (ReturnCode.isSuccess(session.returnCode)) d(vibeCompressedVideoFile)
+                else d(inputFile)
+            }
     }
 
 
