@@ -179,6 +179,7 @@ class VideoCapturingUtils(
                 currentRecordingDifference = timeDifferenceInSeconds(currentRecordingDuration)
                 if (timeDifferenceInSeconds(currentRecordingDuration) >= 15) stopVideo()
             } else if (it is VideoRecordEvent.Finalize && !it.hasError()) {
+                vibeFiles = it.outputResults.outputUri.toFile()
                 compressVideo(it.outputResults.outputUri.toFile())
             }
         }

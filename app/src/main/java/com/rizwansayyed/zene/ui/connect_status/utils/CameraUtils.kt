@@ -52,6 +52,17 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         val vibeVideoFile = File(vibeFolder, "temp_vibe_vid.mp4")
         val vibeCompressedVideoFile = File(vibeFolder, "temp_vibe_vid_compressed.mp4")
 
+        fun isFileExtensionVideo(mimeType: String?): Boolean {
+            return when (mimeType) {
+                "image/jpeg" -> false
+                "image/png" -> false
+                "image/gif" -> true
+                "video/mp4" -> true
+                "video/mpeg" -> true
+                else -> false
+            }
+        }
+
 
         inline fun View.afterMeasured(crossinline block: () -> Unit) {
             if (measuredWidth > 0 && measuredHeight > 0) {

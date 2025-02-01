@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectAttachFiles
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusCaptionView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopColumView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopHeaderView
@@ -48,17 +49,15 @@ class ConnectStatusActivity : ComponentActivity() {
                 ) {
                     ConnectStatusTopColumView {
                         ConnectStatusTopHeaderView()
-                        if (connectViewModel.connectFileSelected != null)
-                            ConnectVibeItemView(connectViewModel)
+
+                        ConnectVibeItemView(connectViewModel.connectFileSelected)
 
                         ConnectStatusCaptionView(caption)
 
                         ConnectVibingSnapView(connectViewModel)
+                        ConnectAttachFiles(connectViewModel)
 
-                        Spacer(Modifier.height(30.dp))
-                        SettingsViewSimpleItems(R.drawable.ic_folder, R.string.attach_photo_video) {
 
-                        }
                         Spacer(Modifier.height(30.dp))
                         SettingsViewSimpleItems(R.drawable.ic_music_note, R.string.add_a_jam) {
 

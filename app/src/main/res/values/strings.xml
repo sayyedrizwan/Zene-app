@@ -90,6 +90,7 @@
     <string name="click_on_notification_enable_switch">Click on Notifications -> Enable Switch.</string>
     <string name="no_user_found">No User found :(</string>
     <string name="need_location_permission_to_read_contact">Need location permission to read contact.</string>
+    <string name="need_camera_microphone_permission_to_photo">Need camera and microphone permission to capture photo.</string>
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>
     <string name="in_your_contacts">In your contacts</string>

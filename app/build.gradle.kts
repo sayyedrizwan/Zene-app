@@ -115,7 +115,12 @@ dependencies {
     implementation(libs.camera.view)
     implementation(libs.camera.core)
 
-    implementation("com.vanniktech:android-image-cropper:4.6.0")
-    implementation("androidx.exifinterface:exifinterface:1.3.3")
-    implementation("com.arthenica:ffmpeg-kit-full:6.0-2")
+
+    implementation(libs.image.cropper)
+    implementation(libs.exifinterface)
+    implementation(libs.ffmpeg.kit.full)
+
+    implementation("androidx.media3:media3-exoplayer:1.5.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.5.1")
+    implementation("androidx.media3:media3-ui:1.5.1")
 }

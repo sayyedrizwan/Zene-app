@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.ui.connect_status.view
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -30,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -42,14 +46,33 @@ import com.rizwansayyed.zene.ui.connect_status.utils.VideoCapturingUtils
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+
+val permissions = listOf(
+    Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
+)
 
 @Composable
 fun ConnectVibingSnapView(viewModel: ConnectViewModel) {
     var showAlert by remember { mutableStateOf(false) }
+    val needPermission = stringResource(R.string.need_camera_microphone_permission_to_photo)
+
+    val request =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            if (it.any { v -> !v.value }) {
+                openAppSettings()
+                needPermission.toast()
+            } else {
+                showAlert = true
+            }
+        }
+
+
     Spacer(Modifier.height(45.dp))
     SettingsViewSimpleItems(R.drawable.ic_camera, R.string.add_vibing_snap) {
-        showAlert = true
+        request.launch(permissions.toTypedArray())
     }
 
     if (showAlert) Dialog(
@@ -222,8 +245,13 @@ fun ConnectVibingSnapAlertNew(viewModel: ConnectViewModel, close: () -> Unit) {
     }
 
     LaunchedEffect(imageCameraUtils?.vibeFiles, videoCameraUtils?.vibeFiles) {
-        if (imageCameraUtils?.vibeFiles != null) viewModel.updateVibeFileInfo(imageCameraUtils!!.vibeFiles)
-        else if (videoCameraUtils?.vibeFiles != null) viewModel.updateVibeFileInfo(videoCameraUtils!!.vibeFiles)
+        if (imageCameraUtils?.vibeFiles != null) {
+            viewModel.updateVibeFileInfo(imageCameraUtils!!.vibeFiles, true)
+            close()
+        } else if (videoCameraUtils?.vibeFiles != null) {
+            viewModel.updateVibeFileInfo(videoCameraUtils!!.vibeFiles, true)
+            close()
+        }
     }
 
     LifecycleResumeEffect(Unit) {

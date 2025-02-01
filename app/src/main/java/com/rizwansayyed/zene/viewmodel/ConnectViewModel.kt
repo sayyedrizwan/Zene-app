@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -108,9 +109,9 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
 
-    var connectFileSelected by mutableStateOf<File?>(null)
+    var connectFileSelected by mutableStateOf<ConnectFeedDataResponse?>(null)
 
-    fun updateVibeFileInfo(file: File?) = viewModelScope.launch(Dispatchers.IO) {
-        connectFileSelected = file
+    fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        connectFileSelected = ConnectFeedDataResponse(file?.absolutePath, isVibing)
     }
 }
