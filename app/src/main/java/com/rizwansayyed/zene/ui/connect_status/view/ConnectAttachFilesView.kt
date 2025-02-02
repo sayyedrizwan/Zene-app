@@ -9,30 +9,23 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.RangeSlider
-import androidx.compose.material3.RangeSliderState
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,17 +33,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.util.UnstableApi
@@ -61,17 +53,21 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.cropVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.isFileExtensionVideo
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeImageFile
-import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoCroppedFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
-import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ConnectAttachFiles(viewModel: ConnectViewModel) {
@@ -105,25 +101,30 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
     val context = LocalContext.current.applicationContext
     val coroutines = rememberCoroutineScope()
     val thumbnailsList = remember { mutableStateListOf<Bitmap>() }
+    var exoplayerDurationJob by remember { mutableStateOf<Job?>(null) }
+    var start by remember { mutableFloatStateOf(0f) }
+    var end by remember { mutableFloatStateOf(0f) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val exoPlayer = ExoPlayer.Builder(context).build()
 
     Column(
         Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        val exoPlayer = ExoPlayer.Builder(context).build()
         AndroidView(
             factory = { ctx ->
                 PlayerView(ctx).apply {
                     useController = false
                     exoPlayer.repeatMode = REPEAT_MODE_ONE
-                    exoPlayer.volume = 0f
-                    player = exoPlayer
+                    exoPlayer.volume = 1f
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                     val mediaItem = MediaItem.fromUri(vibeVideoFile.toUri())
                     exoPlayer.setMediaItem(mediaItem)
                     exoPlayer.prepare()
                     exoPlayer.play()
+                    player = exoPlayer
                 }
             }, modifier = Modifier
                 .fillMaxWidth()
@@ -131,34 +132,74 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
                 .weight(7f)
         )
 
-        Box(
+        LifecycleResumeEffect(Unit) {
+            exoPlayer.play()
+            onPauseOrDispose { exoPlayer.pause() }
+        }
+
+        Column(
             Modifier
+                .padding(horizontal = 6.dp)
                 .fillMaxWidth()
-                .weight(3f), Alignment.Center
+                .weight(3f),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
         ) {
-            Row(
-                Modifier
-                    .align(Alignment.Center)
-                    .padding(top = 20.dp)
-                    .fillMaxWidth()
-                    .background(MainColor), Arrangement.Center, Alignment.CenterVertically
-            ) {
-                thumbnailsList.forEach {
-                    GlideImage(
-                        it,
-                        "",
-                        modifier = Modifier.size(15.dp, 100.dp),
-                        contentScale = ContentScale.Crop
-                    )
+            Box(Modifier.fillMaxWidth()) {
+                Row(
+                    Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth()
+                        .background(MainColor),
+                    Arrangement.Center,
+                    Alignment.CenterVertically
+                ) {
+                    thumbnailsList.forEach {
+                        GlideImage(
+                            it,
+                            "",
+                            modifier = Modifier.size(15.dp, 100.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+
+                ConnectVideoCropperSliderView(
+                    Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth()
+                ) { s, e ->
+                    start = s
+                    end = e
                 }
             }
 
-            RangeCropperSliderVideo(
+            if (isLoading) CircularLoadingView()
+
+            Row(
                 Modifier
                     .padding(top = 20.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
-            )
+                    .fillMaxWidth(),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                ButtonWithBorder(R.string.cancel) {
+                    close()
+                }
+
+                ButtonWithBorder(R.string.attach) {
+                    if (isLoading) return@ButtonWithBorder
+
+                    isLoading = true
+                    cropVideoFile(vibeVideoFile, start, end) {
+                        isLoading = false
+                        viewModel.updateVibeFileInfo(it, false)
+                        close()
+                    }
+
+                }
+            }
+
         }
     }
 
@@ -185,127 +226,22 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
         }
     }
 
-//    LaunchedEffect(Unit) {
-//        val cmd =  "-ss 00:00:05.00 -t 00:00:10.00 -noaccurate_seek -i $vibeVideoFile -codec copy -avoid_negative_ts 1 $vibeVideoCroppedFile"
-//        val session = FFmpegKit.execute(cmd)
-//        if (ReturnCode.isSuccess(session.returnCode)) "done".toast()
-//        else {
-//            "nooo".toast()
-//        }
-//    }
-}
-
-@Composable
-fun RangeCropperSliderVideo(modifier: Modifier) {
-    val videoDuration = getVideoDuration(vibeVideoFile).toFloat()
-    val minSelectableRange = 3f
-    val maxSelectableRange = minOf(videoDuration, 15f * 1000L)
-    var selectedRange by remember { mutableStateOf(0f..maxSelectableRange) }
-
-    val rangeSliderState = remember {
-        RangeSliderState(selectedRange.start,
-            selectedRange.endInclusive,
-            valueRange = 0f..videoDuration,
-            onValueChangeFinished = {})
-    }
-
-    val startInteractionSource = remember { MutableInteractionSource() }
-    val endInteractionSource = remember { MutableInteractionSource() }
-    val startThumbAndTrackColors = SliderDefaults.colors(
-        thumbColor = Color.Red,
-        activeTrackColor = Color.Transparent,
-        inactiveTrackColor = BlackTransparent,
-        disabledThumbColor = BlackTransparent
-    )
-
-    Box(Modifier.fillMaxWidth()) {
-
-        RangeSlider(state = rangeSliderState,
-            modifier = modifier.height(100.dp),
-            startInteractionSource = startInteractionSource,
-            endInteractionSource = endInteractionSource,
-            startThumb = {
-                SliderDefaults.Thumb(
-                    interactionSource = startInteractionSource, colors = startThumbAndTrackColors
-                )
-            },
-            endThumb = {
-                SliderDefaults.Thumb(
-                    interactionSource = endInteractionSource, colors = startThumbAndTrackColors
-                )
-            },
-            track = { rangeSliderState ->
-                SliderDefaults.Track(
-                    colors = startThumbAndTrackColors,
-                    rangeSliderState = rangeSliderState,
-                    modifier = Modifier
-                        .height(100.dp)
-                        .border(1.dp, Color.White)
-                )
-            })
-    }
-
-    LaunchedEffect(rangeSliderState.activeRangeStart, rangeSliderState.activeRangeEnd) {
-        val start = rangeSliderState.activeRangeStart
-        val end = rangeSliderState.activeRangeEnd
-        val diff = end - start
-
-        if (diff > maxSelectableRange) {
-            if (start == selectedRange.start) {
-                rangeSliderState.activeRangeStart = end - maxSelectableRange
-            } else {
-                rangeSliderState.activeRangeEnd = start + maxSelectableRange
+    DisposableEffect(Unit) {
+        exoplayerDurationJob?.cancel()
+        exoplayerDurationJob = coroutines.launch(Dispatchers.Main) {
+            while (true) {
+                if (exoPlayer.currentPosition > end || exoPlayer.currentPosition < start) {
+                    exoPlayer.seekTo(start.toLong())
+                }
+                delay(1.seconds)
             }
-        } else if (diff < minSelectableRange) {
-            if (start == selectedRange.start) {
-                rangeSliderState.activeRangeStart = end - minSelectableRange
-            } else {
-                rangeSliderState.activeRangeEnd = start + minSelectableRange
-            }
-        } else {
-            selectedRange = start..end
         }
-        selectedRange = rangeSliderState.activeRangeStart..rangeSliderState.activeRangeEnd
 
+        onDispose { exoplayerDurationJob?.cancel() }
     }
-}
-
-fun getVideoDuration(videoPath: File): Long {
-    val retriever = MediaMetadataRetriever()
-    try {
-        retriever.setDataSource(videoPath.absolutePath)
-        val durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        return durationString?.toLong() ?: 0L
-    } catch (e: Exception) {
-        e.printStackTrace()
-    } finally {
-        retriever.release()
-    }
-    return 0L
-}
-
-fun extractThumbnails(videoPath: File, count: Int): List<Bitmap> {
-    val retriever = MediaMetadataRetriever()
-    retriever.setDataSource(videoPath.absolutePath)
-
-    val duration =
-        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
-    val interval = duration / count
-    val bitmaps = mutableListOf<Bitmap>()
-
-    for (i in 0 until count) {
-        val frameTime = i * interval * 1000
-        val bitmap = retriever.getFrameAtTime(frameTime, MediaMetadataRetriever.OPTION_CLOSEST)
-        if (bitmap != null) {
-            bitmaps.add(bitmap)
-        }
-    }
-    retriever.release()
-    return bitmaps
 }
 
 private fun saveFileToAppDirectory(uri: Uri): File {
-    vibeVideoCroppedFile.delete()
     vibeVideoFile.delete()
     vibeImageFile.delete()
 

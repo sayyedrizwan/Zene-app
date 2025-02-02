@@ -2,6 +2,8 @@
 
 package com.rizwansayyed.zene.ui.connect_status.view
 
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -26,8 +29,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player.REPEAT_MODE_ONE
+import androidx.media3.common.SimpleBasePlayer
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SimpleExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -50,17 +55,17 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
         if (item?.media != null) {
             Box(Modifier.weight(6f)) {
                 if (item.isMediaVideo()) {
+
                     val exoPlayer = ExoPlayer.Builder(context).build()
                     AndroidView(
                         factory = { ctx ->
                             PlayerView(ctx).apply {
                                 useController = false
                                 exoPlayer.repeatMode = REPEAT_MODE_ONE
-                                exoPlayer.volume = 0f
+                                exoPlayer.volume = 1f
+                                exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
                                 player = exoPlayer
-                                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL;
-                                exoPlayer.videoScalingMode =
-                                    C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+                                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                                 val mediaItem = MediaItem.fromUri(item.media ?: "")
                                 exoPlayer.setMediaItem(mediaItem)
                                 exoPlayer.prepare()
@@ -71,6 +76,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
                             .align(Alignment.Center)
                             .fillMaxWidth()
                             .aspectRatio(1f)
+                            .clipToBounds()
                     )
                 } else {
                     GlideImage(

@@ -112,6 +112,7 @@
     <string name="direction">Direction</string>
     <string name="view_on_map">View On Map</string>
     <string name="cancel">Cancel</string>
+    <string name="attach">Attach</string>
     <string name="you_cant_send_a_new_message_until_you_got_reply">You can\'t send a new message until you got a reply.</string>
     <string name="do_you_want_to_play_this_song">Do you want to play the song?</string>
     <string name="share_notification">Silent Notifications</string>

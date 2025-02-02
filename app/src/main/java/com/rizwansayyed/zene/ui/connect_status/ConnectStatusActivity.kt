@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAttachFiles
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectEmojiView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusCaptionView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopColumView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopHeaderView
@@ -62,14 +63,13 @@ class ConnectStatusActivity : ComponentActivity() {
                         SettingsViewSimpleItems(R.drawable.ic_music_note, R.string.add_a_jam) {
 
                         }
-                        Spacer(Modifier.height(30.dp))
-                        SettingsViewSimpleItems(R.drawable.ic_tongue_wink, R.string.add_a_emoji) {
+                        ConnectEmojiView(connectViewModel)
 
-                        }
                         Spacer(Modifier.height(30.dp))
                         SettingsViewSimpleItems(R.drawable.ic_location, R.string.add_location) {
 
                         }
+                        Spacer(Modifier.height(150.dp))
                     }
                 }
                 LaunchedEffect(Unit) {

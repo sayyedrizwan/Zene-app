@@ -1,12 +1,12 @@
 package com.rizwansayyed.zene.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
@@ -14,11 +14,6 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.ForegroundService
@@ -356,6 +351,16 @@ object MainUtils {
         val currentTime = System.currentTimeMillis()
         val timeDifferenceInSec = TimeUnit.MILLISECONDS.toSeconds(currentTime - ts)
         return timeDifferenceInSec
+    }
+
+    @SuppressLint("DefaultLocale")
+    fun formatMillisecondsToRead(ms: Long): String {
+        val hours = TimeUnit.MILLISECONDS.toHours(ms)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60
+        val milliseconds = (ms % 1000) / 10
+
+        return String.format("%02d:%02d:%02d.%02d", hours, minutes, seconds, milliseconds)
     }
 
     fun openShareConnectShareSMS(url: String, number: String?) {

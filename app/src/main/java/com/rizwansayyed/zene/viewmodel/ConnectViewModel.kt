@@ -12,12 +12,14 @@ import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
@@ -112,6 +114,19 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var connectFileSelected by mutableStateOf<ConnectFeedDataResponse?>(null)
 
     fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        connectFileSelected = ConnectFeedDataResponse(file?.absolutePath, isVibing)
+        val v = connectFileSelected
+        v?.media = file?.absolutePath
+        v?.isVibing = isVibing
+        connectFileSelected = null
+        delay(1.seconds)
+        connectFileSelected = v
+    }
+
+    fun addVibeEmoji(emoji: String) = viewModelScope.launch(Dispatchers.IO) {
+        val v = connectFileSelected
+        v?.emoji = emoji
+        connectFileSelected = null
+        delay(1.seconds)
+        connectFileSelected = v
     }
 }
