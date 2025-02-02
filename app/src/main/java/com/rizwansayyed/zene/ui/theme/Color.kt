@@ -13,4 +13,5 @@ val Pink40 = Color(0xFF7D5260)
 
 val MainColor = Color(0xFF2F3C7E)
 val DarkCharcoal = Color(0xFF101820)
+val BlackTransparent = Color(0x99000000)
 val GoldColor = Color(0xFFFFD700)

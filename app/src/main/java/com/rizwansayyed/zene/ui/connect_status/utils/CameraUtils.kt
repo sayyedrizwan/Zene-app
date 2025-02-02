@@ -48,6 +48,9 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         private val vibeFolder = File(context.filesDir, "temp_img").apply {
             mkdirs()
         }
+        private val vibeTempThumbnailFolder = File(context.filesDir, "temp_thumbnail_img").apply {
+            mkdirs()
+        }
         val vibeImageFile = File(vibeFolder, "temp_vibe_img.jpg")
         val vibeCompressedImageFile = File(vibeFolder, "temp_vibe_img_compressed.jpg")
 
