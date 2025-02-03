@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -81,8 +82,10 @@ fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
             data?.name,
             Modifier
                 .padding(horizontal = 10.dp)
-                .width(250.dp)
                 .clip(RoundedCornerShape(13.dp))
+                .width(250.dp)
+                .height(370.dp),
+            contentScale = ContentScale.Crop
         )
         if (p != null) Row(Modifier.align(Alignment.BottomStart)) {
             TextViewBold("${p + 1}", 100)
@@ -261,7 +264,8 @@ fun FullVideoCardView(data: ZeneMusicData?) {
                 .width(145.dp)
         ) {
             GlideImage(
-                data?.thumbnail, data?.name,
+                data?.thumbnail,
+                data?.name,
                 Modifier
                     .size(140.dp, 100.dp)
                     .clip(RoundedCornerShape(5.dp)),
@@ -282,7 +286,8 @@ fun FullVideoCardView(data: ZeneMusicData?) {
             Modifier
                 .weight(7f)
                 .padding(start = 10.dp, end = 10.dp)
-                .height(100.dp), Arrangement.Center
+                .height(100.dp),
+            Arrangement.Center
         ) {
             TextViewNormal(data?.name ?: "", 15, line = 2)
             TextViewLight(data?.artists ?: "", 13, line = 1)

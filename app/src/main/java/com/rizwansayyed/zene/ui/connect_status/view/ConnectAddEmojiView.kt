@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.connect_status.view
 
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -10,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -38,13 +40,13 @@ fun ConnectEmojiView(viewModel: ConnectViewModel) {
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
                     )
-
                     setOnEmojiPickedListener {
+                        showAlert = false
                         viewModel.addVibeEmoji(it.emoji.trim())
                     }
                 }
             },
-            Modifier.fillMaxSize()
+            Modifier.fillMaxSize().background(Color.White)
         )
     }
 }

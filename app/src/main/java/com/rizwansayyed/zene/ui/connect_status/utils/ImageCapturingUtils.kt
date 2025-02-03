@@ -129,6 +129,7 @@ class ImageCapturingUtils(
     }
 
     fun captureImage() {
+        vibeCompressedImageFile.delete()
         vibeImageFile.delete()
         val outputOptions = ImageCapture.OutputFileOptions.Builder(vibeImageFile).build()
 

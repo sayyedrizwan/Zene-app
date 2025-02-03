@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
@@ -27,6 +28,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_ALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
@@ -66,6 +68,12 @@ interface ZeneAPIService {
     suspend fun homeVideos(
         @Header("token") token: String, @Body data: RequestBody
     ): VideoDataResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SEARCH_ALL_API)
+    suspend fun search(
+        @Header("token") token: String, @Body data: RequestBody
+    ): SearchDataResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_RECENT_HOME_ENTERTAINMENT_API)

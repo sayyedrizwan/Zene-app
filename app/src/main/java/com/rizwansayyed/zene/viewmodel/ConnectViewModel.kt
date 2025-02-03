@@ -114,17 +114,17 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var connectFileSelected by mutableStateOf<ConnectFeedDataResponse?>(null)
 
     fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        val v = connectFileSelected
-        v?.media = file?.absolutePath
-        v?.isVibing = isVibing
+        val v = connectFileSelected ?: ConnectFeedDataResponse()
+        v.media = file?.absolutePath
+        v.isVibing = isVibing
         connectFileSelected = null
         delay(1.seconds)
         connectFileSelected = v
     }
 
     fun addVibeEmoji(emoji: String) = viewModelScope.launch(Dispatchers.IO) {
-        val v = connectFileSelected
-        v?.emoji = emoji
+        val v = connectFileSelected ?: ConnectFeedDataResponse()
+        v.emoji = emoji
         connectFileSelected = null
         delay(1.seconds)
         connectFileSelected = v

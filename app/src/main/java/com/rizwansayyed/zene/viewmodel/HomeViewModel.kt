@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
@@ -56,6 +57,7 @@ class HomeViewModel @Inject constructor(
     )
 
     var nearMusic by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var searchData by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -163,6 +165,16 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             cacheHelper.save(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API, it)
             entertainmentMoviesData = ResponseResult.Success(it)
+        }
+    }
+
+    fun searchZene(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.search(q).onStart {
+            searchData = ResponseResult.Loading
+        }.catch {
+            searchData = ResponseResult.Error(it)
+        }.collectLatest {
+            searchData = ResponseResult.Success(it)
         }
     }
 

@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddJam
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAttachFiles
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectEmojiView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusCaptionView
@@ -58,11 +59,8 @@ class ConnectStatusActivity : ComponentActivity() {
                         ConnectVibingSnapView(connectViewModel)
                         ConnectAttachFiles(connectViewModel)
 
+                        ConnectAddJam(connectViewModel)
 
-                        Spacer(Modifier.height(30.dp))
-                        SettingsViewSimpleItems(R.drawable.ic_music_note, R.string.add_a_jam) {
-
-                        }
                         ConnectEmojiView(connectViewModel)
 
                         Spacer(Modifier.height(30.dp))

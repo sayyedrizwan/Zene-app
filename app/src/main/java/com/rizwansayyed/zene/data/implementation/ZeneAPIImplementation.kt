@@ -114,6 +114,21 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.entertainmentNews(token, body))
     }
 
+    override suspend fun search(q: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipAPI.get()
+
+        val json = JSONObject().apply {
+            put("q", q)
+            put("email", email)
+            put("country", ip.countryCode)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.search(token, body))
+    }
+
     override suspend fun entertainmentMovies() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

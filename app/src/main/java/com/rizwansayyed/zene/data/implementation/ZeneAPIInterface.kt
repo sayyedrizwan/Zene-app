@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
@@ -41,4 +42,5 @@ interface ZeneAPIInterface {
     suspend fun sendConnectMessage(toEmail: String, message: String): Flow<StatusTypeResponse>
     suspend fun sendConnectLocation(toEmail: String): Flow<StatusTypeResponse>
     suspend fun connectFriendsList(): Flow<List<ConnectUserInfoResponse>>
+    suspend fun search(q: String): Flow<SearchDataResponse>
 }

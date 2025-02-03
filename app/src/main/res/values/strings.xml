@@ -13,6 +13,8 @@
     <string name="podcasts">Podcasts</string>
     <string name="radios">Radios</string>
     <string name="videos">Videos</string>
+    <string name="news">News</string>
+    <string name="movies">Movies</string>
     <string name="my_library">My Library</string>
     <string name="top_played_songs_this_month">Top Played Songs This Month</string>
     <string name="are_you_sure_want_to_cancel_add_request">Are you sure want to cancel the add request. Sometime it takes a while to get your request accepted!</string>
@@ -54,6 +56,7 @@
     <string name="search_email_name_username">Enter name or username to search</string>
     <string name="enter_your_name">Enter your name</string>
     <string name="add_a_caption">Add a caption…</string>
+    <string name="search_s_p_a_etc">Search song, playlist, album, etc..</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>
     <string name="enable_notification">Enable notification</string>
@@ -71,6 +74,8 @@
     <string name="entertainment_short">ent.</string>
     <string name="grant">Grant</string>
     <string name="play">Play</string>
+    <string name="playlists">Playlists</string>
+    <string name="albums">Albums</string>
     <string name="confirm">Confirm</string>
     <string name="friends">Friends</string>
     <string name="status">Status</string>
@@ -93,6 +98,7 @@
     <string name="need_camera_microphone_permission_to_photo">Need camera and microphone permission to capture photo.</string>
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>
+    <string name="songs">Songs</string>
     <string name="in_your_contacts">In your contacts</string>
     <string name="contacts">Contacts</string>
     <string name="location_permission">Location Permission</string>

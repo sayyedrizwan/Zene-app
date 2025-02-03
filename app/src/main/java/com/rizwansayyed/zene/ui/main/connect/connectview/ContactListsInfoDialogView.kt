@@ -67,13 +67,13 @@ fun ContactListsInfo() {
                     TextViewNormal(stringResource(R.string.search_email_name_username), 14)
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
+                keyboardActions = KeyboardActions {
                     if (searchText.length <= 3) {
                         enterAValidName.toast()
                         return@KeyboardActions
                     }
                     connectViewModel.searchConnectUsers(searchText)
-                }),
+                },
                 trailingIcon = {
                     if (searchText.length > 3) {
                         IconButton({
