@@ -4,8 +4,10 @@ data class ConnectFeedDataResponse(
     var media: String? = null,
     var isVibing: Boolean? = null,
     var jazzName: String? = null,
+    var jazzArtists: String? = null,
     var jazzId: String? = null,
     var jazzThumbnail: String? = null,
+    var jazzType: String? = null,
     var emoji: String? = null
 ) {
 

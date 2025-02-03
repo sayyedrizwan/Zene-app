@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.ForegroundService
 import com.squareup.moshi.Moshi
@@ -404,5 +405,9 @@ object MainUtils {
 
     fun isNotificationEnabled(): Boolean {
         return NotificationManagerCompat.from(context).areNotificationsEnabled()
+    }
+
+    fun runMusicDataInfos(data: ZeneMusicData?) {
+
     }
 }

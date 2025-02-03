@@ -1,12 +1,12 @@
 package com.rizwansayyed.zene.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -23,17 +23,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.utils.MainUtils.runMusicDataInfos
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemSmallCardView(data: ZeneMusicData?) {
     Column(
         Modifier
+            .clickable { runMusicDataInfos(data) }
             .padding(horizontal = 9.dp)
-            .width(105.dp)
-    ) {
+            .width(105.dp)) {
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
@@ -56,6 +58,7 @@ fun ItemSmallCardView(data: ZeneMusicData?) {
 fun ItemYoutubeCardView(data: ZeneMusicData?) {
     Column(
         Modifier
+            .clickable { runMusicDataInfos(data) }
             .padding(horizontal = 4.dp)
             .width(255.dp)
     ) {
@@ -76,7 +79,7 @@ fun ItemYoutubeCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
-    Box {
+    Box(Modifier.clickable { runMusicDataInfos(data) }) {
         GlideImage(
             data?.thumbnail,
             data?.name,
@@ -87,18 +90,51 @@ fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
                 .height(370.dp),
             contentScale = ContentScale.Crop
         )
+
+
         if (p != null) Row(Modifier.align(Alignment.BottomStart)) {
             TextViewBold("${p + 1}", 100)
         }
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun MoviesImageCardConnect(data: ZeneMusicData?, click: () -> Unit) {
+    Box(Modifier.clickable { click() }) {
+        GlideImage(
+            data?.thumbnail,
+            data?.name,
+            Modifier
+                .padding(horizontal = 10.dp)
+                .clip(RoundedCornerShape(13.dp))
+                .width(250.dp)
+                .height(370.dp),
+            contentScale = ContentScale.Crop
+        )
+
+        Row(
+            Modifier
+                .padding(6.dp)
+                .padding(end = 6.dp)
+                .align(Alignment.BottomEnd)
+                .size(24.dp)
+                .clip(RoundedCornerShape(100))
+                .background(Color.Black),
+            Arrangement.Center,
+            Alignment.CenterVertically
+        ) {
+            ImageIcon(R.drawable.ic_plus_sign, 20)
+        }
+    }
+}
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun NewsItemCard(data: ZeneMusicData?) {
     Row(
         Modifier
+            .clickable { runMusicDataInfos(data) }
             .padding(vertical = 20.dp)
             .fillMaxWidth(),
         Arrangement.Center,
@@ -127,6 +163,7 @@ fun NewsItemCard(data: ZeneMusicData?) {
 fun ItemCardView(data: ZeneMusicData?) {
     Column(
         Modifier
+            .clickable { runMusicDataInfos(data) }
             .padding(horizontal = 9.dp)
             .width(175.dp)
     ) {
@@ -153,11 +190,13 @@ fun ItemCardView(data: ZeneMusicData?) {
     }
 }
 
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemArtistsCardView(data: ZeneMusicData?) {
     Column(
         Modifier
+            .clickable { runMusicDataInfos(data) }
             .padding(horizontal = 9.dp)
             .width(175.dp)
     ) {
@@ -188,6 +227,7 @@ fun ItemArtistsCardView(data: ZeneMusicData?) {
 fun PodcastViewItems(data: ZeneMusicData?) {
     Box(
         Modifier
+            .clickable { runMusicDataInfos(data) }
             .fillMaxWidth()
             .padding(3.dp)
     ) {
@@ -212,6 +252,7 @@ fun PodcastViewItems(data: ZeneMusicData?) {
 fun VideoCardView(data: ZeneMusicData?) {
     Column(
         Modifier
+            .clickable { runMusicDataInfos(data) }
             .padding(horizontal = 9.dp)
             .padding(bottom = 19.dp)
             .width(245.dp)
@@ -251,12 +292,13 @@ fun VideoCardView(data: ZeneMusicData?) {
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun FullVideoCardView(data: ZeneMusicData?) {
     Row(
-        Modifier.padding(horizontal = 5.dp, vertical = 10.dp)
+        Modifier
+            .clickable { runMusicDataInfos(data) }
+            .padding(horizontal = 5.dp, vertical = 10.dp)
     ) {
         Box(
             Modifier
@@ -291,6 +333,115 @@ fun FullVideoCardView(data: ZeneMusicData?) {
         ) {
             TextViewNormal(data?.name ?: "", 15, line = 2)
             TextViewLight(data?.artists ?: "", 13, line = 1)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun ItemCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
+    Column(
+        Modifier
+            .clickable { click() }
+            .padding(horizontal = 9.dp)
+            .width(175.dp)
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            Spacer(
+                Modifier
+                    .size(170.dp)
+                    .background(Color.DarkGray)
+            )
+
+            GlideImage(
+                data?.thumbnail, data?.name, Modifier.size(175.dp), contentScale = ContentScale.Crop
+            )
+
+            Row(
+                Modifier
+                    .padding(4.dp)
+                    .align(Alignment.BottomEnd)
+                    .size(24.dp)
+                    .clip(RoundedCornerShape(100))
+                    .background(Color.Black),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                ImageIcon(R.drawable.ic_plus_sign, 20)
+            }
+        }
+        Spacer(Modifier.height(9.dp))
+        TextViewNormal(data?.name ?: "", 16, line = 1)
+        if (data?.type() != MusicDataTypes.PLAYLISTS) {
+            if (data?.type() == MusicDataTypes.PODCAST) {
+                TextViewLight(data.artists ?: "", 13, line = 3)
+            } else Box(Modifier.offset(y = (-2).dp)) {
+                TextViewLight(data?.artists ?: "", 14, line = 1)
+            }
+        }
+    }
+}
+
+
+
+// connect items
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun VideoCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
+    Column(
+        Modifier
+            .clickable { click() }
+            .padding(horizontal = 9.dp)
+            .padding(bottom = 19.dp)
+            .width(245.dp)
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .width(245.dp)
+        ) {
+            GlideImage(
+                data?.thumbnail,
+                data?.name,
+                Modifier
+                    .size(240.dp, 150.dp)
+                    .clip(RoundedCornerShape(5.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Box(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(5.dp)
+                    .padding(end = 5.dp)
+            ) {
+                TextViewBold(data?.extra ?: "", 13, line = 1)
+            }
+
+            Row(
+                Modifier
+                    .padding(9.dp)
+                    .align(Alignment.BottomEnd)
+                    .size(24.dp)
+                    .clip(RoundedCornerShape(100))
+                    .background(Color.Black),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                ImageIcon(R.drawable.ic_plus_sign, 20)
+            }
+        }
+        Spacer(Modifier.height(9.dp))
+        TextViewNormal(data?.name ?: "", 15, line = 1)
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .offset(y = (-3).dp)
+        ) {
+            TextViewLight(data?.artists ?: "", 12, line = 1)
         }
     }
 }

@@ -3,6 +3,8 @@
 package com.rizwansayyed.zene.ui.connect_status.view
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +15,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -35,12 +41,11 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 
-@OptIn(UnstableApi::class)
 @Composable
 fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
-    val context = LocalContext.current.applicationContext
     Spacer(Modifier.height(10.dp))
 
     Row(
@@ -50,45 +55,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
     ) {
         if (item?.media != null) {
             Box(Modifier.weight(6f)) {
-                if (item.isMediaVideo()) {
-
-                    val exoPlayer = ExoPlayer.Builder(context).build()
-                    AndroidView(
-                        factory = { ctx ->
-                            PlayerView(ctx).apply {
-                                useController = false
-                                exoPlayer.repeatMode = REPEAT_MODE_ONE
-                                exoPlayer.volume = 1f
-                                exoPlayer.videoScalingMode =
-                                    C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-                                player = exoPlayer
-                                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                                val mediaItem = MediaItem.fromUri(item.media ?: "")
-                                exoPlayer.setMediaItem(mediaItem)
-                                exoPlayer.prepare()
-                                exoPlayer.play()
-                            }
-                        },
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clipToBounds()
-                    )
-                } else {
-                    GlideImage(
-                        item.media,
-                        "",
-                        Modifier
-                            .align(Alignment.Center)
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clipToBounds(),
-                        contentScale = ContentScale.Crop
-                    ) {
-                        it.diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
-                    }
-                }
+                ConnectVibeMediaItem(item, Modifier.align(Alignment.Center))
 
                 if (item.isVibing == true) GlideImage(
                     R.drawable.just_vibing_sticker,
@@ -100,6 +67,20 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
                         .rotate(-20f),
                     contentScale = ContentScale.Fit
                 )
+
+                Row(
+                    Modifier
+                        .padding(9.dp)
+                        .align(Alignment.BottomEnd)
+                        .size(24.dp)
+                        .clickable { }
+                        .clip(RoundedCornerShape(100))
+                        .background(Color.White),
+                    Arrangement.Center,
+                    Alignment.CenterVertically
+                ) {
+                    ImageIcon(R.drawable.ic_arrow_expand, 20, Color.Black)
+                }
             }
         }
         if ((item?.jazzName != null && item.jazzId != null) || item?.emoji != null) Column(
@@ -113,7 +94,8 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
                 item.jazzThumbnail, item.jazzName,
                 Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(Modifier.padding(top = 12.dp))
@@ -123,4 +105,47 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
     }
 
     Spacer(Modifier.height(10.dp))
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+fun ConnectVibeMediaItem(item: ConnectFeedDataResponse, modifier: Modifier) {
+    val context = LocalContext.current.applicationContext
+
+    if (item.isMediaVideo()) {
+        val exoPlayer = ExoPlayer.Builder(context).build()
+        AndroidView(
+            factory = { ctx ->
+                PlayerView(ctx).apply {
+                    useController = false
+                    exoPlayer.repeatMode = REPEAT_MODE_ONE
+                    exoPlayer.volume = 1f
+                    exoPlayer.videoScalingMode =
+                        C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+                    player = exoPlayer
+                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    val mediaItem = MediaItem.fromUri(item.media ?: "")
+                    exoPlayer.setMediaItem(mediaItem)
+                    exoPlayer.prepare()
+                    exoPlayer.play()
+                }
+            },
+            modifier = modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clipToBounds()
+        )
+    } else {
+        GlideImage(
+            item.media,
+            "",
+            modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clipToBounds(),
+            contentScale = ContentScale.Crop
+        ) {
+            it.diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+        }
+    }
 }

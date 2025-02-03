@@ -32,15 +32,19 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ItemCardView
+import com.rizwansayyed.zene.ui.view.ItemCardViewConnect
 import com.rizwansayyed.zene.ui.view.MoviesImageCard
+import com.rizwansayyed.zene.ui.view.MoviesImageCardConnect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.VideoCardView
+import com.rizwansayyed.zene.ui.view.VideoCardViewConnect
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
@@ -57,13 +61,14 @@ fun ConnectAddJam(viewModel: ConnectViewModel) {
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
         AddJamDialog {
+            it?.let { z -> viewModel.updateVibeJazzInfo(z) }
             showAlert = false
         }
     }
 }
 
 @Composable
-fun AddJamDialog(close: () -> Unit) {
+fun AddJamDialog(clicked: (ZeneMusicData?) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
 
     var search by remember { mutableStateOf("") }
@@ -125,7 +130,9 @@ fun AddJamDialog(close: () -> Unit) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.song) {
-                            ItemCardView(it)
+                            ItemCardViewConnect(it) {
+                                clicked(it)
+                            }
                         }
                     }
                 }
@@ -138,7 +145,9 @@ fun AddJamDialog(close: () -> Unit) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.videos) {
-                            VideoCardView(it)
+                            VideoCardViewConnect(it) {
+                                clicked(it)
+                            }
                         }
                     }
                 }
@@ -151,7 +160,9 @@ fun AddJamDialog(close: () -> Unit) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.news) {
-                            VideoCardView(it)
+                            VideoCardViewConnect(it) {
+                                clicked(it)
+                            }
                         }
                     }
                 }
@@ -164,7 +175,9 @@ fun AddJamDialog(close: () -> Unit) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.podcast) {
-                            ItemCardView(it)
+                            ItemCardViewConnect(it) {
+                                clicked(it)
+                            }
                         }
                     }
                 }
@@ -178,7 +191,9 @@ fun AddJamDialog(close: () -> Unit) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.movies) {
-                            MoviesImageCard(it)
+                            MoviesImageCardConnect(it) {
+                                clicked(it)
+                            }
                         }
                     }
                 }
@@ -191,7 +206,9 @@ fun AddJamDialog(close: () -> Unit) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.playlists) {
-                            ItemCardView(it)
+                            ItemCardViewConnect(it) {
+                                clicked(it)
+                            }
                         }
                     }
                 }
@@ -204,7 +221,9 @@ fun AddJamDialog(close: () -> Unit) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.albums) {
-                            ItemCardView(it)
+                            ItemCardViewConnect(it) {
+                                clicked(it)
+                            }
                         }
                     }
                 }

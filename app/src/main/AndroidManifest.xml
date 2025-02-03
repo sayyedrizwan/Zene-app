@@ -27,6 +27,7 @@
     <application
         android:name=".di.ZeneBaseApplication"
         android:allowBackup="false"
+        android:largeHeap="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/logo"

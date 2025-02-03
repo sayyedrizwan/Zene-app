@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -125,6 +126,19 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun addVibeEmoji(emoji: String) = viewModelScope.launch(Dispatchers.IO) {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.emoji = emoji
+        connectFileSelected = null
+        delay(1.seconds)
+        connectFileSelected = v
+    }
+
+
+    fun updateVibeJazzInfo(z: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
+        val v = connectFileSelected ?: ConnectFeedDataResponse()
+        v.jazzName = z.name
+        v.jazzArtists = z.artists
+        v.jazzId = z.id
+        v.jazzThumbnail = z.thumbnail
+        v.jazzType = z.type
         connectFileSelected = null
         delay(1.seconds)
         connectFileSelected = v
