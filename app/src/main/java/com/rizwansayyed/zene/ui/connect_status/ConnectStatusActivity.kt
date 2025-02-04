@@ -16,8 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddJam
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddLocation
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAttachFiles
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectEmojiView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusCaptionView
@@ -25,7 +25,6 @@ import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopColumView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopHeaderView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapView
-import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -57,16 +56,14 @@ class ConnectStatusActivity : ComponentActivity() {
                         ConnectStatusCaptionView(caption)
 
                         ConnectVibingSnapView(connectViewModel)
+
                         ConnectAttachFiles(connectViewModel)
 
                         ConnectAddJam(connectViewModel)
 
                         ConnectEmojiView(connectViewModel)
 
-                        Spacer(Modifier.height(30.dp))
-                        SettingsViewSimpleItems(R.drawable.ic_location, R.string.add_location) {
-
-                        }
+                        ConnectAddLocation(connectViewModel)
                         Spacer(Modifier.height(150.dp))
                     }
                 }

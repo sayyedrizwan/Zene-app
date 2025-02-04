@@ -26,18 +26,18 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocationPermissionView(close: () -> Unit) {
+fun LocationPermissionView(close: (Boolean) -> Unit) {
     val rejected = stringResource(R.string.location_permission_reject)
     val permission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-            close()
+            close(it)
             if (!it) {
                 rejected.toast()
                 openAppSettings()
             }
         }
 
-    ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
+    ModalBottomSheet({ close(false) }, contentColor = MainColor, containerColor = MainColor) {
         Column(
             Modifier
                 .fillMaxWidth()

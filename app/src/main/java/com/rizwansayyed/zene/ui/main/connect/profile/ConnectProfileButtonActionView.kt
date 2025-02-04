@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,15 +22,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
-import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun ConnectProfileMessageButton(
@@ -91,18 +96,23 @@ fun ConnectProfileMessageButton(
 
     TextViewNormal(
         stringResource(R.string.you_cant_send_a_new_message_until_you_got_reply),
-        15, Color.White, true
+        15,
+        Color.White,
+        true
     )
 
 
     Spacer(Modifier.height(80.dp))
 }
 
+@SuppressLint("MissingPermission")
 @Composable
 fun ConnectLocationButton(
     user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
 ) {
+    val context = LocalContext.current.applicationContext
     var areaName by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     TextViewBold(stringResource(R.string.send_location), 19, Color.White)
     Spacer(Modifier.height(25.dp))
@@ -110,7 +120,9 @@ fun ConnectLocationButton(
     TextViewNormal(areaName, 16, Color.White, true)
     Spacer(Modifier.height(45.dp))
 
-    ButtonWithImageAndBorder(
+    if (isLoading) CircularLoadingView()
+
+    if (areaName.trim().length > 2) ButtonWithImageAndBorder(
         R.drawable.ic_location, R.string.send_location, Color.White, Color.White
     ) {
         viewModel.sendConnectLocation(user.user?.email)
@@ -118,12 +130,19 @@ fun ConnectLocationButton(
     }
 
     LaunchedEffect(Unit) {
-        areaName = try {
-            val lat = BackgroundLocationTracking.updateLocationLat
-            val lon = BackgroundLocationTracking.updateLocationLon
-            getAddressFromLatLong(lat, lon) ?: ""
+        isLoading = true
+        val l = LocationServices.getFusedLocationProviderClient(context)
+        try {
+            val token = CancellationTokenSource().token
+            val location = l.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, token).await()
+            areaName = try {
+                getAddressFromLatLong(location.latitude, location.longitude) ?: ""
+            } catch (e: Exception) {
+                ""
+            }
+            isLoading = false
         } catch (e: Exception) {
-            ""
+            isLoading = false
         }
     }
 

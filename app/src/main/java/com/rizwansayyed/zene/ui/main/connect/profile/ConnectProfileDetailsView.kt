@@ -66,7 +66,6 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 sendLocation = true
-                BackgroundLocationTracking.backgroundTracking?.onDataReceived()
             }
         }
 

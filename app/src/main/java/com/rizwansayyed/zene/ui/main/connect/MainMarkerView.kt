@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.utils.MainUtils.getBitmapFromURL
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -45,6 +46,10 @@ fun MainMarkerView(currentLatLng: LatLng) {
         keys = arrayOf(1), state = mainUserMarker, title = userInfo?.name
     ) {
         MapMarkerUI(userInfo?.photo, true)
+    }
+
+    LaunchedEffect(currentLatLng) {
+        mainUserMarker.position = currentLatLng
     }
 }
 

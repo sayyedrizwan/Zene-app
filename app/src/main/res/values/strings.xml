@@ -57,6 +57,7 @@
     <string name="enter_your_name">Enter your name</string>
     <string name="add_a_caption">Add a caption…</string>
     <string name="search_s_p_a_etc">Search song, playlist, album, etc..</string>
+    <string name="search_places">Search places</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>
     <string name="enable_notification">Enable notification</string>

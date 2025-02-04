@@ -178,6 +178,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun searchPlaces(lat: Double, lon: Double) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.search(q).onStart {
+            searchData = ResponseResult.Loading
+        }.catch {
+            searchData = ResponseResult.Error(it)
+        }.collectLatest {
+            searchData = ResponseResult.Success(it)
+        }
+    }
+
 
     fun connectNearMusic() = viewModelScope.launch(Dispatchers.IO) {
         val data: ZeneMusicDataList? = cacheHelper.get(ZENE_CONNECT_NEAR_MUSIC_API)
