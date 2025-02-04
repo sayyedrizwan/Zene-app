@@ -10,3 +10,10 @@ data class SearchDataResponse(
     val podcast: List<ZeneMusicData?>?,
     val movies: List<ZeneMusicData?>?,
 )
+
+data class SearchPlacesDataResponse(
+    val address: String?,
+    val name: String?,
+    val lat: String?,
+    val lon: String?
+)

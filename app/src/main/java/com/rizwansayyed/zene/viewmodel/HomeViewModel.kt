@@ -1,10 +1,14 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
@@ -14,9 +18,11 @@ import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
+import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -35,6 +41,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,6 +65,9 @@ class HomeViewModel @Inject constructor(
 
     var nearMusic by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var searchData by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
+    var searchPlaces by mutableStateOf<ResponseResult<List<SearchPlacesDataResponse>>>(
+        ResponseResult.Empty
+    )
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -178,13 +188,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchPlaces(lat: Double, lon: Double) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.search(q).onStart {
-            searchData = ResponseResult.Loading
+    @SuppressLint("MissingPermission")
+    fun searchPlaces(q: String?) = viewModelScope.launch(Dispatchers.IO) {
+        searchPlaces = ResponseResult.Loading
+        val l = if (q == null) {
+            val l = LocationServices.getFusedLocationProviderClient(context)
+            val token = CancellationTokenSource().token
+            l.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, token).await()
+        } else null
+
+        zeneAPI.searchPlaces(q, l?.longitude, l?.latitude).onStart {
+            searchPlaces = ResponseResult.Loading
         }.catch {
-            searchData = ResponseResult.Error(it)
+            searchPlaces = ResponseResult.Error(it)
         }.collectLatest {
-            searchData = ResponseResult.Success(it)
+            searchPlaces = ResponseResult.Success(it)
         }
     }
 

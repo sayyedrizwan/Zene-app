@@ -2,12 +2,15 @@ package com.rizwansayyed.zene.ui.connect_status.view
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -30,21 +32,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.main.connect.view.LocationPermissionView
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.tasks.await
 
 @Composable
 fun ConnectAddLocation(viewModel: ConnectViewModel) {
@@ -60,7 +60,10 @@ fun ConnectAddLocation(viewModel: ConnectViewModel) {
     if (showAlert) Dialog(
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        ConnectAddLocationDialog {}
+        ConnectAddLocationDialog {
+            showAlert = false
+            viewModel.updateVibeLocationInfo(it)
+        }
     }
 
 
@@ -73,9 +76,8 @@ fun ConnectAddLocation(viewModel: ConnectViewModel) {
 
 @SuppressLint("MissingPermission")
 @Composable
-fun ConnectAddLocationDialog(close: () -> Unit) {
+fun ConnectAddLocationDialog(close: (SearchPlacesDataResponse) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
-    val context = LocalContext.current.applicationContext
     var search by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
@@ -95,7 +97,7 @@ fun ConnectAddLocationDialog(close: () -> Unit) {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions {
                     focusManager.clearFocus()
-                    if (search.length > 3) viewModel.searchZene(search)
+                    if (search.length > 3) viewModel.searchPlaces(search)
                 },
                 placeholder = {
                     TextViewNormal(stringResource(R.string.search_places), 14)
@@ -104,7 +106,7 @@ fun ConnectAddLocationDialog(close: () -> Unit) {
                     if (search.length > 3) {
                         IconButton({
                             focusManager.clearFocus()
-                            viewModel.searchZene(search)
+                            viewModel.searchPlaces(search)
                         }) {
                             ImageIcon(R.drawable.ic_search, 24)
                         }
@@ -121,17 +123,28 @@ fun ConnectAddLocationDialog(close: () -> Unit) {
                 singleLine = true
             )
         }
+
+        item { Spacer(Modifier.height(15.dp)) }
+
+        when (val v = viewModel.searchPlaces) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> item { CircularLoadingView() }
+            is ResponseResult.Success -> items(v.data) {
+                Column(
+                    Modifier
+                        .padding(bottom = 35.dp)
+                        .clickable { close(it) }
+                        .padding(horizontal = 10.dp)
+                ) {
+                    TextViewSemiBold(it.name ?: "", 14)
+                    TextViewNormal(it.address ?: "", 14)
+                }
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
-        val l = LocationServices.getFusedLocationProviderClient(context)
-        try {
-            val token = CancellationTokenSource().token
-            val location = l.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, token).await()
-            viewModel.searchPlaces(location.latitude, location.longitude)
-        } catch (e: Exception) {
-            val ip = ipDB.firstOrNull()
-            if (ip?.lat != null && ip.lon != null) viewModel.searchPlaces(ip.lat, ip.lon)
-        }
+        viewModel.searchPlaces(null)
     }
 }

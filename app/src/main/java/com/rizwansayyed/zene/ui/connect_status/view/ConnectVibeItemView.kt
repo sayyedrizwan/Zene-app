@@ -43,64 +43,86 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 
 @Composable
-fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
+fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
     Spacer(Modifier.height(10.dp))
 
-    Row(
+    Column(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 3.dp)
     ) {
-        if (item?.media != null) {
-            Box(Modifier.weight(6f)) {
-                ConnectVibeMediaItem(item, Modifier.align(Alignment.Center))
+        Row(Modifier.fillMaxWidth()) {
+            if (item?.media != null) {
+                Box(Modifier.weight(6f)) {
+                    ConnectVibeMediaItem(item, Modifier.align(Alignment.Center))
 
-                if (item.isVibing == true) GlideImage(
-                    R.drawable.just_vibing_sticker,
-                    "",
-                    Modifier
-                        .align(Alignment.TopStart)
-                        .width(80.dp)
-                        .offset((-14).dp, (-28).dp)
-                        .rotate(-20f),
-                    contentScale = ContentScale.Fit
-                )
+                    if (item.isVibing == true) GlideImage(
+                        R.drawable.just_vibing_sticker,
+                        "",
+                        Modifier
+                            .align(Alignment.TopStart)
+                            .width(80.dp)
+                            .offset((-14).dp, (-28).dp)
+                            .rotate(-20f),
+                        contentScale = ContentScale.Fit
+                    )
 
-                Row(
-                    Modifier
-                        .padding(9.dp)
-                        .align(Alignment.BottomEnd)
-                        .size(24.dp)
-                        .clickable { }
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.White),
-                    Arrangement.Center,
-                    Alignment.CenterVertically
-                ) {
-                    ImageIcon(R.drawable.ic_arrow_expand, 20, Color.Black)
+                    Row(
+                        Modifier
+                            .padding(9.dp)
+                            .align(Alignment.BottomEnd)
+                            .size(24.dp)
+                            .clickable { }
+                            .clip(RoundedCornerShape(100))
+                            .background(Color.White),
+                        Arrangement.Center,
+                        Alignment.CenterVertically) {
+                        ImageIcon(R.drawable.ic_arrow_expand, 20, Color.Black)
+                    }
                 }
             }
-        }
-        if ((item?.jazzName != null && item.jazzId != null) || item?.emoji != null) Column(
-            Modifier
-                .weight(4f)
-                .padding(horizontal = 1.dp),
-            Arrangement.Center,
-            Alignment.CenterHorizontally
-        ) {
-            if (item.jazzName != null && item.jazzId != null) GlideImage(
-                item.jazzThumbnail, item.jazzName,
+            if ((item?.jazzName != null && item.jazzId != null) || item?.emoji != null) Column(
                 Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
-                contentScale = ContentScale.Crop
-            )
+                    .weight(4f)
+                    .padding(horizontal = 1.dp),
+                Arrangement.Center,
+                Alignment.CenterHorizontally
+            ) {
+                if (item.jazzName != null && item.jazzId != null) GlideImage(
+                    item.jazzThumbnail,
+                    item.jazzName,
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
+                )
 
-            Spacer(Modifier.padding(top = 12.dp))
+                Spacer(Modifier.padding(top = 12.dp))
 
-            if (item.emoji != null) TextViewBold(item.emoji ?: "", 50)
+                if (item.emoji != null) TextViewBold(item.emoji ?: "", 50)
+            }
+        }
+
+        if (item?.locationName != null) {
+            Row(
+                Modifier
+                    .padding(top = 25.dp, start = 3.dp)
+                    .fillMaxWidth(),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                ImageIcon(R.drawable.ic_location, 18)
+                Spacer(Modifier.width(4.dp))
+                TextViewNormal(item.locationName!!, 14)
+                Spacer(Modifier.weight(1f))
+            }
+        }
+
+        if (showCaption && item?.caption != null) Box(Modifier.padding(top = 19.dp)) {
+            TextViewNormal(item.caption ?: "", 15)
         }
     }
 
@@ -120,8 +142,7 @@ fun ConnectVibeMediaItem(item: ConnectFeedDataResponse, modifier: Modifier) {
                     useController = false
                     exoPlayer.repeatMode = REPEAT_MODE_ONE
                     exoPlayer.volume = 1f
-                    exoPlayer.videoScalingMode =
-                        C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+                    exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
                     player = exoPlayer
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     val mediaItem = MediaItem.fromUri(item.media ?: "")
@@ -129,8 +150,7 @@ fun ConnectVibeMediaItem(item: ConnectFeedDataResponse, modifier: Modifier) {
                     exoPlayer.prepare()
                     exoPlayer.play()
                 }
-            },
-            modifier = modifier
+            }, modifier = modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clipToBounds()

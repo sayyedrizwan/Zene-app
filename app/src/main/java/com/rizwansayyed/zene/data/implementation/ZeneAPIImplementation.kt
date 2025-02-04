@@ -129,6 +129,21 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.search(token, body))
     }
 
+    override suspend fun searchPlaces(q: String?, lon: Double?, lat: Double?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("q", q)
+            put("lon", lon)
+            put("lat", lat)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.searchPlaces(token, body))
+    }
+
     override suspend fun entertainmentMovies() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

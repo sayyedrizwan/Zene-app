@@ -2,12 +2,17 @@ package com.rizwansayyed.zene.data.model
 
 data class ConnectFeedDataResponse(
     var media: String? = null,
+    var caption: String? = null,
     var isVibing: Boolean? = null,
     var jazzName: String? = null,
     var jazzArtists: String? = null,
     var jazzId: String? = null,
     var jazzThumbnail: String? = null,
     var jazzType: String? = null,
+    var locationName: String? = null,
+    var locationAddress: String? = null,
+    var locationLatitude: String? = null,
+    var locationLongitude: String? = null,
     var emoji: String? = null
 ) {
 

@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -143,4 +144,16 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         delay(1.seconds)
         connectFileSelected = v
     }
+
+    fun updateVibeLocationInfo(z: SearchPlacesDataResponse) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val v = connectFileSelected ?: ConnectFeedDataResponse()
+            v.locationName = z.name
+            v.locationAddress = z.address
+            v.locationLongitude = z.lon
+            v.locationLatitude = z.lat
+            connectFileSelected = null
+            delay(1.seconds)
+            connectFileSelected = v
+        }
 }
