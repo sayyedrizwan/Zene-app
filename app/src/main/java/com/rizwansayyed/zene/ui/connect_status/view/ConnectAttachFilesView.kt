@@ -61,6 +61,7 @@ import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -189,7 +190,6 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
 
                 ButtonWithBorder(R.string.attach) {
                     if (isLoading) return@ButtonWithBorder
-
                     isLoading = true
                     cropVideoFile(vibeVideoFile, start, end) {
                         isLoading = false
@@ -256,3 +256,4 @@ private fun saveFileToAppDirectory(uri: Uri): File {
     }
     return file
 }
+

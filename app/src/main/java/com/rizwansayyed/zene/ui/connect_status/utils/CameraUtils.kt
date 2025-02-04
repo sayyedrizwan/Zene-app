@@ -106,9 +106,11 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                         "-codec copy -avoid_negative_ts 1 $vibeVideoCroppedFile"
 
                 val session = FFmpegKit.execute(cmd)
-                if (ReturnCode.isSuccess(session.returnCode))
-                    compressVideoFile(vibeVideoCroppedFile, d)
-                else d(inputFile)
+                if (ReturnCode.isSuccess(session.returnCode)) {
+                    val size = vibeVideoCroppedFile.length() / (1024.0 * 1024.0)
+                    if (size > 4) d(vibeVideoCroppedFile)
+                    else compressVideoFile(vibeVideoCroppedFile, d)
+                } else d(inputFile)
             }
     }
 

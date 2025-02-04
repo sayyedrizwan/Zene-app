@@ -17,8 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -52,7 +55,9 @@ fun ConnectVideoCropperSliderView(
 
     Box(modifier.fillMaxWidth()) {
         RangeSlider(state = rangeSliderState,
-            modifier = Modifier.height(100.dp),
+            modifier = Modifier
+                .height(100.dp)
+                .clip(RectangleShape),
             startInteractionSource = startInteractionSource,
             endInteractionSource = endInteractionSource,
             startThumb = {
