@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddJam
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddLocation
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAttachFiles
@@ -34,6 +37,9 @@ import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,6 +54,8 @@ class ConnectStatusActivity : ComponentActivity() {
         setContent {
             ZeneTheme {
                 val caption = remember { mutableStateOf("") }
+                val pleaseEnterACaption =
+                    stringResource(R.string.error_uploading_please_try_again_later)
 
                 Box(
                     Modifier
@@ -75,22 +83,63 @@ class ConnectStatusActivity : ComponentActivity() {
                         Spacer(Modifier.height(250.dp))
                     }
 
-                    Column(
-                        Modifier
-                            .padding(bottom = 60.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter),
-                        Arrangement.Center, Alignment.CenterHorizontally
-                    ) {
-                        ButtonHeavy(stringResource(R.string.share)) {
+                    LaunchedEffect(caption.value) {
+                        connectViewModel.updateCaptionInfo(caption.value)
+                    }
 
+                    when (val v = connectViewModel.isConnectSharing) {
+                        ResponseResult.Empty -> ShareButtonUI(Modifier.align(Alignment.BottomCenter))
+                        is ResponseResult.Error -> {
+                            pleaseEnterACaption.toast()
+                            ShareButtonUI(Modifier.align(Alignment.BottomCenter))
                         }
-                        Spacer(Modifier.height(14.dp))
-                        ButtonWithBorder(R.string.cancel) {
-                            finish()
+
+                        ResponseResult.Loading -> Column(
+                            Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 20.dp)
+                        ) {
+                            TextViewNormal(connectViewModel.loadingTypeForFile, 15, center = true)
+                            CircularLoadingView()
+                        }
+
+                        is ResponseResult.Success -> {
+                            if (v.data.status == true) {
+                                finish()
+                            } else {
+                                pleaseEnterACaption.toast()
+                                ShareButtonUI(Modifier.align(Alignment.BottomCenter))
+                            }
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    fun ShareButtonUI(modifier: Modifier = Modifier) {
+        val pleaseEnterACaption = stringResource(R.string.please_enter_valid_caption)
+
+        Column(
+            modifier
+                .padding(bottom = 60.dp)
+                .fillMaxWidth(),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            ButtonHeavy(stringResource(R.string.share)) {
+                if ((connectViewModel.connectFileSelected?.caption?.length
+                        ?: "".length) <= 3
+                ) {
+                    pleaseEnterACaption.toast()
+                    return@ButtonHeavy
+                }
+                connectViewModel.uploadAVibe()
+            }
+            Spacer(Modifier.height(14.dp))
+            ButtonWithBorder(R.string.cancel) {
+                finish()
             }
         }
     }

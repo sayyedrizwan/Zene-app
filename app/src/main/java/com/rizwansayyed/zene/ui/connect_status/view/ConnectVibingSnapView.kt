@@ -42,6 +42,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.connect_status.utils.ImageCapturingUtils
+import com.rizwansayyed.zene.ui.connect_status.utils.MAX_VIDEO_CAPTURE_LENGTH
 import com.rizwansayyed.zene.ui.connect_status.utils.VideoCapturingUtils
 import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -141,7 +142,7 @@ fun ConnectVibingSnapAlertNew(viewModel: ConnectViewModel, close: () -> Unit) {
 
                 LaunchedEffect(videoCameraUtils?.currentRecordingDifference) {
                     currentProgress = ((videoCameraUtils?.currentRecordingDifference
-                        ?: 0).toFloat() / 15 * 100) / 100
+                        ?: 0).toFloat() / MAX_VIDEO_CAPTURE_LENGTH * 100) / 100
                 }
             } else {
                 Spacer(Modifier

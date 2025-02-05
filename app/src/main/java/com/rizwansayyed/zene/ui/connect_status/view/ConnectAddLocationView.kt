@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.connect_status.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
@@ -62,10 +64,10 @@ fun ConnectAddLocation(viewModel: ConnectViewModel) {
     ) {
         ConnectAddLocationDialog {
             showAlert = false
+            Log.d("TAG", "ConnectAddLocation: runnred $it")
             viewModel.updateVibeLocationInfo(it)
         }
     }
-
 
     if (permissionAlert) LocationPermissionView {
         if (permissionAlert) showAlert = true

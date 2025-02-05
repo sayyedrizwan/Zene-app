@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.implementation
 
+import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
@@ -44,5 +45,14 @@ interface ZeneAPIInterface {
     suspend fun sendConnectLocation(toEmail: String): Flow<StatusTypeResponse>
     suspend fun connectFriendsList(): Flow<List<ConnectUserInfoResponse>>
     suspend fun search(q: String): Flow<SearchDataResponse>
-    suspend fun searchPlaces(q: String?, lon: Double?, lat: Double?): Flow<List<SearchPlacesDataResponse>>
+    suspend fun searchPlaces(
+        q: String?,
+        lon: Double?,
+        lat: Double?
+    ): Flow<List<SearchPlacesDataResponse>>
+
+    suspend fun shareConnectVibe(
+        d: ConnectFeedDataResponse,
+        file: String?
+    ): Flow<StatusTypeResponse>
 }

@@ -2,7 +2,9 @@ package com.rizwansayyed.zene.data.implementation
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
+import com.rizwansayyed.zene.data.UploadService
 import com.rizwansayyed.zene.data.ZeneAPIService
+import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
@@ -20,7 +22,9 @@ import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.io.File
 import javax.inject.Inject
+
 
 class ZeneAPIImplementation @Inject constructor(
     private val zeneAPI: ZeneAPIService, private val ipAPI: IPAPIService
@@ -294,8 +298,10 @@ class ZeneAPIImplementation @Inject constructor(
     }
 
     override suspend fun updateConnectSettings(
-        toEmail: String, lastListenSongs: Boolean,
-        locationSharing: Boolean, silentNotification: Boolean
+        toEmail: String,
+        lastListenSongs: Boolean,
+        locationSharing: Boolean,
+        silentNotification: Boolean
     ) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -343,6 +349,36 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.sendConnectLocation(token, body))
+    }
+
+    override suspend fun shareConnectVibe(d: ConnectFeedDataResponse, file: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        var mediaPath: String? = null
+        if (file != null) {
+            val fileCompressed = File(file)
+            if (fileCompressed.exists()) {
+                mediaPath = UploadService.uploadFile(fileCompressed)
+            }
+        }
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("media", mediaPath)
+            put("jazz_type", d.jazzType)
+            put("jazz_artists", d.jazzArtists)
+            put("jazz_name", d.jazzName)
+            put("jazz_id", d.jazzId)
+            put("is_vibing", d.isVibing)
+            put("longitude", d.locationLongitude)
+            put("latitude", d.locationLatitude)
+            put("location_address", d.locationAddress)
+            put("location_name", d.locationName)
+            put("emoji", d.emoji)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.shareConnectVibe(token, body))
     }
 
 }

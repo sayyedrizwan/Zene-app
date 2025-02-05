@@ -21,10 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
+import com.rizwansayyed.zene.ui.connect_status.utils.MAX_VIDEO_CAPTURE_LENGTH
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
-import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +33,7 @@ fun ConnectVideoCropperSliderView(
 ) {
     val videoDuration = getVideoDuration(vibeVideoFile).toFloat()
     val minSelectableRange = 3f
-    val maxSelectableRange = minOf(videoDuration, 15f * 1000L)
+    val maxSelectableRange = minOf(videoDuration, MAX_VIDEO_CAPTURE_LENGTH.toFloat() * 1000L)
     var selectedRange by remember { mutableStateOf(0f..maxSelectableRange) }
 
     val rangeSliderState = remember {

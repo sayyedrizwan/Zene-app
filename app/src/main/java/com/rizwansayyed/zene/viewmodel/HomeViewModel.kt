@@ -118,7 +118,6 @@ class HomeViewModel @Inject constructor(
         zeneAPI.homeVideos().onStart {
             homeVideos = ResponseResult.Loading
         }.catch {
-            it.message?.toast()
             homeVideos = ResponseResult.Error(it)
         }.collectLatest {
             cacheHelper.save(ZENE_RECENT_HOME_VIDEOS_API, it)

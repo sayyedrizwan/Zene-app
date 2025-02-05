@@ -14,6 +14,7 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.PreviewView
 import androidx.core.content.res.ResourcesCompat
 import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.arthenica.ffmpegkit.ReturnCode
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
@@ -46,7 +47,7 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build()
 
 
-        private val vibeFolder = File(context.filesDir, "temp_img").apply {
+        private val vibeFolder = File(context.filesDir, "temp_connect_files").apply {
             mkdirs()
         }
         private val vibeTempThumbnailFolder = File(context.filesDir, "temp_thumbnail_img").apply {
@@ -56,8 +57,8 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         val vibeCompressedImageFile = File(vibeFolder, "temp_vibe_img_compressed.jpg")
 
         val vibeVideoFile = File(vibeFolder, "temp_vibe_vid.mp4")
-        val vibeVideoCroppedFile = File(vibeFolder, "temp_vibe_cropped_vid.mp4")
-        val vibeCompressedVideoFile = File(vibeFolder, "temp_vibe_vid_compressed.mp4")
+        private val vibeVideoCroppedFile = File(vibeFolder, "temp_vibe_cropped_vid.mp4")
+        private val vibeCompressedVideoFile = File(vibeFolder, "temp_vibe_vid_compressed.mp4")
 
         fun isFileExtensionVideo(mimeType: String?): Boolean {
             return when (mimeType) {
@@ -87,30 +88,32 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
             }
         }
 
-        fun compressVideoFile(inputFile: File, d: (File) -> Unit) =
-            CoroutineScope(Dispatchers.IO).launch {
-                vibeCompressedVideoFile.delete()
-                val cmd = "-i ${inputFile.absolutePath} -preset fast -crf 23 -c:a aac " +
-                        "-b:a 128k -movflags +faststart ${vibeCompressedVideoFile.absolutePath}"
+        fun compressVideoFile(inputFile: String): String {
+            vibeCompressedVideoFile.delete()
 
-                val session = FFmpegKit.execute(cmd)
-                if (ReturnCode.isSuccess(session.returnCode)) d(vibeCompressedVideoFile)
-                else d(inputFile)
-            }
+            FFmpegKitConfig.enableLogCallback {
+                android.util.Log.d("TAG", "apply: runned ${it.message} ${it.sessionId}")
+            };
+
+            val cmd =
+                "-i $inputFile -vf scale=480:-2 -c:v mpeg4 -q:v 7 -b:v 150K -c:a aac -b:a 48k -movflags +faststart $vibeCompressedVideoFile"
+
+            val session = FFmpegKit.execute(cmd)
+            return if (ReturnCode.isSuccess(session.returnCode)) vibeCompressedVideoFile.absolutePath
+            else inputFile
+        }
 
         fun cropVideoFile(inputFile: File, start: Float, end: Float, d: (File) -> Unit) =
             CoroutineScope(Dispatchers.IO).launch {
                 vibeVideoCroppedFile.delete()
                 val cmd = "-ss ${formatMillisecondsToRead(start.toLong())} -t " +
-                        "${formatMillisecondsToRead(end.toLong())} -noaccurate_seek -i $inputFile " +
-                        "-codec copy -avoid_negative_ts 1 $vibeVideoCroppedFile"
+                        "${formatMillisecondsToRead(end.toLong())} -vf scale=640:-2 -c:v libx264 " +
+                        "-preset veryfast -crf 28 -c:a aac -b:a 64k -movflags +faststart $vibeVideoCroppedFile"
+
 
                 val session = FFmpegKit.execute(cmd)
-                if (ReturnCode.isSuccess(session.returnCode)) {
-                    val size = vibeVideoCroppedFile.length() / (1024.0 * 1024.0)
-                    if (size > 4) d(vibeVideoCroppedFile)
-                    else compressVideoFile(vibeVideoCroppedFile, d)
-                } else d(inputFile)
+                if (ReturnCode.isSuccess(session.returnCode)) d(vibeVideoCroppedFile)
+                else d(inputFile)
             }
     }
 

@@ -33,6 +33,7 @@ object URLSUtils {
     const val ZENE_CONNECT_USER_SETTINGS_API = "connect/connect-user-settings"
     const val ZENE_CONNECT_SEND_MESSAGE_API = "connect/connect-send-message"
     const val ZENE_CONNECT_SEND_LOCATION_API = "connect/connect-send-location"
+    const val ZENE_CONNECT_SHARE_VIBE_API = "connect/connect-share-vibe"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"

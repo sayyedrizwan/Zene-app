@@ -31,18 +31,16 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
-import com.arthenica.ffmpegkit.FFmpegKit
-import com.arthenica.ffmpegkit.ReturnCode
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.afterMeasured
-import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.selectorHD
-import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeCompressedVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInSeconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+
+const val MAX_VIDEO_CAPTURE_LENGTH = 11
 
 class VideoCapturingUtils(
     private val previewMain: PreviewView,
@@ -178,17 +176,10 @@ class VideoCapturingUtils(
             if (it is VideoRecordEvent.Start) currentRecordingDuration = System.currentTimeMillis()
             else if (it is VideoRecordEvent.Status) {
                 currentRecordingDifference = timeDifferenceInSeconds(currentRecordingDuration)
-                if (timeDifferenceInSeconds(currentRecordingDuration) >= 15) stopVideo()
+                if (timeDifferenceInSeconds(currentRecordingDuration) >= MAX_VIDEO_CAPTURE_LENGTH) stopVideo()
             } else if (it is VideoRecordEvent.Finalize && !it.hasError()) {
                 vibeFiles = it.outputResults.outputUri.toFile()
-                compressVideo(it.outputResults.outputUri.toFile())
             }
-        }
-    }
-
-    private fun compressVideo(inputFile: File) = CoroutineScope(Dispatchers.IO).launch {
-        compressVideoFile(inputFile) {
-            vibeFiles = it
         }
     }
 

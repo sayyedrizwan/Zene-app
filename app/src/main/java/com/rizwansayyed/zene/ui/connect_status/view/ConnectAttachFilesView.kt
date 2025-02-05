@@ -204,7 +204,7 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
     }
 
     LaunchedEffect(Unit) {
-        val count = 35
+        val count = 25
         coroutines.launch(Dispatchers.IO) {
             val retriever = MediaMetadataRetriever()
             retriever.setDataSource(vibeVideoFile.absolutePath)
