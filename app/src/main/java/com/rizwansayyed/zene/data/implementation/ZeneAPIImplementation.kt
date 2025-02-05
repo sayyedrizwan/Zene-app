@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.data.implementation
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
-import com.rizwansayyed.zene.data.UploadService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
@@ -20,6 +19,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.File
@@ -355,30 +356,29 @@ class ZeneAPIImplementation @Inject constructor(
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
-        var mediaPath: String? = null
+        val body = MultipartBody.Builder().setType(MultipartBody.FORM)
+
         if (file != null) {
-            val fileCompressed = File(file)
-            if (fileCompressed.exists()) {
-                mediaPath = UploadService.uploadFile(fileCompressed)
+            val f = File(file)
+            if (f.exists()) {
+                val uploader =
+                    File(file).asRequestBody("application/octet-stream".toMediaTypeOrNull())
+                body.addFormDataPart("file", f.name, uploader)
             }
         }
+        body.addFormDataPart("email", email)
+        d.jazzType?.let { body.addFormDataPart("jazz_type", it) }
+        d.jazzArtists?.let { body.addFormDataPart("jazz_artists", it) }
+        d.jazzName?.let { body.addFormDataPart("jazz_name", it) }
+        d.jazzId?.let { body.addFormDataPart("jazz_id", it) }
+        d.isVibing?.let { body.addFormDataPart("is_vibing", it.toString()) }
+        d.locationLongitude?.let { body.addFormDataPart("longitude", it) }
+        d.locationLatitude?.let { body.addFormDataPart("latitude", it) }
+        d.locationAddress?.let { body.addFormDataPart("location_address", it) }
+        d.locationName?.let { body.addFormDataPart("location_name", it) }
+        d.emoji?.let { body.addFormDataPart("emoji", it) }
 
-        val json = JSONObject().apply {
-            put("email", email)
-            put("media", mediaPath)
-            put("jazz_type", d.jazzType)
-            put("jazz_artists", d.jazzArtists)
-            put("jazz_name", d.jazzName)
-            put("jazz_id", d.jazzId)
-            put("is_vibing", d.isVibing)
-            put("longitude", d.locationLongitude)
-            put("latitude", d.locationLatitude)
-            put("location_address", d.locationAddress)
-            put("location_name", d.locationName)
-            put("emoji", d.emoji)
-        }
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.shareConnectVibe(token, body))
+
+        emit(zeneAPI.shareConnectVibe(token, body.build()))
     }
-
 }

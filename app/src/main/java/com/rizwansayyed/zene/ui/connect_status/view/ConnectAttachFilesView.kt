@@ -130,7 +130,7 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
             }, modifier = Modifier
                 .fillMaxWidth()
                 .clipToBounds()
-                .weight(7f)
+                .weight(6f)
         )
 
         LifecycleResumeEffect(Unit) {
@@ -142,7 +142,7 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
             Modifier
                 .padding(horizontal = 6.dp)
                 .fillMaxWidth()
-                .weight(3f),
+                .weight(4f),
             Arrangement.Center,
             Alignment.CenterHorizontally
         ) {

@@ -36,11 +36,14 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_VERIFY_NUMBER_OTP_API
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 interface ZeneAPIService {
 
@@ -176,6 +179,7 @@ interface ZeneAPIService {
 
     @POST(ZENE_CONNECT_SHARE_VIBE_API)
     suspend fun shareConnectVibe(
-        @Header("token") token: String, @Body data: RequestBody
+        @Header("token") token: String,
+        @Body body: RequestBody?
     ): StatusTypeResponse
 }

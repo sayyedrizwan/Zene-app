@@ -359,9 +359,8 @@ object MainUtils {
         val hours = TimeUnit.MILLISECONDS.toHours(ms)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60
         val seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60
-        val milliseconds = (ms % 1000) / 10
 
-        return String.format("%02d:%02d:%02d.%02d", hours, minutes, seconds, milliseconds)
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     fun openShareConnectShareSMS(url: String, number: String?) {

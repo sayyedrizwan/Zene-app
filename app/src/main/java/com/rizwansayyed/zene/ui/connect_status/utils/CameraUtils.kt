@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.connect_status.utils
 
 import android.content.Context
+import android.util.Log
 import android.view.Surface
 import android.view.View
 import android.view.ViewTreeObserver
@@ -26,6 +27,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.time.Duration.Companion.seconds
+
 
 class CameraUtils(private val ctx: Context, private val previewMain: PreviewView) {
     companion object {
@@ -91,12 +93,8 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         fun compressVideoFile(inputFile: String): String {
             vibeCompressedVideoFile.delete()
 
-            FFmpegKitConfig.enableLogCallback {
-                android.util.Log.d("TAG", "apply: runned ${it.message} ${it.sessionId}")
-            };
-
             val cmd =
-                "-i $inputFile -vf scale=480:-2 -c:v mpeg4 -q:v 7 -b:v 150K -c:a aac -b:a 48k -movflags +faststart $vibeCompressedVideoFile"
+                "-i $inputFile -vf scale=720:-2 -c:v h264_mediacodec -b:v 200K -c:a aac -b:a 128k -movflags +faststart -brand mp42 -f mp4 $vibeCompressedVideoFile"
 
             val session = FFmpegKit.execute(cmd)
             return if (ReturnCode.isSuccess(session.returnCode)) vibeCompressedVideoFile.absolutePath
@@ -106,10 +104,9 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         fun cropVideoFile(inputFile: File, start: Float, end: Float, d: (File) -> Unit) =
             CoroutineScope(Dispatchers.IO).launch {
                 vibeVideoCroppedFile.delete()
-                val cmd = "-ss ${formatMillisecondsToRead(start.toLong())} -t " +
-                        "${formatMillisecondsToRead(end.toLong())} -vf scale=640:-2 -c:v libx264 " +
-                        "-preset veryfast -crf 28 -c:a aac -b:a 64k -movflags +faststart $vibeVideoCroppedFile"
-
+                val cmd = "-ss ${formatMillisecondsToRead(start.toLong())} -i " +
+                        "${inputFile.absolutePath} -to ${formatMillisecondsToRead(end.toLong())} " +
+                        "-c:v copy -c:a copy $vibeVideoCroppedFile"
 
                 val session = FFmpegKit.execute(cmd)
                 if (ReturnCode.isSuccess(session.returnCode)) d(vibeVideoCroppedFile)

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -178,7 +179,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             if (connectFileSelected?.media?.contains(".jpg") == true) connectFileSelected!!.media!!
             else {
                 val fileSizeInMB = (File(connectFileSelected!!.media!!).length() / 1024) / 1024
-                if (fileSizeInMB <= 3) connectFileSelected!!.media
+                if (fileSizeInMB <= 5) connectFileSelected!!.media
                 else compressVideoFile(connectFileSelected!!.media!!)
             }
         } else null

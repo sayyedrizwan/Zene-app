@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player.REPEAT_MODE_ONE
@@ -155,6 +156,10 @@ fun ConnectVibeMediaItem(item: ConnectFeedDataResponse, modifier: Modifier) {
                 .aspectRatio(1f)
                 .clipToBounds()
         )
+        LifecycleResumeEffect(Unit) {
+            exoPlayer.play()
+            onPauseOrDispose { exoPlayer.pause() }
+        }
     } else {
         GlideImage(
             item.media,

@@ -120,10 +120,6 @@ fun ConnectRecentContactsView() {
         Box(Modifier.clickable { contactPermission.launch(Manifest.permission.READ_CONTACTS) }) {
             ImageIcon(R.drawable.ic_user_search, 23)
         }
-        Spacer(Modifier.width(14.dp))
-        Box(Modifier.clickable { editUserView = true }) {
-            ImageIcon(R.drawable.ic_bookmark, 23)
-        }
     }
     Spacer(Modifier.height(12.dp))
 

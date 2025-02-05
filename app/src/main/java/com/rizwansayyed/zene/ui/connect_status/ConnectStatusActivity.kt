@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
@@ -96,8 +99,10 @@ class ConnectStatusActivity : ComponentActivity() {
 
                         ResponseResult.Loading -> Column(
                             Modifier
+                                .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+                                .background(Color.Black)
+                                .padding(bottom = 40.dp, top = 20.dp)
                                 .align(Alignment.BottomCenter)
-                                .padding(bottom = 20.dp)
                         ) {
                             TextViewNormal(connectViewModel.loadingTypeForFile, 15, center = true)
                             CircularLoadingView()
@@ -123,7 +128,9 @@ class ConnectStatusActivity : ComponentActivity() {
 
         Column(
             modifier
-                .padding(bottom = 60.dp)
+                .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+                .background(Color.Black)
+                .padding(bottom = 60.dp, top = 20.dp)
                 .fillMaxWidth(),
             Arrangement.Center,
             Alignment.CenterHorizontally
