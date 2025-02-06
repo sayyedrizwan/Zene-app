@@ -63,7 +63,7 @@ class ForegroundService : Service() {
             val notification: Notification =
                 notificationBuilder.setOngoing(true).setSmallIcon(R.drawable.zene_logo)
                     .setContentTitle("Zene is running..")
-                    .setPriority(NotificationCompat.PRIORITY_MIN) 
+                    .setPriority(NotificationCompat.PRIORITY_MIN)
                     .setContentIntent(pendingIntent).setCategory(Notification.CATEGORY_SERVICE)
                     .build()
 
