@@ -167,7 +167,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
 
             item {
                 LaunchedEffect(Unit) {
-                    page += 0
+                    page += 1
                     connectViewModel.connectFriendsVibesList(page)
                 }
             }
