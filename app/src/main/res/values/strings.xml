@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Zene</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
-    <string name="zene_music_player">Zene Music Player</string>
     <string name="app_desc">Free Music, Podcast, Video, Entertainment. Everything You Love, All in One Place.</string>
     <string name="keep_up_with_your_entertainment">Keep up with your Entertainment</string>
     <string name="enable_push_notification_to_get_update">Enable push notification to get news/updates about your favourite musics, news, movies and many more</string>
@@ -36,6 +35,7 @@
     <string name="hollywood_news">Hollywood News</string>
     <string name="bollywood_news">Bollywood News</string>
     <string name="music_news">Music News</string>
+    <string name="no_posts">No Posts</string>
     <string name="movies_trending_today">Movies/Shows Trending Today</string>
     <string name="top_10_movies_show_in">Top 10 Movies/Shows in</string>
     <string name="songs_for_you">Songs for you</string>
@@ -119,13 +119,14 @@
     <string name="to_location">To Location</string>
     <string name="direction">Direction</string>
     <string name="view_on_map">View On Map</string>
+    <string name="vibe_uploaded_successfully">Vibe uploaded successfully.</string>
     <string name="cancel">Cancel</string>
     <string name="attach">Attach</string>
     <string name="you_cant_send_a_new_message_until_you_got_reply">You can\'t send a new message until you got a reply.</string>
     <string name="do_you_want_to_play_this_song">Do you want to play the song?</string>
     <string name="share_notification">Silent Notifications</string>
-    <string name="compress_processing_video">Compressing and Processing the media file...</string>
-    <string name="uploading_please_wait">Uploading... Please wait...</string>
+    <string name="compress_processing_video">Compressing and Processing the media file…</string>
+    <string name="uploading_please_wait">Uploading… Please wait…</string>
     <string name="share">Share</string>
     <string name="please_enter_valid_caption">Please enter a valid caption</string>
     <string name="error_uploading_please_try_again_later">Error uploading. Please try again later.</string>
@@ -134,4 +135,13 @@
     <string name="share_your_location_desc">Keep your friends in the loop! Share your current location with someone you trust whenever needed.</string>
     <string name="share_your_music">Share Your Music</string>
     <string name="share_your_music_desc">Let your friends know what you’re vibing to! Share your currently playing song or top tracks with them.</string>
+
+
+    <!--    notification channels-->
+    <string name="connect_updates_name">Connect Update Alerts</string>
+    <string name="connect_updates_name_desc">Connect Alerts are notifications you receive about activity on Connect. They\'re designed to keep you informed about what\'s happening with your friends, feeds, location sharing, etc.</string>
+    <string name="other_notification">Other</string>
+    <string name="other_notification_desc">Notifications to keep you updated of Zene.</string>
+    <string name="zene_music_player">Zene Music Player</string>
+    <string name="zene_music_player_service">Notification for Zene Music Player service</string>
 </resources>

@@ -17,6 +17,9 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
+import com.rizwansayyed.zene.utils.NotificationUtils
+import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
+import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -26,7 +29,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
@@ -41,6 +43,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     )
 
 
+    var isLoadingVibeFeed by mutableStateOf(false)
     var connectUserVibesFeeds = mutableStateListOf<ConnectFeedDataResponse>()
 
     fun searchConnectUsers(q: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -74,7 +77,13 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
     fun connectFriendsVibesList(page: Int) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.connectFriendsVibesList(page).onStart {}.catch {}.collectLatest {
+        if (page == 0) connectUserVibesFeeds.clear()
+        zeneAPI.connectFriendsVibesList(page).onStart {
+            isLoadingVibeFeed = true
+        }.catch {
+            isLoadingVibeFeed = false
+        }.collectLatest {
+            isLoadingVibeFeed = false
             connectUserVibesFeeds.addAll(it.toTypedArray())
         }
     }
@@ -155,7 +164,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         v.media = file?.absolutePath
         v.isVibing = isVibing
         connectFileSelected = null
-        delay(1.seconds)
+        delay(500)
         connectFileSelected = v
     }
 
@@ -163,7 +172,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.emoji = emoji
         connectFileSelected = null
-        delay(1.seconds)
+        delay(500)
         connectFileSelected = v
     }
 
@@ -176,7 +185,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         v.jazz_thumbnail = z.thumbnail
         v.jazz_type = z.type
         connectFileSelected = null
-        delay(1.seconds)
+        delay(500)
         connectFileSelected = v
     }
 
@@ -188,7 +197,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             v.longitude = z.lon
             v.latitude = z.lat
             connectFileSelected = null
-            delay(1.seconds)
+            delay(500)
             connectFileSelected = v
         }
 
@@ -215,6 +224,12 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }.collectLatest {
             loadingTypeForFile = ""
             isConnectSharing = ResponseResult.Success(it)
+
+            if (it.status == true) {
+                NotificationUtils(
+                    context.resources.getString(R.string.vibe_uploaded_successfully), "\uD83D\uDE09"
+                ).channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC).generate()
+            }
         }
     }
 }

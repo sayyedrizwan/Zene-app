@@ -14,8 +14,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,8 +30,10 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.view.PhoneNumberVerificationView
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.HorizontalCircleShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
@@ -50,6 +54,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
 
     val coroutines = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
+    var page by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -147,11 +152,35 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
                 ConnectStatusTopView()
             }
 
+            items(connectViewModel.connectUserVibesFeeds) {
+                ConnectVibeItemView(it, true)
+            }
+
+            item {
+                if (connectViewModel.isLoadingVibeFeed) {
+                    CircularLoadingView()
+                }
+                if (!connectViewModel.isLoadingVibeFeed && connectViewModel.connectUserVibesFeeds.isEmpty()) {
+                    TextViewBold(stringResource(R.string.no_posts), 19, center = true)
+                }
+            }
+
+            item {
+                LaunchedEffect(Unit) {
+                    page += 0
+                    connectViewModel.connectFriendsVibesList(page)
+                }
+            }
+
             item {
                 Spacer(Modifier.height(200.dp))
             }
 
         }
+    }
+
+    LaunchedEffect(Unit) {
+        connectViewModel.connectFriendsVibesList(page)
     }
 
     LifecycleResumeEffect(Unit) {

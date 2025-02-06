@@ -36,34 +36,42 @@ class ForegroundService : Service() {
 
     private fun startForegroundNotification() {
         try {
+            val channelId = "zene_music_channel"
             val channelName = context.resources.getString(R.string.zene_music_player)
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel(
-                    packageManager.toString(), channelName, NotificationManager.IMPORTANCE_NONE
+                val channel = NotificationChannel(
+                    channelId, channelName, NotificationManager.IMPORTANCE_NONE
                 ).apply {
                     lightColor = Color.BLUE
                     lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-                    val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                    manager.createNotificationChannel(this)
+                    description = context.resources.getString(R.string.zene_music_player_service)
                 }
+                val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                manager.createNotificationChannel(channel)
             }
 
             val mainIntent = Intent(this, MainActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(
-                this, 2, mainIntent, PendingIntent.FLAG_IMMUTABLE
+                this,
+                2,
+                mainIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
-            val notificationBuilder = NotificationCompat.Builder(this, packageManager.toString())
-            val notification: Notification = notificationBuilder.setOngoing(true)
-                .setSmallIcon(R.drawable.zene_logo)
-                .setContentTitle("Zene is running..")
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setContentIntent(pendingIntent)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .build()
 
-            val serviceType =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-                else 0
+            val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            val notification: Notification =
+                notificationBuilder.setOngoing(true).setSmallIcon(R.drawable.zene_logo)
+                    .setContentTitle("Zene is running..")
+                    .setPriority(NotificationCompat.PRIORITY_MIN) 
+                    .setContentIntent(pendingIntent).setCategory(Notification.CATEGORY_SERVICE)
+                    .build()
+
+            val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            } else {
+                0
+            }
 
             ServiceCompat.startForeground(this, 1, notification, serviceType)
         } catch (e: Exception) {

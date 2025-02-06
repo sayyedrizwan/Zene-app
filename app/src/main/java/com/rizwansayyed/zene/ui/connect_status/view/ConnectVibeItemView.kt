@@ -85,16 +85,16 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
                     }
                 }
             }
-            if ((item?.jazz_name != null && item.jazzId != null) || item?.emoji != null) Column(
+            if ((item?.jazz_name != null && item.jazz_id != null) || item?.emoji != null) Column(
                 Modifier
                     .weight(4f)
                     .padding(horizontal = 1.dp),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ) {
-                if (item.jazzName != null && item.jazzId != null) GlideImage(
-                    item.jazzThumbnail,
-                    item.jazzName,
+                if (item.jazz_name != null && item.jazz_id != null) GlideImage(
+                    item.jazz_thumbnail,
+                    item.jazz_name,
                     Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f),
@@ -107,7 +107,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
             }
         }
 
-        if (item?.locationName != null) {
+        if (item?.location_name != null) {
             Row(
                 Modifier
                     .padding(top = 25.dp, start = 3.dp)
@@ -117,7 +117,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
             ) {
                 ImageIcon(R.drawable.ic_location, 18)
                 Spacer(Modifier.width(4.dp))
-                TextViewNormal(item.locationName!!, 14)
+                TextViewNormal(item.location_name!!, 14)
                 Spacer(Modifier.weight(1f))
             }
         }

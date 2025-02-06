@@ -8,8 +8,8 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.NotificationUtils
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.channelIdForUpdates
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.updateNameAlert
+import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
+import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,10 +75,9 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
                     putExtra(FCM_LAT, lat)
                     putExtra(FCM_LON, lon)
                 }
-                channelID(channelIdForUpdates)
-                setName(updateNameAlert)
+                channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
                 setIntent(intent)
-                start()
+                generate()
             }
         }
     }
