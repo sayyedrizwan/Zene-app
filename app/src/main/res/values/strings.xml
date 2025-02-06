@@ -36,7 +36,7 @@
     <string name="hollywood_news">Hollywood News</string>
     <string name="bollywood_news">Bollywood News</string>
     <string name="music_news">Music News</string>
-    <string name="movies_trending_today">Movies Trending Today</string>
+    <string name="movies_trending_today">Movies/Shows Trending Today</string>
     <string name="top_10_movies_show_in">Top 10 Movies/Shows in</string>
     <string name="songs_for_you">Songs for you</string>
     <string name="your_favourite_artists">Your favourite artists</string>
@@ -79,7 +79,8 @@
     <string name="albums">Albums</string>
     <string name="confirm">Confirm</string>
     <string name="friends">Friends</string>
-    <string name="status">Status</string>
+    <string name="friend_requests">Friend Requests</string>
+    <string name="vibes_status">Vibe Status</string>
     <string name="upload_a_vibes">Upload a Vibes</string>
     <string name="vibes_will_be_shared_and_expire_after_24">Vibes will be shared with your friends and expire after 24 hours</string>
     <string name="chats">Chats</string>

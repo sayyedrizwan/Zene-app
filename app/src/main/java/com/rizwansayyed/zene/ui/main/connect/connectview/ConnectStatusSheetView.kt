@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.main.connect.connectview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,12 +101,41 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
                         if (v.data.isEmpty()) item {
                             TextViewNormal(
                                 stringResource(R.string.you_have_no_friends),
-                                15, line = 1, center = true
+                                15,
+                                line = 1,
+                                center = true
                             )
                         } else item {
                             LazyRow(Modifier.fillMaxWidth()) {
                                 items(v.data) {
                                     ConnectFriendsLists(it)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                when (val v = connectViewModel.connectUserFriendsList) {
+                    ResponseResult.Empty -> {}
+                    is ResponseResult.Error -> {}
+                    ResponseResult.Loading -> item {
+                        HorizontalCircleShimmerLoadingCard()
+                    }
+
+                    is ResponseResult.Success -> {
+                        if (v.data.isNotEmpty()) item {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 5.dp)
+                                    .padding(top = 50.dp, bottom = 10.dp)
+                            ) {
+                                TextViewBold(stringResource(R.string.friend_requests), 18)
+                            }
+
+                            LazyRow(Modifier.fillMaxWidth()) {
+                                items(v.data) {
+                                    ConnectFriendsRequestLists(it)
                                 }
                             }
                         }
@@ -125,9 +154,12 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
         }
     }
 
-    LaunchedEffect(Unit) {
+    LifecycleResumeEffect(Unit) {
         homeViewModel.connectNearMusic()
+        connectViewModel.connectFriendsRequestsList()
+        onPauseOrDispose { }
     }
+
     LifecycleResumeEffect(Unit) {
         job?.cancel()
         job = coroutines.launch(Dispatchers.IO) {

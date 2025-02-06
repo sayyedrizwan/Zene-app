@@ -271,6 +271,18 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.connectFriendsList(token, body))
     }
 
+    override suspend fun connectFriendsRequestList() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.connectFriendsRequestList(token, body))
+    }
+
     override suspend fun connectSendRequest(toEmail: String, remove: Boolean) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

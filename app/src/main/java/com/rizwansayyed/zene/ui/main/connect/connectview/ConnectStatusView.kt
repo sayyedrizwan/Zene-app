@@ -24,7 +24,7 @@ fun ConnectStatusTopView() {
     val context = LocalContext.current.applicationContext
     Spacer(Modifier.height(42.dp))
     Row(Modifier.padding(horizontal = 9.dp)) {
-        TextViewBold(stringResource(R.string.status), 18)
+        TextViewBold(stringResource(R.string.vibes_status), 18)
         Spacer(Modifier.weight(1f))
         Box(Modifier.clickable {
             Intent(context, ConnectStatusActivity::class.java).apply {

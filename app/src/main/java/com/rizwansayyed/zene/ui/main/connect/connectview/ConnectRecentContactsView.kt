@@ -36,6 +36,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileActivity
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -92,6 +93,38 @@ fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
                 contentScale = ContentScale.Crop
             )
 
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun ConnectFriendsRequestLists(user: ConnectUserResponse) {
+    val context = LocalContext.current.applicationContext
+
+    Column(
+        Modifier
+            .padding(horizontal = 9.dp)
+            .width(100.dp)
+            .clickable {
+                Intent(context, ConnectUserProfileActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(Intent.ACTION_MAIN, user.email)
+                    context.startActivity(this)
+                }
+            }, Arrangement.Center, Alignment.CenterHorizontally) {
+        GlideImage(
+            user.profile_photo, user.name,
+            Modifier
+                .clip(RoundedCornerShape(100))
+                .size(100.dp),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(Modifier.height(5.dp))
+        TextViewNormal(user.name ?: "", 15, line = 1)
+        Spacer(Modifier.height(2.dp))
+        TextViewNormal(user.connect_status ?: "", 15, line = 1)
+        Spacer(Modifier.height(10.dp))
     }
 }
 

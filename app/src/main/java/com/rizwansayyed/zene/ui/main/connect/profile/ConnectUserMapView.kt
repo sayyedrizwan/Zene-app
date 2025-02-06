@@ -107,10 +107,6 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
                     user?.name ?: ""
                 )
             }
-
-//            ImageWithBorder(R.drawable.ic_bookmark) {
-//
-//            }
         }
     }
     LaunchedEffect(Unit) {

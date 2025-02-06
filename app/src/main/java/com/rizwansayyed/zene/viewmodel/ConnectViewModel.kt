@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,6 +35,9 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var connectSearch by mutableStateOf<ResponseResult<List<ConnectUserResponse>>>(ResponseResult.Empty)
     var connectUserInfo by mutableStateOf<ResponseResult<ConnectUserInfoResponse>>(ResponseResult.Empty)
     var connectUserList by mutableStateOf<ResponseResult<List<ConnectUserInfoResponse>>>(
+        ResponseResult.Empty
+    )
+    var connectUserFriendsList by mutableStateOf<ResponseResult<List<ConnectUserResponse>>>(
         ResponseResult.Empty
     )
 
@@ -54,6 +58,16 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             connectUserList = ResponseResult.Error(it)
         }.collectLatest {
             connectUserList = ResponseResult.Success(it)
+        }
+    }
+
+    fun connectFriendsRequestsList() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.connectFriendsRequestList().onStart {
+            connectUserFriendsList = ResponseResult.Loading
+        }.catch {
+            connectUserFriendsList = ResponseResult.Error(it)
+        }.collectLatest {
+            connectUserFriendsList = ResponseResult.Success(it)
         }
     }
 
