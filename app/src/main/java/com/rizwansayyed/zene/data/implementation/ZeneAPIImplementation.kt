@@ -204,7 +204,7 @@ class ZeneAPIImplementation @Inject constructor(
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.connectUsersSearch(token, body))
+        emit(zeneAPI.connectUsersSearchViaPhoneNumber(token, body))
     }
 
     override suspend fun sendVerifyPhoneNumber(number: String) = flow {
@@ -379,18 +379,34 @@ class ZeneAPIImplementation @Inject constructor(
             }
         }
         body.addFormDataPart("email", email)
-        d.jazzType?.let { body.addFormDataPart("jazz_type", it) }
-        d.jazzArtists?.let { body.addFormDataPart("jazz_artists", it) }
-        d.jazzName?.let { body.addFormDataPart("jazz_name", it) }
-        d.jazzId?.let { body.addFormDataPart("jazz_id", it) }
+        d.jazz_type?.let { body.addFormDataPart("jazz_type", it) }
+        d.jazz_artists?.let { body.addFormDataPart("jazz_artists", it) }
+        d.jazz_thumbnail?.let { body.addFormDataPart("jazz_thumbnail", it) }
+        d.jazz_name?.let { body.addFormDataPart("jazz_name", it) }
+        d.jazz_id?.let { body.addFormDataPart("jazz_id", it) }
         d.isVibing?.let { body.addFormDataPart("is_vibing", it.toString()) }
-        d.locationLongitude?.let { body.addFormDataPart("longitude", it) }
-        d.locationLatitude?.let { body.addFormDataPart("latitude", it) }
-        d.locationAddress?.let { body.addFormDataPart("location_address", it) }
-        d.locationName?.let { body.addFormDataPart("location_name", it) }
+        d.longitude?.let { body.addFormDataPart("longitude", it) }
+        d.latitude?.let { body.addFormDataPart("latitude", it) }
+        d.location_address?.let { body.addFormDataPart("location_address", it) }
+        d.location_name?.let { body.addFormDataPart("location_name", it) }
         d.emoji?.let { body.addFormDataPart("emoji", it) }
+        d.caption?.let { body.addFormDataPart("caption", it) }
 
 
         emit(zeneAPI.shareConnectVibe(token, body.build()))
+    }
+
+
+    override suspend fun connectFriendsVibesList(page: Int) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("page", page)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.connectFriendsVibes(token, body))
     }
 }

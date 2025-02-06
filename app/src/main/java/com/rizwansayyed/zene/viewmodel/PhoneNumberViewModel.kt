@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.GetAllContactsUtils
 import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -105,7 +106,6 @@ class PhoneNumberViewModel @Inject constructor(
         val contacts = GetAllContactsUtils().getContactList().distinctBy { it.number }
 
         suspend fun run(c: List<ContactData>) {
-            usersOfZene.clear()
             zeneAPI.connectUsersSearch(c).onStart { }.catch {}.collectLatest {
                 usersOfZene.addAll(it)
                 number += c.size
@@ -113,9 +113,10 @@ class PhoneNumberViewModel @Inject constructor(
             }
         }
 
+        usersOfZene.clear()
         contactsUsers.clear()
         contactsUsers.addAll(contacts.sortedBy { it.name })
-        contacts.chunked(50).forEach { c ->
+        contacts.chunked(70).forEach { c ->
             viewModelScope.launch(Dispatchers.IO) {
                 run(c)
             }

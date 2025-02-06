@@ -24,7 +24,7 @@ object URLSUtils {
     const val ZENE_SEARCH_PLACES_API = "search/places"
 
     const val ZENE_CONNECT_NEAR_MUSIC_API = "connect/near-music"
-    const val ZENE_CONNECT_USERS_SEARCH_API = "connect/users-search"
+    const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API = "connect/users-search-via-phonenumber"
     const val ZENE_CONNECT_SEARCH_API = "connect/search"
     const val ZENE_CONNECT_USER_INFO_API = "connect/user-info"
     const val ZENE_CONNECT_FRIENDS_API = "connect/friends"
@@ -34,6 +34,7 @@ object URLSUtils {
     const val ZENE_CONNECT_USER_SETTINGS_API = "connect/user-settings"
     const val ZENE_CONNECT_SEND_MESSAGE_API = "connect/send-message"
     const val ZENE_CONNECT_SEND_LOCATION_API = "connect/send-location"
+    const val ZENE_CONNECT_FRIENDS_VIBES_API = "connect/friends-vibes"
     const val ZENE_CONNECT_SHARE_VIBE_API = "connect/share-vibe"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"

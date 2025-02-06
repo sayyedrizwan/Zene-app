@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -17,7 +17,6 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -40,6 +39,9 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var connectUserFriendsList by mutableStateOf<ResponseResult<List<ConnectUserResponse>>>(
         ResponseResult.Empty
     )
+
+
+    var connectUserVibesFeeds = mutableStateListOf<ConnectFeedDataResponse>()
 
     fun searchConnectUsers(q: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.searchConnect(q).onStart {
@@ -68,6 +70,12 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             connectUserFriendsList = ResponseResult.Error(it)
         }.collectLatest {
             connectUserFriendsList = ResponseResult.Success(it)
+        }
+    }
+
+    fun connectFriendsVibesList(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.connectFriendsVibesList(page).onStart {}.catch {}.collectLatest {
+            connectUserVibesFeeds.addAll(it.toTypedArray())
         }
     }
 
@@ -162,11 +170,11 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
     fun updateVibeJazzInfo(z: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
-        v.jazzName = z.name
-        v.jazzArtists = z.artists
-        v.jazzId = z.id
-        v.jazzThumbnail = z.thumbnail
-        v.jazzType = z.type
+        v.jazz_name = z.name
+        v.jazz_artists = z.artists
+        v.jazz_id = z.id
+        v.jazz_thumbnail = z.thumbnail
+        v.jazz_type = z.type
         connectFileSelected = null
         delay(1.seconds)
         connectFileSelected = v
@@ -175,10 +183,10 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun updateVibeLocationInfo(z: SearchPlacesDataResponse) =
         viewModelScope.launch(Dispatchers.IO) {
             val v = connectFileSelected ?: ConnectFeedDataResponse()
-            v.locationName = z.name
-            v.locationAddress = z.address
-            v.locationLongitude = z.lon
-            v.locationLatitude = z.lat
+            v.location_name = z.name
+            v.location_address = z.address
+            v.longitude = z.lon
+            v.latitude = z.lat
             connectFileSelected = null
             delay(1.seconds)
             connectFileSelected = v

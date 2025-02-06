@@ -58,4 +58,5 @@ interface ZeneAPIInterface {
     ): Flow<StatusTypeResponse>
 
     suspend fun connectFriendsRequestList(): Flow<List<ConnectUserResponse>>
+    suspend fun connectFriendsVibesList(page: Int): Flow<List<ConnectFeedDataResponse>>
 }

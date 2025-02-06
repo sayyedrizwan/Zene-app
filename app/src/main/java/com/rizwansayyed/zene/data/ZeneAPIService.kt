@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data
 
+import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
@@ -12,18 +13,18 @@ import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
-import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_VIBES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_LOCATION_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
@@ -38,14 +39,11 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_VERIFY_NUMBER_OTP_API
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Headers
-import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.Part
 
 interface ZeneAPIService {
 
@@ -126,8 +124,8 @@ interface ZeneAPIService {
     ): ZeneMusicDataList
 
     @Headers("Content-Type: application/json")
-    @POST(ZENE_CONNECT_USERS_SEARCH_API)
-    suspend fun connectUsersSearch(
+    @POST(ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API)
+    suspend fun connectUsersSearchViaPhoneNumber(
         @Header("token") token: String, @Body data: RequestBody
     ): List<ConnectUserResponse>
 
@@ -184,6 +182,12 @@ interface ZeneAPIService {
     suspend fun sendConnectLocation(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_FRIENDS_VIBES_API)
+    suspend fun connectFriendsVibes(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<ConnectFeedDataResponse>
 
     @POST(ZENE_CONNECT_SHARE_VIBE_API)
     suspend fun shareConnectVibe(

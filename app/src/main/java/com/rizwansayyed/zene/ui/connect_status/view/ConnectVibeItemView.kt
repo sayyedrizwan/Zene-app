@@ -85,7 +85,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
                     }
                 }
             }
-            if ((item?.jazzName != null && item.jazzId != null) || item?.emoji != null) Column(
+            if ((item?.jazz_name != null && item.jazzId != null) || item?.emoji != null) Column(
                 Modifier
                     .weight(4f)
                     .padding(horizontal = 1.dp),
