@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val navigationViewModel: NavigationViewModel by viewModels()
 
+    @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -74,8 +77,9 @@ class MainActivity : ComponentActivity() {
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )
 
-                        if (navigationViewModel.homeNotificationSection != null)
-                            NotificationConnectLocationShare(navigationViewModel)
+                        if (navigationViewModel.homeNotificationSection != null) NotificationConnectLocationShare(
+                            navigationViewModel
+                        )
 
                     } else if (showLogin) LoginView()
                 }
@@ -90,6 +94,7 @@ class MainActivity : ComponentActivity() {
                     delay(4.seconds)
                     if (!isNotificationEnabled() && userInfo?.isLoggedIn() == true)
                         navigationViewModel.setHomeNavSections(NOTIFICATION)
+
                 }
             }
         }

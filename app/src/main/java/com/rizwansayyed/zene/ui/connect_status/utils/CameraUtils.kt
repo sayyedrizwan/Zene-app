@@ -1,11 +1,11 @@
 package com.rizwansayyed.zene.ui.connect_status.utils
 
 import android.content.Context
-import android.util.Log
 import android.view.Surface
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import androidx.annotation.OptIn
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -14,12 +14,19 @@ import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.view.PreviewView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.transformer.Composition
+import androidx.media3.transformer.EditedMediaItem
+import androidx.media3.transformer.ExportException
+import androidx.media3.transformer.ExportResult
+import androidx.media3.transformer.Transformer
 import com.arthenica.ffmpegkit.FFmpegKit
-import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.arthenica.ffmpegkit.ReturnCode
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
-import com.rizwansayyed.zene.utils.MainUtils.formatMillisecondsToRead
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,8 +42,6 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
             .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
             .setAllowedResolutionMode(ResolutionSelector.PREFER_CAPTURE_RATE_OVER_HIGHER_RESOLUTION)
             .build()
-
-        private var videoCameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
         var imageCapture: ImageCapture =
             ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
@@ -101,16 +106,53 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
             else inputFile
         }
 
+        @OptIn(UnstableApi::class)
         fun cropVideoFile(inputFile: File, start: Float, end: Float, d: (File) -> Unit) =
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 vibeVideoCroppedFile.delete()
-                val cmd = "-ss ${formatMillisecondsToRead(start.toLong())} -i " +
-                        "${inputFile.absolutePath} -to ${formatMillisecondsToRead(end.toLong())} " +
-                        "-c:v copy -c:a copy $vibeVideoCroppedFile"
 
-                val session = FFmpegKit.execute(cmd)
-                if (ReturnCode.isSuccess(session.returnCode)) d(vibeVideoCroppedFile)
-                else d(inputFile)
+                val transformerListener = object : Transformer.Listener {
+                    override fun onCompleted(
+                        composition: Composition, exportResult: ExportResult
+                    ) {
+                        super.onCompleted(composition, exportResult)
+                        d(vibeVideoCroppedFile)
+                    }
+
+                    override fun onError(
+                        composition: Composition,
+                        exportResult: ExportResult,
+                        exportException: ExportException
+                    ) {
+                        super.onError(composition, exportResult, exportException)
+                        d(inputFile)
+                    }
+                }
+
+                val clippingConfiguration = MediaItem.ClippingConfiguration.Builder()
+                    .setStartPositionMs(start.toLong()).setEndPositionMs(end.toLong()).build()
+
+                val mediaItem = MediaItem.Builder()
+                    .setUri(inputFile.toUri())
+                    .setClippingConfiguration(clippingConfiguration)
+                    .build()
+
+                val editedMediaItem = EditedMediaItem.Builder(mediaItem)
+                    .build()
+                val transformer = Transformer.Builder(context)
+                    .setVideoMimeType(MimeTypes.VIDEO_H265)
+                    .addListener(transformerListener)
+                    .build()
+
+                transformer.start(editedMediaItem, vibeVideoCroppedFile.absolutePath)
+
+//                val cmd = "-ss ${formatMillisecondsToRead(start.toLong())} -i " +
+//                        "${inputFile.absolutePath} -to ${formatMillisecondsToRead(end.toLong())} " +
+//                        "-c:v copy -c:a copy $vibeVideoCroppedFile"
+//
+//                val session = FFmpegKit.execute(cmd)
+//                if (ReturnCode.isSuccess(session.returnCode)) d(vibeVideoCroppedFile)
+//                else d(inputFile)
             }
     }
 
