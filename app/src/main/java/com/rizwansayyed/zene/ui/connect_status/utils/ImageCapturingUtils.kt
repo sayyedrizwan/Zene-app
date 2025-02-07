@@ -134,8 +134,8 @@ class ImageCapturingUtils(
         val outputOptions = ImageCapture.OutputFileOptions.Builder(vibeImageFile).build()
 
         val callback = object : ImageCapture.OnImageSavedCallback {
-            override fun onImageSaved(file: ImageCapture.OutputFileResults?) {
-                file?.savedUri?.toFile()?.let {
+            override fun onImageSaved(file: ImageCapture.OutputFileResults) {
+                file.savedUri?.toFile()?.let {
                     val compressed = compressImageHighQuality(it, vibeCompressedImageFile)
                     if (compressed) vibeFiles = vibeCompressedImageFile
                     else vibeFiles = it

@@ -95,15 +95,37 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
             }
         }
 
+        @OptIn(UnstableApi::class)
         fun compressVideoFile(inputFile: String): String {
             vibeCompressedVideoFile.delete()
 
-            val cmd =
-                "-i $inputFile -vf scale=720:-2 -c:v h264_mediacodec -b:v 200K -c:a aac -b:a 128k -movflags +faststart -brand mp42 -f mp4 $vibeCompressedVideoFile"
 
-            val session = FFmpegKit.execute(cmd)
-            return if (ReturnCode.isSuccess(session.returnCode)) vibeCompressedVideoFile.absolutePath
-            else inputFile
+
+//            val clippingConfiguration = MediaItem.ClippingConfiguration.Builder()
+//                .setStartPositionMs(start.toLong()).setEndPositionMs(end.toLong()).build()
+//
+//            val mediaItem = MediaItem.Builder()
+//                .setUri(inputFile.toUri())
+//                .setClippingConfiguration(clippingConfiguration)
+//                .build()
+//
+//            val editedMediaItem = EditedMediaItem.Builder(mediaItem)
+//                .build()
+//            val transformer = Transformer.Builder(context)
+//                .setVideoMimeType(MimeTypes.VIDEO_H265)
+//                .addListener(transformerListener)
+//                .build()
+//
+//            transformer.start(editedMediaItem, vibeVideoCroppedFile.absolutePath)
+
+//            val cmd =
+//                "-i $inputFile -vf scale=720:-2 -c:v h264_mediacodec -b:v 200K -c:a aac -b:a 128k -movflags +faststart -brand mp42 -f mp4 $vibeCompressedVideoFile"
+//
+//            val session = FFmpegKit.execute(cmd)
+//            return if (ReturnCode.isSuccess(session.returnCode)) vibeCompressedVideoFile.absolutePath
+//            else inputFile
+
+            return  ""
         }
 
         @OptIn(UnstableApi::class)
