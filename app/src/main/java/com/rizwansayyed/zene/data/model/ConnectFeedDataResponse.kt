@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.model
 
 data class ConnectFeedDataResponse(
+    var email: String? = null,
     var media: String? = null,
     var caption: String? = null,
     var media_thubnail: String? = null,

@@ -37,6 +37,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileActivity
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -100,19 +101,14 @@ fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ConnectFriendsRequestLists(user: ConnectUserResponse) {
-    val context = LocalContext.current.applicationContext
-
     Column(
         Modifier
             .padding(horizontal = 9.dp)
             .width(100.dp)
             .clickable {
-                Intent(context, ConnectUserProfileActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.ACTION_MAIN, user.email)
-                    context.startActivity(this)
-                }
-            }, Arrangement.Center, Alignment.CenterHorizontally) {
+                openConnectUserProfile(user.email ?: "")
+            }, Arrangement.Center, Alignment.CenterHorizontally
+    ) {
         GlideImage(
             user.profile_photo, user.name,
             Modifier
@@ -165,5 +161,13 @@ fun ConnectRecentContactsView() {
         { editUserView = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
         ConnectEditProfileView()
+    }
+}
+
+fun openConnectUserProfile(email: String) {
+    Intent(context, ConnectUserProfileActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        putExtra(Intent.ACTION_MAIN, email)
+        context.startActivity(this)
     }
 }

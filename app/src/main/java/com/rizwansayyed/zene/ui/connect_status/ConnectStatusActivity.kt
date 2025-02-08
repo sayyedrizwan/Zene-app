@@ -15,10 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +41,7 @@ import com.rizwansayyed.zene.ui.connect_status.view.ConnectStatusTopHeaderView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
@@ -124,6 +129,7 @@ class ConnectStatusActivity : ComponentActivity() {
 
     @Composable
     fun ShareButtonUI(modifier: Modifier = Modifier) {
+        var confirmationSheet by remember { mutableStateOf(false) }
         val pleaseEnterACaption = stringResource(R.string.please_enter_valid_caption)
 
         Column(
@@ -142,12 +148,46 @@ class ConnectStatusActivity : ComponentActivity() {
                     pleaseEnterACaption.toast()
                     return@ButtonHeavy
                 }
-                connectViewModel.uploadAVibe()
+                confirmationSheet = true
             }
             Spacer(Modifier.height(14.dp))
             ButtonWithBorder(R.string.cancel) {
                 finish()
             }
         }
+
+        if (confirmationSheet) ConfirmationSheetView {
+            confirmationSheet = false
+            if (it) connectViewModel.uploadAVibe()
+        }
     }
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun ConfirmationSheetView(close: (Boolean) -> Unit) {
+        ModalBottomSheet(
+            { close(false) }, contentColor = MainColor, containerColor = MainColor
+        ) {
+            Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
+                Spacer(Modifier.height(10.dp))
+                TextViewNormal(
+                    stringResource(R.string.once_you_shared_a_vibe_cannot_delete),
+                    17,
+                    center = true
+                )
+                Spacer(Modifier.height(20.dp))
+
+                ButtonHeavy(stringResource(R.string.share)) {
+                    close(true)
+                }
+                Spacer(Modifier.height(14.dp))
+                ButtonWithBorder(R.string.cancel) {
+                    close(false)
+                }
+                Spacer(Modifier.height(50.dp))
+            }
+        }
+    }
+
 }

@@ -87,6 +87,7 @@
     <string name="chats">Chats</string>
     <string name="send_location">Send Location</string>
     <string name="open_location">Open Location</string>
+    <string name="my_vibe_then">My vibe then: </string>
     <string name="accept">Accept</string>
     <string name="sent">Sent</string>
     <string name="add">Add</string>
@@ -136,6 +137,7 @@
     <string name="share_your_location_desc">Keep your friends in the loop! Share your current location with someone you trust whenever needed.</string>
     <string name="share_your_music">Share Your Music</string>
     <string name="share_your_music_desc">Let your friends know what you’re vibing to! Share your currently playing song or top tracks with them.</string>
+    <string name="once_you_shared_a_vibe_cannot_delete">Once you shared a vibe you cannot delete it, It will auto expire after 24 hours. Do you sure want to continue?</string>
 
 
     <!--    notification channels-->
