@@ -1,11 +1,13 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
@@ -165,6 +167,8 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.media = file?.absolutePath
+        Glide.get(context).clearMemory()
+        Glide.get(context).clearDiskCache()
         if (v.media?.contains(".jpg") == true) {
             val compressed = compressImageHighQuality(
                 File(v.media!!), vibeMediaThumbnailPreview, 1200, 1200, 50
@@ -175,7 +179,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
                 v.media_thubnail = l.absolutePath
             }
         }
-        v.isVibing = isVibing
+        v.is_vibing = isVibing
         connectFileSelected = null
         delay(500)
         connectFileSelected = v

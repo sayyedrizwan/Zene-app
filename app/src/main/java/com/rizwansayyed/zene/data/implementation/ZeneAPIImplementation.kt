@@ -397,7 +397,7 @@ class ZeneAPIImplementation @Inject constructor(
         d.jazz_thumbnail?.let { body.addFormDataPart("jazz_thumbnail", it) }
         d.jazz_name?.let { body.addFormDataPart("jazz_name", it) }
         d.jazz_id?.let { body.addFormDataPart("jazz_id", it) }
-        d.isVibing?.let { body.addFormDataPart("is_vibing", it.toString()) }
+        d.is_vibing?.let { body.addFormDataPart("is_vibing", it.toString()) }
         d.longitude?.let { body.addFormDataPart("longitude", it) }
         d.latitude?.let { body.addFormDataPart("latitude", it) }
         d.location_address?.let { body.addFormDataPart("location_address", it) }

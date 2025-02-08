@@ -175,14 +175,6 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                         .addListener(transformerListener).build()
 
                 transformer.start(editedMediaItem, vibeVideoCroppedFile.absolutePath)
-
-//                val cmd = "-ss ${formatMillisecondsToRead(start.toLong())} -i " +
-//                        "${inputFile.absolutePath} -to ${formatMillisecondsToRead(end.toLong())} " +
-//                        "-c:v copy -c:a copy $vibeVideoCroppedFile"
-//
-//                val session = FFmpegKit.execute(cmd)
-//                if (ReturnCode.isSuccess(session.returnCode)) d(vibeVideoCroppedFile)
-//                else d(inputFile)
             }
     }
 

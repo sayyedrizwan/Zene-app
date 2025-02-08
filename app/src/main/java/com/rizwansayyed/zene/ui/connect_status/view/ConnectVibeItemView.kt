@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -67,6 +68,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ExoPlayerCache
+import com.rizwansayyed.zene.utils.MainUtils.toast
 
 @Composable
 fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
@@ -74,6 +76,8 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
     var showEmojiDialog by remember { mutableStateOf(false) }
     var showMusicMediaDialog by remember { mutableStateOf(false) }
     var showCommentDialog by remember { mutableStateOf(false) }
+
+    val candidMeaning = stringResource(R.string.candid_desc)
 
     Spacer(Modifier.height(10.dp))
 
@@ -91,6 +95,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
                 item?.userDetails?.name,
                 Modifier
                     .size(45.dp)
+                    .clickable { item?.email?.let { openConnectUserProfile(it) } }
                     .clip(RoundedCornerShape(14.dp)),
                 contentScale = ContentScale.Crop
             )
@@ -103,6 +108,14 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
                     Box(Modifier.offset(y = (-5).dp)) {
                         TextViewNormal("@${it}", 12, line = 1)
                     }
+                }
+                if (item?.media != null && item.is_vibing == true) Box(
+                    Modifier
+                        .offset(y = (-7).dp)
+                        .clickable {
+                            candidMeaning.toast()
+                        }) {
+                    TextViewSemiBold(stringResource(R.string.candid).uppercase(), 13, line = 1)
                 }
             }
 
@@ -198,9 +211,11 @@ fun ConnectVibeItemOnlyCaption(
         if (data?.caption?.trim() != null) {
             Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
                 if (data.getMusicData() != null) {
-                    Box(Modifier
-                        .width(170.dp)
-                        .clickable { openSong() }, Alignment.Center) {
+                    Box(
+                        Modifier
+                            .width(170.dp)
+                            .clickable { openSong() }, Alignment.Center
+                    ) {
                         Spacer(
                             Modifier
                                 .size(170.dp)
@@ -268,7 +283,6 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?, openEmoji: () -> Unit) 
             ) {
                 it.diskCacheStrategy(DiskCacheStrategy.ALL)
             }
-
             if (data?.isMediaVideo() == false) Box(
                 Modifier
                     .fillMaxWidth(0.6f)
@@ -376,9 +390,7 @@ fun ConnectVibeMediaItemAlert(item: ConnectFeedDataResponse?, close: () -> Unit)
                     item?.caption,
                     Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
-                ) {
-                    it.diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
-                }
+                )
             }
         }
     }

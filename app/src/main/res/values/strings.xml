@@ -123,6 +123,8 @@
     <string name="view_on_map">View On Map</string>
     <string name="vibe_uploaded_successfully">Vibe shared successfully.</string>
     <string name="cancel">Cancel</string>
+    <string name="candid">Candid</string>
+    <string name="candid_desc">Candid shot! No filters, no edits—just as it was captured in-app.</string>
     <string name="attach">Attach</string>
     <string name="you_cant_send_a_new_message_until_you_got_reply">You can\'t send a new message until you got a reply.</string>
     <string name="do_you_want_to_play_this_song">Do you want to play the song?</string>

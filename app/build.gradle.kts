@@ -43,9 +43,6 @@ android {
     buildFeatures {
         compose = true
     }
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.5.15"
-//    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -110,7 +107,6 @@ dependencies {
 
     implementation(libs.truecaller)
 
-
     implementation(libs.camera.lifecycle)
     implementation(libs.camera2)
     implementation(libs.camera.view)
@@ -119,7 +115,6 @@ dependencies {
 
     implementation(libs.image.cropper)
     implementation(libs.exifinterface)
-    implementation(libs.ffmpeg.kit.full)
 
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.exoplayer.dash)

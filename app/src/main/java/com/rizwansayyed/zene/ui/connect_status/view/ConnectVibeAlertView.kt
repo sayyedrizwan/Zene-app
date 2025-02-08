@@ -32,7 +32,7 @@ import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapNameLocation
 import com.rizwansayyed.zene.utils.MainUtils.runMusicDataInfos
 
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationSharingPlace(data: ConnectFeedDataResponse?, close: () -> Unit) {
     ModalBottomSheet(
@@ -60,7 +60,7 @@ fun LocationSharingPlace(data: ConnectFeedDataResponse?, close: () -> Unit) {
 }
 
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmojiValueSheet(data: ConnectFeedDataResponse?, close: () -> Unit) {
     ModalBottomSheet(
