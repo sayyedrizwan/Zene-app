@@ -19,12 +19,12 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.transformer.Composition
+import androidx.media3.transformer.DefaultEncoderFactory
 import androidx.media3.transformer.EditedMediaItem
 import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer
-import com.arthenica.ffmpegkit.FFmpegKit
-import com.arthenica.ffmpegkit.ReturnCode
+import androidx.media3.transformer.VideoEncoderSettings
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -32,7 +32,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
+import kotlin.coroutines.resume
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -96,36 +98,40 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         }
 
         @OptIn(UnstableApi::class)
-        fun compressVideoFile(inputFile: String): String {
-            vibeCompressedVideoFile.delete()
+        suspend fun compressVideoFile(inputFile: String): String {
+            return suspendCancellableCoroutine { continuation ->
+                val transformerListener = object : Transformer.Listener {
+                    override fun onCompleted(
+                        composition: Composition, exportResult: ExportResult
+                    ) {
+                        continuation.resume(vibeVideoCroppedFile.absolutePath)
+                    }
 
+                    override fun onError(
+                        composition: Composition,
+                        exportResult: ExportResult,
+                        exportException: ExportException
+                    ) {
+                        continuation.resume(inputFile)
 
+                    }
+                }
 
-//            val clippingConfiguration = MediaItem.ClippingConfiguration.Builder()
-//                .setStartPositionMs(start.toLong()).setEndPositionMs(end.toLong()).build()
-//
-//            val mediaItem = MediaItem.Builder()
-//                .setUri(inputFile.toUri())
-//                .setClippingConfiguration(clippingConfiguration)
-//                .build()
-//
-//            val editedMediaItem = EditedMediaItem.Builder(mediaItem)
-//                .build()
-//            val transformer = Transformer.Builder(context)
-//                .setVideoMimeType(MimeTypes.VIDEO_H265)
-//                .addListener(transformerListener)
-//                .build()
-//
-//            transformer.start(editedMediaItem, vibeVideoCroppedFile.absolutePath)
+                CoroutineScope(Dispatchers.Main).launch {
+                    val mediaItem = MediaItem.Builder().setUri(inputFile.toUri()).build()
+                    val editedMediaItem = EditedMediaItem.Builder(mediaItem).build()
+                    val encoder =
+                        DefaultEncoderFactory.Builder(context).setRequestedVideoEncoderSettings(
+                            VideoEncoderSettings.Builder().setBitrate(30)
+                                .setiFrameIntervalSeconds(1f).build()
+                        ).build()
+                    val transformer =
+                        Transformer.Builder(context).setVideoMimeType(MimeTypes.VIDEO_H265)
+                            .addListener(transformerListener).setEncoderFactory(encoder).build()
 
-//            val cmd =
-//                "-i $inputFile -vf scale=720:-2 -c:v h264_mediacodec -b:v 200K -c:a aac -b:a 128k -movflags +faststart -brand mp42 -f mp4 $vibeCompressedVideoFile"
-//
-//            val session = FFmpegKit.execute(cmd)
-//            return if (ReturnCode.isSuccess(session.returnCode)) vibeCompressedVideoFile.absolutePath
-//            else inputFile
-
-            return  ""
+                    transformer.start(editedMediaItem, vibeCompressedVideoFile.absolutePath)
+                }
+            }
         }
 
         @OptIn(UnstableApi::class)
@@ -151,20 +157,17 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                     }
                 }
 
-                val clippingConfiguration = MediaItem.ClippingConfiguration.Builder()
-                    .setStartPositionMs(start.toLong()).setEndPositionMs(end.toLong()).build()
+                val clippingConfiguration =
+                    MediaItem.ClippingConfiguration.Builder().setStartPositionMs(start.toLong())
+                        .setEndPositionMs(end.toLong()).build()
 
-                val mediaItem = MediaItem.Builder()
-                    .setUri(inputFile.toUri())
-                    .setClippingConfiguration(clippingConfiguration)
-                    .build()
+                val mediaItem = MediaItem.Builder().setUri(inputFile.toUri())
+                    .setClippingConfiguration(clippingConfiguration).build()
 
-                val editedMediaItem = EditedMediaItem.Builder(mediaItem)
-                    .build()
-                val transformer = Transformer.Builder(context)
-                    .setVideoMimeType(MimeTypes.VIDEO_H265)
-                    .addListener(transformerListener)
-                    .build()
+                val editedMediaItem = EditedMediaItem.Builder(mediaItem).build()
+                val transformer =
+                    Transformer.Builder(context).setVideoMimeType(MimeTypes.VIDEO_H265)
+                        .addListener(transformerListener).build()
 
                 transformer.start(editedMediaItem, vibeVideoCroppedFile.absolutePath)
 

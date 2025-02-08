@@ -17,9 +17,6 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
-import com.rizwansayyed.zene.utils.NotificationUtils
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -206,30 +203,27 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         connectFileSelected ?: return@launch
         isConnectSharing = ResponseResult.Loading
         loadingTypeForFile = context.resources.getString(R.string.compress_processing_video)
+
         val file = if (connectFileSelected?.media != null) {
             if (connectFileSelected?.media?.contains(".jpg") == true) connectFileSelected!!.media!!
-            else {
-                val fileSizeInMB = (File(connectFileSelected!!.media!!).length() / 1024) / 1024
-                if (fileSizeInMB <= 5) connectFileSelected!!.media
-                else compressVideoFile(connectFileSelected!!.media!!)
-            }
+            else compressVideoFile(connectFileSelected!!.media!!)
         } else null
 
-        zeneAPI.shareConnectVibe(connectFileSelected!!, file).onStart {
-            loadingTypeForFile = context.resources.getString(R.string.uploading_please_wait)
-            isConnectSharing = ResponseResult.Loading
-        }.catch {
-            loadingTypeForFile = ""
-            isConnectSharing = ResponseResult.Error(it)
-        }.collectLatest {
-            loadingTypeForFile = ""
-            isConnectSharing = ResponseResult.Success(it)
-
-            if (it.status == true) {
-                NotificationUtils(
-                    context.resources.getString(R.string.vibe_uploaded_successfully), "\uD83D\uDE09"
-                ).channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC).generate()
-            }
-        }
+//        zeneAPI.shareConnectVibe(connectFileSelected!!, file).onStart {
+//            loadingTypeForFile = context.resources.getString(R.string.uploading_please_wait)
+//            isConnectSharing = ResponseResult.Loading
+//        }.catch {
+//            loadingTypeForFile = ""
+//            isConnectSharing = ResponseResult.Error(it)
+//        }.collectLatest {
+//            loadingTypeForFile = ""
+//            isConnectSharing = ResponseResult.Success(it)
+//
+//            if (it.status == true) {
+//                NotificationUtils(
+//                    context.resources.getString(R.string.vibe_uploaded_successfully), "\uD83D\uDE09"
+//                ).channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC).generate()
+//            }
+//        }
     }
 }
