@@ -14,10 +14,26 @@ data class ConnectFeedDataResponse(
     var longitude: String? = null,
     var latitude: String? = null,
     var emoji: String? = null,
+    var comments: Int? = null,
+    var timestamp: Long? = null,
     var userDetails: ConnectUserResponse? = null,
 ) {
-    fun getMusicData(): ZeneMusicData {
+    fun getMusicData(): ZeneMusicData? {
+        if (jazz_name == null || jazz_id == null || jazz_artists == null) return null
         return ZeneMusicData(jazz_artists, jazz_id, jazz_name, "", jazz_thumbnail, jazz_type, "")
+    }
+
+    fun ts(): String {
+        timestamp ?: return ""
+        val currentTimestamp = System.currentTimeMillis()
+        val diffMillis: Long = currentTimestamp - timestamp!!
+        val seconds = diffMillis / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+
+        return if (seconds < 60) seconds.toString() + "s ago"
+        else if (minutes < 60) minutes.toString() + "m ago"
+        else hours.toString() + "h ago"
     }
 
     fun isMediaVideo(): Boolean {

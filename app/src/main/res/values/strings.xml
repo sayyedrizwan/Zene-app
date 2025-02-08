@@ -83,6 +83,7 @@
     <string name="vibes_status">Vibe Status</string>
     <string name="upload_a_vibes">Upload a Vibes</string>
     <string name="vibes_will_be_shared_and_expire_after_24">Vibes will be shared with your friends and expire after 24 hours</string>
+    <string name="vibes_expire_after_24">Vibes expire after 24 hours</string>
     <string name="chats">Chats</string>
     <string name="send_location">Send Location</string>
     <string name="open_location">Open Location</string>

@@ -30,7 +30,9 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
@@ -104,7 +106,7 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                     override fun onCompleted(
                         composition: Composition, exportResult: ExportResult
                     ) {
-                        continuation.resume(vibeVideoCroppedFile.absolutePath)
+                        continuation.resume(vibeCompressedVideoFile.absolutePath)
                     }
 
                     override fun onError(
@@ -130,6 +132,8 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                             .addListener(transformerListener).setEncoderFactory(encoder).build()
 
                     transformer.start(editedMediaItem, vibeCompressedVideoFile.absolutePath)
+
+                    if (isActive) cancel()
                 }
             }
         }

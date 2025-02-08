@@ -3,7 +3,9 @@
 package com.rizwansayyed.zene.ui.connect_status.view
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +17,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +45,11 @@ import androidx.media3.ui.PlayerView
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -78,11 +89,35 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
                     }
                 }
             }
-        }
 
+            TextViewNormal(item?.ts() ?: "", 12, line = 1)
+        }
 
         if (item?.media == null && item?.jazz_id == null && item?.jazz_name == null && item?.caption != null) {
             ConnectVibeItemOnlyCaption(item)
+        } else if (item?.media != null) {
+            ConnectVibeItemMedia(item)
+        }
+
+        if (item?.location_name != null) {
+            Row(
+                Modifier
+                    .padding(top = 10.dp, start = 3.dp, end = 3.dp)
+                    .fillMaxWidth(),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                ImageIcon(R.drawable.ic_location, 18)
+                Spacer(Modifier.width(4.dp))
+                TextViewNormal(item.location_name!!, 14)
+                Spacer(Modifier.weight(1f))
+
+                ImageIcon(R.drawable.ic_comment, 18)
+                if ((item.comments ?: 0) > 0) {
+                    Spacer(Modifier.width(4.dp))
+                    TextViewNormal((item.comments ?: 0).toString(), 14)
+                }
+            }
         }
 
 
@@ -180,6 +215,148 @@ fun ConnectVibeItemOnlyCaption(data: ConnectFeedDataResponse?) {
             }
         }
     }
+    Spacer(Modifier.height(30.dp))
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?) {
+    var showMediaDialog by remember { mutableStateOf(false) }
+
+    Spacer(Modifier.height(30.dp))
+    Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .clickable { }, Alignment.Center
+        ) {
+            GlideImage(
+                data?.media,
+                data?.caption,
+                Modifier
+                    .fillMaxWidth(0.6f)
+                    .aspectRatio(9f / 16f)
+                    .clipToBounds(),
+                contentScale = ContentScale.Crop
+            ) {
+                val options = RequestOptions().frame(3000)
+                it.apply(options)
+
+//                it.diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).apply(requestOptions)
+            }
+
+            if (data?.isMediaVideo() == false) Box(
+                Modifier
+                    .fillMaxWidth(0.6f)
+                    .align(Alignment.BottomCenter)
+            ) {
+                Row(
+                    Modifier
+                        .padding(9.dp)
+                        .align(Alignment.BottomEnd)
+                        .size(24.dp)
+                        .clip(RoundedCornerShape(100))
+                        .background(Color.White),
+                    Arrangement.Center,
+                    Alignment.CenterVertically
+                ) {
+                    ImageIcon(R.drawable.ic_arrow_expand, 20, Color.Black)
+                }
+            }
+
+            if (data?.isMediaVideo() == true) Row(
+                Modifier
+                    .padding(9.dp)
+                    .align(Alignment.Center)
+                    .size(45.dp)
+                    .clip(RoundedCornerShape(100))
+                    .background(MainColor),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                ImageIcon(R.drawable.ic_play, 27, Color.White)
+            }
+        }
+
+        if ((data?.caption?.length ?: 0) > 0) {
+            Spacer(Modifier.height(15.dp))
+            TextViewNormal(data?.caption ?: "", 16, center = true)
+        }
+//        if (data?.isMediaVideo() == true) {
+//            val cache = ExoPlayerCache.getInstance(context)
+//            val dataSourceFactory = CacheDataSource.Factory().setCache(cache)
+//                .setUpstreamDataSourceFactory(DefaultHttpDataSource.Factory())
+//
+//            val exoPlayer = remember {
+//                val trackSelector = DefaultTrackSelector(context).apply {
+//                    setParameters(
+//                        buildUponParameters()
+//                            .setMaxVideoSize(854, 480)
+//                            .setMaxVideoBitrate(500_000)
+//                            .setForceLowestBitrate(true)
+//                    )
+//                }
+//                val loadControl = DefaultLoadControl.Builder()
+//                    .setBufferDurationsMs(
+//                        3000,  // Min buffer before playback starts (3s)
+//                        10000, // Max buffer size (10s, enough for the whole video)
+//                        1500,  // Buffer before rebuffering (1.5s)
+//                        3000   // Back buffer size (3s)
+//                    )
+//                    .setTargetBufferBytes(-1) // Use default heuristics
+//                    .setPrioritizeTimeOverSizeThresholds(true) // Prioritize buffering for short video
+//                    .build()
+//
+//                ExoPlayer.Builder(context)
+//                    .setTrackSelector(trackSelector)
+//                    .setLoadControl(loadControl)
+//                    .build().apply {
+//                        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+//                            .createMediaSource(MediaItem.fromUri(data.media ?: ""))
+////                        setMediaItem(MediaItem.fromUri(data.media ?: ""))
+//                        setMediaSource(mediaSource)
+//                        prepare()
+//                        playWhenReady = true
+//                    }
+//            }
+//
+//
+//            AndroidView(
+//                factory = { ctx ->
+//                    PlayerView(ctx).apply {
+//                        useController = false
+//                        exoPlayer.repeatMode = REPEAT_MODE_ONE
+//                        exoPlayer.volume = 0f
+////                        exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+//                        player = exoPlayer
+////                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+//                        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+//                            .createMediaSource(MediaItem.fromUri(data.media ?: ""))
+//                        setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
+////                        exoPlayer.setMediaSource(mediaSource)
+////                        exoPlayer.setMediaItem(MediaItem.fromUri(data.media ?: ""))
+//                        exoPlayer.prepare()
+//                        exoPlayer.play()
+//                    }
+//                }, modifier = Modifier
+//                    .fillMaxWidth(0.6f)
+//                    .aspectRatio(9f / 16f)
+//                    .clipToBounds()
+//            )
+//
+//
+//            DisposableEffect(Unit) {
+//                val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+//                    .createMediaSource(MediaItem.fromUri(data.media ?: ""))
+//                exoPlayer.setMediaSource(mediaSource)
+//                exoPlayer.prepare()
+//                exoPlayer.play()
+//                onDispose { exoPlayer.pause() }
+//            }
+//        } else {
+
+    }
+//    }
     Spacer(Modifier.height(30.dp))
 }
 

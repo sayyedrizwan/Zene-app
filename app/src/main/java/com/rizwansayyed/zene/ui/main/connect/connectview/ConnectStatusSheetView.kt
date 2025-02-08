@@ -123,10 +123,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
                 when (val v = connectViewModel.connectUserFriendsList) {
                     ResponseResult.Empty -> {}
                     is ResponseResult.Error -> {}
-                    ResponseResult.Loading -> item {
-                        HorizontalCircleShimmerLoadingCard()
-                    }
-
+                    ResponseResult.Loading -> {}
                     is ResponseResult.Success -> {
                         if (v.data.isNotEmpty()) item {
                             Row(
@@ -165,7 +162,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
                 }
             }
 
-            item {
+            if (connectViewModel.connectUserVibesFeeds.isNotEmpty() && !connectViewModel.isLoadingVibeFeed) item {
                 LaunchedEffect(Unit) {
                     page += 1
                     connectViewModel.connectFriendsVibesList(page)

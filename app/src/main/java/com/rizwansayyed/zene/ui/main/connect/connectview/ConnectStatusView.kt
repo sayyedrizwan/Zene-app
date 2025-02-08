@@ -5,6 +5,7 @@ package com.rizwansayyed.zene.ui.main.connect.connectview
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -18,13 +19,17 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 
 @Composable
 fun ConnectStatusTopView() {
     val context = LocalContext.current.applicationContext
     Spacer(Modifier.height(42.dp))
     Row(Modifier.padding(horizontal = 9.dp)) {
-        TextViewBold(stringResource(R.string.vibes_status), 18)
+        Column {
+            TextViewBold(stringResource(R.string.vibes_status), 18)
+            TextViewNormal(stringResource(R.string.vibes_expire_after_24), 14)
+        }
         Spacer(Modifier.weight(1f))
         Box(Modifier.clickable {
             Intent(context, ConnectStatusActivity::class.java).apply {
