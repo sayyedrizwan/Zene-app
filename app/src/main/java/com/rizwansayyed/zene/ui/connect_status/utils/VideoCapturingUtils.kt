@@ -2,9 +2,12 @@ package com.rizwansayyed.zene.ui.connect_status.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraMetadata
+import android.media.MediaMetadataRetriever
 import android.os.Build
+import android.util.Log
 import android.view.MotionEvent
 import android.view.Surface
 import androidx.annotation.OptIn
@@ -33,12 +36,15 @@ import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.afterMeasured
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.selectorHD
+import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreview
+import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreviewCompressed
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInSeconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileOutputStream
 
 const val MAX_VIDEO_CAPTURE_LENGTH = 11
 
@@ -186,5 +192,30 @@ class VideoCapturingUtils(
     fun stopVideo() = CoroutineScope(Dispatchers.Main).launch {
         vidRecording?.stop()
         vidRecording?.close()
+    }
+}
+
+fun getMiddleVideoPreviewFrame(videoPath: String): File? {
+    val retriever = MediaMetadataRetriever()
+    try {
+        retriever.setDataSource(videoPath)
+        val duration =
+            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0
+        val middleTimeUs = (duration * 1000) / 2
+        val bitmap = retriever.getFrameAtTime(middleTimeUs, MediaMetadataRetriever.OPTION_CLOSEST)
+
+        FileOutputStream(vibeMediaThumbnailPreview).use { out ->
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, out)
+        }
+
+        val compressed = compressImageHighQuality(
+            vibeMediaThumbnailPreview, vibeMediaThumbnailPreviewCompressed, 1500, 1500, 60
+        )
+        return if (compressed) vibeMediaThumbnailPreviewCompressed else vibeMediaThumbnailPreview
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+    } finally {
+        retriever.release()
     }
 }

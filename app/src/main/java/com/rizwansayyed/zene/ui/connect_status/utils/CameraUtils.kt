@@ -61,15 +61,16 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         private val vibeFolder = File(context.filesDir, "temp_connect_files").apply {
             mkdirs()
         }
-        private val vibeTempThumbnailFolder = File(context.filesDir, "temp_thumbnail_img").apply {
-            mkdirs()
-        }
+
         val vibeImageFile = File(vibeFolder, "temp_vibe_img.jpg")
         val vibeCompressedImageFile = File(vibeFolder, "temp_vibe_img_compressed.jpg")
 
         val vibeVideoFile = File(vibeFolder, "temp_vibe_vid.mp4")
         private val vibeVideoCroppedFile = File(vibeFolder, "temp_vibe_cropped_vid.mp4")
         private val vibeCompressedVideoFile = File(vibeFolder, "temp_vibe_vid_compressed.mp4")
+
+        val vibeMediaThumbnailPreview = File(vibeFolder, "vibe_media_thumbnail_preview.jpg")
+        val vibeMediaThumbnailPreviewCompressed = File(vibeFolder, "vibe_media_thumbnail_preview_compressed.jpg")
 
         fun isFileExtensionVideo(mimeType: String?): Boolean {
             return when (mimeType) {

@@ -150,7 +150,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
             }
 
             items(connectViewModel.connectUserVibesFeeds) {
-                ConnectVibeItemView(it, true)
+                ConnectVibeItemView(it)
             }
 
             item {

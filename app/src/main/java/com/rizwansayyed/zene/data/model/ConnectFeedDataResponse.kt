@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.data.model
 data class ConnectFeedDataResponse(
     var media: String? = null,
     var caption: String? = null,
+    var media_thubnail: String? = null,
     var isVibing: Boolean? = null,
     var jazz_name: String? = null,
     var jazz_artists: String? = null,

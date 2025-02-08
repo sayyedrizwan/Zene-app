@@ -387,6 +387,14 @@ object MainUtils {
         context.startActivity(intent)
     }
 
+    fun openGoogleMapNameLocation(name: String) {
+        val d = Uri.parse("http://maps.google.com/?q=${name}")
+        val intent = Intent(Intent.ACTION_VIEW, d)
+        intent.setPackage("com.google.android.apps.maps")
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
+    }
+
     suspend fun getAddressFromLatLong(lat: Double, lon: Double): String? =
         withContext(Dispatchers.IO) {
             return@withContext try {

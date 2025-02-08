@@ -69,7 +69,7 @@ class ConnectStatusActivity : ComponentActivity() {
                     ConnectStatusTopColumView {
                         ConnectStatusTopHeaderView()
 
-                        ConnectVibeItemView(connectViewModel.connectFileSelected, false)
+                        ConnectVibeItemView(connectViewModel.connectFileSelected)
 
                         ConnectStatusCaptionView(caption)
 

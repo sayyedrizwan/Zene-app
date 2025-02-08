@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +17,9 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
+import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreview
+import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
+import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
@@ -163,6 +165,16 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.media = file?.absolutePath
+        if (v.media?.contains(".jpg") == true) {
+            val compressed = compressImageHighQuality(
+                File(v.media!!), vibeMediaThumbnailPreview, 1200, 1200, 50
+            )
+            v.media_thubnail = if (compressed) vibeMediaThumbnailPreview.absolutePath else v.media
+        } else {
+            getMiddleVideoPreviewFrame(v.media!!)?.let { l ->
+                v.media_thubnail = l.absolutePath
+            }
+        }
         v.isVibing = isVibing
         connectFileSelected = null
         delay(500)
@@ -213,21 +225,23 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             else compressVideoFile(connectFileSelected!!.media!!)
         } else null
 
-        zeneAPI.shareConnectVibe(connectFileSelected!!, file).onStart {
-            loadingTypeForFile = context.resources.getString(R.string.uploading_please_wait)
-            isConnectSharing = ResponseResult.Loading
-        }.catch {
-            loadingTypeForFile = ""
-            isConnectSharing = ResponseResult.Error(it)
-        }.collectLatest {
-            loadingTypeForFile = ""
-            isConnectSharing = ResponseResult.Success(it)
+        zeneAPI.shareConnectVibe(connectFileSelected!!, file, connectFileSelected?.media_thubnail)
+            .onStart {
+                loadingTypeForFile = context.resources.getString(R.string.uploading_please_wait)
+                isConnectSharing = ResponseResult.Loading
+            }.catch {
+                loadingTypeForFile = ""
+                isConnectSharing = ResponseResult.Error(it)
+            }.collectLatest {
+                loadingTypeForFile = ""
+                isConnectSharing = ResponseResult.Success(it)
 
-            if (it.status == true) {
-                NotificationUtils(
-                    context.resources.getString(R.string.vibe_uploaded_successfully), "\uD83D\uDE09"
-                ).channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC).generate()
+                if (it.status == true) {
+                    NotificationUtils(
+                        context.resources.getString(R.string.vibe_uploaded_successfully),
+                        "\uD83D\uDE09"
+                    ).channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC).generate()
+                }
             }
-        }
     }
 }

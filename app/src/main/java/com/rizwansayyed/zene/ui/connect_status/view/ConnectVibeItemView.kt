@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,28 +37,37 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player.REPEAT_MODE_ONE
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.ExoPlayerCache
+import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapLocation
+import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapNameLocation
+
 
 @Composable
-fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
+fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
+    var showPlaceDialog by remember { mutableStateOf(false) }
+
     Spacer(Modifier.height(10.dp))
 
     Column(
@@ -99,102 +111,70 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, showCaption: Boolean) {
             ConnectVibeItemMedia(item)
         }
 
-        if (item?.location_name != null) {
-            Row(
-                Modifier
-                    .padding(top = 10.dp, start = 3.dp, end = 3.dp)
-                    .fillMaxWidth(),
-                Arrangement.Center,
-                Alignment.CenterVertically
-            ) {
-                ImageIcon(R.drawable.ic_location, 18)
-                Spacer(Modifier.width(4.dp))
-                TextViewNormal(item.location_name!!, 14)
-                Spacer(Modifier.weight(1f))
-
-                ImageIcon(R.drawable.ic_comment, 18)
-                if ((item.comments ?: 0) > 0) {
+        Row(
+            Modifier
+                .padding(top = 10.dp, start = 3.dp, end = 3.dp)
+                .fillMaxWidth(),
+            Arrangement.Center,
+            Alignment.CenterVertically
+        ) {
+            if (item?.location_name != null) {
+                Row(
+                    Modifier.clickable { showPlaceDialog = true },
+                    Arrangement.Center,
+                    Alignment.CenterVertically
+                ) {
+                    ImageIcon(R.drawable.ic_location, 18)
                     Spacer(Modifier.width(4.dp))
-                    TextViewNormal((item.comments ?: 0).toString(), 14)
+                    TextViewNormal(item.location_name!!, 14)
                 }
             }
+            Spacer(Modifier.weight(1f))
+
+            ImageIcon(R.drawable.ic_comment, 18)
+            if ((item?.comments ?: 0) > 0) {
+                Spacer(Modifier.width(4.dp))
+                TextViewNormal((item?.comments ?: 0).toString(), 14)
+            }
         }
-
-
-//        Row(Modifier.fillMaxWidth()) {
-//            if (item?.media != null) {
-//                Box(Modifier.weight(6f)) {
-//                    ConnectVibeMediaItem(item, Modifier.align(Alignment.Center))
-//
-//                    if (item.isVibing == true) GlideImage(
-//                        R.drawable.just_vibing_sticker,
-//                        "",
-//                        Modifier
-//                            .align(Alignment.TopStart)
-//                            .width(80.dp)
-//                            .offset((-14).dp, (-28).dp)
-//                            .rotate(-20f),
-//                        contentScale = ContentScale.Fit
-//                    )
-//
-//                    Row(
-//                        Modifier
-//                            .padding(9.dp)
-//                            .align(Alignment.BottomEnd)
-//                            .size(24.dp)
-//                            .clickable { }
-//                            .clip(RoundedCornerShape(100))
-//                            .background(Color.White),
-//                        Arrangement.Center,
-//                        Alignment.CenterVertically) {
-//                        ImageIcon(R.drawable.ic_arrow_expand, 20, Color.Black)
-//                    }
-//                }
-//            }
-//
-//            if ((item?.jazz_name != null && item.jazz_id != null) || item?.emoji != null) Column(
-//                Modifier
-//                    .weight(4f)
-//                    .padding(horizontal = 1.dp),
-//                Arrangement.Center,
-//                Alignment.CenterHorizontally
-//            ) {
-//                if (item.jazz_name != null && item.jazz_id != null) GlideImage(
-//                    item.jazz_thumbnail,
-//                    item.jazz_name,
-//                    Modifier
-//                        .fillMaxWidth()
-//                        .aspectRatio(1f),
-//                    contentScale = ContentScale.Crop
-//                )
-//
-//                Spacer(Modifier.padding(top = 12.dp))
-//
-//                if (item.emoji != null) TextViewBold(item.emoji ?: "", 50)
-//            }
-//        }
-//
-//        if (item?.location_name != null) {
-//            Row(
-//                Modifier
-//                    .padding(top = 25.dp, start = 3.dp)
-//                    .fillMaxWidth(),
-//                Arrangement.Center,
-//                Alignment.CenterVertically
-//            ) {
-//                ImageIcon(R.drawable.ic_location, 18)
-//                Spacer(Modifier.width(4.dp))
-//                TextViewNormal(item.location_name!!, 14)
-//                Spacer(Modifier.weight(1f))
-//            }
-//        }
-//
-//        if (showCaption && item?.caption != null) Box(Modifier.padding(top = 19.dp)) {
-//            TextViewNormal(item.caption ?: "", 15)
-//        }
     }
 
     Spacer(Modifier.height(10.dp))
+
+    if (showPlaceDialog) LocationSharingPlace(item) {
+        showPlaceDialog = false
+    }
+}
+
+
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LocationSharingPlace(data: ConnectFeedDataResponse?, close: () -> Unit) {
+    ModalBottomSheet(
+        { close() }, contentColor = MainColor, containerColor = MainColor
+    ) {
+        Column(Modifier.fillMaxWidth()) {
+            Spacer(Modifier.height(10.dp))
+            TextViewSemiBold(data?.location_address ?: "", 16, center = true)
+            Spacer(Modifier.height(20.dp))
+
+            ButtonWithImageAndBorder(
+                R.drawable.ic_location, R.string.open_location, Color.White, Color.White
+            ) {
+                val lat = data?.latitude?.toDoubleOrNull()
+                val lon = data?.longitude?.toDoubleOrNull()
+
+                if (lat != null && lon != null) openGoogleMapLocation(
+                    false,
+                    lat,
+                    lon,
+                    data.location_name ?: ""
+                )
+                else openGoogleMapNameLocation(data?.location_address ?: "")
+            }
+            Spacer(Modifier.height(50.dp))
+        }
+    }
 }
 
 
@@ -228,10 +208,10 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .clickable { }, Alignment.Center
+                .clickable { showMediaDialog = true }, Alignment.Center
         ) {
             GlideImage(
-                data?.media,
+                data?.media_thubnail,
                 data?.caption,
                 Modifier
                     .fillMaxWidth(0.6f)
@@ -239,10 +219,7 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?) {
                     .clipToBounds(),
                 contentScale = ContentScale.Crop
             ) {
-                val options = RequestOptions().frame(3000)
-                it.apply(options)
-
-//                it.diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).apply(requestOptions)
+                it.diskCacheStrategy(DiskCacheStrategy.ALL)
             }
 
             if (data?.isMediaVideo() == false) Box(
@@ -282,125 +259,72 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?) {
             Spacer(Modifier.height(15.dp))
             TextViewNormal(data?.caption ?: "", 16, center = true)
         }
-//        if (data?.isMediaVideo() == true) {
-//            val cache = ExoPlayerCache.getInstance(context)
-//            val dataSourceFactory = CacheDataSource.Factory().setCache(cache)
-//                .setUpstreamDataSourceFactory(DefaultHttpDataSource.Factory())
-//
-//            val exoPlayer = remember {
-//                val trackSelector = DefaultTrackSelector(context).apply {
-//                    setParameters(
-//                        buildUponParameters()
-//                            .setMaxVideoSize(854, 480)
-//                            .setMaxVideoBitrate(500_000)
-//                            .setForceLowestBitrate(true)
-//                    )
-//                }
-//                val loadControl = DefaultLoadControl.Builder()
-//                    .setBufferDurationsMs(
-//                        3000,  // Min buffer before playback starts (3s)
-//                        10000, // Max buffer size (10s, enough for the whole video)
-//                        1500,  // Buffer before rebuffering (1.5s)
-//                        3000   // Back buffer size (3s)
-//                    )
-//                    .setTargetBufferBytes(-1) // Use default heuristics
-//                    .setPrioritizeTimeOverSizeThresholds(true) // Prioritize buffering for short video
-//                    .build()
-//
-//                ExoPlayer.Builder(context)
-//                    .setTrackSelector(trackSelector)
-//                    .setLoadControl(loadControl)
-//                    .build().apply {
-//                        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-//                            .createMediaSource(MediaItem.fromUri(data.media ?: ""))
-////                        setMediaItem(MediaItem.fromUri(data.media ?: ""))
-//                        setMediaSource(mediaSource)
-//                        prepare()
-//                        playWhenReady = true
-//                    }
-//            }
-//
-//
-//            AndroidView(
-//                factory = { ctx ->
-//                    PlayerView(ctx).apply {
-//                        useController = false
-//                        exoPlayer.repeatMode = REPEAT_MODE_ONE
-//                        exoPlayer.volume = 0f
-////                        exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-//                        player = exoPlayer
-////                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-//                        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-//                            .createMediaSource(MediaItem.fromUri(data.media ?: ""))
-//                        setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
-////                        exoPlayer.setMediaSource(mediaSource)
-////                        exoPlayer.setMediaItem(MediaItem.fromUri(data.media ?: ""))
-//                        exoPlayer.prepare()
-//                        exoPlayer.play()
-//                    }
-//                }, modifier = Modifier
-//                    .fillMaxWidth(0.6f)
-//                    .aspectRatio(9f / 16f)
-//                    .clipToBounds()
-//            )
-//
-//
-//            DisposableEffect(Unit) {
-//                val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-//                    .createMediaSource(MediaItem.fromUri(data.media ?: ""))
-//                exoPlayer.setMediaSource(mediaSource)
-//                exoPlayer.prepare()
-//                exoPlayer.play()
-//                onDispose { exoPlayer.pause() }
-//            }
-//        } else {
-
     }
-//    }
     Spacer(Modifier.height(30.dp))
+
+    if (showMediaDialog) ConnectVibeMediaItemAlert(data) {
+        showMediaDialog = false
+    }
 }
 
 @OptIn(UnstableApi::class)
 @Composable
-fun ConnectVibeMediaItem(item: ConnectFeedDataResponse, modifier: Modifier) {
+fun ConnectVibeMediaItemAlert(item: ConnectFeedDataResponse?, close: () -> Unit) {
     val context = LocalContext.current.applicationContext
-
-    if (item.isMediaVideo()) {
-        val exoPlayer = ExoPlayer.Builder(context).build()
-        AndroidView(
-            factory = { ctx ->
-                PlayerView(ctx).apply {
-                    useController = false
-                    exoPlayer.repeatMode = REPEAT_MODE_ONE
-                    exoPlayer.volume = 1f
-                    exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-                    player = exoPlayer
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    val mediaItem = MediaItem.fromUri(item.media ?: "")
-                    exoPlayer.setMediaItem(mediaItem)
-                    exoPlayer.prepare()
-                    exoPlayer.play()
-                }
-            }, modifier = modifier
+    Dialog(
+        close, DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .clipToBounds()
-        )
-        LifecycleResumeEffect(Unit) {
-            exoPlayer.play()
-            onPauseOrDispose { exoPlayer.pause() }
-        }
-    } else {
-        GlideImage(
-            item.media,
-            "",
-            modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clipToBounds(),
-            contentScale = ContentScale.Crop
+                .background(Color.Black), Alignment.Center
         ) {
-            it.diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+            if (item?.isMediaVideo() == true) {
+                val exoPlayer = remember {
+                    val exo = ExoPlayerCache.getInstance(context)
+
+                    ExoPlayer.Builder(context).setTrackSelector(exo.first)
+                        .setLoadControl(ExoPlayerCache.loadControl).build().apply {
+                            val mediaSource = ProgressiveMediaSource.Factory(exo.second)
+                                .createMediaSource(MediaItem.fromUri(item.media ?: ""))
+                            setMediaSource(mediaSource)
+                            setMediaSource(mediaSource)
+                            prepare()
+                            playWhenReady = true
+                        }
+                }
+
+                AndroidView(
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            useController = true
+                            exoPlayer.volume = 1f
+                            exoPlayer.repeatMode = Player.REPEAT_MODE_ONE
+                            exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
+                            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                            setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
+                            player = exoPlayer
+                            exoPlayer.prepare()
+                            exoPlayer.play()
+                        }
+                    }, modifier = Modifier
+                        .fillMaxSize()
+                        .clipToBounds()
+                )
+                LifecycleResumeEffect(Unit) {
+                    exoPlayer.play()
+                    onPauseOrDispose { exoPlayer.pause() }
+                }
+            } else {
+                GlideImage(
+                    item?.media,
+                    item?.caption,
+                    Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                ) {
+                    it.diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+                }
+            }
         }
     }
 }

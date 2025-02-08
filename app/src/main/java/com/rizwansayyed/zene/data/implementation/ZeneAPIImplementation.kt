@@ -364,7 +364,11 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sendConnectLocation(token, body))
     }
 
-    override suspend fun shareConnectVibe(d: ConnectFeedDataResponse, file: String?) = flow {
+    override suspend fun shareConnectVibe(
+        d: ConnectFeedDataResponse,
+        file: String?,
+        thumbnail: String?
+    ) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
@@ -376,6 +380,15 @@ class ZeneAPIImplementation @Inject constructor(
                 val uploader =
                     File(file).asRequestBody("application/octet-stream".toMediaTypeOrNull())
                 body.addFormDataPart("file", f.name, uploader)
+            }
+        }
+
+        if (thumbnail != null) {
+            val f = File(thumbnail)
+            if (f.exists()) {
+                val uploader =
+                    File(thumbnail).asRequestBody("application/octet-stream".toMediaTypeOrNull())
+                body.addFormDataPart("file_thumbnail", f.name, uploader)
             }
         }
         body.addFormDataPart("email", email)

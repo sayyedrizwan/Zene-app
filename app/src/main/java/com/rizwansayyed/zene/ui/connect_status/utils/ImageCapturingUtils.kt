@@ -137,8 +137,8 @@ class ImageCapturingUtils(
             override fun onImageSaved(file: ImageCapture.OutputFileResults) {
                 file.savedUri?.toFile()?.let {
                     val compressed = compressImageHighQuality(it, vibeCompressedImageFile)
-                    if (compressed) vibeFiles = vibeCompressedImageFile
-                    else vibeFiles = it
+                    vibeFiles = if (compressed) vibeCompressedImageFile
+                    else it
                 }
             }
 
@@ -149,61 +149,63 @@ class ImageCapturingUtils(
 
         imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(ctx), callback)
     }
+}
 
-    fun compressImageHighQuality(
-        imageFile: File,
-        targetFile: File,
-        maxWidth: Int = 3048,
-        maxHeight: Int = 3048,
-        quality: Int = 50
-    ): Boolean {
-        try {
-            val exifInterface = ExifInterface(imageFile)
-            val orientation = exifInterface.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL
-            )
-            var originalBitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-            val matrix = Matrix()
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
-                ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
-                ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
-                ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
-                ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
-                else -> {}
-            }
-            originalBitmap = Bitmap.createBitmap(
-                originalBitmap, 0, 0, originalBitmap.width, originalBitmap.height, matrix, true
-            )
 
-            val aspectRatio = originalBitmap.width.toFloat() / originalBitmap.height.toFloat()
-
-            var newWidth = originalBitmap.width
-            var newHeight = originalBitmap.height
-
-            if (originalBitmap.width > maxWidth || originalBitmap.height > maxHeight) {
-                if (originalBitmap.width > originalBitmap.height) {
-                    newWidth = maxWidth
-                    newHeight = (newWidth / aspectRatio).toInt()
-                } else {
-                    newHeight = maxHeight
-                    newWidth = (newHeight * aspectRatio).toInt()
-                }
-            }
-
-            val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true)
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
-            val fileOutputStream = FileOutputStream(targetFile)
-            fileOutputStream.write(byteArrayOutputStream.toByteArray())
-            fileOutputStream.flush()
-            fileOutputStream.close()
-            originalBitmap.recycle()
-            resizedBitmap.recycle()
-            return true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
+fun compressImageHighQuality(
+    imageFile: File,
+    targetFile: File,
+    maxWidth: Int = 3048,
+    maxHeight: Int = 3048,
+    quality: Int = 50
+): Boolean {
+    try {
+        targetFile.delete()
+        val exifInterface = ExifInterface(imageFile)
+        val orientation = exifInterface.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL
+        )
+        var originalBitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+        val matrix = Matrix()
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
+            else -> {}
         }
+        originalBitmap = Bitmap.createBitmap(
+            originalBitmap, 0, 0, originalBitmap.width, originalBitmap.height, matrix, true
+        )
+
+        val aspectRatio = originalBitmap.width.toFloat() / originalBitmap.height.toFloat()
+
+        var newWidth = originalBitmap.width
+        var newHeight = originalBitmap.height
+
+        if (originalBitmap.width > maxWidth || originalBitmap.height > maxHeight) {
+            if (originalBitmap.width > originalBitmap.height) {
+                newWidth = maxWidth
+                newHeight = (newWidth / aspectRatio).toInt()
+            } else {
+                newHeight = maxHeight
+                newWidth = (newHeight * aspectRatio).toInt()
+            }
+        }
+
+        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true)
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
+        val fileOutputStream = FileOutputStream(targetFile)
+        fileOutputStream.write(byteArrayOutputStream.toByteArray())
+        fileOutputStream.flush()
+        fileOutputStream.close()
+        originalBitmap.recycle()
+        resizedBitmap.recycle()
+        return true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return false
     }
 }
