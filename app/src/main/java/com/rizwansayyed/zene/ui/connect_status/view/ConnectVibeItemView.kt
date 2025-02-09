@@ -90,15 +90,13 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
             .padding(bottom = 10.dp)
     ) {
         Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-            GlideImage(
-                item?.userDetails?.profile_photo,
+            GlideImage(item?.userDetails?.profile_photo,
                 item?.userDetails?.name,
                 Modifier
                     .size(45.dp)
                     .clickable { item?.email?.let { openConnectUserProfile(it) } }
                     .clip(RoundedCornerShape(14.dp)),
-                contentScale = ContentScale.Crop
-            )
+                contentScale = ContentScale.Crop)
 
             Column(Modifier
                 .clickable { item?.email?.let { openConnectUserProfile(it) } }
@@ -110,12 +108,11 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                         TextViewNormal("@${it}", 12, line = 1)
                     }
                 }
-                if (item?.media != null && item.is_vibing == true) Box(
-                    Modifier
-                        .offset(y = (-7).dp)
-                        .clickable {
-                            candidMeaning.toast()
-                        }) {
+                if (item?.media != null && item.is_vibing == true) Box(Modifier
+                    .offset(y = (-7).dp)
+                    .clickable {
+                        candidMeaning.toast()
+                    }) {
                     TextViewSemiBold(stringResource(R.string.candid).uppercase(), 13, line = 1)
                 }
             }
@@ -177,7 +174,10 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                 }
             }
 
-            if (isFeedView) Row(Modifier.clickable { showCommentDialog = true }) {
+            if (isFeedView) Row(
+                Modifier.clickable { showCommentDialog = true },
+                Arrangement.Center, Alignment.CenterVertically
+            ) {
                 ImageIcon(R.drawable.ic_comment, 19)
                 if ((item?.comments ?: 0) > 0) {
                     Spacer(Modifier.width(4.dp))

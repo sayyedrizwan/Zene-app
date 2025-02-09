@@ -52,7 +52,7 @@ fun ContactListsInfo() {
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(MainColor)
     ) {
         item {
             TextField(
@@ -89,8 +89,8 @@ fun ContactListsInfo() {
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MainColor,
-                    unfocusedContainerColor = MainColor,
+                    focusedContainerColor = Color.Black,
+                    unfocusedContainerColor = Color.Black,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     cursorColor = Color.White

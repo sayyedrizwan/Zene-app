@@ -104,6 +104,7 @@ dependencies {
 
     implementation(libs.emoji)
     implementation(libs.emoji.picker)
+    implementation(libs.emoji2.bundled)
 
     implementation(libs.truecaller)
 

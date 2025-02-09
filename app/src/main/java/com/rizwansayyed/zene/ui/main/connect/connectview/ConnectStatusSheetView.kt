@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -57,6 +59,8 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
     val coroutines = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
     var page by remember { mutableIntStateOf(0) }
+    val state = rememberLazyListState()
+    var isBottomTriggered by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -68,7 +72,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
         LazyColumn(
             Modifier
                 .fillMaxSize()
-                .background(MainColor)
+                .background(MainColor), state
         ) {
             item {
                 Box(Modifier.padding(horizontal = 9.dp)) {
@@ -155,19 +159,13 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
                 ConnectVibeItemView(it)
             }
 
+
             item {
                 if (connectViewModel.isLoadingVibeFeed) {
                     CircularLoadingView()
                 }
                 if (!connectViewModel.isLoadingVibeFeed && connectViewModel.connectUserVibesFeeds.isEmpty()) {
                     TextViewBold(stringResource(R.string.no_posts), 19, center = true)
-                }
-            }
-
-            if (connectViewModel.connectUserVibesFeeds.isNotEmpty() && !connectViewModel.isLoadingVibeFeed) item {
-                LaunchedEffect(Unit) {
-                    page += 1
-                    connectViewModel.connectFriendsVibesList(page)
                 }
             }
 
@@ -178,12 +176,29 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
         }
     }
 
+
+    LaunchedEffect(state) {
+        snapshotFlow { state.layoutInfo }
+            .collect { layoutInfo ->
+                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItemsCount = layoutInfo.totalItemsCount
+
+                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                    isBottomTriggered = true
+                    connectViewModel.connectFriendsVibesList(page)
+                    page += 1
+                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                    isBottomTriggered = false
+                }
+            }
+    }
+
     LaunchedEffect(Unit) {
-        connectViewModel.connectFriendsVibesList(page)
         ConnectStatusCallbackManager.setCallback(object : ConnectStatusListener {
             override fun addedNewStatus() {
                 page = 0
                 connectViewModel.connectFriendsVibesList(page)
+                page += 1
             }
         })
     }

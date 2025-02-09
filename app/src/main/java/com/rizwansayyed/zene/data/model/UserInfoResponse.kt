@@ -6,6 +6,7 @@ data class UserInfoResponse(
     val photo: String?,
     val username: String?,
     val phoneNumber: String?,
+    var status: String?,
     val authToken: String?,
 ) {
     fun isLoggedIn(): Boolean {

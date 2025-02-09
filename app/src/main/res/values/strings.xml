@@ -36,6 +36,7 @@
     <string name="bollywood_news">Bollywood News</string>
     <string name="music_news">Music News</string>
     <string name="no_posts">No Posts</string>
+    <string name="no_gif_posted">No GIF Posted</string>
     <string name="movies_trending_today">Movies/Shows Trending Today</string>
     <string name="top_10_movies_show_in">Top 10 Movies/Shows in</string>
     <string name="songs_for_you">Songs for you</string>
@@ -57,9 +58,12 @@
     <string name="enter_your_name">Enter your name</string>
     <string name="add_a_caption">Add a caption…</string>
     <string name="search_s_p_a_etc">Search song, playlist, album, etc..</string>
+    <string name="emoji_status">Emoji Status</string>
+    <string name="search_gif">Search GIF</string>
     <string name="search_places">Search places</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>
+    <string name="update_status_desc">Share your thoughts with emoji.</string>
     <string name="enable_notification">Enable notification</string>
     <string name="maybe_later">Maybe later</string>
     <string name="enter_otp_send_to_your_phone_number">Enter otp send to your phone number</string>
@@ -94,6 +98,10 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="close">Close</string>
+    <string name="post_a_gif">Post a GIF</string>
+    <string name="post">Post</string>
+    <string name="post_a_gif_desc">You cannot delete the GIF. Once it\'s posted. It will de auto deleted after 24 hours with the vibe. Are you sure want to post?</string>
     <string name="gif_spress">GIF-Spress</string>
     <string name="comment_express_yourself_with_gif">Comment/Express yourself with GIF :)</string>
     <string name="invite">Invite</string>

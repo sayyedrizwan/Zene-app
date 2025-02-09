@@ -12,7 +12,7 @@ object URLSUtils {
     const val FB_GRAPH_ID = "https://graph.facebook.com/me"
 
 
-    const val ZENE_BASE_URL_API = "http://192.168.0.110:3000"
+    const val ZENE_BASE_URL_API = "http://192.168.0.101:3000"
     const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
     const val ZENE_RECENT_HOME_RADIO_API = "recent/home-radio"
@@ -22,6 +22,8 @@ object URLSUtils {
 
     const val ZENE_SEARCH_ALL_API = "search/all"
     const val ZENE_SEARCH_PLACES_API = "search/places"
+    const val ZENE_SEARCH_TRENDING_GIF_API = "search/trending-gif"
+    const val ZENE_SEARCH_GIF_API = "search/search-gif"
 
     const val ZENE_CONNECT_NEAR_MUSIC_API = "connect/near-music"
     const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API = "connect/users-search-via-phonenumber"
@@ -36,8 +38,11 @@ object URLSUtils {
     const val ZENE_CONNECT_SEND_LOCATION_API = "connect/send-location"
     const val ZENE_CONNECT_FRIENDS_VIBES_API = "connect/friends-vibes"
     const val ZENE_CONNECT_SHARE_VIBE_API = "connect/share-vibe"
+    const val ZENE_CONNECT_ADD_A_COMMENT_API = "connect/add-a-comment"
+    const val ZENE_CONNECT_GET_COMMENT_API = "connect/get-comment"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
+    const val ZENE_USER_UPDATE_CONNECT_STATUS_API = "users/update-connect-status"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"
     const val ZENE_USER_SEND_NUMBER_OTP_API = "users/send-number-otp"
     const val ZENE_USER_VERIFY_NUMBER_OTP_API = "users/verify-number-otp"

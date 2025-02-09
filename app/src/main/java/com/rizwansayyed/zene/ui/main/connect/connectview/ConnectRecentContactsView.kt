@@ -16,11 +16,15 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,31 +41,35 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileActivity
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
     val context = LocalContext.current.applicationContext
-    Box(
-        Modifier
-            .padding(horizontal = 9.dp)
-            .clickable {
-                Intent(context, ConnectUserProfileActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.ACTION_MAIN, user.user?.email)
-                    context.startActivity(this)
-                }
-            }) {
+    Box(Modifier
+        .padding(horizontal = 9.dp)
+        .clickable {
+            Intent(context, ConnectUserProfileActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(Intent.ACTION_MAIN, user.user?.email)
+                context.startActivity(this)
+            }
+        }) {
         Column(Modifier.width(100.dp), Arrangement.Center, Alignment.CenterHorizontally) {
             GlideImage(
-                user.user?.profile_photo, user.user?.name,
+                user.user?.profile_photo,
+                user.user?.name,
                 Modifier
                     .clip(RoundedCornerShape(100))
                     .size(100.dp),
@@ -74,25 +82,26 @@ fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
             Spacer(Modifier.height(10.dp))
         }
 
-        if ((user.message?.message?.length ?: 0) > 3 && user.message?.fromCurrentUser == false)
-            Spacer(
-                Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = 9.dp, y = 9.dp)
-                    .size(10.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(Color.Red)
-            )
+        if ((user.message?.message?.length
+                ?: 0) > 3 && user.message?.fromCurrentUser == false
+        ) Spacer(
+            Modifier
+                .align(Alignment.TopStart)
+                .offset(x = 9.dp, y = 9.dp)
+                .size(10.dp)
+                .clip(RoundedCornerShape(50))
+                .background(Color.Red)
+        )
 
-        if (user.songDetails?.thumbnail != null)
-            GlideImage(
-                user.songDetails.thumbnail, user.songDetails.name,
-                Modifier
-                    .align(Alignment.TopEnd)
-                    .clip(RoundedCornerShape(10))
-                    .size(30.dp),
-                contentScale = ContentScale.Crop
-            )
+        if (user.songDetails?.thumbnail != null) GlideImage(
+            user.songDetails.thumbnail,
+            user.songDetails.name,
+            Modifier
+                .align(Alignment.TopEnd)
+                .clip(RoundedCornerShape(10))
+                .size(30.dp),
+            contentScale = ContentScale.Crop
+        )
 
     }
 }
@@ -110,7 +119,8 @@ fun ConnectFriendsRequestLists(user: ConnectUserResponse) {
             }, Arrangement.Center, Alignment.CenterHorizontally
     ) {
         GlideImage(
-            user.profile_photo, user.name,
+            user.profile_photo,
+            user.name,
             Modifier
                 .clip(RoundedCornerShape(100))
                 .size(100.dp),
@@ -124,11 +134,15 @@ fun ConnectFriendsRequestLists(user: ConnectUserResponse) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectRecentContactsView() {
+    val coroutine = rememberCoroutineScope()
     val needContact = stringResource(R.string.need_location_permission_to_read_contact)
     var contactsView by remember { mutableStateOf(false) }
     var editUserView by remember { mutableStateOf(false) }
+    var updateStatusView by remember { mutableStateOf(false) }
+
     val contactPermission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) contactsView = true
@@ -149,14 +163,45 @@ fun ConnectRecentContactsView() {
         Box(Modifier.clickable { contactPermission.launch(Manifest.permission.READ_CONTACTS) }) {
             ImageIcon(R.drawable.ic_user_search, 23)
         }
+        Spacer(Modifier.width(14.dp))
+        Box(Modifier.clickable { updateStatusView = true }) {
+            ImageIcon(R.drawable.ic_user_sharing, 23)
+        }
+        Spacer(Modifier.width(14.dp))
+        Box(Modifier.clickable {
+            coroutine.launch {
+                val email = DataStorageManager.userInfo.firstOrNull()?.email
+                Intent(context, ConnectUserProfileActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(Intent.ACTION_MAIN, email)
+                    context.startActivity(this)
+                }
+            }
+        }) {
+            ImageIcon(R.drawable.ic_user_id, 23)
+        }
     }
     Spacer(Modifier.height(12.dp))
 
-    if (contactsView) Dialog(
-        { contactsView = false }, DialogProperties(usePlatformDefaultWidth = false)
+    if (contactsView) ModalBottomSheet(
+        { contactsView = false },
+        modifier = Modifier.wrapContentHeight(),
+        contentColor = MainColor,
+        containerColor = MainColor
     ) {
         ContactListsInfo()
     }
+    if (updateStatusView) ModalBottomSheet(
+        { updateStatusView = false },
+        modifier = Modifier.wrapContentHeight(),
+        contentColor = MainColor,
+        containerColor = MainColor
+    ) {
+        UserStatusUpdateView {
+            updateStatusView = false
+        }
+    }
+
     if (editUserView) Dialog(
         { editUserView = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {

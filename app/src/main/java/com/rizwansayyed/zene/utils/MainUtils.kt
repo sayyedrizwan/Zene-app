@@ -417,4 +417,29 @@ object MainUtils {
     fun runMusicDataInfos(data: ZeneMusicData?) {
 
     }
+
+    fun getAllEmojis(): List<String> {
+        val emojiRanges = listOf(
+            0x1F600..0x1F64F, // Emoticons
+            0x1F300..0x1F5FF, // Symbols & pictographs
+            0x1F680..0x1F6FF, // Transport & map symbols
+            0x1F700..0x1F77F, // Alchemical symbols
+            0x1F780..0x1F7FF, // Geometric shapes
+            0x1F900..0x1F9FF, // Supplemental symbols & pictographs
+            0x2600..0x26FF,   // Miscellaneous symbols (e.g., ☀️☔☘️)
+            0x2700..0x27BF    // Dingbats (e.g., ✂️❤️✔️)
+        )
+
+        val emojis = mutableListOf<String>()
+
+        for (range in emojiRanges) {
+            for (codePoint in range) {
+                val emoji = String(Character.toChars(codePoint))
+                if (emoji.isNotBlank() && emoji != "�") { // Filter out unsupported characters
+                    emojis.add(emoji)
+                }
+            }
+        }
+        return emojis
+    }
 }

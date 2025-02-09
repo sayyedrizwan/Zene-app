@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,9 +37,11 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
-import com.rizwansayyed.zene.data.model.ConnectedUserStatus
+import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
+import com.rizwansayyed.zene.data.model.ConnectedUserStatus.ME
+import com.rizwansayyed.zene.data.model.ConnectedUserStatus.NONE
+import com.rizwansayyed.zene.data.model.ConnectedUserStatus.REQUESTED
 import com.rizwansayyed.zene.data.model.ZeneMusicData
-import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AlertDialogWithImage
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
@@ -81,9 +82,10 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             TopSheetView(data, viewModel)
             Spacer(Modifier.height(30.dp))
         }
+
         item {
             if (data.user?.email != null && data.user.username != null) {
-                if (data.status?.isConnected() == ConnectedUserStatus.FRIENDS) {
+                if (data.isConnected() == FRIENDS) {
                     Row(
                         Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically
                     ) {
@@ -133,7 +135,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             }
         }
         item {
-            if (data.status?.isConnected() == ConnectedUserStatus.FRIENDS) {
+            if (data.isConnected() == FRIENDS) {
                 ConnectSettingsView(data, viewModel)
                 Spacer(Modifier.height(150.dp))
             }
@@ -219,7 +221,11 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             .padding(top = 10.dp), Arrangement.Center, Alignment.CenterVertically
     ) {
         if (data.user?.email != null && data.user.username != null) {
-            Column(Modifier.weight(1f).padding(bottom = 5.dp)) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(bottom = 5.dp)
+            ) {
                 TextViewSemiBold(data.user.name ?: "", 25)
                 TextViewNormal("@${data.user.username}", 14)
 
@@ -233,12 +239,12 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                 }
             }
 
-            when (data.status?.isConnected()) {
-                ConnectedUserStatus.FRIENDS -> ButtonWithBorder(R.string.friends) {
+            when (data.isConnected()) {
+                FRIENDS -> ButtonWithBorder(R.string.friends) {
                     unFriendAlert = true
                 }
 
-                ConnectedUserStatus.REQUESTED -> {
+                REQUESTED -> {
                     if (data.didRequestToYou == true) {
                         Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
                             ButtonWithBorder(R.string.accept) {
@@ -256,9 +262,11 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                     }
                 }
 
-                ConnectedUserStatus.NONE, null -> ButtonWithBorder(R.string.add) {
+                NONE -> ButtonWithBorder(R.string.add) {
                     viewModel.updateAddStatus(data, false)
                 }
+
+                ME -> {}
             }
         }
     }

@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.ContactData
@@ -59,4 +60,9 @@ interface ZeneAPIInterface {
 
     suspend fun connectFriendsRequestList(): Flow<List<ConnectUserResponse>>
     suspend fun connectFriendsVibesList(page: Int): Flow<List<ConnectFeedDataResponse>>
+    suspend fun trendingGIF(): Flow<List<String>>
+    suspend fun searchGif(q: String): Flow<List<String>>
+    suspend fun postCommentOnVibes(gif: String, id: Int?): Flow<StatusTypeResponse>
+    suspend fun getCommentOfVibes(id: Int?, page: Int): Flow<List<VibesCommentsResponse>>
+    suspend fun updateConnectStatus(status: String): Flow<StatusTypeResponse>
 }

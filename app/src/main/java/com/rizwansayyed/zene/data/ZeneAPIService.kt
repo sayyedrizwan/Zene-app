@@ -12,12 +12,15 @@ import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_VIBES_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_GET_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
@@ -34,9 +37,12 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_ALL_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_VERIFY_NUMBER_OTP_API
 import okhttp3.RequestBody
@@ -194,4 +200,35 @@ interface ZeneAPIService {
         @Header("token") token: String,
         @Body body: RequestBody?
     ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SEARCH_TRENDING_GIF_API)
+    suspend fun trendingGif(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<String>
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SEARCH_GIF_API)
+    suspend fun searchGif(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<String>
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_UPDATE_CONNECT_STATUS_API)
+    suspend fun updateConnectStatus(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_ADD_A_COMMENT_API)
+    suspend fun postCommentOnVibes(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_GET_COMMENT_API)
+    suspend fun getCommentOfVibes(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<VibesCommentsResponse>
+
 }

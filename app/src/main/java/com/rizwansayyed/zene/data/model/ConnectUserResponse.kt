@@ -1,5 +1,10 @@
 package com.rizwansayyed.zene.data.model
 
+import com.rizwansayyed.zene.datastore.DataStorageManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
+
 
 data class ConnectUserInfoResponse(
     val songDetails: ZeneMusicData?,
@@ -14,11 +19,13 @@ data class ConnectUserInfoResponse(
         var lastListeningSong: Boolean?,
         var locationSharing: Boolean?,
         var silentNotification: Boolean?
-    ) {
-        fun isConnected(): ConnectedUserStatus {
-            if (isConnected == null) return ConnectedUserStatus.NONE
-            return if (isConnected == true) ConnectedUserStatus.FRIENDS else ConnectedUserStatus.REQUESTED
-        }
+    )
+
+    fun isConnected(): ConnectedUserStatus = runBlocking(Dispatchers.IO) {
+        val userEmail = DataStorageManager.userInfo.firstOrNull()
+        if (user?.email == userEmail?.email) return@runBlocking ConnectedUserStatus.ME
+        if (status?.isConnected == null) return@runBlocking ConnectedUserStatus.NONE
+        return@runBlocking if (status.isConnected == true) ConnectedUserStatus.FRIENDS else ConnectedUserStatus.REQUESTED
     }
 }
 
@@ -26,7 +33,7 @@ data class UserMessage(var fromCurrentUser: Boolean?, var message: String?)
 
 
 enum class ConnectedUserStatus {
-    FRIENDS, REQUESTED, NONE
+    FRIENDS, REQUESTED, NONE, ME
 }
 
 data class ConnectUserResponse(
