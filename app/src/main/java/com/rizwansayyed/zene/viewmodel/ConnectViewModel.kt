@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +17,7 @@ import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.ui.connect_status.ConnectStatusCallbackManager
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreview
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
@@ -26,14 +26,18 @@ import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
@@ -240,11 +244,19 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
                 loadingTypeForFile = ""
                 isConnectSharing = ResponseResult.Success(it)
 
-                if (it.status == true) {
-                    NotificationUtils(
-                        context.resources.getString(R.string.vibe_uploaded_successfully),
-                        "\uD83D\uDE09"
-                    ).channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC).generate()
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(1.seconds)
+                    if (it.status == true) {
+                        NotificationUtils(
+                            context.resources.getString(R.string.vibe_uploaded_successfully),
+                            "\uD83D\uDE09"
+                        ).channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC).generate()
+
+                        delay(1.seconds)
+                        ConnectStatusCallbackManager.triggerEvent()
+                    }
+
+                    if (isActive) cancel()
                 }
             }
     }

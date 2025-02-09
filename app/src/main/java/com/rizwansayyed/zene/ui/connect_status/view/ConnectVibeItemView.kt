@@ -71,7 +71,7 @@ import com.rizwansayyed.zene.utils.ExoPlayerCache
 import com.rizwansayyed.zene.utils.MainUtils.toast
 
 @Composable
-fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
+fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = true) {
     var showPlaceDialog by remember { mutableStateOf(false) }
     var showEmojiDialog by remember { mutableStateOf(false) }
     var showMusicMediaDialog by remember { mutableStateOf(false) }
@@ -99,6 +99,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
                     .clip(RoundedCornerShape(14.dp)),
                 contentScale = ContentScale.Crop
             )
+
             Column(Modifier
                 .clickable { item?.email?.let { openConnectUserProfile(it) } }
                 .padding(horizontal = 9.dp), Arrangement.Center, Alignment.Start) {
@@ -120,7 +121,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
             }
 
             Spacer(Modifier.weight(1f))
-            TextViewNormal(item?.ts() ?: "", 12, line = 1)
+            if (isFeedView) TextViewNormal(item?.ts() ?: "", 12, line = 1)
         }
 
         if (item?.media != null) ConnectVibeItemMedia(item) {
@@ -176,7 +177,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?) {
                 }
             }
 
-            Row(Modifier.clickable { showCommentDialog = true }) {
+            if (isFeedView) Row(Modifier.clickable { showCommentDialog = true }) {
                 ImageIcon(R.drawable.ic_comment, 19)
                 if ((item?.comments ?: 0) > 0) {
                     Spacer(Modifier.width(4.dp))

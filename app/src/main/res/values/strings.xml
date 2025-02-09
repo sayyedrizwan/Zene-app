@@ -94,6 +94,8 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="gif_spress">GIF-Spress</string>
+    <string name="comment_express_yourself_with_gif">Comment/Express yourself with GIF :)</string>
     <string name="invite">Invite</string>
     <string name="you_have_no_friends">You have no friends</string>
     <string name="click_on_notification_enable_switch">Click on Notifications -> Enable Switch.</string>

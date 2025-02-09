@@ -30,6 +30,8 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.connect_status.ConnectStatusCallbackManager
+import com.rizwansayyed.zene.ui.connect_status.ConnectStatusListener
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.view.PhoneNumberVerificationView
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -178,6 +180,12 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
 
     LaunchedEffect(Unit) {
         connectViewModel.connectFriendsVibesList(page)
+        ConnectStatusCallbackManager.setCallback(object : ConnectStatusListener {
+            override fun addedNewStatus() {
+                page = 0
+                connectViewModel.connectFriendsVibesList(page)
+            }
+        })
     }
 
     LifecycleResumeEffect(Unit) {

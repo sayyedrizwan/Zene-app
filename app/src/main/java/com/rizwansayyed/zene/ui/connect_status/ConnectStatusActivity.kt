@@ -74,7 +74,7 @@ class ConnectStatusActivity : ComponentActivity() {
                     ConnectStatusTopColumView {
                         ConnectStatusTopHeaderView()
 
-                        ConnectVibeItemView(connectViewModel.connectFileSelected)
+                        ConnectVibeItemView(connectViewModel.connectFileSelected,false)
 
                         ConnectStatusCaptionView(caption)
 
