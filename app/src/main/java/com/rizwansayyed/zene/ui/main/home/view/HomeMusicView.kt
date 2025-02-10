@@ -5,13 +5,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -117,22 +113,19 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                         TextViewBold(stringResource(R.string.explore_tunes), 23)
                     }
                     Spacer(Modifier.height(12.dp))
-                    LazyHorizontalGrid(
-                        GridCells.Fixed(3),
-                        Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 800.dp)
-                    ) {
-                        items(v.data.songsToExplore) {
+                }
+
+                items(v.data.songsToExplore?.chunked(10) ?: emptyList()) {
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(it) {
                             ItemCardView(it)
                         }
                     }
+                    Spacer(Modifier.height(40.dp))
                 }
             }
         }
 
-        item {
-            Spacer(Modifier.height(200.dp))
-        }
+        item { Spacer(Modifier.height(200.dp)) }
     }
 }

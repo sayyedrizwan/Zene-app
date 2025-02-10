@@ -22,9 +22,9 @@ import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
+import com.rizwansayyed.zene.ui.main.ai.AIView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.*
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
@@ -70,16 +70,15 @@ class MainActivity : ComponentActivity() {
                             SETTINGS -> SettingsView()
                             NOTIFICATION -> NotificationViewScreenView(navigationViewModel)
                             SEARCH -> {}
-                            AI -> {}
+                            AI -> AIView(homeViewModel)
                         }
 
                         HomeBottomNavigationView(
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )
 
-                        if (navigationViewModel.homeNotificationSection != null) NotificationConnectLocationShare(
-                            navigationViewModel
-                        )
+                        if (navigationViewModel.homeNotificationSection != null)
+                            NotificationConnectLocationShare(navigationViewModel)
 
                     } else if (showLogin) LoginView()
                 }

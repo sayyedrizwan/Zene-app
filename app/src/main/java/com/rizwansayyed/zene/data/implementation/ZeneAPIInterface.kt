@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.implementation
 
+import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
@@ -65,4 +66,5 @@ interface ZeneAPIInterface {
     suspend fun postCommentOnVibes(gif: String, id: Int?): Flow<StatusTypeResponse>
     suspend fun getCommentOfVibes(id: Int?, page: Int): Flow<List<VibesCommentsResponse>>
     suspend fun updateConnectStatus(status: String): Flow<StatusTypeResponse>
+    suspend fun trendingAIMusic(): Flow<AIDataResponse>
 }

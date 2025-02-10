@@ -66,6 +66,18 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.recentHome(token, body))
     }
 
+    override suspend fun trendingAIMusic() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.trendingAIMusic(token, body))
+    }
+
     override suspend fun recentPodcast() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

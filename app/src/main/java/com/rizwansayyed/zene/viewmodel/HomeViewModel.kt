@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
@@ -25,6 +26,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
@@ -52,6 +54,7 @@ class HomeViewModel @Inject constructor(
 
     private val cacheHelper = CacheHelper()
     var homeRecent by mutableStateOf<ResponseResult<MusicDataResponse>>(ResponseResult.Empty)
+    var aiMusicList by mutableStateOf<ResponseResult<AIDataResponse>>(ResponseResult.Empty)
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
     var homeVideos by mutableStateOf<ResponseResult<VideoDataResponse>>(ResponseResult.Empty)
     var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
@@ -87,6 +90,27 @@ class HomeViewModel @Inject constructor(
 
             cacheHelper.save(ZENE_RECENT_HOME_MUSIC_API, it)
             homeRecent = ResponseResult.Success(it)
+        }
+    }
+
+    fun trendingAIMusic(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+        val data: AIDataResponse? = cacheHelper.get(ZENE_AI_MUSIC_LIST_API)
+        if ((data?.trending?.size ?: 0) > 0) {
+            aiMusicList = ResponseResult.Success(data!!)
+            return@launch
+        }
+
+        zeneAPI.trendingAIMusic().onStart {
+            aiMusicList = ResponseResult.Loading
+        }.catch {
+            aiMusicList = ResponseResult.Error(it)
+        }.collectLatest {
+            if (it.isExpire == true) {
+                expireToken()
+                return@collectLatest
+            }
+            cacheHelper.save(ZENE_AI_MUSIC_LIST_API, it)
+            aiMusicList = ResponseResult.Success(it)
         }
     }
 

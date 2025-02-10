@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data
 
+import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
@@ -15,6 +16,7 @@ import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
@@ -62,6 +64,12 @@ interface ZeneAPIService {
     suspend fun recentHome(
         @Header("token") token: String, @Body data: RequestBody
     ): MusicDataResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_AI_MUSIC_LIST_API)
+    suspend fun trendingAIMusic(
+        @Header("token") token: String, @Body data: RequestBody
+    ): AIDataResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_RECENT_HOME_PODCAST_API)
@@ -230,5 +238,6 @@ interface ZeneAPIService {
     suspend fun getCommentOfVibes(
         @Header("token") token: String, @Body data: RequestBody
     ): List<VibesCommentsResponse>
+
 
 }

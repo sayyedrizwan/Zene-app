@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Zene</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
-    <string name="app_desc">Free Music, Podcast, Video, Entertainment. Everything You Love, All in One Place.</string>
+    <string name="app_desc">Free Music, Podcasts, Videos &amp; More – All Your Entertainment in One Place!</string>
     <string name="keep_up_with_your_entertainment">Keep up with your Entertainment</string>
-    <string name="enable_push_notification_to_get_update">Enable push notification to get news/updates about your favourite musics, news, movies and many more</string>
+    <string name="enable_push_notification_to_get_update">Enable push notification to get news/updates about your favourite music, news, movies and many more</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="continue_with_apple">Continue with Apple</string>
     <string name="continue_with_facebook">Continue with Facebook</string>
@@ -21,6 +21,8 @@
     <string name="remove_as_friend_desc">Are you sure want to remove them as a friend?</string>
     <string name="cancel_request">Cancel request?</string>
     <string name="top_podcasts_you_listened_to_this_month">Top Podcasts Listened This Month</string>
+    <string name="trending_ai_musics">Trending AI Music</string>
+    <string name="new_ai_musics">New AI Music</string>
     <string name="your_mixes">Your mixes</string>
     <string name="entertainment_">Entertainment</string>
     <string name="recommended_playlists">Recommended playlists</string>

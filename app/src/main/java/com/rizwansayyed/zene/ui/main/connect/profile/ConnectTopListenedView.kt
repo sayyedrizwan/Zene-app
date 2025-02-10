@@ -29,8 +29,8 @@ fun ConnectTopListenedView(topSongs: List<ZeneMusicData>) {
         is ResponseResult.Success -> {
             if (v.data.topSongs?.isNotEmpty() == true) {
                 TextViewBold(stringResource(R.string.top_played_songs_this_month), 20)
-
                 Spacer(Modifier.height(12.dp))
+
                 LazyRow(Modifier.fillMaxWidth()) {
                     items(topSongs) {
                         ItemCardView(it)
@@ -41,8 +41,6 @@ fun ConnectTopListenedView(topSongs: List<ZeneMusicData>) {
     }
 
     LaunchedEffect(Unit) {
-        homeViewModel.homeRecentData {
-
-        }
+        homeViewModel.homeRecentData {}
     }
 }

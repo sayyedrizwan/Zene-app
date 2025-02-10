@@ -41,6 +41,9 @@ object URLSUtils {
     const val ZENE_CONNECT_ADD_A_COMMENT_API = "connect/add-a-comment"
     const val ZENE_CONNECT_GET_COMMENT_API = "connect/get-comment"
 
+
+    const val ZENE_AI_MUSIC_LIST_API = "ai/list"
+
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_CONNECT_STATUS_API = "users/update-connect-status"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"
