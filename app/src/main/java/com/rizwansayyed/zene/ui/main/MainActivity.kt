@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
+import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.utils.IntentCheckUtils
@@ -67,9 +68,9 @@ class MainActivity : ComponentActivity() {
                     if ((userInfo?.email ?: "").contains("@")) {
                         when (navigationViewModel.homeNavSection) {
                             HOME -> HomeView(navigationViewModel, userInfo)
-                            CONNECT -> HomeConnectView()
+                            CONNECT -> HomeConnectView(navigationViewModel)
                             ENT -> EntertainmentNewsView()
-                            SETTINGS -> {}
+                            SETTINGS -> SettingsView()
                             NOTIFICATION -> NotificationViewScreenView(navigationViewModel)
                         }
 

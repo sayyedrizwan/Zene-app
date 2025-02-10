@@ -85,12 +85,14 @@
     <string name="friends">Friends</string>
     <string name="friend_requests">Friend Requests</string>
     <string name="vibes_status">Vibe Status</string>
+    <string name="info">Info</string>
     <string name="upload_a_vibes">Upload a Vibes</string>
     <string name="vibes_will_be_shared_and_expire_after_24">Vibes will be shared with your friends and expire after 24 hours</string>
     <string name="vibes_expire_after_24">Vibes expire after 24 hours</string>
     <string name="chats">Chats</string>
     <string name="send_location">Send Location</string>
     <string name="open_location">Open Location</string>
+    <string name="update_profile_photo">Update Profile Photo</string>
     <string name="my_vibe_then">My vibe then: </string>
     <string name="accept">Accept</string>
     <string name="sent">Sent</string>
@@ -150,6 +152,11 @@
     <string name="share_your_music">Share Your Music</string>
     <string name="share_your_music_desc">Let your friends know what you’re vibing to! Share your currently playing song or top tracks with them.</string>
     <string name="once_you_shared_a_vibe_cannot_delete">Once you shared a vibe you cannot delete it, It will auto expire after 24 hours. Do you sure want to continue?</string>
+    <string name="personal_info">Personal Info</string>
+    <string name="email_address">Email Address</string>
+    <string name="username">Username</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="your_name">Your Name</string>
 
 
     <!--    notification channels-->

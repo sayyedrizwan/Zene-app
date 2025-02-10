@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -34,8 +33,8 @@ import com.rizwansayyed.zene.ui.main.connect.connectview.ConnectStatusView
 import com.rizwansayyed.zene.ui.main.connect.view.LocationPermissionView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.MainUtils.isLocationPermissionGranted
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -48,7 +47,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeConnectView() {
+fun HomeConnectView(navigationViewModel: NavigationViewModel) {
     val coroutines = rememberCoroutineScope()
     val connectViewModel: ConnectViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
@@ -64,7 +63,7 @@ fun HomeConnectView() {
     var cameraPositionState by remember { mutableStateOf<CameraPositionState?>(null) }
 
     BottomSheetScaffold(
-        { ConnectStatusView(connectViewModel) },
+        { ConnectStatusView(connectViewModel, navigationViewModel) },
         Modifier.fillMaxSize(),
         sheetPeekHeight = 280.dp,
         sheetContentColor = MainColor,

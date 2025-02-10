@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -42,6 +43,8 @@ import com.rizwansayyed.zene.data.model.ConnectedUserStatus.ME
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.NONE
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.REQUESTED
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
+import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AlertDialogWithImage
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
@@ -62,6 +65,7 @@ import java.util.Locale
 fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
     var showSendMessage by remember { mutableStateOf(false) }
     var sendLocation by remember { mutableStateOf(false) }
+    var showPosts by remember { mutableStateOf(true) }
 
     val locationPermission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -116,30 +120,58 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 }
             }
         }
+
         item {
-            if (data.songDetails?.id != null && data.songDetails.name != null) {
-                SongListeningTo(data.songDetails)
-                Spacer(Modifier.height(50.dp))
+            Row(Modifier.fillMaxWidth()) {
+                TextSimpleCards(showPosts, stringResource(R.string.vibes_status)) {
+                    showPosts = true
+                }
+
+                TextSimpleCards(!showPosts, stringResource(R.string.info)) {
+                    showPosts = false
+                }
             }
         }
-        item {
-            if (data.user?.isUserLocation() == true) {
-                ConnectUserMapView(data.user)
-                Spacer(Modifier.height(50.dp))
+
+        item { Spacer(Modifier.height(20.dp)) }
+
+        if (showPosts) {
+            if (data.vibes?.isEmpty() == true) item {
+                TextViewBold(stringResource(R.string.no_posts), 19, center = true)
+            }
+
+            items(data.vibes ?: emptyList()) {
+                ConnectVibeItemView(it)
+            }
+        } else {
+            item {
+                if (data.songDetails?.id != null && data.songDetails.name != null) {
+                    SongListeningTo(data.songDetails)
+                    Spacer(Modifier.height(50.dp))
+                }
+            }
+            item {
+                if (data.user?.isUserLocation() == true) {
+                    ConnectUserMapView(data.user)
+                    Spacer(Modifier.height(50.dp))
+                }
+            }
+            item {
+                if (data.topSongs?.isNotEmpty() == true) {
+                    ConnectTopListenedView(data.topSongs)
+                }
             }
         }
-        item {
-            if (data.topSongs?.isNotEmpty() == true) {
-                ConnectTopListenedView(data.topSongs)
-                Spacer(Modifier.height(60.dp))
-            }
-        }
+
+        item { Spacer(Modifier.height(60.dp)) }
+
         item {
             if (data.isConnected() == FRIENDS) {
                 ConnectSettingsView(data, viewModel)
                 Spacer(Modifier.height(150.dp))
             }
         }
+
     }
 
     if (showSendMessage) ModalBottomSheet(

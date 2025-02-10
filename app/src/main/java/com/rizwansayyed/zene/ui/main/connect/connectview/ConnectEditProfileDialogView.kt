@@ -64,6 +64,7 @@ import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.getAllEmojis
 import com.rizwansayyed.zene.utils.MainUtils.removeSpecialChars
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 
 
@@ -163,6 +164,7 @@ fun UserStatusUpdateView(close: () -> Unit) {
     }
 
     LaunchedEffect(statusText) {
+        delay(500)
         val user = userInfo.firstOrNull()
         if (user?.status != statusText) {
             viewModel.updateConnectInfo(statusText)

@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 
-
 data class ConnectUserInfoResponse(
     val songDetails: ZeneMusicData?,
     var didRequestToYou: Boolean?,
@@ -13,6 +12,7 @@ data class ConnectUserInfoResponse(
     val topSongs: List<ZeneMusicData>?,
     val user: ConnectUserResponse?,
     val message: UserMessage?,
+    val vibes: List<ConnectFeedDataResponse?>?,
 ) {
     data class Status(
         var isConnected: Boolean?,

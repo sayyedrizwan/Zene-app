@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -52,7 +53,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun ConnectStatusView(connectViewModel: ConnectViewModel) {
+fun ConnectStatusView(connectViewModel: ConnectViewModel, navigationViewModel: NavigationViewModel) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val userInfo by DataStorageManager.userInfo.collectAsState(null)
 
@@ -98,7 +99,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
 
             if ((userInfo?.phoneNumber?.length ?: 0) > 4) {
                 item {
-                    ConnectRecentContactsView()
+                    ConnectRecentContactsView(navigationViewModel)
                 }
 
                 when (val v = connectViewModel.connectUserList) {
