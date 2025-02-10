@@ -5,5 +5,5 @@ enum class HomeSectionSelector {
 }
 
 enum class HomeNavSelector {
-    HOME, CONNECT, ENT, SETTINGS, NOTIFICATION
+    HOME, CONNECT, SEARCH, AI, ENT, SETTINGS, NOTIFICATION
 }

@@ -60,6 +60,8 @@
     <string name="search_s_p_a_etc">Search song, playlist, album, etc..</string>
     <string name="emoji_status">Emoji Status</string>
     <string name="search_gif">Search GIF</string>
+    <string name="search">search</string>
+    <string name="ai">ai</string>
     <string name="search_places">Search places</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>

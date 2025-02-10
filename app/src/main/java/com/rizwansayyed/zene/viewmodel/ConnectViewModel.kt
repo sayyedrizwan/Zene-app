@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compr
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreview
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
@@ -41,7 +42,6 @@ import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
-
     var connectSearch by mutableStateOf<ResponseResult<List<ConnectUserResponse>>>(ResponseResult.Empty)
     var connectUserInfo by mutableStateOf<ResponseResult<ConnectUserInfoResponse>>(ResponseResult.Empty)
     var connectUserList by mutableStateOf<ResponseResult<List<ConnectUserInfoResponse>>>(
@@ -54,6 +54,10 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
     var isLoadingVibeFeed by mutableStateOf(false)
     var connectUserVibesFeeds = mutableStateListOf<ConnectFeedDataResponse>()
+
+    fun clear() = viewModelScope.launch(Dispatchers.IO) {
+        connectUserVibesFeeds.clear()
+    }
 
     fun searchConnectUsers(q: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.searchConnect(q).onStart {

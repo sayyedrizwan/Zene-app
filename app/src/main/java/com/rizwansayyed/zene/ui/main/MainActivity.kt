@@ -24,11 +24,8 @@ import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.HOME
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SETTINGS
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.*
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
@@ -72,6 +69,8 @@ class MainActivity : ComponentActivity() {
                             ENT -> EntertainmentNewsView()
                             SETTINGS -> SettingsView()
                             NOTIFICATION -> NotificationViewScreenView(navigationViewModel)
+                            SEARCH -> {}
+                            AI -> {}
                         }
 
                         HomeBottomNavigationView(

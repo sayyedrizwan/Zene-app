@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -136,6 +137,10 @@ fun HomeConnectView(navigationViewModel: NavigationViewModel) {
                 job?.cancel()
             }
         }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { connectViewModel.clear() }
     }
 
     if (locationPermission) {
