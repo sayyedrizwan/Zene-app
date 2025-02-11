@@ -22,6 +22,7 @@ object URLSUtils {
 
     const val ZENE_SEARCH_ALL_API = "search/all"
     const val ZENE_SEARCH_PLACES_API = "search/places"
+    const val ZENE_SEARCH_TRENDING_API = "search/trending"
     const val ZENE_SEARCH_TRENDING_GIF_API = "search/trending-gif"
     const val ZENE_SEARCH_GIF_API = "search/search-gif"
 

@@ -42,9 +42,8 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
             }
 
             is ResponseResult.Success -> {
-                item { Spacer(Modifier.height(25.dp)) }
+                item { Spacer(Modifier.height(30.dp)) }
                 if (v.data.trending?.isNotEmpty() == true) item {
-                    Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.trending_ai_musics), 23)
                     }

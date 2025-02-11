@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
+import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
@@ -41,6 +42,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_ALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
@@ -70,6 +72,12 @@ interface ZeneAPIService {
     suspend fun trendingAIMusic(
         @Header("token") token: String, @Body data: RequestBody
     ): AIDataResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SEARCH_TRENDING_API)
+    suspend fun trendingData(
+        @Header("token") token: String, @Body data: RequestBody
+    ): SearchTrendingResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_RECENT_HOME_PODCAST_API)
@@ -130,12 +138,6 @@ interface ZeneAPIService {
     suspend fun verifyPhoneNumber(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
-
-    @Headers("Content-Type: application/json")
-    @POST(ZENE_CONNECT_NEAR_MUSIC_API)
-    suspend fun connectNearMusic(
-        @Header("token") token: String, @Body data: RequestBody
-    ): ZeneMusicDataList
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API)

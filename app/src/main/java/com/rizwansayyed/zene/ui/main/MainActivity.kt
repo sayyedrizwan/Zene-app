@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.*
 import com.rizwansayyed.zene.ui.main.home.HomeView
+import com.rizwansayyed.zene.ui.main.search.SearchView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
@@ -42,7 +43,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             ENT -> EntertainmentNewsView()
                             SETTINGS -> SettingsView(navigationViewModel)
                             NOTIFICATION -> NotificationViewScreenView(navigationViewModel)
-                            SEARCH -> {}
+                            SEARCH -> SearchView(homeViewModel)
                         }
 
                         HomeBottomNavigationView(

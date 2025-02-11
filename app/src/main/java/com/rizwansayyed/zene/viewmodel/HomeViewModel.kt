@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
+import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
@@ -34,6 +35,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -54,6 +56,7 @@ class HomeViewModel @Inject constructor(
 
     private val cacheHelper = CacheHelper()
     var homeRecent by mutableStateOf<ResponseResult<MusicDataResponse>>(ResponseResult.Empty)
+    var searchTrending by mutableStateOf<ResponseResult<SearchTrendingResponse>>(ResponseResult.Empty)
     var aiMusicList by mutableStateOf<ResponseResult<AIDataResponse>>(ResponseResult.Empty)
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
     var homeVideos by mutableStateOf<ResponseResult<VideoDataResponse>>(ResponseResult.Empty)
@@ -65,7 +68,6 @@ class HomeViewModel @Inject constructor(
         ResponseResult.Empty
     )
 
-    var nearMusic by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var searchData by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
     var searchPlaces by mutableStateOf<ResponseResult<List<SearchPlacesDataResponse>>>(
         ResponseResult.Empty
@@ -90,6 +92,23 @@ class HomeViewModel @Inject constructor(
 
             cacheHelper.save(ZENE_RECENT_HOME_MUSIC_API, it)
             homeRecent = ResponseResult.Success(it)
+        }
+    }
+
+    fun searchTrendingData() = viewModelScope.launch(Dispatchers.IO) {
+        val data: SearchTrendingResponse? = cacheHelper.get(ZENE_SEARCH_TRENDING_API)
+        if ((data?.songs?.size ?: 0) > 0) {
+            searchTrending = ResponseResult.Success(data!!)
+            return@launch
+        }
+
+        zeneAPI.trendingData().onStart {
+            searchTrending = ResponseResult.Loading
+        }.catch {
+            searchTrending = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_SEARCH_TRENDING_API, it)
+            searchTrending = ResponseResult.Success(it)
         }
     }
 
@@ -227,25 +246,6 @@ class HomeViewModel @Inject constructor(
             searchPlaces = ResponseResult.Success(it)
         }
     }
-
-
-    fun connectNearMusic() = viewModelScope.launch(Dispatchers.IO) {
-        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_CONNECT_NEAR_MUSIC_API)
-        if ((data?.size ?: 0) > 0) {
-            nearMusic = ResponseResult.Success(data!!)
-            return@launch
-        }
-
-        zeneAPI.connectNearMusic().onStart {
-            nearMusic = ResponseResult.Loading
-        }.catch {
-            nearMusic = ResponseResult.Error(it)
-        }.collectLatest {
-            cacheHelper.save(ZENE_CONNECT_NEAR_MUSIC_API, it)
-            nearMusic = ResponseResult.Success(it)
-        }
-    }
-
 
     fun userInfo() = viewModelScope.launch(Dispatchers.IO) {
         val data = DataStorageManager.userInfo.firstOrNull()

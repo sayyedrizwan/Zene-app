@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
+import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
@@ -27,7 +28,6 @@ interface ZeneAPIInterface {
     suspend fun entertainmentNews(): Flow<EntertainmentDataResponse>
     suspend fun entertainmentMovies(): Flow<MoviesDataResponse>
     suspend fun homeVideos(): Flow<VideoDataResponse>
-    suspend fun connectNearMusic(): Flow<ZeneMusicDataList>
     suspend fun updateTrueCallerNumber(codeVerifier: String, code: String): Flow<StatusTypeResponse>
     suspend fun sendVerifyPhoneNumber(number: String): Flow<StatusTypeResponse>
     suspend fun verifyPhoneNumber(code: String): Flow<StatusTypeResponse>
@@ -67,4 +67,5 @@ interface ZeneAPIInterface {
     suspend fun getCommentOfVibes(id: Int?, page: Int): Flow<List<VibesCommentsResponse>>
     suspend fun updateConnectStatus(status: String): Flow<StatusTypeResponse>
     suspend fun trendingAIMusic(): Flow<AIDataResponse>
+    suspend fun trendingData(): Flow<SearchTrendingResponse>
 }

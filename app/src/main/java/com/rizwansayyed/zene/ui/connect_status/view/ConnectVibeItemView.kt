@@ -52,16 +52,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
-import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
-import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES
-import com.rizwansayyed.zene.data.model.MusicDataTypes.NEWS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.NONE
-import com.rizwansayyed.zene.data.model.MusicDataTypes.PLAYLISTS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.PODCAST
-import com.rizwansayyed.zene.data.model.MusicDataTypes.PODCAST_CATEGORIES
-import com.rizwansayyed.zene.data.model.MusicDataTypes.SONGS
+import com.rizwansayyed.zene.data.model.MusicDataTypes
+import com.rizwansayyed.zene.data.model.MusicDataTypes.*
 import com.rizwansayyed.zene.ui.main.connect.connectview.openConnectUserProfile
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -154,6 +146,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                             NEWS -> ImageIcon(R.drawable.ic_news, 18)
                             MOVIES -> ImageIcon(R.drawable.ic_camera_video, 18)
                             null -> {}
+                            TEXT -> {}
                         }
                         Spacer(Modifier.width(4.dp))
                         TextViewNormal("${item.jazz_name} - ${item.jazz_artists}", 14, line = 1)

@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.connectview
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,8 +38,6 @@ import com.rizwansayyed.zene.ui.main.connect.view.PhoneNumberVerificationView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.HorizontalCircleShimmerLoadingCard
-import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
-import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -53,7 +50,10 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun ConnectStatusView(connectViewModel: ConnectViewModel, navigationViewModel: NavigationViewModel) {
+fun ConnectStatusView(
+    connectViewModel: ConnectViewModel,
+    navigationViewModel: NavigationViewModel
+) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val userInfo by DataStorageManager.userInfo.collectAsState(null)
 
@@ -75,24 +75,6 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel, navigationViewModel: N
                 .fillMaxSize()
                 .background(MainColor), state
         ) {
-            item {
-                Box(Modifier.padding(horizontal = 9.dp)) {
-                    TextViewBold(stringResource(R.string.songs_trending_near_you), 18)
-                }
-                Spacer(Modifier.height(12.dp))
-
-                when (val v = homeViewModel.nearMusic) {
-                    ResponseResult.Empty -> {}
-                    is ResponseResult.Error -> {}
-                    ResponseResult.Loading -> HorizontalShimmerLoadingCard()
-                    is ResponseResult.Success -> LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data) {
-                            ItemCardView(it)
-                        }
-                    }
-                }
-            }
-
             item {
                 if ((userInfo?.phoneNumber?.length ?: 0) < 4) PhoneNumberVerificationView()
             }
@@ -205,7 +187,6 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel, navigationViewModel: N
     }
 
     LifecycleResumeEffect(Unit) {
-        homeViewModel.connectNearMusic()
         connectViewModel.connectFriendsRequestsList()
         onPauseOrDispose { }
     }

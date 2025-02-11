@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.data.model
 
 enum class MusicDataTypes {
-    NONE, SONGS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC
+    NONE, SONGS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC, TEXT
 }
 
 data class AIDataResponse(
@@ -9,6 +9,13 @@ data class AIDataResponse(
     val trending: List<ZeneMusicData?>?,
     val new: List<ZeneMusicData?>?,
     val list: List<ZeneMusicData?>?
+)
+
+data class SearchTrendingResponse(
+    val artists: List<ZeneMusicData?>?,
+    val songs: List<ZeneMusicData?>?,
+    val globalSongs: List<ZeneMusicData?>?,
+    val keywords: List<ZeneMusicData?>?
 )
 
 data class MusicDataResponse(
@@ -52,6 +59,7 @@ data class ZeneMusicData(
             "NEWS" -> MusicDataTypes.NEWS
             "MOVIES" -> MusicDataTypes.MOVIES
             "AI_MUSIC" -> MusicDataTypes.AI_MUSIC
+            "TEXT" -> MusicDataTypes.TEXT
             else -> MusicDataTypes.NONE
         }
     }

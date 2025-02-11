@@ -24,6 +24,9 @@
     <string name="trending_ai_musics">Trending AI Music</string>
     <string name="new_ai_musics">New AI Music</string>
     <string name="your_mixes">Your mixes</string>
+    <string name="trending_artists">Trending Artists</string>
+    <string name="global_trending_songs">Global Trending Songs</string>
+    <string name="trending_songs">Trending Songs in %s</string>
     <string name="entertainment_">Entertainment</string>
     <string name="recommended_playlists">Recommended playlists</string>
     <string name="recommended_videos">Recommended videos</string>
@@ -62,7 +65,8 @@
     <string name="search_s_p_a_etc">Search song, playlist, album, etc..</string>
     <string name="emoji_status">Emoji Status</string>
     <string name="search_gif">Search GIF</string>
-    <string name="search">search</string>
+    <string name="search_">search</string>
+    <string name="search">Search</string>
     <string name="ai_music">AI Music</string>
     <string name="search_places">Search places</string>
     <string name="enter_your_username">Enter your username</string>

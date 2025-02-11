@@ -197,13 +197,13 @@ fun ItemArtistsCardView(data: ZeneMusicData?) {
     Column(
         Modifier
             .clickable { runMusicDataInfos(data) }
-            .padding(horizontal = 9.dp)
-            .width(175.dp)
+            .padding(horizontal = 5.dp)
+            .width(155.dp)
     ) {
-        Box(Modifier.fillMaxWidth()) {
+        Box(Modifier.fillMaxWidth(), Alignment.Center) {
             Spacer(
                 Modifier
-                    .size(170.dp)
+                    .size(150.dp)
                     .clip(RoundedCornerShape(100.dp))
                     .background(Color.DarkGray)
             )
@@ -212,7 +212,7 @@ fun ItemArtistsCardView(data: ZeneMusicData?) {
                 data?.thumbnail,
                 data?.name,
                 Modifier
-                    .size(175.dp)
+                    .size(150.dp)
                     .clip(RoundedCornerShape(100.dp)),
                 contentScale = ContentScale.Crop
             )

@@ -82,7 +82,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         }
 
         TextSimpleCards(
-            viewModel.homeSection == HomeSectionSelector.VIDEO, stringResource(R.string.ai_music)
+            viewModel.homeSection == HomeSectionSelector.AI_MUSIC, stringResource(R.string.ai_music)
         ) {
             viewModel.setHomeSections(HomeSectionSelector.AI_MUSIC)
         }
