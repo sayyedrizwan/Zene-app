@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.ui.main.ai.AIView
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MUSIC
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MY_LIBRARY
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.PODCAST
@@ -53,6 +54,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 RADIO -> HomeRadioView(homeViewModel)
                 PODCAST -> HomePodcastView(homeViewModel)
                 HomeSectionSelector.VIDEO -> HomeVideoView(homeViewModel)
+                HomeSectionSelector.AI_MUSIC -> AIView(homeViewModel)
                 MY_LIBRARY -> {}
             }
         }

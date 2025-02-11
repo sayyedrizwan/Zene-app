@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.connect.view
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,7 @@ import com.rizwansayyed.zene.viewmodel.PhoneNumberViewModel
 
 @Composable
 fun VerifyPhoneNumberOTPView(viewModel: PhoneNumberViewModel) {
-    val context = LocalContext.current as Activity
+    val context = LocalActivity.current
     val focusManager = LocalFocusManager.current
     val verificationSendOn by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var textOTP by remember { mutableStateOf("") }
@@ -114,7 +115,7 @@ fun VerifyPhoneNumberOTPView(viewModel: PhoneNumberViewModel) {
                 is ResponseResult.Success -> {
                     LaunchedEffect(Unit) {
                         if (v.data.status == true) {
-                            context.finish()
+                            context?.finish()
                         } else {
                             if (v.data.message?.contains("too many attempts") == true) {
                                 tooManyAttempt.toast()

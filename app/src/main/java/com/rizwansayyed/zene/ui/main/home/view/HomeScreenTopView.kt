@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,8 +26,10 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
@@ -41,13 +45,23 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         Alignment.CenterVertically
     ) {
         Spacer(Modifier.width(10.dp))
-        GlideImage(
-            userInfo?.photo, userInfo?.name,
-            Modifier
-                .clip(RoundedCornerShape(100))
-                .size(40.dp),
-            contentScale = ContentScale.Crop
-        )
+        Box(Modifier.clickable { viewModel.setHomeNavSections(HomeNavSelector.SETTINGS) }) {
+            GlideImage(
+                userInfo?.photo,
+                userInfo?.name,
+                Modifier
+                    .clip(RoundedCornerShape(100))
+                    .size(40.dp),
+                contentScale = ContentScale.Crop
+            )
+            Box(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(y = 4.dp)
+            ) {
+                ImageIcon(R.drawable.ic_setting, 17)
+            }
+        }
         Spacer(Modifier.width(3.dp))
         TextSimpleCards(
             viewModel.homeSection == HomeSectionSelector.MUSIC, stringResource(R.string.music)
@@ -65,6 +79,12 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             viewModel.homeSection == HomeSectionSelector.VIDEO, stringResource(R.string.videos)
         ) {
             viewModel.setHomeSections(HomeSectionSelector.VIDEO)
+        }
+
+        TextSimpleCards(
+            viewModel.homeSection == HomeSectionSelector.VIDEO, stringResource(R.string.ai_music)
+        ) {
+            viewModel.setHomeSections(HomeSectionSelector.AI_MUSIC)
         }
 
         TextSimpleCards(
@@ -86,13 +106,12 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
 
 @Composable
 fun TextSimpleCards(isActive: Boolean, txt: String, click: () -> Unit) {
-    Row(
-        Modifier
-            .padding(horizontal = 8.dp)
-            .clickable { click() }
-            .clip(RoundedCornerShape(13.dp))
-            .background(if (isActive) MainColor else Color.Black)
-            .padding(horizontal = 14.dp, vertical = 3.dp)) {
+    Row(Modifier
+        .padding(horizontal = 8.dp)
+        .clickable { click() }
+        .clip(RoundedCornerShape(13.dp))
+        .background(if (isActive) MainColor else Color.Black)
+        .padding(horizontal = 14.dp, vertical = 3.dp)) {
         TextViewSemiBold(txt, 13)
     }
 }

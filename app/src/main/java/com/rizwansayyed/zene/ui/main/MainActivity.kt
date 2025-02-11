@@ -10,6 +10,7 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,7 +23,6 @@ import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
-import com.rizwansayyed.zene.ui.main.ai.AIView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.*
@@ -42,6 +42,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -67,10 +68,9 @@ class MainActivity : ComponentActivity() {
                             HOME -> HomeView(navigationViewModel, userInfo)
                             CONNECT -> HomeConnectView(navigationViewModel)
                             ENT -> EntertainmentNewsView()
-                            SETTINGS -> SettingsView()
+                            SETTINGS -> SettingsView(navigationViewModel)
                             NOTIFICATION -> NotificationViewScreenView(navigationViewModel)
                             SEARCH -> {}
-                            AI -> AIView(homeViewModel)
                         }
 
                         HomeBottomNavigationView(

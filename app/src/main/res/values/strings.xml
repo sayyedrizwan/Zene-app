@@ -63,7 +63,7 @@
     <string name="emoji_status">Emoji Status</string>
     <string name="search_gif">Search GIF</string>
     <string name="search">search</string>
-    <string name="ai">ai</string>
+    <string name="ai_music">AI Music</string>
     <string name="search_places">Search places</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>
@@ -80,7 +80,7 @@
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
     <string name="entertainment">entertainment</string>
-    <string name="entertainment_short">ent.</string>
+    <string name="ent_">ent.</string>
     <string name="grant">Grant</string>
     <string name="play">Play</string>
     <string name="playlists">Playlists</string>

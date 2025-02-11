@@ -26,7 +26,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 @Composable
 fun SettingsProfilePhotoView(userInfo: UserInfoResponse?) {
     Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
-        Spacer(Modifier.height(95.dp))
+        Spacer(Modifier.height(25.dp))
         GlideImage(
             userInfo?.photo,
             userInfo?.name,
