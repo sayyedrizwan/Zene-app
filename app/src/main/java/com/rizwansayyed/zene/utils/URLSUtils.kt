@@ -23,10 +23,10 @@ object URLSUtils {
     const val ZENE_SEARCH_ALL_API = "search/all"
     const val ZENE_SEARCH_PLACES_API = "search/places"
     const val ZENE_SEARCH_TRENDING_API = "search/trending"
+    const val ZENE_SEARCH_KEYWORDS_API = "search/keywords"
     const val ZENE_SEARCH_TRENDING_GIF_API = "search/trending-gif"
     const val ZENE_SEARCH_GIF_API = "search/search-gif"
 
-    const val ZENE_CONNECT_NEAR_MUSIC_API = "connect/near-music"
     const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API = "connect/users-search-via-phonenumber"
     const val ZENE_CONNECT_SEARCH_API = "connect/search"
     const val ZENE_CONNECT_USER_INFO_API = "connect/user-info"

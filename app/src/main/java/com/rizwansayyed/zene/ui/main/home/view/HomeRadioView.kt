@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -116,4 +117,6 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
             Spacer(Modifier.height(200.dp))
         }
     }
+
+    LaunchedEffect(Unit) { homeViewModel.homeRadioData() }
 }

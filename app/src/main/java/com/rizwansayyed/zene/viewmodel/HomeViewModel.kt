@@ -22,13 +22,12 @@ import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
-import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
@@ -61,6 +60,7 @@ class HomeViewModel @Inject constructor(
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
     var homeVideos by mutableStateOf<ResponseResult<VideoDataResponse>>(ResponseResult.Empty)
     var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
+    var searchKeywords by mutableStateOf<ResponseResult<List<String>>>(ResponseResult.Empty)
     var entertainmentData by mutableStateOf<ResponseResult<EntertainmentDataResponse>>(
         ResponseResult.Empty
     )
@@ -92,6 +92,20 @@ class HomeViewModel @Inject constructor(
 
             cacheHelper.save(ZENE_RECENT_HOME_MUSIC_API, it)
             homeRecent = ResponseResult.Success(it)
+        }
+    }
+
+    fun clearSearchKeywordsSuggestions() {
+        searchKeywords = ResponseResult.Empty
+    }
+
+    fun searchKeywordsData(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.searchKeywords(q).onStart {
+            searchKeywords = ResponseResult.Loading
+        }.catch {
+            searchKeywords = ResponseResult.Error(it)
+        }.collectLatest {
+            searchKeywords = ResponseResult.Success(it)
         }
     }
 

@@ -80,6 +80,21 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.trendingData(token, body))
     }
 
+    override suspend fun searchKeywords(q: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", country)
+            put("q", q)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.searchKeywords(token, body))
+    }
+
     override suspend fun trendingAIMusic() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

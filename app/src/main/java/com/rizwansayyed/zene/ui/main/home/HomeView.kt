@@ -68,6 +68,5 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
             }
         }
         homeViewModel.homePodcastData()
-        homeViewModel.homeRadioData()
     }
 }

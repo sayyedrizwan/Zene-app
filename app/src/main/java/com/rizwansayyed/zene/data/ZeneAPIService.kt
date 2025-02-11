@@ -16,7 +16,6 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
-import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
@@ -24,7 +23,6 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_VIBES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_GET_COMMENT_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_NEAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_LOCATION_API
@@ -41,6 +39,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_ALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_GIF_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_KEYWORDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
@@ -78,6 +77,12 @@ interface ZeneAPIService {
     suspend fun trendingData(
         @Header("token") token: String, @Body data: RequestBody
     ): SearchTrendingResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SEARCH_KEYWORDS_API)
+    suspend fun searchKeywords(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<String>
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_RECENT_HOME_PODCAST_API)

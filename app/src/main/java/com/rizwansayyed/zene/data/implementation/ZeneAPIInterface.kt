@@ -68,4 +68,5 @@ interface ZeneAPIInterface {
     suspend fun updateConnectStatus(status: String): Flow<StatusTypeResponse>
     suspend fun trendingAIMusic(): Flow<AIDataResponse>
     suspend fun trendingData(): Flow<SearchTrendingResponse>
+    suspend fun searchKeywords(q: String): Flow<List<String>>
 }
