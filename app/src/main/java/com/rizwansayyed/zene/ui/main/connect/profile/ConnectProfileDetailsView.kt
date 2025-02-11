@@ -264,7 +264,7 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                 if (data.user.isUserLocation()) TextViewNormal(areaName, 14)
                 else TextViewNormal(data.user.country ?: "", 14)
 
-                if (data.user.connect_status != null) {
+                if (data.user.connect_status?.trim()?.isNotEmpty() == true) {
                     Spacer(Modifier.height(5.dp))
                     TextViewBold("\uD83E\uDD14 \uD83D\uDC49  '${data.user.connect_status}'", 20)
                     Spacer(Modifier.height(10.dp))

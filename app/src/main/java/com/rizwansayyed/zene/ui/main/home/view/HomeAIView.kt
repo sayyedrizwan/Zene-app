@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.main.ai
+package com.rizwansayyed.zene.ui.main.home.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun AIView(homeViewModel: HomeViewModel) {
+fun HomeAIView(homeViewModel: HomeViewModel) {
     val context = LocalContext.current.applicationContext
 
     LazyColumn(Modifier.fillMaxSize()) {
