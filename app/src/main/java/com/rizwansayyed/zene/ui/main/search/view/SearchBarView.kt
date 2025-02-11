@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.search.view
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -78,13 +79,15 @@ fun SearchBarView(
             singleLine = true
         )
 
-        if (showSearch.length > 3) Box(Modifier
-            .padding(start = 5.dp)
-            .clickable {
-                search.value = ""
-                onSearch("")
-            }) {
-            ImageIcon(R.drawable.ic_link_backward, 24)
+        AnimatedVisibility(showSearch.length > 3) {
+            Box(Modifier
+                .padding(start = 5.dp)
+                .clickable {
+                    search.value = ""
+                    onSearch("")
+                }) {
+                ImageIcon(R.drawable.ic_link_backward, 24)
+            }
         }
     }
 }

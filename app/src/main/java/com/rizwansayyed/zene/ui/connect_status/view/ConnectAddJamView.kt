@@ -137,6 +137,21 @@ fun AddJamDialog(clicked: (ZeneMusicData?) -> Unit) {
                     }
                 }
 
+                if (v.data.aiSongs?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.ai_music), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(v.data.aiSongs) {
+                            ItemCardViewConnect(it) {
+                                clicked(it)
+                            }
+                        }
+                    }
+                }
+
                 if (v.data.videos?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {

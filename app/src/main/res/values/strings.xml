@@ -21,8 +21,8 @@
     <string name="remove_as_friend_desc">Are you sure want to remove them as a friend?</string>
     <string name="cancel_request">Cancel request?</string>
     <string name="top_podcasts_you_listened_to_this_month">Top Podcasts Listened This Month</string>
-    <string name="trending_ai_musics">Trending AI Music</string>
-    <string name="new_ai_musics">New AI Music</string>
+    <string name="trending_ai_musics">Trending AI Songs</string>
+    <string name="new_ai_musics">New AI Songs</string>
     <string name="your_mixes">Your mixes</string>
     <string name="trending_artists">Trending Artists</string>
     <string name="global_trending_songs">Global Trending Songs</string>
@@ -67,7 +67,7 @@
     <string name="search_gif">Search GIF</string>
     <string name="search_">search</string>
     <string name="search">Search</string>
-    <string name="ai_music">AI Music</string>
+    <string name="ai_music">AI Songs</string>
     <string name="search_places">Search places</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>

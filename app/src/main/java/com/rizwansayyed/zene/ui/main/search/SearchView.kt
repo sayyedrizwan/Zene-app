@@ -31,7 +31,9 @@ import com.rizwansayyed.zene.ui.main.search.view.TrendingItemView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
+import com.rizwansayyed.zene.ui.view.MoviesImageCard
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.VideoCardView
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -108,8 +110,115 @@ fun SearchView(homeViewModel: HomeViewModel) {
         }
 
         if (showSearch.trim().length > 3) {
-            item {
+            when (val v = homeViewModel.searchData) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> item { CircularLoadingView() }
+                is ResponseResult.Success -> {
+                    if (v.data.song?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.songs), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.song) {
+                                ItemCardView(it)
+                            }
+                        }
+                    }
 
+                    if (v.data.aiSongs?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.ai_music), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.aiSongs) {
+                                ItemCardView(it)
+                            }
+                        }
+                    }
+
+                    if (v.data.videos?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.videos), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.videos) {
+                                VideoCardView(it)
+                            }
+                        }
+                    }
+
+                    if (v.data.news?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.news), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.news) {
+                                VideoCardView(it)
+                            }
+                        }
+                    }
+
+                    if (v.data.podcast?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.podcasts), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.podcast) {
+                                ItemCardView(it)
+                            }
+                        }
+                    }
+
+                    if (v.data.movies?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.movies), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.movies) {
+                                MoviesImageCard(it)
+                            }
+                        }
+                    }
+
+                    if (v.data.playlists?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.playlists), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.playlists) {
+                                ItemCardView(it)
+                            }
+                        }
+                    }
+
+                    if (v.data.albums?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.albums), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.albums) {
+                                ItemCardView(it)
+                            }
+                        }
+                    }
+                }
             }
         } else when (val v = homeViewModel.searchTrending) {
             ResponseResult.Empty -> {}
@@ -180,6 +289,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
     LaunchedEffect(showSearch) {
         focusManager.clearFocus()
         homeViewModel.clearSearchKeywordsSuggestions()
+        homeViewModel.searchZene(showSearch)
     }
     LaunchedEffect(Unit) {
         homeViewModel.searchTrendingData()
