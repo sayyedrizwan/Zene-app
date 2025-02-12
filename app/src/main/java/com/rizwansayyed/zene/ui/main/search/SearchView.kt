@@ -50,7 +50,12 @@ fun SearchView(homeViewModel: HomeViewModel) {
     val focusManager = LocalFocusManager.current
 
     LazyColumn(Modifier.fillMaxWidth()) {
-        item { SearchTopView() }
+        item {
+            SearchTopView {
+                search.value = it
+                showSearch = it
+            }
+        }
 
         stickyHeader {
             SearchBarView(search, showSearch) {

@@ -8,15 +8,15 @@ plugins {
 }
 
 android {
-    namespace = "com.rizwansayyed.zene"
-    compileSdk = 35
+    namespace = libs.versions.packagename.get()
+    compileSdk = libs.versions.compilesdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.rizwansayyed.zene"
-        minSdk = 24
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = libs.versions.packagename.get()
+        minSdk = libs.versions.minsdk.get().toInt()
+        targetSdk = libs.versions.compilesdk.get().toInt()
+        versionCode = libs.versions.appversion.get().toInt()
+        versionName = libs.versions.versionname.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -28,8 +28,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -113,7 +112,6 @@ dependencies {
     implementation(libs.camera.view)
     implementation(libs.camera.core)
 
-
     implementation(libs.image.cropper)
     implementation(libs.exifinterface)
 
@@ -121,4 +119,6 @@ dependencies {
     implementation(libs.media3.exoplayer.dash)
     implementation(libs.media3.ui)
     implementation(libs.androidx.media3.transformer)
+
+    implementation(libs.androidx.webkit)
 }
