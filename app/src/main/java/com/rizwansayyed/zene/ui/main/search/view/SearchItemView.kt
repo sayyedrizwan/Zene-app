@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -83,6 +84,8 @@ fun SearchKeywordsItemView(text: String, click: (Boolean) -> Unit) {
 
 @Composable
 fun SearchTopView(search: (String) -> Unit) {
+    val configuration = LocalConfiguration.current.screenHeightDp.dp
+
     val speakPrompt = stringResource(R.string.speak_what_you_want_to_search)
     val errorRecognizingSpeech = stringResource(R.string.error_recognizing_speech)
     val s = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -126,7 +129,9 @@ fun SearchTopView(search: (String) -> Unit) {
     ) {
         Column(
             Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .height(configuration / 2)
+                .clip(RoundedCornerShape(12.dp))
                 .background(Color.Black)
         ) {
             SearchSongRecognition()
