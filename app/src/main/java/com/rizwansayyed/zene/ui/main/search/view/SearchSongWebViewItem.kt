@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.rizwansayyed.zene.ui.main.search.view
 
 import android.annotation.SuppressLint
@@ -36,18 +34,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.ERROR
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.LISTENING
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.LOADING
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.NONE
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.NO_SONG
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.RippleLoadingAnimation
-import com.rizwansayyed.zene.utils.MainUtils.runMusicDataInfos
+import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.utils.URLSUtils
+import com.rizwansayyed.zene.utils.URLSUtils.SHAZAM_BASE_URL
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,18 +51,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-const val SHAZAM_BASE_URL = "https://www.shazam.com/"
-
-enum class SongRecognitionType {
-    NONE, LOADING, LISTENING, ERROR, NO_SONG
-}
-
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun SearchSongRecognition(close: () -> Unit) {
     val homeViewModel: HomeViewModel = hiltViewModel()
-    var recType by remember { mutableStateOf(NONE) }
+    var recType by remember { mutableStateOf(URLSUtils.SongRecognitionType.NONE) }
     var webView by remember { mutableStateOf<WebView?>(null) }
     var job by remember { mutableStateOf<Job?>(null) }
     var searchedSong by remember { mutableStateOf("") }
@@ -83,11 +72,11 @@ fun SearchSongRecognition(close: () -> Unit) {
 
         override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
             if (consoleMessage?.message() == "button clicked!") {
-                recType = LISTENING
+                recType = URLSUtils.SongRecognitionType.LISTENING
             } else if (consoleMessage?.message() == "button click error!") {
-                recType = ERROR
+                recType = URLSUtils.SongRecognitionType.ERROR
             } else if (consoleMessage?.message() == "cannot detect song!") {
-                recType = NO_SONG
+                recType = URLSUtils.SongRecognitionType.NO_SONG
             }
             return true
         }
@@ -100,7 +89,7 @@ fun SearchSongRecognition(close: () -> Unit) {
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            recType = LOADING
+            recType = URLSUtils.SongRecognitionType.LOADING
             detectWhenNoSongFound(view)
         }
 
@@ -133,13 +122,14 @@ fun SearchSongRecognition(close: () -> Unit) {
                     Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth(),
-                    Arrangement.Center, Alignment.CenterHorizontally
+                    Arrangement.Center,
+                    Alignment.CenterHorizontally
                 ) {
                     ItemCardView(v.data)
                     Spacer(Modifier.height(10.dp))
                     ButtonWithBorder(R.string.play) {
                         close()
-                        runMusicDataInfos(v.data)
+                        startMedia(v.data)
                     }
                 }
             }
@@ -173,17 +163,17 @@ fun SearchSongRecognition(close: () -> Unit) {
 
             Spacer(
                 Modifier
+                    .clickable { }
                     .fillMaxSize()
                     .background(Color.Black)
             )
 
             Box(
                 Modifier
-                    .clickable { }
                     .fillMaxSize()
                     .background(Color.Black), Alignment.Center
             ) {
-                if (recType == LOADING || recType == LISTENING) {
+                if (recType == URLSUtils.SongRecognitionType.LOADING || recType == URLSUtils.SongRecognitionType.LISTENING) {
                     RippleLoadingAnimation(MainColor)
                     ImageIcon(R.drawable.zene_logo, 18)
                 }

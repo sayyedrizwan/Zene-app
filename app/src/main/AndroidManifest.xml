@@ -84,6 +84,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.videoplayer.VideoPlayerActivity" />
         <activity android:name=".ui.main.connect.profile.ConnectUserProfileActivity" />
         <activity android:name=".ui.phoneverification.PhoneVerificationActivity" />
         <activity

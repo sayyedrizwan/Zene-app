@@ -29,7 +29,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapLocation
 import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapNameLocation
-import com.rizwansayyed.zene.utils.MainUtils.runMusicDataInfos
+import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,10 +98,10 @@ fun MusicDataSheet(data: ConnectFeedDataResponse?, close: () -> Unit) {
             TextViewNormal(data?.getMusicData()?.artists ?: "", 14, center = true)
             Spacer(Modifier.height(10.dp))
             if (data?.getMusicData()?.type() == SONGS) ButtonWithBorder(R.string.play) {
-                runMusicDataInfos(data.getMusicData())
+                startMedia(data.getMusicData())
             }
             else ButtonWithBorder(R.string.view) {
-                runMusicDataInfos(data?.getMusicData())
+                startMedia(data?.getMusicData())
             }
 
             Spacer(Modifier.height(50.dp))

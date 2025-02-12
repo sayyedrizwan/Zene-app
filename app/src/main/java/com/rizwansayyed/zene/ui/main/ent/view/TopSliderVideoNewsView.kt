@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.ent.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,6 +49,7 @@ fun TopSliderVideoNewsView(news: List<ZeneMusicData?>?) {
     HorizontalPager(pagerState, Modifier.fillMaxWidth()) { page ->
         Box(
             Modifier
+                .clickable { startMedia(news?.get(page)) }
                 .fillMaxWidth()
                 .padding(horizontal = 3.dp)
         ) {

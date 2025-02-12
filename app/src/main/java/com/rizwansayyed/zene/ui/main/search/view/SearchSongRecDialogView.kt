@@ -17,24 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.ERROR
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.LISTENING
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.LOADING
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.NONE
-import com.rizwansayyed.zene.ui.main.search.view.SongRecognitionType.NO_SONG
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.URLSUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun SearchSongListeningTextView(
-    modifier: Modifier, recType: SongRecognitionType, close: () -> Unit
+    modifier: Modifier, recType: URLSUtils.SongRecognitionType, close: () -> Unit
 ) {
     when (recType) {
-        NONE -> {}
-        LOADING, LISTENING -> Column(
+        URLSUtils.SongRecognitionType.NONE -> {}
+        URLSUtils.SongRecognitionType.LOADING, URLSUtils.SongRecognitionType.LISTENING -> Column(
             modifier
                 .padding(bottom = 30.dp)
                 .fillMaxWidth(),
@@ -43,7 +39,7 @@ fun SearchSongListeningTextView(
             TextViewNormal(stringResource(R.string.listening_), 17, center = true)
         }
 
-        ERROR -> Column(
+        URLSUtils.SongRecognitionType.ERROR -> Column(
             modifier
                 .padding(bottom = 30.dp)
                 .fillMaxWidth(),
@@ -57,7 +53,7 @@ fun SearchSongListeningTextView(
             ButtonWithBorder(R.string.close) { close() }
         }
 
-        NO_SONG -> Column(
+        URLSUtils.SongRecognitionType.NO_SONG -> Column(
             modifier
                 .padding(bottom = 30.dp)
                 .fillMaxWidth(),

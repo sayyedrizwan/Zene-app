@@ -26,16 +26,15 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
-import com.rizwansayyed.zene.utils.MainUtils.runMusicDataInfos
+import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemSmallCardView(data: ZeneMusicData?) {
-    Column(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .padding(horizontal = 9.dp)
-            .width(105.dp)) {
+    Column(Modifier
+        .clickable { startMedia(data) }
+        .padding(horizontal = 9.dp)
+        .width(105.dp)) {
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
@@ -56,16 +55,13 @@ fun ItemSmallCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemYoutubeCardView(data: ZeneMusicData?) {
-    Column(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .padding(horizontal = 4.dp)
-            .width(255.dp)
-    ) {
+    Column(Modifier
+        .clickable { startMedia(data) }
+        .padding(horizontal = 4.dp)
+        .width(255.dp)) {
         Box(Modifier.fillMaxWidth()) {
             GlideImage(
-                data?.thumbnail, data?.name,
-                Modifier
+                data?.thumbnail, data?.name, Modifier
                     .width(250.dp)
                     .clip(RoundedCornerShape(13.dp))
             )
@@ -79,7 +75,7 @@ fun ItemYoutubeCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
-    Box(Modifier.clickable { runMusicDataInfos(data) }) {
+    Box(Modifier.clickable { startMedia(data) }) {
         GlideImage(
             data?.thumbnail,
             data?.name,
@@ -132,14 +128,12 @@ fun MoviesImageCardConnect(data: ZeneMusicData?, click: () -> Unit) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun NewsItemCard(data: ZeneMusicData?) {
-    Row(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .padding(vertical = 20.dp)
-            .fillMaxWidth(),
+    Row(Modifier
+        .clickable { startMedia(data) }
+        .padding(vertical = 20.dp)
+        .fillMaxWidth(),
         Arrangement.Center,
-        Alignment.CenterVertically
-    ) {
+        Alignment.CenterVertically) {
         GlideImage(
             data?.thumbnail,
             data?.name,
@@ -161,12 +155,10 @@ fun NewsItemCard(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemCardView(data: ZeneMusicData?) {
-    Column(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .padding(horizontal = 9.dp)
-            .width(175.dp)
-    ) {
+    Column(Modifier
+        .clickable { startMedia(data) }
+        .padding(horizontal = 9.dp)
+        .width(175.dp)) {
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
@@ -194,12 +186,10 @@ fun ItemCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemArtistsCardView(data: ZeneMusicData?) {
-    Column(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .padding(horizontal = 5.dp)
-            .width(155.dp)
-    ) {
+    Column(Modifier
+        .clickable { startMedia(data) }
+        .padding(horizontal = 5.dp)
+        .width(155.dp)) {
         Box(Modifier.fillMaxWidth(), Alignment.Center) {
             Spacer(
                 Modifier
@@ -225,12 +215,10 @@ fun ItemArtistsCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PodcastViewItems(data: ZeneMusicData?) {
-    Box(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .fillMaxWidth()
-            .padding(3.dp)
-    ) {
+    Box(Modifier
+        .clickable { startMedia(data) }
+        .fillMaxWidth()
+        .padding(3.dp)) {
         GlideImage(data?.thumbnail, data?.name, Modifier.fillMaxWidth())
 
         if ((data?.extra ?: "").length > 3) Row(
@@ -250,13 +238,11 @@ fun PodcastViewItems(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun VideoCardView(data: ZeneMusicData?) {
-    Column(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .padding(horizontal = 9.dp)
-            .padding(bottom = 19.dp)
-            .width(245.dp)
-    ) {
+    Column(Modifier
+        .clickable { startMedia(data) }
+        .padding(horizontal = 9.dp)
+        .padding(bottom = 19.dp)
+        .width(245.dp)) {
         Box(
             Modifier
                 .fillMaxWidth()
@@ -295,11 +281,9 @@ fun VideoCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun FullVideoCardView(data: ZeneMusicData?) {
-    Row(
-        Modifier
-            .clickable { runMusicDataInfos(data) }
-            .padding(horizontal = 5.dp, vertical = 10.dp)
-    ) {
+    Row(Modifier
+        .clickable { startMedia(data) }
+        .padding(horizontal = 5.dp, vertical = 10.dp)) {
         Box(
             Modifier
                 .weight(3f)
@@ -341,12 +325,10 @@ fun FullVideoCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
-    Column(
-        Modifier
-            .clickable { click() }
-            .padding(horizontal = 9.dp)
-            .width(175.dp)
-    ) {
+    Column(Modifier
+        .clickable { click() }
+        .padding(horizontal = 9.dp)
+        .width(175.dp)) {
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
@@ -384,20 +366,17 @@ fun ItemCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
 }
 
 
-
 // connect items
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun VideoCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
-    Column(
-        Modifier
-            .clickable { click() }
-            .padding(horizontal = 9.dp)
-            .padding(bottom = 19.dp)
-            .width(245.dp)
-    ) {
+    Column(Modifier
+        .clickable { click() }
+        .padding(horizontal = 9.dp)
+        .padding(bottom = 19.dp)
+        .width(245.dp)) {
         Box(
             Modifier
                 .fillMaxWidth()

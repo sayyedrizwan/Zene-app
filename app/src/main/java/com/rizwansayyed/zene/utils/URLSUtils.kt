@@ -8,6 +8,13 @@ object URLSUtils {
         return "$ZENE_URL/connect/$username"
     }
 
+    const val SHAZAM_BASE_URL = "https://www.shazam.com/"
+
+    enum class SongRecognitionType {
+        NONE, LOADING, LISTENING, ERROR, NO_SONG
+    }
+
+
 
     const val FB_GRAPH_ID = "https://graph.facebook.com/me"
 

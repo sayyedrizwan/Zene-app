@@ -414,10 +414,6 @@ object MainUtils {
         return NotificationManagerCompat.from(context).areNotificationsEnabled()
     }
 
-    fun runMusicDataInfos(data: ZeneMusicData?) {
-
-    }
-
     fun getAllEmojis(): List<String> {
         val emojiRanges = listOf(
             0x1F600..0x1F64F, // Emoticons

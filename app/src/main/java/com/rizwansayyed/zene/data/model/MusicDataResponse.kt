@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.data.model
 
 enum class MusicDataTypes {
-    NONE, SONGS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC, TEXT
+    NONE, SONGS, VIDEOS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC, TEXT
 }
 
 data class AIDataResponse(
@@ -53,6 +53,7 @@ data class ZeneMusicData(
             "SONGS" -> MusicDataTypes.SONGS
             "PLAYLISTS" -> MusicDataTypes.PLAYLISTS
             "ALBUMS" -> MusicDataTypes.ALBUMS
+            "VIDEOS" -> MusicDataTypes.VIDEOS
             "ARTISTS" -> MusicDataTypes.ARTISTS
             "PODCAST_CATEGORIES" -> MusicDataTypes.PODCAST_CATEGORIES
             "PODCAST" -> MusicDataTypes.PODCAST
