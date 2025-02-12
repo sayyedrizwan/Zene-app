@@ -1,9 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package com.rizwansayyed.zene.ui.main.search.view
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.SystemClock
-import android.util.Log
 import android.view.MotionEvent
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
@@ -14,19 +15,29 @@ import android.webkit.WebSettings
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
-import com.rizwansayyed.zene.utils.MainUtils.toast
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+const val SHAZAM_BASE_URL = "https://www.shazam.com/"
 
 enum class SongRecognitionType {
     NONE, LOADING, LISTENING, ERROR, NO_SONG
@@ -35,8 +46,13 @@ enum class SongRecognitionType {
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun SearchSongRecognition() {
+fun SearchSongRecognition(close: () -> Unit) {
     var recType by remember { mutableStateOf(SongRecognitionType.NONE) }
+    var webView by remember { mutableStateOf<WebView?>(null) }
+    var job by remember { mutableStateOf<Job?>(null) }
+    var searchedSong by remember { mutableStateOf("") }
+
+    val coroutine = rememberCoroutineScope()
 
     val webCClient = object : WebChromeClient() {
         override fun onPermissionRequest(request: PermissionRequest?) {
@@ -48,15 +64,11 @@ fun SearchSongRecognition() {
         override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
             if (consoleMessage?.message() == "button clicked!") {
                 recType = SongRecognitionType.LISTENING
-                "listening".toast()
             } else if (consoleMessage?.message() == "button click error!") {
                 recType = SongRecognitionType.ERROR
-                "error".toast()
             } else if (consoleMessage?.message() == "cannot detect song!") {
-                "no song".toast()
                 recType = SongRecognitionType.NO_SONG
             }
-            Log.d("TAG", "onConsoleMessage: data ${consoleMessage?.message()}")
             return true
         }
     }
@@ -79,48 +91,76 @@ fun SearchSongRecognition() {
                 clickButtonToStart(view)
             }
             detectWhenIsSongFound(view)
-            CoroutineScope(Dispatchers.Main).launch {
+            job?.cancel()
+            job = coroutine.launch {
                 while (true) {
                     delay(2.seconds)
-                    Log.d("TAG", "onPageFinished: the trackers infos ${view?.url}== ${view?.title}")
+                    if (view?.url == "https://www.shazam.com/song/") {
+                        searchedSong = view.title?.substringBefore(":") ?: ""
+                    }
                 }
             }
         }
     }
 
-    AndroidView({ ctx ->
-        WebView(ctx).apply {
-            settings.javaScriptEnabled = true
-            settings.javaScriptCanOpenWindowsAutomatically = true
-            settings.domStorageEnabled = true
-            webViewClient = webVClient
-            setInitialScale(1)
-            settings.useWideViewPort = true
-            settings.loadWithOverviewMode = true
-            settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+    Box(Modifier.fillMaxSize()) {
+        AndroidView({ ctx ->
+            WebView(ctx).apply {
+                settings.javaScriptEnabled = true
+                settings.javaScriptCanOpenWindowsAutomatically = true
+                settings.domStorageEnabled = true
+                webViewClient = webVClient
+                setInitialScale(1)
+                settings.useWideViewPort = true
+                settings.loadWithOverviewMode = true
+                settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                settings.setSupportZoom(false)
+                settings.cacheMode = WebSettings.LOAD_NO_CACHE
+                webChromeClient = webCClient
 
-            settings.setSupportZoom(false)
-            settings.cacheMode = WebSettings.LOAD_NO_CACHE
-            webChromeClient = webCClient
+//                settings.userAgentString =
+//                    "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36"
 
-            settings.userAgentString =
-                "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36"
+                settings.mediaPlaybackRequiresUserGesture = false
+                settings.allowContentAccess = true
+                webView = this
+                clearWebViewData(this)
+                loadUrl(SHAZAM_BASE_URL)
+            }
+        }, Modifier.fillMaxSize())
 
-            settings.javaScriptEnabled = true
-            settings.mediaPlaybackRequiresUserGesture = false
-            settings.useWideViewPort = true
-            settings.loadWithOverviewMode = true
+        Spacer(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        )
 
-            settings.domStorageEnabled = true
-            settings.allowContentAccess = true
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
 
-            settings.useWideViewPort = true
-            settings.loadWithOverviewMode = true
-
-            clearWebViewData(this)
-            loadUrl("https://www.shazam.com/")
         }
-    })
+    }
+
+    LifecycleResumeEffect(Unit) {
+        onPauseOrDispose {
+            webView?.let { killWebViewData(it) }
+            webView = null
+            close()
+        }
+    }
+}
+
+fun killWebViewData(webView: WebView) {
+    webView.clearHistory();
+    webView.clearCache(true)
+    webView.loadUrl("about:blank")
+    webView.onPause()
+    webView.removeAllViews()
+    webView.pauseTimers()
+    webView.destroy()
 }
 
 fun clearWebViewData(webView: WebView) {
@@ -159,8 +199,10 @@ fun clickButtonToStart(view: WebView?) = CoroutineScope(Dispatchers.Main).launch
         let btn = document.querySelector('[data-test-id="home_userevent_shazamStatus"]');
         if (btn) {
             let rect = btn.getBoundingClientRect();
+            console.log("button clicked!");
             return rect.left + ',' + rect.top;
         }
+        console.log("button click error!");
         return null;
     })();
 """.trimIndent()
