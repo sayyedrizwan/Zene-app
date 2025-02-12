@@ -22,11 +22,11 @@ import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
@@ -68,6 +68,7 @@ class HomeViewModel @Inject constructor(
         ResponseResult.Empty
     )
 
+    var searchASongData by mutableStateOf<ResponseResult<ZeneMusicData>>(ResponseResult.Empty)
     var searchData by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
     var searchPlaces by mutableStateOf<ResponseResult<List<SearchPlacesDataResponse>>>(
         ResponseResult.Empty
@@ -230,6 +231,16 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             cacheHelper.save(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API, it)
             entertainmentMoviesData = ResponseResult.Success(it)
+        }
+    }
+
+    fun searchASong(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.searchASong(q).onStart {
+            searchASongData = ResponseResult.Loading
+        }.catch {
+            searchASongData = ResponseResult.Error(it)
+        }.collectLatest {
+            searchASongData = ResponseResult.Success(it)
         }
     }
 

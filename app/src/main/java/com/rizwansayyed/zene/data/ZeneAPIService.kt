@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
@@ -38,6 +39,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_ALL_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_A_SONG_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_KEYWORDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
@@ -107,6 +109,12 @@ interface ZeneAPIService {
     suspend fun search(
         @Header("token") token: String, @Body data: RequestBody
     ): SearchDataResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SEARCH_A_SONG_API)
+    suspend fun searchASong(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicData
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_SEARCH_PLACES_API)

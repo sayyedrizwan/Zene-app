@@ -103,10 +103,10 @@ fun SearchTopView(search: (String) -> Unit) {
     Row(
         Modifier.padding(horizontal = 9.dp), Arrangement.Center, Alignment.CenterVertically
     ) {
-        TextViewBold(stringResource(R.string.search), 24)
+        TextViewBold(stringResource(R.string.search), 29)
         Spacer(Modifier.weight(1f))
         Box(Modifier.clickable { songRecognitionAlert = true }) {
-            ImageIcon(R.drawable.ic_voice_id, 25)
+            ImageIcon(R.drawable.ic_voice_id, 29)
         }
         Spacer(Modifier.width(9.dp))
         Box(Modifier.clickable {
@@ -117,7 +117,7 @@ fun SearchTopView(search: (String) -> Unit) {
             }
             s.launch(intent)
         }) {
-            ImageIcon(R.drawable.ic_mic, 25)
+            ImageIcon(R.drawable.ic_mic, 29)
         }
     }
 
@@ -134,7 +134,9 @@ fun SearchTopView(search: (String) -> Unit) {
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.Black)
         ) {
-            SearchSongRecognition()
+            SearchSongRecognition {
+                songRecognitionAlert = false
+            }
         }
     }
 

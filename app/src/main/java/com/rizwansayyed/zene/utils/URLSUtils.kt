@@ -21,6 +21,7 @@ object URLSUtils {
     const val ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API = "recent/home-entertainment-movies"
 
     const val ZENE_SEARCH_ALL_API = "search/all"
+    const val ZENE_SEARCH_A_SONG_API = "search/a-song"
     const val ZENE_SEARCH_PLACES_API = "search/places"
     const val ZENE_SEARCH_TRENDING_API = "search/trending"
     const val ZENE_SEARCH_KEYWORDS_API = "search/keywords"

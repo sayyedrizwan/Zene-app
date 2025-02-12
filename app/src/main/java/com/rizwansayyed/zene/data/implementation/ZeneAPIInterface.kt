@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
@@ -69,4 +70,5 @@ interface ZeneAPIInterface {
     suspend fun trendingAIMusic(): Flow<AIDataResponse>
     suspend fun trendingData(): Flow<SearchTrendingResponse>
     suspend fun searchKeywords(q: String): Flow<List<String>>
+    suspend fun searchASong(q: String): Flow<ZeneMusicData>
 }
