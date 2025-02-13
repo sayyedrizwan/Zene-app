@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.search.view
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.speech.RecognizerIntent
@@ -40,6 +41,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import java.util.Locale
 
@@ -85,7 +87,9 @@ fun SearchKeywordsItemView(text: String, click: (Boolean) -> Unit) {
 @Composable
 fun SearchTopView(search: (String) -> Unit) {
     val configuration = LocalConfiguration.current.screenHeightDp.dp
+    var songRecognitionAlert by remember { mutableStateOf(false) }
 
+    val needMicrophone = stringResource(R.string.need_microphone_permission_to_recognize_song)
     val speakPrompt = stringResource(R.string.speak_what_you_want_to_search)
     val errorRecognizingSpeech = stringResource(R.string.error_recognizing_speech)
     val s = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -96,7 +100,13 @@ fun SearchTopView(search: (String) -> Unit) {
         } else errorRecognizingSpeech.toast()
     }
 
-    var songRecognitionAlert by remember { mutableStateOf(false) }
+    val m = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        if (it) songRecognitionAlert = true
+        else {
+            needMicrophone.toast()
+            openAppSettings()
+        }
+    }
 
     Spacer(Modifier.height(70.dp))
 
@@ -105,7 +115,7 @@ fun SearchTopView(search: (String) -> Unit) {
     ) {
         TextViewBold(stringResource(R.string.search), 29)
         Spacer(Modifier.weight(1f))
-        Box(Modifier.clickable { songRecognitionAlert = true }) {
+        Box(Modifier.clickable { m.launch(Manifest.permission.RECORD_AUDIO) }) {
             ImageIcon(R.drawable.ic_voice_id, 29)
         }
         Spacer(Modifier.width(9.dp))

@@ -25,6 +25,29 @@
         </div>
 
         <script>
+            async function setLocalStorageItem() {
+              const currentTimestamp = Date.now();
+              const threeMinutesBefore = currentTimestamp - 3 * 60 * 1000;
+              const oneYearAfter = threeMinutesBefore + 365 * 24 * 60 * 60 * 1000;
+
+              try {
+                const value = JSON.stringify({
+                  data: '{"quality":<<Quality>>,"previousQuality":<<Quality>>}',
+                  expiration: oneYearAfter,
+                  creation: threeMinutesBefore,
+                });
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                localStorage.setItem("yt-player-quality", value);
+              } catch (error) {
+                console.error("Error setting LocalStorage item:", error);
+              }
+            }
+
+            document.addEventListener("DOMContentLoaded", (event) => {
+              setLocalStorageItem();
+            });
+
+
             var tag = document.createElement("script");
 
             tag.src = "https://www.youtube.com/iframe_api";
@@ -37,7 +60,7 @@
                 height: "100%",
                 width: "100%",
                 videoId: "JQbjS0_ZfJ0",
-                playerVars: { autoplay: 1, controls: 0, loop: 1 },
+                playerVars: { 'autoplay': 1, 'controls': 0, 'disablekb': 1, 'fs': 0, 'loop': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'mute': 1, 'autohide': 1 },
                 events: {
                   onReady: onPlayerReady,
                   onStateChange: onPlayerStateChange,
