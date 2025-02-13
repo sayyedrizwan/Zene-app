@@ -11,15 +11,9 @@ object WebViewUtils {
     @SuppressLint("SetJavaScriptEnabled")
     fun WebView.enable() {
         settings.javaScriptEnabled = true
-//        settings.javaScriptCanOpenWindowsAutomatically = true
         settings.domStorageEnabled = true
-//        setInitialScale(1)
-//        settings.useWideViewPort = true
-//        settings.loadWithOverviewMode = true
-//        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         settings.setSupportZoom(false)
         settings.mediaPlaybackRequiresUserGesture = false
-//        settings.allowContentAccess = true
     }
 
     fun killWebViewData(webView: WebView) {

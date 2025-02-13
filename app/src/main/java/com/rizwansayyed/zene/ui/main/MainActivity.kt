@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
 
         Intent(context, VideoPlayerActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(Intent.ACTION_VIEW, "JQbjS0_ZfJ0")
+            putExtra(Intent.ACTION_VIEW, "g5qU7p7yOY8")
             context.startActivity(this)
         }
     }

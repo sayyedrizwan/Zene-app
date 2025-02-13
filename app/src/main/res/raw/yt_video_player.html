@@ -86,20 +86,29 @@
               event.target.unMute();
               event.target.setLoop(true);
               event.target.playVideo();
+              Zene.videoInfo(player.getVideoData().title, player.getVideoData().author);
             }
 
             function playingStatus() {
-              console.log({ status: player.getPlayerState(), currentTS: player.getCurrentTime(), duration: player.getDuration() });
+              Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration());
             }
 
             function onPlayerStateChange(event) {
               playingStatus();
-              if (event.data === YT.PlayerState.ENDED) player.loadVideoById("JQbjS0_ZfJ0");
+              if (event.data === YT.PlayerState.ENDED) player.loadVideoById("<<VideoID>>");
             }
 
             function seekTo(v) {
               player.seekTo(v);
               playingStatus();
+            }
+
+            function playVideo() {
+              player.playVideo();
+            }
+
+            function pauseVideo() {
+              player.pauseVideo();
             }
 
             function stopVideo() {

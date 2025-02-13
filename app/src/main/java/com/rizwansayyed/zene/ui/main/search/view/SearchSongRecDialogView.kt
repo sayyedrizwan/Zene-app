@@ -205,4 +205,20 @@ fun removeYoutubeTopView(view: WebView?, done: () -> Unit) {
             if (isActive) cancel()
         }
     }
+
+    val jsCards = """
+        (function() {
+            var iframe = document.getElementById('player');
+            if (iframe) {
+                var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (innerDoc) {
+                    setTimeout(function() {
+                        var ceElements = innerDoc.querySelectorAll('[class*="ytp-ce-element"]');
+                        ceElements.forEach(el => el.remove());
+                    }, 1000);
+                }
+            }
+        })();
+    """
+    view?.evaluateJavascript(jsCards, null)
 }

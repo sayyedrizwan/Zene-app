@@ -396,6 +396,7 @@ object MainUtils {
         context.startActivity(intent)
     }
 
+    @Suppress("DEPRECATION")
     suspend fun getAddressFromLatLong(lat: Double, lon: Double): String? =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -444,5 +445,27 @@ object MainUtils {
         val inputStream = context.resources.openRawResource(resId)
         val reader = BufferedReader(InputStreamReader(inputStream))
         return reader.use { it.readText() }
+    }
+
+    @SuppressLint("DefaultLocale")
+    fun formatDurationsForVideo(currentSeconds: Float, totalSeconds: Float): Pair<String, String> {
+        val total = totalSeconds.toInt()
+        val current = currentSeconds.toInt()
+
+        val totalHours = total / 3600
+        val totalMinutes = (total % 3600) / 60
+        val totalSecs = total % 60
+
+        val currentHours = current / 3600
+        val currentMinutes = (current % 3600) / 60
+        val currentSecs = current % 60
+
+        return if (totalHours > 0) {
+            String.format("%02d:%02d:%02d", currentHours, currentMinutes, currentSecs) to
+                    String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
+        } else {
+            String.format("%02d:%02d", currentMinutes, currentSecs) to
+                    String.format("%02d:%02d", totalMinutes, totalSecs)
+        }
     }
 }

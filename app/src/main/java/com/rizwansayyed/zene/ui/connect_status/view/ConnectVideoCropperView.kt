@@ -61,12 +61,12 @@ fun ConnectVideoCropperSliderView(
             endInteractionSource = endInteractionSource,
             startThumb = {
                 SliderDefaults.Thumb(
-                    interactionSource = startInteractionSource, colors = startThumbAndTrackColors
+                    interactionSource = startInteractionSource, colors = startThumbAndTrackColors,
                 )
             },
             endThumb = {
                 SliderDefaults.Thumb(
-                    interactionSource = endInteractionSource, colors = startThumbAndTrackColors
+                    interactionSource = endInteractionSource, colors = startThumbAndTrackColors,
                 )
             },
             track = { rangeSliderState ->
