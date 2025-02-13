@@ -30,11 +30,22 @@ fun SearchSongListeningTextView(
 ) {
     when (recType) {
         URLSUtils.SongRecognitionType.NONE -> {}
-        URLSUtils.SongRecognitionType.LOADING, URLSUtils.SongRecognitionType.LISTENING -> Column(
+        URLSUtils.SongRecognitionType.LOADING -> Column(
             modifier
                 .padding(bottom = 30.dp)
                 .fillMaxWidth(),
-            Arrangement.Center, Alignment.CenterHorizontally
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            TextViewNormal(stringResource(R.string.loading_), 17, center = true)
+        }
+
+        URLSUtils.SongRecognitionType.LISTENING -> Column(
+            modifier
+                .padding(bottom = 30.dp)
+                .fillMaxWidth(),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
         ) {
             TextViewNormal(stringResource(R.string.listening_), 17, center = true)
         }

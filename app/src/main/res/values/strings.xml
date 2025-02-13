@@ -168,6 +168,7 @@
     <string name="phone_number">Phone Number</string>
     <string name="your_name">Your Name</string>
     <string name="listening_">Listening…</string>
+    <string name="loading_">Loading…</string>
     <string name="error_recognizing_song">Error Recognizing Song</string>
     <string name="no_song_recognized">No Song Recognized</string>
 
