@@ -81,25 +81,6 @@ fun SearchSongListeningTextView(
 }
 
 
-fun killWebViewData(webView: WebView) {
-    webView.clearHistory();
-    webView.clearCache(true)
-    webView.loadUrl("about:blank")
-    webView.onPause()
-    webView.removeAllViews()
-    webView.pauseTimers()
-    webView.destroy()
-}
-
-fun clearWebViewData(webView: WebView) {
-    val cookieManager = CookieManager.getInstance()
-    cookieManager.removeAllCookies(null)
-    cookieManager.flush()
-    WebStorage.getInstance().deleteAllData()
-    webView.clearCache(true)
-    webView.clearFormData()
-    webView.clearHistory()
-}
 
 fun simulateTapOnWebView(webView: WebView, x: Float, y: Float) {
     webView.post {

@@ -6,7 +6,6 @@ import android.webkit.ConsoleMessage
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
@@ -43,6 +42,9 @@ import com.rizwansayyed.zene.ui.view.RippleLoadingAnimation
 import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.utils.URLSUtils
 import com.rizwansayyed.zene.utils.URLSUtils.SHAZAM_BASE_URL
+import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
+import com.rizwansayyed.zene.utils.WebViewUtils.enable
+import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -142,19 +144,9 @@ fun SearchSongRecognition(close: () -> Unit) {
         } else {
             AndroidView({ ctx ->
                 WebView(ctx).apply {
-                    settings.javaScriptEnabled = true
-                    settings.javaScriptCanOpenWindowsAutomatically = true
-                    settings.domStorageEnabled = true
+                    enable()
                     webViewClient = webVClient
-                    setInitialScale(1)
-                    settings.useWideViewPort = true
-                    settings.loadWithOverviewMode = true
-                    settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                    settings.setSupportZoom(false)
-                    settings.cacheMode = WebSettings.LOAD_NO_CACHE
                     webChromeClient = webCClient
-                    settings.mediaPlaybackRequiresUserGesture = false
-                    settings.allowContentAccess = true
                     webView = this
                     clearWebViewData(this)
                     loadUrl(SHAZAM_BASE_URL)

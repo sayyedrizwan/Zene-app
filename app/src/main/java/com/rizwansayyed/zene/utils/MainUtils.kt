@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.ForegroundService
 import com.squareup.moshi.Moshi
@@ -27,7 +26,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Locale
@@ -437,5 +438,11 @@ object MainUtils {
             }
         }
         return emojis
+    }
+
+    fun getRawFolderString(resId: Int): String {
+        val inputStream = context.resources.openRawResource(resId)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        return reader.use { it.readText() }
     }
 }
