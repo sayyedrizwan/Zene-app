@@ -2,8 +2,6 @@ package com.rizwansayyed.zene.ui.main.search.view
 
 import android.os.SystemClock
 import android.view.MotionEvent
-import android.webkit.CookieManager
-import android.webkit.WebStorage
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +20,9 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.URLSUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,7 +80,6 @@ fun SearchSongListeningTextView(
         }
     }
 }
-
 
 
 fun simulateTapOnWebView(webView: WebView, x: Float, y: Float) {
@@ -184,4 +184,25 @@ fun detectWhenIsSongFound(view: WebView?) {
     })();
     """.trimIndent(), null
     )
+}
+
+fun removeYoutubeTopView(view: WebView?, done: () -> Unit) {
+    val js = """
+         javascript:(function() { 
+            var iframe = document.getElementById('player');
+            if (iframe) {
+                var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                var elements = innerDoc.querySelectorAll('.ytp-chrome-top, .ytp-show-cards-title, .ytp-pause-overlay, .ytp-watermark');
+                elements.forEach(el => el.remove());
+            }
+         })();
+    """.trimIndent()
+
+    view?.evaluateJavascript(js) {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(700)
+            done()
+            if (isActive) cancel()
+        }
+    }
 }

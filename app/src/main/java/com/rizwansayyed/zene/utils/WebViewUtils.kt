@@ -13,8 +13,6 @@ object WebViewUtils {
         settings.javaScriptEnabled = true
 //        settings.javaScriptCanOpenWindowsAutomatically = true
         settings.domStorageEnabled = true
-        settings.allowFileAccessFromFileURLs = true
-        settings.allowUniversalAccessFromFileURLs = true
 //        setInitialScale(1)
 //        settings.useWideViewPort = true
 //        settings.loadWithOverviewMode = true

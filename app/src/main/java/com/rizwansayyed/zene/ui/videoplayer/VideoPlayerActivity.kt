@@ -41,7 +41,7 @@ class VideoPlayerActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    VideoPlayerVideoView(Modifier.align(Alignment.Center))
+                    VideoPlayerVideoView(Modifier.align(Alignment.Center), videoID)
                 }
             }
         }
