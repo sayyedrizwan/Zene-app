@@ -53,6 +53,9 @@ object URLSUtils {
     const val ZENE_CONNECT_GET_COMMENT_API = "connect/get-comment"
 
 
+    const val ZENE_PLAYER_SIMILAR_VIDEOS_API = "player/similar-videos"
+
+
     const val ZENE_AI_MUSIC_LIST_API = "ai/list"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"

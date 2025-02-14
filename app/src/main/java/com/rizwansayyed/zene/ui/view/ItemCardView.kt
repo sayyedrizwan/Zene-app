@@ -253,7 +253,8 @@ fun VideoCardView(data: ZeneMusicData?) {
                 data?.name,
                 Modifier
                     .size(240.dp, 150.dp)
-                    .clip(RoundedCornerShape(5.dp)),
+                    .clip(RoundedCornerShape(5.dp))
+                    .align(Alignment.Center),
                 contentScale = ContentScale.Crop
             )
 

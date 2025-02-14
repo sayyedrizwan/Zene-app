@@ -36,11 +36,10 @@ class PlayingVideoInfoViewModel : ViewModel() {
     var videoCurrentTimestamp by mutableFloatStateOf(0f)
     var videoDuration by mutableFloatStateOf(0f)
     var videoMute by mutableStateOf(false)
-    var isCaptionAvailable by mutableStateOf(false)
     var videoName by mutableStateOf("")
     var videoAuthor by mutableStateOf("")
     var videoThumbnail by mutableStateOf("")
-    private var videoID by mutableStateOf("")
+    var videoID by mutableStateOf("")
 
     fun setVideoThumb(id: String?) {
         videoID = id ?: ""
@@ -84,10 +83,6 @@ class PlayingVideoInfoViewModel : ViewModel() {
     fun setVideoInfo(name: String, author: String) {
         videoName = name
         videoAuthor = author
-    }
-
-    fun setVideoCaptionAvailable(isCaption: Boolean) {
-        isCaptionAvailable = isCaption
     }
 
     fun showControlView(doShow: Boolean) {

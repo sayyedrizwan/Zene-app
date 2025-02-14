@@ -12,6 +12,7 @@ import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,10 +25,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoPlayerVideoView
+import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class VideoPlayerActivity : ComponentActivity() {
+
+    val viewModel: PlayingVideoInfoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +45,18 @@ class VideoPlayerActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    VideoPlayerVideoView(Modifier.align(Alignment.Center), videoID)
+                    VideoPlayerVideoView(Modifier.align(Alignment.Center), videoID, viewModel)
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val videoID = intent.getStringExtra(Intent.ACTION_VIEW)
+        viewModel.showControlView(false)
+        viewModel.setVideoThumb(videoID)
+        viewModel.loadWebView(true)
     }
 
     @Composable

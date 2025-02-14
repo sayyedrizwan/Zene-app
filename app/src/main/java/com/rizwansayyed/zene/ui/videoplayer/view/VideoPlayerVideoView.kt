@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.MotionEvent
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -23,12 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import kotlinx.coroutines.Job
@@ -38,8 +35,9 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("ClickableViewAccessibility")
 @Composable
-fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
-    val viewModel: PlayingVideoInfoViewModel = hiltViewModel()
+fun VideoPlayerVideoView(
+    modifier: Modifier, videoID: String?, viewModel: PlayingVideoInfoViewModel
+) {
 
     var didRemoved by remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }

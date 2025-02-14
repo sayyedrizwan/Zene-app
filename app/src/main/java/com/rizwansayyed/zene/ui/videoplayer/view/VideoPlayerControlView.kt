@@ -84,7 +84,7 @@ fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
 
         Row {
             ImageWithBorder(R.drawable.ic_playlist) { }
-            ImageWithBorder(R.drawable.ic_discover_circle) { }
+            VideoPlayerSimilarView(viewModel)
             ImageWithBorder(R.drawable.ic_share) {}
         }
 

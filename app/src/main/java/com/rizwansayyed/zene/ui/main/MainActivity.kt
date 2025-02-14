@@ -121,10 +121,10 @@ class MainActivity : ComponentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
 
-        Intent(context, VideoPlayerActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(Intent.ACTION_VIEW, "g5qU7p7yOY8")
-            context.startActivity(this)
-        }
+//        Intent(context, VideoPlayerActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            putExtra(Intent.ACTION_VIEW, "g5qU7p7yOY8")
+//            context.startActivity(this)
+//        }
     }
 }

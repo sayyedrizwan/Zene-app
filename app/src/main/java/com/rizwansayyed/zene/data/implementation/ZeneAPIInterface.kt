@@ -71,4 +71,5 @@ interface ZeneAPIInterface {
     suspend fun trendingData(): Flow<SearchTrendingResponse>
     suspend fun searchKeywords(q: String): Flow<List<String>>
     suspend fun searchASong(q: String): Flow<ZeneMusicData>
+    suspend fun similarVideos(id: String): Flow<ZeneMusicDataList>
 }
