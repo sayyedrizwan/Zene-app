@@ -84,13 +84,14 @@
 
             function onPlayerReady(event) {
               event.target.unMute();
+              event.target.setVolume(100);
               event.target.setLoop(true);
               event.target.playVideo();
               Zene.videoInfo(player.getVideoData().title, player.getVideoData().author);
             }
 
             function playingStatus() {
-              Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration());
+              Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration(), player.isMuted());
             }
 
             function onPlayerStateChange(event) {
@@ -98,9 +99,27 @@
               if (event.data === YT.PlayerState.ENDED) player.loadVideoById("<<VideoID>>");
             }
 
+            function unMute() {
+               player.unMute();
+               playingStatus();
+            }
+
+            function mute() {
+               player.mute();
+               playingStatus();
+            }
+
             function seekTo(v) {
               player.seekTo(v);
               playingStatus();
+            }
+
+            function seekAhead() {
+              seekTo(player.getCurrentTime() + 10);
+            }
+
+            function seekBack() {
+              seekTo(player.getCurrentTime() - 10);
             }
 
             function playVideo() {

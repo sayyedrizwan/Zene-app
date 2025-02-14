@@ -12,6 +12,8 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_ST
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_QUALITY_DB
+import com.rizwansayyed.zene.datastore.model.VideoQualityEnum
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +33,7 @@ object DataStorageManager {
 
         val USER_INFO_DB = stringPreferencesKey("user_info_db")
         val IP_DB = stringPreferencesKey("ip_db")
+        val VIDEO_QUALITY_DB = stringPreferencesKey("video_quality_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -53,6 +56,20 @@ object DataStorageManager {
             context.dataStore.edit {
                 val json = moshi.adapter(IPResponse::class.java).toJson(value.first())
                 it[IP_DB] = json
+            }
+            if (isActive) cancel()
+        }
+
+
+    var videoQualityDB: Flow<VideoQualityEnum>
+        get() = context.dataStore.data.map {
+            val videoQuality =
+                VideoQualityEnum.entries.firstOrNull { v -> v.name == it[VIDEO_QUALITY_DB] }
+            videoQuality ?: VideoQualityEnum.`1440`
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[VIDEO_QUALITY_DB] = value.first().name
             }
             if (isActive) cancel()
         }

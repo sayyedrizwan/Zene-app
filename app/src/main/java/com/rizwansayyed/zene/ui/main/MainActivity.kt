@@ -19,8 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
@@ -39,10 +41,13 @@ import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.MainUtils.startAppService
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -111,10 +116,10 @@ class MainActivity : ComponentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
 
-        Intent(context, VideoPlayerActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(Intent.ACTION_VIEW, "g5qU7p7yOY8")
-            context.startActivity(this)
-        }
+//        Intent(context, VideoPlayerActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            putExtra(Intent.ACTION_VIEW, "g5qU7p7yOY8")
+//            context.startActivity(this)
+//        }
     }
 }

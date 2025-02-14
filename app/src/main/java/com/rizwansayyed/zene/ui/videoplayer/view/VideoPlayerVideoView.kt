@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,16 +25,19 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
 import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
-import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
-import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @SuppressLint("ClickableViewAccessibility")
@@ -52,8 +54,8 @@ fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
 
     class WebAppInterface {
         @JavascriptInterface
-        fun videoState(playerState: Int, currentTS: String, duration: String) {
-            viewModel.setVideoState(playerState, currentTS, duration)
+        fun videoState(playerState: Int, currentTS: String, duration: String, isMuted: Boolean) {
+            viewModel.setVideoState(playerState, currentTS, duration, isMuted)
         }
 
         @JavascriptInterface
@@ -86,10 +88,15 @@ fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
             addJavascriptInterface(WebAppInterface(), "Zene")
             settings.setSupportZoom(true)
             settings.builtInZoomControls = false
-            val c = htmlContent.replace("<<Quality>>", "1080").replace("<<VideoID>>", videoID ?: "")
-            viewModel.setVideoThumb(videoID)
-            viewModel.setWebViewTo(this)
-            loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
+            coroutine.launch(Dispatchers.Main) {
+                val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
+                    .replace("<<VideoID>>", videoID ?: "")
+                viewModel.setVideoThumb(videoID)
+                viewModel.setWebViewTo(this@apply)
+                delay(500)
+                loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
+                if (isActive) cancel()
+            }
         }
     }, modifier.fillMaxSize())
 
@@ -119,10 +126,7 @@ fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
 
     DisposableEffect(Unit) {
         onDispose {
-            viewModel.webView?.let {
-                clearWebViewData(it)
-                killWebViewData(it)
-            }
+            viewModel.killWebView()
         }
     }
 }

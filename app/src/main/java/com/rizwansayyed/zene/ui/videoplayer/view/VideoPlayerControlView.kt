@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
+import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +21,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -26,20 +29,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
+import com.rizwansayyed.zene.datastore.model.VideoQualityEnum
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
-import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.ImageWithBgAndBorder
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
+import com.rizwansayyed.zene.viewmodel.YoutubePlayerState
+import kotlinx.coroutines.flow.flowOf
 
 
 @Composable
@@ -58,17 +67,27 @@ fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel) {
 
 @Composable
 fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
+    val quality by videoQualityDB.collectAsState(null)
     Column(modifier.padding(top = 10.dp, end = 30.dp), Arrangement.Center, Alignment.End) {
-        ButtonWithBorder(R.string.one_forty_p) {
-
+        ButtonWithBorder(
+            R.string.one_forty_p,
+            if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
+        ) {
+            videoQualityDB = flowOf(VideoQualityEnum.`1440`)
         }
         Spacer(Modifier.height(14.dp))
-        ButtonWithBorder(R.string.seven_twenty_p, Color.Gray) {
-
+        ButtonWithBorder(
+            R.string.seven_twenty_p,
+            if (quality == VideoQualityEnum.`720`) Color.White else Color.Gray
+        ) {
+            videoQualityDB = flowOf(VideoQualityEnum.`720`)
         }
         Spacer(Modifier.height(14.dp))
-        ButtonWithBorder(R.string.four_eighty_p, Color.Gray) {
-
+        ButtonWithBorder(
+            R.string.four_eighty_p,
+            if (quality == VideoQualityEnum.`480`) Color.White else Color.Gray
+        ) {
+            videoQualityDB = flowOf(VideoQualityEnum.`480`)
         }
         Spacer(Modifier.height(14.dp))
         Spacer(
@@ -78,12 +97,26 @@ fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
                 .clip(RoundedCornerShape(7.dp))
                 .background(Color.White)
         )
+
         Spacer(Modifier.height(14.dp))
 
         Row {
-            ImageWithBorder(R.drawable.ic_camera) { }
-            ImageWithBorder(R.drawable.ic_link_backward) { }
             ImageWithBorder(R.drawable.ic_playlist) { }
+            ImageWithBorder(R.drawable.ic_discover_circle) { }
+            ImageWithBorder(R.drawable.ic_share) { }
+        }
+
+        Spacer(Modifier.height(14.dp))
+
+        Row {
+            ImageWithBorder(R.drawable.ic_open_caption) { }
+            ImageWithBorder(R.drawable.ic_dashboard_speed) { }
+            if (viewModel.videoMute) ImageWithBorder(R.drawable.ic_volume_mute) {
+                viewModel.webView?.evaluateJavascript("unMute();", null)
+            }
+            else ImageWithBorder(R.drawable.ic_speaker_full) {
+                viewModel.webView?.evaluateJavascript("mute();", null)
+            }
         }
     }
 }
@@ -142,28 +175,23 @@ fun VideoPlayerBottomControl(viewModel: PlayingVideoInfoViewModel, modifier: Mod
             )
         }
 
-        Row(
-            Modifier
-                .padding(horizontal = 5.dp, vertical = 5.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(MainColor)
-                .padding(horizontal = 10.dp, vertical = 7.dp)
-        ) {
+        Spacer(Modifier.width(10.dp))
+        ImageWithBgAndBorder(R.drawable.ic_go_backward_10sec) {
+            viewModel.webView?.evaluateJavascript("seekBack();", null)
+        }
+        Spacer(Modifier.height(5.dp))
 
-            Box(Modifier.clickable {
-                viewModel.showControlView(true)
-                if (viewModel.playerState == PlayingVideoInfoViewModel.Companion.YoutubePlayerState.PLAYING) {
-                    viewModel.webView?.evaluateJavascript("pauseVideo();", null)
-                } else {
-                    viewModel.webView?.evaluateJavascript("playVideo();", null)
-                }
-            }) {
-                if (viewModel.playerState == PlayingVideoInfoViewModel.Companion.YoutubePlayerState.PLAYING) {
-                    ImageIcon(R.drawable.ic_pause, 20)
-                } else {
-                    ImageIcon(R.drawable.ic_play, 20)
-                }
+        if (viewModel.playerState == YoutubePlayerState.PLAYING) {
+            ImageWithBgAndBorder(R.drawable.ic_pause) {
+                viewModel.webView?.evaluateJavascript("pauseVideo();", null)
             }
+        } else ImageWithBgAndBorder(R.drawable.ic_play) {
+            viewModel.webView?.evaluateJavascript("playVideo();", null)
+        }
+
+        Spacer(Modifier.height(5.dp))
+        ImageWithBgAndBorder(R.drawable.ic_go_forward_10sec) {
+            viewModel.webView?.evaluateJavascript("seekAhead();", null)
         }
     }
 
@@ -175,7 +203,10 @@ fun VideoPlayerBottomControl(viewModel: PlayingVideoInfoViewModel, modifier: Mod
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun VideoPlayerInfoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
-    Column(modifier.padding(top = 10.dp, start = 20.dp)) {
+    val activity = LocalActivity.current
+    val height = LocalConfiguration.current.screenWidthDp.dp
+
+    Column(modifier.width(height / (2)).padding(top = 10.dp, start = 20.dp)) {
         GlideImage(
             viewModel.videoThumbnail,
             viewModel.videoName,
@@ -183,7 +214,18 @@ fun VideoPlayerInfoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier
             contentScale = ContentScale.Crop
         )
 
-        TextViewSemiBold(viewModel.videoName, size = 20)
-        TextViewNormal(viewModel.videoAuthor, size = 13)
+        TextViewSemiBold(viewModel.videoName, size = 20, line = 2)
+        TextViewNormal(viewModel.videoAuthor, size = 13, line = 1)
+
+        Spacer(Modifier.height(14.dp))
+
+        Row {
+            Box(Modifier.rotate(180f)) {
+                ImageWithBorder(R.drawable.ic_arrow_right) {
+                    activity?.finish()
+                }
+            }
+            ImageWithBorder(R.drawable.ic_picture_in_picture_on) { }
+        }
     }
 }
