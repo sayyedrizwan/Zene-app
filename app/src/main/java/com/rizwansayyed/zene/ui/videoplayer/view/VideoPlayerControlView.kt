@@ -37,10 +37,8 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
-import com.rizwansayyed.zene.datastore.model.VideoQualityEnum
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageWithBgAndBorder
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
@@ -68,8 +66,12 @@ fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel) {
 
 @Composable
 fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
+    val isClosedCaption by videoCCDB.collectAsState(true)
+    val coroutine = rememberCoroutineScope()
+
     Column(modifier.padding(top = 10.dp, end = 30.dp), Arrangement.Center, Alignment.End) {
         VideoPlayerButtonView(viewModel)
+
         Spacer(
             Modifier
                 .width(100.dp)
@@ -89,8 +91,17 @@ fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
         Spacer(Modifier.height(14.dp))
 
         Row {
-            ImageWithBorder(R.drawable.ic_open_caption) { }
+            ImageWithBorder(if (isClosedCaption) R.drawable.ic_open_caption else R.drawable.ic_closed_caption) {
+                if (isClosedCaption) viewModel.webView?.evaluateJavascript("disableCaption()", null)
+                else viewModel.webView?.evaluateJavascript("enableCaption()", null)
+
+                coroutine.launch {
+                    videoCCDB = flowOf(!isClosedCaption)
+                }
+            }
+
             VideoPlayerSpeedView(viewModel)
+
             if (viewModel.videoMute) ImageWithBorder(R.drawable.ic_volume_mute) {
                 viewModel.webView?.evaluateJavascript("unMute();", null)
             }

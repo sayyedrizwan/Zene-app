@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.datastore
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -12,6 +13,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_ST
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_PLAYER_CC_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_QUALITY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_SPEED_DB
 import com.rizwansayyed.zene.datastore.model.VideoQualityEnum
@@ -37,6 +39,7 @@ object DataStorageManager {
         val IP_DB = stringPreferencesKey("ip_db")
         val VIDEO_QUALITY_DB = stringPreferencesKey("video_quality_db")
         val VIDEO_SPEED_DB = stringPreferencesKey("video_speed_db")
+        val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -84,6 +87,17 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[VIDEO_SPEED_DB] = value.first().name
+            }
+            if (isActive) cancel()
+        }
+
+    var videoCCDB: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[VIDEO_PLAYER_CC_DB] ?: true
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[VIDEO_PLAYER_CC_DB] = value.first()
             }
             if (isActive) cancel()
         }

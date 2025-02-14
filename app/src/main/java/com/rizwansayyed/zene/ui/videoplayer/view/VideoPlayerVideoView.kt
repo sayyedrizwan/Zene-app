@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.MotionEvent
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -24,20 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
-import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
-import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
-import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @SuppressLint("ClickableViewAccessibility")
@@ -59,6 +55,12 @@ fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
         @JavascriptInterface
         fun videoInfo(title: String, author: String) {
             viewModel.setVideoInfo(title, author)
+            coroutine.launch {
+                if (videoCCDB.first())
+                    viewModel.webView?.evaluateJavascript("enableCaption()", null)
+                else
+                    viewModel.webView?.evaluateJavascript("disableCaption()", null)
+            }
         }
     }
 
@@ -68,7 +70,7 @@ fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
-                    removeYoutubeTopView(view) {
+                    if (view.progress == 100) removeYoutubeTopView(view) {
                         didRemoved = true
                     }
                 }

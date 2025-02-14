@@ -8,9 +8,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
@@ -34,6 +36,7 @@ class PlayingVideoInfoViewModel : ViewModel() {
     var videoCurrentTimestamp by mutableFloatStateOf(0f)
     var videoDuration by mutableFloatStateOf(0f)
     var videoMute by mutableStateOf(false)
+    var isCaptionAvailable by mutableStateOf(false)
     var videoName by mutableStateOf("")
     var videoAuthor by mutableStateOf("")
     var videoThumbnail by mutableStateOf("")
@@ -59,14 +62,15 @@ class PlayingVideoInfoViewModel : ViewModel() {
 
     fun loadWebView(startNew: Boolean = true) = viewModelScope.launch(Dispatchers.Main) {
         val lastDuration = if (startNew) 0 else videoCurrentTimestamp
-        val speed = videoSpeedDB.first().name.replace("_", ".")
 
         val htmlContent = getRawFolderString(R.raw.yt_video_player)
         delay(500)
+        val speed = videoSpeedDB.first().name.replace("_", ".")
         val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
             .replace("<<VideoID>>", videoID)
             .replace("setDuration = 0", "setDuration = $lastDuration")
             .replace("setSpeed = 1.0", "setSpeed = $speed")
+
         webView?.loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
     }
 
@@ -80,6 +84,10 @@ class PlayingVideoInfoViewModel : ViewModel() {
     fun setVideoInfo(name: String, author: String) {
         videoName = name
         videoAuthor = author
+    }
+
+    fun setVideoCaptionAvailable(isCaption: Boolean) {
+        isCaptionAvailable = isCaption
     }
 
     fun showControlView(doShow: Boolean) {

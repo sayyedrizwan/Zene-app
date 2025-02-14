@@ -201,7 +201,7 @@ fun removeYoutubeTopView(view: WebView?, done: () -> Unit) {
 
     view?.evaluateJavascript(js) {
         CoroutineScope(Dispatchers.IO).launch {
-            delay(1.seconds)
+            delay(700)
             done()
             if (isActive) cancel()
         }

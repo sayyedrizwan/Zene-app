@@ -41,6 +41,7 @@
         <script>
             var setDuration = 0;
             var setSpeed = 1.0;
+            var showCaption = true;
 
             async function setLocalStorageItem() {
               const currentTimestamp = Date.now();
@@ -92,7 +93,6 @@
               event.target.playVideo();
               event.target.seekTo(setDuration);
               event.target.setPlaybackRate(setSpeed);
-
               Zene.videoInfo(player.getVideoData().title, player.getVideoData().author);
             }
 
@@ -142,6 +142,29 @@
 
             function stopVideo() {
               player.stopVideo();
+            }
+
+            function isEnableCaption() {
+                var tracks = player.getOption("captions", "tracklist");
+                if (tracks && tracks.length > 0) {
+                  Zene.captionAvailable(true);
+                } else {
+                  Zene.captionAvailable(false);
+                }
+            }
+
+            function enableCaption() {
+              try {
+                player.loadModule("captions");
+                player.loadModule("cc");
+              } catch (exception) {}
+            }
+
+            function disableCaption() {
+              try {
+                player.unloadModule("captions");
+                player.unloadModule("cc");
+              } catch (exception) {}
             }
 
         </script>
