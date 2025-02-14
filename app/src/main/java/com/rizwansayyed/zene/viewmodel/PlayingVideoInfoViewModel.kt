@@ -7,10 +7,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
+import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
+import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -22,7 +29,7 @@ class PlayingVideoInfoViewModel : ViewModel() {
 
     var webView by mutableStateOf<WebView?>(null)
     var playerState by mutableStateOf(YoutubePlayerState.UNSTARTED)
-    var showControlViewJob by mutableStateOf<Job?>(null)
+    private var showControlViewJob by mutableStateOf<Job?>(null)
     var showControlView by mutableStateOf(false)
     var videoCurrentTimestamp by mutableFloatStateOf(0f)
     var videoDuration by mutableFloatStateOf(0f)
@@ -30,9 +37,11 @@ class PlayingVideoInfoViewModel : ViewModel() {
     var videoName by mutableStateOf("")
     var videoAuthor by mutableStateOf("")
     var videoThumbnail by mutableStateOf("")
+    private var videoID by mutableStateOf("")
 
-    fun setVideoThumb(videoID: String?) {
-        videoThumbnail = "https://i.ytimg.com/vi/${videoID}/hqdefault.jpg"
+    fun setVideoThumb(id: String?) {
+        videoID = id ?: ""
+        videoThumbnail = "https://i.ytimg.com/vi/${id}/hqdefault.jpg"
     }
 
     fun setWebViewTo(view: WebView) {
@@ -44,7 +53,21 @@ class PlayingVideoInfoViewModel : ViewModel() {
             clearWebViewData(it)
             killWebViewData(it)
         }
+        showControlViewJob?.cancel()
         webView = null
+    }
+
+    fun loadWebView(startNew: Boolean = true) = viewModelScope.launch(Dispatchers.Main) {
+        val lastDuration = if (startNew) 0 else videoCurrentTimestamp
+        val speed = videoSpeedDB.first().name.replace("_", ".")
+
+        val htmlContent = getRawFolderString(R.raw.yt_video_player)
+        delay(500)
+        val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
+            .replace("<<VideoID>>", videoID)
+            .replace("setDuration = 0", "setDuration = $lastDuration")
+            .replace("setSpeed = 1.0", "setSpeed = $speed")
+        webView?.loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
     }
 
     fun setVideoState(state: Int, currentTS: String, duration: String, isMute: Boolean) {

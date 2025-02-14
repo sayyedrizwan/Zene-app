@@ -90,6 +90,23 @@ fun ImageWithBgAndBorder(img: Int, color: Color = MainColor, click: () -> Unit) 
 }
 
 @Composable
+fun TextWithBgAndBorder(txt: String, color: Color = MainColor, click: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(color)
+            .clickable {
+                click()
+            }
+            .padding(vertical = 7.dp, horizontal = 14.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextViewNormal(txt, 14, center = false)
+    }
+}
+
+@Composable
 fun ButtonHeavy(text: String, click: () -> Unit) {
     Row(
         modifier = Modifier

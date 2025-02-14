@@ -39,6 +39,9 @@
             <div id="player"></div>
         </div>
         <script>
+            var setDuration = 0;
+            var setSpeed = 1.0;
+
             async function setLocalStorageItem() {
               const currentTimestamp = Date.now();
               const threeMinutesBefore = currentTimestamp - 3 * 60 * 1000;
@@ -87,6 +90,9 @@
               event.target.setVolume(100);
               event.target.setLoop(true);
               event.target.playVideo();
+              event.target.seekTo(setDuration);
+              event.target.setPlaybackRate(setSpeed);
+
               Zene.videoInfo(player.getVideoData().title, player.getVideoData().author);
             }
 
@@ -107,6 +113,10 @@
             function mute() {
                player.mute();
                playingStatus();
+            }
+
+            function playbackRate(v) {
+               player.setPlaybackRate(v);
             }
 
             function seekTo(v) {

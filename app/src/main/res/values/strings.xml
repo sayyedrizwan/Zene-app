@@ -126,6 +126,7 @@
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>
     <string name="songs_trending_near_you">Songs trending near you</string>
     <string name="songs">Songs</string>
+    <string name="playback_speed_of_video">Playback Speed of Video</string>
     <string name="in_your_contacts">In your contacts</string>
     <string name="contacts">Contacts</string>
     <string name="location_permission">Location Permission</string>

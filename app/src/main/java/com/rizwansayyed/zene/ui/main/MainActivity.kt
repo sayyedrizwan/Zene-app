@@ -50,6 +50,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+// cannot see the tags in same user id.
+//
+// login - local device
+
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -116,10 +121,10 @@ class MainActivity : ComponentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
 
-//        Intent(context, VideoPlayerActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            putExtra(Intent.ACTION_VIEW, "g5qU7p7yOY8")
-//            context.startActivity(this)
-//        }
+        Intent(context, VideoPlayerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(Intent.ACTION_VIEW, "g5qU7p7yOY8")
+            context.startActivity(this)
+        }
     }
 }

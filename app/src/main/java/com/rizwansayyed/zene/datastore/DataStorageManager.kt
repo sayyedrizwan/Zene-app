@@ -13,7 +13,9 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_J
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_QUALITY_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_SPEED_DB
 import com.rizwansayyed.zene.datastore.model.VideoQualityEnum
+import com.rizwansayyed.zene.datastore.model.VideoSpeedEnum
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +36,7 @@ object DataStorageManager {
         val USER_INFO_DB = stringPreferencesKey("user_info_db")
         val IP_DB = stringPreferencesKey("ip_db")
         val VIDEO_QUALITY_DB = stringPreferencesKey("video_quality_db")
+        val VIDEO_SPEED_DB = stringPreferencesKey("video_speed_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -63,13 +66,24 @@ object DataStorageManager {
 
     var videoQualityDB: Flow<VideoQualityEnum>
         get() = context.dataStore.data.map {
-            val videoQuality =
-                VideoQualityEnum.entries.firstOrNull { v -> v.name == it[VIDEO_QUALITY_DB] }
-            videoQuality ?: VideoQualityEnum.`1440`
+            val q = VideoQualityEnum.entries.firstOrNull { v -> v.name == it[VIDEO_QUALITY_DB] }
+            q ?: VideoQualityEnum.`1440`
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[VIDEO_QUALITY_DB] = value.first().name
+            }
+            if (isActive) cancel()
+        }
+
+    var videoSpeedDB: Flow<VideoSpeedEnum>
+        get() = context.dataStore.data.map {
+            val q = VideoSpeedEnum.entries.firstOrNull { v -> v.name == it[VIDEO_SPEED_DB] }
+            q ?: VideoSpeedEnum.`1_0`
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[VIDEO_SPEED_DB] = value.first().name
             }
             if (isActive) cancel()
         }

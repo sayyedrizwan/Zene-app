@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +49,7 @@ import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import com.rizwansayyed.zene.viewmodel.YoutubePlayerState
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -67,29 +68,8 @@ fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel) {
 
 @Composable
 fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
-    val quality by videoQualityDB.collectAsState(null)
     Column(modifier.padding(top = 10.dp, end = 30.dp), Arrangement.Center, Alignment.End) {
-        ButtonWithBorder(
-            R.string.one_forty_p,
-            if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
-        ) {
-            videoQualityDB = flowOf(VideoQualityEnum.`1440`)
-        }
-        Spacer(Modifier.height(14.dp))
-        ButtonWithBorder(
-            R.string.seven_twenty_p,
-            if (quality == VideoQualityEnum.`720`) Color.White else Color.Gray
-        ) {
-            videoQualityDB = flowOf(VideoQualityEnum.`720`)
-        }
-        Spacer(Modifier.height(14.dp))
-        ButtonWithBorder(
-            R.string.four_eighty_p,
-            if (quality == VideoQualityEnum.`480`) Color.White else Color.Gray
-        ) {
-            videoQualityDB = flowOf(VideoQualityEnum.`480`)
-        }
-        Spacer(Modifier.height(14.dp))
+        VideoPlayerButtonView(viewModel)
         Spacer(
             Modifier
                 .width(100.dp)
@@ -103,14 +83,14 @@ fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
         Row {
             ImageWithBorder(R.drawable.ic_playlist) { }
             ImageWithBorder(R.drawable.ic_discover_circle) { }
-            ImageWithBorder(R.drawable.ic_share) { }
+            ImageWithBorder(R.drawable.ic_share) {}
         }
 
         Spacer(Modifier.height(14.dp))
 
         Row {
             ImageWithBorder(R.drawable.ic_open_caption) { }
-            ImageWithBorder(R.drawable.ic_dashboard_speed) { }
+            VideoPlayerSpeedView(viewModel)
             if (viewModel.videoMute) ImageWithBorder(R.drawable.ic_volume_mute) {
                 viewModel.webView?.evaluateJavascript("unMute();", null)
             }
@@ -206,7 +186,11 @@ fun VideoPlayerInfoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier
     val activity = LocalActivity.current
     val height = LocalConfiguration.current.screenWidthDp.dp
 
-    Column(modifier.width(height / (2)).padding(top = 10.dp, start = 20.dp)) {
+    Column(
+        modifier
+            .width(height / (2))
+            .padding(top = 10.dp, start = 20.dp)
+    ) {
         GlideImage(
             viewModel.videoThumbnail,
             viewModel.videoName,

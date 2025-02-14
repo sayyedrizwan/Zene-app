@@ -24,6 +24,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun SearchSongListeningTextView(
@@ -200,7 +201,7 @@ fun removeYoutubeTopView(view: WebView?, done: () -> Unit) {
 
     view?.evaluateJavascript(js) {
         CoroutineScope(Dispatchers.IO).launch {
-            delay(700)
+            delay(1.seconds)
             done()
             if (isActive) cancel()
         }

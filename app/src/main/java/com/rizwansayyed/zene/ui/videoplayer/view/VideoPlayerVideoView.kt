@@ -47,8 +47,6 @@ fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
 
     var didRemoved by remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
-    val htmlContent = getRawFolderString(R.raw.yt_video_player)
-
 
     val coroutine = rememberCoroutineScope()
 
@@ -88,15 +86,9 @@ fun VideoPlayerVideoView(modifier: Modifier, videoID: String?) {
             addJavascriptInterface(WebAppInterface(), "Zene")
             settings.setSupportZoom(true)
             settings.builtInZoomControls = false
-            coroutine.launch(Dispatchers.Main) {
-                val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
-                    .replace("<<VideoID>>", videoID ?: "")
-                viewModel.setVideoThumb(videoID)
-                viewModel.setWebViewTo(this@apply)
-                delay(500)
-                loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
-                if (isActive) cancel()
-            }
+            viewModel.setWebViewTo(this@apply)
+            viewModel.setVideoThumb(videoID)
+            viewModel.loadWebView()
         }
     }, modifier.fillMaxSize())
 
