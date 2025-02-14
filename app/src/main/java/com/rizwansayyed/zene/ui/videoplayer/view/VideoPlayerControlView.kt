@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
+import android.app.PictureInPictureParams
+import android.os.Build
+import android.util.Rational
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +36,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -44,6 +48,9 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
+import com.rizwansayyed.zene.utils.MainUtils.hasPIPPermission
+import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import com.rizwansayyed.zene.viewmodel.YoutubePlayerState
 import kotlinx.coroutines.flow.flowOf
@@ -197,6 +204,8 @@ fun VideoPlayerInfoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier
     val activity = LocalActivity.current
     val height = LocalConfiguration.current.screenWidthDp.dp
 
+    val needPictureMode = stringResource(R.string.pip_mode_disabled_for_app)
+
     Column(
         modifier
             .width(height / (2))
@@ -220,7 +229,18 @@ fun VideoPlayerInfoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier
                     activity?.finish()
                 }
             }
-            ImageWithBorder(R.drawable.ic_picture_in_picture_on) { }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ImageWithBorder(R.drawable.ic_picture_in_picture_on) {
+                    if (!hasPIPPermission()) {
+                        needPictureMode.toast()
+                        openAppSettings()
+                        return@ImageWithBorder
+                    }
+                    val params =
+                        PictureInPictureParams.Builder().setAspectRatio(Rational(192, 108)).build()
+                    activity?.enterPictureInPictureMode(params)
+                }
+            }
         }
     }
 }

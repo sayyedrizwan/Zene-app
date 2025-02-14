@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.videoplayer
 
 import android.app.Activity
+import android.app.PictureInPictureUiState
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -49,6 +50,11 @@ class VideoPlayerActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {
+        super.onPictureInPictureUiStateChanged(pipState)
+        viewModel.showControlView(false)
     }
 
     override fun onNewIntent(intent: Intent) {

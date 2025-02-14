@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.utils
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AppOpsManager
+import android.app.AppOpsManager.OPSTR_PICTURE_IN_PICTURE
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -467,5 +469,12 @@ object MainUtils {
             String.format("%02d:%02d", currentMinutes, currentSecs) to
                     String.format("%02d:%02d", totalMinutes, totalSecs)
         }
+    }
+
+    fun hasPIPPermission(): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        return appOps.checkOpNoThrow(
+            OPSTR_PICTURE_IN_PICTURE, android.os.Process.myUid(), context.packageName
+        ) == AppOpsManager.MODE_ALLOWED
     }
 }
