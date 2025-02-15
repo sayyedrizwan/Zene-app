@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 fun VideoPlayerVideoView(
     modifier: Modifier, videoID: String?, viewModel: PlayingVideoInfoViewModel
 ) {
-    var showAddToPlaylists by remember { mutableStateOf(false) }
+    var showAddToPlaylists = remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
 
     val coroutine = rememberCoroutineScope()
@@ -93,11 +93,11 @@ fun VideoPlayerVideoView(
     }, modifier.fillMaxSize())
 
     AnimatedVisibility(viewModel.showControlView, Modifier, fadeIn(), fadeOut()) {
-        VideoPlayerControlView(viewModel)
+        VideoPlayerControlView(viewModel, showAddToPlaylists)
     }
 
-    if (showAddToPlaylists) AddToPlaylistsView(viewModel.videoInfo) {
-        showAddToPlaylists = false
+    if (showAddToPlaylists.value) AddToPlaylistsView(viewModel.videoInfo) {
+        showAddToPlaylists.value = false
     }
 
 

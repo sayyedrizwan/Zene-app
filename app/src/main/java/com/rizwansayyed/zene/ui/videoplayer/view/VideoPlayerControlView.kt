@@ -23,6 +23,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -58,7 +59,9 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel) {
+fun VideoPlayerControlView(
+    viewModel: PlayingVideoInfoViewModel, showAddToPlaylists: MutableState<Boolean>
+) {
     Box(Modifier
         .clickable { viewModel.showControlView(false) }
         .fillMaxSize()
@@ -67,12 +70,16 @@ fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel) {
 
         VideoPlayerBottomControl(viewModel, Modifier.align(Alignment.BottomCenter))
 
-        QualityVideoView(viewModel, Modifier.align(Alignment.TopEnd))
+        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd)) {
+            showAddToPlaylists.value = true
+        }
     }
 }
 
 @Composable
-fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
+fun QualityAndControlVideoView(
+    viewModel: PlayingVideoInfoViewModel, modifier: Modifier, add: () -> Unit
+) {
     val isClosedCaption by videoCCDB.collectAsState(true)
     val coroutine = rememberCoroutineScope()
 
@@ -90,7 +97,7 @@ fun QualityVideoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier) {
         Spacer(Modifier.height(14.dp))
 
         Row {
-            ImageWithBorder(R.drawable.ic_playlist) { }
+            ImageWithBorder(R.drawable.ic_playlist, click = add)
             VideoPlayerSimilarView(viewModel)
             ImageWithBorder(R.drawable.ic_share) {}
         }

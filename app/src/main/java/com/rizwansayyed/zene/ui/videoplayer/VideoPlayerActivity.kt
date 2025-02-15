@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
@@ -58,6 +59,13 @@ class VideoPlayerActivity : ComponentActivity() {
 
     override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {
         super.onPictureInPictureUiStateChanged(pipState)
+        viewModel.showControlView(false)
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean, newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         viewModel.showControlView(false)
     }
 
