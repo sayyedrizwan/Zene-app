@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
@@ -50,6 +51,24 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.updateUser(body))
+    }
+
+    override suspend fun addHistory(data: ZeneMusicData) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("id", data.id)
+            put("name", data.name)
+            put("artists", data.artists)
+            put("deviceInfo", "Android ${getDeviceInfo()}")
+            put("email", email)
+            put("thumbnail", data.thumbnail)
+            put("type", data.type)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.addHistory(token, body))
     }
 
     override suspend fun recentHome() = flow {

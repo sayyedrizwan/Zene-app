@@ -39,7 +39,6 @@ fun VideoPlayerVideoView(
     modifier: Modifier, videoID: String?, viewModel: PlayingVideoInfoViewModel
 ) {
 
-    var didRemoved by remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
 
     val coroutine = rememberCoroutineScope()
@@ -69,7 +68,7 @@ fun VideoPlayerVideoView(
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     if (view.progress == 100) removeYoutubeTopView(view) {
-                        didRemoved = true
+                        viewModel.showLoadingView( true)
                     }
                 }
             }
@@ -96,7 +95,7 @@ fun VideoPlayerVideoView(
         VideoPlayerControlView(viewModel)
     }
 
-    if (!didRemoved) Box(
+    if (!viewModel.showLoadingView) Box(
         Modifier
             .fillMaxSize()
             .background(Color.Black), Alignment.Center

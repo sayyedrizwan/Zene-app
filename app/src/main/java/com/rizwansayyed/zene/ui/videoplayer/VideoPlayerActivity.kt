@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -37,6 +38,9 @@ class VideoPlayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        window?.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContent {
             val videoID = intent.getStringExtra(Intent.ACTION_VIEW)
             ZeneTheme {
@@ -60,6 +64,7 @@ class VideoPlayerActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val videoID = intent.getStringExtra(Intent.ACTION_VIEW)
+        viewModel.showLoadingView( false)
         viewModel.showControlView(false)
         viewModel.setVideoThumb(videoID)
         viewModel.loadWebView(true)

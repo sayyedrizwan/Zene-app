@@ -47,6 +47,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_KEYWORDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
@@ -63,6 +64,10 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_UPDATE_API)
     suspend fun updateUser(@Body data: RequestBody): UserInfoResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_ADD_HISTORY_API)
+    suspend fun addHistory(@Header("token") token: String, @Body data: RequestBody): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_RECENT_HOME_MUSIC_API)

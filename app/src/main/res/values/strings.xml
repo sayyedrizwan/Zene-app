@@ -174,7 +174,7 @@
     <string name="loading_">Loading…</string>
     <string name="error_recognizing_song">Error Recognizing Song</string>
     <string name="no_song_recognized">No Song Recognized</string>
-    <string name="one_forty_p">1440p</string>
+    <string name="fourteen_forty_eighty_p">1440p</string>
     <string name="seven_twenty_p">720p</string>
     <string name="four_eighty_p">480p</string>
     <string name="pip_mode_disabled_for_app">Picture and Picture Mode is disabled for the app.</string>

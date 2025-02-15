@@ -38,7 +38,7 @@ data class ZeneMusicData(
     val path: String?,
     val thumbnail: String?,
     val type: String?,
-    val extra: String?
+    val extra: String? = null
 ) {
     fun podcastTimestamp(): Boolean {
         if (extra?.contains("s ago") == true) return true

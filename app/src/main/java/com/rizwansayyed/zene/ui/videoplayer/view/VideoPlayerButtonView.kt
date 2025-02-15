@@ -42,7 +42,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -52,29 +51,23 @@ fun VideoPlayerButtonView(viewModel: PlayingVideoInfoViewModel) {
     val coroutine = rememberCoroutineScope()
 
     ButtonWithBorder(
-        R.string.one_forty_p, if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
+        R.string.fourteen_forty_eighty_p, if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
     ) {
-        coroutine.launch {
-            videoQualityDB = flowOf(VideoQualityEnum.`1440`)
-        }
+        coroutine.launch { videoQualityDB = flowOf(VideoQualityEnum.`1440`) }
         viewModel.loadWebView(false)
     }
     Spacer(Modifier.height(14.dp))
     ButtonWithBorder(
         R.string.seven_twenty_p, if (quality == VideoQualityEnum.`720`) Color.White else Color.Gray
     ) {
-        coroutine.launch {
-            videoQualityDB = flowOf(VideoQualityEnum.`720`)
-        }
+        coroutine.launch { videoQualityDB = flowOf(VideoQualityEnum.`720`) }
         viewModel.loadWebView(false)
     }
     Spacer(Modifier.height(14.dp))
     ButtonWithBorder(
         R.string.four_eighty_p, if (quality == VideoQualityEnum.`480`) Color.White else Color.Gray
     ) {
-        coroutine.launch {
-            videoQualityDB = flowOf(VideoQualityEnum.`480`)
-        }
+        coroutine.launch { videoQualityDB = flowOf(VideoQualityEnum.`480`) }
         viewModel.loadWebView(false)
     }
     Spacer(Modifier.height(14.dp))

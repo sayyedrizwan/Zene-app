@@ -8,31 +8,39 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
+import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.MusicDataTypes
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 enum class YoutubePlayerState(val v: Int) {
     UNSTARTED(-1), ENDED(0), PLAYING(1), PAUSE(2), BUFFERING(3), VIDEO_CUED(5)
 }
 
-class PlayingVideoInfoViewModel : ViewModel() {
+@HiltViewModel
+class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
+    ViewModel() {
 
     var webView by mutableStateOf<WebView?>(null)
     var playerState by mutableStateOf(YoutubePlayerState.UNSTARTED)
     private var showControlViewJob by mutableStateOf<Job?>(null)
     var showControlView by mutableStateOf(false)
+    var showLoadingView by mutableStateOf(false)
     var videoCurrentTimestamp by mutableFloatStateOf(0f)
     var videoDuration by mutableFloatStateOf(0f)
     var videoMute by mutableStateOf(false)
@@ -48,6 +56,10 @@ class PlayingVideoInfoViewModel : ViewModel() {
 
     fun setWebViewTo(view: WebView) {
         webView = view
+    }
+
+    fun showLoadingView(v: Boolean) {
+        showLoadingView = v
     }
 
     fun killWebView() {
@@ -73,6 +85,12 @@ class PlayingVideoInfoViewModel : ViewModel() {
         webView?.loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
     }
 
+    private fun addToHistory(name: String, author: String) = viewModelScope.launch(Dispatchers.IO) {
+        val data =
+            ZeneMusicData(author, videoID, name, "", videoThumbnail, MusicDataTypes.VIDEOS.name)
+        zeneAPI.addHistory(data).catch { }.collectLatest { }
+    }
+
     fun setVideoState(state: Int, currentTS: String, duration: String, isMute: Boolean) {
         playerState = YoutubePlayerState.entries.first { it.v == state }
         videoCurrentTimestamp = currentTS.toFloatOrNull() ?: 0f
@@ -83,6 +101,7 @@ class PlayingVideoInfoViewModel : ViewModel() {
     fun setVideoInfo(name: String, author: String) {
         videoName = name
         videoAuthor = author
+        addToHistory(name, author)
     }
 
     fun showControlView(doShow: Boolean) {
