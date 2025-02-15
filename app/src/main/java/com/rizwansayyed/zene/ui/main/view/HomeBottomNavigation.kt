@@ -19,6 +19,9 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
@@ -45,7 +48,10 @@ fun HomeBottomNavigationView(
 fun HomeBottomNavItems(icon: Int, txt: Int, nav: HomeNavSelector, vm: NavigationViewModel) {
     Column(Modifier
         .padding(horizontal = 5.dp)
-        .clickable { vm.setHomeNavSections(nav) }
+        .clickable {
+            NavigationUtils.triggerHomeNav(NAV_MAIN_PAGE)
+            vm.setHomeNavSections(nav)
+        }
         .padding(horizontal = 15.dp), Arrangement.Center, Alignment.CenterHorizontally) {
         if (vm.homeNavSection == nav) {
             ImageIcon(icon, 25)

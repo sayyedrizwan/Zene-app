@@ -25,6 +25,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
+import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
@@ -38,7 +39,7 @@ import kotlinx.coroutines.launch
 fun VideoPlayerVideoView(
     modifier: Modifier, videoID: String?, viewModel: PlayingVideoInfoViewModel
 ) {
-
+    var showAddToPlaylists by remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
 
     val coroutine = rememberCoroutineScope()
@@ -50,8 +51,8 @@ fun VideoPlayerVideoView(
         }
 
         @JavascriptInterface
-        fun videoInfo(title: String, author: String) {
-            viewModel.setVideoInfo(title, author)
+        fun videoInfo(title: String, author: String, videoId: String) {
+            viewModel.setVideoInfo(title, author, videoId)
             coroutine.launch {
                 if (videoCCDB.first())
                     viewModel.webView?.evaluateJavascript("enableCaption()", null)
@@ -68,7 +69,7 @@ fun VideoPlayerVideoView(
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     if (view.progress == 100) removeYoutubeTopView(view) {
-                        viewModel.showLoadingView( true)
+                        viewModel.showLoadingView(true)
                     }
                 }
             }
@@ -94,6 +95,11 @@ fun VideoPlayerVideoView(
     AnimatedVisibility(viewModel.showControlView, Modifier, fadeIn(), fadeOut()) {
         VideoPlayerControlView(viewModel)
     }
+
+    if (showAddToPlaylists) AddToPlaylistsView(viewModel.videoInfo) {
+        showAddToPlaylists = false
+    }
+
 
     if (!viewModel.showLoadingView) Box(
         Modifier

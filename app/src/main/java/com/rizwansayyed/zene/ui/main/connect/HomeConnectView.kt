@@ -48,7 +48,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeConnectView(navigationViewModel: NavigationViewModel) {
+fun HomeConnectView() {
     val coroutines = rememberCoroutineScope()
     val connectViewModel: ConnectViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
@@ -64,7 +64,7 @@ fun HomeConnectView(navigationViewModel: NavigationViewModel) {
     var cameraPositionState by remember { mutableStateOf<CameraPositionState?>(null) }
 
     BottomSheetScaffold(
-        { ConnectStatusView(connectViewModel, navigationViewModel) },
+        { ConnectStatusView(connectViewModel) },
         Modifier.fillMaxSize(),
         sheetPeekHeight = 280.dp,
         sheetContentColor = MainColor,

@@ -44,14 +44,11 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
     var videoCurrentTimestamp by mutableFloatStateOf(0f)
     var videoDuration by mutableFloatStateOf(0f)
     var videoMute by mutableStateOf(false)
-    var videoName by mutableStateOf("")
-    var videoAuthor by mutableStateOf("")
-    var videoThumbnail by mutableStateOf("")
+    var videoInfo by mutableStateOf<ZeneMusicData?>(null)
     var videoID by mutableStateOf("")
 
     fun setVideoThumb(id: String?) {
         videoID = id ?: ""
-        videoThumbnail = "https://i.ytimg.com/vi/${id}/hqdefault.jpg"
     }
 
     fun setWebViewTo(view: WebView) {
@@ -85,10 +82,8 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         webView?.loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
     }
 
-    private fun addToHistory(name: String, author: String) = viewModelScope.launch(Dispatchers.IO) {
-        val data =
-            ZeneMusicData(author, videoID, name, "", videoThumbnail, MusicDataTypes.VIDEOS.name)
-        zeneAPI.addHistory(data).catch { }.collectLatest { }
+    private fun addToHistory() = viewModelScope.launch(Dispatchers.IO) {
+        videoInfo?.let { zeneAPI.addHistory(it).catch { }.collectLatest { } }
     }
 
     fun setVideoState(state: Int, currentTS: String, duration: String, isMute: Boolean) {
@@ -98,10 +93,11 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         videoMute = isMute
     }
 
-    fun setVideoInfo(name: String, author: String) {
-        videoName = name
-        videoAuthor = author
-        addToHistory(name, author)
+    fun setVideoInfo(name: String, author: String, videoId: String) {
+        val videoThumbnail = "https://i.ytimg.com/vi/${videoId}/hqdefault.jpg"
+        videoInfo =
+            ZeneMusicData(author, videoID, name, "", videoThumbnail, MusicDataTypes.VIDEOS.name)
+        addToHistory()
     }
 
     fun showControlView(doShow: Boolean) {

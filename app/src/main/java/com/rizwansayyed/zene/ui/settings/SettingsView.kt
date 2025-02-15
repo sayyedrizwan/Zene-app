@@ -16,14 +16,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.settings.view.SettingsPersonalInfo
 import com.rizwansayyed.zene.ui.settings.view.SettingsProfilePhotoView
 import com.rizwansayyed.zene.ui.view.ImageIcon
-import com.rizwansayyed.zene.viewmodel.NavigationViewModel
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 
 @Composable
-fun SettingsView(navigationViewModel: NavigationViewModel) {
+fun SettingsView() {
     val userInfo by DataStorageManager.userInfo.collectAsState(null)
     LazyColumn(Modifier.fillMaxSize()) {
         item {
@@ -31,7 +31,7 @@ fun SettingsView(navigationViewModel: NavigationViewModel) {
             Box(Modifier
                 .rotate(180f)
                 .padding(horizontal = 5.dp)
-                .clickable { navigationViewModel.setHomeNavSections(HomeNavSelector.HOME) }) {
+                .clickable { NavigationUtils.triggerHomeNav(NAV_GO_BACK) }) {
                 ImageIcon(R.drawable.ic_arrow_right, 27)
             }
         }
@@ -45,6 +45,6 @@ fun SettingsView(navigationViewModel: NavigationViewModel) {
     }
 
     BackHandler {
-        navigationViewModel.setHomeNavSections(HomeNavSelector.HOME)
+        NavigationUtils.triggerHomeNav(NAV_GO_BACK)
     }
 }

@@ -1,0 +1,22 @@
+package com.rizwansayyed.zene.utils
+
+
+interface HomeNavigationListener {
+    fun navigate(path: String)
+}
+
+object NavigationUtils {
+    const val NAV_GO_BACK = "go_back"
+    const val NAV_MAIN_PAGE = "main_page"
+    const val NAV_SETTINGS_PAGE = "settings_page"
+
+    private var callback: HomeNavigationListener? = null
+
+    fun setNavigationCallback(listener: HomeNavigationListener) {
+        callback = listener
+    }
+
+    fun triggerHomeNav(path: String) {
+        callback?.navigate(path)
+    }
+}

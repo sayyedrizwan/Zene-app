@@ -212,14 +212,14 @@ fun VideoPlayerInfoView(viewModel: PlayingVideoInfoViewModel, modifier: Modifier
             .padding(top = 10.dp, start = 20.dp)
     ) {
         GlideImage(
-            viewModel.videoThumbnail,
-            viewModel.videoName,
+            viewModel.videoInfo?.thumbnail,
+            viewModel.videoInfo?.name,
             Modifier.size(130.dp, 100.dp),
             contentScale = ContentScale.Crop
         )
 
-        TextViewSemiBold(viewModel.videoName, size = 20, line = 2)
-        TextViewNormal(viewModel.videoAuthor, size = 13, line = 1)
+        TextViewSemiBold(viewModel.videoInfo?.name ?: "", size = 20, line = 2)
+        TextViewNormal(viewModel.videoInfo?.artists ?: "", size = 13, line = 1)
 
         Spacer(Modifier.height(14.dp))
 

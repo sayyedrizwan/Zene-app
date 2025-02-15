@@ -26,7 +26,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
@@ -41,8 +40,6 @@ import com.rizwansayyed.zene.ui.view.HorizontalCircleShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
-import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -50,11 +47,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun ConnectStatusView(
-    connectViewModel: ConnectViewModel,
-    navigationViewModel: NavigationViewModel
-) {
-    val homeViewModel: HomeViewModel = hiltViewModel()
+fun ConnectStatusView(connectViewModel: ConnectViewModel) {
     val userInfo by DataStorageManager.userInfo.collectAsState(null)
 
     val coroutines = rememberCoroutineScope()
@@ -80,9 +73,7 @@ fun ConnectStatusView(
             }
 
             if ((userInfo?.phoneNumber?.length ?: 0) > 4) {
-                item {
-                    ConnectRecentContactsView(navigationViewModel)
-                }
+                item { ConnectRecentContactsView() }
 
                 when (val v = connectViewModel.connectUserList) {
                     ResponseResult.Empty -> {}
@@ -95,9 +86,7 @@ fun ConnectStatusView(
                         if (v.data.isEmpty()) item {
                             TextViewNormal(
                                 stringResource(R.string.you_have_no_friends),
-                                15,
-                                line = 1,
-                                center = true
+                                15, line = 1, center = true
                             )
                         } else item {
                             LazyRow(Modifier.fillMaxWidth()) {

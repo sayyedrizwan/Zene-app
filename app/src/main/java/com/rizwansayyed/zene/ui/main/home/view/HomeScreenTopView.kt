@@ -26,11 +26,12 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.UserInfoResponse
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -45,7 +46,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         Alignment.CenterVertically
     ) {
         Spacer(Modifier.width(10.dp))
-        Box(Modifier.clickable { viewModel.setHomeNavSections(HomeNavSelector.SETTINGS) }) {
+        Box(Modifier.clickable { NavigationUtils.triggerHomeNav(NAV_SETTINGS_PAGE) }) {
             GlideImage(
                 userInfo?.photo,
                 userInfo?.name,

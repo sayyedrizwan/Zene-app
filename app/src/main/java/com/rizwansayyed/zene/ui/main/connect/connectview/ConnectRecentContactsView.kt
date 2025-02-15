@@ -51,6 +51,8 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -138,7 +140,7 @@ fun ConnectFriendsRequestLists(user: ConnectUserResponse) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConnectRecentContactsView(navigationViewModel: NavigationViewModel) {
+fun ConnectRecentContactsView() {
     val coroutine = rememberCoroutineScope()
     val needContact = stringResource(R.string.need_location_permission_to_read_contact)
     var contactsView by remember { mutableStateOf(false) }
@@ -154,11 +156,11 @@ fun ConnectRecentContactsView(navigationViewModel: NavigationViewModel) {
             }
         }
 
-    Spacer(Modifier.height(52.dp))
+    Spacer(Modifier.height(5.dp))
     Row(Modifier.padding(horizontal = 9.dp)) {
         TextViewBold(stringResource(R.string.friends), 18)
         Spacer(Modifier.weight(1f))
-        Box(Modifier.clickable { navigationViewModel.setHomeNavSections(HomeNavSelector.SETTINGS) }) {
+        Box(Modifier.clickable { NavigationUtils.triggerHomeNav(NAV_SETTINGS_PAGE) }) {
             ImageIcon(R.drawable.ic_user_edit, 23)
         }
         Spacer(Modifier.width(14.dp))

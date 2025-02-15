@@ -121,4 +121,6 @@ dependencies {
     implementation(libs.androidx.media3.transformer)
 
     implementation(libs.androidx.webkit)
+
+    implementation(libs.navigation.compose)
 }
