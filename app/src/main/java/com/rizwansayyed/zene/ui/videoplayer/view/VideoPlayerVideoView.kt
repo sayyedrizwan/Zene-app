@@ -28,8 +28,8 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
+import com.rizwansayyed.zene.ui.main.view.ShareDataView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
@@ -44,7 +44,6 @@ fun VideoPlayerVideoView(
     modifier: Modifier, videoID: String?, viewModel: PlayingVideoInfoViewModel
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
-    val showAddToPlaylists = remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
 
     val coroutine = rememberCoroutineScope()
@@ -98,11 +97,15 @@ fun VideoPlayerVideoView(
     }, modifier.fillMaxSize())
 
     AnimatedVisibility(viewModel.showControlView, Modifier, fadeIn(), fadeOut()) {
-        VideoPlayerControlView(viewModel, showAddToPlaylists, playerViewModel)
+        VideoPlayerControlView(viewModel, playerViewModel)
     }
 
-    if (showAddToPlaylists.value) AddToPlaylistsView(viewModel.videoInfo) {
-        showAddToPlaylists.value = false
+    if (viewModel.showPlaylistDialog) AddToPlaylistsView(viewModel.videoInfo) {
+        viewModel.showPlaylistDialog(false)
+    }
+
+    if (viewModel.showShareDialog) ShareDataView(viewModel.videoInfo) {
+        viewModel.showShareDialog(false)
     }
 
 

@@ -39,6 +39,8 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
     var webView by mutableStateOf<WebView?>(null)
     var playerState by mutableStateOf(YoutubePlayerState.UNSTARTED)
     private var showControlViewJob by mutableStateOf<Job?>(null)
+    var showPlaylistDialog by mutableStateOf(false)
+    var showShareDialog by mutableStateOf(false)
     var showControlView by mutableStateOf(false)
     var showLoadingView by mutableStateOf(false)
     var videoCurrentTimestamp by mutableFloatStateOf(0f)
@@ -46,6 +48,14 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
     var videoMute by mutableStateOf(false)
     var videoInfo by mutableStateOf<ZeneMusicData?>(null)
     var videoID by mutableStateOf("")
+
+    fun showPlaylistDialog(v: Boolean) {
+        showPlaylistDialog = v
+    }
+
+    fun showShareDialog(v: Boolean) {
+        showShareDialog = v
+    }
 
     fun setVideoThumb(id: String?) {
         videoID = id ?: ""

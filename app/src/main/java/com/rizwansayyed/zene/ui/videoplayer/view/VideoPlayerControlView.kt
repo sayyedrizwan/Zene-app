@@ -23,7 +23,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -60,11 +59,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun VideoPlayerControlView(
-    viewModel: PlayingVideoInfoViewModel,
-    showAddToPlaylists: MutableState<Boolean>,
-    playerViewModel: PlayerViewModel
-) {
+fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel, playerViewModel: PlayerViewModel) {
     Box(Modifier
         .clickable { viewModel.showControlView(false) }
         .fillMaxSize()
@@ -73,16 +68,13 @@ fun VideoPlayerControlView(
 
         VideoPlayerBottomControl(viewModel, Modifier.align(Alignment.BottomCenter))
 
-        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd), playerViewModel) {
-            showAddToPlaylists.value = true
-        }
+        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd), playerViewModel)
     }
 }
 
 @Composable
 fun QualityAndControlVideoView(
-    viewModel: PlayingVideoInfoViewModel,
-    modifier: Modifier, playerViewModel: PlayerViewModel, add: () -> Unit
+    viewModel: PlayingVideoInfoViewModel, modifier: Modifier, playerViewModel: PlayerViewModel
 ) {
     val isClosedCaption by videoCCDB.collectAsState(true)
     val coroutine = rememberCoroutineScope()
@@ -110,9 +102,13 @@ fun QualityAndControlVideoView(
                     playerViewModel.likeAItem(viewModel.videoInfo, true)
                 }
 
-            ImageWithBorder(R.drawable.ic_playlist, click = add)
+            ImageWithBorder(R.drawable.ic_playlist) {
+                viewModel.showPlaylistDialog(true)
+            }
             VideoPlayerSimilarView(viewModel)
-            ImageWithBorder(R.drawable.ic_share) {}
+            ImageWithBorder(R.drawable.ic_share) {
+                viewModel.showShareDialog(true)
+            }
         }
 
         Spacer(Modifier.height(14.dp))
