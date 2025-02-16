@@ -40,7 +40,7 @@ data class UserPlaylistResponse(
     val img: String?,
     val name: String?,
     val exists: Boolean?,
-    val track_count: Boolean?,
+    val track_count: Int?,
 )
 
 typealias ZeneMusicDataList = List<ZeneMusicData>

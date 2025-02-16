@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +20,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -31,9 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -45,15 +50,19 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
@@ -81,6 +90,7 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
                 Column(
                     Modifier
                         .fillMaxWidth()
+                        .background(Color.Black)
                         .padding(vertical = 8.dp),
                     Arrangement.Center,
                     Alignment.CenterHorizontally
@@ -105,7 +115,9 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
 
             item {
                 Column(
-                    Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                     Arrangement.Center,
                     Alignment.CenterHorizontally
                 ) {
@@ -113,9 +125,10 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
                     Spacer(Modifier.height(20.dp))
                 }
             }
+            item { Spacer(Modifier.height(40.dp)) }
 
             items(playerViewModel.checksPlaylistsSongLists) {
-
+                AddPlaylistItems(it, playerViewModel)
             }
 
             if (playerViewModel.checksPlaylistsSongListsLoading) item {
@@ -144,6 +157,55 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
 
     if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, info) {
         addNewPlaylists = false
+        if (it) {
+            page = 0
+            info?.id?.let { playerViewModel.playlistSongCheckList(page, it) }
+            page += 1
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun AddPlaylistItems(playlist: UserPlaylistResponse, viewModel: PlayerViewModel) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp, horizontal = 5.dp)
+            .clickable {
+                val value =
+                    if (viewModel.itemAddedToPlaylists.contains(playlist.id)) viewModel.itemAddedToPlaylists[playlist.id]
+                        ?: false else playlist.exists ?: false
+
+                viewModel.addMediaToPlaylist(playlist.id ?: "", !value)
+            }, Arrangement.Center, Alignment.CenterVertically
+    ) {
+        GlideImage(
+            playlist.img,
+            playlist.name,
+            Modifier
+                .size(65.dp)
+                .clip(RoundedCornerShape(10.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(horizontal = 9.dp)
+        ) {
+            TextViewBold(playlist.name ?: "", 15)
+            TextViewLight(
+                "${playlist.track_count} ${stringResource(R.string.items)}", 14
+            )
+        }
+
+        RadioButton(
+            selected = if (viewModel.itemAddedToPlaylists.contains(playlist.id)) viewModel.itemAddedToPlaylists[playlist.id]
+                ?: false else playlist.exists ?: false,
+            onClick = null,
+            colors = RadioButtonColors(MainColor, Color.White, Color.White, Color.White)
+        )
     }
 }
 
