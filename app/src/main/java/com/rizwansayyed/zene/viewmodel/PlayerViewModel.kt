@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
+import com.rizwansayyed.zene.data.model.UserPlaylistResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +31,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     var itemAddedToPlaylists = mutableStateMapOf<String, Boolean>()
     var createPlaylist by mutableStateOf<ResponseResult<NewPlaylistResponse>>(ResponseResult.Empty)
+    var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
+    var checksPlaylistsSongListsLoading by mutableStateOf(false)
 
     fun similarVideos(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val v = videoSimilarVideos) {
@@ -49,15 +53,28 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun createNewPlaylists(name: String) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.createNewPlaylists(name).onStart {
-            createPlaylist = ResponseResult.Loading
+    fun createNewPlaylists(name: String, info: ZeneMusicData?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.createNewPlaylists(name, info).onStart {
+                createPlaylist = ResponseResult.Loading
+            }.catch {
+                createPlaylist = ResponseResult.Error(it)
+            }.collectLatest {
+                createPlaylist = ResponseResult.Success(it)
+                delay(1.seconds)
+                createPlaylist = ResponseResult.Empty
+            }
+        }
+
+    fun playlistSongCheckList(page: Int, songId: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (page == 0) checksPlaylistsSongLists.clear()
+        zeneAPI.playlistSongCheck(songId, page).onStart {
+            checksPlaylistsSongListsLoading = true
         }.catch {
-            createPlaylist = ResponseResult.Error(it)
+            checksPlaylistsSongListsLoading = false
         }.collectLatest {
-            createPlaylist = ResponseResult.Success(it)
-            delay(1.seconds)
-            createPlaylist = ResponseResult.Empty
+            checksPlaylistsSongListsLoading = false
+            checksPlaylistsSongLists.addAll(it)
         }
     }
 

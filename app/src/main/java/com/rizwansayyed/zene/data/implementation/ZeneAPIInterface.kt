@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -74,5 +75,6 @@ interface ZeneAPIInterface {
     suspend fun searchASong(q: String): Flow<ZeneMusicData>
     suspend fun similarVideos(id: String): Flow<ZeneMusicDataList>
     suspend fun addHistory(data: ZeneMusicData): Flow<StatusTypeResponse>
-    suspend fun createNewPlaylists(name: String): Flow<NewPlaylistResponse>
+    suspend fun createNewPlaylists(name: String, info: ZeneMusicData?): Flow<NewPlaylistResponse>
+    suspend fun playlistSongCheck(songId: String, page: Int): Flow<List<UserPlaylistResponse>>
 }

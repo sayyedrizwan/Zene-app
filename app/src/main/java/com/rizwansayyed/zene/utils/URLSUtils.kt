@@ -37,7 +37,8 @@ object URLSUtils {
     const val ZENE_SEARCH_TRENDING_GIF_API = "search/trending-gif"
     const val ZENE_SEARCH_GIF_API = "search/search-gif"
 
-    const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API = "connect/users-search-via-phonenumber"
+    const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API =
+        "connect/users-search-via-phonenumber"
     const val ZENE_CONNECT_SEARCH_API = "connect/search"
     const val ZENE_CONNECT_USER_INFO_API = "connect/user-info"
     const val ZENE_CONNECT_FRIENDS_API = "connect/friends"
@@ -66,6 +67,7 @@ object URLSUtils {
     const val ZENE_USER_ADD_HISTORY_API = "users/add-history"
 
     const val ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API = "users-playlists/create-new-playlists"
+    const val ZENE_USER_PLAYLISTS_SONG_CHECK_API = "users-playlists/playlists-song-check"
 
     const val ZENE_CONTACT_CACHE = "zene_contact_cache"
 

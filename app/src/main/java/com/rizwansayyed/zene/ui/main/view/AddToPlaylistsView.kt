@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,9 +24,11 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -63,6 +67,10 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
     var addNewPlaylists by remember { mutableStateOf(false) }
     val playerViewModel: PlayerViewModel = hiltViewModel()
 
+    var page by remember { mutableIntStateOf(0) }
+    val state = rememberLazyListState()
+    var isBottomTriggered by remember { mutableStateOf(false) }
+
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         LazyColumn(
             Modifier
@@ -92,24 +100,57 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
                     }
 
                     Spacer(Modifier.height(30.dp))
+                }
+            }
 
+            item {
+                Column(
+                    Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    Arrangement.Center,
+                    Alignment.CenterHorizontally
+                ) {
                     ButtonWithBorder(R.string.create_playlist) { addNewPlaylists = true }
-
                     Spacer(Modifier.height(20.dp))
                 }
             }
 
+            items(playerViewModel.checksPlaylistsSongLists) {
+
+            }
+
+            if (playerViewModel.checksPlaylistsSongListsLoading) item {
+                Spacer(Modifier.height(40.dp))
+                CircularLoadingView()
+                Spacer(Modifier.height(40.dp))
+            }
         }
     }
 
-    if (addNewPlaylists) CreateAPlaylistsView(playerViewModel) {
+    LaunchedEffect(state) {
+        snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
+            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val totalItemsCount = layoutInfo.totalItemsCount
+
+            if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                isBottomTriggered = true
+                info?.id?.let { playerViewModel.playlistSongCheckList(page, it) }
+                page += 1
+            } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                isBottomTriggered = false
+            }
+        }
+    }
+
+
+    if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, info) {
         addNewPlaylists = false
     }
 }
 
-
 @Composable
-fun CreateAPlaylistsView(playerViewModel: PlayerViewModel, close: (Boolean) -> Unit) {
+fun CreateAPlaylistsView(
+    playerViewModel: PlayerViewModel, info: ZeneMusicData?, close: (Boolean) -> Unit
+) {
     Dialog({ close(false) }, DialogProperties(usePlatformDefaultWidth = false)) {
         val context = LocalContext.current.applicationContext
         val focusManager = LocalFocusManager.current
@@ -165,7 +206,7 @@ fun CreateAPlaylistsView(playerViewModel: PlayerViewModel, close: (Boolean) -> U
                     when (val v = playerViewModel.createPlaylist) {
                         ResponseResult.Empty -> ButtonWithBorder(R.string.create) {
                             if (search.length <= 3) return@ButtonWithBorder
-                            playerViewModel.createNewPlaylists(search)
+                            playerViewModel.createNewPlaylists(search, info)
                         }
 
                         is ResponseResult.Error -> {}

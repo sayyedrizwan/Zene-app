@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -50,6 +51,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_SONG_CHECK_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
@@ -275,5 +277,11 @@ interface ZeneAPIService {
     suspend fun createNewPlaylists(
         @Header("token") token: String, @Body data: RequestBody
     ): NewPlaylistResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_PLAYLISTS_SONG_CHECK_API)
+    suspend fun playlistSongCheck(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<UserPlaylistResponse>
 
 }

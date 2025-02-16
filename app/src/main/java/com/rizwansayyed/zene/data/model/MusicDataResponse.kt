@@ -34,6 +34,15 @@ data class NewPlaylistResponse(
     val playlistID: String?,
 )
 
+data class UserPlaylistResponse(
+    val email: String?,
+    val id: String?,
+    val img: String?,
+    val name: String?,
+    val exists: Boolean?,
+    val track_count: Boolean?,
+)
+
 typealias ZeneMusicDataList = List<ZeneMusicData>
 
 data class ZeneMusicData(
