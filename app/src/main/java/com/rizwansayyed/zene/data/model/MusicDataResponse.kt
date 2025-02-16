@@ -29,6 +29,11 @@ data class MusicDataResponse(
     val topSongs: List<ZeneMusicData?>?
 )
 
+data class NewPlaylistResponse(
+    val isExpire: Boolean?,
+    val playlistID: String?,
+)
+
 typealias ZeneMusicDataList = List<ZeneMusicData>
 
 data class ZeneMusicData(

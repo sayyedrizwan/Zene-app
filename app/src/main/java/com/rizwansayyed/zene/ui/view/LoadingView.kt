@@ -29,15 +29,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
 
 @Composable
-fun CircularLoadingView() {
+fun CircularLoadingView(showFull: Boolean = true) {
     Row(
-        Modifier
+        if (showFull) Modifier
             .padding(20.dp)
-            .fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
+            .fillMaxWidth()
+        else Modifier.padding(20.dp), Arrangement.Center, Alignment.CenterVertically
     ) {
         CircularProgressIndicator(Modifier.width(35.dp), Color.White, trackColor = MainColor)
     }
@@ -63,7 +63,8 @@ fun HorizontalCircleShimmerLoadingCard() {
             ShimmerEffect(
                 modifier = Modifier
                     .padding(horizontal = 9.dp)
-                    .size(170.dp).clip(RoundedCornerShape(100)), durationMillis = 1000
+                    .size(170.dp)
+                    .clip(RoundedCornerShape(100)), durationMillis = 1000
             )
         }
     }

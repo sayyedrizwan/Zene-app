@@ -89,6 +89,7 @@
     <string name="grant">Grant</string>
     <string name="play">Play</string>
     <string name="playlists">Playlists</string>
+    <string name="playlist_name">Playlist Name</string>
     <string name="albums">Albums</string>
     <string name="confirm">Confirm</string>
     <string name="friends">Friends</string>
@@ -111,6 +112,9 @@
     <string name="view">View</string>
     <string name="close">Close</string>
     <string name="post_a_gif">Post a GIF</string>
+    <string name="create">Create</string>
+    <string name="create_playlist">Create Playlist</string>
+    <string name="add_to_playlist">Add to Playlist</string>
     <string name="post">Post</string>
     <string name="post_a_gif_desc">You cannot delete the GIF. Once it\'s posted. It will de auto deleted after 24 hours with the vibe. Are you sure want to post?</string>
     <string name="gif_spress">GIF-Spress</string>
@@ -178,6 +182,7 @@
     <string name="seven_twenty_p">720p</string>
     <string name="four_eighty_p">480p</string>
     <string name="pip_mode_disabled_for_app">Picture and Picture Mode is disabled for the app.</string>
+    <string name="give_your_playlist_a_name">Give your playlist a name</string>
 
 
     <!--    notification channels-->

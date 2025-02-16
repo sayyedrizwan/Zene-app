@@ -65,6 +65,8 @@ object URLSUtils {
     const val ZENE_USER_VERIFY_NUMBER_OTP_API = "users/verify-number-otp"
     const val ZENE_USER_ADD_HISTORY_API = "users/add-history"
 
+    const val ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API = "users-playlists/create-new-playlists"
+
     const val ZENE_CONTACT_CACHE = "zene_contact_cache"
 
     const val IP_BASE_URL = "http://ip-api.com/"

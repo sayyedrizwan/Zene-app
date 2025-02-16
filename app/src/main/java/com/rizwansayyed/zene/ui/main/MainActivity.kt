@@ -23,6 +23,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
@@ -36,6 +37,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SEARCH
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.search.SearchView
+import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
@@ -99,6 +101,16 @@ class MainActivity : ComponentActivity() {
 
                         if (navigationViewModel.homeNotificationSection != null)
                             NotificationConnectLocationShare(navigationViewModel)
+
+                        val v = ZeneMusicData(
+                            "Album",
+                            "OLAK5uy_mna-KUWe1Ey7LBZVvj5g4PqxYHuOVbzB0",
+                            "Jannat (Original Motion Picture Soundtrack)",
+                            "",
+                            "https://lh3.googleusercontent.com/EAcRDkdhB4b-DneqjeCHvPPx0YAD9x5E2gWhq8BcJrL-Xqji-9EeHApsKYJcSyxgHodoKzEH0MJlO2k",
+                            "MUSIC"
+                        )
+                        AddToPlaylistsView(v) {}
 
                         BackHandler {
                             navController.popBackStack()

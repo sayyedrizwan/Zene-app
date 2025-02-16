@@ -561,4 +561,17 @@ class ZeneAPIImplementation @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.similarVideos(token, body))
     }
+
+    override suspend fun createNewPlaylists(name: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("name", name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.createNewPlaylists(token, body))
+    }
 }

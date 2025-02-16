@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
+import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
@@ -48,6 +49,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
@@ -67,7 +69,9 @@ interface ZeneAPIService {
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_ADD_HISTORY_API)
-    suspend fun addHistory(@Header("token") token: String, @Body data: RequestBody): StatusTypeResponse
+    suspend fun addHistory(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_RECENT_HOME_MUSIC_API)
@@ -227,8 +231,7 @@ interface ZeneAPIService {
 
     @POST(ZENE_CONNECT_SHARE_VIBE_API)
     suspend fun shareConnectVibe(
-        @Header("token") token: String,
-        @Body body: RequestBody?
+        @Header("token") token: String, @Body body: RequestBody?
     ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
@@ -267,5 +270,10 @@ interface ZeneAPIService {
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
 
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API)
+    suspend fun createNewPlaylists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): NewPlaylistResponse
 
 }
