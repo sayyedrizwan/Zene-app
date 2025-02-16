@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
+import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
@@ -50,6 +51,9 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_SONG_CHECK_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
@@ -283,5 +287,23 @@ interface ZeneAPIService {
     suspend fun playlistSongCheck(
         @Header("token") token: String, @Body data: RequestBody
     ): List<UserPlaylistResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_ADD_TO_PLAYLISTS_API)
+    suspend fun addItemToPlaylists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_ADD_LIKE_API)
+    suspend fun likeItems(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_IS_LIKED_API)
+    suspend fun likedStatus(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MediaLikedResponse
 
 }

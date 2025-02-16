@@ -102,16 +102,6 @@ class MainActivity : ComponentActivity() {
                         if (navigationViewModel.homeNotificationSection != null)
                             NotificationConnectLocationShare(navigationViewModel)
 
-                        val v = ZeneMusicData(
-                            "Album",
-                            "guBxOvJy4bE",
-                            "Jannat (Original Motion Picture Soundtrack)",
-                            "",
-                            "https://lh3.googleusercontent.com/EAcRDkdhB4b-DneqjeCHvPPx0YAD9x5E2gWhq8BcJrL-Xqji-9EeHApsKYJcSyxgHodoKzEH0MJlO2k",
-                            "MUSIC"
-                        )
-                        AddToPlaylistsView(v) {}
-
                         BackHandler {
                             navController.popBackStack()
                         }

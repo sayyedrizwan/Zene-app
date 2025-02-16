@@ -125,10 +125,10 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
                     Spacer(Modifier.height(20.dp))
                 }
             }
-            item { Spacer(Modifier.height(40.dp)) }
+            item { Spacer(Modifier.height(20.dp)) }
 
             items(playerViewModel.checksPlaylistsSongLists) {
-                AddPlaylistItems(it, playerViewModel)
+                AddPlaylistItems(it, info, playerViewModel)
             }
 
             if (playerViewModel.checksPlaylistsSongListsLoading) item {
@@ -167,17 +167,20 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun AddPlaylistItems(playlist: UserPlaylistResponse, viewModel: PlayerViewModel) {
+fun AddPlaylistItems(
+    playlist: UserPlaylistResponse, info: ZeneMusicData?, viewModel: PlayerViewModel
+) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 5.dp)
             .clickable {
                 val value =
-                    if (viewModel.itemAddedToPlaylists.contains(playlist.id)) viewModel.itemAddedToPlaylists[playlist.id]
-                        ?: false else playlist.exists ?: false
+                    if (viewModel.itemAddedToPlaylists.contains(playlist.id))
+                        viewModel.itemAddedToPlaylists[playlist.id] ?: false else playlist.exists
+                        ?: false
 
-                viewModel.addMediaToPlaylist(playlist.id ?: "", !value)
+                viewModel.addMediaToPlaylist(playlist.id ?: "", !value, info)
             }, Arrangement.Center, Alignment.CenterVertically
     ) {
         GlideImage(
@@ -283,7 +286,6 @@ fun CreateAPlaylistsView(
                             }
 
                             if (v.data.playlistID != null) {
-                                playerViewModel.addMediaToPlaylist(v.data.playlistID, true)
                                 LaunchedEffect(Unit) {
                                     close(true)
                                 }

@@ -5,8 +5,10 @@ import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
+import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
@@ -51,15 +53,11 @@ interface ZeneAPIInterface {
     suspend fun connectFriendsList(): Flow<List<ConnectUserInfoResponse>>
     suspend fun search(q: String): Flow<SearchDataResponse>
     suspend fun searchPlaces(
-        q: String?,
-        lon: Double?,
-        lat: Double?
+        q: String?, lon: Double?, lat: Double?
     ): Flow<List<SearchPlacesDataResponse>>
 
     suspend fun shareConnectVibe(
-        d: ConnectFeedDataResponse,
-        file: String?,
-        thumbnail: String?
+        d: ConnectFeedDataResponse, file: String?, thumbnail: String?
     ): Flow<StatusTypeResponse>
 
     suspend fun connectFriendsRequestList(): Flow<List<ConnectUserResponse>>
@@ -77,4 +75,10 @@ interface ZeneAPIInterface {
     suspend fun addHistory(data: ZeneMusicData): Flow<StatusTypeResponse>
     suspend fun createNewPlaylists(name: String, info: ZeneMusicData?): Flow<NewPlaylistResponse>
     suspend fun playlistSongCheck(songId: String, page: Int): Flow<List<UserPlaylistResponse>>
+    suspend fun addItemToPlaylists(
+        info: ZeneMusicData?, playlistID: String, state: Boolean
+    ): Flow<StatusTypeResponse>
+
+    suspend fun likedStatus(id: String?, type: MusicDataTypes): Flow<MediaLikedResponse>
+    suspend fun addRemoveLikeItem(info: ZeneMusicData?, state: Boolean): Flow<StatusTypeResponse>
 }

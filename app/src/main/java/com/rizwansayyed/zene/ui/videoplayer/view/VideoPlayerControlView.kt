@@ -52,6 +52,7 @@ import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.utils.MainUtils.hasPIPPermission
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import com.rizwansayyed.zene.viewmodel.YoutubePlayerState
 import kotlinx.coroutines.flow.flowOf
@@ -60,7 +61,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun VideoPlayerControlView(
-    viewModel: PlayingVideoInfoViewModel, showAddToPlaylists: MutableState<Boolean>
+    viewModel: PlayingVideoInfoViewModel,
+    showAddToPlaylists: MutableState<Boolean>,
+    playerViewModel: PlayerViewModel
 ) {
     Box(Modifier
         .clickable { viewModel.showControlView(false) }
@@ -70,7 +73,7 @@ fun VideoPlayerControlView(
 
         VideoPlayerBottomControl(viewModel, Modifier.align(Alignment.BottomCenter))
 
-        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd)) {
+        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd), playerViewModel) {
             showAddToPlaylists.value = true
         }
     }
@@ -78,7 +81,8 @@ fun VideoPlayerControlView(
 
 @Composable
 fun QualityAndControlVideoView(
-    viewModel: PlayingVideoInfoViewModel, modifier: Modifier, add: () -> Unit
+    viewModel: PlayingVideoInfoViewModel,
+    modifier: Modifier, playerViewModel: PlayerViewModel, add: () -> Unit
 ) {
     val isClosedCaption by videoCCDB.collectAsState(true)
     val coroutine = rememberCoroutineScope()
@@ -97,6 +101,15 @@ fun QualityAndControlVideoView(
         Spacer(Modifier.height(14.dp))
 
         Row {
+            if (playerViewModel.isItemLiked)
+                ImageWithBorder(R.drawable.ic_thumbs_up, Color.Red) {
+                    playerViewModel.likeAItem(viewModel.videoInfo, false)
+                }
+            else
+                ImageWithBorder(R.drawable.ic_thumbs_up) {
+                    playerViewModel.likeAItem(viewModel.videoInfo, true)
+                }
+
             ImageWithBorder(R.drawable.ic_playlist, click = add)
             VideoPlayerSimilarView(viewModel)
             ImageWithBorder(R.drawable.ic_share) {}

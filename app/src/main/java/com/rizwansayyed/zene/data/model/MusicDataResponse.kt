@@ -43,6 +43,8 @@ data class UserPlaylistResponse(
     val track_count: Int?,
 )
 
+data class MediaLikedResponse(val isLiked: Boolean?)
+
 typealias ZeneMusicDataList = List<ZeneMusicData>
 
 data class ZeneMusicData(

@@ -26,10 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoPlayerVideoView
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class VideoPlayerActivity : ComponentActivity() {
@@ -71,11 +74,14 @@ class VideoPlayerActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val videoID = intent.getStringExtra(Intent.ACTION_VIEW)
-        viewModel.showLoadingView( false)
-        viewModel.showControlView(false)
-        viewModel.setVideoThumb(videoID)
-        viewModel.loadWebView(true)
+        lifecycleScope.launch {
+            val videoID = intent.getStringExtra(Intent.ACTION_VIEW)
+            viewModel.showLoadingView(false)
+            delay(500)
+            viewModel.showControlView(false)
+            viewModel.setVideoThumb(videoID)
+            viewModel.loadWebView(true)
+        }
     }
 
     @Composable

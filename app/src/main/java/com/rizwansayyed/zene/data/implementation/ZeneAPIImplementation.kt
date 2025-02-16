@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -426,9 +427,7 @@ class ZeneAPIImplementation @Inject constructor(
     }
 
     override suspend fun shareConnectVibe(
-        d: ConnectFeedDataResponse,
-        file: String?,
-        thumbnail: String?
+        d: ConnectFeedDataResponse, file: String?, thumbnail: String?
     ) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -595,5 +594,58 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.playlistSongCheck(token, body))
+    }
+
+    override suspend fun addItemToPlaylists(
+        info: ZeneMusicData?, playlistID: String, state: Boolean
+    ) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("status", state)
+            put("playlist_id", playlistID)
+            put("media_name", info?.name ?: "")
+            put("media_artists", info?.artists ?: "")
+            put("type", info?.type ?: "")
+            put("media_id", info?.id ?: "")
+            put("media_thumbnail", info?.thumbnail ?: "")
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.addItemToPlaylists(token, body))
+    }
+
+    override suspend fun addRemoveLikeItem(info: ZeneMusicData?, state: Boolean) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("status", state)
+            put("media_name", info?.name ?: "")
+            put("media_artists", info?.artists ?: "")
+            put("type", info?.type ?: "")
+            put("media_id", info?.id ?: "")
+            put("media_thumbnail", info?.thumbnail ?: "")
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.likeItems(token, body))
+    }
+
+    override suspend fun likedStatus(id: String?, type: MusicDataTypes) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("media_id", id)
+            put("type", type.name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.likedStatus(token, body))
     }
 }

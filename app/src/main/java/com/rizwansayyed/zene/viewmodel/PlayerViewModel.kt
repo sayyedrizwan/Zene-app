@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -34,6 +34,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var createPlaylist by mutableStateOf<ResponseResult<NewPlaylistResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
+    var isItemLiked by mutableStateOf(false)
 
     fun similarVideos(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val v = videoSimilarVideos) {
@@ -79,7 +80,24 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun addMediaToPlaylist(id: String, state: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        itemAddedToPlaylists[id] = state
+    fun likedMediaItem(id: String?, type: MusicDataTypes) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.likedStatus(id, type).onStart {
+            isItemLiked = false
+        }.catch {
+            isItemLiked = false
+        }.collectLatest {
+            isItemLiked = it.isLiked ?: false
+        }
     }
+
+    fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        isItemLiked = doLike
+        zeneAPI.addRemoveLikeItem(data, doLike).catch { }.collectLatest { }
+    }
+
+    fun addMediaToPlaylist(id: String, state: Boolean, info: ZeneMusicData?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            itemAddedToPlaylists[id] = state
+            zeneAPI.addItemToPlaylists(info, id, state).catch { }.collectLatest { }
+        }
 }

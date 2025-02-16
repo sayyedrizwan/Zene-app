@@ -22,12 +22,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -39,7 +43,8 @@ import kotlinx.coroutines.launch
 fun VideoPlayerVideoView(
     modifier: Modifier, videoID: String?, viewModel: PlayingVideoInfoViewModel
 ) {
-    var showAddToPlaylists = remember { mutableStateOf(false) }
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val showAddToPlaylists = remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
 
     val coroutine = rememberCoroutineScope()
@@ -93,7 +98,7 @@ fun VideoPlayerVideoView(
     }, modifier.fillMaxSize())
 
     AnimatedVisibility(viewModel.showControlView, Modifier, fadeIn(), fadeOut()) {
-        VideoPlayerControlView(viewModel, showAddToPlaylists)
+        VideoPlayerControlView(viewModel, showAddToPlaylists, playerViewModel)
     }
 
     if (showAddToPlaylists.value) AddToPlaylistsView(viewModel.videoInfo) {
@@ -110,6 +115,7 @@ fun VideoPlayerVideoView(
     }
 
     LifecycleResumeEffect(Unit) {
+        playerViewModel.likedMediaItem(videoID, MusicDataTypes.VIDEOS)
         job?.cancel()
         job = coroutine.launch {
             while (true) {
