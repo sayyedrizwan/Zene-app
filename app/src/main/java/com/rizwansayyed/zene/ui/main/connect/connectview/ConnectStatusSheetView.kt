@@ -142,7 +142,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
             }
 
             item {
-                Spacer(Modifier.height(200.dp))
+                Spacer(Modifier.height(300.dp))
             }
 
         }

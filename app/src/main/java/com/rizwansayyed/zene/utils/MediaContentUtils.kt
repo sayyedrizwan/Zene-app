@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.NONE
 import com.rizwansayyed.zene.data.model.MusicDataTypes.PLAYLISTS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.PODCAST
 import com.rizwansayyed.zene.data.model.MusicDataTypes.PODCAST_CATEGORIES
+import com.rizwansayyed.zene.data.model.MusicDataTypes.RADIO
 import com.rizwansayyed.zene.data.model.MusicDataTypes.SONGS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.TEXT
 import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
@@ -30,10 +31,12 @@ import com.rizwansayyed.zene.utils.MainUtils.moshi
 
 object MediaContentUtils {
 
-    fun startMedia(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList()) {
+    fun startMedia(
+        data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList(), isNew: Boolean = false
+    ) {
         when (data?.type()) {
             NONE -> {}
-            SONGS -> startAppService(context, data, list)
+            SONGS, PODCAST, AI_MUSIC, RADIO -> startAppService(context, data, list, isNew)
             VIDEOS -> Intent(context, VideoPlayerActivity::class.java).apply {
                 flags = FLAG_ACTIVITY_NEW_TASK
                 putExtra(Intent.ACTION_VIEW, data.id)
@@ -43,7 +46,6 @@ object MediaContentUtils {
             PLAYLISTS -> {}
             ALBUMS -> {}
             ARTISTS -> {}
-            PODCAST -> {}
             PODCAST_CATEGORIES -> {}
             NEWS -> {
                 val toolbarColor =
@@ -60,14 +62,15 @@ object MediaContentUtils {
             }
 
             MOVIES -> {}
-            AI_MUSIC -> {}
             TEXT -> {}
             null -> {}
         }
     }
 
 
-    private fun startAppService(context: Context, data: ZeneMusicData, list: List<ZeneMusicData?>) {
+    private fun startAppService(
+        context: Context, data: ZeneMusicData, list: List<ZeneMusicData?>, isNew: Boolean = false
+    ) {
         val listJson =
             moshi.adapter(Array<ZeneMusicData?>::class.java).toJson(list.toTypedArray())
 
@@ -75,6 +78,7 @@ object MediaContentUtils {
             flags = FLAG_ACTIVITY_NEW_TASK
             putExtra(Intent.ACTION_VIEW, moshi.adapter(ZeneMusicData::class.java).toJson(data))
             putExtra(Intent.ACTION_RUN, listJson)
+            putExtra(Intent.ACTION_USER_PRESENT, isNew)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(this)
             else context.startService(this)
         }

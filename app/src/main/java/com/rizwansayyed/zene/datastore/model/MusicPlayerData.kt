@@ -5,7 +5,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 data class MusicPlayerData(
     val lists: List<ZeneMusicData?>,
     val data: ZeneMusicData?,
-    val state: YoutubePlayerState?,
-    var currentDuration: Int?,
-    var totalDuration: Int?,
+    var state: YoutubePlayerState?,
+    var currentDuration: String?,
+    var totalDuration: String?,
 )

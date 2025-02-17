@@ -16,6 +16,7 @@ object URLSUtils {
 
 
     const val YT_VIDEO_BASE_URL = "https://www.youtube.com/"
+    const val X_VIDEO_BASE_URL = "https://www.x.com/"
 
 
     const val FB_GRAPH_ID = "https://graph.facebook.com/me"

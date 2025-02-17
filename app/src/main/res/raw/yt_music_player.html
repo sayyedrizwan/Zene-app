@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Zene Video Player</title>
+    </head>
+    <body>
+        <div id="player"></div>
+        <script>
+            var setSpeed = 1.0;
+            var showCaption = true;
+            var isNew = false;
+
+            async function setLocalStorageItem() {
+              const currentTimestamp = Date.now();
+              const threeMinutesBefore = currentTimestamp - 3 * 60 * 1000;
+              const oneYearAfter = threeMinutesBefore + 365 * 24 * 60 * 60 * 1000;
+
+              try {
+                const value = JSON.stringify({
+                  data: '{"quality": 144,"previousQuality": 144}',
+                  expiration: oneYearAfter,
+                  creation: threeMinutesBefore,
+                });
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                localStorage.setItem("yt-player-quality", value);
+              } catch (error) {
+                console.error("Error setting LocalStorage item:", error);
+              }
+            }
+
+            document.addEventListener("DOMContentLoaded", (event) => {
+              setLocalStorageItem();
+            });
+
+
+            var tag = document.createElement("script");
+
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName("script")[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            var player;
+            function onYouTubeIframeAPIReady() {
+              player = new YT.Player("player", {
+                height: "100%",
+                width: "100%",
+                videoId: "<<VideoID>>",
+                playerVars: { 'autoplay': 1, 'controls': 0 },
+                events: {
+                  onReady: onPlayerReady,
+                  onStateChange: onPlayerStateChange,
+                },
+              });
+            }
+
+            function onPlayerReady(event) {
+              event.target.unMute();
+              event.target.setVolume(100);
+              event.target.setLoop(true);
+              event.target.playVideo();
+              event.target.setPlaybackRate(setSpeed);
+              if(isNew) {
+                 event.target.pauseVideo();
+              }
+
+              Zene.videoInfo(player.getVideoData().title, player.getVideoData().author, player.getVideoData().video_id);
+            }
+
+            function playingStatus() {
+              Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration());
+            }
+
+            function onPlayerStateChange(event) {
+              playingStatus();
+              if (event.data === YT.PlayerState.ENDED) player.loadVideoById("<<VideoID>>");
+            }
+
+            function unMute() {
+               player.unMute();
+               playingStatus();
+            }
+
+            function playbackRate(v) {
+               player.setPlaybackRate(v);
+            }
+
+            function seekTo(v) {
+              player.seekTo(v);
+              playingStatus();
+            }
+
+            function seekAhead() {
+              seekTo(player.getCurrentTime() + 5);
+            }
+
+            function seekBack() {
+              seekTo(player.getCurrentTime() - 5);
+            }
+
+            function playVideo() {
+              player.playVideo();
+            }
+
+            function pauseVideo() {
+              player.pauseVideo();
+            }
+
+            function stopVideo() {
+              player.stopVideo();
+            }
+        </script>
+    </body>
+</html>

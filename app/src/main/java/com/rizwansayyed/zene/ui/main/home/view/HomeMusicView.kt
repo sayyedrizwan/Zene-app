@@ -37,7 +37,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     Spacer(Modifier.height(30.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.topSongs) {
-                            ItemCardView(it)
+                            ItemCardView(it, v.data.topSongs)
                         }
                     }
                 }
@@ -126,6 +126,6 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
             }
         }
 
-        item { Spacer(Modifier.height(200.dp)) }
+        item { Spacer(Modifier.height(300.dp)) }
     }
 }

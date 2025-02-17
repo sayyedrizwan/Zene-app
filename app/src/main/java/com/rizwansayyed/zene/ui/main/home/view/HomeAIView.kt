@@ -92,7 +92,7 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
             }
         }
 
-        item { Spacer(Modifier.height(200.dp)) }
+        item { Spacer(Modifier.height(300.dp)) }
     }
 
     LaunchedEffect(Unit) {

@@ -288,7 +288,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
             }
         }
 
-        item { Spacer(Modifier.height(250.dp)) }
+        item { Spacer(Modifier.height(320.dp)) }
     }
 
     LaunchedEffect(showSearch) {

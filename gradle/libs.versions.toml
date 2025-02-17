@@ -44,6 +44,7 @@ camera = "1.5.0-alpha05"
 material3 = "1.4.0-alpha08"
 webkit = "1.12.1"
 navigation = "2.8.7"
+paletteKtx = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -121,6 +122,7 @@ androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
+androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

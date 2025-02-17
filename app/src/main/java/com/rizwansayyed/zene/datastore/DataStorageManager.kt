@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_ST
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SONG_SPEED_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_PLAYER_CC_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_QUALITY_DB
@@ -41,6 +42,7 @@ object DataStorageManager {
         val IP_DB = stringPreferencesKey("ip_db")
         val VIDEO_QUALITY_DB = stringPreferencesKey("video_quality_db")
         val VIDEO_SPEED_DB = stringPreferencesKey("video_speed_db")
+        val SONG_SPEED_DB = stringPreferencesKey("song_speed_db")
         val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
         val MUSIC_PLAYER_DB = stringPreferencesKey("music_player_db")
     }
@@ -102,6 +104,18 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[VIDEO_SPEED_DB] = value.first().name
+            }
+            if (isActive) cancel()
+        }
+
+    var songSpeedDB: Flow<VideoSpeedEnum>
+        get() = context.dataStore.data.map {
+            val q = VideoSpeedEnum.entries.firstOrNull { v -> v.name == it[SONG_SPEED_DB] }
+            q ?: VideoSpeedEnum.`1_0`
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[SONG_SPEED_DB] = value.first().name
             }
             if (isActive) cancel()
         }

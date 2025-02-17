@@ -42,6 +42,8 @@ fun SettingsView() {
         item {
             SettingsPersonalInfo(userInfo)
         }
+
+        item { Spacer(Modifier.height(300.dp)) }
     }
 
     BackHandler {

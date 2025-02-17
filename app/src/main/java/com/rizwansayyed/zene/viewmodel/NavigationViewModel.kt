@@ -12,9 +12,14 @@ class NavigationViewModel : ViewModel() {
     var homeSection by mutableStateOf(HomeSectionSelector.MUSIC)
     var homeNavSection by mutableStateOf(HomeNavSelector.HOME)
     var homeNotificationSection by mutableStateOf<IntentFCMNotification?>(null)
+    var showMusicPlayer by mutableStateOf(false)
 
     fun setHomeSections(v: HomeSectionSelector) {
         homeSection = v
+    }
+
+    fun setMusicPlayer(v: Boolean) {
+        showMusicPlayer = v
     }
 
     fun setHomeNavSections(v: HomeNavSelector) {
