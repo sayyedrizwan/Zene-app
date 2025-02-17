@@ -411,15 +411,17 @@ class ZeneAPIImplementation @Inject constructor(
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
-        val lat = BackgroundLocationTracking.updateLocationLat
-        val lon = BackgroundLocationTracking.updateLocationLon
-        val address = getAddressFromLatLong(lat, lon) ?: ""
+        val location = BackgroundLocationTracking.getLatestLocation()
+        val address =
+            if (location != null) getAddressFromLatLong(location.latitude, location.longitude)
+                ?: "" else ""
+
         val json = JSONObject().apply {
             put("email", email)
             put("toEmail", toEmail)
             put("address", address)
-            put("lat", lat)
-            put("lon", lon)
+            put("lat", location?.latitude)
+            put("lon", location?.longitude)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -647,5 +649,20 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.likedStatus(token, body))
+    }
+
+    override suspend fun similarPlaylistsSongs(id: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val ip = ipAPI.get()
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+            put("country", ip.countryCode)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.similarPlaylistsSongs(token, body))
     }
 }

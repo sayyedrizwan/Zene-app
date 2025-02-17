@@ -22,11 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -34,7 +32,6 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
-import kotlinx.coroutines.tasks.await
 
 @Composable
 fun ConnectProfileMessageButton(
@@ -131,12 +128,10 @@ fun ConnectLocationButton(
 
     LaunchedEffect(Unit) {
         isLoading = true
-        val l = LocationServices.getFusedLocationProviderClient(context)
         try {
-            val token = CancellationTokenSource().token
-            val location = l.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, token).await()
+            val location = BackgroundLocationTracking.getLatestLocation()
             areaName = try {
-                getAddressFromLatLong(location.latitude, location.longitude) ?: ""
+                getAddressFromLatLong(location!!.latitude, location.longitude) ?: ""
             } catch (e: Exception) {
                 ""
             }

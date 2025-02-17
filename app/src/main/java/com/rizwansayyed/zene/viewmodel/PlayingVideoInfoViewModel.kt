@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
+import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
@@ -27,10 +28,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
-
-enum class YoutubePlayerState(val v: Int) {
-    UNSTARTED(-1), ENDED(0), PLAYING(1), PAUSE(2), BUFFERING(3), VIDEO_CUED(5)
-}
 
 @HiltViewModel
 class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :

@@ -42,6 +42,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
+import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageWithBgAndBorder
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
@@ -53,7 +54,6 @@ import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
-import com.rizwansayyed.zene.viewmodel.YoutubePlayerState
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 

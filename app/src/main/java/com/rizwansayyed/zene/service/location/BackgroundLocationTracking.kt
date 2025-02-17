@@ -2,13 +2,16 @@ package com.rizwansayyed.zene.service.location
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import android.os.Looper
-import android.util.Log
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import kotlinx.coroutines.tasks.await
 import kotlin.time.Duration.Companion.minutes
 
 @SuppressLint("MissingPermission")
@@ -17,6 +20,17 @@ class BackgroundLocationTracking(context: Context) : LocationTrackingBackground 
         var updateLocationLat = 0.0
         var updateLocationLon = 0.0
         var backgroundTracking: LocationTrackingBackground? = null
+
+        suspend fun getLatestLocation(): Location? {
+            val locationClient = LocationServices.getFusedLocationProviderClient(context)
+
+            return runCatching {
+                val token = CancellationTokenSource().token
+                locationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, token).await()
+            }.getOrElse {
+                runCatching { locationClient.lastLocation.await() }.getOrNull()
+            }
+        }
     }
 
     init {

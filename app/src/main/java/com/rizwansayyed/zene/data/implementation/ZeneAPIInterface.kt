@@ -81,4 +81,5 @@ interface ZeneAPIInterface {
 
     suspend fun likedStatus(id: String?, type: MusicDataTypes): Flow<MediaLikedResponse>
     suspend fun addRemoveLikeItem(info: ZeneMusicData?, state: Boolean): Flow<StatusTypeResponse>
+    suspend fun similarPlaylistsSongs(id: String?): Flow<ZeneMusicDataList>
 }

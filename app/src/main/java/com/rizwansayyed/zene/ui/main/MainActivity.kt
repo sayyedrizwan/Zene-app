@@ -23,7 +23,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
@@ -37,7 +36,6 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SEARCH
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.search.SearchView
-import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
@@ -47,7 +45,6 @@ import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.utils.HomeNavigationListener
 import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
-import com.rizwansayyed.zene.utils.MainUtils.startAppService
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
@@ -103,7 +100,9 @@ class MainActivity : ComponentActivity() {
                             NotificationConnectLocationShare(navigationViewModel)
 
                         BackHandler {
-                            navController.popBackStack()
+                            if (!navController.popBackStack()) {
+                                finish()
+                            }
                         }
                     } else if (showLogin) LoginView()
                 }
@@ -131,7 +130,7 @@ class MainActivity : ComponentActivity() {
                     IntentCheckUtils(intent, navigationViewModel)
                     showLogin = true
                     delay(1.seconds)
-                    startAppService(this@MainActivity)
+
 
                     delay(4.seconds)
                     if (!isNotificationEnabled() && userInfo?.isLoggedIn() == true) navigationViewModel.setHomeNavSections(

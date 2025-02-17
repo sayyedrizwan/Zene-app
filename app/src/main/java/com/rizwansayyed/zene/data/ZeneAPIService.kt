@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
@@ -305,5 +306,11 @@ interface ZeneAPIService {
     suspend fun likedStatus(
         @Header("token") token: String, @Body data: RequestBody
     ): MediaLikedResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API)
+    suspend fun similarPlaylistsSongs(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
 
 }

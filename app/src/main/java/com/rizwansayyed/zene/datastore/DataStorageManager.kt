@@ -12,10 +12,12 @@ import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_STORE_KEY
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_PLAYER_CC_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_QUALITY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_SPEED_DB
+import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.VideoQualityEnum
 import com.rizwansayyed.zene.datastore.model.VideoSpeedEnum
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
@@ -40,6 +42,7 @@ object DataStorageManager {
         val VIDEO_QUALITY_DB = stringPreferencesKey("video_quality_db")
         val VIDEO_SPEED_DB = stringPreferencesKey("video_speed_db")
         val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
+        val MUSIC_PLAYER_DB = stringPreferencesKey("music_player_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -50,6 +53,18 @@ object DataStorageManager {
             context.dataStore.edit {
                 val json = moshi.adapter(UserInfoResponse::class.java).toJson(value.first())
                 it[USER_INFO_DB] = json
+            }
+            if (isActive) cancel()
+        }
+
+    var musicPlayerDB: Flow<MusicPlayerData?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(MusicPlayerData::class.java).fromJson(it[MUSIC_PLAYER_DB] ?: EMPTY_JSON)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                val json = moshi.adapter(MusicPlayerData::class.java).toJson(value.first())
+                it[MUSIC_PLAYER_DB] = json
             }
             if (isActive) cancel()
         }

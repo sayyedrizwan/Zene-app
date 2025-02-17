@@ -154,9 +154,9 @@ fun NewsItemCard(data: ZeneMusicData?) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ItemCardView(data: ZeneMusicData?) {
+fun ItemCardView(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList()) {
     Column(Modifier
-        .clickable { startMedia(data) }
+        .clickable { startMedia(data, list) }
         .padding(horizontal = 9.dp)
         .width(175.dp)) {
         Box(Modifier.fillMaxWidth()) {

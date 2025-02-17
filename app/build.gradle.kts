@@ -123,4 +123,5 @@ dependencies {
     implementation(libs.androidx.webkit)
 
     implementation(libs.navigation.compose)
+    implementation(libs.browser)
 }

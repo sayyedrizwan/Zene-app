@@ -18,7 +18,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
-import com.rizwansayyed.zene.service.ForegroundService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -314,15 +313,6 @@ object MainUtils {
         return location == PackageManager.PERMISSION_GRANTED
     }
 
-    fun startAppService(context: Context) {
-        Intent(context, ForegroundService::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(this)
-            else context.startService(this)
-        }
-    }
-
-
     fun openAppSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.data = Uri.parse("package:" + context.packageName)
@@ -463,11 +453,18 @@ object MainUtils {
         val currentSecs = current % 60
 
         return if (totalHours > 0) {
-            String.format("%02d:%02d:%02d", currentHours, currentMinutes, currentSecs) to
-                    String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
+            String.format(
+                "%02d:%02d:%02d",
+                currentHours,
+                currentMinutes,
+                currentSecs
+            ) to String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
         } else {
-            String.format("%02d:%02d", currentMinutes, currentSecs) to
-                    String.format("%02d:%02d", totalMinutes, totalSecs)
+            String.format("%02d:%02d", currentMinutes, currentSecs) to String.format(
+                "%02d:%02d",
+                totalMinutes,
+                totalSecs
+            )
         }
     }
 
