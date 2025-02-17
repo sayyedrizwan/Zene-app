@@ -6,6 +6,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -48,6 +50,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
+import com.rizwansayyed.zene.service.ForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -84,7 +88,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 MusicPlayingView(player, page, pagerState, screenWidth)
             }
 
-            PlayerControlPanel(Modifier.align(Alignment.BottomCenter))
+            PlayerControlPanel(Modifier.align(Alignment.BottomCenter), player)
         }
 
         LaunchedEffect(player?.data?.id) {
@@ -119,7 +123,9 @@ fun MusicPlayingView(player: MusicPlayerData?, page: Int, pagerState: PagerState
             GlideImage(
                 player?.lists?.get(page)?.thumbnail,
                 player?.lists?.get(page)?.name,
-                Modifier.fillMaxSize().clip(RoundedCornerShape(14.dp)),
+                Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(14.dp)),
                 contentScale = ContentScale.Fit
             )
 
@@ -156,7 +162,7 @@ fun MusicPlayingView(player: MusicPlayerData?, page: Int, pagerState: PagerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerControlPanel(modifier: Modifier = Modifier) {
+fun PlayerControlPanel(modifier: Modifier = Modifier, player: MusicPlayerData?) {
     var sliderPosition by remember { mutableFloatStateOf(0f) }
 
     Column(
@@ -172,8 +178,9 @@ fun PlayerControlPanel(modifier: Modifier = Modifier) {
         Slider(value = sliderPosition,
             onValueChange = {
                 sliderPosition = it
+                getPlayerS()?.seekTo(it)
             },
-            valueRange = 0f..100f,
+            valueRange = 0f..(player?.totalDuration?.toFloatOrNull() ?: 0f),
             colors = SliderDefaults.colors(Color.White),
             modifier = Modifier
                 .fillMaxWidth()
@@ -193,9 +200,9 @@ fun PlayerControlPanel(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(5.dp))
 
         Row(Modifier.fillMaxWidth()) {
-            TextViewSemiBold("01:22", size = 13)
+            TextViewSemiBold(player?.currentDuration() ?: "", size = 13)
             Spacer(Modifier.weight(1f))
-            TextViewSemiBold("01:11", size = 13)
+            TextViewSemiBold(player?.totalDuration() ?: "", size = 13)
         }
         Spacer(Modifier.height(9.dp))
 
@@ -208,21 +215,36 @@ fun PlayerControlPanel(modifier: Modifier = Modifier) {
                 Modifier
                     .padding(15.dp)
                     .clip(RoundedCornerShape(100))
+                    .clickable {
+                        if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                        else getPlayerS()?.play()
+                    }
                     .background(Color.White)
                     .padding(10.dp)
             ) {
-                ImageIcon(R.drawable.ic_play, 27, Color.Black)
+                when (player?.state) {
+                    YoutubePlayerState.PLAYING -> ImageIcon(R.drawable.ic_pause, 27, Color.Black)
+                    YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
+                        Modifier.size(26.dp), Color.White, 4.dp, MainColor
+                    )
+
+                    else -> ImageIcon(R.drawable.ic_play, 27, Color.Black)
+                }
             }
             Box(Modifier) {
                 ImageIcon(R.drawable.ic_forward, 27)
             }
 
             Box(Modifier) {
-                ImageIcon(R.drawable.ic_timer , 27)
+                ImageIcon(R.drawable.ic_timer, 27)
             }
         }
 
 
         Spacer(Modifier.height(40.dp))
+    }
+
+    LaunchedEffect(player?.currentDuration) {
+        sliderPosition = player?.currentDuration?.toFloatOrNull() ?: 0f
     }
 }

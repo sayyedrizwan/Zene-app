@@ -168,4 +168,8 @@ class ForegroundService : Service(), PlayerServiceInterface {
         playerWebView?.evaluateJavascript("playVideo();", null)
     }
 
+    override fun seekTo(v: Float) {
+        playerWebView?.evaluateJavascript("seekTo(${v});", null)
+    }
+
 }
