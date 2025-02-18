@@ -125,7 +125,7 @@
             android:value="_lecij7uyjsnmpvcgplrkmal6uwkjxk2o1ersfewvfe" />
 
         <service
-            android:name=".service.ForegroundService"
+            android:name=".service.player.PlayerForegroundService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"

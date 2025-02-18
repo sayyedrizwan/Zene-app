@@ -425,9 +425,7 @@ object MainUtils {
         for (range in emojiRanges) {
             for (codePoint in range) {
                 val emoji = String(Character.toChars(codePoint))
-                if (emoji.isNotBlank() && emoji != "�") { // Filter out unsupported characters
-                    emojis.add(emoji)
-                }
+                if (emoji.isNotBlank() && emoji != "�") emojis.add(emoji)
             }
         }
         return emojis

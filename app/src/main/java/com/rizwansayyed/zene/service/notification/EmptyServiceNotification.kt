@@ -12,12 +12,12 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.service.ForegroundService
+import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.main.MainActivity
 
 object EmptyServiceNotification {
 
-    fun generate(context: ForegroundService) {
+    fun generate(context: PlayerForegroundService) {
         try {
             val channelId = "zene_music_channel"
             val channelName = context.resources.getString(R.string.zene_music_player)

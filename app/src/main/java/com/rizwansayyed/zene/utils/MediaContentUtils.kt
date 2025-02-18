@@ -23,7 +23,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.TEXT
 import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
-import com.rizwansayyed.zene.service.ForegroundService
+import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
@@ -74,7 +74,7 @@ object MediaContentUtils {
         val listJson =
             moshi.adapter(Array<ZeneMusicData?>::class.java).toJson(list.toTypedArray())
 
-        Intent(context, ForegroundService::class.java).apply {
+        Intent(context, PlayerForegroundService::class.java).apply {
             flags = FLAG_ACTIVITY_NEW_TASK
             putExtra(Intent.ACTION_VIEW, moshi.adapter(ZeneMusicData::class.java).toJson(data))
             putExtra(Intent.ACTION_RUN, listJson)

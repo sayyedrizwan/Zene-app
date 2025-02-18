@@ -56,7 +56,7 @@
             function onPlayerReady(event) {
               event.target.unMute();
               event.target.setVolume(100);
-              event.target.setLoop(true);
+              event.target.setLoop(false);
               event.target.playVideo();
               event.target.setPlaybackRate(setSpeed);
               if(isNew) {
@@ -71,8 +71,9 @@
             }
 
             function onPlayerStateChange(event) {
-              playingStatus();
-              if (event.data === YT.PlayerState.ENDED) player.loadVideoById("<<VideoID>>");
+              if (event.data === YT.PlayerState.ENDED) {
+                Zene.videoEnded()
+              }
             }
 
             function unMute() {

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
-import com.rizwansayyed.zene.service.ForegroundService.Companion.getPlayerS
+import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -128,7 +129,10 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
         Box(
             Modifier
                 .padding(end = 10.dp)
-                .clickable {
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
                     if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
                     else getPlayerS()?.play()
                 }, Alignment.Center

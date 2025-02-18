@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.service
+package com.rizwansayyed.zene.service.player
 
 import android.app.Service
 import android.content.Intent
@@ -8,11 +8,14 @@ import android.webkit.WebView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification
+import com.rizwansayyed.zene.service.player.utils.SmartShuffle
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
@@ -33,14 +36,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ForegroundService : Service(), PlayerServiceInterface {
+class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     companion object {
         lateinit var playerService: PlayerServiceInterface
 
         fun getPlayerS(): PlayerServiceInterface? {
             try {
-                if (::playerService.isInitialized) return playerService
+                if (Companion::playerService.isInitialized) return playerService
                 return null
             } catch (e: Exception) {
                 return null
@@ -57,6 +60,7 @@ class ForegroundService : Service(), PlayerServiceInterface {
     private var currentPlayingSong: ZeneMusicData? = null
     private var songsLists: Array<ZeneMusicData?> = emptyArray()
     private var durationJob: Job? = null
+    private var smartShuffle: SmartShuffle? = null
 
     override fun onBind(p0: Intent?): IBinder? = null
 
@@ -68,13 +72,18 @@ class ForegroundService : Service(), PlayerServiceInterface {
         currentPlayingSong = moshi.adapter(ZeneMusicData::class.java).fromJson(musicData)
         songsLists =
             moshi.adapter(Array<ZeneMusicData?>::class.java).fromJson(musicList) ?: emptyArray()
-        getSimilarSongInfo()
-        loadAVideo(currentPlayingSong?.id)
+        smartShuffle = SmartShuffle(songsLists.toList())
+        playSongs(isNew)
         return START_STICKY
     }
 
+    private fun playSongs(new: Boolean) {
+        isNew = new
+        getSimilarSongInfo()
+        loadAVideo(currentPlayingSong?.id)
+    }
 
-    class WebAppInterface {
+    inner class WebAppInterface {
         @JavascriptInterface
         fun videoState(playerState: Int, currentTS: String, duration: String) {
             CoroutineScope(Dispatchers.IO).launch {
@@ -83,6 +92,21 @@ class ForegroundService : Service(), PlayerServiceInterface {
                 playerInfo?.currentDuration = currentTS
                 playerInfo?.totalDuration = duration
                 musicPlayerDB = flowOf(playerInfo)
+                if (isActive) cancel()
+            }
+        }
+
+        @JavascriptInterface
+        fun videoEnded() {
+            CoroutineScope(Dispatchers.IO).launch {
+                val isLoop = isLoopDB.firstOrNull() ?: false
+                if (isLoop) {
+                    playSongs(false)
+                    return@launch
+                }
+
+                toNextSong()
+
                 if (isActive) cancel()
             }
         }
@@ -158,6 +182,36 @@ class ForegroundService : Service(), PlayerServiceInterface {
         }
         durationJob?.cancel()
         playerWebView = null
+    }
+
+    override fun toNextSong() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val isShuffle = isShuffleDB.firstOrNull() ?: false
+            if (isShuffle) {
+                currentPlayingSong = smartShuffle?.getNextSong()
+                playSongs(false)
+                return@launch
+            }
+
+            val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
+            val info =
+                if (index != -1 && index < songsLists.size - 1) songsLists[index + 1] else null
+            if (info != null) {
+                currentPlayingSong = info
+                playSongs(false)
+            }
+        }
+    }
+
+    override fun toBackSong() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
+            val info = if (index > 0) songsLists[index - 1] else null
+            if (info != null) {
+                currentPlayingSong = info
+                playSongs(false)
+            }
+        }
     }
 
     override fun pause() {

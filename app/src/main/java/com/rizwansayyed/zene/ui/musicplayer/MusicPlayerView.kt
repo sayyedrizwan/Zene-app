@@ -45,24 +45,32 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
-import com.rizwansayyed.zene.service.ForegroundService.Companion.getPlayerS
+import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MediaContentUtils
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import kotlinx.coroutines.flow.flowOf
 import kotlin.math.absoluteValue
 
 @Composable
 fun MusicPlayerView(navViewModel: NavigationViewModel) {
     val player by DataStorageManager.musicPlayerDB.collectAsState(null)
+    val playViewModel: PlayerViewModel = hiltViewModel()
+
     AnimatedVisibility(
         navViewModel.showMusicPlayer,
         enter = slideInVertically(initialOffsetY = { it / 2 }),
@@ -88,18 +96,24 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 MusicPlayingView(player, page, pagerState, screenWidth)
             }
 
-            PlayerControlPanel(Modifier.align(Alignment.BottomCenter), player)
+            PlayerControlPanel(Modifier.align(Alignment.BottomCenter), player, playViewModel)
         }
 
         LaunchedEffect(player?.data?.id) {
             val i = player?.lists?.indexOfFirst { it?.id == player?.data?.id }
-            pagerState.scrollToPage(i ?: 0)
+            pagerState.animateScrollToPage(i ?: 0)
         }
 
         BackHandler {
             navViewModel.setMusicPlayer(false)
         }
     }
+
+    LaunchedEffect(player?.data?.id) {
+        if (player?.data?.id != null && player?.data?.type() != null)
+            playViewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
+    }
+
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -145,7 +159,13 @@ fun MusicPlayingView(player: MusicPlayerData?, page: Int, pagerState: PagerState
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    ImageIcon(R.drawable.ic_play, 20)
+                    Box(Modifier.clickable {
+                        MediaContentUtils.startMedia(
+                            player?.lists?.get(page), player?.lists ?: emptyList()
+                        )
+                    }) {
+                        ImageIcon(R.drawable.ic_play, 20)
+                    }
                 }
             }
         }
@@ -162,7 +182,11 @@ fun MusicPlayingView(player: MusicPlayerData?, page: Int, pagerState: PagerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerControlPanel(modifier: Modifier = Modifier, player: MusicPlayerData?) {
+fun PlayerControlPanel(
+    modifier: Modifier = Modifier, player: MusicPlayerData?, viewModel: PlayerViewModel
+) {
+    val isShuffleEnabled by isShuffleDB.collectAsState(false)
+    val isLoopEnabled by isLoopDB.collectAsState(false)
     var sliderPosition by remember { mutableFloatStateOf(0f) }
 
     Column(
@@ -175,6 +199,7 @@ fun PlayerControlPanel(modifier: Modifier = Modifier, player: MusicPlayerData?) 
             .padding(horizontal = 12.dp), Arrangement.Center, Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(40.dp))
+
         Slider(value = sliderPosition,
             onValueChange = {
                 sliderPosition = it
@@ -204,24 +229,46 @@ fun PlayerControlPanel(modifier: Modifier = Modifier, player: MusicPlayerData?) 
             Spacer(Modifier.weight(1f))
             TextViewSemiBold(player?.totalDuration() ?: "", size = 13)
         }
+
         Spacer(Modifier.height(9.dp))
 
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-            ImageIcon(R.drawable.ic_thumbs_up, 20)
-            Box(Modifier.rotate(180f)) {
+
+            Box(Modifier.clickable {
+                viewModel.likeAItem(player?.data, !viewModel.isItemLiked)
+            }) {
+                if (viewModel.isItemLiked)
+                    ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
+                else
+                    ImageIcon(R.drawable.ic_thumbs_up, 22)
+            }
+
+            Box(Modifier.clickable {
+                isShuffleDB = flowOf(!isShuffleEnabled)
+            }) {
+                ImageIcon(
+                    if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle,
+                    22
+                )
+            }
+
+            Box(Modifier
+                .rotate(180f)
+                .clickable {
+                    getPlayerS()?.toBackSong()
+                }) {
                 ImageIcon(R.drawable.ic_forward, 27)
             }
-            Box(
-                Modifier
-                    .padding(15.dp)
-                    .clip(RoundedCornerShape(100))
-                    .clickable {
-                        if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
-                        else getPlayerS()?.play()
-                    }
-                    .background(Color.White)
-                    .padding(10.dp)
-            ) {
+
+            Box(Modifier
+                .padding(5.dp)
+                .clip(RoundedCornerShape(100))
+                .clickable {
+                    if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                    else getPlayerS()?.play()
+                }
+                .background(Color.White)
+                .padding(10.dp)) {
                 when (player?.state) {
                     YoutubePlayerState.PLAYING -> ImageIcon(R.drawable.ic_pause, 27, Color.Black)
                     YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
@@ -231,12 +278,21 @@ fun PlayerControlPanel(modifier: Modifier = Modifier, player: MusicPlayerData?) 
                     else -> ImageIcon(R.drawable.ic_play, 27, Color.Black)
                 }
             }
-            Box(Modifier) {
+            Box(Modifier
+                .clickable {
+                    getPlayerS()?.toNextSong()
+                }) {
                 ImageIcon(R.drawable.ic_forward, 27)
             }
 
+            Box(Modifier.clickable {
+                isLoopDB = flowOf(!isLoopEnabled)
+            }) {
+                ImageIcon(if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22)
+            }
+
             Box(Modifier) {
-                ImageIcon(R.drawable.ic_timer, 27)
+                ImageIcon(R.drawable.ic_timer, 22)
             }
         }
 
