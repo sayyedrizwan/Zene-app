@@ -195,6 +195,10 @@ fun MusicPlayerControlPanel(
             MiniWithImageAndBorder(R.drawable.ic_dashboard_speed, R.string.playback_speed) {
 
             }
+
+            MiniWithImageAndBorder(R.drawable.ic_download, R.string.cache_song) {
+
+            }
         }
 
         Spacer(Modifier.height(40.dp))
