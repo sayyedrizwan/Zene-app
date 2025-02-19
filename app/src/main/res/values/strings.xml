@@ -12,6 +12,9 @@
     <string name="podcasts">Podcasts</string>
     <string name="radios">Radios</string>
     <string name="videos">Videos</string>
+    <string name="song_video">Song Video</string>
+    <string name="lyrics_video">Lyrics Video</string>
+    <string name="lyrics">Lyrics</string>
     <string name="news">News</string>
     <string name="movies">Movies</string>
     <string name="my_library">My Library</string>
@@ -123,6 +126,7 @@
     <string name="create">Create</string>
     <string name="create_playlist">Create Playlist</string>
     <string name="add_to_playlist">Add to Playlist</string>
+    <string name="playback_speed">Playback Speed</string>
     <string name="post">Post</string>
     <string name="post_a_gif_desc">You cannot delete the GIF. Once it\'s posted. It will de auto deleted after 24 hours with the vibe. Are you sure want to post?</string>
     <string name="gif_spress">GIF-Spress</string>

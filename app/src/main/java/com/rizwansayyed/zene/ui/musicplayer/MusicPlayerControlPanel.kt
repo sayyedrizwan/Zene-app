@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,6 +44,7 @@ import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -105,7 +105,6 @@ fun MusicPlayerControlPanel(
         Spacer(Modifier.height(9.dp))
 
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-
             Box(Modifier.clickable {
                 viewModel.likeAItem(player?.data, !viewModel.isItemLiked)
             }) {
@@ -167,8 +166,35 @@ fun MusicPlayerControlPanel(
             }
         }
 
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
+        Spacer(Modifier.height(14.dp))
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+            MiniWithImageAndBorder(R.drawable.ic_share, R.string.share) {
 
+            }
+
+            MiniWithImageAndBorder(R.drawable.ic_video_replay, R.string.song_video) {
+
+            }
+
+            MiniWithImageAndBorder(R.drawable.ic_teaching, R.string.lyrics_video) {
+
+            }
+
+            MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics) {
+
+            }
+
+            MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.add_to_playlist) {
+
+            }
+
+            MiniWithImageAndBorder(R.drawable.ic_dashboard_speed, R.string.playback_speed) {
+
+            }
         }
 
         Spacer(Modifier.height(40.dp))
