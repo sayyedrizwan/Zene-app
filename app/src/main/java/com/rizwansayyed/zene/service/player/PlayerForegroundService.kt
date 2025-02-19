@@ -15,7 +15,10 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification
+import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.SmartShuffle
+import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
+import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
@@ -34,6 +37,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.minutes
 
 @AndroidEntryPoint
 class PlayerForegroundService : Service(), PlayerServiceInterface {
@@ -60,6 +64,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     private var currentPlayingSong: ZeneMusicData? = null
     private var songsLists: Array<ZeneMusicData?> = emptyArray()
     private var durationJob: Job? = null
+    private var sleepTimer: Job? = null
     private var smartShuffle: SmartShuffle? = null
 
     override fun onBind(p0: Intent?): IBinder? = null
@@ -99,6 +104,11 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         @JavascriptInterface
         fun videoEnded() {
             CoroutineScope(Dispatchers.IO).launch {
+                if (sleepTimerSelected == SleepTimerEnum.END_OF_TRACK) {
+                    sleepTimerSelected = SleepTimerEnum.TURN_OFF
+                    sleepTimerNotification()
+                    return@launch
+                }
                 val isLoop = isLoopDB.firstOrNull() ?: false
                 if (isLoop) {
                     playSongs(false)
@@ -184,6 +194,20 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         playerWebView = null
     }
 
+    override fun sleepTimer(minutes: SleepTimerEnum) {
+        sleepTimer?.cancel()
+        sleepTimerSelected = minutes
+        if (minutes == SleepTimerEnum.END_OF_TRACK) return
+        if (minutes == SleepTimerEnum.TURN_OFF) return
+        sleepTimer = CoroutineScope(Dispatchers.IO).launch {
+            delay(minutes.time.minutes)
+            pause()
+            sleepTimerNotification()
+            sleepTimerSelected = SleepTimerEnum.TURN_OFF
+            if (isActive) cancel()
+        }
+    }
+
     override fun toNextSong() {
         CoroutineScope(Dispatchers.IO).launch {
             val isShuffle = isShuffleDB.firstOrNull() ?: false
@@ -215,15 +239,23 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun pause() {
-        playerWebView?.evaluateJavascript("pauseVideo();", null)
+        CoroutineScope(Dispatchers.Main).launch {
+            playerWebView?.evaluateJavascript("pauseVideo();", null)
+            if (isActive) cancel()
+        }
     }
 
     override fun play() {
-        playerWebView?.evaluateJavascript("playVideo();", null)
+        CoroutineScope(Dispatchers.Main).launch {
+            playerWebView?.evaluateJavascript("playVideo();", null)
+            if (isActive) cancel()
+        }
     }
 
     override fun seekTo(v: Float) {
-        playerWebView?.evaluateJavascript("seekTo(${v});", null)
+        CoroutineScope(Dispatchers.Main).launch {
+            playerWebView?.evaluateJavascript("seekTo(${v});", null)
+            if (isActive) cancel()
+        }
     }
-
 }

@@ -24,6 +24,11 @@
     <string name="trending_ai_musics">Trending AI Songs</string>
     <string name="new_ai_musics">New AI Songs</string>
     <string name="your_mixes">Your mixes</string>
+    <string name="sleep_timer">Sleep Timer</string>
+    <string name="minutes">minutes</string>
+    <string name="one_hour">1 hour</string>
+    <string name="end_of_track">End of track</string>
+    <string name="turn_off">Turn Off</string>
     <string name="trending_artists">Trending Artists</string>
     <string name="global_trending_songs">Global Trending Songs</string>
     <string name="trending_songs">Trending Songs in %s</string>
@@ -184,6 +189,8 @@
     <string name="four_eighty_p">480p</string>
     <string name="pip_mode_disabled_for_app">Picture and Picture Mode is disabled for the app.</string>
     <string name="give_your_playlist_a_name">Give your playlist a name</string>
+    <string name="timer_completed">Timer Completed</string>
+    <string name="timer_completed_desc">The sleep timer has finished, and playback has ended.</string>
 
 
     <!--    notification channels-->
@@ -193,4 +200,6 @@
     <string name="other_notification_desc">Notifications to keep you updated of Zene.</string>
     <string name="zene_music_player">Zene Music Player</string>
     <string name="zene_music_player_service">Notification for Zene Music Player service</string>
+    <string name="sleep_timer_notification">Sleep Timer Alerts</string>
+    <string name="sleep_timer_notification_desc">Notifications alert to update you when sleep timer is triggered.</string>
 </resources>

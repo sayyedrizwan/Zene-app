@@ -14,13 +14,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
@@ -35,8 +39,12 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
+import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
+import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.flowOf
@@ -46,6 +54,7 @@ import kotlinx.coroutines.flow.flowOf
 fun MusicPlayerControlPanel(
     modifier: Modifier = Modifier, player: MusicPlayerData?, viewModel: PlayerViewModel
 ) {
+    var showTimerSheet by remember { mutableStateOf(false) }
     val isShuffleEnabled by isShuffleDB.collectAsState(false)
     val isLoopEnabled by isLoopDB.collectAsState(false)
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -98,10 +107,8 @@ fun MusicPlayerControlPanel(
             Box(Modifier.clickable {
                 viewModel.likeAItem(player?.data, !viewModel.isItemLiked)
             }) {
-                if (viewModel.isItemLiked)
-                    ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
-                else
-                    ImageIcon(R.drawable.ic_thumbs_up, 22)
+                if (viewModel.isItemLiked) ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
+                else ImageIcon(R.drawable.ic_thumbs_up, 22)
             }
 
             Box(Modifier.clickable {
@@ -113,12 +120,11 @@ fun MusicPlayerControlPanel(
                 )
             }
 
-            Box(
-                Modifier
-                    .rotate(180f)
-                    .clickable {
-                        getPlayerS()?.toBackSong()
-                    }) {
+            Box(Modifier
+                .rotate(180f)
+                .clickable {
+                    getPlayerS()?.toBackSong()
+                }) {
                 ImageIcon(R.drawable.ic_forward, 27)
             }
 
@@ -140,11 +146,9 @@ fun MusicPlayerControlPanel(
                     else -> ImageIcon(R.drawable.ic_play, 27, Color.Black)
                 }
             }
-            Box(
-                Modifier
-                    .clickable {
-                        getPlayerS()?.toNextSong()
-                    }) {
+            Box(Modifier.clickable {
+                getPlayerS()?.toNextSong()
+            }) {
                 ImageIcon(R.drawable.ic_forward, 27)
             }
 
@@ -154,8 +158,11 @@ fun MusicPlayerControlPanel(
                 ImageIcon(if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22)
             }
 
-            Box(Modifier) {
-                ImageIcon(R.drawable.ic_timer, 22)
+            Box(Modifier.clickable { showTimerSheet = true }) {
+                ImageIcon(
+                    R.drawable.ic_timer, 22,
+                    if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else MainColor
+                )
             }
         }
 
@@ -165,5 +172,56 @@ fun MusicPlayerControlPanel(
 
     LaunchedEffect(player?.currentDuration) {
         sliderPosition = player?.currentDuration?.toFloatOrNull() ?: 0f
+    }
+
+    if (showTimerSheet) SleepTimerSheet {
+        showTimerSheet = false
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SleepTimerSheet(close: () -> Unit) {
+    val state = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
+
+    ModalBottomSheet(
+        { close() }, sheetState = state, contentColor = MainColor, containerColor = MainColor,
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
+            TextViewBold(stringResource(R.string.sleep_timer), 23)
+            Spacer(Modifier.height(25.dp))
+            SleepTimerEnum.entries.forEach {
+                Box(Modifier.clickable {
+                    getPlayerS()?.sleepTimer(it)
+                    close()
+                }) {
+                    when (it) {
+                        SleepTimerEnum.SIXTY_MINUTES -> TextViewNormal(
+                            stringResource(R.string.one_hour), 16
+                        )
+
+                        SleepTimerEnum.END_OF_TRACK -> TextViewNormal(
+                            stringResource(R.string.end_of_track), 16
+                        )
+
+                        SleepTimerEnum.TURN_OFF -> if (sleepTimerSelected != SleepTimerEnum.TURN_OFF) TextViewNormal(
+                            stringResource(R.string.turn_off), 16
+                        )
+
+                        else -> TextViewNormal("${it.time} ${stringResource(R.string.minutes)}", 16)
+                    }
+                }
+                Spacer(Modifier.height(20.dp))
+            }
+
+            Spacer(Modifier.height(30.dp))
+        }
     }
 }

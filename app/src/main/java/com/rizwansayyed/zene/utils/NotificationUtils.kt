@@ -25,6 +25,10 @@ class NotificationUtils(
         val CONNECT_UPDATES_NAME = context.resources.getString(R.string.connect_updates_name)
         val CONNECT_UPDATES_NAME_DESC =
             context.resources.getString(R.string.connect_updates_name_desc)
+
+        val SLEEP_TIMER_NOTIFICATION = context.resources.getString(R.string.sleep_timer_notification)
+        val SLEEP_TIMER_NOTIFICATION_DESC =
+            context.resources.getString(R.string.sleep_timer_notification_desc)
     }
 
     private val notificationManager: NotificationManager =
