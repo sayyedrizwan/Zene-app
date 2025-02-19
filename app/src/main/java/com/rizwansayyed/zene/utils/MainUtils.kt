@@ -472,4 +472,8 @@ object MainUtils {
             OPSTR_PICTURE_IN_PICTURE, android.os.Process.myUid(), context.packageName
         ) == AppOpsManager.MODE_ALLOWED
     }
+
+    fun convertToMS(timeInSeconds: String): Long {
+        return (timeInSeconds.toDoubleOrNull()?.times(1000))?.toLong() ?: 0L
+    }
 }

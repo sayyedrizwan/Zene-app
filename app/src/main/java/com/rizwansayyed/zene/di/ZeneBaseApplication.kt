@@ -4,14 +4,17 @@ import android.app.Application
 import androidx.core.content.ContextCompat
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
+import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.MediaContentUtils
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -27,11 +30,20 @@ class ZeneBaseApplication : Application() {
         super.onCreate()
         context = this
         EmojiCompat.init(BundledEmojiCompatConfig(context, ContextCompat.getMainExecutor(this)))
+        CoroutineScope(Dispatchers.Main).launch {
+            Glide.get(context).clearMemory()
+            if (isActive) cancel()
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            Glide.get(context).clearDiskCache()
+            if (isActive) cancel()
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(1.seconds)
             val data = DataStorageManager.musicPlayerDB.firstOrNull()
             if (data?.data != null) MediaContentUtils.startMedia(data.data, data.lists, true)
+            if (isActive) cancel()
         }
     }
 }

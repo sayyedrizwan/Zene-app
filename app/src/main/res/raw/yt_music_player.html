@@ -67,7 +67,7 @@
             }
 
             function playingStatus() {
-              Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration());
+              Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration(), player.getPlaybackRate());
             }
 
             function onPlayerStateChange(event) {

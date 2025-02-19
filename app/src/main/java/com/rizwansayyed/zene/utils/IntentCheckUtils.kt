@@ -1,13 +1,13 @@
 package com.rizwansayyed.zene.utils
 
 import android.content.Intent
+import android.content.Intent.CATEGORY_APP_MUSIC
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_LOCATION_SHARING_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_BODY
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LAT
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LON
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TITLE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TYPE
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 data class IntentFCMNotification(
@@ -28,6 +28,10 @@ class IntentCheckUtils(intent: Intent, navViewModel: NavigationViewModel) {
                 )
                 navViewModel.setHomeInfoNavigation(n)
             }
+        }
+
+        if (intent.getStringExtra(Intent.ACTION_SENDTO) == CATEGORY_APP_MUSIC) {
+            navViewModel.setMusicPlayer(true)
         }
     }
 }

@@ -125,4 +125,6 @@ dependencies {
 
     implementation(libs.navigation.compose)
     implementation(libs.browser)
+
+    implementation("androidx.core:core-ktx:1.15.0")
 }

@@ -67,6 +67,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     private var durationJob: Job? = null
     private var sleepTimer: Job? = null
     private var smartShuffle: SmartShuffle? = null
+    private val mediaSession by lazy { MediaSessionPlayerNotification(this) }
 
     override fun onBind(p0: Intent?): IBinder? = null
 
@@ -92,10 +93,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     inner class WebAppInterface {
         @JavascriptInterface
-        fun videoState(playerState: Int, currentTS: String, duration: String) {
+        fun videoState(playerState: Int, currentTS: String, duration: String, playSpeed: String) {
             CoroutineScope(Dispatchers.IO).launch {
+                val state = YoutubePlayerState.entries.first { it.v == playerState }
+                visiblePlayerNotification(state, currentTS, duration, playSpeed)
+
                 val playerInfo = musicPlayerDB.firstOrNull()
-                playerInfo?.state = YoutubePlayerState.entries.first { it.v == playerState }
+                playerInfo?.state = state
+                playerInfo?.speed = playSpeed
                 playerInfo?.currentDuration = currentTS
                 playerInfo?.totalDuration = duration
                 musicPlayerDB = flowOf(playerInfo)
@@ -146,7 +151,6 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     private fun loadAVideo(videoID: String?) = CoroutineScope(Dispatchers.Main).launch {
-        visiblePlayerNotification()
         val htmlContent = getRawFolderString(R.raw.yt_music_player)
         val speed = songSpeedDB.first().name.replace("_", ".")
 
@@ -169,7 +173,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 addAll(list)
             }
             val d = MusicPlayerData(
-                finalList, currentPlayingSong, YoutubePlayerState.BUFFERING, "0", "0"
+                finalList, currentPlayingSong, YoutubePlayerState.BUFFERING, "0", "1.0", "0"
             )
             musicPlayerDB = flowOf(d)
             if (isActive) cancel()
@@ -241,12 +245,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         }
     }
 
-    private fun visiblePlayerNotification() = CoroutineScope(Dispatchers.IO).launch {
-        val mediaNotificationManager = MediaSessionPlayerNotification(this@PlayerForegroundService)
-        mediaNotificationManager.createMediaSession()
-        mediaNotificationManager.updateMetadata(currentPlayingSong)
-        mediaNotificationManager.updatePlaybackState(isPlaying = true)
-        mediaNotificationManager.showNotification(isPlaying = true)
+    private fun visiblePlayerNotification(
+        state: YoutubePlayerState, currentTS: String, duration: String, speed: String
+    ) = CoroutineScope(Dispatchers.IO).launch {
+        mediaSession.apply {
+            updateMetadata(currentPlayingSong, duration)
+            showNotification(state == YoutubePlayerState.PLAYING, currentTS, speed)
+        }
     }
 
     override fun pause() {

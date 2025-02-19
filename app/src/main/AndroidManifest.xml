@@ -90,8 +90,8 @@
             android:name=".ui.videoplayer.VideoPlayerActivity"
             android:autoRemoveFromRecents="true"
             android:clearTaskOnLaunch="true"
-            android:excludeFromRecents="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:supportsPictureInPicture="true" />
 

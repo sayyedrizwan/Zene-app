@@ -8,6 +8,7 @@ data class MusicPlayerData(
     val data: ZeneMusicData?,
     var state: YoutubePlayerState?,
     var currentDuration: String?,
+    var speed: String?,
     var totalDuration: String?,
 ) {
     fun currentDuration(): String {
