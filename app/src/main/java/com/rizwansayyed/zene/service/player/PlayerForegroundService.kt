@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MediaSessionPlayerNotification
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
@@ -79,6 +80,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             moshi.adapter(Array<ZeneMusicData?>::class.java).fromJson(musicList) ?: emptyArray()
         smartShuffle = SmartShuffle(songsLists.toList())
         playSongs(isNew)
+
         return START_STICKY
     }
 
@@ -144,6 +146,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     private fun loadAVideo(videoID: String?) = CoroutineScope(Dispatchers.Main).launch {
+        visiblePlayerNotification()
         val htmlContent = getRawFolderString(R.raw.yt_music_player)
         val speed = songSpeedDB.first().name.replace("_", ".")
 
@@ -236,6 +239,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 playSongs(false)
             }
         }
+    }
+
+    private fun visiblePlayerNotification() = CoroutineScope(Dispatchers.IO).launch {
+        val mediaNotificationManager = MediaSessionPlayerNotification(this@PlayerForegroundService)
+        mediaNotificationManager.createMediaSession()
+        mediaNotificationManager.updateMetadata(currentPlayingSong)
+        mediaNotificationManager.updatePlaybackState(isPlaying = true)
+        mediaNotificationManager.showNotification(isPlaying = true)
     }
 
     override fun pause() {

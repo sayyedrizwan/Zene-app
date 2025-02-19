@@ -12,19 +12,21 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.main.MainActivity
 
 object EmptyServiceNotification {
 
+    const val CHANNEL_MUSIC_PLAYER_ID = "zene_music_channel"
+    val CHANNEL_MUSIC_PLAYER_NAME = context.resources.getString(R.string.zene_music_player)
+
+
     fun generate(context: PlayerForegroundService) {
         try {
-            val channelId = "zene_music_channel"
-            val channelName = context.resources.getString(R.string.zene_music_player)
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channel = NotificationChannel(
-                    channelId, channelName, NotificationManager.IMPORTANCE_NONE
+                    CHANNEL_MUSIC_PLAYER_ID, CHANNEL_MUSIC_PLAYER_NAME, NotificationManager.IMPORTANCE_NONE
                 ).apply {
                     lightColor = Color.BLUE
                     lockscreenVisibility = Notification.VISIBILITY_PRIVATE
@@ -42,7 +44,7 @@ object EmptyServiceNotification {
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            val notificationBuilder = NotificationCompat.Builder(context, channelId)
+            val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_MUSIC_PLAYER_ID)
             val notification: Notification =
                 notificationBuilder.setOngoing(true).setSmallIcon(R.drawable.zene_logo)
                     .setContentTitle("Zene is running..")

@@ -121,11 +121,10 @@ fun MusicPlayerControlPanel(
             }
 
             Box(Modifier
-                .rotate(180f)
                 .clickable {
                     getPlayerS()?.toBackSong()
                 }) {
-                ImageIcon(R.drawable.ic_forward, 27)
+                ImageIcon(R.drawable.ic_backward, 27)
             }
 
             Box(Modifier
@@ -166,6 +165,9 @@ fun MusicPlayerControlPanel(
             }
         }
 
+        Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
+
+        }
 
         Spacer(Modifier.height(40.dp))
     }
