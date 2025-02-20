@@ -30,7 +30,7 @@ fun TextViewNormal(
         if (center) Modifier.fillMaxWidth() else Modifier,
         color, size.sp, null, FontWeight.Normal, proximanOverFamily,
         textAlign = if (center) TextAlign.Center else null, maxLines = line,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
     )
 }
 

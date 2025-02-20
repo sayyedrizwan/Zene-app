@@ -92,6 +92,7 @@
     <string name="add_location">Add Location</string>
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
+    <string name="connect_">Connect</string>
     <string name="entertainment">entertainment</string>
     <string name="ent_">ent.</string>
     <string name="grant">Grant</string>
@@ -198,6 +199,15 @@
     <string name="give_your_playlist_a_name">Give your playlist a name</string>
     <string name="timer_completed">Timer Completed</string>
     <string name="timer_completed_desc">The sleep timer has finished, and playback has ended.</string>
+    <string name="copy_link">Copy link</string>
+    <string name="share_to_">Share to…</string>
+    <string name="share_on_connect">Share on \nconnect</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="facebook">Facebook</string>
+    <string name="instagram">Instagram</string>
+    <string name="snapchat">Snapchat</string>
+    <string name="x">X</string>
+    <string name="pinterest">Pinterest</string>
 
 
     <!--    notification channels-->

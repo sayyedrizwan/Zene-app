@@ -51,7 +51,8 @@ fun VideoPlayerButtonView(viewModel: PlayingVideoInfoViewModel) {
     val coroutine = rememberCoroutineScope()
 
     ButtonWithBorder(
-        R.string.fourteen_forty_eighty_p, if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
+        R.string.fourteen_forty_eighty_p,
+        if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
     ) {
         coroutine.launch { videoQualityDB = flowOf(VideoQualityEnum.`1440`) }
         viewModel.loadWebView(false)
@@ -96,14 +97,33 @@ fun VideoPlayerSpeedView(viewModel: PlayingVideoInfoViewModel) {
 
     if (showAlert) Dialog(
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
-    ) { VideoSpeedChangeAlert(viewModel, videoSpeed) }
+    ) {
+        val coroutines = rememberCoroutineScope()
+        var job by remember { mutableStateOf<Job?>(null) }
+
+        VideoSpeedChangeAlert(videoSpeed) {
+            val name = it.name.replace("_", ".")
+            coroutines.launch {
+                videoSpeedDB = flowOf(it)
+            }
+            viewModel.webView?.evaluateJavascript("playbackRate(${name});", null)
+        }
+
+        DisposableEffect(Unit) {
+            job?.cancel()
+            job = coroutines.launch {
+                while (true) {
+                    viewModel.showControlView(true)
+                    delay(1.seconds)
+                }
+            }
+            onDispose { job?.cancel() }
+        }
+    }
 }
 
 @Composable
-fun VideoSpeedChangeAlert(viewModel: PlayingVideoInfoViewModel, videoSpeed: VideoSpeedEnum?) {
-    val coroutines = rememberCoroutineScope()
-    var job by remember { mutableStateOf<Job?>(null) }
-
+fun VideoSpeedChangeAlert(videoSpeed: VideoSpeedEnum?, changed: (VideoSpeedEnum) -> Unit) {
     Column(
         Modifier
             .padding(5.dp)
@@ -120,24 +140,10 @@ fun VideoSpeedChangeAlert(viewModel: PlayingVideoInfoViewModel, videoSpeed: Vide
             VideoSpeedEnum.entries.forEach {
                 val name = it.name.replace("_", ".")
                 TextWithBgAndBorder("x${name}", if (videoSpeed == it) Color.Gray else Color.Black) {
-                    coroutines.launch {
-                        videoSpeedDB = flowOf(it)
-                    }
-                    viewModel.webView?.evaluateJavascript("playbackRate(${name});", null)
+                    changed(it)
                 }
             }
         }
         Spacer(Modifier.height(35.dp))
-    }
-
-    DisposableEffect(Unit) {
-        job?.cancel()
-        job = coroutines.launch {
-            while (true) {
-                viewModel.showControlView(true)
-                delay(1.seconds)
-            }
-        }
-        onDispose { job?.cancel() }
     }
 }

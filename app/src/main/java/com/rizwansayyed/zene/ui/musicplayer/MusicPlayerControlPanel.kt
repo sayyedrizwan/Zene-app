@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,15 +35,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
+import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
+import com.rizwansayyed.zene.ui.main.view.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.videoplayer.view.VideoSpeedChangeAlert
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -50,16 +58,22 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicPlayerControlPanel(
     modifier: Modifier = Modifier, player: MusicPlayerData?, viewModel: PlayerViewModel
 ) {
+    var songSpeedView by remember { mutableStateOf(false) }
+    var addToPlaylistView by remember { mutableStateOf(false) }
+    var showShareView by remember { mutableStateOf(false) }
     var showTimerSheet by remember { mutableStateOf(false) }
     val isShuffleEnabled by isShuffleDB.collectAsState(false)
     val isLoopEnabled by isLoopDB.collectAsState(false)
     var sliderPosition by remember { mutableFloatStateOf(0f) }
+
+    val videoSpeed by songSpeedDB.collectAsState(null)
 
     Column(
         modifier
@@ -121,8 +135,7 @@ fun MusicPlayerControlPanel(
                 )
             }
 
-            Box(Modifier
-                .clickable {
+            Box(Modifier.clickable {
                     getPlayerS()?.toBackSong()
                 }) {
                 ImageIcon(R.drawable.ic_backward, 27)
@@ -160,7 +173,8 @@ fun MusicPlayerControlPanel(
 
             Box(Modifier.clickable { showTimerSheet = true }) {
                 ImageIcon(
-                    R.drawable.ic_timer, 22,
+                    R.drawable.ic_timer,
+                    22,
                     if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else MainColor
                 )
             }
@@ -173,7 +187,7 @@ fun MusicPlayerControlPanel(
                 .horizontalScroll(rememberScrollState())
         ) {
             MiniWithImageAndBorder(R.drawable.ic_share, R.string.share) {
-
+                showShareView = true
             }
 
             MiniWithImageAndBorder(R.drawable.ic_video_replay, R.string.song_video) {
@@ -189,11 +203,11 @@ fun MusicPlayerControlPanel(
             }
 
             MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.add_to_playlist) {
-
+                addToPlaylistView = true
             }
 
             MiniWithImageAndBorder(R.drawable.ic_dashboard_speed, R.string.playback_speed) {
-
+                songSpeedView = true
             }
 
             MiniWithImageAndBorder(R.drawable.ic_download, R.string.cache_song) {
@@ -210,6 +224,28 @@ fun MusicPlayerControlPanel(
 
     if (showTimerSheet) SleepTimerSheet {
         showTimerSheet = false
+    }
+
+    if (showShareView) ShareDataView(player?.data) {
+        showShareView = false
+    }
+
+    if (addToPlaylistView) AddToPlaylistsView(player?.data) {
+        addToPlaylistView = false
+    }
+
+    if (songSpeedView) Dialog(
+        { songSpeedView = false }, DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        val coroutines = rememberCoroutineScope()
+
+        VideoSpeedChangeAlert(videoSpeed) {
+            val name = it.name.replace("_", ".")
+            coroutines.launch {
+                songSpeedDB = flowOf(it)
+            }
+            getPlayerS()?.playbackRate(name)
+        }
     }
 }
 

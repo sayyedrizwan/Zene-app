@@ -274,4 +274,11 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             if (isActive) cancel()
         }
     }
+
+    override fun playbackRate(v: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            playerWebView?.evaluateJavascript("playbackRate(${v});", null)
+            if (isActive) cancel()
+        }
+    }
 }

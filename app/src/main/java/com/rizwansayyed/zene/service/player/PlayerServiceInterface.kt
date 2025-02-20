@@ -9,4 +9,5 @@ interface PlayerServiceInterface {
     fun pause()
     fun play()
     fun seekTo(v: Float)
+    fun playbackRate(v: String)
 }
