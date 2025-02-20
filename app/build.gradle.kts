@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -22,8 +24,19 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        manifestPlaceholders.clear()
-        manifestPlaceholders["hostName"] = "www.example.com"
+
+        val keystoreFile = project.rootProject.file("key.properties")
+        val properties = Properties()
+        properties.load(keystoreFile.inputStream())
+
+        val appEncodeKey = properties.getProperty("APP_ENCODE_KEY") ?: ""
+        buildConfigField("String", "APP_ENCODE_KEY", appEncodeKey)
+
+        val facebookApplicationID = properties.getProperty("FACEBOOK_APPLICATION_ID") ?: ""
+        manifestPlaceholders["FACEBOOK_APPLICATION_ID"] = facebookApplicationID
+
+        val facebookClientToken = properties.getProperty("FACEBOOK_CLIENT_TOKEN") ?: ""
+        manifestPlaceholders["FACEBOOK_CLIENT_TOKEN"] = facebookClientToken
     }
 
     buildTypes {
@@ -70,6 +83,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.androidx.core.ktx)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
@@ -129,5 +144,4 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.browser)
 
-    implementation("androidx.core:core-ktx:1.15.0")
 }

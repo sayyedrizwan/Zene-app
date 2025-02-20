@@ -111,10 +111,10 @@
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="847085490671954" />
+            android:value="${FACEBOOK_APPLICATION_ID}" />
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
-            android:value="e38db482e05b57ef2a92b3b6c7e30678" />
+            android:value="${FACEBOOK_CLIENT_TOKEN}" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -160,6 +160,7 @@
                 android:name="androidx.emoji2.text.EmojiCompatInitializer"
                 tools:node="remove" />
         </provider>
+
     </application>
 
 </manifest>
