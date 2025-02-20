@@ -22,6 +22,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        manifestPlaceholders.clear()
+        manifestPlaceholders["hostName"] = "www.example.com"
     }
 
     buildTypes {

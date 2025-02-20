@@ -1,8 +1,12 @@
 package com.rizwansayyed.zene.utils
 
+import android.util.Base64
+import com.rizwansayyed.zene.BuildConfig
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class ShareEncodingAndDecoding {
+object ShareEncodingAndDecoding {
 
     private const val ALGORITHM = "AES/CBC/PKCS5Padding"
     private val KEY = SecretKeySpec(BuildConfig.APP_ENCODE_KEY.toByteArray(), "AES")
