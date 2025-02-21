@@ -43,6 +43,11 @@ data class UserPlaylistResponse(
     val track_count: Int?,
 )
 
+data class PlayerLyricsInfoResponse(
+    val plainLyrics: String?,
+    val syncedLyrics: String?
+)
+
 data class MediaLikedResponse(val isLiked: Boolean?)
 
 typealias ZeneMusicDataList = List<ZeneMusicData>
@@ -54,7 +59,9 @@ data class ZeneMusicData(
     val path: String?,
     val thumbnail: String?,
     val type: String?,
-    val extra: String? = null
+    val extra: String? = null,
+    val extraInfo: String? = null,
+    val isExpire: Boolean? = false
 ) {
     fun podcastTimestamp(): Boolean {
         if (extra?.contains("s ago") == true) return true

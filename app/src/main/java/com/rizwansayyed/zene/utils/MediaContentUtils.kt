@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.ui.graphics.toArgb
@@ -27,6 +28,7 @@ import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 
 
 object MediaContentUtils {
@@ -36,13 +38,13 @@ object MediaContentUtils {
     ) {
         when (data?.type()) {
             NONE -> {}
-            SONGS, PODCAST, AI_MUSIC, RADIO -> startAppService(context, data, list, isNew)
+            SONGS, AI_MUSIC, RADIO -> startAppService(context, data, list, isNew)
             VIDEOS -> Intent(context, VideoPlayerActivity::class.java).apply {
                 flags = FLAG_ACTIVITY_NEW_TASK
                 putExtra(Intent.ACTION_VIEW, data.id)
                 context.startActivity(this)
             }
-
+            PODCAST -> NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
             PLAYLISTS -> {}
             ALBUMS -> {}
             ARTISTS -> {}

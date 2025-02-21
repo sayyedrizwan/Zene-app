@@ -9,6 +9,7 @@ object NavigationUtils {
     const val NAV_GO_BACK = "go_back"
     const val NAV_MAIN_PAGE = "main_page"
     const val NAV_SETTINGS_PAGE = "settings_page"
+    const val NAV_PODCAST_PAGE = "podcast/"
 
     private var callback: HomeNavigationListener? = null
 

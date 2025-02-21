@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
+import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
@@ -38,6 +39,9 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_VIDEOS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SONGS_LYRICS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_INFO_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
@@ -310,6 +314,24 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API)
     suspend fun similarPlaylistsSongs(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_SONGS_LYRICS_API)
+    suspend fun playerLyrics(
+        @Header("token") token: String, @Body data: RequestBody
+    ): PlayerLyricsInfoResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PODCAST_PODCAST_INFO_API)
+    suspend fun podcastInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicData
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PODCAST_PODCAST_LIST_API)
+    suspend fun podcastList(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
 

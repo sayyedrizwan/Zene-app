@@ -8,9 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +35,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NONE
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SEARCH
 import com.rizwansayyed.zene.ui.main.home.HomeView
+import com.rizwansayyed.zene.ui.main.podcast.PodcastView
 import com.rizwansayyed.zene.ui.main.search.SearchView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
@@ -51,6 +49,7 @@ import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.setNavigationCallback
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -94,14 +93,20 @@ class MainActivity : ComponentActivity() {
                             composable(NAV_SETTINGS_PAGE) {
                                 SettingsView()
                             }
-                        }
 
+                            composable("$NAV_PODCAST_PAGE{id}") { backStackEntry ->
+                                val id = backStackEntry.arguments?.getString("id")
+                                if (id != null) PodcastView(id)
+                            }
+                        }
+                        PodcastView("nbc-nightly-news-with-lester-holt")
                         HomeBottomNavigationView(
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )
 
-                        if (navigationViewModel.homeNotificationSection != null)
-                            NotificationConnectLocationShare(navigationViewModel)
+                        if (navigationViewModel.homeNotificationSection != null) NotificationConnectLocationShare(
+                            navigationViewModel
+                        )
 
                         MusicPlayerView(navigationViewModel)
 

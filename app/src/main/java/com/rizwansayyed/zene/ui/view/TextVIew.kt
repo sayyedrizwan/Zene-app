@@ -30,10 +30,21 @@ fun TextViewNormal(
         if (center) Modifier.fillMaxWidth() else Modifier,
         color, size.sp, null, FontWeight.Normal, proximanOverFamily,
         textAlign = if (center) TextAlign.Center else null, maxLines = line,
-        overflow = TextOverflow.Ellipsis,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
+@Composable
+fun TextViewBoldBig(
+    txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
+) {
+    Text(
+        txt,
+        if (center) Modifier.fillMaxWidth() else Modifier,
+        color, size.sp, null, FontWeight.Bold, proximanOverFamily,
+        textAlign = if (center) TextAlign.Center else null, maxLines = line, lineHeight = 43.sp
+    )
+}
 @Composable
 fun TextViewBold(
     txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20

@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPlayerGridDB
+import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -70,7 +71,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
         ) {
             HorizontalPager(pagerStateMain, Modifier.fillMaxSize()) { pageMain ->
                 if (pageMain == 0) {
-
+                    SongLyricsView(player)
                 } else if (pageMain == 2) {
 
                 } else {
@@ -106,7 +107,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                         .padding(horizontal = 6.dp)
                 ) {
                     when (pagerStateMain.currentPage) {
-                        0 -> TextViewBold(stringResource(R.string.lyrics), 19)
+                        0 -> TextViewBold(stringResource(R.string.lyrics_info), 19)
                         2 -> TextViewBold(stringResource(R.string.similar_songs), 19)
                         else -> TextViewBold(stringResource(R.string.list), 19)
                     }
@@ -152,9 +153,14 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
     }
 
     LaunchedEffect(player?.data?.id) {
-        if (player?.data?.id != null && player?.data?.type() != null) playViewModel.likedMediaItem(
-            player?.data?.id, player?.data?.type()!!
-        )
+        if (player?.data?.id != null && player?.data?.type() != null) {
+            playViewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
+            playViewModel.getSongLyrics()
+        }
     }
+}
+
+@Composable
+fun SongLyricsView(player: MusicPlayerData?) {
 
 }

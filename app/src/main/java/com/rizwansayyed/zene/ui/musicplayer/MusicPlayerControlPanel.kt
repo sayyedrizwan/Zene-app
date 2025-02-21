@@ -212,7 +212,7 @@ fun MusicPlayerControlPanel(
 
                 }
 
-                MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics) {
+                MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics_info) {
                     coroutine.launch {
                         pagerStateMain.animateScrollToPage(0)
                     }

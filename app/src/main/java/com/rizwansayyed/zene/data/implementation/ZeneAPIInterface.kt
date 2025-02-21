@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
+import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
@@ -22,6 +23,7 @@ import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
 
@@ -82,4 +84,7 @@ interface ZeneAPIInterface {
     suspend fun likedStatus(id: String?, type: MusicDataTypes): Flow<MediaLikedResponse>
     suspend fun addRemoveLikeItem(info: ZeneMusicData?, state: Boolean): Flow<StatusTypeResponse>
     suspend fun similarPlaylistsSongs(id: String?): Flow<ZeneMusicDataList>
+    suspend fun playerLyrics(p: MusicPlayerData?): Flow<PlayerLyricsInfoResponse>
+    suspend fun podcastInfo(id: String?): Flow<ZeneMusicData>
+    suspend fun podcastList(id: String?): Flow<ZeneMusicDataList>
 }

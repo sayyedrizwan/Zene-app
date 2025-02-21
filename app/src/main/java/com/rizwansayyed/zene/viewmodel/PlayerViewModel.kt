@@ -10,14 +10,19 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
+import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
+import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,9 +37,11 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     var itemAddedToPlaylists = mutableStateMapOf<String, Boolean>()
     var createPlaylist by mutableStateOf<ResponseResult<NewPlaylistResponse>>(ResponseResult.Empty)
+    var playerLyrics by mutableStateOf<ResponseResult<PlayerLyricsInfoResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
     var isItemLiked by mutableStateOf(false)
+    var lyricsJob by mutableStateOf<Job?>(null)
 
     fun similarVideos(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val v = videoSimilarVideos) {
@@ -100,4 +107,23 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             itemAddedToPlaylists[id] = state
             zeneAPI.addItemToPlaylists(info, id, state).catch { }.collectLatest { }
         }
+
+
+    fun getSongLyrics() {
+        var p: MusicPlayerData? = null
+        playerLyrics = ResponseResult.Loading
+        lyricsJob?.cancel()
+        lyricsJob = viewModelScope.launch(Dispatchers.IO) {
+            while (p == null) {
+                delay(1.seconds)
+                if (musicPlayerDB.firstOrNull()?.totalDuration != "0")
+                    p = musicPlayerDB.firstOrNull()
+            }
+            zeneAPI.playerLyrics(p).catch {
+                playerLyrics = ResponseResult.Error(it)
+            }.collectLatest {
+                playerLyrics = ResponseResult.Success(it)
+            }
+        }
+    }
 }

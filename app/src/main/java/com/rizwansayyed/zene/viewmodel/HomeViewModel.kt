@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
@@ -73,6 +74,10 @@ class HomeViewModel @Inject constructor(
     var searchPlaces by mutableStateOf<ResponseResult<List<SearchPlacesDataResponse>>>(
         ResponseResult.Empty
     )
+
+
+    var podcastData by mutableStateOf<ResponseResult<ZeneMusicData>>(ResponseResult.Empty)
+    var podcastList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -289,6 +294,31 @@ class HomeViewModel @Inject constructor(
                 info?.status = connectStatus
                 DataStorageManager.userInfo = flowOf(info)
             }
+        }
+    }
+
+
+    fun podcastData(id: String, expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.podcastInfo(id).onStart {
+            podcastData = ResponseResult.Loading
+        }.catch {
+            podcastData = ResponseResult.Error(it)
+        }.collectLatest {
+            if (it.isExpire == true) {
+                expireToken()
+                return@collectLatest
+            }
+            podcastData = ResponseResult.Success(it)
+        }
+    }
+
+    fun podcastDataList(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.podcastList(id).onStart {
+            podcastList = ResponseResult.Loading
+        }.catch {
+            podcastList = ResponseResult.Error(it)
+        }.collectLatest {
+            podcastList = ResponseResult.Success(it)
         }
     }
 }

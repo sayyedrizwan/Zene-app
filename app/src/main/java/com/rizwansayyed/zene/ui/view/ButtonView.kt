@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
 
 @Composable
@@ -59,6 +62,29 @@ fun MiniWithImageAndBorder(
         ImageIcon(img, 16)
         Spacer(Modifier.width(5.dp))
         TextViewNormal(stringResource(txt), 13, center = false)
+    }
+}
+
+@Composable
+fun ButtonWithImageAndArrow(
+    txt: String, color: Color = Color.Gray.copy(0.4f), click: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(color)
+            .clickable {
+                click()
+            }
+            .padding(vertical = 7.dp, horizontal = 14.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextViewNormal(txt, 13, center = false)
+        Spacer(Modifier.width(5.dp))
+        Box(Modifier.rotate(-90f)) {
+            ImageIcon(R.drawable.ic_arrow_down, 16)
+        }
     }
 }
 

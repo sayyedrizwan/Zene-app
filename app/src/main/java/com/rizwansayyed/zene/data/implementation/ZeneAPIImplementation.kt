@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.implementation
 
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
@@ -8,6 +9,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
@@ -75,11 +77,11 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun recentHome() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val ip = ipDB.firstOrNull()
 
         val json = JSONObject().apply {
             put("email", email)
-            put("country", ip.countryCode)
+            put("country", ip?.countryCode)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -141,11 +143,11 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun recentRadio() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("email", email)
-            put("country", ip.countryCode)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -155,11 +157,11 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun homeVideos() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("email", email)
-            put("country", ip.countryCode)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -169,11 +171,11 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun entertainmentNews() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("email", email)
-            put("country", ip.countryCode)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -183,12 +185,12 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun search(q: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("q", q)
             put("email", email)
-            put("country", ip.countryCode)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -198,12 +200,12 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun searchASong(q: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("q", q)
             put("email", email)
-            put("country", ip.countryCode)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -228,11 +230,11 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun entertainmentMovies() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("email", email)
-            put("country", ip.countryCode)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -654,15 +656,61 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun similarPlaylistsSongs(id: String?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val ip = ipAPI.get()
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("email", email)
             put("id", id)
-            put("country", ip.countryCode)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.similarPlaylistsSongs(token, body))
+    }
+
+    override suspend fun playerLyrics(p: MusicPlayerData?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", email)
+            put("name", p?.data?.name)
+            put("artists", p?.data?.artists)
+            put("duration", p?.totalDuration)
+            put("id", p?.data?.id)
+            put("type", p?.data?.type)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.playerLyrics(token, body))
+    }
+
+    override suspend fun podcastInfo(id: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.podcastInfo(token, body))
+    }
+
+    override suspend fun podcastList(id: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.podcastList(token, body))
     }
 }
