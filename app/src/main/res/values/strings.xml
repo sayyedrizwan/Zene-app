@@ -208,6 +208,8 @@
     <string name="snapchat">Snapchat</string>
     <string name="x">X</string>
     <string name="pinterest">Pinterest</string>
+    <string name="list">List</string>
+    <string name="similar_songs">Similar Songs</string>
 
 
     <!--    notification channels-->

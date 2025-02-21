@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,7 +42,6 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
@@ -63,8 +63,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicPlayerControlPanel(
-    modifier: Modifier = Modifier, player: MusicPlayerData?, viewModel: PlayerViewModel
+    modifier: Modifier = Modifier,
+    player: MusicPlayerData?,
+    viewModel: PlayerViewModel,
+    pagerStateMain: PagerState
 ) {
+    val coroutine = rememberCoroutineScope()
+
     var songSpeedView by remember { mutableStateOf(false) }
     var addToPlaylistView by remember { mutableStateOf(false) }
     var showShareView by remember { mutableStateOf(false) }
@@ -118,104 +123,122 @@ fun MusicPlayerControlPanel(
 
         Spacer(Modifier.height(9.dp))
 
-        Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-            Box(Modifier.clickable {
-                viewModel.likeAItem(player?.data, !viewModel.isItemLiked)
-            }) {
-                if (viewModel.isItemLiked) ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
-                else ImageIcon(R.drawable.ic_thumbs_up, 22)
-            }
+        if (pagerStateMain.currentPage == 1) {
+            Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
+                Box(Modifier.clickable {
+                    viewModel.likeAItem(player?.data, !viewModel.isItemLiked)
+                }) {
+                    if (viewModel.isItemLiked) ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
+                    else ImageIcon(R.drawable.ic_thumbs_up, 22)
+                }
 
-            Box(Modifier.clickable {
-                isShuffleDB = flowOf(!isShuffleEnabled)
-            }) {
-                ImageIcon(
-                    if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle,
-                    22
-                )
-            }
+                Box(Modifier.clickable {
+                    isShuffleDB = flowOf(!isShuffleEnabled)
+                }) {
+                    ImageIcon(
+                        if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle,
+                        22
+                    )
+                }
 
-            Box(Modifier.clickable {
+                Box(Modifier.clickable {
                     getPlayerS()?.toBackSong()
                 }) {
-                ImageIcon(R.drawable.ic_backward, 27)
-            }
-
-            Box(Modifier
-                .padding(5.dp)
-                .clip(RoundedCornerShape(100))
-                .clickable {
-                    if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
-                    else getPlayerS()?.play()
+                    ImageIcon(R.drawable.ic_backward, 27)
                 }
-                .background(Color.White)
-                .padding(10.dp)) {
-                when (player?.state) {
-                    YoutubePlayerState.PLAYING -> ImageIcon(R.drawable.ic_pause, 27, Color.Black)
-                    YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
-                        Modifier.size(26.dp), Color.White, 4.dp, MainColor
+
+                Box(Modifier
+                    .padding(5.dp)
+                    .clip(RoundedCornerShape(100))
+                    .clickable {
+                        if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                        else getPlayerS()?.play()
+                    }
+                    .background(Color.White)
+                    .padding(10.dp)) {
+                    when (player?.state) {
+                        YoutubePlayerState.PLAYING -> ImageIcon(
+                            R.drawable.ic_pause,
+                            27,
+                            Color.Black
+                        )
+
+                        YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
+                            Modifier.size(26.dp), Color.White, 4.dp, MainColor
+                        )
+
+                        else -> ImageIcon(R.drawable.ic_play, 27, Color.Black)
+                    }
+                }
+                Box(Modifier.clickable {
+                    getPlayerS()?.toNextSong()
+                }) {
+                    ImageIcon(R.drawable.ic_forward, 27)
+                }
+
+                Box(Modifier.clickable {
+                    isLoopDB = flowOf(!isLoopEnabled)
+                }) {
+                    ImageIcon(
+                        if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat,
+                        22
                     )
+                }
 
-                    else -> ImageIcon(R.drawable.ic_play, 27, Color.Black)
+                Box(Modifier.clickable { showTimerSheet = true }) {
+                    ImageIcon(
+                        R.drawable.ic_timer,
+                        22,
+                        if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else MainColor
+                    )
                 }
             }
-            Box(Modifier.clickable {
-                getPlayerS()?.toNextSong()
-            }) {
-                ImageIcon(R.drawable.ic_forward, 27)
-            }
 
-            Box(Modifier.clickable {
-                isLoopDB = flowOf(!isLoopEnabled)
-            }) {
-                ImageIcon(if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22)
-            }
+            Spacer(Modifier.height(14.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                MiniWithImageAndBorder(R.drawable.ic_share, R.string.share) {
+                    showShareView = true
+                }
 
-            Box(Modifier.clickable { showTimerSheet = true }) {
-                ImageIcon(
-                    R.drawable.ic_timer,
-                    22,
-                    if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else MainColor
-                )
+                MiniWithImageAndBorder(R.drawable.ic_video_replay, R.string.song_video) {
+
+                }
+
+                MiniWithImageAndBorder(R.drawable.ic_teaching, R.string.lyrics_video) {
+
+                }
+
+                MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics) {
+                    coroutine.launch {
+                        pagerStateMain.animateScrollToPage(0)
+                    }
+                }
+
+                MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_songs) {
+                    coroutine.launch {
+                        pagerStateMain.animateScrollToPage(2)
+                    }
+                }
+
+                MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.add_to_playlist) {
+                    addToPlaylistView = true
+                }
+
+                MiniWithImageAndBorder(R.drawable.ic_dashboard_speed, R.string.playback_speed) {
+                    songSpeedView = true
+                }
+
+                MiniWithImageAndBorder(R.drawable.ic_download, R.string.cache_song) {
+
+                }
             }
+            Spacer(Modifier.height(20.dp))
         }
-
-        Spacer(Modifier.height(14.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-        ) {
-            MiniWithImageAndBorder(R.drawable.ic_share, R.string.share) {
-                showShareView = true
-            }
-
-            MiniWithImageAndBorder(R.drawable.ic_video_replay, R.string.song_video) {
-
-            }
-
-            MiniWithImageAndBorder(R.drawable.ic_teaching, R.string.lyrics_video) {
-
-            }
-
-            MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics) {
-
-            }
-
-            MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.add_to_playlist) {
-                addToPlaylistView = true
-            }
-
-            MiniWithImageAndBorder(R.drawable.ic_dashboard_speed, R.string.playback_speed) {
-                songSpeedView = true
-            }
-
-            MiniWithImageAndBorder(R.drawable.ic_download, R.string.cache_song) {
-
-            }
-        }
-
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(20.dp))
     }
 
     LaunchedEffect(player?.currentDuration) {

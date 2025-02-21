@@ -118,11 +118,11 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAFR5zPlsuPYHHKaNX7_U-FvWb18gr3RkA" />
+            android:value="${GOOGLE_MAP_KEY}" />
 
         <meta-data
             android:name="com.truecaller.android.sdk.ClientId"
-            android:value="_lecij7uyjsnmpvcgplrkmal6uwkjxk2o1ersfewvfe" />
+            android:value="${TRUE_CALLER_KEY}" />
 
         <service
             android:name=".service.player.PlayerForegroundService"

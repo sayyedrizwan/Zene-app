@@ -94,7 +94,7 @@ fun MusicPlayingGridView(
     Column(
         Modifier
             .offset(
-                y = if (page == pagerState.currentPage) (-100).dp else 0.dp
+                y = if (page == pagerState.currentPage) (-120).dp else 0.dp
             )
             .animateContentSize()
             .fillMaxSize()

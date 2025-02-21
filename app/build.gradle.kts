@@ -37,6 +37,12 @@ android {
 
         val facebookClientToken = properties.getProperty("FACEBOOK_CLIENT_TOKEN") ?: ""
         manifestPlaceholders["FACEBOOK_CLIENT_TOKEN"] = facebookClientToken
+
+        val googleMapKey = properties.getProperty("GOOGLE_MAP_KEY") ?: ""
+        manifestPlaceholders["GOOGLE_MAP_KEY"] = googleMapKey
+
+        val trueCallerKey = properties.getProperty("TRUE_CALLER_KEY") ?: ""
+        manifestPlaceholders["TRUE_CALLER_KEY"] = trueCallerKey
     }
 
     buildTypes {
