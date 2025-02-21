@@ -99,8 +99,10 @@
     <string name="grant">Grant</string>
     <string name="play">Play</string>
     <string name="playlists">Playlists</string>
+    <string name="playlist">Playlist</string>
     <string name="playlist_name">Playlist Name</string>
     <string name="albums">Albums</string>
+    <string name="album">Album</string>
     <string name="confirm">Confirm</string>
     <string name="friends">Friends</string>
     <string name="friend_requests">Friend Requests</string>
@@ -168,6 +170,8 @@
     <string name="vibe_uploaded_successfully">Vibe shared successfully.</string>
     <string name="cancel">Cancel</string>
     <string name="candid">Candid</string>
+    <string name="minutes_ago">minutes ago</string>
+    <string name="days_ago">days ago</string>
     <string name="candid_desc">Candid shot! No filters, no edits—just as it was captured in-app.</string>
     <string name="attach">Attach</string>
     <string name="you_cant_send_a_new_message_until_you_got_reply">You can\'t send a new message until you got a reply.</string>

@@ -12,14 +12,10 @@ data class MusicPlayerData(
     var totalDuration: String?,
 ) {
     fun currentDuration(): String {
-        return formatDurationsForVideo(
-            currentDuration?.toFloatOrNull() ?: 0f, totalDuration?.toFloatOrNull() ?: 0f
-        ).first
+        return formatDurationsForVideo(currentDuration?.toFloatOrNull() ?: 0f)
     }
 
     fun totalDuration(): String {
-        return formatDurationsForVideo(
-            currentDuration?.toFloatOrNull() ?: 0f, totalDuration?.toFloatOrNull() ?: 0f
-        ).second
+        return formatDurationsForVideo(totalDuration?.toFloatOrNull() ?: 0f)
     }
 }

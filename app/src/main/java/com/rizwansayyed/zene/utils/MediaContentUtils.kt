@@ -5,45 +5,36 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.ui.graphics.toArgb
-import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
-import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES
-import com.rizwansayyed.zene.data.model.MusicDataTypes.NEWS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.NONE
-import com.rizwansayyed.zene.data.model.MusicDataTypes.PLAYLISTS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.PODCAST
-import com.rizwansayyed.zene.data.model.MusicDataTypes.PODCAST_CATEGORIES
-import com.rizwansayyed.zene.data.model.MusicDataTypes.RADIO
-import com.rizwansayyed.zene.data.model.MusicDataTypes.SONGS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.TEXT
-import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
+import com.rizwansayyed.zene.data.model.MusicDataTypes.*
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 
 
 object MediaContentUtils {
 
     fun startMedia(
-        data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList(), isNew: Boolean = false
+        data: ZeneMusicData?, l: List<ZeneMusicData?> = emptyList(), isNew: Boolean = false
     ) {
+        val index = l.indexOfFirst { it?.id == data?.id }
+        val list = getItemsAroundIndex(l, index)
         when (data?.type()) {
             NONE -> {}
-            SONGS, AI_MUSIC, RADIO -> startAppService(context, data, list, isNew)
+            SONGS, AI_MUSIC, RADIO, PODCAST_AUDIO -> startAppService(context, data, list, isNew)
             VIDEOS -> Intent(context, VideoPlayerActivity::class.java).apply {
                 flags = FLAG_ACTIVITY_NEW_TASK
                 putExtra(Intent.ACTION_VIEW, data.id)
                 context.startActivity(this)
             }
+
             PODCAST -> NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
             PLAYLISTS -> {}
             ALBUMS -> {}
@@ -84,6 +75,17 @@ object MediaContentUtils {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(this)
             else context.startService(this)
         }
+    }
+
+    private fun getItemsAroundIndex(
+        list: List<ZeneMusicData?>, index: Int, limit: Int = 200
+    ): List<ZeneMusicData?> {
+        if (list.size <= limit) return list
+
+        val halfLimit = limit / 2
+        val startIndex = maxOf(0, index - halfLimit)
+        val endIndex = minOf(list.size, startIndex + limit)
+        return list.subList(startIndex, endIndex)
     }
 
 }

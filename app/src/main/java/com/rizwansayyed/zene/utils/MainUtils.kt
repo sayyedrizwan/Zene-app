@@ -16,6 +16,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.text.HtmlCompat
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.squareup.moshi.Moshi
@@ -438,31 +439,18 @@ object MainUtils {
     }
 
     @SuppressLint("DefaultLocale")
-    fun formatDurationsForVideo(currentSeconds: Float, totalSeconds: Float): Pair<String, String> {
+    fun formatDurationsForVideo(totalSeconds: Float): String {
         val total = totalSeconds.toInt()
-        val current = currentSeconds.toInt()
 
         val totalHours = total / 3600
         val totalMinutes = (total % 3600) / 60
         val totalSecs = total % 60
 
-        val currentHours = current / 3600
-        val currentMinutes = (current % 3600) / 60
-        val currentSecs = current % 60
 
         return if (totalHours > 0) {
-            String.format(
-                "%02d:%02d:%02d",
-                currentHours,
-                currentMinutes,
-                currentSecs
-            ) to String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
+            String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
         } else {
-            String.format("%02d:%02d", currentMinutes, currentSecs) to String.format(
-                "%02d:%02d",
-                totalMinutes,
-                totalSecs
-            )
+            String.format("%02d:%02d", totalMinutes, totalSecs)
         }
     }
 
@@ -475,5 +463,9 @@ object MainUtils {
 
     fun convertToMS(timeInSeconds: String): Long {
         return (timeInSeconds.toDoubleOrNull()?.times(1000))?.toLong() ?: 0L
+    }
+
+    fun htmlToText(html: String): String {
+        return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
     }
 }

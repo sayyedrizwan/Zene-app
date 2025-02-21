@@ -66,29 +66,6 @@ fun MiniWithImageAndBorder(
 }
 
 @Composable
-fun ButtonWithImageAndArrow(
-    txt: String, color: Color = Color.Gray.copy(0.4f), click: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 10.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(color)
-            .clickable {
-                click()
-            }
-            .padding(vertical = 7.dp, horizontal = 14.dp),
-        Arrangement.Center, Alignment.CenterVertically
-    ) {
-        TextViewNormal(txt, 13, center = false)
-        Spacer(Modifier.width(5.dp))
-        Box(Modifier.rotate(-90f)) {
-            ImageIcon(R.drawable.ic_arrow_down, 16)
-        }
-    }
-}
-
-@Composable
 fun ButtonWithBorder(txt: Int, border: Color = Color.White, click: () -> Unit) {
     Row(
         modifier = Modifier

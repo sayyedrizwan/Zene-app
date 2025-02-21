@@ -30,6 +30,7 @@ import androidx.compose.ui.util.lerp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -42,16 +43,14 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MusicPlayingListView(player: MusicPlayerData?, data: ZeneMusicData?) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clickable {
-                MediaContentUtils.startMedia(data, player?.lists ?: emptyList())
-            }
-            .padding(horizontal = 9.dp, vertical = 9.dp),
+    Row(Modifier
+        .fillMaxWidth()
+        .clickable {
+            MediaContentUtils.startMedia(data, player?.lists ?: emptyList())
+        }
+        .padding(horizontal = 9.dp, vertical = 9.dp),
         Arrangement.Center,
-        Alignment.CenterVertically
-    ) {
+        Alignment.CenterVertically) {
         GlideImage(
             data?.thumbnail,
             data?.name,
@@ -67,16 +66,15 @@ fun MusicPlayingListView(player: MusicPlayerData?, data: ZeneMusicData?) {
                 .weight(1f)
         ) {
             TextViewBold(data?.name ?: "", 15, line = 2)
-            Spacer(Modifier.height(1.dp))
-            TextViewNormal(data?.artists ?: "", 13, line = 1)
+            if (data?.type() == MusicDataTypes.SONGS) {
+                Spacer(Modifier.height(1.dp))
+                TextViewNormal(data.artists ?: "", 13, line = 1)
+            }
         }
 
         if (player?.data?.id == data?.id) {
             GlideImage(
-                R.raw.song_playing_wave,
-                "",
-                Modifier.size(24.dp),
-                contentScale = ContentScale.Crop
+                R.raw.song_playing_wave, "", Modifier.size(24.dp), contentScale = ContentScale.Crop
             )
         } else {
             Box(Modifier) {
@@ -146,7 +144,11 @@ fun MusicPlayingGridView(
             Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.End) {
                 Spacer(Modifier.height(6.dp))
                 TextViewBold(player?.lists?.get(page)?.name ?: "", 25, center = true, line = 2)
-                TextViewNormal(player?.lists?.get(page)?.artists ?: "", 13, center = true, line = 1)
+                if (player?.lists?.get(page)?.type() == MusicDataTypes.SONGS) {
+                    TextViewNormal(
+                        player.lists[page]?.artists ?: "", 13, center = true, line = 1
+                    )
+                }
             }
         }
     }

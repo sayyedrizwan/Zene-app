@@ -87,4 +87,5 @@ interface ZeneAPIInterface {
     suspend fun playerLyrics(p: MusicPlayerData?): Flow<PlayerLyricsInfoResponse>
     suspend fun podcastInfo(id: String?): Flow<ZeneMusicData>
     suspend fun podcastList(id: String?): Flow<ZeneMusicDataList>
+    suspend fun podcastMediaURL(id: String?): Flow<String>
 }

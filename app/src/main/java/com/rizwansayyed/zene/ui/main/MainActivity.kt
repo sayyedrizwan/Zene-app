@@ -35,7 +35,6 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NONE
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SEARCH
 import com.rizwansayyed.zene.ui.main.home.HomeView
-import com.rizwansayyed.zene.ui.main.podcast.PodcastView
 import com.rizwansayyed.zene.ui.main.search.SearchView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
@@ -44,6 +43,8 @@ import com.rizwansayyed.zene.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.ui.view.PlaylistView
+import com.rizwansayyed.zene.ui.view.PlaylistsType
 import com.rizwansayyed.zene.utils.HomeNavigationListener
 import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
@@ -96,10 +97,10 @@ class MainActivity : ComponentActivity() {
 
                             composable("$NAV_PODCAST_PAGE{id}") { backStackEntry ->
                                 val id = backStackEntry.arguments?.getString("id")
-                                if (id != null) PodcastView(id)
+                                if (id != null) PlaylistView(id, PlaylistsType.PODCAST)
                             }
                         }
-                        PodcastView("nbc-nightly-news-with-lester-holt")
+                        PlaylistView("tedtalks-audio", PlaylistsType.PODCAST)
                         HomeBottomNavigationView(
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )

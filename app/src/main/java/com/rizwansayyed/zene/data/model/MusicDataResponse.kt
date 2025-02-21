@@ -1,7 +1,13 @@
 package com.rizwansayyed.zene.data.model
 
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 enum class MusicDataTypes {
-    NONE, SONGS, RADIO, VIDEOS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC, TEXT
+    NONE, SONGS, RADIO, VIDEOS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_AUDIO, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC, TEXT
 }
 
 data class AIDataResponse(
@@ -63,12 +69,28 @@ data class ZeneMusicData(
     val extraInfo: String? = null,
     val isExpire: Boolean? = false
 ) {
+
     fun podcastTimestamp(): Boolean {
         if (extra?.contains("s ago") == true) return true
         else if (extra?.contains("m ago") == true) return true
         else if (extra?.contains("h ago") == true) return true
 
         return false
+    }
+
+    fun timeAgo(): String {
+        val epoch = (extra?.toLong() ?: 0)
+        val now = System.currentTimeMillis() / 1000
+        val diff = now - epoch
+
+        return when {
+            diff < 60 -> "$diff ${context.resources.getString(R.string.minutes_ago)}"
+            diff < 7 * 24 * 60 * 60 -> "${diff / (24 * 60 * 60)} ${context.resources.getString(R.string.days_ago)}"
+            diff < 30 * 24 * 60 * 60 -> SimpleDateFormat("HH MMM", Locale.getDefault())
+                .format(Date(epoch * 1000))
+
+            else -> SimpleDateFormat("HH MMM yyy", Locale.getDefault()).format(Date(epoch * 1000))
+        }
     }
 
     fun type(): MusicDataTypes {
@@ -81,6 +103,7 @@ data class ZeneMusicData(
             "ARTISTS" -> MusicDataTypes.ARTISTS
             "PODCAST_CATEGORIES" -> MusicDataTypes.PODCAST_CATEGORIES
             "PODCAST" -> MusicDataTypes.PODCAST
+            "PODCAST_AUDIO" -> MusicDataTypes.PODCAST_AUDIO
             "NEWS" -> MusicDataTypes.NEWS
             "MOVIES" -> MusicDataTypes.MOVIES
             "AI_MUSIC" -> MusicDataTypes.AI_MUSIC

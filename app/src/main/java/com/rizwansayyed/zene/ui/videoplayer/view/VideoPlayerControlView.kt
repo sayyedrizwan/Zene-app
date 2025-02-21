@@ -93,14 +93,12 @@ fun QualityAndControlVideoView(
         Spacer(Modifier.height(14.dp))
 
         Row {
-            if (playerViewModel.isItemLiked)
-                ImageWithBorder(R.drawable.ic_thumbs_up, Color.Red) {
-                    playerViewModel.likeAItem(viewModel.videoInfo, false)
-                }
-            else
-                ImageWithBorder(R.drawable.ic_thumbs_up) {
-                    playerViewModel.likeAItem(viewModel.videoInfo, true)
-                }
+            if (playerViewModel.isItemLiked) ImageWithBorder(R.drawable.ic_thumbs_up, Color.Red) {
+                playerViewModel.likeAItem(viewModel.videoInfo, false)
+            }
+            else ImageWithBorder(R.drawable.ic_thumbs_up) {
+                playerViewModel.likeAItem(viewModel.videoInfo, true)
+            }
 
             ImageWithBorder(R.drawable.ic_playlist) {
                 viewModel.showPlaylistDialog(true)
@@ -153,9 +151,7 @@ fun VideoPlayerBottomControl(viewModel: PlayingVideoInfoViewModel, modifier: Mod
             Alignment.CenterVertically
         ) {
             TextViewNormal(
-                formatDurationsForVideo(
-                    viewModel.videoCurrentTimestamp, viewModel.videoDuration
-                ).first, size = 13
+                formatDurationsForVideo(viewModel.videoCurrentTimestamp), size = 13
             )
 
             Slider(value = sliderPosition,
@@ -183,9 +179,7 @@ fun VideoPlayerBottomControl(viewModel: PlayingVideoInfoViewModel, modifier: Mod
                 })
 
             TextViewNormal(
-                formatDurationsForVideo(
-                    viewModel.videoCurrentTimestamp, viewModel.videoDuration
-                ).second, size = 13
+                formatDurationsForVideo(viewModel.videoDuration), size = 13
             )
         }
 

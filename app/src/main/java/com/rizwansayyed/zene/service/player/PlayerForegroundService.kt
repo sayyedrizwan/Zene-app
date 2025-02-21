@@ -3,10 +3,12 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
@@ -21,6 +23,7 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.MediaSessionPlayerNotification
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
@@ -87,8 +90,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     private fun playSongs(new: Boolean) {
         isNew = new
-        getSimilarSongInfo()
-        loadAVideo(currentPlayingSong?.id)
+
+        if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
+            getSimilarSongInfo()
+            loadAVideo(currentPlayingSong?.id)
+        }else if (currentPlayingSong?.type() == MusicDataTypes.PODCAST_AUDIO) {
+            getMediaPlayerPath()
+        }
     }
 
     inner class WebAppInterface {
@@ -187,6 +195,18 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             saveEmpty(lists?.toList() ?: emptyList())
         } catch (e: Exception) {
             saveEmpty(songsLists.asList())
+        }
+        if (isActive) cancel()
+    }
+
+
+    private fun getMediaPlayerPath() = CoroutineScope(Dispatchers.IO).launch {
+        currentPlayingSong ?: return@launch
+
+        try {
+            val path = zeneAPI.podcastMediaURL(currentPlayingSong!!.path).firstOrNull()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         if (isActive) cancel()
     }
