@@ -49,8 +49,13 @@
                 events: {
                   onReady: onPlayerReady,
                   onStateChange: onPlayerStateChange,
+                  onError: onPlayerError,
                 },
               });
+            }
+
+            function onPlayerError(event) {
+                Zene.onError()
             }
 
             function onPlayerReady(event) {

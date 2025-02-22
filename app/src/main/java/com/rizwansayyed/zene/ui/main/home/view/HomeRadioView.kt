@@ -44,7 +44,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
 
             is ResponseResult.Success -> {
                 item {
-                    Spacer(Modifier.height(30.dp))
+                    Spacer(Modifier.height(20.dp))
                 }
 
                 if (v.data.recent?.isNotEmpty() == true) item {
@@ -68,7 +68,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.countryRadio) {
-                            ItemCardView(it)
+                            ItemCardView(it, v.data.countryRadio)
                         }
                     }
                     Spacer(Modifier.height(30.dp))
@@ -106,7 +106,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                             .heightIn(max = 500.dp)
                     ) {
                         items(v.data.exploreRadio) {
-                            ItemCardView(it)
+                            ItemCardView(it, v.data.exploreRadio)
                         }
                     }
                 }

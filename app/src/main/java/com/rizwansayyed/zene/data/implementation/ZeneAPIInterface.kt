@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
+import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes
@@ -86,6 +87,7 @@ interface ZeneAPIInterface {
     suspend fun addRemoveLikeItem(info: ZeneMusicData?, state: Boolean): Flow<StatusTypeResponse>
     suspend fun similarPlaylistsSongs(id: String?): Flow<ZeneMusicDataList>
     suspend fun playerLyrics(p: MusicPlayerData?): Flow<PlayerLyricsInfoResponse>
-    suspend fun podcastMediaURL(id: String?): Flow<String>
     suspend fun podcastInfo(id: String?): Flow<PodcastPlaylistResponse>
+    suspend fun podcastMediaURL(id: String?): Flow<MediaPathResponse>
+    suspend fun radioMediaURL(id: String?): Flow<MediaPathResponse>
 }

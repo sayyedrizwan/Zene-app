@@ -6,6 +6,7 @@ import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
+import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
@@ -43,6 +44,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SONGS_LYRICS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_MEDIA_URL_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO_MEDIA_URL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
@@ -334,6 +336,12 @@ interface ZeneAPIService {
     @POST(ZENE_PODCAST_PODCAST_MEDIA_URL_API)
     suspend fun podcastMediaURL(
         @Header("token") token: String, @Body data: RequestBody
-    ): String
+    ): MediaPathResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_RADIO_MEDIA_URL_API)
+    suspend fun radioMediaURL(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MediaPathResponse
 
 }

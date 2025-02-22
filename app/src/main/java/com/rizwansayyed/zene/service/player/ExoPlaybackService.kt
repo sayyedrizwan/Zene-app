@@ -1,14 +1,14 @@
 package com.rizwansayyed.zene.service.player
 
-import android.util.Log
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
-import com.rizwansayyed.zene.utils.MainUtils.formatMSDurationsForVideo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -26,6 +26,13 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
             super.onPlaybackStateChanged(playbackState)
             if (playbackState == STATE_ENDED) context.songEnded()
         }
+
+        override fun onPlayerError(error: PlaybackException) {
+            super.onPlayerError(error)
+            if (context.currentPlayingSong?.type() == MusicDataTypes.SONGS) return
+            context.errorReRun += 1
+            if (context.errorReRun <= 3) context.playSongs(false)
+        }
     }
 
     init {
@@ -36,11 +43,11 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
 
     fun startPlaying(path: String?) = CoroutineScope(Dispatchers.Main).launch {
         path ?: return@launch
+
         val mediaItem = MediaItem.fromUri(path)
         exoPlayer?.setMediaItem(mediaItem)
         exoPlayer?.prepare()
         if (!context.isNew) exoPlayer?.play()
-        exoPlayer?.seekTo(0)
 
         if (isActive) cancel()
     }
@@ -56,9 +63,12 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
             val duration = exoPlayer?.duration.toString()
             val currentTS = exoPlayer?.currentPosition.toString()
             val playSpeed = exoPlayer?.playbackState.toString()
-
-            val state =
+            val state = if (context.currentPlayingSong?.type() == MusicDataTypes.RADIO) {
+                if (exoPlayer?.isPlaying == true) YoutubePlayerState.PLAYING else YoutubePlayerState.PAUSE
+            } else {
                 if (exoPlayer?.isPlaying == true) YoutubePlayerState.PLAYING else if (exoPlayer?.isLoading == true) YoutubePlayerState.BUFFERING else YoutubePlayerState.PAUSE
+            }
+
             context.visiblePlayerNotification(state, currentTS, duration, playSpeed)
 
             val playerInfo = musicPlayerDB.firstOrNull()

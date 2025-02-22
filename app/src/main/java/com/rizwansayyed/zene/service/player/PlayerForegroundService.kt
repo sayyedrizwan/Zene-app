@@ -22,9 +22,9 @@ import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.SmartShuffle
 import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
-import com.rizwansayyed.zene.utils.MainUtils.formatMSDurationsForVideo
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
@@ -65,13 +65,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     private var playerWebView: WebView? = null
 
     var isNew: Boolean = false
-    private var currentPlayingSong: ZeneMusicData? = null
+    var currentPlayingSong: ZeneMusicData? = null
     private var songsLists: Array<ZeneMusicData?> = emptyArray()
     private var durationJob: Job? = null
     private var sleepTimer: Job? = null
     private var smartShuffle: SmartShuffle? = null
     private val mediaSession by lazy { MediaSessionPlayerNotification(this) }
     private val exoPlayerSession by lazy { ExoPlaybackService(this) }
+    var errorReRun = 0
 
     override fun onBind(p0: Intent?): IBinder? = null
 
@@ -85,11 +86,12 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             moshi.adapter(Array<ZeneMusicData?>::class.java).fromJson(musicList) ?: emptyArray()
         smartShuffle = SmartShuffle(songsLists.toList())
         playSongs(isNew)
+        errorReRun += 0
 
         return START_STICKY
     }
 
-    private fun playSongs(new: Boolean) {
+    fun playSongs(new: Boolean) {
         isNew = new
 
         if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
@@ -98,6 +100,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             exoPlayerSession.stop()
         } else if (currentPlayingSong?.type() == MusicDataTypes.PODCAST_AUDIO) {
             getMediaPlayerPath()
+            loadAVideo("")
+        } else if (currentPlayingSong?.type() == MusicDataTypes.RADIO) {
+            getRadioPlayerPath()
             loadAVideo("")
         }
     }
@@ -122,6 +127,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         @JavascriptInterface
         fun videoEnded() {
             songEnded()
+        }
+
+        @JavascriptInterface
+        fun onError() {
+            if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
+                errorReRun += 1
+                if (errorReRun <= 3) playSongs(false)
+            }
         }
     }
 
@@ -195,7 +208,19 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         saveEmpty(songsLists.asList())
         try {
             val path = zeneAPI.podcastMediaURL(currentPlayingSong!!.path).firstOrNull()
-            exoPlayerSession.startPlaying(path?.trim())
+            exoPlayerSession.startPlaying(path?.urlPath?.trim())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        if (isActive) cancel()
+    }
+
+    private fun getRadioPlayerPath() = CoroutineScope(Dispatchers.IO).launch {
+        currentPlayingSong ?: return@launch
+        saveEmpty(songsLists.asList())
+        try {
+            val path = zeneAPI.radioMediaURL(currentPlayingSong!!.id).firstOrNull()
+            exoPlayerSession.startPlaying(path?.urlPath?.trim())
         } catch (e: Exception) {
             e.printStackTrace()
         }

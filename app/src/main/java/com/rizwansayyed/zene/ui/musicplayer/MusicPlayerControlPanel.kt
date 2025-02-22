@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
@@ -91,35 +92,38 @@ fun MusicPlayerControlPanel(
     ) {
         Spacer(Modifier.height(40.dp))
 
-        if (player?.totalDuration?.contains("-") == false && player.currentDuration?.contains("-") == false) {
-            Slider(value = sliderPosition,
-                onValueChange = { sliderPosition = it },
-                onValueChangeFinished = { getPlayerS()?.seekTo(sliderPosition) },
-                valueRange = 0f..(player.totalDuration?.toFloatOrNull() ?: 1f),
-                colors = SliderDefaults.colors(Color.White),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(10.dp),
-                track = { sliderState ->
-                    SliderDefaults.Track(
-                        modifier = Modifier.height(4.dp),
-                        sliderState = sliderState,
-                        drawStopIndicator = null,
-                        thumbTrackGapSize = 0.dp,
-                        colors = SliderDefaults.colors(
-                            Color.White, MainColor, MainColor, Color.Gray, Color.Gray
+        if (player?.data?.type() == MusicDataTypes.RADIO) {
+            TextViewSemiBold(stringResource(R.string.live_streaming), size = 14, center = true)
+        } else {
+            if (player?.totalDuration?.contains("-") == false && player.currentDuration?.contains("-") == false) {
+                Slider(value = sliderPosition,
+                    onValueChange = { sliderPosition = it },
+                    onValueChangeFinished = { getPlayerS()?.seekTo(sliderPosition) },
+                    valueRange = 0f..(player.totalDuration?.toFloatOrNull() ?: 1f),
+                    colors = SliderDefaults.colors(Color.White),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(10.dp),
+                    track = { sliderState ->
+                        SliderDefaults.Track(
+                            modifier = Modifier.height(4.dp),
+                            sliderState = sliderState,
+                            drawStopIndicator = null,
+                            thumbTrackGapSize = 0.dp,
+                            colors = SliderDefaults.colors(
+                                Color.White, MainColor, MainColor, Color.Gray, Color.Gray
+                            )
                         )
-                    )
-                })
-        }
-        Spacer(Modifier.height(5.dp))
+                    })
+            }
+            Spacer(Modifier.height(5.dp))
 
-        Row(Modifier.fillMaxWidth()) {
-            TextViewSemiBold(player?.currentDuration() ?: "", size = 13)
-            Spacer(Modifier.weight(1f))
-            TextViewSemiBold(player?.totalDuration() ?: "", size = 13)
+            Row(Modifier.fillMaxWidth()) {
+                TextViewSemiBold(player?.currentDuration() ?: "", size = 13)
+                Spacer(Modifier.weight(1f))
+                TextViewSemiBold(player?.totalDuration() ?: "", size = 13)
+            }
         }
-
         Spacer(Modifier.height(9.dp))
 
         if (pagerStateMain.currentPage == 1) {
