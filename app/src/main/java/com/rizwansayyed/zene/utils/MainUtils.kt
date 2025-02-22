@@ -13,6 +13,7 @@ import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
@@ -440,17 +441,34 @@ object MainUtils {
 
     @SuppressLint("DefaultLocale")
     fun formatDurationsForVideo(totalSeconds: Float): String {
-        val total = totalSeconds.toInt()
+        try {
+            val total = totalSeconds.toInt()
 
-        val totalHours = total / 3600
-        val totalMinutes = (total % 3600) / 60
-        val totalSecs = total % 60
+            val totalHours = total / 3600
+            val totalMinutes = (total % 3600) / 60
+            val totalSecs = total % 60
 
+            return if (totalHours > 0) {
+                String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
+            } else {
+                String.format("%02d:%02d", totalMinutes, totalSecs)
+            }
+        } catch (e: Exception) {
+            return "0:00"
+        }
+    }
 
-        return if (totalHours > 0) {
-            String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
+    @SuppressLint("DefaultLocale")
+    fun formatMSDurationsForVideo(totalMS: Float): String {
+        val totalSeconds = totalMS / 1000
+        val hours = (totalSeconds / 3600).toInt()
+        val minutes = ((totalSeconds % 3600) / 60).toInt()
+        val seconds = (totalSeconds % 60).toInt()
+
+        return if (hours > 0) {
+            String.format("%02d:%02d:%02d", hours, minutes, seconds)
         } else {
-            String.format("%02d:%02d", totalMinutes, totalSecs)
+            String.format("%02d:%02d", minutes, seconds)
         }
     }
 
@@ -462,10 +480,7 @@ object MainUtils {
     }
 
     fun convertToMS(timeInSeconds: String): Long {
+        if (!timeInSeconds.contains(".")) return timeInSeconds.toLongOrNull() ?: 0L
         return (timeInSeconds.toDoubleOrNull()?.times(1000))?.toLong() ?: 0L
-    }
-
-    fun htmlToText(html: String): String {
-        return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
     }
 }

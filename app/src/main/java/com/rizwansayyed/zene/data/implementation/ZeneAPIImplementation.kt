@@ -701,19 +701,6 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.podcastInfo(token, body))
     }
 
-    override suspend fun podcastList(id: String?) = flow {
-        val email = userInfo.firstOrNull()?.email ?: ""
-        val token = userInfo.firstOrNull()?.authToken ?: ""
-
-        val json = JSONObject().apply {
-            put("email", email)
-            put("id", id)
-        }
-
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.podcastList(token, body))
-    }
-
     override suspend fun podcastMediaURL(id: String?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

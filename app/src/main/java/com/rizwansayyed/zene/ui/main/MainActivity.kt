@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity() {
                                 if (id != null) PlaylistView(id, PlaylistsType.PODCAST)
                             }
                         }
-                        PlaylistView("tedtalks-audio", PlaylistsType.PODCAST)
+
                         HomeBottomNavigationView(
                             Modifier.align(Alignment.BottomCenter), navigationViewModel
                         )

@@ -91,28 +91,27 @@ fun MusicPlayerControlPanel(
     ) {
         Spacer(Modifier.height(40.dp))
 
-        Slider(value = sliderPosition,
-            onValueChange = {
-                sliderPosition = it
-                getPlayerS()?.seekTo(it)
-            },
-            valueRange = 0f..(player?.totalDuration?.toFloatOrNull() ?: 0f),
-            colors = SliderDefaults.colors(Color.White),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(10.dp),
-            track = { sliderState ->
-                SliderDefaults.Track(
-                    modifier = Modifier.height(4.dp),
-                    sliderState = sliderState,
-                    drawStopIndicator = null,
-                    thumbTrackGapSize = 0.dp,
-                    colors = SliderDefaults.colors(
-                        Color.White, MainColor, MainColor, Color.Gray, Color.Gray
+        if (player?.totalDuration?.contains("-") == false && player.currentDuration?.contains("-") == false) {
+            Slider(value = sliderPosition,
+                onValueChange = { sliderPosition = it },
+                onValueChangeFinished = { getPlayerS()?.seekTo(sliderPosition) },
+                valueRange = 0f..(player.totalDuration?.toFloatOrNull() ?: 1f),
+                colors = SliderDefaults.colors(Color.White),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp),
+                track = { sliderState ->
+                    SliderDefaults.Track(
+                        modifier = Modifier.height(4.dp),
+                        sliderState = sliderState,
+                        drawStopIndicator = null,
+                        thumbTrackGapSize = 0.dp,
+                        colors = SliderDefaults.colors(
+                            Color.White, MainColor, MainColor, Color.Gray, Color.Gray
+                        )
                     )
-                )
-            })
-
+                })
+        }
         Spacer(Modifier.height(5.dp))
 
         Row(Modifier.fillMaxWidth()) {
@@ -242,7 +241,7 @@ fun MusicPlayerControlPanel(
     }
 
     LaunchedEffect(player?.currentDuration) {
-        sliderPosition = player?.currentDuration?.toFloatOrNull() ?: 0f
+        sliderPosition = player?.currentDuration?.toFloatOrNull() ?: 1f
     }
 
     if (showTimerSheet) SleepTimerSheet {

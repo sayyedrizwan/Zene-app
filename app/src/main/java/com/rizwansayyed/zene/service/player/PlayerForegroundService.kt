@@ -17,14 +17,14 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification
+import com.rizwansayyed.zene.service.player.utils.MediaSessionPlayerNotification
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.SmartShuffle
 import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
+import com.rizwansayyed.zene.utils.MainUtils.formatMSDurationsForVideo
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.MediaSessionPlayerNotification
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
@@ -64,13 +64,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     private var playerWebView: WebView? = null
 
-    private var isNew: Boolean = false
+    var isNew: Boolean = false
     private var currentPlayingSong: ZeneMusicData? = null
     private var songsLists: Array<ZeneMusicData?> = emptyArray()
     private var durationJob: Job? = null
     private var sleepTimer: Job? = null
     private var smartShuffle: SmartShuffle? = null
     private val mediaSession by lazy { MediaSessionPlayerNotification(this) }
+    private val exoPlayerSession by lazy { ExoPlaybackService(this) }
 
     override fun onBind(p0: Intent?): IBinder? = null
 
@@ -94,8 +95,10 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
             getSimilarSongInfo()
             loadAVideo(currentPlayingSong?.id)
-        }else if (currentPlayingSong?.type() == MusicDataTypes.PODCAST_AUDIO) {
+            exoPlayerSession.stop()
+        } else if (currentPlayingSong?.type() == MusicDataTypes.PODCAST_AUDIO) {
             getMediaPlayerPath()
+            loadAVideo("")
         }
     }
 
@@ -118,22 +121,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
         @JavascriptInterface
         fun videoEnded() {
-            CoroutineScope(Dispatchers.IO).launch {
-                if (sleepTimerSelected == SleepTimerEnum.END_OF_TRACK) {
-                    sleepTimerSelected = SleepTimerEnum.TURN_OFF
-                    sleepTimerNotification()
-                    return@launch
-                }
-                val isLoop = isLoopDB.firstOrNull() ?: false
-                if (isLoop) {
-                    playSongs(false)
-                    return@launch
-                }
-
-                toNextSong()
-
-                if (isActive) cancel()
-            }
+            songEnded()
         }
     }
 
@@ -153,7 +141,10 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         durationJob = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
                 delay(500)
-                playerWebView?.evaluateJavascript("playingStatus();", null)
+                if (currentPlayingSong?.type() == MusicDataTypes.SONGS)
+                    playerWebView?.evaluateJavascript("playingStatus();", null)
+                else
+                    exoPlayerSession.playingStatus()
             }
         }
     }
@@ -171,21 +162,21 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
+    private fun saveEmpty(list: List<ZeneMusicData?>) = CoroutineScope(Dispatchers.IO).launch {
+        val doContain = list.any { it?.id == currentPlayingSong!!.id }
+        val finalList = if (doContain) list else ArrayList<ZeneMusicData?>().apply {
+            add(currentPlayingSong)
+            addAll(list)
+        }
+        val d = MusicPlayerData(
+            finalList, currentPlayingSong, YoutubePlayerState.BUFFERING, "0", "1.0", "0"
+        )
+        musicPlayerDB = flowOf(d)
+        if (isActive) cancel()
+    }
+
     private fun getSimilarSongInfo() = CoroutineScope(Dispatchers.IO).launch {
         currentPlayingSong ?: return@launch
-
-        fun saveEmpty(list: List<ZeneMusicData?>) = CoroutineScope(Dispatchers.IO).launch {
-            val doContain = list.any { it?.id == currentPlayingSong!!.id }
-            val finalList = if (doContain) list else ArrayList<ZeneMusicData?>().apply {
-                add(currentPlayingSong)
-                addAll(list)
-            }
-            val d = MusicPlayerData(
-                finalList, currentPlayingSong, YoutubePlayerState.BUFFERING, "0", "1.0", "0"
-            )
-            musicPlayerDB = flowOf(d)
-            if (isActive) cancel()
-        }
 
         saveEmpty(songsLists.asList())
         if (songsLists.size > 1) return@launch
@@ -199,12 +190,12 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
-
     private fun getMediaPlayerPath() = CoroutineScope(Dispatchers.IO).launch {
         currentPlayingSong ?: return@launch
-
+        saveEmpty(songsLists.asList())
         try {
             val path = zeneAPI.podcastMediaURL(currentPlayingSong!!.path).firstOrNull()
+            exoPlayerSession.startPlaying(path?.trim())
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -213,12 +204,33 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun onDestroy() {
         super.onDestroy()
+        clearWebView()
+        exoPlayerSession.destroy()
+        durationJob?.cancel()
+    }
+
+    private fun clearWebView() {
         playerWebView?.let {
             clearWebViewData(it)
             killWebViewData(it)
         }
-        durationJob?.cancel()
         playerWebView = null
+    }
+
+    fun songEnded() = CoroutineScope(Dispatchers.IO).launch {
+        if (sleepTimerSelected == SleepTimerEnum.END_OF_TRACK) {
+            sleepTimerSelected = SleepTimerEnum.TURN_OFF
+            sleepTimerNotification()
+            return@launch
+        }
+        val isLoop = isLoopDB.firstOrNull() ?: false
+        if (isLoop) {
+            playSongs(false)
+            return@launch
+        }
+
+        toNextSong()
+        if (isActive) cancel()
     }
 
     override fun sleepTimer(minutes: SleepTimerEnum) {
@@ -265,7 +277,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         }
     }
 
-    private fun visiblePlayerNotification(
+    fun visiblePlayerNotification(
         state: YoutubePlayerState, currentTS: String, duration: String, speed: String
     ) = CoroutineScope(Dispatchers.IO).launch {
         mediaSession.apply {
@@ -276,6 +288,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun pause() {
         CoroutineScope(Dispatchers.Main).launch {
+            exoPlayerSession.pause()
             playerWebView?.evaluateJavascript("pauseVideo();", null)
             if (isActive) cancel()
         }
@@ -283,6 +296,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun play() {
         CoroutineScope(Dispatchers.Main).launch {
+            exoPlayerSession.play()
             playerWebView?.evaluateJavascript("playVideo();", null)
             if (isActive) cancel()
         }
@@ -290,6 +304,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun seekTo(v: Float) {
         CoroutineScope(Dispatchers.Main).launch {
+            exoPlayerSession.seekTo(v)
             playerWebView?.evaluateJavascript("seekTo(${v});", null)
             if (isActive) cancel()
         }
@@ -297,6 +312,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun playbackRate(v: String) {
         CoroutineScope(Dispatchers.Main).launch {
+            exoPlayerSession.playRate(v)
             playerWebView?.evaluateJavascript("playbackRate(${v});", null)
             if (isActive) cancel()
         }

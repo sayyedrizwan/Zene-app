@@ -143,7 +143,8 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.exoplayer.dash)
     implementation(libs.media3.ui)
-    implementation(libs.androidx.media3.transformer)
+    implementation(libs.media3.transformer)
+    implementation(libs.media3.session)
 
     implementation(libs.androidx.webkit)
 

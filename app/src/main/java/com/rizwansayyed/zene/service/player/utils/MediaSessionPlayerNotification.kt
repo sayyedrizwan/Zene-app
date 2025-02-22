@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.utils
+package com.rizwansayyed.zene.service.player.utils
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 class MediaSessionPlayerNotification(private val context: PlayerForegroundService) {
     private var mediaSession: MediaSessionCompat? = null
@@ -197,15 +196,6 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             setSmallIcon(R.drawable.zene_logo).setPriority(NotificationCompat.PRIORITY_HIGH)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setContentIntent(pendingIntent)
-//            addAction(
-//                R.drawable.ic_backward, "Previous", pi(ACTION_SKIP_TO_PREVIOUS)
-//            )
-//            addAction(
-//                playPauseIcon, if (isPlaying) "Pause" else "Play", pi(ACTION_PLAY_PAUSE)
-//            )
-//            addAction(
-//                R.drawable.ic_forward, "Next", pi(PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
-//            )
             setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession?.sessionToken).setShowActionsInCompactView(1)

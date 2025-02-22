@@ -80,21 +80,14 @@ fun PlaylistView(id: String, type: PlaylistsType) {
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> item { CircularLoadingView() }
             is ResponseResult.Success -> {
-                item { PlaylistTopView(v.data, type) }
+                item { v.data.info?.let { PlaylistTopView(it, type) } }
 
-                when (val list = homeViewModel.podcastList) {
-                    ResponseResult.Empty -> {}
-                    is ResponseResult.Error -> {}
-                    ResponseResult.Loading -> {}
-                    is ResponseResult.Success -> {
-                        item { PlaylistsItemView(list.data) }
-                        item { Spacer(Modifier.height(20.dp)) }
-                        items(list.data) {
-                            when (type) {
-                                PODCAST -> PodcastItemView(it, playerInfo, list.data)
-                                PLAYLIST, ALBUMS -> {}
-                            }
-                        }
+                item { PlaylistsItemView(v.data.list ?: emptyList()) }
+                item { Spacer(Modifier.height(20.dp)) }
+                items(v.data.list ?: emptyList()) {
+                    when (type) {
+                        PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
+                        PLAYLIST, ALBUMS -> {}
                     }
                 }
             }
@@ -111,7 +104,6 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                 ProcessPhoenix.triggerRebirth(context)
             }
         }
-        homeViewModel.podcastDataList(id)
     }
 }
 
