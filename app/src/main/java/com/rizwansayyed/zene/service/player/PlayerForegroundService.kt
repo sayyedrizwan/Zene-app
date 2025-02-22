@@ -81,12 +81,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
         val musicData = intent?.getStringExtra(Intent.ACTION_VIEW) ?: "{}"
         val musicList = intent?.getStringExtra(Intent.ACTION_RUN) ?: "[]"
+        "clicked".toast()
         currentPlayingSong = moshi.adapter(ZeneMusicData::class.java).fromJson(musicData)
         songsLists =
             moshi.adapter(Array<ZeneMusicData?>::class.java).fromJson(musicList) ?: emptyArray()
         smartShuffle = SmartShuffle(songsLists.toList())
         playSongs(isNew)
-        errorReRun += 0
+        errorReRun = 0
 
         return START_STICKY
     }
@@ -103,6 +104,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             loadAVideo("")
         } else if (currentPlayingSong?.type() == MusicDataTypes.RADIO) {
             getRadioPlayerPath()
+            loadAVideo("")
+        } else if (currentPlayingSong?.type() == MusicDataTypes.AI_MUSIC) {
+            getAIMusicPlayerPath()
             loadAVideo("")
         }
     }
@@ -220,6 +224,18 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         saveEmpty(songsLists.asList())
         try {
             val path = zeneAPI.radioMediaURL(currentPlayingSong!!.id).firstOrNull()
+            exoPlayerSession.startPlaying(path?.urlPath?.trim())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        if (isActive) cancel()
+    }
+
+    private fun getAIMusicPlayerPath() = CoroutineScope(Dispatchers.IO).launch {
+        currentPlayingSong ?: return@launch
+        saveEmpty(songsLists.asList())
+        try {
+            val path = zeneAPI.aiMusicMediaURL(currentPlayingSong!!.id).firstOrNull()
             exoPlayerSession.startPlaying(path?.urlPath?.trim())
         } catch (e: Exception) {
             e.printStackTrace()

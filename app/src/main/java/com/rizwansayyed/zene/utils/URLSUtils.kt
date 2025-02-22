@@ -66,6 +66,7 @@ object URLSUtils {
 
 
     const val ZENE_AI_MUSIC_LIST_API = "ai/list"
+    const val ZENE_AI_MUSIC_MEDIA_URL_API = "ai/ai-music-media-url"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_CONNECT_STATUS_API = "users/update-connect-status"

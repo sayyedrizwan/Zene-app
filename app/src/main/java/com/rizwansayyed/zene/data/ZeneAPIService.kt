@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_MEDIA_URL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
@@ -341,6 +342,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_RADIO_MEDIA_URL_API)
     suspend fun radioMediaURL(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MediaPathResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_AI_MUSIC_MEDIA_URL_API)
+    suspend fun aiMusicMediaURL(
         @Header("token") token: String, @Body data: RequestBody
     ): MediaPathResponse
 
