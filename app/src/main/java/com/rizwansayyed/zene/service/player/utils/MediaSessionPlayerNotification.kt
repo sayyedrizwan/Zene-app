@@ -16,13 +16,13 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_ID
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_NAME
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.main.MainActivity
-import com.rizwansayyed.zene.utils.MainUtils.convertToMS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -79,22 +79,32 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
     suspend fun updateMetadata(data: ZeneMusicData?, duration: String) {
         createMediaSession()
+        val d = if (data?.type() == MusicDataTypes.SONGS)
+            (duration.toDoubleOrNull()?.times(1000))?.toLong() ?: 0L
+        else duration.toLongOrNull() ?: 0L
+
         val bitmap = loadBitmapFromUrl(data?.thumbnail ?: "")
+
         mediaSession?.setMetadata(
             MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, data?.name)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, data?.artists)
                 .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, convertToMS(duration)).build()
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, d).build()
         )
     }
 
     private fun updatePlaybackState(isPlaying: Boolean, currentTS: String, speed: String) {
+        val d = if (context.currentPlayingSong?.type() == MusicDataTypes.SONGS)
+            (currentTS.toDoubleOrNull()?.times(1000))?.toLong() ?: 0L
+        else
+            currentTS.toLongOrNull() ?: 0L
+
         val state =
             if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
         val playback = PlaybackStateCompat.Builder().setActions(
             PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SEEK_TO
-        ).setState(state, convertToMS(currentTS), speed.toFloat())
+        ).setState(state, d, speed.toFloat())
 
         playback.addCustomAction(PlaybackStateCompat.CustomAction.Builder(
             CATEGORY_APP_MUSIC,
@@ -172,8 +182,10 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
         override fun onSeekTo(pos: Long) {
             super.onSeekTo(pos)
-            val position = pos / 1000
-            PlayerForegroundService.getPlayerS()?.seekTo(position.toFloat())
+            if (context.currentPlayingSong?.type() == MusicDataTypes.SONGS)
+                PlayerForegroundService.getPlayerS()?.seekTo(pos / 1000)
+            else
+                PlayerForegroundService.getPlayerS()?.seekTo(pos)
         }
     }
 

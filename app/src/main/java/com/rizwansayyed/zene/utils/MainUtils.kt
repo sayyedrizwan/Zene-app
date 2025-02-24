@@ -13,11 +13,9 @@ import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.core.text.HtmlCompat
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.squareup.moshi.Moshi
@@ -477,10 +475,5 @@ object MainUtils {
         return appOps.checkOpNoThrow(
             OPSTR_PICTURE_IN_PICTURE, android.os.Process.myUid(), context.packageName
         ) == AppOpsManager.MODE_ALLOWED
-    }
-
-    fun convertToMS(timeInSeconds: String): Long {
-        if (!timeInSeconds.contains(".")) return timeInSeconds.toLongOrNull() ?: 0L
-        return (timeInSeconds.toDoubleOrNull()?.times(1000))?.toLong() ?: 0L
     }
 }

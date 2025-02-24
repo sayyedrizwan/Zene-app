@@ -22,7 +22,7 @@ object URLSUtils {
     const val FB_GRAPH_ID = "https://graph.facebook.com/me"
 
 
-    const val ZENE_BASE_URL_API = "http://192.168.0.101:3000"
+    const val ZENE_BASE_URL_API = "http://192.168.0.105:3000"
     const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
     const val ZENE_RECENT_HOME_RADIO_API = "recent/home-radio"
@@ -67,6 +67,7 @@ object URLSUtils {
 
     const val ZENE_AI_MUSIC_LIST_API = "ai/list"
     const val ZENE_AI_MUSIC_MEDIA_URL_API = "ai/ai-music-media-url"
+    const val ZENE_AI_SIMILAR_MUSIC_API = "ai/similar-ai-music"
 
     const val ZENE_USER_UPDATE_API = "users/user-info"
     const val ZENE_USER_UPDATE_CONNECT_STATUS_API = "users/update-connect-status"

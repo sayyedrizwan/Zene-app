@@ -52,7 +52,7 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
         if (isActive) cancel()
     }
 
-    fun stop() {
+    fun stop() = CoroutineScope(Dispatchers.Main).launch {
         exoPlayer?.pause()
         exoPlayer?.stop()
         exoPlayer?.clearMediaItems()
@@ -90,8 +90,8 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
         exoPlayer?.pause()
     }
 
-    fun seekTo(v: Float) {
-        exoPlayer?.seekTo(v.toLong())
+    fun seekTo(v: Long) {
+        exoPlayer?.seekTo(v)
     }
 
     fun playRate(v: String) {

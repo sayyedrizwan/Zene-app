@@ -98,7 +98,7 @@ fun MusicPlayerControlPanel(
             if (player?.totalDuration?.contains("-") == false && player.currentDuration?.contains("-") == false) {
                 Slider(value = sliderPosition,
                     onValueChange = { sliderPosition = it },
-                    onValueChangeFinished = { getPlayerS()?.seekTo(sliderPosition) },
+                    onValueChangeFinished = { getPlayerS()?.seekTo(sliderPosition.toLong()) },
                     valueRange = 0f..(player.totalDuration?.toFloatOrNull() ?: 1f),
                     colors = SliderDefaults.colors(Color.White),
                     modifier = Modifier

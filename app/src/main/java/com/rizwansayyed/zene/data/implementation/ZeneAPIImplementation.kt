@@ -739,4 +739,17 @@ class ZeneAPIImplementation @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.aiMusicMediaURL(token, body))
     }
+
+    override suspend fun similarAISongs(tags: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("tags", tags)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.similarAISongs(token, body))
+    }
 }

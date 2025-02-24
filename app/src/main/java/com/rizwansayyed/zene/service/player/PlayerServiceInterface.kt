@@ -8,6 +8,6 @@ interface PlayerServiceInterface {
     fun toBackSong()
     fun pause()
     fun play()
-    fun seekTo(v: Float)
+    fun seekTo(v: Long)
     fun playbackRate(v: String)
 }

@@ -24,7 +24,6 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
@@ -35,6 +34,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
@@ -81,7 +82,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
         val musicData = intent?.getStringExtra(Intent.ACTION_VIEW) ?: "{}"
         val musicList = intent?.getStringExtra(Intent.ACTION_RUN) ?: "[]"
-        "clicked".toast()
+
         currentPlayingSong = moshi.adapter(ZeneMusicData::class.java).fromJson(musicData)
         songsLists =
             moshi.adapter(Array<ZeneMusicData?>::class.java).fromJson(musicList) ?: emptyArray()
@@ -89,6 +90,10 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         playSongs(isNew)
         errorReRun = 0
 
+        CoroutineScope(Dispatchers.IO).launch {
+            currentPlayingSong?.let { zeneAPI.addHistory(it).catch { }.collectLatest { } }
+            if (isActive) cancel()
+        }
         return START_STICKY
     }
 
@@ -107,6 +112,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             loadAVideo("")
         } else if (currentPlayingSong?.type() == MusicDataTypes.AI_MUSIC) {
             getAIMusicPlayerPath()
+            getSimilarAISongInfo()
             loadAVideo("")
         }
     }
@@ -200,6 +206,21 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
         try {
             val lists = zeneAPI.similarPlaylistsSongs(currentPlayingSong!!.id).firstOrNull()
+            saveEmpty(lists?.toList() ?: emptyList())
+        } catch (e: Exception) {
+            saveEmpty(songsLists.asList())
+        }
+        if (isActive) cancel()
+    }
+
+    private fun getSimilarAISongInfo() = CoroutineScope(Dispatchers.IO).launch {
+        currentPlayingSong ?: return@launch
+
+        saveEmpty(songsLists.asList())
+        if (songsLists.size > 1) return@launch
+
+        try {
+            val lists = zeneAPI.similarAISongs(currentPlayingSong!!.artists).firstOrNull()
             saveEmpty(lists?.toList() ?: emptyList())
         } catch (e: Exception) {
             saveEmpty(songsLists.asList())
@@ -343,7 +364,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         }
     }
 
-    override fun seekTo(v: Float) {
+    override fun seekTo(v: Long) {
         CoroutineScope(Dispatchers.Main).launch {
             exoPlayerSession.seekTo(v)
             playerWebView?.evaluateJavascript("seekTo(${v});", null)

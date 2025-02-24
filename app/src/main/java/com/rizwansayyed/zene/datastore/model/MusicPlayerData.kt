@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.datastore.model
 
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.utils.MainUtils.formatMSDurationsForVideo
@@ -13,16 +14,16 @@ data class MusicPlayerData(
     var totalDuration: String?,
 ) {
     fun currentDuration(): String {
-        if (currentDuration?.contains(".") == false)
-            return formatMSDurationsForVideo(currentDuration?.toFloatOrNull() ?: 0f)
+        if (data?.type() == MusicDataTypes.SONGS)
+            return formatDurationsForVideo(currentDuration?.toFloatOrNull() ?: 0f)
 
-        return formatDurationsForVideo(currentDuration?.toFloatOrNull() ?: 0f)
+        return formatMSDurationsForVideo(currentDuration?.toFloatOrNull() ?: 0f)
     }
 
     fun totalDuration(): String {
-        if (totalDuration?.contains(".") == false)
-            return formatMSDurationsForVideo(totalDuration?.toFloatOrNull() ?: 0f)
+        if (data?.type() == MusicDataTypes.SONGS)
+            return formatDurationsForVideo(totalDuration?.toFloatOrNull() ?: 0f)
 
-        return formatDurationsForVideo(totalDuration?.toFloatOrNull() ?: 0f)
+        return formatMSDurationsForVideo(totalDuration?.toFloatOrNull() ?: 0f)
     }
 }

@@ -91,4 +91,5 @@ interface ZeneAPIInterface {
     suspend fun podcastMediaURL(id: String?): Flow<MediaPathResponse>
     suspend fun radioMediaURL(id: String?): Flow<MediaPathResponse>
     suspend fun aiMusicMediaURL(id: String?): Flow<MediaPathResponse>
+    suspend fun similarAISongs(tags: String?): Flow<ZeneMusicDataList>
 }
