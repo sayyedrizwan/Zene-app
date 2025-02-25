@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -45,8 +46,6 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.view.PlaylistsType.ALBUMS
-import com.rizwansayyed.zene.ui.view.PlaylistsType.PLAYLIST
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
@@ -58,7 +57,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 enum class PlaylistsType {
-    PODCAST, PLAYLIST, ALBUMS
+    PODCAST, PLAYLIST_ALBUMS
 }
 
 @Composable
@@ -83,44 +82,72 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                 item { v.data.info?.let { PlaylistTopView(it, type) } }
 
                 item { PlaylistsItemView(v.data.list ?: emptyList()) }
+                item { Spacer(Modifier.height(30.dp)) }
+
+                when (val list = homeViewModel.podcastSimilarList) {
+                    ResponseResult.Empty -> {}
+                    is ResponseResult.Error -> {}
+                    ResponseResult.Loading -> {}
+                    is ResponseResult.Success -> {
+                        if (list.data.isNotEmpty()) item {
+                            Spacer(Modifier.height(30.dp))
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 6.dp)
+                            ) {
+                                TextViewBold(stringResource(R.string.similar_podcasts), 23)
+                            }
+                            Spacer(Modifier.height(12.dp))
+                            LazyRow(Modifier.fillMaxWidth()) {
+                                items(list.data) {
+                                    ItemCardView(it)
+                                }
+                            }
+                            Spacer(Modifier.height(30.dp))
+                        }
+                    }
+                }
                 item { Spacer(Modifier.height(20.dp)) }
                 items(v.data.list ?: emptyList()) {
                     when (type) {
                         PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
-                        PLAYLIST, ALBUMS -> {}
+                        PlaylistsType.PLAYLIST_ALBUMS -> {}
                     }
                 }
             }
-
         }
 
         item { Spacer(Modifier.height(300.dp)) }
     }
 
     LaunchedEffect(Unit) {
-        homeViewModel.podcastData(id) {
-            CoroutineScope(Dispatchers.IO).launch {
-                delay(5.seconds)
-                ProcessPhoenix.triggerRebirth(context)
+        if (homeViewModel.podcastData !is ResponseResult.Success)
+            homeViewModel.podcastData(id) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(5.seconds)
+                    ProcessPhoenix.triggerRebirth(context)
+                }
             }
-        }
+
+        if (homeViewModel.podcastSimilarList !is ResponseResult.Success)
+            homeViewModel.similarPlaylistsData(id)
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PodcastItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusicDataList) {
-    Row(
-        Modifier
-            .padding(top = 15.dp)
-            .padding(horizontal = 5.dp, vertical = 10.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(13.dp))
-            .background(BlackGray)
-            .clickable { startMedia(data, list) }
-            .padding(horizontal = 15.dp, vertical = 25.dp),
-        Arrangement.Center, Alignment.CenterVertically
-    ) {
+    Row(Modifier
+        .padding(top = 15.dp)
+        .padding(horizontal = 5.dp, vertical = 10.dp)
+        .fillMaxWidth()
+        .clip(RoundedCornerShape(13.dp))
+        .background(BlackGray)
+        .clickable { startMedia(data, list) }
+        .padding(horizontal = 15.dp, vertical = 25.dp),
+        Arrangement.Center,
+        Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
             TextViewSemiBold(data.name ?: "", 16, line = 3)
             Spacer(Modifier.height(10.dp))
@@ -139,15 +166,10 @@ fun PodcastItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusic
             }
         }
 
-        if (info?.data?.id == data.id)
-            GlideImage(
-                R.raw.song_playing_wave,
-                "",
-                Modifier.size(24.dp),
-                contentScale = ContentScale.Crop
-            )
-        else
-            ImageIcon(R.drawable.ic_play, 25)
+        if (info?.data?.id == data.id) GlideImage(
+            R.raw.song_playing_wave, "", Modifier.size(24.dp), contentScale = ContentScale.Crop
+        )
+        else ImageIcon(R.drawable.ic_play, 25)
     }
 }
 
@@ -200,9 +222,10 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
     Spacer(Modifier.height(15.dp))
     when (type) {
         PODCAST -> TextViewSemiBold(stringResource(R.string.podcast), 17, center = true)
-        PLAYLIST -> TextViewSemiBold(stringResource(R.string.playlist), 17, center = true)
-        ALBUMS -> TextViewSemiBold(stringResource(R.string.album), 17, center = true)
+        else -> {}
     }
+
+
 
     Spacer(Modifier.height(15.dp))
     TextViewNormal(

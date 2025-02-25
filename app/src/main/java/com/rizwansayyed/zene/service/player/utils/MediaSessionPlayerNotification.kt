@@ -100,23 +100,31 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         else
             currentTS.toLongOrNull() ?: 0L
 
+        var showSeek =
+            PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SEEK_TO
+
+        if (context.currentPlayingSong?.type() == MusicDataTypes.RADIO) {
+            showSeek =
+                PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+        }
+
         val state =
             if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
-        val playback = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SEEK_TO
-        ).setState(state, d, speed.toFloat())
+        val playback =
+            PlaybackStateCompat.Builder().setActions(showSeek).setState(state, d, speed.toFloat())
 
-        playback.addCustomAction(PlaybackStateCompat.CustomAction.Builder(
-            CATEGORY_APP_MUSIC,
-            context.resources.getString(R.string.loop),
-            if (doLoop) R.drawable.ic_repeat_one else R.drawable.ic_repeat
-        ).run {
-            val bundle = Bundle().apply {
-                putInt(Intent.ACTION_VIEW, PlaybackStateCompat.REPEAT_MODE_ONE)
-            }
-            setExtras(bundle)
-            build()
-        })
+        if (context.currentPlayingSong?.type() != MusicDataTypes.RADIO)
+            playback.addCustomAction(PlaybackStateCompat.CustomAction.Builder(
+                CATEGORY_APP_MUSIC,
+                context.resources.getString(R.string.loop),
+                if (doLoop) R.drawable.ic_repeat_one else R.drawable.ic_repeat
+            ).run {
+                val bundle = Bundle().apply {
+                    putInt(Intent.ACTION_VIEW, PlaybackStateCompat.REPEAT_MODE_ONE)
+                }
+                setExtras(bundle)
+                build()
+            })
 
         playback.addCustomAction(PlaybackStateCompat.CustomAction.Builder(
             CATEGORY_APP_MUSIC,

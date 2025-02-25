@@ -41,7 +41,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
     var isItemLiked by mutableStateOf(false)
-    var lyricsJob by mutableStateOf<Job?>(null)
+    private var lyricsJob by mutableStateOf<Job?>(null)
 
     fun similarVideos(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val v = videoSimilarVideos) {
@@ -116,14 +116,24 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         lyricsJob = viewModelScope.launch(Dispatchers.IO) {
             while (p == null) {
                 delay(1.seconds)
-                if (musicPlayerDB.firstOrNull()?.totalDuration != "0")
-                    p = musicPlayerDB.firstOrNull()
+                if (musicPlayerDB.firstOrNull()?.totalDuration != "0") p =
+                    musicPlayerDB.firstOrNull()
             }
             zeneAPI.playerLyrics(p).catch {
                 playerLyrics = ResponseResult.Error(it)
             }.collectLatest {
                 playerLyrics = ResponseResult.Success(it)
             }
+        }
+    }
+
+    fun getAISongLyrics(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.lyricsAIMusic(id).onStart {
+            playerLyrics = ResponseResult.Loading
+        }.catch {
+            playerLyrics = ResponseResult.Error(it)
+        }.collectLatest {
+            playerLyrics = ResponseResult.Success(it)
         }
     }
 }

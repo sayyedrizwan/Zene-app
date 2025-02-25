@@ -19,11 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -54,6 +50,7 @@ import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.setNavigationCallback
@@ -102,6 +99,11 @@ class MainActivity : ComponentActivity() {
                             composable("$NAV_PODCAST_PAGE{id}") { backStackEntry ->
                                 val id = backStackEntry.arguments?.getString("id")
                                 if (id != null) PlaylistView(id, PlaylistsType.PODCAST)
+                            }
+
+                            composable("$NAV_PLAYLIST_PAGE{id}") { backStackEntry ->
+                                val id = backStackEntry.arguments?.getString("id")
+                                if (id != null) PlaylistView(id, PlaylistsType.PLAYLIST_ALBUMS)
                             }
                         }
 

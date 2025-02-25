@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LYRICS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_MEDIA_URL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_SIMILAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
@@ -60,6 +61,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_KEYWORDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SIMILAR_PODCASTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
@@ -352,10 +354,21 @@ interface ZeneAPIService {
         @Header("token") token: String, @Body data: RequestBody
     ): MediaPathResponse
 
-
     @Headers("Content-Type: application/json")
     @POST(ZENE_AI_SIMILAR_MUSIC_API)
     suspend fun similarAISongs(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_AI_MUSIC_LYRICS_API)
+    suspend fun lyricsAIMusic(
+        @Header("token") token: String, @Body data: RequestBody
+    ): PlayerLyricsInfoResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SIMILAR_PODCASTS_API)
+    suspend fun similarPodcasts(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
 

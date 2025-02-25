@@ -10,6 +10,7 @@ object NavigationUtils {
     const val NAV_MAIN_PAGE = "main_page"
     const val NAV_SETTINGS_PAGE = "settings_page"
     const val NAV_PODCAST_PAGE = "podcast/"
+    const val NAV_PLAYLIST_PAGE = "playlist/"
 
     private var callback: HomeNavigationListener? = null
 

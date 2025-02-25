@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
@@ -77,6 +78,7 @@ class HomeViewModel @Inject constructor(
 
 
     var podcastData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
+    var podcastSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -308,6 +310,16 @@ class HomeViewModel @Inject constructor(
                 return@collectLatest
             }
             podcastData = ResponseResult.Success(it)
+        }
+    }
+
+    fun similarPlaylistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.similarPodcasts(id).onStart {
+            podcastSimilarList = ResponseResult.Loading
+        }.catch {
+            podcastSimilarList = ResponseResult.Error(it)
+        }.collectLatest {
+            podcastSimilarList = ResponseResult.Success(it)
         }
     }
 }

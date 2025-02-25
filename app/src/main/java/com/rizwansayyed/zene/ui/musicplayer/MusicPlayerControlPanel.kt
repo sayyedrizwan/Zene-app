@@ -207,25 +207,36 @@ fun MusicPlayerControlPanel(
                     showShareView = true
                 }
 
-                MiniWithImageAndBorder(R.drawable.ic_video_replay, R.string.song_video) {
+                if (player?.data?.type() == MusicDataTypes.SONGS) {
+                    MiniWithImageAndBorder(R.drawable.ic_video_replay, R.string.song_video) {
 
+                    }
+
+                    MiniWithImageAndBorder(R.drawable.ic_teaching, R.string.lyrics_video) {
+
+                    }
                 }
 
-                MiniWithImageAndBorder(R.drawable.ic_teaching, R.string.lyrics_video) {
-
-                }
-
-                MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics_info) {
+                if (player?.data?.type() == MusicDataTypes.SONGS ||
+                    player?.data?.type() == MusicDataTypes.AI_MUSIC
+                ) MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics) {
                     coroutine.launch {
                         pagerStateMain.animateScrollToPage(0)
                     }
                 }
 
-                MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_songs) {
-                    coroutine.launch {
-                        pagerStateMain.animateScrollToPage(2)
+                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
+                    MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_podcasts) {
+                        coroutine.launch {
+                            pagerStateMain.animateScrollToPage(2)
+                        }
                     }
-                }
+                else
+                    MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_songs) {
+                        coroutine.launch {
+                            pagerStateMain.animateScrollToPage(2)
+                        }
+                    }
 
                 MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.add_to_playlist) {
                     addToPlaylistView = true

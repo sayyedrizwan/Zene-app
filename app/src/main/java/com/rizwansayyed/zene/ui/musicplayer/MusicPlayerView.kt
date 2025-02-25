@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPlayerGridDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
@@ -70,11 +71,9 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 .background(MainColor)
         ) {
             HorizontalPager(pagerStateMain, Modifier.fillMaxSize()) { pageMain ->
-                if (pageMain == 0) {
-                    SongLyricsView(player)
-                } else if (pageMain == 2) {
-
-                } else {
+                if (pageMain == 0) MusicPlayerLyricsView(playViewModel, player?.currentDuration)
+                else if (pageMain == 2) SimilarSongsPodcastsView(player)
+                else {
                     if (isPlayerGrid) VerticalPager(
                         pagerState,
                         Modifier.fillMaxSize(),
@@ -107,8 +106,18 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                         .padding(horizontal = 6.dp)
                 ) {
                     when (pagerStateMain.currentPage) {
-                        0 -> TextViewBold(stringResource(R.string.lyrics_info), 19)
-                        2 -> TextViewBold(stringResource(R.string.similar_songs), 19)
+                        0 -> TextViewBold(
+                            stringResource(
+                                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO && player?.data?.type() == MusicDataTypes.RADIO) R.string.info
+                                else R.string.lyrics
+                            ), 19
+                        )
+
+                        2 -> if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) TextViewBold(
+                            stringResource(R.string.similar_podcasts), 19
+                        )
+                        else TextViewBold(stringResource(R.string.similar_songs), 19)
+
                         else -> TextViewBold(stringResource(R.string.list), 19)
                     }
 
@@ -155,12 +164,15 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
     LaunchedEffect(player?.data?.id) {
         if (player?.data?.id != null && player?.data?.type() != null) {
             playViewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
-            playViewModel.getSongLyrics()
+            if (player?.data?.type() == MusicDataTypes.AI_MUSIC) playViewModel.getAISongLyrics(
+                player?.data?.id!!
+            )
+            else playViewModel.getSongLyrics()
         }
     }
 }
 
 @Composable
-fun SongLyricsView(player: MusicPlayerData?) {
+fun SimilarSongsPodcastsView(player: MusicPlayerData?) {
 
 }

@@ -55,7 +55,12 @@ data class PlayerLyricsInfoResponse(
 )
 
 data class MediaLikedResponse(val isLiked: Boolean?)
-data class PodcastPlaylistResponse(val info: ZeneMusicData?, val list: ZeneMusicDataList?, val isExpire: Boolean?)
+data class PodcastPlaylistResponse(
+    val info: ZeneMusicData?,
+    val list: ZeneMusicDataList?,
+    val isExpire: Boolean?
+)
+
 data class MediaPathResponse(val urlPath: String?)
 
 typealias ZeneMusicDataList = List<ZeneMusicData>
