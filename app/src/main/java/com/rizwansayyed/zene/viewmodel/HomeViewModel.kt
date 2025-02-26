@@ -79,6 +79,7 @@ class HomeViewModel @Inject constructor(
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var isPlaylistAdded by mutableStateOf(false)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -308,6 +309,7 @@ class HomeViewModel @Inject constructor(
                 expireToken()
                 return@collectLatest
             }
+            isPlaylistAdded = it.isAdded ?: false
             playlistsData = ResponseResult.Success(it)
         }
     }
@@ -322,8 +324,13 @@ class HomeViewModel @Inject constructor(
                 expireToken()
                 return@collectLatest
             }
+            isPlaylistAdded = it.isAdded ?: false
             playlistsData = ResponseResult.Success(it)
         }
+    }
+
+    fun addToPlaylists(status: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        isPlaylistAdded = status
     }
 
     fun similarPlaylistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {

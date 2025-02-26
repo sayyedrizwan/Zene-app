@@ -25,6 +25,7 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
+import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
@@ -180,7 +181,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             .replace("setSpeed = 1.0", "setSpeed = $speed")
             .replace("isNew = false", "isNew = $isNew")
 
-        playerWebView?.loadDataWithBaseURL(X_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
+        playerWebView?.loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
 
         if (isActive) cancel()
     }

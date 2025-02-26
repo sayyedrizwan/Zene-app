@@ -218,6 +218,8 @@
     <string name="similar_songs">Similar Songs</string>
     <string name="similar_podcasts">Similar Podcasts</string>
     <string name="no_lyrics_found">No Lyrics Found</string>
+    <string name="added_to_your_library">Added to your library</string>
+    <string name="removed_to_your_library">Removed from your library</string>
 
 
     <!--    notification channels-->

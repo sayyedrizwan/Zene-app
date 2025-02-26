@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,7 +35,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -41,16 +47,19 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.MusicDataTypes
+import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PLAYLIST_ALBUMS
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +77,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
     val context = LocalContext.current.applicationContext
     val playerInfo by musicPlayerDB.collectAsState(null)
 
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -83,7 +93,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
             is ResponseResult.Success -> {
                 item { v.data.info?.let { PlaylistTopView(it, type) } }
 
-                item { PlaylistsItemView(v.data.list ?: emptyList()) }
+                item { PlaylistsButtonView(v.data, homeViewModel) }
                 item { Spacer(Modifier.height(30.dp)) }
 
                 when (val list = homeViewModel.playlistSimilarList) {
@@ -114,8 +124,11 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                 items(v.data.list ?: emptyList()) {
                     when (type) {
                         PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
-                        PLAYLIST_ALBUMS ->
-                            PlaylistsItemView(it, playerInfo, v.data.list ?: emptyList())
+                        PLAYLIST_ALBUMS -> PlaylistsItemView(
+                            it,
+                            playerInfo,
+                            v.data.list ?: emptyList()
+                        )
                     }
                 }
             }
@@ -126,31 +139,33 @@ fun PlaylistView(id: String, type: PlaylistsType) {
 
     LaunchedEffect(Unit) {
         if (type == PODCAST) {
-            if (homeViewModel.playlistsData !is ResponseResult.Success)
-                homeViewModel.podcastData(id) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        delay(5.seconds)
-                        ProcessPhoenix.triggerRebirth(context)
-                    }
+            if (homeViewModel.playlistsData !is ResponseResult.Success) homeViewModel.podcastData(id) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(5.seconds)
+                    ProcessPhoenix.triggerRebirth(context)
                 }
+            }
 
-            if (homeViewModel.playlistSimilarList !is ResponseResult.Success)
-                homeViewModel.similarPlaylistsData(id)
+            if (homeViewModel.playlistSimilarList !is ResponseResult.Success) homeViewModel.similarPlaylistsData(
+                id
+            )
 
             return@LaunchedEffect
         }
 
         if (type == PLAYLIST_ALBUMS) {
-            if (homeViewModel.playlistsData !is ResponseResult.Success)
-                homeViewModel.playlistsData(id) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        delay(5.seconds)
-                        ProcessPhoenix.triggerRebirth(context)
-                    }
+            if (homeViewModel.playlistsData !is ResponseResult.Success) homeViewModel.playlistsData(
+                id
+            ) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(5.seconds)
+                    ProcessPhoenix.triggerRebirth(context)
                 }
+            }
 
-            if (homeViewModel.playlistSimilarList !is ResponseResult.Success)
-                homeViewModel.similarPlaylistsData(id)
+            if (homeViewModel.playlistSimilarList !is ResponseResult.Success) homeViewModel.similarPlaylistsData(
+                id
+            )
 
             return@LaunchedEffect
         }
@@ -231,7 +246,10 @@ fun PlaylistsItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMus
 }
 
 @Composable
-fun PlaylistsItemView(data: ZeneMusicDataList) {
+fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel) {
+    val addedToLibrary = stringResource(R.string.added_to_your_library)
+    val removedLibrary = stringResource(R.string.removed_to_your_library)
+
     Row(
         Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
     ) {
@@ -240,11 +258,24 @@ fun PlaylistsItemView(data: ZeneMusicDataList) {
             .clickable { }) {
             ImageIcon(R.drawable.ic_download, 27)
         }
-        Box(Modifier
+
+        if (viewModel.isPlaylistAdded) Box(Modifier
             .padding(horizontal = 7.dp)
-            .clickable { }) {
+            .clickable {
+                SnackBarManager.showMessage(removedLibrary)
+                viewModel.addToPlaylists(false)
+            }) {
+            ImageIcon(R.drawable.ic_tick, 24)
+        }
+        else Box(Modifier
+            .padding(horizontal = 7.dp)
+            .clickable {
+                SnackBarManager.showMessage(addedToLibrary)
+                viewModel.addToPlaylists(true)
+            }) {
             ImageIcon(R.drawable.ic_layer_add, 24)
         }
+
         Box(Modifier
             .padding(horizontal = 7.dp)
             .clickable { }) {
@@ -252,10 +283,10 @@ fun PlaylistsItemView(data: ZeneMusicDataList) {
         }
         Spacer(Modifier.weight(1f))
 
-        if (data.isNotEmpty()) MiniWithImageAndBorder(
+        if (data.list?.isNotEmpty() == true) MiniWithImageAndBorder(
             R.drawable.ic_play, R.string.play, MainColor
         ) {
-            startMedia(data.first(), data)
+            startMedia(data.list.first(), data.list)
         }
     }
 }
@@ -265,6 +296,8 @@ fun PlaylistsItemView(data: ZeneMusicDataList) {
 fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
     val width = (LocalConfiguration.current.screenWidthDp / 1.5).dp
     var fullDesc by remember { mutableStateOf(false) }
+    var shouldShowArrow by remember { mutableStateOf(false) }
+
 
     GlideImage(
         v.thumbnail,
@@ -295,14 +328,25 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
 
     if ((v.artists?.trim()?.length ?: 0) > 5) {
         Spacer(Modifier.height(15.dp))
-        TextViewNormal(
-            v.artists ?: "", 14, center = true, line = if (fullDesc) 1000 else 3
+        Text(
+            v.artists ?: "",
+            Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
+            Color.White, 14.sp, null, FontWeight.Normal, proximanOverFamily,
+            textAlign = TextAlign.Center, maxLines = if (fullDesc) 1000 else 3,
+            overflow = TextOverflow.Ellipsis,
+            onTextLayout = { textLayoutResult ->
+                shouldShowArrow = textLayoutResult.lineCount > 2
+            },
         )
+
         Spacer(Modifier.height(5.dp))
 
-        Box(Modifier
-            .rotate(if (fullDesc) 180f else 0f)
-            .clickable { fullDesc = !fullDesc }) {
+        if (shouldShowArrow) Box(
+            Modifier
+                .rotate(if (fullDesc) 180f else 0f)
+                .clickable { fullDesc = !fullDesc }) {
             ImageIcon(R.drawable.ic_arrow_down, 28)
         }
     }

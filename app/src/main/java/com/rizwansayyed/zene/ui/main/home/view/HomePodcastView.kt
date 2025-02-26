@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -28,6 +29,7 @@ import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.PodcastViewItems
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
+import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalGlideComposeApi::class)
@@ -83,21 +85,24 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (v.data.podcastYouMayLike?.isNotEmpty() == true)
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Column(Modifier.fillMaxWidth()) {
-                            Spacer(Modifier.height(50.dp))
-                            Box(Modifier.padding(horizontal = 6.dp)) {
-                                TextViewBold(stringResource(R.string.podcast_for_you), 23)
-                            }
-                            Spacer(Modifier.height(12.dp))
-                            LazyRow(Modifier.fillMaxWidth()) {
-                                items(v.data.podcastYouMayLike) {
-                                    ItemCardView(it)
-                                }
+                if (v.data.podcastYouMayLike?.isNotEmpty() == true) item(span = {
+                    GridItemSpan(
+                        maxLineSpan
+                    )
+                }) {
+                    Column(Modifier.fillMaxWidth()) {
+                        Spacer(Modifier.height(50.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.podcast_for_you), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.podcastYouMayLike) {
+                                ItemCardView(it)
                             }
                         }
                     }
+                }
 
                 if (v.data.explore?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {
@@ -111,7 +116,11 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
 
 
                 items(v.data.explore ?: emptyList(), span = { GridItemSpan(1) }) {
-                    GlideImage(it?.thumbnail, it?.name, Modifier.fillMaxWidth())
+                    GlideImage(it?.thumbnail,
+                        it?.name,
+                        Modifier
+                            .clickable { startMedia(it) }
+                            .fillMaxWidth())
                 }
             }
         }
