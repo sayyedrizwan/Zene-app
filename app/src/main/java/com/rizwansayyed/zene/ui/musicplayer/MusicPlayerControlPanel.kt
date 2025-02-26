@@ -246,7 +246,8 @@ fun MusicPlayerControlPanel(
                     songSpeedView = true
                 }
 
-                MiniWithImageAndBorder(R.drawable.ic_download, R.string.cache_song) {
+
+                MiniWithImageAndBorder(R.drawable.ic_download, R.string.offline_cache_song) {
 
                 }
             }

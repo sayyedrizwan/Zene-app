@@ -3,10 +3,10 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -93,7 +93,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
 
     implementation(platform(libs.firebase.bom))
@@ -147,9 +147,14 @@ dependencies {
     implementation(libs.media3.transformer)
     implementation(libs.media3.session)
 
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+    implementation(libs.room.ktx)
+
     implementation(libs.androidx.webkit)
 
     implementation(libs.navigation.compose)
     implementation(libs.browser)
+
 
 }
