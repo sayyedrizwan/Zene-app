@@ -40,6 +40,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
@@ -113,7 +114,8 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                 items(v.data.list ?: emptyList()) {
                     when (type) {
                         PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
-                        PlaylistsType.PLAYLIST_ALBUMS -> {}
+                        PLAYLIST_ALBUMS ->
+                            PlaylistsItemView(it, playerInfo, v.data.list ?: emptyList())
                     }
                 }
             }
@@ -193,6 +195,41 @@ fun PodcastItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusic
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun PlaylistsItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusicDataList) {
+    Row(Modifier
+        .padding(top = 15.dp)
+        .padding(horizontal = 5.dp, vertical = 10.dp)
+        .fillMaxWidth()
+        .clip(RoundedCornerShape(13.dp))
+        .background(BlackGray)
+        .clickable { startMedia(data, list) }
+        .padding(horizontal = 15.dp, vertical = 25.dp),
+        Arrangement.Center,
+        Alignment.CenterVertically) {
+        GlideImage(
+            data.thumbnail,
+            data.name,
+            Modifier
+                .padding(end = 10.dp)
+                .size(60.dp),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(Modifier.weight(1f), Arrangement.Center, Alignment.Start) {
+            TextViewSemiBold(data.name ?: "", 15, line = 3)
+            Spacer(Modifier.height(2.dp))
+            TextViewNormal(data.artists ?: "", 12, line = 1)
+        }
+
+        if (info?.data?.id == data.id) GlideImage(
+            R.raw.song_playing_wave, "", Modifier.size(24.dp), contentScale = ContentScale.Crop
+        )
+        else ImageIcon(R.drawable.ic_play, 25)
+    }
+}
+
 @Composable
 fun PlaylistsItemView(data: ZeneMusicDataList) {
     Row(
@@ -242,22 +279,32 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
     Spacer(Modifier.height(15.dp))
     when (type) {
         PODCAST -> TextViewSemiBold(stringResource(R.string.podcast), 17, center = true)
-        else -> {}
+        else -> {
+            TextViewSemiBold(
+                stringResource(
+                    if (v.type() == MusicDataTypes.ALBUMS) R.string.album else R.string.playlist
+                ), 17, center = true
+            )
+
+            if (v.type() == MusicDataTypes.ALBUMS) {
+                Spacer(Modifier.height(15.dp))
+                TextViewNormal(v.extra ?: "", 17, center = true)
+            }
+        }
     }
 
+    if ((v.artists?.trim()?.length ?: 0) > 5) {
+        Spacer(Modifier.height(15.dp))
+        TextViewNormal(
+            v.artists ?: "", 14, center = true, line = if (fullDesc) 1000 else 3
+        )
+        Spacer(Modifier.height(5.dp))
 
-
-    Spacer(Modifier.height(15.dp))
-    TextViewNormal(
-        v.artists ?: "", 14, center = true, line = if (fullDesc) 1000 else 3
-    )
-    Spacer(Modifier.height(5.dp))
-
-    Box(Modifier
-        .rotate(if (fullDesc) 180f else 0f)
-        .clickable { fullDesc = !fullDesc }) {
-        ImageIcon(R.drawable.ic_arrow_down, 28)
+        Box(Modifier
+            .rotate(if (fullDesc) 180f else 0f)
+            .clickable { fullDesc = !fullDesc }) {
+            ImageIcon(R.drawable.ic_arrow_down, 28)
+        }
     }
-
     Spacer(Modifier.height(30.dp))
 }

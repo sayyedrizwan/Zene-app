@@ -87,17 +87,23 @@ data class ZeneMusicData(
     }
 
     fun timeAgo(): String {
-        val epoch = (extra?.toLong() ?: 0)
-        val now = System.currentTimeMillis() / 1000
-        val diff = now - epoch
+        try {
+            val epoch = (extra?.toLong() ?: 0)
+            val now = System.currentTimeMillis() / 1000
+            val diff = now - epoch
 
-        return when {
-            diff <= 60 -> "$diff ${context.resources.getString(R.string.minutes_ago)}"
-            diff < 7 * 24 * 60 * 60 -> "${diff / (24 * 60 * 60)} ${context.resources.getString(R.string.days_ago)}"
-            diff < 30 * 24 * 60 * 60 -> SimpleDateFormat("HH MMM", Locale.getDefault())
-                .format(Date(epoch * 1000))
+            return when {
+                diff <= 60 -> "$diff ${context.resources.getString(R.string.minutes_ago)}"
+                diff < 7 * 24 * 60 * 60 -> "${diff / (24 * 60 * 60)} ${context.resources.getString(R.string.days_ago)}"
+                diff < 30 * 24 * 60 * 60 -> SimpleDateFormat("HH MMM", Locale.getDefault())
+                    .format(Date(epoch * 1000))
 
-            else -> SimpleDateFormat("HH MMM yyy", Locale.getDefault()).format(Date(epoch * 1000))
+                else -> SimpleDateFormat(
+                    "HH MMM yyy", Locale.getDefault()
+                ).format(Date(epoch * 1000))
+            }
+        } catch (e: Exception) {
+            return ""
         }
     }
 
