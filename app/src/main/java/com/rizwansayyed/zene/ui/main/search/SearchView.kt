@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,7 +50,9 @@ fun SearchView(homeViewModel: HomeViewModel) {
     val coroutine = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    LazyColumn(Modifier.fillMaxWidth()) {
+    val state = rememberLazyListState()
+
+    LazyColumn(Modifier.fillMaxWidth(), state) {
         item {
             SearchTopView {
                 search.value = it
@@ -109,6 +112,10 @@ fun SearchView(homeViewModel: HomeViewModel) {
                             showSearch = txt
                         } else search.value = txt
                     }
+
+                    LaunchedEffect(Unit) {
+                        state.animateScrollToItem(0)
+                    }
                 }
                 if (v.data.isNotEmpty()) item { Spacer(Modifier.height(50.dp)) }
             }
@@ -133,18 +140,6 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                     }
 
-                    if (v.data.aiSongs?.isNotEmpty() == true) item {
-                        Spacer(Modifier.height(30.dp))
-                        Box(Modifier.padding(horizontal = 6.dp)) {
-                            TextViewBold(stringResource(R.string.ai_music), 23)
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.aiSongs) {
-                                ItemCardView(it)
-                            }
-                        }
-                    }
 
                     if (v.data.videos?.isNotEmpty() == true) item {
                         Spacer(Modifier.height(30.dp))
@@ -155,6 +150,48 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         LazyRow(Modifier.fillMaxWidth()) {
                             items(v.data.videos) {
                                 VideoCardView(it)
+                            }
+                        }
+                    }
+
+
+                    if (v.data.albums?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.albums), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.albums) {
+                                ItemCardView(it)
+                            }
+                        }
+                    }
+
+
+                    if (v.data.playlists?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.playlists), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.playlists) {
+                                ItemCardView(it)
+                            }
+                        }
+                    }
+
+
+                    if (v.data.aiSongs?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.ai_music), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.aiSongs) {
+                                ItemCardView(it)
                             }
                         }
                     }
@@ -198,31 +235,6 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                     }
 
-                    if (v.data.playlists?.isNotEmpty() == true) item {
-                        Spacer(Modifier.height(30.dp))
-                        Box(Modifier.padding(horizontal = 6.dp)) {
-                            TextViewBold(stringResource(R.string.playlists), 23)
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.playlists) {
-                                ItemCardView(it)
-                            }
-                        }
-                    }
-
-                    if (v.data.albums?.isNotEmpty() == true) item {
-                        Spacer(Modifier.height(30.dp))
-                        Box(Modifier.padding(horizontal = 6.dp)) {
-                            TextViewBold(stringResource(R.string.albums), 23)
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.albums) {
-                                ItemCardView(it)
-                            }
-                        }
-                    }
                 }
             }
         } else when (val v = homeViewModel.searchTrending) {

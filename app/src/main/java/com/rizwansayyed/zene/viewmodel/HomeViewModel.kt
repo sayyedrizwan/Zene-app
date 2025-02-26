@@ -77,8 +77,8 @@ class HomeViewModel @Inject constructor(
     )
 
 
-    var podcastData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
-    var podcastSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
+    var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -298,28 +298,41 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
     fun podcastData(id: String, expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.podcastInfo(id).onStart {
-            podcastData = ResponseResult.Loading
+            playlistsData = ResponseResult.Loading
         }.catch {
-            podcastData = ResponseResult.Error(it)
+            playlistsData = ResponseResult.Error(it)
         }.collectLatest {
             if (it.isExpire == true) {
                 expireToken()
                 return@collectLatest
             }
-            podcastData = ResponseResult.Success(it)
+            playlistsData = ResponseResult.Success(it)
+        }
+    }
+
+    fun playlistsData(id: String, expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playlistsInfo(id).onStart {
+            playlistsData = ResponseResult.Loading
+        }.catch {
+            playlistsData = ResponseResult.Error(it)
+        }.collectLatest {
+            if (it.isExpire == true) {
+                expireToken()
+                return@collectLatest
+            }
+            playlistsData = ResponseResult.Success(it)
         }
     }
 
     fun similarPlaylistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.similarPodcasts(id).onStart {
-            podcastSimilarList = ResponseResult.Loading
+            playlistSimilarList = ResponseResult.Loading
         }.catch {
-            podcastSimilarList = ResponseResult.Error(it)
+            playlistSimilarList = ResponseResult.Error(it)
         }.collectLatest {
-            podcastSimilarList = ResponseResult.Success(it)
+            playlistSimilarList = ResponseResult.Success(it)
         }
     }
 }

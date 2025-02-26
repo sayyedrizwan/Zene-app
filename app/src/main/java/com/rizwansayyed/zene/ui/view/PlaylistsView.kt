@@ -46,6 +46,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.PlaylistsType.PLAYLIST_ALBUMS
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
@@ -74,7 +75,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item { Spacer(Modifier.height(70.dp)) }
-        when (val v = homeViewModel.podcastData) {
+        when (val v = homeViewModel.playlistsData) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> item { CircularLoadingView() }
@@ -84,7 +85,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                 item { PlaylistsItemView(v.data.list ?: emptyList()) }
                 item { Spacer(Modifier.height(30.dp)) }
 
-                when (val list = homeViewModel.podcastSimilarList) {
+                when (val list = homeViewModel.playlistSimilarList) {
                     ResponseResult.Empty -> {}
                     is ResponseResult.Error -> {}
                     ResponseResult.Loading -> {}
@@ -122,16 +123,35 @@ fun PlaylistView(id: String, type: PlaylistsType) {
     }
 
     LaunchedEffect(Unit) {
-        if (homeViewModel.podcastData !is ResponseResult.Success)
-            homeViewModel.podcastData(id) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(5.seconds)
-                    ProcessPhoenix.triggerRebirth(context)
+        if (type == PODCAST) {
+            if (homeViewModel.playlistsData !is ResponseResult.Success)
+                homeViewModel.podcastData(id) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(5.seconds)
+                        ProcessPhoenix.triggerRebirth(context)
+                    }
                 }
-            }
 
-        if (homeViewModel.podcastSimilarList !is ResponseResult.Success)
-            homeViewModel.similarPlaylistsData(id)
+            if (homeViewModel.playlistSimilarList !is ResponseResult.Success)
+                homeViewModel.similarPlaylistsData(id)
+
+            return@LaunchedEffect
+        }
+
+        if (type == PLAYLIST_ALBUMS) {
+            if (homeViewModel.playlistsData !is ResponseResult.Success)
+                homeViewModel.playlistsData(id) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(5.seconds)
+                        ProcessPhoenix.triggerRebirth(context)
+                    }
+                }
+
+            if (homeViewModel.playlistSimilarList !is ResponseResult.Success)
+                homeViewModel.similarPlaylistsData(id)
+
+            return@LaunchedEffect
+        }
     }
 }
 

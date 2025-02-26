@@ -94,4 +94,5 @@ interface ZeneAPIInterface {
     suspend fun similarAISongs(tags: String?): Flow<ZeneMusicDataList>
     suspend fun lyricsAIMusic(id: String?): Flow<PlayerLyricsInfoResponse>
     suspend fun similarPodcasts(id: String?): Flow<ZeneMusicDataList>
+    suspend fun playlistsInfo(id: String?): Flow<PodcastPlaylistResponse>
 }
