@@ -95,7 +95,6 @@
             android:launchMode="singleInstance"
             android:supportsPictureInPicture="true" />
 
-        <activity android:name=".ui.main.connect.profile.ConnectUserProfileActivity" />
         <activity android:name=".ui.phoneverification.PhoneVerificationActivity" />
         <activity
             android:name=".ui.connect_status.ConnectStatusActivity"

@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.view
 
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,16 +13,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileActivity
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.openShareConnectShareSMS
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,25 +34,20 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun UserSearchInfo(user: ConnectUserResponse) {
-    val context = LocalContext.current.applicationContext
 
     fun showProfile() {
-        Intent(context, ConnectUserProfileActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(Intent.ACTION_MAIN, user.email)
-            context.startActivity(this)
-        }
+        NavigationUtils.triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE${user.email}")
     }
 
     Row(
         Modifier
             .padding(horizontal = 13.dp, vertical = 10.dp)
             .fillMaxWidth()
-            .clickable { showProfile() },
-        verticalAlignment = Alignment.CenterVertically
+            .clickable { showProfile() }, verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
-            user.profile_photo, user.name,
+            user.profile_photo,
+            user.name,
             Modifier
                 .size(60.dp)
                 .clip(RoundedCornerShape(20)),

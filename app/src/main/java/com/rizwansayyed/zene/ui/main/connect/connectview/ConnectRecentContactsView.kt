@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -43,8 +42,6 @@ import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
-import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileActivity
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -52,23 +49,18 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
-import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
-    val context = LocalContext.current.applicationContext
     Box(Modifier
         .padding(horizontal = 9.dp)
         .clickable {
-            Intent(context, ConnectUserProfileActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                putExtra(Intent.ACTION_MAIN, user.user?.email)
-                context.startActivity(this)
-            }
+            NavigationUtils.triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE${user.user?.email}")
         }) {
         Column(Modifier.width(100.dp), Arrangement.Center, Alignment.CenterHorizontally) {
             GlideImage(
@@ -175,11 +167,7 @@ fun ConnectRecentContactsView() {
         Box(Modifier.clickable {
             coroutine.launch {
                 val email = DataStorageManager.userInfo.firstOrNull()?.email
-                Intent(context, ConnectUserProfileActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.ACTION_MAIN, email)
-                    context.startActivity(this)
-                }
+                NavigationUtils.triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE${email}")
             }
         }) {
             ImageIcon(R.drawable.ic_user_id, 23)
@@ -214,9 +202,5 @@ fun ConnectRecentContactsView() {
 }
 
 fun openConnectUserProfile(email: String) {
-    Intent(context, ConnectUserProfileActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        putExtra(Intent.ACTION_MAIN, email)
-        context.startActivity(this)
-    }
+    NavigationUtils.triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE${email}")
 }

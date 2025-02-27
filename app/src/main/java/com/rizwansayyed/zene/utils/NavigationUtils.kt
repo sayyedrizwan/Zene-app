@@ -11,6 +11,7 @@ object NavigationUtils {
     const val NAV_SETTINGS_PAGE = "settings_page"
     const val NAV_PODCAST_PAGE = "podcast/"
     const val NAV_PLAYLIST_PAGE = "playlist/"
+    const val NAV_CONNECT_PROFILE_PAGE = "connect_profile/"
 
     private var callback: HomeNavigationListener? = null
 

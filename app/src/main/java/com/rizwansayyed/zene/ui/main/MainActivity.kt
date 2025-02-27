@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
+import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
@@ -54,6 +55,7 @@ import com.rizwansayyed.zene.ui.view.PlaylistsType
 import com.rizwansayyed.zene.utils.HomeNavigationListener
 import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
@@ -128,6 +130,11 @@ class MainActivity : ComponentActivity() {
                                 composable("$NAV_PLAYLIST_PAGE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
                                     if (id != null) PlaylistView(id, PlaylistsType.PLAYLIST_ALBUMS)
+                                }
+
+                                composable("$NAV_CONNECT_PROFILE_PAGE{id}") { backStackEntry ->
+                                    val id = backStackEntry.arguments?.getString("id")
+                                    if (id != null) ConnectUserProfileView(id)
                                 }
                             }
 

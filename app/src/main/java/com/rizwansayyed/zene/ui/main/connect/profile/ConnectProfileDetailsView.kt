@@ -172,6 +172,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             }
         }
 
+        item { Spacer(Modifier.height(150.dp)) }
     }
 
     if (showSendMessage) ModalBottomSheet(
