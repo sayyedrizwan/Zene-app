@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.AppOpsManager.OPSTR_PICTURE_IN_PICTURE
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -475,5 +477,11 @@ object MainUtils {
         return appOps.checkOpNoThrow(
             OPSTR_PICTURE_IN_PICTURE, android.os.Process.myUid(), context.packageName
         ) == AppOpsManager.MODE_ALLOWED
+    }
+
+    fun copyTextToClipboard(txt: String) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(context.packageName, txt)
+        clipboard.setPrimaryClip(clip)
     }
 }

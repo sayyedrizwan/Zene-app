@@ -174,7 +174,10 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
 fun HomeBottomNavItems(icon: Int, txt: Int, nav: HomeNavSelector, vm: NavigationViewModel) {
     Column(Modifier
         .padding(horizontal = 5.dp)
-        .clickable {
+        .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null
+        ) {
             NavigationUtils.triggerHomeNav(NAV_MAIN_PAGE)
             vm.setHomeNavSections(nav)
         }

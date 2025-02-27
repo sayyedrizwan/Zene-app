@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
+import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.main.view.ShareDataView
@@ -37,6 +38,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+
 
 @SuppressLint("ClickableViewAccessibility")
 @Composable
@@ -58,10 +60,11 @@ fun VideoPlayerVideoView(
         fun videoInfo(title: String, author: String, videoId: String) {
             viewModel.setVideoInfo(title, author, videoId)
             coroutine.launch {
-                if (videoCCDB.first())
-                    viewModel.webView?.evaluateJavascript("enableCaption()", null)
-                else
-                    viewModel.webView?.evaluateJavascript("disableCaption()", null)
+                if (videoCCDB.first()) viewModel.webView?.evaluateJavascript(
+                    "enableCaption()",
+                    null
+                )
+                else viewModel.webView?.evaluateJavascript("disableCaption()", null)
             }
         }
     }
@@ -69,6 +72,13 @@ fun VideoPlayerVideoView(
     AndroidView({ ctx ->
         WebView(ctx).apply {
             enable()
+            settings.apply {
+                builtInZoomControls = true
+                displayZoomControls = false
+                useWideViewPort = true
+                loadWithOverviewMode = true
+                setSupportZoom(true)
+            }
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
@@ -78,18 +88,16 @@ fun VideoPlayerVideoView(
                 }
             }
 
-            setOnTouchListener { v, m ->
-                if (m.action == MotionEvent.ACTION_UP) {
-                    v.parent.requestDisallowInterceptTouchEvent(false)
-                    viewModel.showControlView(true)
-                } else v.parent.requestDisallowInterceptTouchEvent(true)
-
+            setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> viewModel.showControlView(true)
+                    MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
+                    else -> v.parent.requestDisallowInterceptTouchEvent(true)
+                }
                 false
             }
 
             addJavascriptInterface(WebAppInterface(), "Zene")
-            settings.setSupportZoom(true)
-            settings.builtInZoomControls = false
             viewModel.setWebViewTo(this@apply)
             viewModel.setVideoThumb(videoID)
             viewModel.loadWebView()
@@ -108,7 +116,6 @@ fun VideoPlayerVideoView(
         viewModel.showShareDialog(false)
     }
 
-
     if (!viewModel.showLoadingView) Box(
         Modifier
             .fillMaxSize()
@@ -118,6 +125,7 @@ fun VideoPlayerVideoView(
     }
 
     LifecycleResumeEffect(Unit) {
+        PlayerForegroundService.getPlayerS()?.pause()
         playerViewModel.likedMediaItem(videoID, MusicDataTypes.VIDEOS)
         job?.cancel()
         job = coroutine.launch {
@@ -126,13 +134,11 @@ fun VideoPlayerVideoView(
                 delay(500)
             }
         }
-
         onPauseOrDispose { job?.cancel() }
     }
 
+
     DisposableEffect(Unit) {
-        onDispose {
-            viewModel.killWebView()
-        }
+        onDispose { viewModel.killWebView() }
     }
 }

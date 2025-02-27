@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.theme.FacebookColor
 import com.rizwansayyed.zene.ui.theme.InstagramColor
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -37,10 +40,16 @@ import com.rizwansayyed.zene.ui.theme.WhatsAppColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.ShareContentUtils
+import com.rizwansayyed.zene.utils.SharingContentType
 
 @Composable
 fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        val userInfo by userInfo.collectAsState(null)
+        val enableConnect = stringResource(R.string.zene_connect_is_not_enabled_yet)
+
         Box(Modifier
             .clickable { close() }
             .fillMaxSize()
@@ -58,15 +67,22 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
             ) {
 
                 ShareRoundIcon(R.drawable.ic_link, R.string.copy_link) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.COPY)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_share, R.string.share_to_) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.SHARE_TO)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_hotspot, R.string.connect_) {
-
+                    if ((userInfo?.phoneNumber?.trim()?.length ?: 0) < 6) {
+                        enableConnect.toast()
+                        return@ShareRoundIcon
+                    }
+                    ShareContentUtils.shareTheData(data, SharingContentType.CONNECT)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_whatsapp, R.string.whatsapp, WhatsAppColor) {

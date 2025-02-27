@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_ID
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_NAME
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
@@ -94,7 +95,11 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         )
     }
 
-    private fun updatePlaybackState(isPlaying: Boolean, currentTS: String, speed: String) {
+    private fun updatePlaybackState(
+        isPlaying: YoutubePlayerState,
+        currentTS: String,
+        speed: String
+    ) {
         val d = if (context.currentPlayingSong?.type() == MusicDataTypes.SONGS)
             (currentTS.toDoubleOrNull()?.times(1000))?.toLong() ?: 0L
         else
@@ -108,8 +113,11 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
                 PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
         }
 
-        val state =
-            if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+        var state =
+            if (isPlaying == YoutubePlayerState.PLAYING) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+
+        if (isPlaying == YoutubePlayerState.BUFFERING) state = PlaybackStateCompat.STATE_BUFFERING
+
         val playback =
             PlaybackStateCompat.Builder().setActions(showSeek).setState(state, d, speed.toFloat())
 
@@ -197,7 +205,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         }
     }
 
-    fun showNotification(isPlaying: Boolean, currentTS: String, speed: String) {
+    fun showNotification(isPlaying: YoutubePlayerState, currentTS: String, speed: String) {
         updatePlaybackState(isPlaying, currentTS, speed)
         createNotificationChannel()
 

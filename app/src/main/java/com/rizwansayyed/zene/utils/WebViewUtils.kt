@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.utils
 
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
-import android.webkit.WebSettings
 import android.webkit.WebStorage
 import android.webkit.WebView
 
@@ -17,12 +16,10 @@ object WebViewUtils {
     }
 
     fun killWebViewData(webView: WebView) {
-        webView.clearHistory();
+        webView.clearHistory()
         webView.clearCache(true)
         webView.loadUrl("about:blank")
         webView.onPause()
-        webView.removeAllViews()
-        webView.pauseTimers()
         webView.destroy()
     }
 

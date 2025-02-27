@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
@@ -24,7 +23,6 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.URLSUtils.X_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
@@ -345,7 +343,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     ) = CoroutineScope(Dispatchers.IO).launch {
         mediaSession.apply {
             updateMetadata(currentPlayingSong, duration)
-            showNotification(state == YoutubePlayerState.PLAYING, currentTS, speed)
+            showNotification(state, currentTS, speed)
         }
     }
 

@@ -52,12 +52,14 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.ui.main.view.ShareDataView
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PLAYLIST_ALBUMS
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
+import com.rizwansayyed.zene.utils.MediaContentUtils
 import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -77,7 +79,6 @@ fun PlaylistView(id: String, type: PlaylistsType) {
     val context = LocalContext.current.applicationContext
     val playerInfo by musicPlayerDB.collectAsState(null)
 
-
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -93,8 +94,10 @@ fun PlaylistView(id: String, type: PlaylistsType) {
             is ResponseResult.Success -> {
                 item { v.data.info?.let { PlaylistTopView(it, type) } }
 
-                item { PlaylistsButtonView(v.data, homeViewModel) }
-                item { Spacer(Modifier.height(30.dp)) }
+                if (v.data.info?.id != null) {
+                    item { PlaylistsButtonView(v.data, homeViewModel) }
+                    item { Spacer(Modifier.height(30.dp)) }
+                }
 
                 when (val list = homeViewModel.playlistSimilarList) {
                     ResponseResult.Empty -> {}
@@ -120,15 +123,14 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                         }
                     }
                 }
+
                 item { Spacer(Modifier.height(20.dp)) }
+
                 items(v.data.list ?: emptyList()) {
                     when (type) {
                         PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
-                        PLAYLIST_ALBUMS -> PlaylistsItemView(
-                            it,
-                            playerInfo,
-                            v.data.list ?: emptyList()
-                        )
+                        PLAYLIST_ALBUMS ->
+                            PlaylistsItemView(it, playerInfo, v.data.list ?: emptyList())
                     }
                 }
             }
@@ -154,19 +156,18 @@ fun PlaylistView(id: String, type: PlaylistsType) {
         }
 
         if (type == PLAYLIST_ALBUMS) {
-            if (homeViewModel.playlistsData !is ResponseResult.Success) homeViewModel.playlistsData(
-                id
-            ) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(5.seconds)
-                    ProcessPhoenix.triggerRebirth(context)
+            if (homeViewModel.playlistsData !is ResponseResult.Success) {
+                homeViewModel.playlistsData(id) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(5.seconds)
+                        ProcessPhoenix.triggerRebirth(context)
+                    }
                 }
             }
 
-            if (homeViewModel.playlistSimilarList !is ResponseResult.Success) homeViewModel.similarPlaylistsData(
-                id
-            )
-
+            if (homeViewModel.playlistSimilarList !is ResponseResult.Success) {
+                homeViewModel.similarPlaylistsData(id)
+            }
             return@LaunchedEffect
         }
     }
@@ -249,16 +250,11 @@ fun PlaylistsItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMus
 fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel) {
     val addedToLibrary = stringResource(R.string.added_to_your_library)
     val removedLibrary = stringResource(R.string.removed_to_your_library)
+    var showShareView by remember { mutableStateOf(false) }
 
     Row(
         Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
     ) {
-        Box(Modifier
-            .padding(horizontal = 6.dp)
-            .clickable { }) {
-            ImageIcon(R.drawable.ic_download, 27)
-        }
-
         if (viewModel.isPlaylistAdded) Box(Modifier
             .padding(horizontal = 7.dp)
             .clickable {
@@ -278,7 +274,7 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
 
         Box(Modifier
             .padding(horizontal = 7.dp)
-            .clickable { }) {
+            .clickable { showShareView = true }) {
             ImageIcon(R.drawable.ic_share, 24)
         }
         Spacer(Modifier.weight(1f))
@@ -288,6 +284,10 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
         ) {
             startMedia(data.list.first(), data.list)
         }
+    }
+
+    if (showShareView) ShareDataView(data.info) {
+        showShareView = false
     }
 }
 

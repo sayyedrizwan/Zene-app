@@ -2,7 +2,7 @@ package com.rizwansayyed.zene.utils
 
 object URLSUtils {
 
-    private const val ZENE_URL = "https://www.zenemusic.co/"
+    const val ZENE_URL = "https://www.zenemusic.co/"
 
     fun connectShareURL(username: String): String {
         return "$ZENE_URL/connect/$username"

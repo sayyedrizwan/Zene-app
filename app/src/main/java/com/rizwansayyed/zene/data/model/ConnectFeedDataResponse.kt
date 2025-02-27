@@ -22,7 +22,7 @@ data class ConnectFeedDataResponse(
     var userDetails: ConnectUserResponse? = null,
 ) {
     fun getMusicData(): ZeneMusicData? {
-        if (jazz_name == null || jazz_id == null || jazz_artists == null) return null
+        if (jazz_name == null || jazz_id == null) return null
         return ZeneMusicData(jazz_artists, jazz_id, jazz_name, "", jazz_thumbnail, jazz_type, "")
     }
 

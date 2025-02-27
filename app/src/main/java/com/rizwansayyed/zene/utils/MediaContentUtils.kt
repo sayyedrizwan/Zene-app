@@ -15,7 +15,6 @@ import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 
@@ -37,8 +36,8 @@ object MediaContentUtils {
             }
 
             PODCAST -> NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
-            PLAYLISTS, ALBUMS ->
-                NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
+            PLAYLISTS, ALBUMS -> NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
+
             ARTISTS -> {}
             PODCAST_CATEGORIES -> {}
             NEWS -> {
@@ -65,8 +64,7 @@ object MediaContentUtils {
     private fun startAppService(
         context: Context, data: ZeneMusicData, list: List<ZeneMusicData?>, isNew: Boolean = false
     ) {
-        val listJson =
-            moshi.adapter(Array<ZeneMusicData?>::class.java).toJson(list.toTypedArray())
+        val listJson = moshi.adapter(Array<ZeneMusicData?>::class.java).toJson(list.toTypedArray())
 
         Intent(context, PlayerForegroundService::class.java).apply {
             flags = FLAG_ACTIVITY_NEW_TASK

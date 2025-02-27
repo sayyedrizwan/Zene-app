@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
@@ -51,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -95,9 +97,21 @@ fun SearchSongRecognition(close: () -> Unit) {
             detectWhenNoSongFound(view)
         }
 
+        fun scrollWebViewRepeatedly(view: WebView?, times: Int, delay: Long) {
+            if (view == null) return
+            repeat(times) { i ->
+                view.postDelayed({ view.scrollBy(0, 100) }, delay * i)
+            }
+        }
+
+
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             CoroutineScope(Dispatchers.IO).launch {
+                delay(2.seconds)
+                withContext(Dispatchers.Main) {
+                    scrollWebViewRepeatedly(view, times = 3, delay = 500)
+                }
                 delay(2.seconds)
                 clickButtonToStart(view)
             }
@@ -149,6 +163,11 @@ fun SearchSongRecognition(close: () -> Unit) {
                     webChromeClient = webCClient
                     webView = this
                     clearWebViewData(this)
+
+                    val newUA =
+                        "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0"
+                    settings.userAgentString = newUA
+
                     loadUrl(SHAZAM_BASE_URL)
                 }
             }, Modifier.fillMaxSize())
@@ -177,6 +196,7 @@ fun SearchSongRecognition(close: () -> Unit) {
 
 
     LifecycleResumeEffect(Unit) {
+        PlayerForegroundService.getPlayerS()?.pause()
         onPauseOrDispose {
             job?.cancel()
             webView?.let { killWebViewData(it) }

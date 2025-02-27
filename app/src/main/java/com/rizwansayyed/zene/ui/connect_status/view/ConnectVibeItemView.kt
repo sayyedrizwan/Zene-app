@@ -251,7 +251,42 @@ fun ConnectVibeItemOnlyCaption(
                         }
                     }
                     Spacer(Modifier.height(10.dp))
-                    TextViewNormal(data.getMusicData()?.name ?: "", 16, line = 1, center = true)
+                    TextViewNormal(data.getMusicData()?.name ?: "", 20, line = 1, center = true)
+                    Spacer(Modifier.height(5.dp))
+                    when (data.getMusicData()?.type()) {
+                        NONE -> {}
+                        SONGS -> TextViewNormal(stringResource(R.string.song), 14, center = true)
+                        RADIO -> TextViewNormal(stringResource(R.string.radio), 14, center = true)
+                        VIDEOS -> TextViewNormal(stringResource(R.string.video), 14, center = true)
+                        PLAYLISTS ->
+                            TextViewNormal(stringResource(R.string.playlist), 14, center = true)
+
+                        ALBUMS ->
+                            TextViewNormal(stringResource(R.string.album), 14, center = true)
+
+                        ARTISTS ->
+                            TextViewNormal(stringResource(R.string.artist), 14, center = true)
+
+                        PODCAST -> TextViewNormal(
+                            stringResource(R.string.podcasts_series), 14, center = true
+                        )
+
+                        PODCAST_AUDIO ->
+                            TextViewNormal(stringResource(R.string.podcast), 14, center = true)
+
+                        PODCAST_CATEGORIES -> {}
+                        NEWS ->
+                            TextViewNormal(stringResource(R.string.news), 14, center = true)
+
+                        MOVIES ->
+                            TextViewNormal(stringResource(R.string.movie), 14, center = true)
+
+                        AI_MUSIC ->
+                            TextViewNormal(stringResource(R.string.ai_music), 14, center = true)
+
+                        TEXT -> {}
+                        null -> {}
+                    }
                     Spacer(Modifier.height(20.dp))
                 }
 

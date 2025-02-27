@@ -156,5 +156,6 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.browser)
 
+    implementation("org.hashids:hashids:1.0.3")
 
 }

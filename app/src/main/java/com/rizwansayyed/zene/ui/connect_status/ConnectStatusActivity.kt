@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.ui.connect_status
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,8 +31,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddJam
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddLocation
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAttachFiles
@@ -47,9 +51,13 @@ import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class ConnectStatusActivity : ComponentActivity() {
@@ -59,6 +67,7 @@ class ConnectStatusActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        readIncomingJazz(intent)
         setContent {
             ZeneTheme {
                 val caption = remember { mutableStateOf("") }
@@ -74,7 +83,7 @@ class ConnectStatusActivity : ComponentActivity() {
                     ConnectStatusTopColumView {
                         ConnectStatusTopHeaderView()
 
-                        ConnectVibeItemView(connectViewModel.connectFileSelected,false)
+                        ConnectVibeItemView(connectViewModel.connectFileSelected, false)
 
                         ConnectStatusCaptionView(caption)
 
@@ -124,6 +133,24 @@ class ConnectStatusActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        readIncomingJazz(intent)
+    }
+
+    private fun readIncomingJazz(intent: Intent) = lifecycleScope.launch {
+        delay(2.seconds)
+        try {
+            val intentJson = intent.getStringExtra(Intent.ACTION_SEND) ?: "{}"
+            val json = moshi.adapter(ZeneMusicData::class.java).fromJson(intentJson)
+            if (json?.id != null && json.name != null)
+                connectViewModel.updateVibeJazzInfo(json)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

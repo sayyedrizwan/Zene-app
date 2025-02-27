@@ -43,6 +43,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.SnackBarManager
 import java.util.Locale
 
 
@@ -97,13 +98,13 @@ fun SearchTopView(search: (String) -> Unit) {
             val data = it.data
             val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             search(matches?.firstOrNull() ?: "")
-        } else errorRecognizingSpeech.toast()
+        } else SnackBarManager.showMessage(errorRecognizingSpeech)
     }
 
     val m = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         if (it) songRecognitionAlert = true
         else {
-            needMicrophone.toast()
+            SnackBarManager.showMessage(needMicrophone)
             openAppSettings()
         }
     }

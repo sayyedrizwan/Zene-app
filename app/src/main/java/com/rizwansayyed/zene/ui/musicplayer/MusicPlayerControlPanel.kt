@@ -247,9 +247,9 @@ fun MusicPlayerControlPanel(
                 }
 
 
-                MiniWithImageAndBorder(R.drawable.ic_download, R.string.offline_cache_song) {
-
-                }
+//                MiniWithImageAndBorder(R.drawable.ic_download, R.string.offline_cache_song) {
+//
+//                }
             }
             Spacer(Modifier.height(20.dp))
         }

@@ -93,7 +93,7 @@ fun MusicDataSheet(data: ConnectFeedDataResponse?, close: () -> Unit) {
                 contentScale = ContentScale.Crop
             )
             Spacer(Modifier.height(20.dp))
-            TextViewNormal(data?.getMusicData()?.name ?: "", 19, center = true)
+            TextViewNormal(data?.getMusicData()?.name ?: "", 20, center = true)
             Spacer(Modifier.height(5.dp))
             TextViewNormal(data?.getMusicData()?.artists ?: "", 14, center = true)
             Spacer(Modifier.height(10.dp))
