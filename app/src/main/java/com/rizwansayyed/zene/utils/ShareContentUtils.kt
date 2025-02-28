@@ -1,6 +1,10 @@
 package com.rizwansayyed.zene.utils
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
@@ -21,8 +25,15 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
 import com.rizwansayyed.zene.utils.MainUtils.copyTextToClipboard
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.math.BigInteger
+
 
 enum class SharingContentType {
     COPY, SHARE_TO, CONNECT, WHATS_APP, INSTAGRAM, SNAPCHAT, FACEBOOK, X, PINTEREST
@@ -32,6 +43,53 @@ object ShareContentUtils {
 
     fun shareTheData(data: ZeneMusicData?, type: SharingContentType) {
         val id = encryptSharingId(data?.id)
+
+        val sharingText = when (data?.type()) {
+            NONE -> ""
+            SONGS -> String.format(
+                context.resources.getString(R.string.enjoy_the_song_on_zene), data.name
+            )
+
+            RADIO -> String.format(
+                context.resources.getString(R.string.enjoy_free_radio_on_zene), data.name
+            )
+
+            VIDEOS -> context.resources.getString(R.string.enjoy_free_video_on_zene)
+            PLAYLISTS, ALBUMS -> String.format(
+                context.resources.getString(R.string.enjoy_free_mix_playlist_album_on_zene),
+                data.name
+            )
+
+            ARTISTS -> String.format(
+                context.resources.getString(R.string.enjoy_free_mix_playlist_album_on_zene),
+                data.name
+            )
+
+            PODCAST -> String.format(
+                context.resources.getString(R.string.enjoy_free_podcast_series_on_zene), data.name
+            )
+
+            PODCAST_AUDIO -> String.format(
+                context.resources.getString(R.string.enjoy_free_podcast_on_zene), data.name
+            )
+
+            PODCAST_CATEGORIES -> ""
+            NEWS -> String.format(
+                context.resources.getString(R.string.enjoy_free_news_on_zene), data.name
+            )
+
+            MOVIES -> String.format(
+                context.resources.getString(R.string.about_movie_on_zene), data.name
+            )
+
+            AI_MUSIC -> String.format(
+                context.resources.getString(R.string.enjoy_free_ai_music_on_zene), data.name
+            )
+
+            TEXT -> ""
+            null -> ""
+        }
+
 
         val url = when (data?.type()) {
             NONE -> ZENE_URL
@@ -56,37 +114,85 @@ object ShareContentUtils {
                 copyTextToClipboard(url)
             }
 
-            SharingContentType.SHARE_TO -> {
-                val sendIntent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, url)
-                    setType("text/plain")
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-
-                context.startActivity(sendIntent)
+            SharingContentType.SHARE_TO -> Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, url)
+                setType("text/plain")
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
             }
 
-            SharingContentType.CONNECT -> {
-                Intent(context, ConnectStatusActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    val json = moshi.adapter(ZeneMusicData::class.java).toJson(data)
-                    putExtra(Intent.ACTION_SEND, json)
-                    context.startActivity(this)
-                }
+            SharingContentType.CONNECT -> Intent(context, ConnectStatusActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                val json = moshi.adapter(ZeneMusicData::class.java).toJson(data)
+                putExtra(Intent.ACTION_SEND, json)
+                context.startActivity(this)
             }
 
-            SharingContentType.WHATS_APP -> {}
-            SharingContentType.INSTAGRAM -> {}
-            SharingContentType.SNAPCHAT -> {}
+            SharingContentType.WHATS_APP -> startIntentImageSharing(
+                "com.whatsapp", "$sharingText \n$url", data?.thumbnail ?: ""
+            )
+
+            SharingContentType.INSTAGRAM -> startIntentImageSharing(
+                "com.instagram.android", "$sharingText \n$url", data?.thumbnail ?: ""
+            )
+
+            SharingContentType.SNAPCHAT -> startIntentImageSharing(
+                "com.snapchat.android", "$sharingText \n$url", data?.thumbnail ?: ""
+            )
+
             SharingContentType.FACEBOOK -> {}
             SharingContentType.X -> {}
             SharingContentType.PINTEREST -> {}
         }
     }
 
+    private fun startIntentImageSharing(n: String, text: String, thumbnail: String) {
+        downloadAndSaveFile(thumbnail) {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.setType("text/plain")
+            intent.setPackage(n)
+            intent.putExtra(Intent.EXTRA_TEXT, text)
+            intent.putExtra(Intent.EXTRA_TITLE, text)
+//                    && n == "com.whatsapp"
+            if (it != null ) {
+                intent.putExtra(Intent.EXTRA_STREAM, it)
+                intent.setType("image/jpeg")
+            }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-    private const val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+            try {
+                context.startActivity(intent)
+            } catch (ex: Exception) {
+                context.resources.getString(R.string.error_sharing_).toast()
+            }
+        }
+    }
+
+
+    private fun downloadAndSaveFile(url: String, onFile: (Uri?) -> Unit) =
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val b = Glide.with(context).asBitmap().load(url).submit().get()
+                val fileNew = File(context.cacheDir, "sharing_img.png")
+                val fOut = FileOutputStream(fileNew)
+                b.compress(Bitmap.CompressFormat.PNG, 100, fOut)
+                fOut.flush()
+
+                val file = File(context.cacheDir, "sharing_img.png")
+                val uri =
+                    FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+                onFile(uri)
+            } catch (e: Exception) {
+                onFile(null)
+            }
+        }
+
+
+    private const val ALPHABET =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+
     private fun toBigInteger(input: String, alphabet: String = ALPHABET): BigInteger {
         val base = BigInteger.valueOf(alphabet.length.toLong())
         var result = BigInteger.ZERO

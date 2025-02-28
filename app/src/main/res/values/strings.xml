@@ -205,6 +205,16 @@
     <string name="listening_">Listening…</string>
     <string name="loading_">Loading…</string>
     <string name="error_recognizing_song">Error Recognizing Song</string>
+    <string name="error_sharing_">Error Sharing…</string>
+    <string name="enjoy_the_song_on_zene">Enjoy free %s song on Zene</string>
+    <string name="enjoy_free_ai_music_on_zene">Enjoy free AI Music, %s on Zene</string>
+    <string name="enjoy_free_radio_on_zene">Enjoy free %s radio on Zene</string>
+    <string name="enjoy_free_mix_playlist_album_on_zene">Enjoy free Mix Playlist/Album - %s on Zene</string>
+    <string name="enjoy_free_podcast_series_on_zene">Enjoy free Podcast Series of %s on Zene</string>
+    <string name="enjoy_free_podcast_on_zene">Enjoy free Podcast %s on Zene</string>
+    <string name="enjoy_free_video_on_zene">Enjoy free video on Zene</string>
+    <string name="enjoy_free_news_on_zene">Read free news about %s on Zene</string>
+    <string name="about_movie_on_zene">About %s on Zene</string>
     <string name="no_song_recognized">No Song Recognized</string>
     <string name="fourteen_forty_eighty_p">1440p</string>
     <string name="seven_twenty_p">720p</string>

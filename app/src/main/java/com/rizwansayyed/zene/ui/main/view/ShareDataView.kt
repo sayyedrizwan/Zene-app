@@ -86,15 +86,18 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
                 }
 
                 ShareRoundIcon(R.drawable.ic_whatsapp, R.string.whatsapp, WhatsAppColor) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.WHATS_APP)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_instagram, R.string.instagram, InstagramColor) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.INSTAGRAM)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_snapchat, R.string.snapchat, SnapchatColor) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.SNAPCHAT)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_facebook_border, R.string.facebook, FacebookColor) {
