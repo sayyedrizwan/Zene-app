@@ -327,7 +327,7 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?, openEmoji: () -> Unit) 
                     .clipToBounds(),
                 contentScale = ContentScale.Crop
             ) {
-                it.diskCacheStrategy(DiskCacheStrategy.ALL)
+                it.diskCacheStrategy(DiskCacheStrategy.NONE)
             }
             if (data?.isMediaVideo() == false) Box(
                 Modifier

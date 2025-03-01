@@ -128,7 +128,7 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
                                 Column(
                                     Modifier
                                         .align(Alignment.Center)
-                                        .alpha(0.9f)
+                                        .alpha(0.75f)
                                         .fillMaxWidth(0.6f)
                                         .clip(RoundedCornerShape(10.dp))
                                         .background(backgroundColor)

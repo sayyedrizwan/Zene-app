@@ -70,7 +70,6 @@ fun ConnectVibingSnapView(viewModel: ConnectViewModel) {
             }
         }
 
-
     Spacer(Modifier.height(45.dp))
     SettingsViewSimpleItems(R.drawable.ic_camera, R.string.add_vibing_snap) {
         request.launch(permissions.toTypedArray())

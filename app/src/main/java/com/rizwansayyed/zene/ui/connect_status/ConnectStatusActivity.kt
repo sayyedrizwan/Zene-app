@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.connect_status
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddJam
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAddLocation
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectAttachFiles
@@ -56,7 +56,9 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -136,19 +138,35 @@ class ConnectStatusActivity : ComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        lifecycleScope.launch {
+            val phoneNumber = DataStorageManager.userInfo.firstOrNull()?.phoneNumber
+            if ((phoneNumber?.length ?: 0) <= 6) {
+                finish()
+            }
+        }
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         readIncomingJazz(intent)
     }
 
     private fun readIncomingJazz(intent: Intent) = lifecycleScope.launch {
-        delay(2.seconds)
         try {
+            delay(1.seconds)
             val intentJson = intent.getStringExtra(Intent.ACTION_SEND) ?: "{}"
             val json = moshi.adapter(ZeneMusicData::class.java).fromJson(intentJson)
             if (json?.id != null && json.name != null)
                 connectViewModel.updateVibeJazzInfo(json)
 
+            delay(1.seconds)
+
+            val intentFile = intent.getStringExtra(Intent.ACTION_ATTACH_DATA) ?: ""
+            if (File(intentFile).exists()) {
+                connectViewModel.updateVibeFileInfo(File(intentFile), false)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

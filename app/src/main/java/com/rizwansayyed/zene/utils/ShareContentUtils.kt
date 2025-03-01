@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
+import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
@@ -46,18 +47,28 @@ object ShareContentUtils {
 
     fun shareTheData(data: ZeneMusicData?, type: SharingContentType, view: ComposeView) {
         val id = encryptSharingId(data?.id)
-        val fileSharingImg = File(context.cacheDir, "sharing_img.png")
+        val fileSharingImg = File(context.cacheDir, "sharing_img.jpg")
+        fileSharingImg.deleteRecursively()
 
-        view.post {
+        try {
             val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
+
+            view.measure(
+                View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(view.height, View.MeasureSpec.EXACTLY)
+            )
+            view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+
             view.draw(canvas)
+
             val fOut = FileOutputStream(fileSharingImg)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
             fOut.flush()
-
+            fOut.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
 
         val sharingText = when (data?.type()) {
             NONE -> ""
@@ -141,7 +152,7 @@ object ShareContentUtils {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 val json = moshi.adapter(ZeneMusicData::class.java).toJson(data)
                 putExtra(Intent.ACTION_SEND, json)
-                putExtra(Intent.ACTION_ATTACH_DATA, json)
+                putExtra(Intent.ACTION_ATTACH_DATA, fileSharingImg.absolutePath)
                 context.startActivity(this)
             }
 
@@ -199,25 +210,6 @@ object ShareContentUtils {
             context.resources.getString(R.string.error_sharing_).toast()
         }
     }
-
-
-    private fun downloadAndSaveFile(url: String, onFile: (Uri?) -> Unit) =
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val b = Glide.with(context).asBitmap().load(url).submit().get()
-                val fileNew = File(context.cacheDir, "sharing_img.png")
-                val fOut = FileOutputStream(fileNew)
-                b.compress(Bitmap.CompressFormat.PNG, 100, fOut)
-                fOut.flush()
-
-                val file = File(context.cacheDir, "sharing_img.png")
-                val uri =
-                    FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
-                onFile(uri)
-            } catch (e: Exception) {
-                onFile(null)
-            }
-        }
 
 
     private const val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
