@@ -116,6 +116,28 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.searchKeywords(token, body))
     }
 
+    override suspend fun searchImages(q: ZeneMusicData) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        if (q.type() == MusicDataTypes.RADIO || q.type() == MusicDataTypes.PLAYLISTS || q.type() == MusicDataTypes.PLAYLISTS || q.type() == MusicDataTypes.PODCAST_AUDIO || q.type() == MusicDataTypes.AI_MUSIC) {
+            q.thumbnail?.let { emit(listOf(q.thumbnail)) }
+            return@flow
+        }
+
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", country)
+            put("artists", q.artists)
+            put("name", q.name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.searchImages(token, body))
+    }
+
     override suspend fun trendingAIMusic() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

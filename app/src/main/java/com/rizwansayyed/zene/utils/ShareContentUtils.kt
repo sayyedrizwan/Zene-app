@@ -2,7 +2,9 @@ package com.rizwansayyed.zene.utils
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
@@ -42,8 +44,20 @@ enum class SharingContentType {
 
 object ShareContentUtils {
 
-    fun shareTheData(data: ZeneMusicData?, type: SharingContentType) {
+    fun shareTheData(data: ZeneMusicData?, type: SharingContentType, view: ComposeView) {
         val id = encryptSharingId(data?.id)
+        val fileSharingImg = File(context.cacheDir, "sharing_img.png")
+
+        view.post {
+            val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
+            val fOut = FileOutputStream(fileSharingImg)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut)
+            fOut.flush()
+
+        }
+
 
         val sharingText = when (data?.type()) {
             NONE -> ""
@@ -127,62 +141,62 @@ object ShareContentUtils {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 val json = moshi.adapter(ZeneMusicData::class.java).toJson(data)
                 putExtra(Intent.ACTION_SEND, json)
+                putExtra(Intent.ACTION_ATTACH_DATA, json)
                 context.startActivity(this)
             }
 
             SharingContentType.WHATS_APP -> startIntentImageSharing(
-                "com.whatsapp", "$sharingText \n$url", data?.thumbnail ?: ""
+                "com.whatsapp", "$sharingText \n$url", fileSharingImg
             )
 
             SharingContentType.INSTAGRAM -> startIntentImageSharing(
-                "com.instagram.android", "$sharingText \n$url", data?.thumbnail ?: ""
+                "com.instagram.android", "$sharingText \n$url", fileSharingImg
             )
 
             SharingContentType.SNAPCHAT -> startIntentImageSharing(
-                "com.snapchat.android", "$sharingText \n$url", data?.thumbnail ?: ""
+                "com.snapchat.android", "$sharingText \n$url", fileSharingImg
             )
 
             SharingContentType.FACEBOOK -> {
                 if (isAppInstalled("com.facebook.lite")) startIntentImageSharing(
-                    "com.facebook.lite", "$sharingText \n$url", data?.thumbnail ?: ""
+                    "com.facebook.lite", "$sharingText \n$url", fileSharingImg
                 )
                 else startIntentImageSharing(
-                    "com.facebook.katana", "$sharingText \n$url", data?.thumbnail ?: ""
+                    "com.facebook.katana", "$sharingText \n$url", fileSharingImg
                 )
             }
 
             SharingContentType.X -> startIntentImageSharing(
-                "com.twitter.android", "$sharingText \n$url", data?.thumbnail ?: ""
+                "com.twitter.android", "$sharingText \n$url", fileSharingImg
             )
 
             SharingContentType.PINTEREST -> startIntentImageSharing(
-                "com.pinterest", "$sharingText \n$url", data?.thumbnail ?: ""
+                "com.pinterest", "$sharingText \n$url", fileSharingImg
             )
         }
     }
 
-    private fun startIntentImageSharing(n: String, text: String, thumbnail: String) {
-        downloadAndSaveFile(thumbnail) {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.setType("text/plain")
-            intent.setPackage(n)
-            intent.putExtra(Intent.EXTRA_TEXT, text)
-            intent.putExtra(Intent.EXTRA_TITLE, text)
+    private fun startIntentImageSharing(n: String, text: String, image: File) {
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", image)
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.setType("text/plain")
+        intent.setPackage(n)
+        intent.putExtra(Intent.EXTRA_TEXT, text)
+        intent.putExtra(Intent.EXTRA_TITLE, text)
 
-            if (it != null && (n.contains("whatsapp") || n.contains("facebook") ||
-                        n.contains("twitter") || n.contains("pinterest"))
-            ) {
-                intent.putExtra(Intent.EXTRA_STREAM, it)
-                intent.setType("image/jpeg")
-            }
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        if (image.exists() && (n.contains("whatsapp") || n.contains("facebook") ||
+                    n.contains("twitter") || n.contains("pinterest"))
+        ) {
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.setType("image/jpeg")
+        }
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-            try {
-                context.startActivity(intent)
-            } catch (ex: Exception) {
-                context.resources.getString(R.string.error_sharing_).toast()
-            }
+        try {
+            context.startActivity(intent)
+        } catch (ex: Exception) {
+            context.resources.getString(R.string.error_sharing_).toast()
         }
     }
 

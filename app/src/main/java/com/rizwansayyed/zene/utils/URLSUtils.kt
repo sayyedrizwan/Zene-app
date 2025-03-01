@@ -35,6 +35,7 @@ object URLSUtils {
     const val ZENE_SEARCH_KEYWORDS_API = "search/keywords"
     const val ZENE_SEARCH_TRENDING_GIF_API = "search/trending-gif"
     const val ZENE_SEARCH_GIF_API = "search/search-gif"
+    const val ZENE_SEARCH_IMG_API = "search/search-img"
 
     const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API =
         "connect/users-search-via-phonenumber"

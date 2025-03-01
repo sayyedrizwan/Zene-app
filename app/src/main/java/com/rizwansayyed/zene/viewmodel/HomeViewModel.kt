@@ -58,6 +58,7 @@ class HomeViewModel @Inject constructor(
     private val cacheHelper = CacheHelper()
     var homeRecent by mutableStateOf<ResponseResult<MusicDataResponse>>(ResponseResult.Empty)
     var searchTrending by mutableStateOf<ResponseResult<SearchTrendingResponse>>(ResponseResult.Empty)
+    var searchImages by mutableStateOf<ResponseResult<List<String>>>(ResponseResult.Empty)
     var aiMusicList by mutableStateOf<ResponseResult<AIDataResponse>>(ResponseResult.Empty)
     var homePodcast by mutableStateOf<ResponseResult<PodcastDataResponse>>(ResponseResult.Empty)
     var homeVideos by mutableStateOf<ResponseResult<VideoDataResponse>>(ResponseResult.Empty)
@@ -131,6 +132,16 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             cacheHelper.save(ZENE_SEARCH_TRENDING_API, it)
             searchTrending = ResponseResult.Success(it)
+        }
+    }
+
+    fun searchImages(q: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.searchImages(q).onStart {
+            searchImages = ResponseResult.Loading
+        }.catch {
+            searchImages = ResponseResult.Error(it)
+        }.collectLatest {
+            searchImages = ResponseResult.Success(it)
         }
     }
 

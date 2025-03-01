@@ -49,7 +49,7 @@ import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.ge
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
-import com.rizwansayyed.zene.ui.main.view.ShareDataView
+import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoSpeedChangeAlert
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -246,10 +246,6 @@ fun MusicPlayerControlPanel(
                     songSpeedView = true
                 }
 
-
-//                MiniWithImageAndBorder(R.drawable.ic_download, R.string.offline_cache_song) {
-//
-//                }
             }
             Spacer(Modifier.height(20.dp))
         }

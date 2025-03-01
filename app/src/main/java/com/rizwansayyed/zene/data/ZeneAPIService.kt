@@ -58,6 +58,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_ALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_A_SONG_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_GIF_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_IMG_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_KEYWORDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
@@ -113,6 +114,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_SEARCH_KEYWORDS_API)
     suspend fun searchKeywords(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<String>
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SEARCH_IMG_API)
+    suspend fun searchImages(
         @Header("token") token: String, @Body data: RequestBody
     ): List<String>
 

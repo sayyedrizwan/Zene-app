@@ -158,5 +158,6 @@ dependencies {
     implementation(libs.browser)
 
     implementation("org.hashids:hashids:1.0.3")
+    implementation("com.github.skydoves:colorpicker-compose:1.1.2")
 
 }

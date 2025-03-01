@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
@@ -320,10 +321,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
             val info =
                 if (index != -1 && index < songsLists.size - 1) songsLists[index + 1] else null
+            Log.d("TAG", "toNextSong: runned $info")
             if (info != null) {
                 currentPlayingSong = info
                 playSongs(false)
             }
+
+            playSongs(false)
         }
     }
 
