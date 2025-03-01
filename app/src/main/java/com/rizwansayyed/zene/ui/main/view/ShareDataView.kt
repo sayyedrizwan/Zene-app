@@ -125,7 +125,7 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
                     TextViewBold(stringResource(R.string.share), size = 55)
                 }
                 Box(Modifier.align(Alignment.TopCenter)) {
-
+                    
                 }
             }
         }
