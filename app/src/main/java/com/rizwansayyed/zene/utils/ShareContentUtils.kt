@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
 import com.rizwansayyed.zene.utils.MainUtils.copyTextToClipboard
+import com.rizwansayyed.zene.utils.MainUtils.isAppInstalled
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
@@ -141,9 +142,22 @@ object ShareContentUtils {
                 "com.snapchat.android", "$sharingText \n$url", data?.thumbnail ?: ""
             )
 
-            SharingContentType.FACEBOOK -> {}
-            SharingContentType.X -> {}
-            SharingContentType.PINTEREST -> {}
+            SharingContentType.FACEBOOK -> {
+                if (isAppInstalled("com.facebook.lite")) startIntentImageSharing(
+                    "com.facebook.lite", "$sharingText \n$url", data?.thumbnail ?: ""
+                )
+                else startIntentImageSharing(
+                    "com.facebook.katana", "$sharingText \n$url", data?.thumbnail ?: ""
+                )
+            }
+
+            SharingContentType.X -> startIntentImageSharing(
+                "com.twitter.android", "$sharingText \n$url", data?.thumbnail ?: ""
+            )
+
+            SharingContentType.PINTEREST -> startIntentImageSharing(
+                "com.pinterest", "$sharingText \n$url", data?.thumbnail ?: ""
+            )
         }
     }
 
@@ -154,8 +168,10 @@ object ShareContentUtils {
             intent.setPackage(n)
             intent.putExtra(Intent.EXTRA_TEXT, text)
             intent.putExtra(Intent.EXTRA_TITLE, text)
-//                    && n == "com.whatsapp"
-            if (it != null ) {
+
+            if (it != null && (n.contains("whatsapp") || n.contains("facebook") ||
+                        n.contains("twitter") || n.contains("pinterest"))
+            ) {
                 intent.putExtra(Intent.EXTRA_STREAM, it)
                 intent.setType("image/jpeg")
             }
@@ -190,8 +206,7 @@ object ShareContentUtils {
         }
 
 
-    private const val ALPHABET =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+    private const val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
     private fun toBigInteger(input: String, alphabet: String = ALPHABET): BigInteger {
         val base = BigInteger.valueOf(alphabet.length.toLong())

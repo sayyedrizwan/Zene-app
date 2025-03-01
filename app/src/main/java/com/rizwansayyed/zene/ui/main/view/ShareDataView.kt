@@ -101,24 +101,32 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
                 }
 
                 ShareRoundIcon(R.drawable.ic_facebook_border, R.string.facebook, FacebookColor) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.FACEBOOK)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_twitter_x, R.string.x, Color.Black) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.X)
+                    close()
                 }
 
                 ShareRoundIcon(R.drawable.ic_pinterest, R.string.pinterest, PinterestColor) {
-
+                    ShareContentUtils.shareTheData(data, SharingContentType.PINTEREST)
+                    close()
                 }
             }
 
             Box(
                 Modifier
                     .align(Alignment.Center)
-                    .fillMaxWidth(), Alignment.Center
+                    .fillMaxWidth()
             ) {
-                TextViewBold(stringResource(R.string.share), size = 55)
+                Box(Modifier.align(Alignment.TopCenter)) {
+                    TextViewBold(stringResource(R.string.share), size = 55)
+                }
+                Box(Modifier.align(Alignment.TopCenter)) {
+
+                }
             }
         }
     }

@@ -91,7 +91,10 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
     var loadedImage by remember { mutableStateOf<Bitmap?>(null) }
 
     if (player?.data?.id != null) Row(Modifier
-        .clickable { openPlayer() }
+        .clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        ) { openPlayer() }
         .padding(5.dp)
         .fillMaxWidth()
         .clip(RoundedCornerShape(5.dp))

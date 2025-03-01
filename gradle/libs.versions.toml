@@ -47,6 +47,7 @@ navigation = "2.8.7"
 paletteKtx = "1.0.0"
 room = "2.6.1"
 ksp = "2.0.21-1.0.27"
+storage = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -131,6 +132,7 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }
+androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

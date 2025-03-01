@@ -148,6 +148,8 @@ class MainActivity : ComponentActivity() {
 
                             MusicPlayerView(navigationViewModel)
 
+
+
                             BackHandler {
                                 if (!navController.popBackStack()) {
                                     finish()

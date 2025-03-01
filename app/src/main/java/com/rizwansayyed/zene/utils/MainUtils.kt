@@ -484,4 +484,13 @@ object MainUtils {
         val clip = ClipData.newPlainText(context.packageName, txt)
         clipboard.setPrimaryClip(clip)
     }
+
+    fun isAppInstalled(packageName: String): Boolean {
+        return try {
+            context.packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
 }
