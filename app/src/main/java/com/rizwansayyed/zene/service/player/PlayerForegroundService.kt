@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
@@ -24,6 +23,7 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
@@ -43,6 +43,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
+
 
 @AndroidEntryPoint
 class PlayerForegroundService : Service(), PlayerServiceInterface {
@@ -81,12 +82,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         isNew = intent?.getBooleanExtra(Intent.ACTION_USER_PRESENT, false) ?: false
 
         val musicData = intent?.getStringExtra(Intent.ACTION_VIEW) ?: "{}"
-        val musicList = intent?.getStringExtra(Intent.ACTION_RUN) ?: "[]"
-
         currentPlayingSong = moshi.adapter(ZeneMusicData::class.java).fromJson(musicData)
-        songsLists =
-            moshi.adapter(Array<ZeneMusicData?>::class.java).fromJson(musicList) ?: emptyArray()
-        smartShuffle = SmartShuffle(songsLists.toList())
+        songsLists = TEMP_ZENE_MUSIC_DATA_LIST.toTypedArray()
+
         playSongs(isNew)
         errorReRun = 0
 
@@ -321,7 +319,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
             val info =
                 if (index != -1 && index < songsLists.size - 1) songsLists[index + 1] else null
-            Log.d("TAG", "toNextSong: runned $info")
+
             if (info != null) {
                 currentPlayingSong = info
                 playSongs(false)
