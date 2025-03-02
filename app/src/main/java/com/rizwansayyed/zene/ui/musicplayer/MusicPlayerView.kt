@@ -71,8 +71,11 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 .background(MainColor)
         ) {
             HorizontalPager(pagerStateMain, Modifier.fillMaxSize()) { pageMain ->
-                if (pageMain == 0) MusicPlayerLyricsView(playViewModel, player?.currentDuration)
-                else if (pageMain == 2) SimilarSongsPodcastsView(player)
+                if (pageMain == 0) {
+                    if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
+                        MusicPlayerPodcastView(playViewModel) else
+                        MusicPlayerLyricsView(playViewModel, player?.currentDuration)
+                } else if (pageMain == 2) SimilarSongsPodcastsView(player)
                 else {
                     if (isPlayerGrid) VerticalPager(
                         pagerState,
@@ -108,7 +111,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                     when (pagerStateMain.currentPage) {
                         0 -> TextViewBold(
                             stringResource(
-                                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO && player?.data?.type() == MusicDataTypes.RADIO) R.string.info
+                                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO || player?.data?.type() == MusicDataTypes.RADIO) R.string.info
                                 else R.string.lyrics
                             ), 19
                         )
@@ -164,9 +167,10 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
     LaunchedEffect(player?.data?.id) {
         if (player?.data?.id != null && player?.data?.type() != null) {
             playViewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
-            if (player?.data?.type() == MusicDataTypes.AI_MUSIC) playViewModel.getAISongLyrics(
-                player?.data?.id!!
-            )
+            if (player?.data?.type() == MusicDataTypes.AI_MUSIC)
+                playViewModel.getAISongLyrics(player?.data?.id!!)
+            else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
+                playViewModel.playerPodcastInfo(player?.data?.id!!, player?.data?.path!!)
             else playViewModel.getSongLyrics()
         }
     }

@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
+import com.rizwansayyed.zene.data.model.PodcastEposideResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
@@ -42,6 +43,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SONGS_LYRICS_API
@@ -295,6 +297,12 @@ interface ZeneAPIService {
     suspend fun similarVideos(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_PODCAST_INFO_API)
+    suspend fun playerPodcastInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): PodcastEposideResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API)

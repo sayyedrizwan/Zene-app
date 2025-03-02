@@ -162,11 +162,10 @@ class ConnectStatusActivity : ComponentActivity() {
                 connectViewModel.updateVibeJazzInfo(json)
 
             delay(1.seconds)
-
             val intentFile = intent.getStringExtra(Intent.ACTION_ATTACH_DATA) ?: ""
-            if (File(intentFile).exists()) {
+            if (File(intentFile).exists())
                 connectViewModel.updateVibeFileInfo(File(intentFile), false)
-            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

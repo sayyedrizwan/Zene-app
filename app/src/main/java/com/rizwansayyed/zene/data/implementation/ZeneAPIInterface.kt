@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
+import com.rizwansayyed.zene.data.model.PodcastEposideResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
@@ -96,4 +97,5 @@ interface ZeneAPIInterface {
     suspend fun similarPodcasts(id: String?): Flow<ZeneMusicDataList>
     suspend fun playlistsInfo(id: String?): Flow<PodcastPlaylistResponse>
     suspend fun searchImages(q: ZeneMusicData): Flow<List<String>>
+    suspend fun playerPodcastInfo(id: String, path: String): Flow<PodcastEposideResponse>
 }

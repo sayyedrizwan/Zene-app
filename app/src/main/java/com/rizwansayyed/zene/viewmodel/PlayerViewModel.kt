@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
+import com.rizwansayyed.zene.data.model.PodcastEposideResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
@@ -38,6 +39,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var itemAddedToPlaylists = mutableStateMapOf<String, Boolean>()
     var createPlaylist by mutableStateOf<ResponseResult<NewPlaylistResponse>>(ResponseResult.Empty)
     var playerLyrics by mutableStateOf<ResponseResult<PlayerLyricsInfoResponse>>(ResponseResult.Empty)
+    var playerPodcastInfo by mutableStateOf<ResponseResult<PodcastEposideResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
     var isItemLiked by mutableStateOf(false)
@@ -134,6 +136,16 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             playerLyrics = ResponseResult.Error(it)
         }.collectLatest {
             playerLyrics = ResponseResult.Success(it)
+        }
+    }
+
+    fun playerPodcastInfo(id: String, path: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playerPodcastInfo(id, path).onStart {
+            playerPodcastInfo = ResponseResult.Loading
+        }.catch {
+            playerPodcastInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            playerPodcastInfo = ResponseResult.Success(it)
         }
     }
 }
