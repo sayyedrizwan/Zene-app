@@ -60,6 +60,22 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
         enter = slideInVertically(initialOffsetY = { it / 2 }),
         exit = slideOutVertically(targetOffsetY = { it / 2 })
     ) {
+
+    }
+}
+
+
+@Composable
+fun MusicPlayerViewOld(navViewModel: NavigationViewModel) {
+    val player by DataStorageManager.musicPlayerDB.collectAsState(null)
+    val playViewModel: PlayerViewModel = hiltViewModel()
+    val isPlayerGrid by isPlayerGridDB.collectAsState(false)
+
+    AnimatedVisibility(
+        navViewModel.showMusicPlayer,
+        enter = slideInVertically(initialOffsetY = { it / 2 }),
+        exit = slideOutVertically(targetOffsetY = { it / 2 })
+    ) {
         val coroutines = rememberCoroutineScope()
         val configuration = LocalConfiguration.current
         val screenHeight = configuration.screenHeightDp.dp

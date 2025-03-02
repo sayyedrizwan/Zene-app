@@ -50,6 +50,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils.isDirectToTV
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
@@ -75,7 +76,9 @@ fun HomeBottomNavigationView(
             Alignment.CenterVertically
         ) {
             HomeBottomNavItems(R.drawable.ic_home, R.string.home, HomeNavSelector.HOME, vm)
-            HomeBottomNavItems(R.drawable.ic_hotspot, R.string.connect, HomeNavSelector.CONNECT, vm)
+            if (!isDirectToTV()) HomeBottomNavItems(
+                R.drawable.ic_hotspot, R.string.connect, HomeNavSelector.CONNECT, vm
+            )
             HomeBottomNavItems(R.drawable.ic_search, R.string.search, HomeNavSelector.SEARCH, vm)
             HomeBottomNavItems(R.drawable.ic_audio_book, R.string.ent_, HomeNavSelector.ENT, vm)
         }

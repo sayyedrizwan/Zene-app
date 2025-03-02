@@ -310,6 +310,11 @@ object MainUtils {
         return "$manufacturer $model $osVersion"
     }
 
+    fun isDirectToTV(): Boolean {
+        return (context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEVISION)
+                || context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK))
+    }
+
     fun isLocationPermissionGranted(): Boolean {
         val location = checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
         return location == PackageManager.PERMISSION_GRANTED

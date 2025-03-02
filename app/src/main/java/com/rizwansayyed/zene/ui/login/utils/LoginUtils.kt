@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -84,9 +85,11 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
                         email ?: "", info.displayName ?: "", info.profilePictureUri.toString()
                     )
                 } catch (e: Exception) {
+                    Log.d("TAG", "startGoogleLogin: dd ${e.message} ")
                     isLoading = false
                 }
             } catch (e: Exception) {
+                Log.d("TAG", "startGoogleLogin: dd ${e.message} ")
                 isLoading = false
             }
         }

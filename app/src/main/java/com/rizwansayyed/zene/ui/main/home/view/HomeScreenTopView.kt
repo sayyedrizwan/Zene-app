@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +32,7 @@ import com.rizwansayyed.zene.ui.theme.LuxColor
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
@@ -42,8 +42,8 @@ import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
     Row(
         Modifier
+            .padding(top = if (MainUtils.isDirectToTV()) 15.dp else 60.dp)
             .horizontalScroll(rememberScrollState())
-            .padding(top = 60.dp)
             .fillMaxWidth(),
         Arrangement.Center,
         Alignment.CenterVertically
@@ -67,7 +67,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             }
         }
         Spacer(Modifier.width(3.dp))
-        LuxCards(stringResource(R.string.app_name_luxe)) {
+        LuxCards() {
             viewModel.setHomeSections(HomeSectionSelector.LUX)
         }
 
@@ -117,8 +117,8 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
 fun TextSimpleCards(isActive: Boolean, txt: String, click: () -> Unit) {
     Row(Modifier
         .padding(horizontal = 8.dp)
-        .clickable { click() }
         .clip(RoundedCornerShape(13.dp))
+        .clickable { click() }
         .background(if (isActive) MainColor else Color.Black)
         .padding(horizontal = 14.dp, vertical = 3.dp)) {
         TextViewSemiBold(txt, 13)
@@ -126,7 +126,7 @@ fun TextSimpleCards(isActive: Boolean, txt: String, click: () -> Unit) {
 }
 
 @Composable
-fun LuxCards(txt: String, click: () -> Unit) {
+fun LuxCards(click: () -> Unit) {
     Row(Modifier
         .padding(horizontal = 8.dp)
         .clip(RoundedCornerShape(13.dp))
@@ -136,6 +136,6 @@ fun LuxCards(txt: String, click: () -> Unit) {
         Arrangement.Center, Alignment.CenterVertically) {
         ImageIcon(R.drawable.ic_crown, 16, GoldColor)
         Spacer(Modifier.width(5.dp))
-        TextViewSemiBold(txt, 13)
+        TextViewSemiBold(stringResource(R.string.app_name_luxe), 13)
     }
 }
