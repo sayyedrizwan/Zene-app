@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -40,9 +39,14 @@ class ZeneBaseApplication : Application() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            delay(1.seconds)
-            val data = DataStorageManager.musicPlayerDB.firstOrNull()
-            if (data?.data != null) MediaContentUtils.startMedia(data.data, data.lists, true)
+            delay(2.seconds)
+            try {
+                val data = DataStorageManager.musicPlayerDB.firstOrNull()
+                if (data?.data != null)
+                    MediaContentUtils.startMedia(data.data, data.lists ?: emptyList(), true)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
             if (isActive) cancel()
         }
     }

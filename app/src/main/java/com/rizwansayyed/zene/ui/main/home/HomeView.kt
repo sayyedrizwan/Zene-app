@@ -53,6 +53,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 MUSIC -> HomeMusicView(homeViewModel)
                 RADIO -> HomeRadioView(homeViewModel)
                 PODCAST -> HomePodcastView(homeViewModel)
+                HomeSectionSelector.LUX -> {}
                 HomeSectionSelector.VIDEO -> HomeVideoView(homeViewModel)
                 HomeSectionSelector.AI_MUSIC -> HomeAIView(homeViewModel)
                 MY_LIBRARY -> {}

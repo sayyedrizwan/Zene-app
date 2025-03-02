@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Zene</string>
+    <string name="app_name_luxe">Zene Luxe</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
     <string name="app_desc">Free Music, Podcasts, Videos &amp; More – All Your Entertainment in One Place!</string>
     <string name="keep_up_with_your_entertainment">Keep up with your Entertainment</string>

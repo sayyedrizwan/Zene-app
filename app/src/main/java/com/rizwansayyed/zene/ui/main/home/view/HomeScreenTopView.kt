@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,6 +28,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
+import com.rizwansayyed.zene.ui.theme.GoldColor
+import com.rizwansayyed.zene.ui.theme.LuxColor
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -63,6 +66,11 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
                 ImageIcon(R.drawable.ic_setting, 17)
             }
         }
+        Spacer(Modifier.width(3.dp))
+        LuxCards(stringResource(R.string.app_name_luxe)) {
+            viewModel.setHomeSections(HomeSectionSelector.LUX)
+        }
+
         Spacer(Modifier.width(3.dp))
         TextSimpleCards(
             viewModel.homeSection == HomeSectionSelector.MUSIC, stringResource(R.string.music)
@@ -113,6 +121,21 @@ fun TextSimpleCards(isActive: Boolean, txt: String, click: () -> Unit) {
         .clip(RoundedCornerShape(13.dp))
         .background(if (isActive) MainColor else Color.Black)
         .padding(horizontal = 14.dp, vertical = 3.dp)) {
+        TextViewSemiBold(txt, 13)
+    }
+}
+
+@Composable
+fun LuxCards(txt: String, click: () -> Unit) {
+    Row(Modifier
+        .padding(horizontal = 8.dp)
+        .clip(RoundedCornerShape(13.dp))
+        .background(LuxColor)
+        .clickable { click() }
+        .padding(horizontal = 14.dp, vertical = 3.dp),
+        Arrangement.Center, Alignment.CenterVertically) {
+        ImageIcon(R.drawable.ic_crown, 16, GoldColor)
+        Spacer(Modifier.width(5.dp))
         TextViewSemiBold(txt, 13)
     }
 }
