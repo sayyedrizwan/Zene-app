@@ -195,9 +195,7 @@ object ShareContentUtils {
         intent.putExtra(Intent.EXTRA_TEXT, text)
         intent.putExtra(Intent.EXTRA_TITLE, text)
 
-        if (image.exists() && (n.contains("whatsapp") || n.contains("facebook") ||
-                    n.contains("twitter") || n.contains("pinterest"))
-        ) {
+        if (image.exists()) {
             intent.putExtra(Intent.EXTRA_STREAM, uri)
             intent.setType("image/jpeg")
         }

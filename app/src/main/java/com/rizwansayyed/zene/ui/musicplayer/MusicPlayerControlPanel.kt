@@ -223,7 +223,13 @@ fun MusicPlayerControlPanel(
                     coroutine.launch {
                         pagerStateMain.animateScrollToPage(0)
                     }
-                }
+                } else
+                    MiniWithImageAndBorder(R.drawable.ic_information_circle, R.string.info) {
+                        coroutine.launch {
+                            pagerStateMain.animateScrollToPage(0)
+                        }
+                    }
+
 
                 if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
                     MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_podcasts) {

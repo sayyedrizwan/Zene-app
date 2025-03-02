@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -31,12 +33,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPlayerGridDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
+import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
@@ -73,9 +78,12 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             HorizontalPager(pagerStateMain, Modifier.fillMaxSize()) { pageMain ->
                 if (pageMain == 0) {
                     if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
-                        MusicPlayerPodcastView(playViewModel, navViewModel) else
+                        MusicPlayerPodcastInfoView(playViewModel, navViewModel)
+                    else if (player?.data?.type() == MusicDataTypes.RADIO)
+                        MusicPlayerRadioInfoView(playViewModel)
+                    else
                         MusicPlayerLyricsView(playViewModel, player?.currentDuration)
-                } else if (pageMain == 2) SimilarSongsPodcastsView(player)
+                } else if (pageMain == 2) SimilarSongsPodcastsView(player, playViewModel)
                 else {
                     if (isPlayerGrid) VerticalPager(
                         pagerState,
@@ -167,16 +175,71 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
     LaunchedEffect(player?.data?.id) {
         if (player?.data?.id != null && player?.data?.type() != null) {
             playViewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
+            playViewModel.playerSimilarSongs(player?.data?.id)
+
+
             if (player?.data?.type() == MusicDataTypes.AI_MUSIC)
                 playViewModel.getAISongLyrics(player?.data?.id!!)
             else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
                 playViewModel.playerPodcastInfo(player?.data?.id!!, player?.data?.path!!)
+            else if (player?.data?.type() == MusicDataTypes.RADIO)
+                playViewModel.playerRadioInfo(player?.data?.id!!)
             else playViewModel.getSongLyrics()
         }
     }
 }
 
 @Composable
-fun SimilarSongsPodcastsView(player: MusicPlayerData?) {
+fun SimilarSongsPodcastsView(player: MusicPlayerData?, playViewModel: PlayerViewModel) {
+    LazyColumn(Modifier.fillMaxSize()) {
+        when (val v = playViewModel.similarSongs) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> item {
+                Spacer(Modifier.height(50.dp))
+                CircularLoadingView()
+            }
 
+            is ResponseResult.Success -> {
+                if (v.data.songs?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.song), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(v.data.songs) {
+                            ItemCardView(it)
+                        }
+                    }
+                }
+
+                if (v.data.playlists?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.playlists), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(v.data.playlists) {
+                            ItemCardView(it)
+                        }
+                    }
+                }
+
+                if (v.data.albums?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.albums), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(v.data.albums) {
+                            ItemCardView(it)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

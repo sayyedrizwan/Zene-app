@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
+import com.rizwansayyed.zene.data.model.PlayerRadioResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.PodcastEposideResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
@@ -44,7 +45,9 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_RADIO_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SONGS_LYRICS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYLISTS_INFO_API
@@ -299,10 +302,22 @@ interface ZeneAPIService {
     ): ZeneMusicDataList
 
     @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_SIMILAR_SONGS_API)
+    suspend fun similarSongs(
+        @Header("token") token: String, @Body data: RequestBody
+    ): SearchDataResponse
+
+    @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_PODCAST_INFO_API)
     suspend fun playerPodcastInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): PodcastEposideResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_RADIO_INFO_API)
+    suspend fun playerRadioInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): PlayerRadioResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API)

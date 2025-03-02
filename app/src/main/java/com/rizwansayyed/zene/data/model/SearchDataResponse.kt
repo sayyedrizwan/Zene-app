@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.data.model
 
 data class SearchDataResponse(
-    val song: List<ZeneMusicData?>?,
+    val songs: List<ZeneMusicData?>?,
     val aiSongs: List<ZeneMusicData?>?,
     val videos: List<ZeneMusicData?>?,
     val news: List<ZeneMusicData?>?,

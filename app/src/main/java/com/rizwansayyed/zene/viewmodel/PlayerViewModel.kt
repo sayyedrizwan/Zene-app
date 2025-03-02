@@ -11,7 +11,9 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
+import com.rizwansayyed.zene.data.model.PlayerRadioResponse
 import com.rizwansayyed.zene.data.model.PodcastEposideResponse
+import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
@@ -40,6 +42,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var createPlaylist by mutableStateOf<ResponseResult<NewPlaylistResponse>>(ResponseResult.Empty)
     var playerLyrics by mutableStateOf<ResponseResult<PlayerLyricsInfoResponse>>(ResponseResult.Empty)
     var playerPodcastInfo by mutableStateOf<ResponseResult<PodcastEposideResponse>>(ResponseResult.Empty)
+    var playerRadioInfo by mutableStateOf<ResponseResult<PlayerRadioResponse>>(ResponseResult.Empty)
+    var similarSongs by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
     var isItemLiked by mutableStateOf(false)
@@ -146,6 +150,27 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             playerPodcastInfo = ResponseResult.Error(it)
         }.collectLatest {
             playerPodcastInfo = ResponseResult.Success(it)
+        }
+    }
+
+    fun playerRadioInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playerRadioInfo(id).onStart {
+            playerRadioInfo = ResponseResult.Loading
+        }.catch {
+            playerRadioInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            playerRadioInfo = ResponseResult.Success(it)
+        }
+    }
+
+    fun playerSimilarSongs(id: String?) = viewModelScope.launch(Dispatchers.IO) {
+        id ?: return@launch
+        zeneAPI.similarSongs(id).onStart {
+            similarSongs = ResponseResult.Loading
+        }.catch {
+            similarSongs = ResponseResult.Error(it)
+        }.collectLatest {
+            similarSongs = ResponseResult.Success(it)
         }
     }
 }

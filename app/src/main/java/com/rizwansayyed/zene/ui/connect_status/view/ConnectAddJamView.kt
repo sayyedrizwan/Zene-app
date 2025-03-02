@@ -122,14 +122,14 @@ fun AddJamDialog(clicked: (ZeneMusicData?) -> Unit) {
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> item { CircularLoadingView() }
             is ResponseResult.Success -> {
-                if (v.data.song?.isNotEmpty() == true) item {
+                if (v.data.songs?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.songs), 23)
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.song) {
+                        items(v.data.songs) {
                             ItemCardViewConnect(it) {
                                 clicked(it)
                             }

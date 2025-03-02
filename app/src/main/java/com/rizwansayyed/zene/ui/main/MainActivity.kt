@@ -110,9 +110,8 @@ class MainActivity : ComponentActivity() {
                                         HOME -> HomeView(navigationViewModel, userInfo)
                                         CONNECT -> HomeConnectView()
                                         ENT -> EntertainmentNewsView()
-                                        NOTIFICATION -> NotificationViewScreenView(
-                                            navigationViewModel
-                                        )
+                                        NOTIFICATION ->
+                                            NotificationViewScreenView(navigationViewModel)
 
                                         SEARCH -> SearchView(homeViewModel)
                                         NONE -> {}
@@ -147,8 +146,6 @@ class MainActivity : ComponentActivity() {
                             )
 
                             MusicPlayerView(navigationViewModel)
-
-
 
                             BackHandler {
                                 if (!navController.popBackStack()) {

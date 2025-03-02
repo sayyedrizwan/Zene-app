@@ -31,6 +31,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.ui.theme.Pink80
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
@@ -44,7 +45,7 @@ import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MusicPlayerPodcastView(viewModel: PlayerViewModel, navViewModel: NavigationViewModel) {
+fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel, navViewModel: NavigationViewModel) {
     when (val v = viewModel.playerPodcastInfo) {
         ResponseResult.Empty -> {}
         is ResponseResult.Error -> {}
@@ -52,13 +53,22 @@ fun MusicPlayerPodcastView(viewModel: PlayerViewModel, navViewModel: NavigationV
         is ResponseResult.Success -> LazyColumn(
             Modifier
                 .padding(horizontal = 5.dp)
-                .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             item { Spacer(Modifier.height(150.dp)) }
             item {
-                GlideImage(
-                    v.data.image?.url,
+                if (v.data.image?.url != null) GlideImage(
+                    v.data.image.url,
+                    v.data.slug,
+                    Modifier
+                        .size(120.dp)
+                        .clip(RoundedCornerShape(14.dp)),
+                    contentScale = ContentScale.Crop
+                )
+                else GlideImage(
+                    v.data.series?.image?.url,
                     v.data.slug,
                     Modifier
                         .size(120.dp)
@@ -84,14 +94,18 @@ fun MusicPlayerPodcastView(viewModel: PlayerViewModel, navViewModel: NavigationV
                             style = SpanStyle(
                                 textDecoration = TextDecoration.Underline,
                                 fontStyle = FontStyle.Italic,
-                                color = Color.Black
+                                color = Pink80
                             )
                         )
                     ),
                     Modifier
                         .fillMaxWidth()
                         .animateContentSize(),
-                    Color.White, 14.sp, null, FontWeight.Normal, proximanOverFamily,
+                    Color.White,
+                    14.sp,
+                    null,
+                    FontWeight.Normal,
+                    proximanOverFamily,
                     textAlign = TextAlign.Center
                 )
             }
@@ -131,6 +145,65 @@ fun MusicPlayerPodcastView(viewModel: PlayerViewModel, navViewModel: NavigationV
                         R.drawable.ic_arrow_up_right, R.string.open_home_page, tint = Color.White
                     ) {
                         MediaContentUtils.openCustomBrowser(v.data.series.home)
+                    }
+                }
+            }
+
+            item { Spacer(Modifier.height(250.dp)) }
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun MusicPlayerRadioInfoView(viewModel: PlayerViewModel) {
+    when (val v = viewModel.playerRadioInfo) {
+        ResponseResult.Empty -> {}
+        is ResponseResult.Error -> {}
+        ResponseResult.Loading -> CircularLoadingView()
+        is ResponseResult.Success -> LazyColumn(
+            Modifier
+                .padding(horizontal = 5.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            item { Spacer(Modifier.height(150.dp)) }
+            item {
+                GlideImage(
+                    v.data.favicon,
+                    v.data.name,
+                    Modifier
+                        .size(120.dp)
+                        .clip(RoundedCornerShape(14.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            item {
+                Spacer(Modifier.height(14.dp))
+                TextViewSemiBold(v.data.name ?: "", 18, center = true)
+                if (v.data.country != null || v.data.state != null) {
+                    Spacer(Modifier.height(10.dp))
+                    TextViewNormal("${v.data.state}, ${v.data.country}", 15, center = true)
+                }
+            }
+
+            item {
+                if (v.data.language != null) {
+                    Spacer(Modifier.height(10.dp))
+                    TextViewNormal(v.data.language, 15, center = true)
+                }
+            }
+
+            item {
+                if (v.data.homepage != null) {
+                    Spacer(Modifier.height(10.dp))
+
+                    ButtonWithImageAndBorder(
+                        R.drawable.ic_arrow_up_right, R.string.open_home_page, tint = Color.White
+                    ) {
+                        MediaContentUtils.openCustomBrowser(v.data.homepage)
                     }
                 }
             }
