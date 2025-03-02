@@ -21,6 +21,20 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 
 object MediaContentUtils {
 
+    fun openCustomBrowser(url: String?) {
+        val toolbarColor =
+            CustomTabColorSchemeParams.Builder().setToolbarColor(MainColor.toArgb()).build()
+        val builder = CustomTabsIntent.Builder().setDefaultColorSchemeParams(toolbarColor)
+            .setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, toolbarColor)
+            .setUrlBarHidingEnabled(true).setShowTitle(true)
+            .setSendToExternalDefaultHandlerEnabled(true)
+
+        val intent = builder.build().apply {
+            intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
+        }
+        intent.launchUrl(context, Uri.parse(url))
+    }
+
     fun startMedia(
         data: ZeneMusicData?, l: List<ZeneMusicData?> = emptyList(), isNew: Boolean = false
     ) {
@@ -40,20 +54,7 @@ object MediaContentUtils {
 
             ARTISTS -> {}
             PODCAST_CATEGORIES -> {}
-            NEWS -> {
-                val toolbarColor =
-                    CustomTabColorSchemeParams.Builder().setToolbarColor(MainColor.toArgb()).build()
-                val builder = CustomTabsIntent.Builder().setDefaultColorSchemeParams(toolbarColor)
-                    .setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, toolbarColor)
-                    .setUrlBarHidingEnabled(true).setShowTitle(true)
-                    .setSendToExternalDefaultHandlerEnabled(true)
-
-                val intent = builder.build().apply {
-                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
-                }
-                intent.launchUrl(context, Uri.parse(data.id))
-            }
-
+            NEWS -> openCustomBrowser(data.id)
             MOVIES -> {}
             TEXT -> {}
             null -> {}

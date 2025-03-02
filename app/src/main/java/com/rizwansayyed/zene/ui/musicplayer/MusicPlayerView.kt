@@ -73,7 +73,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             HorizontalPager(pagerStateMain, Modifier.fillMaxSize()) { pageMain ->
                 if (pageMain == 0) {
                     if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
-                        MusicPlayerPodcastView(playViewModel) else
+                        MusicPlayerPodcastView(playViewModel, navViewModel) else
                         MusicPlayerLyricsView(playViewModel, player?.currentDuration)
                 } else if (pageMain == 2) SimilarSongsPodcastsView(player)
                 else {

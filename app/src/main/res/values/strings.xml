@@ -119,6 +119,9 @@
     <string name="chats">Chats</string>
     <string name="send_location">Send Location</string>
     <string name="open_location">Open Location</string>
+    <string name="open_podcast_series">Open Podcast Series</string>
+    <string name="open_episode_page">Open Episode Page</string>
+    <string name="open_home_page">Open Home Page</string>
     <string name="update_profile_photo">Update Profile Photo</string>
     <string name="my_vibe_then">My vibe then: </string>
     <string name="accept">Accept</string>
