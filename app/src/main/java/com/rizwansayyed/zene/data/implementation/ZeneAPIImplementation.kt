@@ -739,7 +739,6 @@ class ZeneAPIImplementation @Inject constructor(
 
         val json = JSONObject().apply {
             put("email", email)
-            put("country", email)
             put("name", p?.data?.name)
             put("artists", p?.data?.artists)
             put("duration", p?.totalDuration)
@@ -750,6 +749,22 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.playerLyrics(token, body))
+    }
+
+    override suspend fun playerVideoForSongs(p: ZeneMusicData?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", country)
+            put("name", p?.name)
+            put("artists", p?.artists)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.playerVideoForSongs(token, body))
     }
 
     override suspend fun playlistsInfo(id: String?) = flow {

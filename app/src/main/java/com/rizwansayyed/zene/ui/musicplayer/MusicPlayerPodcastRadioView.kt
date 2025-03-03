@@ -49,7 +49,7 @@ import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel, navViewModel: NavigationViewModel) {
+fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel) {
     when (val v = viewModel.playerPodcastInfo) {
         ResponseResult.Empty -> {}
         is ResponseResult.Error -> {}
@@ -136,7 +136,6 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel, navViewModel: Navigat
                         tint = Color.White
                     ) {
                         NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${v.data.series.slug}")
-                        navViewModel.setMusicPlayer(false)
                     }
                 }
             }

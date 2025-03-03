@@ -163,6 +163,7 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
                                     return
                                 }
+                                navigationViewModel.setMusicPlayer(false)
                                 navController.navigate(path) {
                                     if (path == NAV_MAIN_PAGE) {
                                         popUpTo(NAV_MAIN_PAGE) {

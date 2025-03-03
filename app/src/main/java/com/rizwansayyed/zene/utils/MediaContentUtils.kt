@@ -52,9 +52,6 @@ object MediaContentUtils {
     fun startMedia(
         data: ZeneMusicData?, l: List<ZeneMusicData?> = emptyList(), isNew: Boolean = false
     ) {
-//        val index = l.indexOfFirst { it?.id == data?.id }
-//        val list = getItemsAroundIndex(l, index)
-
         TEMP_ZENE_MUSIC_DATA_LIST.clear()
         TEMP_ZENE_MUSIC_DATA_LIST.addAll(l.toTypedArray())
         when (data?.type()) {
@@ -90,16 +87,4 @@ object MediaContentUtils {
             else context.startService(this)
         }
     }
-
-    private fun getItemsAroundIndex(
-        list: List<ZeneMusicData?>, index: Int, limit: Int = 200
-    ): List<ZeneMusicData?> {
-        if (list.size <= limit) return list
-
-        val halfLimit = limit / 2
-        val startIndex = maxOf(0, index - halfLimit)
-        val endIndex = minOf(list.size, startIndex + limit)
-        return list.subList(startIndex, endIndex)
-    }
-
 }

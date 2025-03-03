@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.PlayerRadioResponse
+import com.rizwansayyed.zene.data.model.PlayerVideoForSongsResponse
 import com.rizwansayyed.zene.data.model.PodcastEposideResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
@@ -46,6 +47,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var playerPodcastInfo by mutableStateOf<ResponseResult<PodcastEposideResponse>>(ResponseResult.Empty)
     var playerRadioInfo by mutableStateOf<ResponseResult<PlayerRadioResponse>>(ResponseResult.Empty)
     var similarSongs by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
+    var videoForSongs by mutableStateOf<ResponseResult<PlayerVideoForSongsResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
     var isItemLiked = mutableStateMapOf<String?, LikeItemType>()
@@ -109,7 +111,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         isItemLiked[data?.id] = if (doLike) LikeItemType.LIKE else LikeItemType.NONE
-        Log.d("TAG", "likeAItem: data ${isItemLiked[data?.id]} $doLike")
+
         zeneAPI.addRemoveLikeItem(data, doLike).catch { }.collectLatest { }
     }
 
@@ -176,6 +178,16 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             similarSongs = ResponseResult.Error(it)
         }.collectLatest {
             similarSongs = ResponseResult.Success(it)
+        }
+    }
+
+    fun playerVideoForSongs(data: ZeneMusicData?) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playerVideoForSongs(data).onStart {
+            videoForSongs = ResponseResult.Loading
+        }.catch {
+            videoForSongs = ResponseResult.Error(it)
+        }.collectLatest {
+            videoForSongs = ResponseResult.Success(it)
         }
     }
 }

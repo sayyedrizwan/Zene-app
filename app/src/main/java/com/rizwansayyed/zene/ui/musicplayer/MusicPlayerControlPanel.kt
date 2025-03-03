@@ -48,6 +48,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
@@ -60,10 +61,13 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoSpeedChangeAlert
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -74,15 +78,34 @@ fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
     HorizontalPager(
         pagerState, Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp)
     ) { page ->
-        GlideImage(
-            data?.lists?.get(page)?.thumbnail,
-            data?.lists?.get(page)?.name,
+        Box(
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .padding(horizontal = 5.dp),
-            contentScale = ContentScale.Crop
-        )
+        ) {
+            GlideImage(
+                data?.lists?.get(page)?.thumbnail,
+                data?.lists?.get(page)?.name,
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .padding(horizontal = 5.dp),
+                contentScale = ContentScale.Crop
+            )
+            if (data?.lists?.get(page)?.id != data?.data?.id) {
+                Box(Modifier
+                    .padding(15.dp)
+                    .align(Alignment.BottomEnd)
+                    .clip(RoundedCornerShape(100))
+                    .background(MainColor)
+                    .clickable {
+                        startMedia(data?.lists?.get(page), data?.lists ?: emptyList())
+                    }
+                    .padding(10.dp)) {
+                    ImageIcon(R.drawable.ic_play, 24, Color.White)
+                }
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -97,7 +120,8 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
     val isShuffleEnabled by isShuffleDB.collectAsState(false)
 
     Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-        Box(Modifier.clickable(indication = null,
+        Box(Modifier.clickable(
+            indication = null,
             interactionSource = remember { MutableInteractionSource() }) {
             isLoopDB = flowOf(!isLoopEnabled)
         }) {
@@ -106,7 +130,8 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
             )
         }
 
-        Box(Modifier.clickable(indication = null,
+        Box(Modifier.clickable(
+            indication = null,
             interactionSource = remember { MutableInteractionSource() }) {
             getPlayerS()?.toBackSong()
         }) {
@@ -135,14 +160,16 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
             }
         }
 
-        Box(Modifier.clickable(indication = null,
+        Box(Modifier.clickable(
+            indication = null,
             interactionSource = remember { MutableInteractionSource() }) {
             getPlayerS()?.toNextSong()
         }) {
             ImageIcon(R.drawable.ic_forward, 27)
         }
 
-        Box(Modifier.clickable(indication = null,
+        Box(Modifier.clickable(
+            indication = null,
             interactionSource = remember { MutableInteractionSource() }) {
             isShuffleDB = flowOf(!isShuffleEnabled)
         }) {
@@ -155,7 +182,7 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
 
 
 @Composable
-fun PlayerItemButtonView(player: MusicPlayerData?) {
+fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
     var showShareView by remember { mutableStateOf(false) }
     var songSpeedView by remember { mutableStateOf(false) }
     val videoSpeed by songSpeedDB.collectAsState(null)
@@ -170,14 +197,41 @@ fun PlayerItemButtonView(player: MusicPlayerData?) {
         Alignment.CenterVertically
     ) {
         if (player?.data?.type() == MusicDataTypes.SONGS) {
-            ImageIcon(R.drawable.ic_video_replay, 22)
-            Spacer(Modifier.width(25.dp))
-            ImageIcon(R.drawable.ic_teaching, 22)
+            when (val v = viewModel.videoForSongs) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> CircularLoadingViewSmall()
+                is ResponseResult.Success -> {
+                    if (v.data.videoID?.id != null) {
+                        Box(Modifier.clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            startMedia(v.data.videoID)
+                        }) {
+                            ImageIcon(R.drawable.ic_video_replay, 22)
+                        }
+                    }
+
+                    if (v.data.lyricsID?.id != null) {
+                        Spacer(Modifier.width(25.dp))
+                        Box(Modifier.clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            startMedia(v.data.lyricsID)
+                        }) {
+                            ImageIcon(R.drawable.ic_teaching, 22)
+                        }
+                    }
+                }
+            }
+
+
         }
 
         Spacer(Modifier.weight(1f))
 
-        Box(Modifier.clickable(indication = null,
+        Box(Modifier.clickable(
+            indication = null,
             interactionSource = remember { MutableInteractionSource() }) {
             songSpeedView = true
         }) {
@@ -185,7 +239,8 @@ fun PlayerItemButtonView(player: MusicPlayerData?) {
         }
 
         Spacer(Modifier.width(25.dp))
-        Box(Modifier.clickable(indication = null,
+        Box(Modifier.clickable(
+            indication = null,
             interactionSource = remember { MutableInteractionSource() }) {
             showTimerSheet = true
         }) {
@@ -197,7 +252,8 @@ fun PlayerItemButtonView(player: MusicPlayerData?) {
         }
 
         Spacer(Modifier.width(25.dp))
-        Box(Modifier.clickable(indication = null,
+        Box(Modifier.clickable(
+            indication = null,
             interactionSource = remember { MutableInteractionSource() }) {
             showShareView = true
         }) {

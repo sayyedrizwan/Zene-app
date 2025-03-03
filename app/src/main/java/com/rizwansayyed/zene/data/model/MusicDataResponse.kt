@@ -69,6 +69,8 @@ data class PodcastPlaylistResponse(
 
 data class MediaPathResponse(val urlPath: String?)
 
+data class PlayerVideoForSongsResponse(val videoID: ZeneMusicData?, val lyricsID: ZeneMusicData?)
+
 typealias ZeneMusicDataList = List<ZeneMusicData>
 
 data class ZeneMusicData(

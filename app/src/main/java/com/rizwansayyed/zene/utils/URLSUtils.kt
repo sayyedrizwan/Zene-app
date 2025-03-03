@@ -60,6 +60,7 @@ object URLSUtils {
     const val ZENE_PLAYER_SIMILAR_SONGS_API = "player/similar-songs"
     const val ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API = "player/similar-playlists-songs"
     const val ZENE_PLAYER_SONGS_LYRICS_API = "player/song-lyrics"
+    const val ZENE_PLAYER_VIDEO_FOR_SONGS_API = "player/video-for-songs"
 
 
     const val ZENE_PLAYLISTS_INFO_API = "playlists/playlists-info"

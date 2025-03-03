@@ -13,94 +13,53 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.isPlayerGridDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
-import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
-import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
-import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
-import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.main.home.view.LuxCards
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
-import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
-import com.rizwansayyed.zene.ui.videoplayer.view.VideoSpeedChangeAlert
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
-import com.rizwansayyed.zene.ui.view.ImageWithBorder
-import com.rizwansayyed.zene.ui.view.ItemCardView
-import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 
@@ -146,7 +105,6 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                             triggerHomeNav(NAV_MAIN_PAGE)
                             delay(500)
                             navViewModel.setHomeSections(HomeSectionSelector.LUX)
-                            navViewModel.setMusicPlayer(false)
                         }
                     }
 
@@ -192,7 +150,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
             item {
                 Spacer(Modifier.height(5.dp))
-                PlayerItemButtonView(player)
+                PlayerItemButtonView(player, viewModel)
             }
 
 
@@ -206,7 +164,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             item {
                 if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) {
                     Spacer(Modifier.height(25.dp))
-                    MusicPlayerPodcastInfoView(viewModel, navViewModel)
+                    MusicPlayerPodcastInfoView(viewModel)
                 }
             }
 
@@ -215,6 +173,12 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                     Spacer(Modifier.height(25.dp))
                     MusicPlayerRadioInfoView(viewModel)
                 }
+            }
+
+
+            item {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerSimilarView(viewModel)
             }
 
             item { Spacer(Modifier.height(150.dp)) }
@@ -243,6 +207,9 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             viewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
             viewModel.playerSimilarSongs(player?.data?.id)
 
+            if (player?.data?.type() == MusicDataTypes.SONGS)
+                viewModel.playerVideoForSongs(player?.data)
+
             if (player?.data?.type() == MusicDataTypes.AI_MUSIC) {
                 viewModel.getAISongLyrics(player?.data?.id!!)
             } else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) {
@@ -262,12 +229,9 @@ fun SongTextAndArtists(data: List<ZeneMusicData?>?, pagerState: PagerState, modi
             Modifier
                 .animateContentSize()
                 .basicMarquee(),
-            Color.White,
-            23.sp,
-            null,
-            FontWeight.Bold,
-            proximanOverFamily
+            Color.White, 23.sp, null, FontWeight.Bold, proximanOverFamily
         )
+
         Spacer(Modifier.height(1.dp))
 
         if (data?.get(pagerState.currentPage)?.type() == MusicDataTypes.SONGS
@@ -282,10 +246,10 @@ fun SongTextAndArtists(data: List<ZeneMusicData?>?, pagerState: PagerState, modi
             ) {
                 data[pagerState.currentPage]?.artists?.split(*delimiters)?.forEach {
                     TextViewNormal(it, 14)
+                    Spacer(Modifier.width(8.dp))
                 }
             }
         }
-
 
         if (data?.get(pagerState.currentPage)?.type() == MusicDataTypes.PODCAST_AUDIO) {
             Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
@@ -300,15 +264,18 @@ fun SongTextAndArtists(data: List<ZeneMusicData?>?, pagerState: PagerState, modi
 fun LikeSongView(player: MusicPlayerData?, viewModel: PlayerViewModel, pagerState: PagerState) {
     var addToPlaylistView by remember { mutableStateOf(false) }
 
-    Box(Modifier.clickable(
-        indication = null,
-        interactionSource = remember { MutableInteractionSource() }) {
-        val isLiked = when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
-            LikeItemType.LIKE -> true
-            LikeItemType.LOADING, LikeItemType.NONE, null -> false
-        }
-        viewModel.likeAItem(player?.lists?.get(pagerState.currentPage), !isLiked)
-    }, Alignment.Center
+    Box(Modifier
+        .padding(start = 10.dp)
+        .clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            val isLiked =
+                when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
+                    LikeItemType.LIKE -> true
+                    LikeItemType.LOADING, LikeItemType.NONE, null -> false
+                }
+            viewModel.likeAItem(player?.lists?.get(pagerState.currentPage), !isLiked)
+        }, Alignment.Center
     ) {
         when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
             LikeItemType.LOADING -> CircularLoadingViewSmall()
