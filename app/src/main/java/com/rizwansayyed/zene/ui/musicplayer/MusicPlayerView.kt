@@ -59,6 +59,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -71,14 +73,21 @@ import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPlayerGridDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
+import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
+import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.main.home.view.LuxCards
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
+import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.theme.Purple40
+import com.rizwansayyed.zene.ui.theme.PurpleGrey80
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
+import com.rizwansayyed.zene.ui.videoplayer.view.VideoSpeedChangeAlert
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -101,7 +110,7 @@ val delimiters = arrayOf(",", "&", " and ")
 @Composable
 fun MusicPlayerView(navViewModel: NavigationViewModel) {
     val player by DataStorageManager.musicPlayerDB.collectAsState(null)
-    val playViewModel: PlayerViewModel = hiltViewModel()
+    val viewModel: PlayerViewModel = hiltViewModel()
 
     AnimatedVisibility(
         navViewModel.showMusicPlayer,
@@ -167,7 +176,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                     ) {
                         SongTextAndArtists(player?.lists, pagerState, Modifier.weight(1f))
 
-                        LikeSongView(player, playViewModel, pagerState)
+                        LikeSongView(player, viewModel, pagerState)
                     }
                 }
             }
@@ -181,6 +190,19 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 Spacer(Modifier.height(5.dp))
                 PlayerButtonControl(player)
             }
+
+            item {
+                Spacer(Modifier.height(5.dp))
+                PlayerItemButtonView(player)
+            }
+
+
+            item {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerLyricsView(viewModel, player?.currentDuration)
+            }
+
+            item { Spacer(Modifier.height(150.dp)) }
         }
 
         BackHandler { navViewModel.setMusicPlayer(false) }
@@ -188,7 +210,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
         LaunchedEffect(pagerState.currentPage) {
             val id = player?.lists?.get(pagerState.currentPage)?.id
             val type = player?.lists?.get(pagerState.currentPage)?.type()!!
-            playViewModel.likedMediaItem(id, type)
+            viewModel.likedMediaItem(id, type)
         }
 
 
@@ -198,23 +220,24 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 pagerState.animateScrollToPage(i ?: 0)
             }
         }
+
     }
 
     LaunchedEffect(player?.data?.id) {
         if (player?.data?.id != null && player?.data?.type() != null) {
-            playViewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
-            playViewModel.playerSimilarSongs(player?.data?.id)
+            viewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
+            viewModel.playerSimilarSongs(player?.data?.id)
 
-            if (player?.data?.type() == MusicDataTypes.AI_MUSIC) playViewModel.getAISongLyrics(
+            if (player?.data?.type() == MusicDataTypes.AI_MUSIC) viewModel.getAISongLyrics(
                 player?.data?.id!!
             )
-            else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) playViewModel.playerPodcastInfo(
+            else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) viewModel.playerPodcastInfo(
                 player?.data?.id!!, player?.data?.path!!
             )
-            else if (player?.data?.type() == MusicDataTypes.RADIO) playViewModel.playerRadioInfo(
+            else if (player?.data?.type() == MusicDataTypes.RADIO) viewModel.playerRadioInfo(
                 player?.data?.id!!
             )
-            else playViewModel.getSongLyrics()
+            else viewModel.getSongLyrics()
         }
     }
 }
@@ -372,6 +395,15 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
             )
         }
     }
+}
+
+@Composable
+fun PlayerItemButtonView(player: MusicPlayerData?) {
+    var showShareView by remember { mutableStateOf(false) }
+    var songSpeedView by remember { mutableStateOf(false) }
+    val videoSpeed by songSpeedDB.collectAsState(null)
+    var showTimerSheet by remember { mutableStateOf(false) }
+
     Spacer(Modifier.height(10.dp))
     Row(
         Modifier
@@ -386,11 +418,57 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
 
         Spacer(Modifier.weight(1f))
 
-        ImageIcon(R.drawable.ic_dashboard_speed, 22)
+        Box(Modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            songSpeedView = true
+        }) {
+            ImageIcon(R.drawable.ic_dashboard_speed, 22)
+        }
+
         Spacer(Modifier.width(25.dp))
-        ImageIcon(R.drawable.ic_timer, 22)
+        Box(Modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            showTimerSheet = true
+        }) {
+            ImageIcon(
+                R.drawable.ic_timer, 22,
+                if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else Color.Black
+            )
+        }
+
         Spacer(Modifier.width(25.dp))
-        ImageIcon(R.drawable.ic_share, 22)
+        Box(Modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            showShareView = true
+        }) {
+            ImageIcon(R.drawable.ic_share, 22)
+        }
+    }
+
+
+    if (showShareView) ShareDataView(player?.data) {
+        showShareView = false
+    }
+
+    if (showTimerSheet) SleepTimerSheet {
+        showTimerSheet = false
+    }
+
+    if (songSpeedView) Dialog(
+        { songSpeedView = false }, DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        val coroutines = rememberCoroutineScope()
+
+        VideoSpeedChangeAlert(videoSpeed) {
+            val name = it.name.replace("_", ".")
+            coroutines.launch {
+                songSpeedDB = flowOf(it)
+            }
+            getPlayerS()?.playbackRate(name)
+        }
     }
 }
 

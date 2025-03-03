@@ -1,31 +1,37 @@
 package com.rizwansayyed.zene.ui.musicplayer
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
@@ -43,8 +49,6 @@ fun MusicPlayerLyricsView(viewModel: PlayerViewModel, currentDuration: String?) 
                 MusicPlayerSyncedLyricsView(v.data.syncedLyrics, currentDuration)
             } else if ((v.data.plainLyrics?.trim()?.length ?: 0) > 5) {
                 MusicPlayerPlainLyricsView(v.data.plainLyrics)
-            } else Box(Modifier.fillMaxSize(), Alignment.Center) {
-                TextViewBold(stringResource(R.string.no_lyrics_found), 18, center = true)
             }
         }
     }
@@ -56,14 +60,23 @@ fun MusicPlayerPlainLyricsView(plainLyrics: String?) {
 
     LazyColumn(
         Modifier
+            .height(400.dp)
+            .padding(horizontal = 20.dp)
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color.Black)
             .fillMaxSize()
             .animateContentSize(), contentPadding = PaddingValues(16.dp)
     ) {
-        item { Spacer(Modifier.height(100.dp)) }
+        item { Spacer(Modifier.height(20.dp)) }
+
+        item { TextViewBold(stringResource(R.string.lyrics), 30) }
+
+        item { Spacer(Modifier.height(20.dp)) }
+
         items(lyrics ?: emptyList()) {
             TextViewBold(it, 17)
         }
-        item { Spacer(Modifier.height(350.dp)) }
+        item { Spacer(Modifier.height(50.dp)) }
     }
 }
 
@@ -76,7 +89,11 @@ fun MusicPlayerSyncedLyricsView(syncedLyrics: String?, currentDuration: String?)
 
     LazyColumn(
         Modifier
-            .fillMaxSize()
+            .height(400.dp)
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color.Black)
             .animateContentSize()
             .pointerInput(Unit) {
                 detectTapGestures {
@@ -84,10 +101,19 @@ fun MusicPlayerSyncedLyricsView(syncedLyrics: String?, currentDuration: String?)
                 }
             }, listState, contentPadding = PaddingValues(16.dp)
     ) {
-        item { Spacer(Modifier.height(100.dp)) }
+        item { Spacer(Modifier.height(20.dp)) }
 
-        itemsIndexed(lyrics) { index, (_, lyric) ->
-            Box(Modifier.padding(top = 40.dp)) {
+        item { TextViewBold(stringResource(R.string.lyrics), 30) }
+
+        item { Spacer(Modifier.height(10.dp)) }
+
+        itemsIndexed(lyrics) { index, (ts, lyric) ->
+            Box(Modifier
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) { getPlayerS()?.seekTo(ts.toLong() + 1) }
+                .padding(top = 40.dp)) {
                 if (index < currentIndex) TextViewBold(
                     lyric.substringAfter("] "), 18, Color.White.copy(0.7f)
                 ) else if (index == currentIndex) TextViewBold(
@@ -99,7 +125,7 @@ fun MusicPlayerSyncedLyricsView(syncedLyrics: String?, currentDuration: String?)
             }
         }
 
-        item { Spacer(Modifier.height(350.dp)) }
+        item { Spacer(Modifier.height(50.dp)) }
     }
 
     LaunchedEffect(Unit) {
@@ -109,7 +135,7 @@ fun MusicPlayerSyncedLyricsView(syncedLyrics: String?, currentDuration: String?)
 
     LaunchedEffect(currentIndex) {
         if (!userScrolled && currentIndex != -1) {
-            val centerIndex = maxOf(0, currentIndex - 3)
+            val centerIndex = maxOf(0, currentIndex + 1)
             listState.animateScrollToItem(centerIndex)
         }
     }
