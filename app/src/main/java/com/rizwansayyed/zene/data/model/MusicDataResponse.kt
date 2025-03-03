@@ -10,6 +10,10 @@ enum class MusicDataTypes {
     NONE, SONGS, RADIO, VIDEOS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_AUDIO, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC, TEXT
 }
 
+enum class LikeItemType {
+    LOADING, LIKE, NONE
+}
+
 data class AIDataResponse(
     val isExpire: Boolean?,
     val trending: List<ZeneMusicData?>?,

@@ -1,11 +1,12 @@
 package com.rizwansayyed.zene.service.player.utils
 
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.service.player.PlayerForegroundService
 
-class SmartShuffle(private val songs: List<ZeneMusicData?>) {
+class SmartShuffle(private val service: PlayerForegroundService) {
     private val queue = mutableListOf<ZeneMusicData?>()
     private val history = mutableListOf<ZeneMusicData?>()
-    private val maxHistorySize = songs.size / 2
+    private val maxHistorySize = service.songsLists.size / 2
 
     init {
         reshuffle()
@@ -13,7 +14,7 @@ class SmartShuffle(private val songs: List<ZeneMusicData?>) {
 
     private fun reshuffle() {
         queue.clear()
-        queue.addAll(songs.shuffled())
+        queue.addAll(service.songsLists.toList().shuffled())
     }
 
     fun getNextSong(): ZeneMusicData? {

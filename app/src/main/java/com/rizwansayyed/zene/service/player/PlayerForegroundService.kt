@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
@@ -68,10 +69,10 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     var isNew: Boolean = false
     var currentPlayingSong: ZeneMusicData? = null
-    private var songsLists: Array<ZeneMusicData?> = emptyArray()
+    var songsLists: Array<ZeneMusicData?> = emptyArray()
     private var durationJob: Job? = null
     private var sleepTimer: Job? = null
-    private var smartShuffle: SmartShuffle? = null
+    private val smartShuffle by lazy { SmartShuffle(this) }
     private val mediaSession by lazy { MediaSessionPlayerNotification(this) }
     private val exoPlayerSession by lazy { ExoPlaybackService(this) }
     var errorReRun = 0
@@ -312,6 +313,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             val isShuffle = isShuffleDB.firstOrNull() ?: false
             if (isShuffle) {
                 currentPlayingSong = smartShuffle?.getNextSong()
+                Log.d("TAG", "toNextSong: ")
                 playSongs(false)
                 return@launch
             }

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
@@ -52,6 +53,8 @@ import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoSpeedChangeAlert
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -129,10 +132,14 @@ fun MusicPlayerControlPanel(
         if (pagerStateMain.currentPage == 1) {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
                 Box(Modifier.clickable {
-                    viewModel.likeAItem(player?.data, !viewModel.isItemLiked)
+                    val isLiked = viewModel.isItemLiked[player?.data?.id] ?: LikeItemType.NONE
+                    viewModel.likeAItem(player?.data, isLiked != LikeItemType.LIKE)
                 }) {
-                    if (viewModel.isItemLiked) ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
-                    else ImageIcon(R.drawable.ic_thumbs_up, 22)
+                    when (viewModel.isItemLiked[player?.data?.id]) {
+                        LikeItemType.LOADING -> CircularLoadingViewSmall()
+                        LikeItemType.LIKE -> ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
+                        LikeItemType.NONE, null -> ImageIcon(R.drawable.ic_thumbs_up, 22)
+                    }
                 }
 
                 Box(Modifier.clickable {
@@ -161,9 +168,7 @@ fun MusicPlayerControlPanel(
                     .padding(10.dp)) {
                     when (player?.state) {
                         YoutubePlayerState.PLAYING -> ImageIcon(
-                            R.drawable.ic_pause,
-                            27,
-                            Color.Black
+                            R.drawable.ic_pause, 27, Color.Black
                         )
 
                         YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
@@ -183,8 +188,7 @@ fun MusicPlayerControlPanel(
                     isLoopDB = flowOf(!isLoopEnabled)
                 }) {
                     ImageIcon(
-                        if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat,
-                        22
+                        if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22
                     )
                 }
 
@@ -217,32 +221,33 @@ fun MusicPlayerControlPanel(
                     }
                 }
 
-                if (player?.data?.type() == MusicDataTypes.SONGS ||
-                    player?.data?.type() == MusicDataTypes.AI_MUSIC
-                ) MiniWithImageAndBorder(R.drawable.ic_note, R.string.lyrics) {
+                if (player?.data?.type() == MusicDataTypes.SONGS || player?.data?.type() == MusicDataTypes.AI_MUSIC) MiniWithImageAndBorder(
+                    R.drawable.ic_note,
+                    R.string.lyrics
+                ) {
                     coroutine.launch {
                         pagerStateMain.animateScrollToPage(0)
                     }
-                } else
-                    MiniWithImageAndBorder(R.drawable.ic_information_circle, R.string.info) {
-                        coroutine.launch {
-                            pagerStateMain.animateScrollToPage(0)
-                        }
+                } else MiniWithImageAndBorder(R.drawable.ic_information_circle, R.string.info) {
+                    coroutine.launch {
+                        pagerStateMain.animateScrollToPage(0)
                     }
+                }
 
 
-                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
-                    MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_podcasts) {
-                        coroutine.launch {
-                            pagerStateMain.animateScrollToPage(2)
-                        }
+                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) MiniWithImageAndBorder(
+                    R.drawable.ic_music_note,
+                    R.string.similar_podcasts
+                ) {
+                    coroutine.launch {
+                        pagerStateMain.animateScrollToPage(2)
                     }
-                else
-                    MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_songs) {
-                        coroutine.launch {
-                            pagerStateMain.animateScrollToPage(2)
-                        }
+                }
+                else MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_songs) {
+                    coroutine.launch {
+                        pagerStateMain.animateScrollToPage(2)
                     }
+                }
 
                 MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.add_to_playlist) {
                     addToPlaylistView = true

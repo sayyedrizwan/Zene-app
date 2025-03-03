@@ -32,14 +32,21 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.ui.theme.MainColor
 
 @Composable
-fun CircularLoadingView(showFull: Boolean = true) {
+fun CircularLoadingView() {
     Row(
-        if (showFull) Modifier
+        Modifier
             .padding(20.dp)
-            .fillMaxWidth()
-        else Modifier.padding(20.dp), Arrangement.Center, Alignment.CenterVertically
+            .fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
     ) {
         CircularProgressIndicator(Modifier.width(35.dp), Color.White, trackColor = MainColor)
+    }
+}
+
+
+@Composable
+fun CircularLoadingViewSmall() {
+    Box(Modifier.size(20.dp)) {
+        CircularProgressIndicator(Modifier, Color.White, trackColor = Color.Gray)
     }
 }
 

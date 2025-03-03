@@ -41,9 +41,13 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgAndBorder
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
@@ -59,7 +63,11 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel, playerViewModel: PlayerViewModel) {
+fun VideoPlayerControlView(
+    viewModel: PlayingVideoInfoViewModel,
+    playerViewModel: PlayerViewModel,
+    videoID: String?
+) {
     Box(Modifier
         .clickable { viewModel.showControlView(false) }
         .fillMaxSize()
@@ -68,13 +76,16 @@ fun VideoPlayerControlView(viewModel: PlayingVideoInfoViewModel, playerViewModel
 
         VideoPlayerBottomControl(viewModel, Modifier.align(Alignment.BottomCenter))
 
-        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd), playerViewModel)
+        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd), playerViewModel, videoID)
     }
 }
 
 @Composable
 fun QualityAndControlVideoView(
-    viewModel: PlayingVideoInfoViewModel, modifier: Modifier, playerViewModel: PlayerViewModel
+    viewModel: PlayingVideoInfoViewModel,
+    modifier: Modifier,
+    playerViewModel: PlayerViewModel,
+    videoID: String?
 ) {
     val isClosedCaption by videoCCDB.collectAsState(true)
     val coroutine = rememberCoroutineScope()
@@ -93,11 +104,14 @@ fun QualityAndControlVideoView(
         Spacer(Modifier.height(14.dp))
 
         Row {
-            if (playerViewModel.isItemLiked) ImageWithBorder(R.drawable.ic_thumbs_up, Color.Red) {
-                playerViewModel.likeAItem(viewModel.videoInfo, false)
-            }
-            else ImageWithBorder(R.drawable.ic_thumbs_up) {
-                playerViewModel.likeAItem(viewModel.videoInfo, true)
+            when (playerViewModel.isItemLiked[videoID]) {
+                LikeItemType.LOADING -> CircularLoadingViewSmall()
+                LikeItemType.LIKE -> ImageWithBorder(R.drawable.ic_thumbs_up, Color.Red) {
+                    playerViewModel.likeAItem(viewModel.videoInfo, false)
+                }
+                LikeItemType.NONE, null -> ImageWithBorder(R.drawable.ic_thumbs_up) {
+                    playerViewModel.likeAItem(viewModel.videoInfo, true)
+                }
             }
 
             ImageWithBorder(R.drawable.ic_playlist) {

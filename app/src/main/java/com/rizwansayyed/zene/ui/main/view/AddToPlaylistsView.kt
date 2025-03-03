@@ -60,6 +60,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
@@ -275,7 +276,7 @@ fun CreateAPlaylistsView(
                         }
 
                         is ResponseResult.Error -> {}
-                        ResponseResult.Loading -> CircularLoadingView(false)
+                        ResponseResult.Loading -> CircularLoadingViewSmall()
                         is ResponseResult.Success -> {
                             if (v.data.isExpire == true) {
                                 LaunchedEffect(Unit) {

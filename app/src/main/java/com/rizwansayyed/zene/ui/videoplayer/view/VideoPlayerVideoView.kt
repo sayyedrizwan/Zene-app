@@ -105,7 +105,7 @@ fun VideoPlayerVideoView(
     }, modifier.fillMaxSize())
 
     AnimatedVisibility(viewModel.showControlView, Modifier, fadeIn(), fadeOut()) {
-        VideoPlayerControlView(viewModel, playerViewModel)
+        VideoPlayerControlView(viewModel, playerViewModel, videoID)
     }
 
     if (viewModel.showPlaylistDialog) AddToPlaylistsView(viewModel.videoInfo) {

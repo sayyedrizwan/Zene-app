@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
@@ -46,7 +48,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var similarSongs by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
-    var isItemLiked by mutableStateOf(false)
+    var isItemLiked = mutableStateMapOf<String?, LikeItemType>()
     private var lyricsJob by mutableStateOf<Job?>(null)
 
     fun similarVideos(id: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -94,17 +96,20 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     }
 
     fun likedMediaItem(id: String?, type: MusicDataTypes) = viewModelScope.launch(Dispatchers.IO) {
+        if (isItemLiked.contains(id)) return@launch
+
         zeneAPI.likedStatus(id, type).onStart {
-            isItemLiked = false
+            isItemLiked[id] = LikeItemType.LOADING
         }.catch {
-            isItemLiked = false
+            isItemLiked[id] = LikeItemType.NONE
         }.collectLatest {
-            isItemLiked = it.isLiked ?: false
+            isItemLiked[id] = if (it.isLiked == true) LikeItemType.LIKE else LikeItemType.NONE
         }
     }
 
     fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        isItemLiked = doLike
+        isItemLiked[data?.id] = if (doLike) LikeItemType.LIKE else LikeItemType.NONE
+        Log.d("TAG", "likeAItem: data ${isItemLiked[data?.id]} $doLike")
         zeneAPI.addRemoveLikeItem(data, doLike).catch { }.collectLatest { }
     }
 
