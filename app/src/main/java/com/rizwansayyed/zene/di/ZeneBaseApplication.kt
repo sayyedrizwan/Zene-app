@@ -29,14 +29,7 @@ class ZeneBaseApplication : Application() {
         super.onCreate()
         context = this
         EmojiCompat.init(BundledEmojiCompatConfig(context, ContextCompat.getMainExecutor(this)))
-        CoroutineScope(Dispatchers.Main).launch {
-            Glide.get(context).clearMemory()
-            if (isActive) cancel()
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            Glide.get(context).clearDiskCache()
-            if (isActive) cancel()
-        }
+
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)

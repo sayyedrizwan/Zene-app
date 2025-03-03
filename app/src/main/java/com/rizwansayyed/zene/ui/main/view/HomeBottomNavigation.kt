@@ -38,6 +38,8 @@ import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.rizwansayyed.zene.R
@@ -156,6 +158,7 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
 
     LaunchedEffect(player?.data?.thumbnail) {
         Glide.with(context).asBitmap().load(player?.data?.thumbnail)
+            .apply(RequestOptions.skipMemoryCacheOf(true))
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, p1: Transition<in Bitmap>?) {
                     loadedImage = resource

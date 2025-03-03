@@ -1,13 +1,16 @@
 package com.rizwansayyed.zene.ui.musicplayer
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -35,6 +38,7 @@ import com.rizwansayyed.zene.ui.theme.Pink80
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MediaContentUtils
@@ -52,12 +56,24 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel, navViewModel: Navigat
         ResponseResult.Loading -> CircularLoadingView()
         is ResponseResult.Success -> LazyColumn(
             Modifier
+                .height(400.dp)
+                .padding(horizontal = 20.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(Color.Black)
                 .padding(horizontal = 5.dp)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            item { Spacer(Modifier.height(150.dp)) }
+            item { Spacer(Modifier.height(20.dp)) }
+            item {
+                Row(Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.weight(1f))
+                    ImageIcon(R.drawable.ic_information_circle, 19)
+                    Spacer(Modifier.width(10.dp))
+                }
+            }
+            item { Spacer(Modifier.height(20.dp)) }
             item {
                 if (v.data.image?.url != null) GlideImage(
                     v.data.image.url,
@@ -149,7 +165,7 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel, navViewModel: Navigat
                 }
             }
 
-            item { Spacer(Modifier.height(250.dp)) }
+            item { Spacer(Modifier.height(50.dp)) }
         }
     }
 }
@@ -163,12 +179,24 @@ fun MusicPlayerRadioInfoView(viewModel: PlayerViewModel) {
         ResponseResult.Loading -> CircularLoadingView()
         is ResponseResult.Success -> LazyColumn(
             Modifier
+                .height(400.dp)
+                .padding(horizontal = 20.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(Color.Black)
                 .padding(horizontal = 5.dp)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            item { Spacer(Modifier.height(150.dp)) }
+            item { Spacer(Modifier.height(20.dp)) }
+            item {
+                Row(Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.weight(1f))
+                    ImageIcon(R.drawable.ic_information_circle, 19)
+                    Spacer(Modifier.width(10.dp))
+                }
+            }
+            item { Spacer(Modifier.height(20.dp)) }
             item {
                 GlideImage(
                     v.data.favicon,
@@ -208,7 +236,7 @@ fun MusicPlayerRadioInfoView(viewModel: PlayerViewModel) {
                 }
             }
 
-            item { Spacer(Modifier.height(250.dp)) }
+            item { Spacer(Modifier.height(50.dp)) }
         }
     }
 }

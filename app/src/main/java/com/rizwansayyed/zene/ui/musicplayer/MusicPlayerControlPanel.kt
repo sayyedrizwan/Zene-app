@@ -2,18 +2,23 @@ package com.rizwansayyed.zene.ui.musicplayer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,12 +39,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
@@ -49,234 +57,161 @@ import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
-import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoSpeedChangeAlert
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
-import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
-import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MusicPlayerControlPanel(
-    modifier: Modifier = Modifier,
-    player: MusicPlayerData?,
-    viewModel: PlayerViewModel,
-    pagerStateMain: PagerState
-) {
-    val coroutine = rememberCoroutineScope()
+fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
+    HorizontalPager(
+        pagerState, Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp)
+    ) { page ->
+        GlideImage(
+            data?.lists?.get(page)?.thumbnail,
+            data?.lists?.get(page)?.name,
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .padding(horizontal = 5.dp),
+            contentScale = ContentScale.Crop
+        )
+    }
 
-    var songSpeedView by remember { mutableStateOf(false) }
-    var addToPlaylistView by remember { mutableStateOf(false) }
-    var showShareView by remember { mutableStateOf(false) }
-    var showTimerSheet by remember { mutableStateOf(false) }
-    val isShuffleEnabled by isShuffleDB.collectAsState(false)
+    LaunchedEffect(Unit) {
+        val index = data?.lists?.indexOfFirst { it?.id == data.data?.id } ?: 0
+        pagerState.scrollToPage(index)
+    }
+}
+
+@Composable
+fun PlayerButtonControl(player: MusicPlayerData?) {
     val isLoopEnabled by isLoopDB.collectAsState(false)
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    val isShuffleEnabled by isShuffleDB.collectAsState(false)
 
+    Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
+        Box(Modifier.clickable(indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            isLoopDB = flowOf(!isLoopEnabled)
+        }) {
+            ImageIcon(
+                if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22
+            )
+        }
+
+        Box(Modifier.clickable(indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            getPlayerS()?.toBackSong()
+        }) {
+            ImageIcon(R.drawable.ic_backward, 27)
+        }
+
+        Box(Modifier
+            .padding(5.dp)
+            .clip(RoundedCornerShape(100))
+            .clickable {
+                if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                else getPlayerS()?.play()
+            }
+            .background(Color.White)
+            .padding(10.dp)) {
+            when (player?.state) {
+                YoutubePlayerState.PLAYING -> ImageIcon(
+                    R.drawable.ic_pause, 27, Color.Black
+                )
+
+                YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
+                    Modifier.size(26.dp), Color.White, 4.dp, MainColor
+                )
+
+                else -> ImageIcon(R.drawable.ic_play, 27, Color.Black)
+            }
+        }
+
+        Box(Modifier.clickable(indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            getPlayerS()?.toNextSong()
+        }) {
+            ImageIcon(R.drawable.ic_forward, 27)
+        }
+
+        Box(Modifier.clickable(indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            isShuffleDB = flowOf(!isShuffleEnabled)
+        }) {
+            ImageIcon(
+                if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle, 22
+            )
+        }
+    }
+}
+
+
+@Composable
+fun PlayerItemButtonView(player: MusicPlayerData?) {
+    var showShareView by remember { mutableStateOf(false) }
+    var songSpeedView by remember { mutableStateOf(false) }
     val videoSpeed by songSpeedDB.collectAsState(null)
+    var showTimerSheet by remember { mutableStateOf(false) }
 
-    Column(
-        modifier
-            .padding(horizontal = 15.dp, vertical = 10.dp)
-            .padding(bottom = 70.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(Color.Black)
-            .padding(horizontal = 12.dp), Arrangement.Center, Alignment.CenterHorizontally
+    Spacer(Modifier.height(10.dp))
+    Row(
+        Modifier
+            .padding(horizontal = 20.dp, vertical = 15.dp)
+            .fillMaxWidth(),
+        Arrangement.Center,
+        Alignment.CenterVertically
     ) {
-        Spacer(Modifier.height(40.dp))
-
-        if (player?.data?.type() == MusicDataTypes.RADIO) {
-            TextViewSemiBold(stringResource(R.string.live_streaming), size = 14, center = true)
-        } else {
-            if (player?.totalDuration?.contains("-") == false && player.currentDuration?.contains("-") == false) {
-                Slider(value = sliderPosition,
-                    onValueChange = { sliderPosition = it },
-                    onValueChangeFinished = { getPlayerS()?.seekTo(sliderPosition.toLong()) },
-                    valueRange = 0f..(player.totalDuration?.toFloatOrNull() ?: 1f),
-                    colors = SliderDefaults.colors(Color.White),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(10.dp),
-                    track = { sliderState ->
-                        SliderDefaults.Track(
-                            modifier = Modifier.height(4.dp),
-                            sliderState = sliderState,
-                            drawStopIndicator = null,
-                            thumbTrackGapSize = 0.dp,
-                            colors = SliderDefaults.colors(
-                                Color.White, MainColor, MainColor, Color.Gray, Color.Gray
-                            )
-                        )
-                    })
-            }
-            Spacer(Modifier.height(5.dp))
-
-            Row(Modifier.fillMaxWidth()) {
-                TextViewSemiBold(player?.currentDuration() ?: "", size = 13)
-                Spacer(Modifier.weight(1f))
-                TextViewSemiBold(player?.totalDuration() ?: "", size = 13)
-            }
+        if (player?.data?.type() == MusicDataTypes.SONGS) {
+            ImageIcon(R.drawable.ic_video_replay, 22)
+            Spacer(Modifier.width(25.dp))
+            ImageIcon(R.drawable.ic_teaching, 22)
         }
-        Spacer(Modifier.height(9.dp))
 
-        if (pagerStateMain.currentPage == 1) {
-            Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-                Box(Modifier.clickable {
-                    val isLiked = viewModel.isItemLiked[player?.data?.id] ?: LikeItemType.NONE
-                    viewModel.likeAItem(player?.data, isLiked != LikeItemType.LIKE)
-                }) {
-                    when (viewModel.isItemLiked[player?.data?.id]) {
-                        LikeItemType.LOADING -> CircularLoadingViewSmall()
-                        LikeItemType.LIKE -> ImageIcon(R.drawable.ic_thumbs_up, 22, Color.Red)
-                        LikeItemType.NONE, null -> ImageIcon(R.drawable.ic_thumbs_up, 22)
-                    }
-                }
+        Spacer(Modifier.weight(1f))
 
-                Box(Modifier.clickable {
-                    isShuffleDB = flowOf(!isShuffleEnabled)
-                }) {
-                    ImageIcon(
-                        if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle,
-                        22
-                    )
-                }
-
-                Box(Modifier.clickable {
-                    getPlayerS()?.toBackSong()
-                }) {
-                    ImageIcon(R.drawable.ic_backward, 27)
-                }
-
-                Box(Modifier
-                    .padding(5.dp)
-                    .clip(RoundedCornerShape(100))
-                    .clickable {
-                        if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
-                        else getPlayerS()?.play()
-                    }
-                    .background(Color.White)
-                    .padding(10.dp)) {
-                    when (player?.state) {
-                        YoutubePlayerState.PLAYING -> ImageIcon(
-                            R.drawable.ic_pause, 27, Color.Black
-                        )
-
-                        YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
-                            Modifier.size(26.dp), Color.White, 4.dp, MainColor
-                        )
-
-                        else -> ImageIcon(R.drawable.ic_play, 27, Color.Black)
-                    }
-                }
-                Box(Modifier.clickable {
-                    getPlayerS()?.toNextSong()
-                }) {
-                    ImageIcon(R.drawable.ic_forward, 27)
-                }
-
-                Box(Modifier.clickable {
-                    isLoopDB = flowOf(!isLoopEnabled)
-                }) {
-                    ImageIcon(
-                        if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22
-                    )
-                }
-
-                Box(Modifier.clickable { showTimerSheet = true }) {
-                    ImageIcon(
-                        R.drawable.ic_timer,
-                        22,
-                        if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else MainColor
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(14.dp))
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                MiniWithImageAndBorder(R.drawable.ic_share, R.string.share) {
-                    showShareView = true
-                }
-
-                if (player?.data?.type() == MusicDataTypes.SONGS) {
-                    MiniWithImageAndBorder(R.drawable.ic_video_replay, R.string.song_video) {
-
-                    }
-
-                    MiniWithImageAndBorder(R.drawable.ic_teaching, R.string.lyrics_video) {
-
-                    }
-                }
-
-                if (player?.data?.type() == MusicDataTypes.SONGS || player?.data?.type() == MusicDataTypes.AI_MUSIC) MiniWithImageAndBorder(
-                    R.drawable.ic_note,
-                    R.string.lyrics
-                ) {
-                    coroutine.launch {
-                        pagerStateMain.animateScrollToPage(0)
-                    }
-                } else MiniWithImageAndBorder(R.drawable.ic_information_circle, R.string.info) {
-                    coroutine.launch {
-                        pagerStateMain.animateScrollToPage(0)
-                    }
-                }
-
-
-                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) MiniWithImageAndBorder(
-                    R.drawable.ic_music_note,
-                    R.string.similar_podcasts
-                ) {
-                    coroutine.launch {
-                        pagerStateMain.animateScrollToPage(2)
-                    }
-                }
-                else MiniWithImageAndBorder(R.drawable.ic_music_note, R.string.similar_songs) {
-                    coroutine.launch {
-                        pagerStateMain.animateScrollToPage(2)
-                    }
-                }
-
-                MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.add_to_playlist) {
-                    addToPlaylistView = true
-                }
-
-                MiniWithImageAndBorder(R.drawable.ic_dashboard_speed, R.string.playback_speed) {
-                    songSpeedView = true
-                }
-
-            }
-            Spacer(Modifier.height(20.dp))
+        Box(Modifier.clickable(indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            songSpeedView = true
+        }) {
+            ImageIcon(R.drawable.ic_dashboard_speed, 22)
         }
-        Spacer(Modifier.height(20.dp))
+
+        Spacer(Modifier.width(25.dp))
+        Box(Modifier.clickable(indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            showTimerSheet = true
+        }) {
+            ImageIcon(
+                R.drawable.ic_timer,
+                22,
+                if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else Color.Black
+            )
+        }
+
+        Spacer(Modifier.width(25.dp))
+        Box(Modifier.clickable(indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            showShareView = true
+        }) {
+            ImageIcon(R.drawable.ic_share, 22)
+        }
     }
 
-    LaunchedEffect(player?.currentDuration) {
-        sliderPosition = player?.currentDuration?.toFloatOrNull() ?: 1f
-    }
-
-    if (showTimerSheet) SleepTimerSheet {
-        showTimerSheet = false
-    }
 
     if (showShareView) ShareDataView(player?.data) {
         showShareView = false
     }
 
-    if (addToPlaylistView) AddToPlaylistsView(player?.data) {
-        addToPlaylistView = false
+    if (showTimerSheet) SleepTimerSheet {
+        showTimerSheet = false
     }
 
     if (songSpeedView) Dialog(
@@ -292,6 +227,68 @@ fun MusicPlayerControlPanel(
             getPlayerS()?.playbackRate(name)
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PlayerControlView(player: MusicPlayerData?) {
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    val interactionSource by remember { mutableStateOf(MutableInteractionSource()) }
+
+    if (player?.data?.type() == MusicDataTypes.RADIO) {
+        TextViewSemiBold(stringResource(R.string.live_streaming), size = 14, center = true)
+    } else {
+        if (player?.totalDuration?.contains("-") == false && player.currentDuration?.contains("-") == false) {
+            Slider(
+                value = sliderPosition,
+                onValueChange = { sliderPosition = it },
+                onValueChangeFinished = { getPlayerS()?.seekTo(sliderPosition.toLong()) },
+                valueRange = 0f..(player.totalDuration?.toFloatOrNull() ?: 1f),
+                colors = SliderDefaults.colors(Color.White),
+                modifier = Modifier
+                    .padding(horizontal = 11.dp)
+                    .fillMaxWidth(),
+                track = { sliderState ->
+                    SliderDefaults.Track(
+                        modifier = Modifier.height(7.dp),
+                        sliderState = sliderState,
+                        drawStopIndicator = null,
+                        thumbTrackGapSize = 2.dp,
+                        colors = SliderDefaults.colors(
+                            Color.White, Color.White, MainColor, Color.Gray, Color.Gray
+                        )
+                    )
+                },
+                interactionSource = interactionSource,
+                thumb = {
+                    SliderDefaults.Thumb(
+                        interactionSource = interactionSource,
+                        thumbSize = DpSize(6.dp, 24.dp),
+                        colors = SliderDefaults.colors(Color.White)
+                    )
+                },
+            )
+        }
+
+        Row(
+            Modifier
+                .offset(y = (-10).dp)
+                .padding(horizontal = 15.dp)
+                .fillMaxWidth()
+        ) {
+            TextViewSemiBold(player?.currentDuration() ?: "", size = 13)
+            Spacer(Modifier.weight(1f))
+            TextViewSemiBold(player?.totalDuration() ?: "", size = 13)
+        }
+    }
+    Spacer(Modifier.height(9.dp))
+
+
+    LaunchedEffect(player?.currentDuration) {
+        sliderPosition = player?.currentDuration?.toFloatOrNull() ?: 1f
+    }
+
 }
 
 
