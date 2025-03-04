@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 
@@ -66,7 +67,7 @@ object MediaContentUtils {
             PODCAST -> NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
             PLAYLISTS, ALBUMS -> NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
 
-            ARTISTS -> {}
+            ARTISTS -> NavigationUtils.triggerHomeNav("$NAV_ARTIST_PAGE${data.id}")
             PODCAST_CATEGORIES -> {}
             NEWS -> openCustomBrowser(data.id)
             MOVIES -> {}

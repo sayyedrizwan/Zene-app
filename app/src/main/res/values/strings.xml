@@ -42,6 +42,7 @@
     <string name="turn_off">Turn Off</string>
     <string name="trending_artists">Trending Artists</string>
     <string name="artist">Artist</string>
+    <string name="artists">Artists</string>
     <string name="global_trending_songs">Global Trending Songs</string>
     <string name="trending_songs">Trending Songs in %s</string>
     <string name="entertainment_">Entertainment</string>

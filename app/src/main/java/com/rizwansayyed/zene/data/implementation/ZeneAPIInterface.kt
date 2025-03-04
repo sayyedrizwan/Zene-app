@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.implementation
 
 import com.rizwansayyed.zene.data.model.AIDataResponse
+import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
@@ -104,4 +105,5 @@ interface ZeneAPIInterface {
     suspend fun similarSongs(id: String): Flow<SearchDataResponse>
     suspend fun playerVideoForSongs(p: ZeneMusicData?): Flow<PlayerVideoForSongsResponse>
     suspend fun similarRadio(tags: String?): Flow<ZeneMusicDataList>
+    suspend fun artistsInfo(artistsID: String?): Flow<ArtistsResponse>
 }

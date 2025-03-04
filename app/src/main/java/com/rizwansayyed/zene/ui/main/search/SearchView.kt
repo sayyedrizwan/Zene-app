@@ -139,6 +139,18 @@ fun SearchView(homeViewModel: HomeViewModel) {
                             }
                         }
                     }
+                    if (v.data.artists?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.artists), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            items(v.data.artists) {
+                                ItemArtistsCardView(it)
+                            }
+                        }
+                    }
 
 
                     if (v.data.videos?.isNotEmpty() == true) item {

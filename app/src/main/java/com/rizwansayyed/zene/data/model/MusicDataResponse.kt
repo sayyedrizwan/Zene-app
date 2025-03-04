@@ -67,6 +67,13 @@ data class PodcastPlaylistResponse(
     val isExpire: Boolean?
 )
 
+data class ArtistsResponse(
+    val info: ZeneMusicData?,
+    val list: ZeneMusicDataList?,
+    val isAdded: Boolean?,
+    val isExpire: Boolean?
+)
+
 data class MediaPathResponse(val urlPath: String?)
 
 data class PlayerVideoForSongsResponse(val videoID: ZeneMusicData?, val lyricsID: ZeneMusicData?)

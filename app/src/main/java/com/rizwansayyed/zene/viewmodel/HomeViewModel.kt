@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +13,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.AIDataResponse
+import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
@@ -81,6 +81,7 @@ class HomeViewModel @Inject constructor(
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var artistsInfo by mutableStateOf<ResponseResult<ArtistsResponse>>(ResponseResult.Empty)
     var isPlaylistAdded by mutableStateOf(false)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
@@ -352,6 +353,16 @@ class HomeViewModel @Inject constructor(
             playlistSimilarList = ResponseResult.Error(it)
         }.collectLatest {
             playlistSimilarList = ResponseResult.Success(it)
+        }
+    }
+
+    fun artistsInfo(artistsID: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.artistsInfo(artistsID).onStart {
+            artistsInfo = ResponseResult.Loading
+        }.catch {
+            artistsInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            artistsInfo = ResponseResult.Success(it)
         }
     }
 }
