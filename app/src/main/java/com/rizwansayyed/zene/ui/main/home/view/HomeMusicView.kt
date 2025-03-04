@@ -126,6 +126,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
             }
         }
 
+        item { Spacer(Modifier.height(60.dp)) }
+        item { HomeLoveTextView() }
         item { Spacer(Modifier.height(300.dp)) }
     }
 }
