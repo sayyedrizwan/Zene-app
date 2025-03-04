@@ -92,6 +92,25 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                     }
                 }
 
+                if (v.data.recommendedRadio?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.recommended_radios_for_you), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+
+                    LazyHorizontalGrid(
+                        GridCells.Fixed(2),
+                        Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 500.dp)
+                    ) {
+                        items(v.data.recommendedRadio) {
+                            ItemCardView(it, v.data.recommendedRadio)
+                        }
+                    }
+                }
+
                 if (v.data.exploreRadio?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {

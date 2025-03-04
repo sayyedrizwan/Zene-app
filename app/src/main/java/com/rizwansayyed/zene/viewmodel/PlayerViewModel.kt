@@ -47,6 +47,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var playerPodcastInfo by mutableStateOf<ResponseResult<PodcastEposideResponse>>(ResponseResult.Empty)
     var playerRadioInfo by mutableStateOf<ResponseResult<PlayerRadioResponse>>(ResponseResult.Empty)
     var similarSongs by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
+    var similarPodcast by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var similarRadio by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var videoForSongs by mutableStateOf<ResponseResult<PlayerVideoForSongsResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
@@ -188,6 +190,26 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             videoForSongs = ResponseResult.Error(it)
         }.collectLatest {
             videoForSongs = ResponseResult.Success(it)
+        }
+    }
+
+    fun similarPodcasts(data: ZeneMusicData?) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.similarPodcasts(data?.secId).onStart {
+            similarPodcast = ResponseResult.Loading
+        }.catch {
+            similarPodcast = ResponseResult.Error(it)
+        }.collectLatest {
+            similarPodcast = ResponseResult.Success(it)
+        }
+    }
+
+    fun similarRadio(data: ZeneMusicData?) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.similarRadio(data?.artists).onStart {
+            similarRadio = ResponseResult.Loading
+        }.catch {
+            similarRadio = ResponseResult.Error(it)
+        }.collectLatest {
+            similarRadio = ResponseResult.Success(it)
         }
     }
 }

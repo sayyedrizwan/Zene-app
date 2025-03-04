@@ -19,7 +19,53 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
 @Composable
-fun MusicPlayerSimilarView(viewModel: PlayerViewModel) {
+fun MusicPlayerSimilarRadiosView(viewModel: PlayerViewModel) {
+    when (val v = viewModel.similarRadio) {
+        ResponseResult.Empty -> {}
+        is ResponseResult.Error -> {}
+        ResponseResult.Loading -> CircularLoadingView()
+        is ResponseResult.Success -> {
+            if (v.data.isNotEmpty()) {
+                Spacer(Modifier.height(50.dp))
+                Box(Modifier.padding(horizontal = 6.dp)) {
+                    TextViewBold(stringResource(R.string.similar_radios), 23)
+                }
+                Spacer(Modifier.height(12.dp))
+                v.data.chunked(5).forEach { m ->
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(m) { ItemCardView(it) }
+                    }
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MusicPlayerSimilarPodcastView(viewModel: PlayerViewModel) {
+    when (val v = viewModel.similarPodcast) {
+        ResponseResult.Empty -> {}
+        is ResponseResult.Error -> {}
+        ResponseResult.Loading -> CircularLoadingView()
+        is ResponseResult.Success -> {
+            if (v.data.isNotEmpty()) {
+                Spacer(Modifier.height(50.dp))
+                Box(Modifier.padding(horizontal = 6.dp)) {
+                    TextViewBold(stringResource(R.string.similar_podcasts), 23)
+                }
+                Spacer(Modifier.height(12.dp))
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(v.data) { ItemCardView(it) }
+                }
+                Spacer(Modifier.height(20.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun MusicPlayerSimilarSongsView(viewModel: PlayerViewModel) {
     when (val v = viewModel.similarSongs) {
         ResponseResult.Empty -> {}
         is ResponseResult.Error -> {}

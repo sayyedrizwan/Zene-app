@@ -82,6 +82,7 @@ data class ZeneMusicData(
     val type: String?,
     val extra: String? = null,
     val extraInfo: String? = null,
+    val secId: String? = null,
     val isExpire: Boolean? = false
 ) {
 

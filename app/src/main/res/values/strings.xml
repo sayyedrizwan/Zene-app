@@ -66,6 +66,7 @@
     <string name="latest_podcasts">Latest Podcasts</string>
     <string name="radio_in_your_country">Radio\'s in your country</string>
     <string name="explore_more_radios">Explore more Radio\'s</string>
+    <string name="recommended_radios_for_you">Recommended Radio\'s for you </string>
     <string name="top_recent">Top recent</string>
     <string name="categories">Categories</string>
     <string name="podcast_for_you">Podcasts for you</string>
@@ -241,6 +242,7 @@
     <string name="similar_playlists">Similar Playlists</string>
     <string name="similar_albums">Similar Albums</string>
     <string name="similar_podcasts">Similar Podcasts</string>
+    <string name="similar_radios">Similar Radios</string>
     <string name="no_lyrics_found">No Lyrics Found</string>
     <string name="added_to_your_library">Added to your library</string>
     <string name="removed_to_your_library">Removed from your library</string>

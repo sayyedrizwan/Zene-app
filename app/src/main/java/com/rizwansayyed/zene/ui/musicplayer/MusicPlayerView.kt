@@ -20,10 +20,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -77,111 +77,112 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
     ) {
         val coroutines = rememberCoroutineScope()
         val pagerState = rememberPagerState(pageCount = { player?.lists?.size ?: 0 })
+        val columnState = rememberScrollState()
 
-        LazyColumn(
+        Column(
             Modifier
+                .verticalScroll(columnState)
                 .fillMaxSize()
                 .background(MainColor)
         ) {
-            item {
-                Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(50.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                Arrangement.Center,
+                Alignment.CenterVertically
+            ) {
+                IconButton({
+                    navViewModel.setMusicPlayer(false)
+                }) {
+                    ImageIcon(R.drawable.ic_arrow_down, 26)
+                }
+
+                Spacer(Modifier.weight(1f))
+
+                LuxCards {
+                    coroutines.launch {
+                        triggerHomeNav(NAV_MAIN_PAGE)
+                        delay(500)
+                        navViewModel.setHomeSections(HomeSectionSelector.LUX)
+                    }
+                }
+
+                IconButton({
+
+                }) {
+                    ImageIcon(R.drawable.ic_more_vertical_circle, 24)
+                }
+            }
+
+            Spacer(Modifier.height(40.dp))
+            SongSlider(player, pagerState)
+
+            Spacer(Modifier.height(40.dp))
+            if ((player?.lists?.size ?: 0) > 0) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 5.dp),
+                        .padding(horizontal = 10.dp),
                     Arrangement.Center,
                     Alignment.CenterVertically
                 ) {
-                    IconButton({
-                        navViewModel.setMusicPlayer(false)
-                    }) {
-                        ImageIcon(R.drawable.ic_arrow_down, 26)
-                    }
+                    SongTextAndArtists(player?.lists, pagerState, Modifier.weight(1f))
 
-                    Spacer(Modifier.weight(1f))
-
-                    LuxCards {
-                        coroutines.launch {
-                            triggerHomeNav(NAV_MAIN_PAGE)
-                            delay(500)
-                            navViewModel.setHomeSections(HomeSectionSelector.LUX)
-                        }
-                    }
-
-                    IconButton({
-
-                    }) {
-                        ImageIcon(R.drawable.ic_more_vertical_circle, 24)
-                    }
-                }
-            }
-
-            item {
-                Spacer(Modifier.height(40.dp))
-                SongSlider(player, pagerState)
-            }
-
-            item {
-                Spacer(Modifier.height(40.dp))
-                if ((player?.lists?.size ?: 0) > 0) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp),
-                        Arrangement.Center,
-                        Alignment.CenterVertically
-                    ) {
-                        SongTextAndArtists(player?.lists, pagerState, Modifier.weight(1f))
-
-                        LikeSongView(player, viewModel, pagerState)
-                    }
-                }
-            }
-
-            item {
-                Spacer(Modifier.height(15.dp))
-                PlayerControlView(player)
-            }
-
-            item {
-                Spacer(Modifier.height(5.dp))
-                PlayerButtonControl(player)
-            }
-
-            item {
-                Spacer(Modifier.height(5.dp))
-                PlayerItemButtonView(player, viewModel)
-            }
-
-
-            item {
-                if (player?.data?.type() == MusicDataTypes.SONGS) {
-                    Spacer(Modifier.height(25.dp))
-                    MusicPlayerLyricsView(viewModel, player?.currentDuration)
-                }
-            }
-
-            item {
-                if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) {
-                    Spacer(Modifier.height(25.dp))
-                    MusicPlayerPodcastInfoView(viewModel)
-                }
-            }
-
-            item {
-                if (player?.data?.type() == MusicDataTypes.RADIO) {
-                    Spacer(Modifier.height(25.dp))
-                    MusicPlayerRadioInfoView(viewModel)
+                    LikeSongView(player, viewModel, pagerState)
                 }
             }
 
 
-            item {
+            Spacer(Modifier.height(15.dp))
+            PlayerControlView(player)
+
+
+            Spacer(Modifier.height(5.dp))
+            PlayerButtonControl(player)
+
+
+            Spacer(Modifier.height(5.dp))
+            PlayerItemButtonView(player, viewModel)
+
+
+            if (player?.data?.type() == MusicDataTypes.SONGS) {
                 Spacer(Modifier.height(25.dp))
-                MusicPlayerSimilarView(viewModel)
+                MusicPlayerLyricsView(viewModel, player?.currentDuration)
             }
 
-            item { Spacer(Modifier.height(150.dp)) }
+
+            if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerPodcastInfoView(viewModel)
+            }
+
+
+            if (player?.data?.type() == MusicDataTypes.RADIO) {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerRadioInfoView(viewModel)
+            }
+
+
+            if (player?.data?.type() == MusicDataTypes.SONGS) {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerSimilarSongsView(viewModel)
+            }
+
+
+            if (player?.data?.type() == MusicDataTypes.RADIO) {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerSimilarRadiosView(viewModel)
+            }
+
+            if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerSimilarPodcastView(viewModel)
+            }
+
+
+            Spacer(Modifier.height(150.dp))
         }
 
         BackHandler { navViewModel.setMusicPlayer(false) }
@@ -198,6 +199,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             coroutines.launch {
                 pagerState.animateScrollToPage(i ?: 0)
             }
+            columnState.animateScrollTo(0)
         }
 
     }
@@ -209,6 +211,10 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
             if (player?.data?.type() == MusicDataTypes.SONGS)
                 viewModel.playerVideoForSongs(player?.data)
+            else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
+                viewModel.similarPodcasts(player?.data)
+            else if (player?.data?.type() == MusicDataTypes.RADIO)
+                viewModel.similarRadio(player?.data)
 
             if (player?.data?.type() == MusicDataTypes.AI_MUSIC) {
                 viewModel.getAISongLyrics(player?.data?.id!!)

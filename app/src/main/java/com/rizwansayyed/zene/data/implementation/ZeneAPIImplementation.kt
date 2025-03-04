@@ -872,4 +872,20 @@ class ZeneAPIImplementation @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.similarPodcasts(token, body))
     }
+
+
+    override suspend fun similarRadio(tags: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("tags", tags)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.similarRadio(token, body))
+    }
 }
