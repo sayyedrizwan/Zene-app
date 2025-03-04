@@ -147,7 +147,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             PlayerItemButtonView(player, viewModel)
 
 
-            if (player?.data?.type() == MusicDataTypes.SONGS) {
+            if (player?.data?.type() == MusicDataTypes.SONGS || player?.data?.type() == MusicDataTypes.AI_MUSIC) {
                 Spacer(Modifier.height(25.dp))
                 MusicPlayerLyricsView(viewModel, player?.currentDuration)
             }
@@ -179,6 +179,11 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) {
                 Spacer(Modifier.height(25.dp))
                 MusicPlayerSimilarPodcastView(viewModel)
+            }
+
+            if (player?.data?.type() == MusicDataTypes.AI_MUSIC) {
+                Spacer(Modifier.height(25.dp))
+                MusicPlayerSimilarAIViewView(viewModel)
             }
 
 
@@ -215,6 +220,8 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 viewModel.similarPodcasts(player?.data)
             else if (player?.data?.type() == MusicDataTypes.RADIO)
                 viewModel.similarRadio(player?.data)
+            else if (player?.data?.type() == MusicDataTypes.AI_MUSIC)
+                viewModel.similarAIMusic(player?.data)
 
             if (player?.data?.type() == MusicDataTypes.AI_MUSIC) {
                 viewModel.getAISongLyrics(player?.data?.id!!)

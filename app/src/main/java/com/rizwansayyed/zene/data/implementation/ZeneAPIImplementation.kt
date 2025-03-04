@@ -121,7 +121,7 @@ class ZeneAPIImplementation @Inject constructor(
         val token = userInfo.firstOrNull()?.authToken ?: ""
         val country = ipDB.firstOrNull()?.countryCode
 
-        if (q.type() == MusicDataTypes.RADIO || q.type() == MusicDataTypes.PLAYLISTS || q.type() == MusicDataTypes.PLAYLISTS || q.type() == MusicDataTypes.PODCAST_AUDIO || q.type() == MusicDataTypes.AI_MUSIC) {
+        if (q.type() == MusicDataTypes.PLAYLISTS || q.type() == MusicDataTypes.PODCAST_AUDIO || q.type() == MusicDataTypes.AI_MUSIC) {
             q.thumbnail?.let { emit(listOf(q.thumbnail)) }
             return@flow
         }
@@ -130,7 +130,7 @@ class ZeneAPIImplementation @Inject constructor(
         val json = JSONObject().apply {
             put("email", email)
             put("country", country)
-            put("artists", q.artists)
+            if (q.type() == MusicDataTypes.SONGS) put("artists", q.artists)
             put("name", q.name)
         }
 

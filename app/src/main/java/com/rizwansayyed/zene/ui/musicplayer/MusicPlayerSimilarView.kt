@@ -65,6 +65,30 @@ fun MusicPlayerSimilarPodcastView(viewModel: PlayerViewModel) {
 }
 
 @Composable
+fun MusicPlayerSimilarAIViewView(viewModel: PlayerViewModel) {
+    when (val v = viewModel.similarAIMusic) {
+        ResponseResult.Empty -> {}
+        is ResponseResult.Error -> {}
+        ResponseResult.Loading -> CircularLoadingView()
+        is ResponseResult.Success -> {
+            if (v.data.isNotEmpty()) {
+                Spacer(Modifier.height(50.dp))
+                Box(Modifier.padding(horizontal = 6.dp)) {
+                    TextViewBold(stringResource(R.string.similar_ai_music), 23)
+                }
+                Spacer(Modifier.height(12.dp))
+                v.data.chunked(7).forEach { m ->
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(m) { ItemCardView(it) }
+                    }
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun MusicPlayerSimilarSongsView(viewModel: PlayerViewModel) {
     when (val v = viewModel.similarSongs) {
         ResponseResult.Empty -> {}
