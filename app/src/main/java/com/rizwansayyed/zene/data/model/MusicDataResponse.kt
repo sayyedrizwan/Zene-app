@@ -68,9 +68,12 @@ data class PodcastPlaylistResponse(
 )
 
 data class ArtistsResponse(
-    val info: ZeneMusicData?,
-    val list: ZeneMusicDataList?,
-    val isAdded: Boolean?,
+    val data: ZeneMusicData?,
+    val albums: ZeneMusicDataList?,
+    val videos: ZeneMusicDataList?,
+    val songs: ZeneMusicDataList?,
+    val playlists: ZeneMusicDataList?,
+    val artists: ZeneMusicDataList?,
     val isExpire: Boolean?
 )
 
