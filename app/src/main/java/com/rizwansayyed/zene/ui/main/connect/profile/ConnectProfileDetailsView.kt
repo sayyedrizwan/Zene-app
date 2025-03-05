@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,6 +56,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -121,44 +123,62 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             }
         }
 
-        item {
-            Row(Modifier.fillMaxWidth()) {
-                TextSimpleCards(showPosts, stringResource(R.string.vibes_status)) {
-                    showPosts = true
-                }
+        if (data.isConnected() == FRIENDS) {
+            item {
+                Row(Modifier.fillMaxWidth()) {
+                    TextSimpleCards(showPosts, stringResource(R.string.vibes_status)) {
+                        showPosts = true
+                    }
 
-                TextSimpleCards(!showPosts, stringResource(R.string.info)) {
-                    showPosts = false
+                    TextSimpleCards(!showPosts, stringResource(R.string.info)) {
+                        showPosts = false
+                    }
                 }
             }
         }
 
         item { Spacer(Modifier.height(20.dp)) }
 
-        if (showPosts) {
-            if (data.vibes?.isEmpty() == true) item {
-                TextViewBold(stringResource(R.string.no_posts), 19, center = true)
-            }
+        if (data.isConnected() == FRIENDS) {
+            if (showPosts) {
+                if (data.vibes?.isEmpty() == true) item {
+                    TextViewBold(stringResource(R.string.no_posts), 19, center = true)
+                }
 
-            items(data.vibes ?: emptyList()) {
-                ConnectVibeItemView(it)
-            }
-        } else {
-            item {
-                if (data.songDetails?.id != null && data.songDetails.name != null) {
-                    SongListeningTo(data.songDetails)
-                    Spacer(Modifier.height(50.dp))
+                items(data.vibes ?: emptyList()) {
+                    ConnectVibeItemView(it)
                 }
-            }
-            item {
-                if (data.user?.isUserLocation() == true) {
-                    ConnectUserMapView(data.user)
-                    Spacer(Modifier.height(50.dp))
+            } else {
+                item { UsersSettingsOfView(data) }
+
+                item {
+                    if (data.songDetails?.id != null && data.songDetails.name != null) {
+                        SongListeningTo(data.songDetails)
+                        Spacer(Modifier.height(50.dp))
+                    }
                 }
-            }
-            item {
-                if (data.topSongs?.isNotEmpty() == true) {
-                    ConnectTopListenedView(data.topSongs)
+                item {
+                    if (data.otherStatus?.locationSharing == true) {
+                        if (data.user?.isUserLocation() == true) {
+                            ConnectUserMapView(data.user)
+                            Spacer(Modifier.height(50.dp))
+                        } else {
+                            Spacer(Modifier.height(20.dp))
+                            TextViewBold(stringResource(R.string.song_sharing_is_disabled_by_user))
+                            Spacer(Modifier.height(20.dp))
+                        }
+                    }
+                }
+                item {
+                    if (data.topSongs?.isNotEmpty() == true) {
+                        ConnectTopListenedView(data.topSongs)
+                    } else {
+                        Spacer(Modifier.height(20.dp))
+                        TextViewBold(
+                            stringResource(R.string.no_listened_song_found_of_user), center = true
+                        )
+                        Spacer(Modifier.height(20.dp))
+                    }
                 }
             }
         }
@@ -239,6 +259,39 @@ fun SongListeningTo(song: ZeneMusicData) {
     }, {
         showPlaySong = false
     })
+}
+
+@Composable
+fun UsersSettingsOfView(data: ConnectUserInfoResponse) {
+    val musicSharing = stringResource(R.string.top_songs_sharing_off_by_user)
+    val locationSharing = stringResource(R.string.location_sharing_off_by_user)
+    val notificationSilent = stringResource(R.string.notification_from_you_silent_by_user)
+
+    if (data.otherStatus?.lastListeningSong == false || data.otherStatus?.locationSharing == false
+        || data.otherStatus?.silentNotification == true
+    ) {
+        Spacer(Modifier.height(20.dp))
+        Row(
+            Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
+        ) {
+            if (data.otherStatus.lastListeningSong == false)
+                ImageWithBorder(R.drawable.ic_music_note, Color.Red) {
+                    SnackBarManager.showMessage(musicSharing)
+                }
+
+            Spacer(Modifier.width(20.dp))
+            if (data.otherStatus.locationSharing == false)
+                ImageWithBorder(R.drawable.ic_location, Color.Red) {
+                    SnackBarManager.showMessage(locationSharing)
+                }
+
+            Spacer(Modifier.width(20.dp))
+            if (data.otherStatus.silentNotification == true)
+                ImageWithBorder(R.drawable.ic_notification_off, Color.Red) {
+                    SnackBarManager.showMessage(notificationSilent)
+                }
+        }
+    }
 }
 
 @Composable

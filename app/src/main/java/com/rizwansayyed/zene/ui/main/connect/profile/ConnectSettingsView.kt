@@ -36,9 +36,9 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
         R.drawable.ic_music_note,
         R.string.share_your_music,
         R.string.share_your_music_desc,
-        response.status?.lastListeningSong
+        response.myStatus?.lastListeningSong
     ) {
-        response.status?.lastListeningSong = it
+        response.myStatus?.lastListeningSong = it
         viewModel.updateSettingsStatus(response)
     }
 
@@ -47,9 +47,9 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
         R.drawable.ic_location,
         R.string.share_your_location,
         R.string.share_your_location_desc,
-        response.status?.locationSharing
+        response.myStatus?.locationSharing
     ) {
-        response.status?.locationSharing = it
+        response.myStatus?.locationSharing = it
         viewModel.updateSettingsStatus(response)
 
     }
@@ -59,9 +59,9 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
         R.drawable.ic_notification_off,
         R.string.share_notification,
         R.string.share_notification_desc,
-        response.status?.silentNotification
+        response.myStatus?.silentNotification
     ) {
-        response.status?.silentNotification = it
+        response.myStatus?.silentNotification = it
         viewModel.updateSettingsStatus(response)
     }
 

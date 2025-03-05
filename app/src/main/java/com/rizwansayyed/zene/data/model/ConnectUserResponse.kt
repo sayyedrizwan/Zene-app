@@ -8,7 +8,8 @@ import kotlinx.coroutines.runBlocking
 data class ConnectUserInfoResponse(
     val songDetails: ZeneMusicData?,
     var didRequestToYou: Boolean?,
-    val status: Status?,
+    val myStatus: Status?,
+    val otherStatus: Status?,
     val topSongs: List<ZeneMusicData>?,
     val user: ConnectUserResponse?,
     val message: UserMessage?,
@@ -24,8 +25,8 @@ data class ConnectUserInfoResponse(
     fun isConnected(): ConnectedUserStatus = runBlocking(Dispatchers.IO) {
         val userEmail = DataStorageManager.userInfo.firstOrNull()
         if (user?.email == userEmail?.email) return@runBlocking ConnectedUserStatus.ME
-        if (status?.isConnected == null) return@runBlocking ConnectedUserStatus.NONE
-        return@runBlocking if (status.isConnected == true) ConnectedUserStatus.FRIENDS else ConnectedUserStatus.REQUESTED
+        if (myStatus?.isConnected == null) return@runBlocking ConnectedUserStatus.NONE
+        return@runBlocking if (myStatus.isConnected == true) ConnectedUserStatus.FRIENDS else ConnectedUserStatus.REQUESTED
     }
 }
 

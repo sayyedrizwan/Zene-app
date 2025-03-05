@@ -28,6 +28,9 @@
     <string name="movies">Movies</string>
     <string name="movie">Movie</string>
     <string name="my_library">My Library</string>
+    <string name="top_songs_sharing_off_by_user">Current/Top songs sharing is off by user</string>
+    <string name="location_sharing_off_by_user">Location sharing is off by user</string>
+    <string name="notification_from_you_silent_by_user">Notification from you is silent by user</string>
     <string name="top_played_songs_this_month">Top Played Songs This Month</string>
     <string name="are_you_sure_want_to_cancel_add_request">Are you sure want to cancel the add request. Sometime it takes a while to get your request accepted!</string>
     <string name="remove_as_friend">Remove as Friend</string>
@@ -164,6 +167,8 @@
     <string name="songs_trending_near_you">Songs trending near you</string>
     <string name="songs">Songs</string>
     <string name="song">Song</string>
+    <string name="song_sharing_is_disabled_by_user">Song sharing is disabled by user</string>
+    <string name="no_listened_song_found_of_user">No listened song found of user</string>
     <string name="playback_speed_of_video">Playback Speed of Video</string>
     <string name="in_your_contacts">In your contacts</string>
     <string name="contacts">Contacts</string>
