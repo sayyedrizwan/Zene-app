@@ -34,7 +34,7 @@ import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
 
 interface ZeneAPIInterface {
-    suspend fun updateUser(email: String, name: String, photo: String): Flow<UserInfoResponse>
+    suspend fun loginUser(tokenID: String, type: String): Flow<UserInfoResponse>
     suspend fun recentHome(): Flow<MusicDataResponse>
     suspend fun recentPodcast(): Flow<PodcastDataResponse>
     suspend fun recentRadio(): Flow<RadioDataResponse>
@@ -106,4 +106,5 @@ interface ZeneAPIInterface {
     suspend fun playerVideoForSongs(p: ZeneMusicData?): Flow<PlayerVideoForSongsResponse>
     suspend fun similarRadio(tags: String?): Flow<ZeneMusicDataList>
     suspend fun artistsInfo(artistsID: String?): Flow<ArtistsResponse>
+    suspend fun updateUser(): Flow<UserInfoResponse>
 }

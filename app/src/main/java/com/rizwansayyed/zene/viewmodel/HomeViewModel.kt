@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
@@ -30,6 +31,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
+import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
@@ -296,10 +298,14 @@ class HomeViewModel @Inject constructor(
         val data = DataStorageManager.userInfo.firstOrNull()
         if (data?.isLoggedIn() == false) return@launch
 
-        zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch {}
-            .collectLatest {
-                DataStorageManager.userInfo = flowOf(it)
+        zeneAPI.updateUser().catch {}.collectLatest {
+            if (it.logout == true) {
+                DataStorageManager.userInfo = flowOf(null)
+                SnackBarManager.showMessage(context.resources.getString(R.string.login_expired))
+                return@collectLatest
             }
+            DataStorageManager.userInfo = flowOf(it)
+        }
     }
 
     fun updateConnectInfo(connectStatus: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -356,13 +362,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun artistsInfo(artistsID: String) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.artistsInfo(artistsID).onStart {
-            artistsInfo = ResponseResult.Loading
-        }.catch {
-            artistsInfo = ResponseResult.Error(it)
-        }.collectLatest {
-            artistsInfo = ResponseResult.Success(it)
+    fun artistsInfo(artistsID: String, expireToken: () -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.artistsInfo(artistsID).onStart {
+                artistsInfo = ResponseResult.Loading
+            }.catch {
+                artistsInfo = ResponseResult.Error(it)
+            }.collectLatest {
+                if (it.isExpire == true) {
+                    expireToken()
+                    return@collectLatest
+                }
+                artistsInfo = ResponseResult.Success(it)
+            }
         }
-    }
 }

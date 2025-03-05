@@ -133,12 +133,19 @@
             android:name="com.facebook.CustomTabActivity"
             android:exported="true" />
 
+<!--        <meta-data-->
+<!--            android:name="com.facebook.sdk.ApplicationId"-->
+<!--            android:value="${FACEBOOK_APPLICATION_ID}" />-->
+<!--        <meta-data-->
+<!--            android:name="com.facebook.sdk.ClientToken"-->
+<!--            android:value="${FACEBOOK_CLIENT_TOKEN}" />-->
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="${FACEBOOK_APPLICATION_ID}" />
+            android:value="847085490671954" />
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
-            android:value="${FACEBOOK_CLIENT_TOKEN}" />
+            android:value="e38db482e05b57ef2a92b3b6c7e30678" />
 
 <!--        <meta-data-->
 <!--            android:name="com.google.android.geo.API_KEY"-->

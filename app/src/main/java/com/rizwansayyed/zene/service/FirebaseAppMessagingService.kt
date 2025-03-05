@@ -45,8 +45,8 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             val data = DataStorageManager.userInfo.firstOrNull()
             if (data?.isLoggedIn() == false) return@launch
 
-            zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch { }
-                .collectLatest { }
+//            zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch { }
+//                .collectLatest { }
         }
     }
 

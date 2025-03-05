@@ -89,10 +89,10 @@ class PhoneNumberViewModel @Inject constructor(
             if (it.status == true) {
                 val data = DataStorageManager.userInfo.firstOrNull()
 
-                zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch {}
-                    .collectLatest {
-                        DataStorageManager.userInfo = flowOf(it)
-                    }
+//                zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch {}
+//                    .collectLatest {
+//                        DataStorageManager.userInfo = flowOf(it)
+//                    }
             }
 
             delay(1.seconds)

@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -17,37 +18,42 @@ import com.facebook.login.LoginResult
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.OAuthProvider
+import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
-import com.rizwansayyed.zene.utils.URLSUtils.FB_GRAPH_ID
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.utils.SnackBarManager
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
 import javax.inject.Inject
 
 @Module
 @InstallIn(SingletonComponent::class)
 class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
 
+    enum class LoginType(val type: String) {
+        GOOGLE("GOOGLE"), FACEBOOK("FACEBOOK"), APPLE("APPLE_ANDROID")
+    }
+
     var isLoading by mutableStateOf(false)
 
-    private val serverClientId =
-        "12742833162-pko059vg6kqvb5pnj3uf8l7sbbih9i2f.apps.googleusercontent.com"
-
+    private val serverClientId = BuildConfig.GOOGLE_SERVER_KEY
     private val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(true)
         .setServerClientId(serverClientId).setAutoSelectEnabled(true).build()
+
     private val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
     private val callbackManager = CallbackManager.Factory.create()
 
@@ -70,6 +76,7 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
                     isLoading = false
                     return@launch
                 }
+
                 val credential = result.credential
                 if (credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     isLoading = false
@@ -78,18 +85,11 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
 
                 try {
                     val info = GoogleIdTokenCredential.createFrom(credential.data)
-                    val email =
-                        info.data.getString("com.google.android.libraries.identity.googleid.BUNDLE_KEY_ID")
-
-                    serverLogin(
-                        email ?: "", info.displayName ?: "", info.profilePictureUri.toString()
-                    )
+                    serverLogin(info.idToken, LoginType.GOOGLE)
                 } catch (e: Exception) {
-                    Log.d("TAG", "startGoogleLogin: dd ${e.message} ")
                     isLoading = false
                 }
             } catch (e: Exception) {
-                Log.d("TAG", "startGoogleLogin: dd ${e.message} ")
                 isLoading = false
             }
         }
@@ -105,28 +105,10 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         }
 
         override fun onSuccess(result: LoginResult) {
-            getFacebookInfo(result.accessToken.token)
-        }
-    }
-
-    fun getFacebookInfo(token: String) = CoroutineScope(Dispatchers.IO).launch {
-        val urlBuilder = FB_GRAPH_ID.toHttpUrlOrNull()?.newBuilder()?.apply {
-            addQueryParameter("fields", "email,name")
-            addQueryParameter("access_token", token)
-        }
-
-        try {
-            val client = OkHttpClient()
-            val request = Request.Builder().url(urlBuilder?.build().toString()).build()
-            val call = client.newCall(request).execute()
-            val json = JSONObject(call.body?.string() ?: "")
-            val name = json.optString("name")
-            val email = json.optString("email")
-            val photo = " https://graph.facebook.com/${json.optString("id")}/picture?type=large"
-
-            serverLogin(email, name, photo)
-        } catch (e: Exception) {
-            isLoading = false
+            CoroutineScope(Dispatchers.IO).launch {
+                serverLogin(result.accessToken.token, LoginType.FACEBOOK)
+                if (isActive) cancel()
+            }
         }
     }
 
@@ -142,33 +124,31 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
     fun startAppleLogin(activity: Activity) = CoroutineScope(Dispatchers.IO).launch {
         isLoading = true
 
-        val auth: FirebaseAuth = FirebaseAuth.getInstance()
-        var email = ""
-        var name = ""
-        var photo = ""
+        try {
+            val auth: FirebaseAuth = FirebaseAuth.getInstance()
+            val result =
+                auth.startActivityForSignInWithProvider(activity, appleProvider.build()).await()
+                    ?: return@launch
 
-        val result =
-            auth.startActivityForSignInWithProvider(activity, appleProvider.build()).await()
-                ?: return@launch
+            val appleCredential = result.credential as? OAuthCredential
+            val idToken = appleCredential?.idToken ?: ""
 
-        result.user?.providerData?.forEach {
-            email = it.email ?: ""
-            name = it.displayName ?: ""
-            photo = it.photoUrl.toString()
+            serverLogin(idToken, LoginType.APPLE)
+        } catch (e: Exception) {
+            isLoading = false
         }
-
-        serverLogin(email, name, photo)
     }
 
-    private suspend fun serverLogin(email: String, name: String, photo: String) {
-        if (email.length < 5 || !email.contains("@")) {
+    private suspend fun serverLogin(id: String, type: LoginType) {
+        if (id.length < 5) {
             isLoading = false
             return
         }
-        zeneAPI.updateUser(email, name, photo).catch {
+
+        zeneAPI.loginUser(id, type.type).catch { isLoading = false }.collectLatest {
             isLoading = false
-        }.collectLatest {
-            userInfo = flowOf(it)
+            if (it.isError == true) SnackBarManager.showMessage(context.resources.getString(R.string.error_login))
+            else userInfo = flowOf(it)
         }
     }
 

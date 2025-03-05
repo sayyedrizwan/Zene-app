@@ -1,13 +1,15 @@
 package com.rizwansayyed.zene.utils
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.net.Uri
+import android.os.Build
 import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
-import com.bumptech.glide.Glide
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
@@ -31,12 +33,10 @@ import com.rizwansayyed.zene.utils.MainUtils.isAppInstalled
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.math.BigInteger
+import java.util.UUID
 
 
 enum class SharingContentType {
@@ -267,5 +267,27 @@ object ShareContentUtils {
 
         val decrypted = (aInv.multiply(value.subtract(b))).mod(modulus)
         return fromBigInteger(decrypted, length)
+    }
+
+    fun getUniqueDeviceId(): String {
+        val masterKeyAlias = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        val sharedPreferences = EncryptedSharedPreferences.create(
+            context, "secret_device_prefs", masterKeyAlias,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        var uniqueID = sharedPreferences.getString("unique_device_id", "")
+
+        if (uniqueID == null) {
+            val deviceModel = Build.MODEL
+            uniqueID = "$deviceModel-${UUID.randomUUID()}"
+            sharedPreferences.edit().putString("unique_device_id", uniqueID).apply()
+        }
+
+        return uniqueID
     }
 }

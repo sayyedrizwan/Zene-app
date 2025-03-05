@@ -10,17 +10,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ArtistsView(artistsID: String) {
     val viewModel: HomeViewModel = hiltViewModel()
+    val context = LocalContext.current
 
     when (val v = viewModel.artistsInfo) {
         ResponseResult.Empty -> {}
@@ -49,7 +57,12 @@ fun ArtistsView(artistsID: String) {
         }
 
         if (viewModel.artistsInfo !is ResponseResult.Success)
-            viewModel.artistsInfo(artistsID)
+            viewModel.artistsInfo(artistsID) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(5.seconds)
+                    ProcessPhoenix.triggerRebirth(context)
+                }
+            }
     }
 }
 

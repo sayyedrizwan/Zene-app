@@ -8,6 +8,8 @@ data class UserInfoResponse(
     val phoneNumber: String?,
     var status: String?,
     val authToken: String?,
+    val isError: Boolean?,
+    val logout: Boolean?,
 ) {
     fun isLoggedIn(): Boolean {
         if (email == null) return false

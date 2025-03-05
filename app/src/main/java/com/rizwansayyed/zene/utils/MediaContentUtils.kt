@@ -78,8 +78,6 @@ object MediaContentUtils {
 
 
     private fun startAppService(context: Context, data: ZeneMusicData, isNew: Boolean = false) {
-//        val listJson = moshi.adapter(Array<ZeneMusicData?>::class.java).toJson(list.toTypedArray())
-
         Intent(context, PlayerForegroundService::class.java).apply {
             flags = FLAG_ACTIVITY_NEW_TASK
             putExtra(Intent.ACTION_VIEW, moshi.adapter(ZeneMusicData::class.java).toJson(data))

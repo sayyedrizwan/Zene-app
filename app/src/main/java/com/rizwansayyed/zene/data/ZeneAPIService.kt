@@ -78,6 +78,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_LOGIN_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_SONG_CHECK_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
@@ -94,8 +95,14 @@ import retrofit2.http.POST
 interface ZeneAPIService {
 
     @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_LOGIN_API)
+    suspend fun loginUser(@Body data: RequestBody): UserInfoResponse
+
+    @Headers("Content-Type: application/json")
     @POST(ZENE_USER_UPDATE_API)
-    suspend fun updateUser(@Body data: RequestBody): UserInfoResponse
+    suspend fun updateUser(
+        @Header("token") token: String, @Body data: RequestBody
+    ): UserInfoResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_ADD_HISTORY_API)

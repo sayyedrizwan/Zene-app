@@ -32,6 +32,12 @@ android {
         val appEncodeKey = properties.getProperty("APP_ENCODE_KEY") ?: ""
         buildConfigField("String", "APP_ENCODE_KEY", appEncodeKey)
 
+        val deviceEncKey = properties.getProperty("DEVICE_ENC_KEY") ?: ""
+        buildConfigField("String", "DEVICE_ENC_KEY", deviceEncKey)
+
+        val googleServerKey = properties.getProperty("GOOGLE_SERVER_KEY") ?: ""
+        buildConfigField("String", "GOOGLE_SERVER_KEY", googleServerKey)
+
         val facebookApplicationID = properties.getProperty("FACEBOOK_APPLICATION_ID") ?: ""
         manifestPlaceholders["FACEBOOK_APPLICATION_ID"] = facebookApplicationID
 
@@ -159,5 +165,6 @@ dependencies {
 
     implementation("org.hashids:hashids:1.0.3")
     implementation("com.github.skydoves:colorpicker-compose:1.1.2")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
 }

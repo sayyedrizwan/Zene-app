@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -64,6 +65,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.setNavigationCallback
+import com.rizwansayyed.zene.utils.ShareContentUtils.getUniqueDeviceId
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel

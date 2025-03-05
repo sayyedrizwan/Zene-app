@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.ShareContentUtils.getUniqueDeviceId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -34,7 +35,7 @@ class ZeneAPIImplementation @Inject constructor(
     private val zeneAPI: ZeneAPIService, private val ipAPI: IPAPIService
 ) : ZeneAPIInterface {
 
-    override suspend fun updateUser(email: String, name: String, photo: String) = flow {
+    override suspend fun loginUser(tokenID: String, type: String) = flow {
         val ip = ipAPI.get()
         CoroutineScope(Dispatchers.IO).launch {
             ipDB = flowOf(ip)
@@ -42,9 +43,9 @@ class ZeneAPIImplementation @Inject constructor(
 
         val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
         val json = JSONObject().apply {
-            put("email", email)
-            put("name", name)
-            put("photo", photo)
+            put("token", tokenID)
+            put("device_id", getUniqueDeviceId())
+            put("type", type)
             put("fcm_token", fcm)
             put("ip", ip.query)
             put("device", "Android ${getDeviceInfo()}")
@@ -52,7 +53,30 @@ class ZeneAPIImplementation @Inject constructor(
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.updateUser(body))
+        emit(zeneAPI.loginUser(body))
+    }
+
+    override suspend fun updateUser() = flow {
+        val ip = ipAPI.get()
+        CoroutineScope(Dispatchers.IO).launch {
+            ipDB = flowOf(ip)
+        }
+        val info = userInfo.firstOrNull()
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
+        val json = JSONObject().apply {
+            put("email", info?.email ?: "")
+            put("name", info?.name ?: "")
+            put("device_id", getUniqueDeviceId())
+            put("fcm_token", fcm)
+            put("ip", ip.query)
+            put("device", "Android ${getDeviceInfo()}")
+            put("country", "${ip.city}, ${ip.regionName}, ${ip.country}")
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.updateUser(token, body))
     }
 
     override suspend fun addHistory(data: ZeneMusicData) = flow {
