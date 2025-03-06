@@ -39,6 +39,9 @@ android {
         buildConfigField("String", "GOOGLE_SERVER_KEY", googleServerKey)
 
         val facebookApplicationID = properties.getProperty("FACEBOOK_APPLICATION_ID") ?: ""
+
+//        resValue("string", "FB_SECRET_KEY", properties.getProperty("FB_SECRET_KEY"))
+
         manifestPlaceholders["FACEBOOK_APPLICATION_ID"] = facebookApplicationID
 
         val facebookClientToken = properties.getProperty("FACEBOOK_CLIENT_TOKEN") ?: ""
