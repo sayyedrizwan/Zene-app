@@ -7,6 +7,7 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -19,6 +20,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.ui.main.home.ShortcutSelector
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_CONNECT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_ENTERTAINMENT
@@ -33,6 +35,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+
 object GenerateShortcuts {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -40,27 +43,27 @@ object GenerateShortcuts {
         val url = generateShareUrl(data)
         val shortcutManager = context.getSystemService(ShortcutManager::class.java)
 
-        val txt = context.resources.getString(R.string.app_name)
-
         if (shortcutManager?.isRequestPinShortcutSupported == true) {
             val shortcutIntent = Intent(context, MainActivity::class.java).apply {
                 action = Intent.ACTION_VIEW
                 setData(url.toUri())
             }
-            val bitmap =
-                Glide.with(context).asBitmap().load(data?.thumbnail).override(192, 192).centerCrop()
-                    .submit()
-                    .get()
+            val bitmap = Glide.with(context).asBitmap().load(data?.thumbnail).submit().get()
 
             val shortcut = ShortcutInfo.Builder(context, data?.id)
                 .setShortLabel(data?.name ?: "")
-                .setLongLabel(data?.name ?: "").setIcon(Icon.createWithBitmap(bitmap))
+                .setLongLabel(data?.name ?: "")
+                .setIcon(Icon.createWithAdaptiveBitmap(bitmap))
                 .setIntent(shortcutIntent)
                 .build()
 
-            val pinnedShortcutCallbackIntent = shortcutManager.createShortcutResultIntent(shortcut)
-            val successCallback = PendingIntent.getBroadcast(
-                context, 0, pinnedShortcutCallbackIntent,
+
+            val homeScreen = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            val successCallback = PendingIntent.getActivity(
+                context, 0, homeScreen,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
@@ -100,7 +103,7 @@ object GenerateShortcuts {
             }
 
             val drawable = ContextCompat.getDrawable(context, shortcutIcon)?.mutate()
-            drawable?.setTint(ContextCompat.getColor(context, android.R.color.black))
+            drawable?.setTint(MainColor.toArgb())
 
             val bitmap = drawable?.toBitmap()
             val icon = bitmap?.let { IconCompat.createWithBitmap(it) }
