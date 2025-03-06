@@ -4,9 +4,8 @@ import android.app.Application
 import androidx.core.content.ContextCompat
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
-import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.utils.MediaContentUtils
+import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

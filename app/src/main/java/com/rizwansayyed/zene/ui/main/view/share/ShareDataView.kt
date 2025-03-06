@@ -62,8 +62,8 @@ import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.ShareContentUtils
-import com.rizwansayyed.zene.utils.SharingContentType
+import com.rizwansayyed.zene.utils.share.ShareContentUtils
+import com.rizwansayyed.zene.utils.share.SharingContentType
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 

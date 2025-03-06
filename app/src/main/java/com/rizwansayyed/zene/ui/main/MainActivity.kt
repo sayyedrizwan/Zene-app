@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -55,7 +54,6 @@ import com.rizwansayyed.zene.ui.view.ArtistsView
 import com.rizwansayyed.zene.ui.view.PlaylistView
 import com.rizwansayyed.zene.ui.view.PlaylistsType
 import com.rizwansayyed.zene.utils.HomeNavigationListener
-import com.rizwansayyed.zene.utils.IntentCheckUtils
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
@@ -65,8 +63,9 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.setNavigationCallback
-import com.rizwansayyed.zene.utils.ShareContentUtils.getUniqueDeviceId
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
+import com.rizwansayyed.zene.utils.share.IntentCheckUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -149,9 +148,9 @@ class MainActivity : ComponentActivity() {
                                 Modifier.align(Alignment.BottomCenter), navigationViewModel
                             )
 
-                            if (navigationViewModel.homeNotificationSection != null) NotificationConnectLocationShare(
-                                navigationViewModel
-                            )
+                            if (navigationViewModel.homeNotificationSection != null) {
+                                NotificationConnectLocationShare(navigationViewModel)
+                            }
 
                             MusicPlayerView(navigationViewModel)
 
@@ -208,5 +207,6 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
+        generateMainShortcuts(this)
     }
 }

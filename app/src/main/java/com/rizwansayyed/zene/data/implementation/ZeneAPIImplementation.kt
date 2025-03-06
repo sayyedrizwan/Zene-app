@@ -14,7 +14,7 @@ import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.ShareContentUtils.getUniqueDeviceId
+import com.rizwansayyed.zene.utils.share.ShareContentUtils.getUniqueDeviceId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull

@@ -7,3 +7,7 @@ enum class HomeSectionSelector {
 enum class HomeNavSelector {
     HOME, CONNECT, SEARCH, ENT, NOTIFICATION, NONE
 }
+
+enum class ShortcutSelector {
+    CONNECT, SEARCH, ENT, SETTINGS, PODCAST, MY_LIBRARY
+}

@@ -40,7 +40,7 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.RippleLoadingAnimation
-import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.utils.URLSUtils
 import com.rizwansayyed.zene.utils.URLSUtils.SHAZAM_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData

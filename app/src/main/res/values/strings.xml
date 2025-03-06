@@ -28,6 +28,8 @@
     <string name="movies">Movies</string>
     <string name="movie">Movie</string>
     <string name="my_library">My Library</string>
+    <string name="add_to_home_screen">Add to Home Screen</string>
+    <string name="add_to_home_screen_desc">Quickly access your favorite playlists and podcasts right from your home screen. Pin them for instant play with just one tap!</string>
     <string name="top_songs_sharing_off_by_user">Current/Top songs sharing is off by user</string>
     <string name="location_sharing_off_by_user">Location sharing is off by user</string>
     <string name="notification_from_you_silent_by_user">Notification from you is silent by user</string>
@@ -119,6 +121,7 @@
     <string name="albums">Albums</string>
     <string name="album">Album</string>
     <string name="confirm">Confirm</string>
+    <string name="play_next">Play next</string>
     <string name="friends">Friends</string>
     <string name="friend_requests">Friend Requests</string>
     <string name="vibes_status">Vibe Status</string>
@@ -142,6 +145,8 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="add_to_queue">Add to Queue</string>
+    <string name="queue_desc">Queue up your favorite playlists and podcasts to play next or at the end without interrupting your current vibe.</string>
     <string name="items">Items</string>
     <string name="close">Close</string>
     <string name="post_a_gif">Post a GIF</string>

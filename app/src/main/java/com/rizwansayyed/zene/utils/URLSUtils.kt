@@ -3,8 +3,14 @@ package com.rizwansayyed.zene.utils
 object URLSUtils {
 
     const val ZENE_URL = "https://www.zenemusic.co"
+    const val ZENE_URL_CONNECT = "/connect"
+    const val ZENE_URL_SEARCH = "/search"
+    const val ZENE_URL_ENTERTAINMENT = "/entertainment"
+    const val ZENE_URL_SETTINGS = "/settings"
+    const val ZENE_URL_PODCASTS = "/podcasts"
+    const val ZENE_URL_MY_LIBRARY = "/my-library"
 
-    fun connectShareURL(username: String) = "$ZENE_URL/connect/$username"
+    fun connectShareURL(username: String) = "$ZENE_URL${ZENE_URL_CONNECT}/$username"
 
     const val SHAZAM_BASE_URL = "https://www.shazam.com/"
 

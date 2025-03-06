@@ -29,7 +29,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapLocation
 import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapNameLocation
-import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 
 @OptIn(ExperimentalMaterial3Api::class)

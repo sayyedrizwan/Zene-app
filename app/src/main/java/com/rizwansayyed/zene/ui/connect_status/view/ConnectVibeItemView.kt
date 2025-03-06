@@ -153,9 +153,9 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                             NONE -> {}
                             SONGS, AI_MUSIC -> ImageIcon(R.drawable.ic_music_note, 18)
                             PLAYLISTS, ALBUMS -> ImageIcon(R.drawable.ic_playlist, 18)
-                            ARTISTS -> ImageIcon(R.drawable.ic_black_microphone, 18)
+                            ARTISTS -> ImageIcon(R.drawable.ic_artists, 18)
                             PODCAST, PODCAST_CATEGORIES, PODCAST_AUDIO ->
-                                ImageIcon(R.drawable.ic_mic, 18)
+                                ImageIcon(R.drawable.ic_podcast, 18)
 
                             NEWS -> ImageIcon(R.drawable.ic_news, 18)
                             MOVIES -> ImageIcon(R.drawable.ic_camera_video, 18)

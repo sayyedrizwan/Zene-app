@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.service.player
 
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 
 interface PlayerServiceInterface {
@@ -10,4 +11,6 @@ interface PlayerServiceInterface {
     fun play()
     fun seekTo(v: Long)
     fun playbackRate(v: String)
+    fun addListsToNext(list: List<ZeneMusicData>)
+    fun addListsToQueue(list: List<ZeneMusicData>)
 }

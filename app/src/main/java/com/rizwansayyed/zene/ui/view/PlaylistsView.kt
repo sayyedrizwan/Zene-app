@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.os.Build
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,6 +55,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -59,8 +63,10 @@ import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PLAYLIST_ALBUMS
 import com.rizwansayyed.zene.ui.view.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
-import com.rizwansayyed.zene.utils.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -128,8 +134,11 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                 items(v.data.list ?: emptyList()) {
                     when (type) {
                         PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
-                        PLAYLIST_ALBUMS ->
-                            PlaylistsItemView(it, playerInfo, v.data.list ?: emptyList())
+                        PLAYLIST_ALBUMS -> PlaylistsItemView(
+                            it,
+                            playerInfo,
+                            v.data.list ?: emptyList()
+                        )
                     }
                 }
             }
@@ -250,6 +259,8 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
     val addedToLibrary = stringResource(R.string.added_to_your_library)
     val removedLibrary = stringResource(R.string.removed_to_your_library)
     var showShareView by remember { mutableStateOf(false) }
+    var showAddToQueue by remember { mutableStateOf(false) }
+    var showAddToHomeScreen by remember { mutableStateOf(false) }
 
     Row(
         Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
@@ -273,9 +284,23 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
 
         Box(Modifier
             .padding(horizontal = 7.dp)
+            .clickable { showAddToQueue = true }) {
+            ImageIcon(R.drawable.ic_add_to_queue, 24)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .clickable { showAddToHomeScreen = true }) {
+            ImageIcon(R.drawable.ic_screen_add_to_home, 24)
+        }
+
+        Box(Modifier
+            .padding(horizontal = 7.dp)
             .clickable { showShareView = true }) {
             ImageIcon(R.drawable.ic_share, 24)
         }
+
         Spacer(Modifier.weight(1f))
 
         if (data.list?.isNotEmpty() == true) MiniWithImageAndBorder(
@@ -288,6 +313,25 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
     if (showShareView) ShareDataView(data.info) {
         showShareView = false
     }
+
+    if (showAddToQueue) AddSongToQueue(data) {
+        showAddToQueue = false
+    }
+
+    if (showAddToHomeScreen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) TextAlertDialog(R.string.add_to_home_screen,
+        R.string.add_to_home_screen_desc,
+        {
+            showAddToHomeScreen = false
+        },
+        {
+            generateHomeScreenShortcut(data.info)
+            showAddToHomeScreen = false
+        })
+
+
+//        AddSongToQueue(data) {
+//        showAddToQueue = false
+//    }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -342,12 +386,48 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
 
         Spacer(Modifier.height(5.dp))
 
-        if (shouldShowArrow) Box(
-            Modifier
-                .rotate(if (fullDesc) 180f else 0f)
-                .clickable { fullDesc = !fullDesc }) {
+        if (shouldShowArrow) Box(Modifier
+            .rotate(if (fullDesc) 180f else 0f)
+            .clickable { fullDesc = !fullDesc }) {
             ImageIcon(R.drawable.ic_arrow_down, 28)
         }
     }
     Spacer(Modifier.height(30.dp))
+}
+
+@Composable
+fun AddSongToQueue(data: PodcastPlaylistResponse, close: () -> Unit) {
+    AlertDialog(title = {
+        TextViewNormal(stringResource(R.string.add_to_queue), 17, line = 2, center = false)
+    }, text = {
+        TextViewNormal(stringResource(R.string.queue_desc), 16, center = false)
+    }, onDismissRequest = {
+        close()
+    }, confirmButton = {
+        Row {
+            TextButton(onClick = {
+                close()
+                TEMP_ZENE_MUSIC_DATA_LIST.clear()
+                TEMP_ZENE_MUSIC_DATA_LIST.addAll(data.list?.toTypedArray() ?: emptyArray())
+                getPlayerS()?.addListsToNext(data.list?.toList() ?: emptyList())
+            }) {
+                TextViewNormal(stringResource(R.string.play_next), 15)
+            }
+            Spacer(Modifier.width(10.dp))
+            TextButton(onClick = {
+                close()
+                TEMP_ZENE_MUSIC_DATA_LIST.clear()
+                TEMP_ZENE_MUSIC_DATA_LIST.addAll(data.list?.toTypedArray() ?: emptyArray())
+                getPlayerS()?.addListsToQueue(data.list?.toList() ?: emptyList())
+            }) {
+                TextViewNormal(stringResource(R.string.add_to_queue), 15)
+            }
+        }
+    }, dismissButton = {
+        TextButton(onClick = {
+            close()
+        }) {
+            TextViewNormal(stringResource(R.string.cancel), 15)
+        }
+    })
 }

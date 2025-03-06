@@ -1,15 +1,21 @@
-package com.rizwansayyed.zene.utils
+package com.rizwansayyed.zene.utils.share
 
-import android.content.Context
+import android.app.PendingIntent
 import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
@@ -28,11 +34,18 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
+import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.MainUtils.copyTextToClipboard
 import com.rizwansayyed.zene.utils.MainUtils.isAppInstalled
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.math.BigInteger
@@ -46,7 +59,6 @@ enum class SharingContentType {
 object ShareContentUtils {
 
     fun shareTheData(data: ZeneMusicData?, type: SharingContentType, view: ComposeView) {
-        val id = encryptSharingId(data?.id)
         val fileSharingImg = File(context.cacheDir, "sharing_img.jpg")
         fileSharingImg.deleteRecursively()
 
@@ -116,23 +128,7 @@ object ShareContentUtils {
             null -> ""
         }
 
-
-        val url = when (data?.type()) {
-            NONE -> ZENE_URL
-            SONGS -> "$ZENE_URL/song/${id}"
-            RADIO -> "$ZENE_URL/radio/${id}"
-            VIDEOS -> "$ZENE_URL/video/${id}"
-            PLAYLISTS, ALBUMS -> "$ZENE_URL/mix/${id}"
-            ARTISTS -> "$ZENE_URL/artist/${data.name}"
-            PODCAST -> "$ZENE_URL/podcast-series/${data.name}"
-            PODCAST_AUDIO -> "$ZENE_URL/podcast/${data.id}"
-            PODCAST_CATEGORIES -> ZENE_URL
-            NEWS -> "$ZENE_URL/news/${data.id}"
-            MOVIES -> "$ZENE_URL/m/${data.id}"
-            AI_MUSIC -> "$ZENE_URL/ai_music/${data.id}"
-            TEXT -> ZENE_URL
-            null -> ZENE_URL
-        }
+        val url = generateShareUrl(data)
 
         when (type) {
             SharingContentType.COPY -> {
@@ -184,6 +180,27 @@ object ShareContentUtils {
             SharingContentType.PINTEREST -> startIntentImageSharing(
                 "com.pinterest", "$sharingText \n$url", fileSharingImg
             )
+        }
+    }
+
+    fun generateShareUrl(data: ZeneMusicData?): String {
+        val id = encryptSharingId(data?.id)
+
+        return when (data?.type()) {
+            NONE -> ZENE_URL
+            SONGS -> "$ZENE_URL/song/${id}"
+            RADIO -> "$ZENE_URL/radio/${id}"
+            VIDEOS -> "$ZENE_URL/video/${id}"
+            PLAYLISTS, ALBUMS -> "$ZENE_URL/mix/${id}"
+            ARTISTS -> "$ZENE_URL/artist/${data.name}"
+            PODCAST -> "$ZENE_URL/podcast-series/${data.name}"
+            PODCAST_AUDIO -> "$ZENE_URL/podcast/${data.id}"
+            PODCAST_CATEGORIES -> ZENE_URL
+            NEWS -> "$ZENE_URL/news/${data.id}"
+            MOVIES -> "$ZENE_URL/m/${data.id}"
+            AI_MUSIC -> "$ZENE_URL/ai_music/${data.id}"
+            TEXT -> ZENE_URL
+            null -> ZENE_URL
         }
     }
 

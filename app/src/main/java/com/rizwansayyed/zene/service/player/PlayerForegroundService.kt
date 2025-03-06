@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
@@ -24,7 +23,7 @@ import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
@@ -42,6 +41,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
 
@@ -163,10 +163,11 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         durationJob = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
                 delay(500)
-                if (currentPlayingSong?.type() == MusicDataTypes.SONGS)
-                    playerWebView?.evaluateJavascript("playingStatus();", null)
-                else
-                    exoPlayerSession.playingStatus()
+                if (currentPlayingSong?.type() == MusicDataTypes.SONGS) playerWebView?.evaluateJavascript(
+                    "playingStatus();",
+                    null
+                )
+                else exoPlayerSession.playingStatus()
             }
         }
     }
@@ -312,8 +313,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         CoroutineScope(Dispatchers.IO).launch {
             val isShuffle = isShuffleDB.firstOrNull() ?: false
             if (isShuffle) {
-                currentPlayingSong = smartShuffle?.getNextSong()
-                Log.d("TAG", "toNextSong: ")
+                currentPlayingSong = smartShuffle.getNextSong()
                 playSongs(false)
                 return@launch
             }
@@ -380,6 +380,43 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             exoPlayerSession.playRate(v)
             playerWebView?.evaluateJavascript("playbackRate(${v});", null)
             if (isActive) cancel()
+        }
+    }
+
+    override fun addListsToNext(list: List<ZeneMusicData>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
+
+            val arrayList = ArrayList<ZeneMusicData?>()
+            arrayList.addAll(songsLists)
+            arrayList.addAll(index + 1, list)
+            val l = arrayList.distinctBy { it?.id }.toList()
+
+            val player = musicPlayerDB.firstOrNull()
+            player?.lists = arrayList.toList()
+            withContext(Dispatchers.IO) {
+                musicPlayerDB = flowOf(player)
+            }
+
+            songsLists = l.toTypedArray()
+        }
+    }
+
+    override fun addListsToQueue(list: List<ZeneMusicData>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val arrayList = ArrayList<ZeneMusicData?>()
+
+            arrayList.addAll(songsLists)
+            arrayList.addAll(list)
+            val l = arrayList.distinctBy { it?.id }.toList()
+
+            val player = musicPlayerDB.firstOrNull()
+            player?.lists = arrayList.toList()
+            withContext(Dispatchers.IO) {
+                musicPlayerDB = flowOf(player)
+            }
+
+            songsLists = l.toTypedArray()
         }
     }
 }

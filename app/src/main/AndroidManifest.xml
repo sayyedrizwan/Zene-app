@@ -133,31 +133,20 @@
             android:name="com.facebook.CustomTabActivity"
             android:exported="true" />
 
-<!--        <meta-data-->
-<!--            android:name="com.facebook.sdk.ApplicationId"-->
-<!--            android:value="${FACEBOOK_APPLICATION_ID}" />-->
-<!--        <meta-data-->
-<!--            android:name="com.facebook.sdk.ClientToken"-->
-<!--            android:value="${FACEBOOK_CLIENT_TOKEN}" />-->
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="847085490671954" />
+            android:value="@string/FACEBOOK_APPLICATION_ID" />
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
-            android:value="e38db482e05b57ef2a92b3b6c7e30678" />
-
-<!--        <meta-data-->
-<!--            android:name="com.google.android.geo.API_KEY"-->
-<!--            android:value="${GOOGLE_MAP_KEY}" />-->
+            android:value="@string/FACEBOOK_CLIENT_TOKEN" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAFR5zPlsuPYHHKaNX7_U-FvWb18gr3RkA" />
+            android:value="@string/GOOGLE_MAP_KEY" />
 
         <meta-data
             android:name="com.truecaller.android.sdk.ClientId"
-            android:value="${TRUE_CALLER_KEY}" />
+            android:value="@string/TRUE_CALLER_KEY" />
 
         <service
             android:name=".service.player.PlayerForegroundService"

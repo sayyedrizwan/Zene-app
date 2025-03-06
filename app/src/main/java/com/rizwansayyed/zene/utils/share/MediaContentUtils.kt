@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.utils
+package com.rizwansayyed.zene.utils.share
 
 import android.content.Context
 import android.content.Intent
@@ -28,13 +28,14 @@ import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 
 
 object MediaContentUtils {
-    var TEMP_ZENE_MUSIC_DATA_LIST = ArrayList<ZeneMusicData?>(200)
+    var TEMP_ZENE_MUSIC_DATA_LIST = ArrayList<ZeneMusicData?>(600)
 
     fun openCustomBrowser(url: String?) {
         val toolbarColor =

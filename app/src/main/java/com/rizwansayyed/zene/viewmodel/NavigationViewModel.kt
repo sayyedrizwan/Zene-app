@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
-import com.rizwansayyed.zene.utils.IntentFCMNotification
+import com.rizwansayyed.zene.utils.share.IntentFCMNotification
 
 class NavigationViewModel : ViewModel() {
     var homeSection by mutableStateOf(HomeSectionSelector.MUSIC)

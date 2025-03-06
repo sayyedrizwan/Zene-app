@@ -39,19 +39,16 @@ android {
         buildConfigField("String", "GOOGLE_SERVER_KEY", googleServerKey)
 
         val facebookApplicationID = properties.getProperty("FACEBOOK_APPLICATION_ID") ?: ""
-
-//        resValue("string", "FB_SECRET_KEY", properties.getProperty("FB_SECRET_KEY"))
-
-        manifestPlaceholders["FACEBOOK_APPLICATION_ID"] = facebookApplicationID
+        resValue("string", "FACEBOOK_APPLICATION_ID", facebookApplicationID)
 
         val facebookClientToken = properties.getProperty("FACEBOOK_CLIENT_TOKEN") ?: ""
-        manifestPlaceholders["FACEBOOK_CLIENT_TOKEN"] = facebookClientToken
+        resValue("string", "FACEBOOK_CLIENT_TOKEN", facebookClientToken)
 
         val googleMapKey = properties.getProperty("GOOGLE_MAP_KEY") ?: ""
-        manifestPlaceholders["GOOGLE_MAP_KEY"] = googleMapKey
+        resValue("string", "GOOGLE_MAP_KEY", googleMapKey)
 
         val trueCallerKey = properties.getProperty("TRUE_CALLER_KEY") ?: ""
-        manifestPlaceholders["TRUE_CALLER_KEY"] = trueCallerKey
+        resValue("string", "TRUE_CALLER_KEY", trueCallerKey)
     }
 
     buildTypes {
@@ -90,8 +87,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.play.services.location)
-    implementation(libs.androidx.palette.ktx)
-    implementation(libs.androidx.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -161,13 +156,20 @@ dependencies {
     annotationProcessor(libs.room.compiler)
     implementation(libs.room.ktx)
 
+    implementation(libs.storage)
+
     implementation(libs.androidx.webkit)
 
     implementation(libs.navigation.compose)
     implementation(libs.browser)
 
-    implementation("org.hashids:hashids:1.0.3")
-    implementation("com.github.skydoves:colorpicker-compose:1.1.2")
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    implementation(libs.hashids)
+
+
+    implementation(libs.palette.ktx)
+
+    implementation(libs.colorpicker.compose)
+    implementation(libs.security.crypto)
 
 }
