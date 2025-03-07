@@ -102,9 +102,9 @@ class PlayingSongWidget : GlanceAppWidget() {
                     GlanceModifier.defaultWeight().padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically
                 ) {
-                    GlanceTextItemBold(music?.data?.name ?: "")
+                    GlanceTextItemBold(music.data.name ?: "")
                     Spacer(GlanceModifier.height(1.dp))
-                    GlanceTextItemNormal(music?.data?.artists ?: "")
+                    GlanceTextItemNormal(music.data.artists ?: "")
 
                     Row(
                         GlanceModifier.padding(top = 10.dp).fillMaxWidth(),
@@ -143,10 +143,10 @@ class PlayingSongWidget : GlanceAppWidget() {
                 }
 
                 Column(GlanceModifier.padding(5.dp).cornerRadius(100.dp).clickable {
-                    if (music?.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                    if (music.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
                     else getPlayerS()?.play()
                 }.background(Color.White).padding(6.dp)) {
-                    when (music?.state) {
+                    when (music.state) {
                         YoutubePlayerState.PLAYING -> GlanceImageIcon(R.drawable.ic_pause, 20)
 
                         YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
@@ -158,12 +158,12 @@ class PlayingSongWidget : GlanceAppWidget() {
                 }
             }
 
-            LaunchedEffect(music?.data?.thumbnail) {
+            LaunchedEffect(music.data.thumbnail) {
                 coroutine.launch(Dispatchers.IO) {
-                    if (music?.data?.thumbnail != null) {
+                    if (music.data.thumbnail != null) {
                         try {
                             val b =
-                                Glide.with(context).asBitmap().load(music?.data?.thumbnail).submit()
+                                Glide.with(context).asBitmap().load(music.data.thumbnail).submit()
                                     .get()
                             bitmap = b
                         } catch (e: Exception) {
@@ -174,7 +174,6 @@ class PlayingSongWidget : GlanceAppWidget() {
             }
         } else {
             GlanceTextItemBold(LocalContext.current.getString(R.string.no_song_played))
-            Spacer(GlanceModifier.height(1.dp))
         }
     }
 }

@@ -12,6 +12,7 @@ import androidx.glance.ImageProvider
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.layout.ContentScale
+import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
@@ -20,13 +21,13 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 
 @Composable
-fun GlanceImage(img: Bitmap, size: Int) {
+fun GlanceImage(img: Bitmap, size: Int?, h: Int = 5) {
     Image(
         provider = ImageProvider(img),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = GlanceModifier.padding(horizontal = 5.dp).size(size.dp)
-            .cornerRadius(13.dp)
+        modifier = if (size == null) GlanceModifier.padding(horizontal = h.dp).fillMaxSize()
+        else GlanceModifier.padding(horizontal = h.dp).size(size.dp).cornerRadius(13.dp)
     )
 }
 

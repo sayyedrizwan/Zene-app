@@ -1,0 +1,8 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/small_player_widget_desc"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:minWidth="50dp"
+    android:minHeight="50dp"
+    android:previewImage="@drawable/small_music_player_widgets"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen" />

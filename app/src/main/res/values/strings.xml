@@ -3,7 +3,8 @@
     <string name="app_name_luxe">Zene Luxe</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
     <string name="app_desc">Free Music, Podcasts, Videos &amp; More – All Your Entertainment in One Place!</string>
-    <string name="full_player_widget_desc">Play your favourite tunes and podcasts, right from your home screen.</string>
+    <string name="full_player_widget_desc">Control your favourite tunes and podcasts, right from your home screen.</string>
+    <string name="small_player_widget_desc">Play/Pause your favourite tunes and podcasts, right from your home screen.</string>
     <string name="app_desc_bottom">The Place that fits all your entertainment needs!</string>
     <string name="app_desc_bottom_desc">Crafted with love from Zene Team ❤️</string>
     <string name="keep_up_with_your_entertainment">Keep up with your Entertainment</string>

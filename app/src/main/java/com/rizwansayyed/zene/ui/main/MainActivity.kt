@@ -212,9 +212,5 @@ class MainActivity : ComponentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
-
-        lifecycleScope.launch {
-            musicPlayerDB = flowOf(null)
-        }
     }
 }

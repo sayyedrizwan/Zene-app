@@ -196,7 +196,8 @@
         </provider>
 
 
-        <receiver android:name=".widgets.playingsongbig.PlayingSongWidgetReceiver"
+        <receiver
+            android:name=".widgets.playingsongbig.PlayingSongWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -204,6 +205,17 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/full_music_player_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".widgets.playingsongsmall.PlayingSongWidgetSmallReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/small_music_player_widget" />
         </receiver>
 
     </application>
