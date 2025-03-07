@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +16,6 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.GetAllContactsUtils
 import com.rizwansayyed.zene.utils.MainUtils.countryCodeMap
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -87,12 +85,9 @@ class PhoneNumberViewModel @Inject constructor(
             optVerify = ResponseResult.Error(it)
         }.collectLatest {
             if (it.status == true) {
-                val data = DataStorageManager.userInfo.firstOrNull()
-
-//                zeneAPI.updateUser(data?.email ?: "", data?.name ?: "", data?.photo ?: "").catch {}
-//                    .collectLatest {
-//                        DataStorageManager.userInfo = flowOf(it)
-//                    }
+                zeneAPI.updateUser().catch {}.collectLatest { u ->
+                    DataStorageManager.userInfo = flowOf(u)
+                }
             }
 
             delay(1.seconds)

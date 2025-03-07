@@ -193,7 +193,7 @@ object ShareContentUtils {
             VIDEOS -> "$ZENE_URL/video/${id}"
             PLAYLISTS, ALBUMS -> "$ZENE_URL/mix/${id}"
             ARTISTS -> "$ZENE_URL/artist/${data.name}"
-            PODCAST -> "$ZENE_URL/podcast-series/${data.name}"
+            PODCAST -> "$ZENE_URL/podcast-series/${id}"
             PODCAST_AUDIO -> "$ZENE_URL/podcast/${data.id}"
             PODCAST_CATEGORIES -> ZENE_URL
             NEWS -> "$ZENE_URL/news/${data.id}"

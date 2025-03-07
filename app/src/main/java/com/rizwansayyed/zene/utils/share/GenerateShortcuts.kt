@@ -14,6 +14,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
+import androidx.glance.appwidget.updateAll
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -29,6 +30,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PODCASTS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SEARCH
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SETTINGS
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.generateShareUrl
+import com.rizwansayyed.zene.widgets.playingsongbig.PlayingSongWidget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -120,6 +122,11 @@ object GenerateShortcuts {
                 .build()
 
             ShortcutManagerCompat.pushDynamicShortcut(context, shortcutConnect)
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            PlayingSongWidget().updateAll(context)
+            if (isActive) cancel()
         }
     }
 

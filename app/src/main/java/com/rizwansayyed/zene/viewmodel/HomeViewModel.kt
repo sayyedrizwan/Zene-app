@@ -267,6 +267,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun searchZene(q: String) = viewModelScope.launch(Dispatchers.IO) {
+        searchKeywords = ResponseResult.Empty
         zeneAPI.search(q).onStart {
             searchData = ResponseResult.Loading
         }.catch {

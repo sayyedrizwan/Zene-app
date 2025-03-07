@@ -1,5 +1,6 @@
 [versions]
 browser = "1.8.0"
+glanceAppwidget = "1.1.1"
 packagename = "com.rizwansayyed.zene"
 
 compilesdk = "35"
@@ -87,6 +88,7 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltA
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }

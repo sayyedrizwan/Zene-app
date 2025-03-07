@@ -193,9 +193,13 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
         BackHandler { navViewModel.setMusicPlayer(false) }
 
         LaunchedEffect(pagerState.currentPage) {
-            val id = player?.lists?.get(pagerState.currentPage)?.id
-            val type = player?.lists?.get(pagerState.currentPage)?.type()!!
-            viewModel.likedMediaItem(id, type)
+            try {
+                val id = player?.lists?.get(pagerState.currentPage)?.id
+                val type = player?.lists?.get(pagerState.currentPage)?.type()!!
+                viewModel.likedMediaItem(id, type)
+            }catch (e: Exception){
+                e.message
+            }
         }
 
 

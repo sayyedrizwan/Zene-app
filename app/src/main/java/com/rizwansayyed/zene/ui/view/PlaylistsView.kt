@@ -327,11 +327,6 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
             generateHomeScreenShortcut(data.info)
             showAddToHomeScreen = false
         })
-
-
-//        AddSongToQueue(data) {
-//        showAddToQueue = false
-//    }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -409,7 +404,10 @@ fun AddSongToQueue(data: PodcastPlaylistResponse, close: () -> Unit) {
                 close()
                 TEMP_ZENE_MUSIC_DATA_LIST.clear()
                 TEMP_ZENE_MUSIC_DATA_LIST.addAll(data.list?.toTypedArray() ?: emptyArray())
-                getPlayerS()?.addListsToNext(data.list?.toList() ?: emptyList())
+                if (getPlayerS() == null)
+                    startMedia(data.list?.first(), data.list?.toList() ?: emptyList())
+                else
+                    getPlayerS()?.addListsToNext(data.list?.toList() ?: emptyList())
             }) {
                 TextViewNormal(stringResource(R.string.play_next), 15)
             }
@@ -418,7 +416,11 @@ fun AddSongToQueue(data: PodcastPlaylistResponse, close: () -> Unit) {
                 close()
                 TEMP_ZENE_MUSIC_DATA_LIST.clear()
                 TEMP_ZENE_MUSIC_DATA_LIST.addAll(data.list?.toTypedArray() ?: emptyArray())
-                getPlayerS()?.addListsToQueue(data.list?.toList() ?: emptyList())
+
+                if (getPlayerS() == null)
+                    startMedia(data.list?.first(), data.list?.toList() ?: emptyList())
+                else
+                    getPlayerS()?.addListsToQueue(data.list?.toList() ?: emptyList())
             }) {
                 TextViewNormal(stringResource(R.string.add_to_queue), 15)
             }

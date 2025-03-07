@@ -172,4 +172,6 @@ dependencies {
     implementation(libs.colorpicker.compose)
     implementation(libs.security.crypto)
 
+    implementation(libs.glance.appwidget)
+
 }
