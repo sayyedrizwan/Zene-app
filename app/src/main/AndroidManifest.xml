@@ -203,7 +203,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/music_player_widget_info" />
+                android:resource="@xml/full_music_player_widget" />
         </receiver>
 
     </application>

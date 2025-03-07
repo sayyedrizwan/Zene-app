@@ -72,6 +72,9 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
     AnimatedVisibility(
         navViewModel.showMusicPlayer,
+        Modifier
+            .fillMaxSize()
+            .background(MainColor),
         enter = slideInVertically(initialOffsetY = { it / 2 }),
         exit = slideOutVertically(targetOffsetY = { it / 2 })
     ) {
@@ -197,7 +200,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 val id = player?.lists?.get(pagerState.currentPage)?.id
                 val type = player?.lists?.get(pagerState.currentPage)?.type()!!
                 viewModel.likedMediaItem(id, type)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.message
             }
         }
@@ -218,14 +221,14 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             viewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
             viewModel.playerSimilarSongs(player?.data?.id)
 
-            if (player?.data?.type() == MusicDataTypes.SONGS)
-                viewModel.playerVideoForSongs(player?.data)
-            else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO)
-                viewModel.similarPodcasts(player?.data)
-            else if (player?.data?.type() == MusicDataTypes.RADIO)
-                viewModel.similarRadio(player?.data)
-            else if (player?.data?.type() == MusicDataTypes.AI_MUSIC)
-                viewModel.similarAIMusic(player?.data)
+            if (player?.data?.type() == MusicDataTypes.SONGS) viewModel.playerVideoForSongs(player?.data)
+            else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) viewModel.similarPodcasts(
+                player?.data
+            )
+            else if (player?.data?.type() == MusicDataTypes.RADIO) viewModel.similarRadio(player?.data)
+            else if (player?.data?.type() == MusicDataTypes.AI_MUSIC) viewModel.similarAIMusic(
+                player?.data
+            )
 
             if (player?.data?.type() == MusicDataTypes.AI_MUSIC) {
                 viewModel.getAISongLyrics(player?.data?.id!!)
@@ -240,20 +243,22 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
 @Composable
 fun SongTextAndArtists(data: List<ZeneMusicData?>?, pagerState: PagerState, modifier: Modifier) {
-    Column(modifier) {
+    if (data?.isNotEmpty() == true) Column(modifier) {
         Text(
-            data?.get(pagerState.currentPage)?.name ?: "",
+            data[pagerState.currentPage]?.name ?: "",
             Modifier
                 .animateContentSize()
                 .basicMarquee(),
-            Color.White, 23.sp, null, FontWeight.Bold, proximanOverFamily
+            Color.White,
+            23.sp,
+            null,
+            FontWeight.Bold,
+            proximanOverFamily
         )
 
         Spacer(Modifier.height(1.dp))
 
-        if (data?.get(pagerState.currentPage)?.type() == MusicDataTypes.SONGS
-            || data?.get(pagerState.currentPage)?.type() == MusicDataTypes.RADIO
-        ) {
+        if (data[pagerState.currentPage]?.type() == MusicDataTypes.SONGS || data[pagerState.currentPage]?.type() == MusicDataTypes.RADIO) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -268,7 +273,7 @@ fun SongTextAndArtists(data: List<ZeneMusicData?>?, pagerState: PagerState, modi
             }
         }
 
-        if (data?.get(pagerState.currentPage)?.type() == MusicDataTypes.PODCAST_AUDIO) {
+        if (data[pagerState.currentPage]?.type() == MusicDataTypes.PODCAST_AUDIO) {
             Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
                 TextViewNormal(data[pagerState.currentPage]?.artists ?: "", 14, line = 1)
             }
