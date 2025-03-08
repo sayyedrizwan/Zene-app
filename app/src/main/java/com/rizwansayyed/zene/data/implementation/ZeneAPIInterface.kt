@@ -107,4 +107,5 @@ interface ZeneAPIInterface {
     suspend fun similarRadio(tags: String?): Flow<ZeneMusicDataList>
     suspend fun artistsInfo(artistsID: String?): Flow<ArtistsResponse>
     suspend fun updateUser(): Flow<UserInfoResponse>
+    suspend fun followArtists(name: String?, doAdd: Boolean?): Flow<Boolean>
 }

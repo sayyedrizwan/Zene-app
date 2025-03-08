@@ -821,6 +821,20 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.artistsInfo(token, body))
     }
 
+    override suspend fun followArtists(name: String?, doAdd: Boolean?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("name", name)
+            put("add", doAdd)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.followArtists(token, body))
+    }
+
     override suspend fun podcastInfo(id: String?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

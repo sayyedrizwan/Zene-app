@@ -47,6 +47,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_FOLLOW_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_RADIO_INFO_API
@@ -398,6 +399,12 @@ interface ZeneAPIService {
     ): ArtistsResponse
 
     @Headers("Content-Type: application/json")
+    @POST(ZENE_INFO_ARTIST_FOLLOW_API)
+    suspend fun followArtists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): Boolean
+
+    @Headers("Content-Type: application/json")
     @POST(ZENE_PODCAST_PODCAST_MEDIA_URL_API)
     suspend fun podcastMediaURL(
         @Header("token") token: String, @Body data: RequestBody
@@ -432,7 +439,6 @@ interface ZeneAPIService {
     suspend fun similarPodcasts(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
-
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_SIMILAR_RADIO_API)

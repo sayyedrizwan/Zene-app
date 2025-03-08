@@ -17,6 +17,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.PODCAST
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.RADIO
 import com.rizwansayyed.zene.ui.main.home.view.HomeAIView
 import com.rizwansayyed.zene.ui.main.home.view.HomeMusicView
+import com.rizwansayyed.zene.ui.main.home.view.HomeMyLibraryView
 import com.rizwansayyed.zene.ui.main.home.view.HomePodcastView
 import com.rizwansayyed.zene.ui.main.home.view.HomeRadioView
 import com.rizwansayyed.zene.ui.main.home.view.HomeScreenTopView
@@ -56,7 +57,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 HomeSectionSelector.LUX -> {}
                 HomeSectionSelector.VIDEO -> HomeVideoView(homeViewModel)
                 HomeSectionSelector.AI_MUSIC -> HomeAIView(homeViewModel)
-                MY_LIBRARY -> {}
+                MY_LIBRARY -> HomeMyLibraryView()
             }
         }
     }

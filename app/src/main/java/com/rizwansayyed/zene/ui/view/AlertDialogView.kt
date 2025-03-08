@@ -74,3 +74,20 @@ fun TextAlertDialog(title: Int, name: Int, dismiss: () -> Unit, click: () -> Uni
         }
     })
 }
+
+@Composable
+fun TextAlertDialog(title: Int, name: Int, dismiss: () -> Unit) {
+    AlertDialog(title = {
+        TextViewNormal(stringResource(title), 17, line = 2, center = false)
+    }, text = {
+        TextViewNormal(stringResource(name), 16, center = false)
+    }, onDismissRequest = {
+        dismiss()
+    }, confirmButton = {}, dismissButton = {
+        TextButton(onClick = {
+            dismiss()
+        }) {
+            TextViewLight(stringResource(R.string.cancel), 15)
+        }
+    })
+}

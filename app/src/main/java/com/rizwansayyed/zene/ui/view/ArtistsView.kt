@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,7 +77,6 @@ fun ArtistsView(artistsID: String) {
             }
 
             is ResponseResult.Success -> {
-                val isFollowing = remember { mutableStateOf(false) }
                 val height = LocalConfiguration.current.screenHeightDp
 
                 Box(Modifier.fillMaxSize()) {
@@ -93,7 +91,7 @@ fun ArtistsView(artistsID: String) {
                             )
                         }
 
-                        item { ArtistsDetailsInfo(v.data, isFollowing) }
+                        item { ArtistsDetailsInfo(v.data, viewModel) }
 
                         if (v.data.songs?.isNotEmpty() == true) item {
                             ArtistsHeaderText(R.string.songs)
@@ -198,7 +196,7 @@ fun ArtistsView(artistsID: String) {
                 }
 
                 LaunchedEffect(Unit) {
-                    isFollowing.value = v.data.isFollowing ?: false
+                    viewModel.isFollowing = v.data.isFollowing ?: false
                 }
             }
         }
@@ -237,10 +235,11 @@ fun ArtistsHeaderText(txt: Int) {
 }
 
 @Composable
-fun ArtistsDetailsInfo(data: ArtistsResponse, isFollowing: MutableState<Boolean>) {
+fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
     var showFullDesc by remember { mutableStateOf(false) }
     var showAddToHomeScreen by remember { mutableStateOf(false) }
     var showShareView by remember { mutableStateOf(false) }
+    var showMoreFollower by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -284,12 +283,11 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, isFollowing: MutableState<Boolean>
         Arrangement.Start,
         Alignment.CenterVertically
     ) {
-
-        if (isFollowing.value) ButtonWithBorder(R.string.following, Color.White) {
-            isFollowing.value = false
+        if (viewModel.isFollowing) ButtonWithBorder(R.string.following, Color.White) {
+            viewModel.followArtists(data.data?.name, false) { showMoreFollower = true }
         }
         else ButtonWithBorder(R.string.follow, Color.White) {
-            isFollowing.value = true
+            viewModel.followArtists(data.data?.name, true) { showMoreFollower = true }
         }
 
         Spacer(Modifier.width(15.dp))
@@ -312,18 +310,16 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, isFollowing: MutableState<Boolean>
             ImageIcon(R.drawable.ic_play, 26)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Box(
-            Modifier
-                .padding(horizontal = 7.dp)
-                .padding(end = 7.dp)
-                .clickable { showAddToHomeScreen = true }) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Box(Modifier
+            .padding(horizontal = 7.dp)
+            .padding(end = 7.dp)
+            .clickable { showAddToHomeScreen = true }) {
             ImageIcon(R.drawable.ic_screen_add_to_home, 24)
         }
 
-        Box(
-            Modifier
-                .padding(horizontal = 7.dp)
-                .clickable { showShareView = true }) {
+        Box(Modifier
+            .padding(horizontal = 7.dp)
+            .clickable { showShareView = true }) {
             ImageIcon(R.drawable.ic_share, 24)
         }
     }
@@ -333,13 +329,21 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, isFollowing: MutableState<Boolean>
         showShareView = false
     }
 
-    if (showAddToHomeScreen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        TextAlertDialog(R.string.add_to_home_screen, R.string.add_to_home_screen_artists_desc, {
+    if (showAddToHomeScreen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) TextAlertDialog(
+        R.string.add_to_home_screen,
+        R.string.add_to_home_screen_artists_desc,
+        {
             showAddToHomeScreen = false
-        }, {
+        },
+        {
             generateHomeScreenShortcut(data.data)
             showAddToHomeScreen = false
         })
+
+    if (showMoreFollower) TextAlertDialog(
+        R.string.error_following_artists,
+        R.string.a_user_can_only_follow_up_to_40_artists,
+        { showMoreFollower = false })
 }
 
 
