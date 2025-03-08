@@ -84,69 +84,73 @@ fun PlaylistView(id: String, type: PlaylistsType) {
     val context = LocalContext.current.applicationContext
     val playerInfo by musicPlayerDB.collectAsState(null)
 
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(horizontal = 5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item { Spacer(Modifier.height(70.dp)) }
-        when (val v = homeViewModel.playlistsData) {
-            ResponseResult.Empty -> {}
-            is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item { CircularLoadingView() }
-            is ResponseResult.Success -> {
-                item { v.data.info?.let { PlaylistTopView(it, type) } }
+    Box(Modifier.fillMaxSize()) {
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(horizontal = 5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item { Spacer(Modifier.height(100.dp)) }
+            when (val v = homeViewModel.playlistsData) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> item { CircularLoadingView() }
+                is ResponseResult.Success -> {
+                    item { v.data.info?.let { PlaylistTopView(it, type) } }
 
-                if (v.data.info?.id != null) {
-                    item { PlaylistsButtonView(v.data, homeViewModel) }
-                    item { Spacer(Modifier.height(30.dp)) }
-                }
+                    if (v.data.info?.id != null) {
+                        item { PlaylistsButtonView(v.data, homeViewModel) }
+                        item { Spacer(Modifier.height(30.dp)) }
+                    }
 
-                when (val list = homeViewModel.playlistSimilarList) {
-                    ResponseResult.Empty -> {}
-                    is ResponseResult.Error -> {}
-                    ResponseResult.Loading -> {}
-                    is ResponseResult.Success -> {
-                        if (list.data.isNotEmpty()) item {
-                            Spacer(Modifier.height(30.dp))
-                            Box(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 6.dp)
-                            ) {
-                                TextViewBold(stringResource(R.string.similar_podcasts), 23)
-                            }
-                            Spacer(Modifier.height(12.dp))
-                            LazyRow(Modifier.fillMaxWidth()) {
-                                items(list.data) {
-                                    ItemCardView(it)
+                    when (val list = homeViewModel.playlistSimilarList) {
+                        ResponseResult.Empty -> {}
+                        is ResponseResult.Error -> {}
+                        ResponseResult.Loading -> {}
+                        is ResponseResult.Success -> {
+                            if (list.data.isNotEmpty()) item {
+                                Spacer(Modifier.height(30.dp))
+                                Box(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 6.dp)
+                                ) {
+                                    TextViewBold(stringResource(R.string.similar_podcasts), 23)
                                 }
+                                Spacer(Modifier.height(12.dp))
+                                LazyRow(Modifier.fillMaxWidth()) {
+                                    items(list.data) {
+                                        ItemCardView(it)
+                                    }
+                                }
+                                Spacer(Modifier.height(30.dp))
                             }
-                            Spacer(Modifier.height(30.dp))
+                        }
+                    }
+
+                    item { Spacer(Modifier.height(20.dp)) }
+
+                    items(v.data.list ?: emptyList()) {
+                        when (type) {
+                            PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
+                            PLAYLIST_ALBUMS -> PlaylistsItemView(
+                                it,
+                                playerInfo,
+                                v.data.list ?: emptyList()
+                            )
                         }
                     }
                 }
-
-                item { Spacer(Modifier.height(20.dp)) }
-
-                items(v.data.list ?: emptyList()) {
-                    when (type) {
-                        PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
-                        PLAYLIST_ALBUMS -> PlaylistsItemView(
-                            it,
-                            playerInfo,
-                            v.data.list ?: emptyList()
-                        )
-                    }
-                }
             }
+
+            item { Spacer(Modifier.height(300.dp)) }
         }
 
-        item { Spacer(Modifier.height(300.dp)) }
-    }
 
+        ButtonArrowBack()
+    }
     LaunchedEffect(Unit) {
         if (type == PODCAST) {
             if (homeViewModel.playlistsData !is ResponseResult.Success) homeViewModel.podcastData(id) {

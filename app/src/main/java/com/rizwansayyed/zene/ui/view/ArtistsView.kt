@@ -1,30 +1,43 @@
 package com.rizwansayyed.zene.ui.view
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.jakewharton.processphoenix.ProcessPhoenix
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -32,6 +45,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -39,25 +53,142 @@ fun ArtistsView(artistsID: String) {
     val viewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current
 
-    when (val v = viewModel.artistsInfo) {
-        ResponseResult.Empty -> {}
-        is ResponseResult.Error -> {}
-        ResponseResult.Loading -> {
-            Box(Modifier.fillMaxSize(), Alignment.Center) {
-                CircularLoadingView()
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+        when (val v = viewModel.artistsInfo) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> {
+                Box(Modifier.fillMaxSize(), Alignment.Center) {
+                    CircularLoadingView()
+                }
             }
-        }
 
-        is ResponseResult.Success -> {
-            LazyColumn(Modifier.fillMaxSize()) {
-                item {
-                    Spacer(Modifier.height(55.dp))
-                    TopArtistsInfoView(v.data.data)
+            is ResponseResult.Success -> {
+                val height = LocalConfiguration.current.screenHeightDp
+                Box(Modifier.fillMaxSize()) {
+                    GlideFullImage(v.data.data, height, Modifier.align(Alignment.TopCenter))
+
+                    LazyColumn(Modifier.fillMaxSize()) {
+                        item {
+                            Spacer(
+                                Modifier
+                                    .height((height.absoluteValue / 1.6).dp)
+                                    .background(Color.Transparent)
+                            )
+                        }
+
+                        item { ArtistsDetailsInfo(v.data.data) }
+
+                        if (v.data.songs?.isNotEmpty() == true) item {
+                            ArtistsHeaderText(R.string.songs)
+                        }
+
+                        items(v.data.songs?.chunked(20) ?: emptyList()) {
+                            LazyRow(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black)
+                                    .padding(bottom = 30.dp)
+                            ) {
+                                items(it) { songs -> ItemCardView(songs) }
+                            }
+                        }
+
+                        if (v.data.videos?.isNotEmpty() == true) item {
+                            ArtistsHeaderText(R.string.videos)
+                        }
+
+                        items(v.data.videos?.chunked(20) ?: emptyList()) {
+                            LazyRow(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black)
+                                    .padding(bottom = 30.dp)
+                            ) {
+                                items(it) { v -> VideoCardView(v) }
+                            }
+                        }
+
+                        if (v.data.albums?.isNotEmpty() == true) item {
+                            ArtistsHeaderText(R.string.albums)
+                        }
+
+                        items(v.data.albums?.chunked(20) ?: emptyList()) {
+                            LazyRow(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black)
+                                    .padding(bottom = 30.dp)
+                            ) {
+                                items(it) { a -> ItemCardView(a) }
+                            }
+                        }
+
+                        if (v.data.singles?.isNotEmpty() == true) item {
+                            ArtistsHeaderText(R.string.singles)
+                        }
+
+                        items(v.data.singles?.chunked(20) ?: emptyList()) {
+                            LazyRow(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black)
+                                    .padding(bottom = 30.dp)
+                            ) {
+                                items(it) { a -> ItemCardView(a) }
+                            }
+                        }
+
+                        if (v.data.playlists?.isNotEmpty() == true) item {
+                            ArtistsHeaderText(R.string.playlists)
+                        }
+
+                        item {
+                            LazyRow(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black)
+                                    .padding(bottom = 30.dp)
+                            ) {
+                                items(v.data.playlists ?: emptyList()) { a -> ItemCardView(a) }
+                            }
+                        }
+
+                        if (v.data.artists?.isNotEmpty() == true) item {
+                            ArtistsHeaderText(R.string.similar_artists)
+                        }
+
+                        item {
+                            LazyRow(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black)
+                                    .padding(bottom = 30.dp)
+                            ) {
+                                items(v.data.artists ?: emptyList()) { a -> ItemArtistsCardView(a) }
+                            }
+                        }
+
+                        item {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black)
+                            ) {
+                                Spacer(Modifier.height(350.dp))
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
 
+        ButtonArrowBack()
+    }
 
     LaunchedEffect(Unit) {
         if (artistsID.length <= 3) {
@@ -74,19 +205,87 @@ fun ArtistsView(artistsID: String) {
     }
 }
 
+@Composable
+fun ArtistsHeaderText(txt: Int) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+    ) {
+        Spacer(Modifier.height(70.dp))
+        Box(Modifier.padding(horizontal = 6.dp)) {
+            TextViewBold(stringResource(txt), 23)
+        }
+        Spacer(Modifier.height(12.dp))
+    }
+}
+
+@Composable
+fun ArtistsDetailsInfo(data: ZeneMusicData?) {
+    var showFullDesc by remember { mutableStateOf(false) }
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Transparent,
+                        Color.Transparent,
+                        BlackTransparent.copy(0.2f),
+                        BlackTransparent.copy(0.4f),
+                        BlackTransparent.copy(0.7f),
+                        Color.Black
+                    )
+                )
+            )
+            .padding(horizontal = 7.dp)
+    ) {
+        Spacer(Modifier.height(40.dp))
+        TextViewBold(data?.name ?: "", 50)
+    }
+
+    Box(Modifier
+        .fillMaxWidth()
+        .background(Color.Black)
+        .clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        ) { showFullDesc = !showFullDesc }
+        .padding(horizontal = 9.dp)
+    ) {
+        TextViewNormal(data?.artists ?: "", 15, line = if (showFullDesc) 1000 else 5)
+    }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+            .padding(top = 50.dp)
+    ) {
+        Box(Modifier.weight(6f)) {
+            ButtonWithImageAndBorder(
+                R.drawable.ic_tick, R.string.follow, Color.White, Color.White
+            ) { }
+        }
+
+        Row(Modifier.weight(4f)) {
+
+        }
+    }
+}
+
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TopArtistsInfoView(info: ZeneMusicData?) {
-    Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
-        GlideImage(
-            info?.thumbnail ?: "", "", Modifier
-                .fillMaxWidth(0.9f)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(17.dp))
-                .shadow(85.dp),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(Modifier.height(15.dp))
-        TextViewBold(info?.name ?: "", 26, center = true)
-    }
+fun GlideFullImage(data: ZeneMusicData?, height: Int, modifier: Modifier) {
+    GlideImage(
+        data?.thumbnail, data?.name,
+        modifier
+            .fillMaxWidth()
+            .height((height.absoluteValue / 1.5).dp)
+            .shadow(85.dp),
+        contentScale = ContentScale.Crop
+    )
 }

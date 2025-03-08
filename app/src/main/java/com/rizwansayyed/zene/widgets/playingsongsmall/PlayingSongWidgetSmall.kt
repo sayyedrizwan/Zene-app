@@ -106,13 +106,13 @@ class PlayingSongWidgetSmall : GlanceAppWidget() {
                 else getPlayerS()?.play()
             }.background(Color.White).padding(6.dp)) {
                 when (music.state) {
-                    YoutubePlayerState.PLAYING -> GlanceImageIcon(R.drawable.ic_pause, 20)
+                    YoutubePlayerState.PLAYING -> GlanceImageIcon(R.drawable.ic_pause, 23)
 
                     YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
                         GlanceModifier.size(26.dp), ColorProvider(MainColor)
                     )
 
-                    else -> GlanceImageIcon(R.drawable.ic_play, 20)
+                    else -> GlanceImageIcon(R.drawable.ic_play, 23)
                 }
             }
         }

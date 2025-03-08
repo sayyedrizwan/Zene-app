@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,10 +15,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
+
+@Composable
+fun ButtonArrowBack() {
+    Box(Modifier
+        .padding(top = 45.dp)
+        .padding(6.dp)
+        .rotate(180f)
+        .clip(RoundedCornerShape(14.dp))
+        .background(BlackGray)
+        .padding(horizontal = 10.dp, vertical = 10.dp)
+        .clickable { NavigationUtils.triggerHomeNav(NAV_GO_BACK) }) {
+        ImageIcon(R.drawable.ic_arrow_right, 27)
+    }
+}
 
 @Composable
 fun ButtonWithImageAndBorder(

@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SEARCH
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SETTINGS
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.generateShareUrl
 import com.rizwansayyed.zene.widgets.playingsongbig.PlayingSongWidget
+import com.rizwansayyed.zene.widgets.playingsongsmall.PlayingSongWidgetSmall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -126,6 +127,7 @@ object GenerateShortcuts {
 
         CoroutineScope(Dispatchers.Main).launch {
             PlayingSongWidget().updateAll(context)
+            PlayingSongWidgetSmall().updateAll(context)
             if (isActive) cancel()
         }
     }

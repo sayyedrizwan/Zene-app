@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.ui.view.FullUsersShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
@@ -66,14 +67,7 @@ fun ConnectUserProfileView(email: String) {
             }
         }
 
-        Box(
-            Modifier
-                .padding(top = 50.dp, start = 15.dp)
-                .align(Alignment.TopStart)
-                .rotate(90f)
-                .clickable { NavigationUtils.triggerHomeNav(NAV_GO_BACK) }) {
-            ImageIcon(R.drawable.ic_arrow_down, size = 25)
-        }
+        ButtonArrowBack()
     }
     LifecycleResumeEffect(Unit) {
         job?.cancel()

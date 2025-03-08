@@ -53,6 +53,7 @@
     <string name="trending_artists">Trending Artists</string>
     <string name="artist">Artist</string>
     <string name="artists">Artists</string>
+    <string name="similar_artists">Similar Artists</string>
     <string name="global_trending_songs">Global Trending Songs</string>
     <string name="trending_songs">Trending Songs in %s</string>
     <string name="entertainment_">Entertainment</string>
@@ -122,6 +123,7 @@
     <string name="playlist">Playlist</string>
     <string name="playlist_name">Playlist Name</string>
     <string name="albums">Albums</string>
+    <string name="singles">Singles</string>
     <string name="album">Album</string>
     <string name="confirm">Confirm</string>
     <string name="play_next">Play next</string>
@@ -149,6 +151,7 @@
     <string name="resend">Resend</string>
     <string name="view">View</string>
     <string name="add_to_queue">Add to Queue</string>
+    <string name="follow">Follow</string>
     <string name="queue_desc">Queue up your favorite playlists and podcasts to play next or at the end without interrupting your current vibe.</string>
     <string name="items">Items</string>
     <string name="close">Close</string>
