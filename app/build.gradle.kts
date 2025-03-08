@@ -174,4 +174,5 @@ dependencies {
 
     implementation(libs.glance.appwidget)
 
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
