@@ -69,6 +69,7 @@ data class PodcastPlaylistResponse(
 
 data class ArtistsResponse(
     val data: ZeneMusicData?,
+    val isFollowing: Boolean?,
     val albums: ZeneMusicDataList?,
     val singles: ZeneMusicDataList?,
     val videos: ZeneMusicDataList?,

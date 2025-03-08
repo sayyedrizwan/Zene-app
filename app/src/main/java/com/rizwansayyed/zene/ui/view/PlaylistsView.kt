@@ -342,8 +342,7 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
 
 
     GlideImage(
-        v.thumbnail,
-        v.name,
+        v.thumbnail, v.name,
         modifier = Modifier
             .size(width)
             .clip(RoundedCornerShape(14.dp)),
