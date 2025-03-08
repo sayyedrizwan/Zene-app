@@ -1,21 +1,14 @@
 package com.rizwansayyed.zene.utils.share
 
-import android.app.PendingIntent
 import android.content.Intent
-import android.content.pm.ShortcutInfo
-import android.content.pm.ShortcutManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.Icon
 import android.os.Build
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
@@ -34,18 +27,12 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
-import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.MainUtils.copyTextToClipboard
 import com.rizwansayyed.zene.utils.MainUtils.isAppInstalled
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.math.BigInteger
@@ -192,7 +179,7 @@ object ShareContentUtils {
             RADIO -> "$ZENE_URL/radio/${id}"
             VIDEOS -> "$ZENE_URL/video/${id}"
             PLAYLISTS, ALBUMS -> "$ZENE_URL/mix/${id}"
-            ARTISTS -> "$ZENE_URL/artist/${data.name}"
+            ARTISTS -> "$ZENE_URL/artist/${id}"
             PODCAST -> "$ZENE_URL/podcast-series/${id}"
             PODCAST_AUDIO -> "$ZENE_URL/podcast/${data.id}"
             PODCAST_CATEGORIES -> ZENE_URL
@@ -267,7 +254,7 @@ object ShareContentUtils {
         val modulus = base.pow(length)
         val value = toBigInteger(input ?: "")
         val encrypted = (a.multiply(value).add(b)).mod(modulus)
-        return fromBigInteger(encrypted, length)
+        return fromBigInteger(encrypted, length).replace("/", "_.")
     }
 
     fun decryptSharingId(input: String): String {
