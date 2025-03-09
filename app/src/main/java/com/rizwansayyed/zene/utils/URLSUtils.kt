@@ -92,6 +92,7 @@ object URLSUtils {
     const val ZENE_USER_SEND_NUMBER_OTP_API = "users/send-number-otp"
     const val ZENE_USER_VERIFY_NUMBER_OTP_API = "users/verify-number-otp"
     const val ZENE_USER_ADD_HISTORY_API = "users/add-history"
+    const val ZENE_USER_GET_HISTORY_API = "users/get-history"
 
     const val ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API = "users-playlists/create-new-playlists"
     const val ZENE_USER_PLAYLISTS_SONG_CHECK_API = "users-playlists/playlists-song-check"

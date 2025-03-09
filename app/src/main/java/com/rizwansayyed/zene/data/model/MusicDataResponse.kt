@@ -10,6 +10,10 @@ enum class MusicDataTypes {
     NONE, SONGS, RADIO, VIDEOS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_AUDIO, PODCAST_CATEGORIES, NEWS, MOVIES, AI_MUSIC, TEXT
 }
 
+enum class MyLibraryTypes(val names: Int) {
+    HISTORY(R.string.history), SAVED(R.string.saved_mix), MY_PLAYLISTS(R.string.my_playlists)
+}
+
 enum class LikeItemType {
     LOADING, LIKE, NONE
 }
@@ -127,22 +131,25 @@ data class ZeneMusicData(
         }
     }
 
-    fun type(): MusicDataTypes {
-        return when (type) {
-            "SONGS" -> MusicDataTypes.SONGS
-            "PLAYLISTS" -> MusicDataTypes.PLAYLISTS
-            "ALBUMS" -> MusicDataTypes.ALBUMS
-            "VIDEOS" -> MusicDataTypes.VIDEOS
-            "RADIO" -> MusicDataTypes.RADIO
-            "ARTISTS" -> MusicDataTypes.ARTISTS
-            "PODCAST_CATEGORIES" -> MusicDataTypes.PODCAST_CATEGORIES
-            "PODCAST" -> MusicDataTypes.PODCAST
-            "PODCAST_AUDIO" -> MusicDataTypes.PODCAST_AUDIO
-            "NEWS" -> MusicDataTypes.NEWS
-            "MOVIES" -> MusicDataTypes.MOVIES
-            "AI_MUSIC" -> MusicDataTypes.AI_MUSIC
-            "TEXT" -> MusicDataTypes.TEXT
-            else -> MusicDataTypes.NONE
-        }
+    fun type() = musicMediaType(type)
+}
+
+
+fun musicMediaType(type: String?): MusicDataTypes {
+    return when (type) {
+        "SONGS" -> MusicDataTypes.SONGS
+        "PLAYLISTS" -> MusicDataTypes.PLAYLISTS
+        "ALBUMS" -> MusicDataTypes.ALBUMS
+        "VIDEOS" -> MusicDataTypes.VIDEOS
+        "RADIO" -> MusicDataTypes.RADIO
+        "ARTISTS" -> MusicDataTypes.ARTISTS
+        "PODCAST_CATEGORIES" -> MusicDataTypes.PODCAST_CATEGORIES
+        "PODCAST" -> MusicDataTypes.PODCAST
+        "PODCAST_AUDIO" -> MusicDataTypes.PODCAST_AUDIO
+        "NEWS" -> MusicDataTypes.NEWS
+        "MOVIES" -> MusicDataTypes.MOVIES
+        "AI_MUSIC" -> MusicDataTypes.AI_MUSIC
+        "TEXT" -> MusicDataTypes.TEXT
+        else -> MusicDataTypes.NONE
     }
 }

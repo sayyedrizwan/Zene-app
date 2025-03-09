@@ -47,6 +47,9 @@
     <string name="top_podcasts_you_listened_to_this_month">Top Podcasts Listened This Month</string>
     <string name="trending_ai_musics">Trending AI Songs</string>
     <string name="new_ai_musics">New AI Songs</string>
+    <string name="history">History</string>
+    <string name="saved_mix">Saved Mix</string>
+    <string name="my_playlists">My Playlists</string>
     <string name="your_mixes">Your mixes</string>
     <string name="sleep_timer">Sleep Timer</string>
     <string name="minutes">minutes</string>
@@ -234,6 +237,7 @@
     <string name="your_name">Your Name</string>
     <string name="listening_">Listening…</string>
     <string name="loading_">Loading…</string>
+    <string name="load_more">load more</string>
     <string name="error_recognizing_song">Error Recognizing Song</string>
     <string name="error_sharing_">Error Sharing…</string>
     <string name="enjoy_the_song_on_zene">Enjoy free %s song on Zene</string>

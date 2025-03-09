@@ -97,6 +97,19 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.addHistory(token, body))
     }
 
+    override suspend fun getHistory(page: Int) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("page", page)
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.getHistory(token, body))
+    }
+
     override suspend fun recentHome() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
