@@ -5,11 +5,13 @@ import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes
+import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
+import com.rizwansayyed.zene.ui.view.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
@@ -108,6 +110,19 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.getHistory(token, body))
+    }
+
+    override suspend fun getSavePlaylists(page: Int) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("page", page)
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.getSavePlaylists(token, body))
     }
 
     override suspend fun recentHome() = flow {
@@ -817,6 +832,26 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.playlistsInfo(token, body))
+    }
+
+    override suspend fun savePlaylists(
+        data: PodcastPlaylistResponse, status: Boolean, type: PlaylistsType
+    ) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("doAdd", status)
+            put("id", data.info?.id)
+            put("img", data.info?.thumbnail)
+            put("name", data.info?.name)
+            put("artist", data.info?.artists)
+            put("type", type.type)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.savePlaylists(token, body))
     }
 
     override suspend fun artistsInfo(artistsID: String?) = flow {

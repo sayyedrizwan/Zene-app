@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.PodcastEposideResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
@@ -31,6 +32,7 @@ import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.ui.view.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
 
@@ -110,4 +112,9 @@ interface ZeneAPIInterface {
     suspend fun followArtists(name: String?, doAdd: Boolean?): Flow<Boolean>
     suspend fun addHistory(data: ZeneMusicData): Flow<StatusTypeResponse>
     suspend fun getHistory(page: Int): Flow<List<MusicHistoryResponse>>
+    suspend fun savePlaylists(
+        data: PodcastPlaylistResponse, status: Boolean, type: PlaylistsType
+    ): Flow<StatusTypeResponse>
+
+    suspend fun getSavePlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
 }

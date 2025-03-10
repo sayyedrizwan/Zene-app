@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -32,6 +31,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
+import com.rizwansayyed.zene.ui.view.PlaylistsType
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
@@ -351,9 +351,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addToPlaylists(status: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        isPlaylistAdded = status
-    }
+    fun addToPlaylists(status: Boolean, data: PodcastPlaylistResponse, type: PlaylistsType) =
+        viewModelScope.launch(Dispatchers.IO) {
+            isPlaylistAdded = status
+            zeneAPI.savePlaylists(data, status, type).catch { }.collectLatest { }
+        }
 
     fun similarPlaylistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.similarPodcasts(id).onStart {

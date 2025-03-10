@@ -74,8 +74,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-enum class PlaylistsType {
-    PODCAST, PLAYLIST_ALBUMS
+enum class PlaylistsType(val type: String) {
+    PODCAST("PODCAST"), PLAYLIST_ALBUMS("YT_PLAYLISTS")
 }
 
 @Composable
@@ -101,7 +101,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                     item { v.data.info?.let { PlaylistTopView(it, type) } }
 
                     if (v.data.info?.id != null) {
-                        item { PlaylistsButtonView(v.data, homeViewModel) }
+                        item { PlaylistsButtonView(v.data, homeViewModel, type) }
                         item { Spacer(Modifier.height(30.dp)) }
                     }
 
@@ -259,7 +259,9 @@ fun PlaylistsItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMus
 }
 
 @Composable
-fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel) {
+fun PlaylistsButtonView(
+    data: PodcastPlaylistResponse, viewModel: HomeViewModel, type: PlaylistsType
+) {
     val addedToLibrary = stringResource(R.string.added_to_your_library)
     val removedLibrary = stringResource(R.string.removed_to_your_library)
     var showShareView by remember { mutableStateOf(false) }
@@ -273,7 +275,7 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
             .padding(horizontal = 7.dp)
             .clickable {
                 SnackBarManager.showMessage(removedLibrary)
-                viewModel.addToPlaylists(false)
+                viewModel.addToPlaylists(false, data, type)
             }) {
             ImageIcon(R.drawable.ic_tick, 24)
         }
@@ -281,7 +283,7 @@ fun PlaylistsButtonView(data: PodcastPlaylistResponse, viewModel: HomeViewModel)
             .padding(horizontal = 7.dp)
             .clickable {
                 SnackBarManager.showMessage(addedToLibrary)
-                viewModel.addToPlaylists(true)
+                viewModel.addToPlaylists(true, data, type)
             }) {
             ImageIcon(R.drawable.ic_layer_add, 24)
         }

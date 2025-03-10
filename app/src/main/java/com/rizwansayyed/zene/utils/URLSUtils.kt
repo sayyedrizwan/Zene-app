@@ -93,12 +93,14 @@ object URLSUtils {
     const val ZENE_USER_VERIFY_NUMBER_OTP_API = "users/verify-number-otp"
     const val ZENE_USER_ADD_HISTORY_API = "users/add-history"
     const val ZENE_USER_GET_HISTORY_API = "users/get-history"
+    const val ZENE_USER_SAVED_PLAYLISTS_API = "users/saved-playlists"
 
     const val ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API = "users-playlists/create-new-playlists"
     const val ZENE_USER_PLAYLISTS_SONG_CHECK_API = "users-playlists/playlists-song-check"
     const val ZENE_USER_ADD_TO_PLAYLISTS_API = "users-playlists/add-to-playlists"
     const val ZENE_USER_IS_LIKED_API = "users-playlists/is-liked"
     const val ZENE_USER_ADD_LIKE_API = "users-playlists/add-like"
+    const val ZENE_USER_SAVE_PLAYLISTS_API = "users-playlists/save-playlists"
 
     const val ZENE_CONTACT_CACHE = "zene_contact_cache"
 

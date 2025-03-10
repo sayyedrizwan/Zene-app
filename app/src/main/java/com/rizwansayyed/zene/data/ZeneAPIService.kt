@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.PodcastEposideResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
+import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
@@ -84,6 +85,8 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_LOGIN_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_SONG_CHECK_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SAVED_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SAVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
@@ -399,6 +402,18 @@ interface ZeneAPIService {
     suspend fun playlistsInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): PodcastPlaylistResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_SAVE_PLAYLISTS_API)
+    suspend fun savePlaylists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_SAVED_PLAYLISTS_API)
+    suspend fun getSavePlaylists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): SavedPlaylistsPodcastsResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_INFO_ARTIST_API)

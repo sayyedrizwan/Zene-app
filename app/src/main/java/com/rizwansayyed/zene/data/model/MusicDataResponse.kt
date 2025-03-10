@@ -101,7 +101,6 @@ data class ZeneMusicData(
     val secId: String? = null,
     val isExpire: Boolean? = false
 ) {
-
     fun podcastTimestamp(): Boolean {
         if (extra?.contains("s ago") == true) return true
         else if (extra?.contains("m ago") == true) return true

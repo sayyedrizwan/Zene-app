@@ -1,8 +1,10 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,14 +39,19 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.MyLibraryTypes
+import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
+import com.rizwansayyed.zene.ui.main.view.CreateAPlaylistsView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.ImageWithBorder
+import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
@@ -51,8 +59,12 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun HomeMyLibraryView() {
     val viewModel: MyLibraryViewModel = hiltViewModel()
+    val playerViewModel: PlayerViewModel = hiltViewModel()
     var selectedType by remember { mutableStateOf(MyLibraryTypes.HISTORY) }
     var isLaunched by remember { mutableStateOf(false) }
+
+    var historyInfo by remember { mutableStateOf(false) }
+    var addNewPlaylists by remember { mutableStateOf(false) }
 
     LazyColumn(Modifier.fillMaxSize()) {
         item { Spacer(Modifier.height(10.dp)) }
@@ -61,8 +73,10 @@ fun HomeMyLibraryView() {
             Row(
                 Modifier
                     .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
                     .background(DarkCharcoal)
-                    .padding(vertical = 5.dp)
+                    .padding(vertical = 5.dp),
+                Arrangement.Start, Alignment.CenterVertically
             ) {
                 MyLibraryTypes.entries.forEach {
                     ButtonWithBorder(
@@ -70,22 +84,54 @@ fun HomeMyLibraryView() {
                     ) {
                         selectedType = it
                     }
+
+                    if (it == MyLibraryTypes.HISTORY)
+                        AnimatedVisibility(selectedType == MyLibraryTypes.HISTORY) {
+                            ImageWithBorder(R.drawable.ic_information_circle) {
+                                historyInfo = true
+                            }
+                        }
+
+
+                    if (it == MyLibraryTypes.MY_PLAYLISTS)
+                        AnimatedVisibility(selectedType == MyLibraryTypes.MY_PLAYLISTS) {
+                            ImageWithBorder(R.drawable.ic_plus_sign) {
+                                addNewPlaylists = true
+                            }
+                        }
                 }
             }
         }
 
         item { Spacer(Modifier.height(30.dp)) }
-        items(viewModel.historyList) { HistoryCardItems(it) }
 
-        item {
-            if (viewModel.historyIsLoading) CircularLoadingView()
-        }
+        when (selectedType) {
+            MyLibraryTypes.HISTORY -> {
+                items(viewModel.historyList) { HistoryCardItems(it) }
 
-        item {
-            LaunchedEffect(Unit) {
-                if (isLaunched) {
-                    viewModel.songHistoryList(false)
+                item { if (viewModel.historyIsLoading) CircularLoadingView() }
+
+                item {
+                    LaunchedEffect(Unit) {
+                        if (isLaunched) viewModel.songHistoryList(false)
+                    }
                 }
+            }
+
+            MyLibraryTypes.SAVED -> {
+                items(viewModel.savedList) { SavedPlaylistsPodcastView(it) }
+
+                item { if (viewModel.savedIsLoading) CircularLoadingView() }
+
+                item {
+                    LaunchedEffect(Unit) {
+                        if (isLaunched) viewModel.savedPlaylistsList(false)
+                    }
+                }
+            }
+
+            MyLibraryTypes.MY_PLAYLISTS -> {
+
             }
         }
 
@@ -94,8 +140,20 @@ fun HomeMyLibraryView() {
 
     LaunchedEffect(Unit) {
         viewModel.songHistoryList(true)
+        viewModel.savedPlaylistsList(true)
         delay(1.seconds)
         isLaunched = true
+    }
+
+    if (historyInfo) TextAlertDialog(R.string.history, R.string.history_desc) {
+        historyInfo = false
+    }
+
+    if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, null) {
+        addNewPlaylists = false
+        if (it) {
+//            info?.id?.let { playerViewModel.playlistSongCheckList(page, it) }
+        }
     }
 }
 
@@ -132,39 +190,22 @@ fun HistoryCardItems(data: MusicHistoryResponse) {
             }
         }
 
-        if (data.asMusicData().type() == MusicDataTypes.SONGS || data.asMusicData()
-                .type() == MusicDataTypes.AI_MUSIC
-        ) {
-            ImageIcon(R.drawable.ic_music_note, 19)
+        if (data.asMusicData().type() == MusicDataTypes.SONGS) {
+            ImageIcon(R.drawable.ic_music_note, 20)
+        } else if (data.asMusicData().type() == MusicDataTypes.AI_MUSIC) {
+            ImageIcon(R.drawable.ic_robot_singing, 20)
         } else if (data.asMusicData().type() == MusicDataTypes.PODCAST) {
-            ImageIcon(R.drawable.ic_podcast, 19)
+            ImageIcon(R.drawable.ic_podcast, 20)
         } else if (data.asMusicData().type() == MusicDataTypes.RADIO) {
-            ImageIcon(R.drawable.ic_radio, 19)
+            ImageIcon(R.drawable.ic_radio, 20)
         } else if (data.asMusicData().type() == MusicDataTypes.VIDEOS) {
-            ImageIcon(R.drawable.ic_video_replay, 19)
+            ImageIcon(R.drawable.ic_video_replay, 20)
         }
 
     }
+}
 
-//    Column(Modifier
-//        .clickable { startMedia(data.asMusicData()) }
-//        .padding(horizontal = 2.dp)
-//        .padding(bottom = 25.dp)
-//        .fillMaxWidth()) {
-//
-//        GlideImage(
-//            data.thumbnail,
-//            data.name,
-//            Modifier
-//                .fillMaxWidth()
-//                .aspectRatio(1f)
-//                .clip(RoundedCornerShape(14.dp)),
-//            contentScale = ContentScale.Fit
-//        )
-//        Spacer(Modifier.height(4.dp))
-//        TextViewBold(data.name ?: "", 14, line = 1)
-//        Box(Modifier.offset(y = (-9).dp)) {
-//            TextViewNormal(data.artists ?: "", 12, line = 1)
-//        }
-//    }
+@Composable
+fun SavedPlaylistsPodcastView(modifier: SavedPlaylistsPodcastsResponseItem) {
+
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
+import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -39,6 +40,29 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         }.collectLatest {
             historyIsLoading = false
             historyList.addAll(it)
+        }
+    }
+
+
+    var savedList = mutableStateListOf<SavedPlaylistsPodcastsResponseItem>()
+    var savedIsLoading by mutableStateOf(false)
+    private var savedPage by mutableIntStateOf(0)
+
+    fun savedPlaylistsList(new: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        if (new) {
+            savedPage = 0
+            savedList.clear()
+        } else {
+            savedPage += 1
+        }
+
+        zeneAPI.getSavePlaylists(savedPage).onStart {
+            savedIsLoading = true
+        }.catch {
+            savedIsLoading = true
+        }.collectLatest {
+            savedIsLoading = false
+            savedList.addAll(it)
         }
     }
 }

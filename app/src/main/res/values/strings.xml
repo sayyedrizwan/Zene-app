@@ -47,6 +47,7 @@
     <string name="top_podcasts_you_listened_to_this_month">Top Podcasts Listened This Month</string>
     <string name="trending_ai_musics">Trending AI Songs</string>
     <string name="new_ai_musics">New AI Songs</string>
+    <string name="history_desc">We automatically clear your history older than 30 days to save server costs and keep Zene free for everyone.</string>
     <string name="history">History</string>
     <string name="saved_mix">Saved Mix</string>
     <string name="my_playlists">My Playlists</string>
