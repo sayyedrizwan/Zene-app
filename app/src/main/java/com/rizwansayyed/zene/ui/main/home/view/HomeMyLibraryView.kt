@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,8 +54,6 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,12 +61,15 @@ fun HomeMyLibraryView() {
     val viewModel: MyLibraryViewModel = hiltViewModel()
     val playerViewModel: PlayerViewModel = hiltViewModel()
     var selectedType by remember { mutableStateOf(MyLibraryTypes.HISTORY) }
-    var isLaunched by remember { mutableStateOf(false) }
 
     var historyInfo by remember { mutableStateOf(false) }
     var addNewPlaylists by remember { mutableStateOf(false) }
 
-    LazyColumn(Modifier.fillMaxSize()) {
+    val state = rememberLazyListState()
+    var isBottomTriggered by remember { mutableStateOf(false) }
+
+
+    LazyColumn(Modifier.fillMaxSize(), state) {
         item { Spacer(Modifier.height(10.dp)) }
 
         stickyHeader {
@@ -110,24 +113,12 @@ fun HomeMyLibraryView() {
                 items(viewModel.historyList) { HistoryCardItems(it) }
 
                 item { if (viewModel.historyIsLoading) CircularLoadingView() }
-
-                item {
-                    LaunchedEffect(Unit) {
-                        if (isLaunched) viewModel.songHistoryList(false)
-                    }
-                }
             }
 
             MyLibraryTypes.SAVED -> {
                 items(viewModel.savedList) { SavedPlaylistsPodcastView(it) }
 
                 item { if (viewModel.savedIsLoading) CircularLoadingView() }
-
-                item {
-                    LaunchedEffect(Unit) {
-                        if (isLaunched) viewModel.savedPlaylistsList(false)
-                    }
-                }
             }
 
             MyLibraryTypes.MY_PLAYLISTS -> {
@@ -138,11 +129,26 @@ fun HomeMyLibraryView() {
         item { Spacer(Modifier.height(300.dp)) }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.songHistoryList(true)
-        viewModel.savedPlaylistsList(true)
-        delay(1.seconds)
-        isLaunched = true
+
+    LaunchedEffect(state) {
+        snapshotFlow { state.layoutInfo }
+            .collect { layoutInfo ->
+                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItemsCount = layoutInfo.totalItemsCount
+
+                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                    isBottomTriggered = true
+                    when (selectedType) {
+                        MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
+                        MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
+                        MyLibraryTypes.MY_PLAYLISTS -> {}
+                    }
+
+                    viewModel.savedPlaylistsList()
+                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                    isBottomTriggered = false
+                }
+            }
     }
 
     if (historyInfo) TextAlertDialog(R.string.history, R.string.history_desc) {

@@ -25,19 +25,13 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var historyIsLoading by mutableStateOf(false)
     private var historyPage by mutableIntStateOf(0)
 
-    fun songHistoryList(new: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        if (new) {
-            historyPage = 0
-            historyList.clear()
-        } else {
-            historyPage += 1
-        }
-
+    fun songHistoryList() = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.getHistory(historyPage).onStart {
             historyIsLoading = true
         }.catch {
             historyIsLoading = true
         }.collectLatest {
+            historyPage += 1
             historyIsLoading = false
             historyList.addAll(it)
         }
@@ -48,19 +42,13 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var savedIsLoading by mutableStateOf(false)
     private var savedPage by mutableIntStateOf(0)
 
-    fun savedPlaylistsList(new: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        if (new) {
-            savedPage = 0
-            savedList.clear()
-        } else {
-            savedPage += 1
-        }
-
+    fun savedPlaylistsList() = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.getSavePlaylists(savedPage).onStart {
             savedIsLoading = true
         }.catch {
             savedIsLoading = true
         }.collectLatest {
+            savedPage += 1
             savedIsLoading = false
             savedList.addAll(it)
         }
