@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +36,7 @@ import kotlin.time.Duration.Companion.seconds
 fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
+    val saveableStateHolder = rememberSaveableStateHolder()
 
     Column(Modifier.fillMaxSize()) {
         Box(

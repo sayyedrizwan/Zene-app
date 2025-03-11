@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
@@ -86,6 +87,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_LOGIN_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_SONG_CHECK_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLIST_LIKE_COUNT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SAVED_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SAVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
@@ -421,6 +423,12 @@ interface ZeneAPIService {
     suspend fun myPlaylists(
         @Header("token") token: String, @Body data: RequestBody
     ): SavedPlaylistsPodcastsResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_PLAYLIST_LIKE_COUNT_API)
+    suspend fun likeSongsCount(
+        @Header("token") token: String, @Body data: RequestBody
+    ): CountResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_INFO_ARTIST_API)

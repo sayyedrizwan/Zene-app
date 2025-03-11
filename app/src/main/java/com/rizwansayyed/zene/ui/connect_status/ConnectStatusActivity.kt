@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.connect_status
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -50,6 +51,7 @@ import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.LockScreenOrientation
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -75,6 +77,8 @@ class ConnectStatusActivity : ComponentActivity() {
                 val caption = remember { mutableStateOf("") }
                 val pleaseEnterACaption =
                     stringResource(R.string.error_uploading_please_try_again_later)
+
+                LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE, false)
 
                 Box(
                     Modifier

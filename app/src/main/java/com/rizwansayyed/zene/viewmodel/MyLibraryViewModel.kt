@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -8,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,18 +60,27 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var myList = mutableStateListOf<SavedPlaylistsPodcastsResponseItem>()
     var myIsLoading by mutableStateOf(false)
     private var myPage by mutableIntStateOf(0)
+    var likedItemsCount by mutableStateOf<ResponseResult<CountResponse>>(ResponseResult.Empty)
 
     fun myPlaylistsList() = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.myPlaylists(myPage).onStart {
             myIsLoading = true
         }.catch {
-            Log.d("TAG", "myPlaylistsList: runnned on dd ${it.message}")
             myIsLoading = false
         }.collectLatest {
-            Log.d("TAG", "myPlaylistsList: runnned on ${it.size}")
             myPage += 1
             myIsLoading = false
             myList.addAll(it)
+        }
+    }
+
+    fun likedItemCount() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.likeSongsCount().onStart {
+            likedItemsCount = ResponseResult.Loading
+        }.catch {
+            likedItemsCount = ResponseResult.Error(it)
+        }.collectLatest {
+            likedItemsCount = ResponseResult.Success(it)
         }
     }
 

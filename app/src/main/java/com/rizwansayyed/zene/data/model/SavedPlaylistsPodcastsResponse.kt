@@ -12,5 +12,5 @@ data class SavedPlaylistsPodcastsResponseItem(
     val type: String?,
 ) {
     fun isPodcast() = type == "PODCAST"
-    fun isUserPodcast() = type == "USER_PLAYLISTS"
+    fun isUserPlaylist() = type == "USER_PLAYLISTS"
 }

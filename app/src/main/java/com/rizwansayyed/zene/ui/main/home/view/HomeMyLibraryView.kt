@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.MyLibraryTypes
@@ -51,6 +52,7 @@ import com.rizwansayyed.zene.ui.main.view.CreateAPlaylistsView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
@@ -106,6 +108,7 @@ fun HomeMyLibraryView() {
                 }
 
                 MyLibraryTypes.MY_PLAYLISTS -> {
+                    item { LikedPlaylistsView(viewModel) }
                     items(viewModel.myList) { SavedPlaylistsPodcastView(it) }
 
                     item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.myIsLoading) CircularLoadingView() }
@@ -175,6 +178,7 @@ fun HomeMyLibraryView() {
     }
 
     DisposableEffect(Unit) {
+        viewModel.likedItemCount()
         onDispose { viewModel.clearAll() }
     }
 }
@@ -185,7 +189,7 @@ fun HistoryCardItems(data: MusicHistoryResponse) {
     Row(Modifier
         .padding(10.dp)
         .fillMaxWidth()
-        .clip(RoundedCornerShape(14.dp))
+        .clip(RoundedCornerShape(7.dp))
         .background(Color.Black)
         .clickable { startMedia(data.asMusicData()) }
         .padding(10.dp),
@@ -248,14 +252,14 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(14.dp)),
+                .clip(RoundedCornerShape(7.dp)),
             contentScale = ContentScale.Crop
         )
         Spacer(Modifier.height(5.dp))
         TextViewBold(data.name ?: "", 14, line = 2)
         Box(Modifier.offset(y = (-3).dp)) {
-            if (data.isUserPodcast()) {
-                TextViewNormal(stringResource(R.string.playlist), 14, line = 1)
+            if (data.isUserPlaylist()) {
+                TextViewNormal(stringResource(R.string.my_playlist), 14, line = 1)
             } else {
                 if (data.isPodcast())
                     TextViewNormal(stringResource(R.string.podcasts), 14, line = 1)
@@ -263,6 +267,42 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
                     TextViewNormal(stringResource(R.string.playlist), 14, line = 1)
                 else
                     TextViewNormal(stringResource(R.string.album), 14, line = 1)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun LikedPlaylistsView(data: MyLibraryViewModel) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .padding(bottom = 15.dp)
+            .clickable {
+
+            }
+    ) {
+        GlideImage(
+            "https://i.ibb.co/xq4CWHCz/liked-thumb-img.png", stringResource(R.string.liked_songs),
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(7.dp)),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(Modifier.height(5.dp))
+        TextViewBold(stringResource(R.string.liked_songs), 14, line = 2)
+        Box(Modifier.offset(y = (-3).dp)) {
+            when (val v = data.likedItemsCount) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> CircularLoadingViewSmall()
+                is ResponseResult.Success ->
+                    TextViewNormal(
+                        "${v.data.count ?: 0} ${stringResource(R.string.songs)}", 14, line = 1
+                    )
             }
         }
     }

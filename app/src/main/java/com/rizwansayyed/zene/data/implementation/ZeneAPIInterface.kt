@@ -5,6 +5,7 @@ import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
@@ -118,4 +119,5 @@ interface ZeneAPIInterface {
 
     suspend fun getSavePlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
     suspend fun myPlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
+    suspend fun likeSongsCount(): Flow<CountResponse>
 }
