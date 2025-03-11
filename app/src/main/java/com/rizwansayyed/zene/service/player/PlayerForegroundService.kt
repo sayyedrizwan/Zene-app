@@ -232,7 +232,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         currentPlayingSong ?: return@launch
         saveEmpty(songsLists.asList())
         try {
-            val path = zeneAPI.podcastMediaURL(currentPlayingSong!!.path).firstOrNull()
+            val path = zeneAPI.podcastMediaURL(currentPlayingSong!!.id).firstOrNull()
             exoPlayerSession.startPlaying(path?.urlPath?.trim())
         } catch (e: Exception) {
             e.printStackTrace()

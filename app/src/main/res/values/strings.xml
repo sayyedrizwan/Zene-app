@@ -107,6 +107,7 @@
     <string name="search_">search</string>
     <string name="search">Search</string>
     <string name="ai_music">AI Songs</string>
+    <string name="ai_song">AI Song</string>
     <string name="search_places">Search places</string>
     <string name="enter_your_username">Enter your username</string>
     <string name="update_status">Update status</string>

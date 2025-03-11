@@ -48,6 +48,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.MyLibraryTypes
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.main.view.CreateAPlaylistsView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
@@ -59,13 +60,14 @@ import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_LIKED_PLAYLIST
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -96,9 +98,7 @@ fun HomeMyLibraryView() {
 
             when (selectedType) {
                 MyLibraryTypes.HISTORY -> {
-                    items(viewModel.historyList, span = { GridItemSpan(maxLineSpan) }) {
-                        HistoryCardItems(it)
-                    }
+                    items(viewModel.historyList) { HistoryCardItems(it) }
 
                     if (!viewModel.historyIsLoading && viewModel.historyList.isEmpty()) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -126,7 +126,6 @@ fun HomeMyLibraryView() {
                             )
                         }
                     }
-
 
                     item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.savedIsLoading) CircularLoadingView() }
                 }
@@ -220,70 +219,111 @@ fun HomeMyLibraryView() {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HistoryCardItems(data: MusicHistoryResponse) {
-    Row(Modifier
-        .padding(10.dp)
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(7.dp))
-        .background(Color.Black)
-        .clickable { startMedia(data.asMusicData()) }
-        .padding(10.dp),
-        Arrangement.Center,
-        Alignment.CenterVertically) {
-        GlideImage(
-            data.thumbnail,
-            data.name,
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .padding(bottom = 15.dp)
+            .clickable { startMedia(data.asMusicData()) }, Alignment.Center
+    ) {
+
+        Column(Modifier.fillMaxWidth()) {
+            GlideImage(
+                data.thumbnail,
+                data.name,
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(7.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(Modifier.height(5.dp))
+            TextViewBold(data.name ?: "", 14, line = 2)
+            TextViewNormal(data.artists ?: "", 14, line = 1)
+        }
+
+        Box(
             Modifier
-                .padding(horizontal = 5.dp)
-                .height(90.dp)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(14.dp)),
-            contentScale = ContentScale.Fit
-        )
-        Column(
-            Modifier
-                .padding(horizontal = 4.dp)
-                .weight(1f), Arrangement.Center, Alignment.Start
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+                .clip(RoundedCornerShape(100))
+                .background(Color.Black)
+                .padding(5.dp)
         ) {
-            TextViewBold(data.name ?: "", 13, line = 2)
-            if ((data.artists?.length ?: 0) > 3) Box(Modifier.offset(y = (-2).dp)) {
-                TextViewNormal(data.artists!!, 12, line = 1)
+            if (data.asMusicData().type() == MusicDataTypes.SONGS) {
+                ImageIcon(R.drawable.ic_music_note, 20)
+            } else if (data.asMusicData().type() == MusicDataTypes.AI_MUSIC) {
+                ImageIcon(R.drawable.ic_robot_singing, 20)
+            } else if (data.asMusicData().type() == MusicDataTypes.PODCAST_AUDIO) {
+                ImageIcon(R.drawable.ic_podcast, 20)
+            } else if (data.asMusicData().type() == MusicDataTypes.RADIO) {
+                ImageIcon(R.drawable.ic_radio, 20)
+            } else if (data.asMusicData().type() == MusicDataTypes.VIDEOS) {
+                ImageIcon(R.drawable.ic_video_replay, 20)
             }
         }
-
-        if (data.asMusicData().type() == MusicDataTypes.SONGS) {
-            ImageIcon(R.drawable.ic_music_note, 20)
-        } else if (data.asMusicData().type() == MusicDataTypes.AI_MUSIC) {
-            ImageIcon(R.drawable.ic_robot_singing, 20)
-        } else if (data.asMusicData().type() == MusicDataTypes.PODCAST) {
-            ImageIcon(R.drawable.ic_podcast, 20)
-        } else if (data.asMusicData().type() == MusicDataTypes.RADIO) {
-            ImageIcon(R.drawable.ic_radio, 20)
-        } else if (data.asMusicData().type() == MusicDataTypes.VIDEOS) {
-            ImageIcon(R.drawable.ic_video_replay, 20)
-        }
-
     }
+
+//    Row(Modifier
+//        .padding(10.dp)
+//        .fillMaxWidth()
+//        .clip(RoundedCornerShape(7.dp))
+//        .background(Color.Black)
+//        .clickable { startMedia(data.asMusicData()) }
+//        .padding(10.dp),
+//        Arrangement.Center,
+//        Alignment.CenterVertically) {
+//        GlideImage(
+//            data.thumbnail,
+//            data.name,
+//            Modifier
+//                .padding(horizontal = 5.dp)
+//                .height(90.dp)
+//                .aspectRatio(1f)
+//                .clip(RoundedCornerShape(14.dp)),
+//            contentScale = ContentScale.Fit
+//        )
+//        Column(
+//            Modifier
+//                .padding(horizontal = 4.dp)
+//                .weight(1f), Arrangement.Center, Alignment.Start
+//        ) {
+//            TextViewBold(data.name ?: "", 13, line = 2)
+//            if ((data.artists?.length ?: 0) > 3) Box(Modifier.offset(y = (-2).dp)) {
+//                TextViewNormal(data.artists!!, 12, line = 1)
+//            }
+//        }
+//
+//        if (data.asMusicData().type() == MusicDataTypes.SONGS) {
+//            ImageIcon(R.drawable.ic_music_note, 20)
+//        } else if (data.asMusicData().type() == MusicDataTypes.AI_MUSIC) {
+//            ImageIcon(R.drawable.ic_robot_singing, 20)
+//        } else if (data.asMusicData().type() == MusicDataTypes.PODCAST) {
+//            ImageIcon(R.drawable.ic_podcast, 20)
+//        } else if (data.asMusicData().type() == MusicDataTypes.RADIO) {
+//            ImageIcon(R.drawable.ic_radio, 20)
+//        } else if (data.asMusicData().type() == MusicDataTypes.VIDEOS) {
+//            ImageIcon(R.drawable.ic_video_replay, 20)
+//        }
+//
+//    }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(5.dp)
-            .padding(bottom = 15.dp)
-            .clickable {
-                if (data.isUserPlaylist()) {
-                    NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${data.id}")
-                } else {
-                    if (data.isPodcast())
-                        NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
-                    else
-                        NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
-                }
+    Column(Modifier
+        .fillMaxWidth()
+        .padding(5.dp)
+        .padding(bottom = 15.dp)
+        .clickable {
+            if (data.isUserPlaylist()) {
+                NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${data.id}")
+            } else {
+                if (data.isPodcast()) NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
+                else NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
             }
-    ) {
+        }) {
         GlideImage(
             data.img,
             data.name,
@@ -299,12 +339,13 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
             if (data.isUserPlaylist()) {
                 TextViewNormal(stringResource(R.string.my_playlist), 14, line = 1)
             } else {
-                if (data.isPodcast())
-                    TextViewNormal(stringResource(R.string.podcasts), 14, line = 1)
-                else if (data.id?.startsWith("VL") == true)
-                    TextViewNormal(stringResource(R.string.playlist), 14, line = 1)
-                else
-                    TextViewNormal(stringResource(R.string.album), 14, line = 1)
+                if (data.isPodcast()) TextViewNormal(
+                    stringResource(R.string.podcasts), 14, line = 1
+                )
+                else if (data.id?.startsWith("VL") == true) TextViewNormal(
+                    stringResource(R.string.playlist), 14, line = 1
+                )
+                else TextViewNormal(stringResource(R.string.album), 14, line = 1)
             }
         }
     }
@@ -313,17 +354,21 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LikedPlaylistsView(data: MyLibraryViewModel) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(5.dp)
-            .padding(bottom = 15.dp)
-            .clickable {
-                NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${NAV_LIKED_PLAYLIST}")
+    val coroutine = rememberCoroutineScope()
+    Column(Modifier
+        .fillMaxWidth()
+        .padding(5.dp)
+        .padding(bottom = 15.dp)
+        .clickable {
+            coroutine.launch {
+                val email = DataStorageManager.userInfo.firstOrNull()?.email
+                val id = "${email}${LIKED_SONGS_ON_ZENE}"
+                NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${id}")
             }
-    ) {
+        }) {
         GlideImage(
-            "https://i.ibb.co/xq4CWHCz/liked-thumb-img.png", stringResource(R.string.liked_songs),
+            "https://i.ibb.co/xq4CWHCz/liked-thumb-img.png",
+            stringResource(R.string.liked_songs),
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
@@ -337,10 +382,9 @@ fun LikedPlaylistsView(data: MyLibraryViewModel) {
                 ResponseResult.Empty -> {}
                 is ResponseResult.Error -> {}
                 ResponseResult.Loading -> CircularLoadingViewSmall()
-                is ResponseResult.Success ->
-                    TextViewNormal(
-                        "${v.data.count ?: 0} ${stringResource(R.string.songs)}", 14, line = 1
-                    )
+                is ResponseResult.Success -> TextViewNormal(
+                    "${v.data.count ?: 0} ${stringResource(R.string.songs)}", 14, line = 1
+                )
             }
         }
     }

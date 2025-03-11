@@ -20,6 +20,7 @@ object URLSUtils {
 
 
     const val YT_VIDEO_BASE_URL = "https://www.youtube.com/"
+    const val LIKED_SONGS_ON_ZENE = "_liked_songs_on_zene"
     const val X_VIDEO_BASE_URL = "https://www.x.com/"
 
 
@@ -102,6 +103,7 @@ object URLSUtils {
     const val ZENE_USER_SAVE_PLAYLISTS_API = "users-playlists/save-playlists"
     const val ZENE_USER_SAVED_PLAYLISTS_API = "users-playlists/saved-playlists"
     const val ZENE_USER_MY_PLAYLISTS_API = "users-playlists/my-playlists"
+    const val ZENE_USER_MY_PLAYLISTS_SONGS_API = "users-playlists/my-playlists-songs"
     const val ZENE_USER_PLAYLIST_LIKE_COUNT_API = "users-playlists/like-count"
 
     const val ZENE_CONTACT_CACHE = "zene_contact_cache"

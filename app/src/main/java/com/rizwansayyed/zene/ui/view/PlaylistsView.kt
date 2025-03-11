@@ -136,9 +136,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                         when (type) {
                             PODCAST -> PodcastItemView(it, playerInfo, v.data.list ?: emptyList())
                             PLAYLIST_ALBUMS -> PlaylistsItemView(
-                                it,
-                                playerInfo,
-                                v.data.list ?: emptyList()
+                                it, playerInfo, v.data.list ?: emptyList()
                             )
                         }
                     }

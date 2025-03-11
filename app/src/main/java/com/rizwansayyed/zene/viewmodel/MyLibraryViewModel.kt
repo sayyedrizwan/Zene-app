@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -84,16 +85,21 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         }
     }
 
-    fun myPlaylistData() = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.likeSongsCount().onStart {
-            likedItemsCount = ResponseResult.Loading
+    var myPlaylistSongsList = mutableStateListOf<ZeneMusicData>()
+    var myPlaylistSongsIsLoading by mutableStateOf(false)
+    private var myPlaylistSongsPage by mutableIntStateOf(0)
+
+    fun myPlaylistSongsData(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
+            myPlaylistSongsIsLoading = true
         }.catch {
-            likedItemsCount = ResponseResult.Error(it)
+            myPlaylistSongsIsLoading = false
         }.collectLatest {
-            likedItemsCount = ResponseResult.Success(it)
+            myPlaylistSongsPage += 1
+            myPlaylistSongsIsLoading = false
+            myPlaylistSongsList.addAll(it)
         }
     }
-
 
 
     fun clearAll() {
