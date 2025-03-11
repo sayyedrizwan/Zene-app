@@ -59,6 +59,8 @@ import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_LIKED_PLAYLIST
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
@@ -98,11 +100,33 @@ fun HomeMyLibraryView() {
                         HistoryCardItems(it)
                     }
 
+                    if (!viewModel.historyIsLoading && viewModel.historyList.isEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Spacer(Modifier.height(60.dp))
+                        }
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            TextViewNormal(stringResource(R.string.no_history), 15, center = true)
+                        }
+                    }
+
                     item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.historyIsLoading) CircularLoadingView() }
                 }
 
                 MyLibraryTypes.SAVED -> {
                     items(viewModel.savedList) { SavedPlaylistsPodcastView(it) }
+
+                    if (!viewModel.savedIsLoading && viewModel.savedList.isEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Spacer(Modifier.height(60.dp))
+                        }
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            TextViewNormal(
+                                stringResource(R.string.no_saved_and_save), 15, center = true
+                            )
+                        }
+                    }
+
 
                     item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.savedIsLoading) CircularLoadingView() }
                 }
@@ -110,6 +134,16 @@ fun HomeMyLibraryView() {
                 MyLibraryTypes.MY_PLAYLISTS -> {
                     item { LikedPlaylistsView(viewModel) }
                     items(viewModel.myList) { SavedPlaylistsPodcastView(it) }
+
+                    if (!viewModel.myIsLoading && viewModel.myList.isEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Spacer(Modifier.height(60.dp))
+                        }
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            TextViewNormal(stringResource(R.string.no_playlists), 15, center = true)
+                        }
+                    }
 
                     item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.myIsLoading) CircularLoadingView() }
                 }
@@ -240,10 +274,14 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
             .padding(5.dp)
             .padding(bottom = 15.dp)
             .clickable {
-                if (data.isPodcast())
-                    NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
-                else
-                    NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
+                if (data.isUserPlaylist()) {
+                    NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${data.id}")
+                } else {
+                    if (data.isPodcast())
+                        NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
+                    else
+                        NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
+                }
             }
     ) {
         GlideImage(
@@ -281,7 +319,7 @@ fun LikedPlaylistsView(data: MyLibraryViewModel) {
             .padding(5.dp)
             .padding(bottom = 15.dp)
             .clickable {
-
+                NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${NAV_LIKED_PLAYLIST}")
             }
     ) {
         GlideImage(

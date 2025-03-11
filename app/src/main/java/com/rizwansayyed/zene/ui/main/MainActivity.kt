@@ -53,6 +53,7 @@ import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ArtistsView
 import com.rizwansayyed.zene.ui.view.LockScreenOrientation
+import com.rizwansayyed.zene.ui.view.MyPlaylistView
 import com.rizwansayyed.zene.ui.view.PlaylistView
 import com.rizwansayyed.zene.ui.view.PlaylistsType
 import com.rizwansayyed.zene.utils.HomeNavigationListener
@@ -61,6 +62,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
@@ -144,6 +146,14 @@ class MainActivity : ComponentActivity() {
                                 composable("$NAV_ARTIST_PAGE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
                                     if (id != null) ArtistsView(id)
+                                }
+                                composable("$NAV_ARTIST_PAGE{id}") { backStackEntry ->
+                                    val id = backStackEntry.arguments?.getString("id")
+                                    if (id != null) ArtistsView(id)
+                                }
+                                composable("$NAV_MY_PLAYLIST_PAGE{id}") { backStackEntry ->
+                                    val id = backStackEntry.arguments?.getString("id")
+                                    if (id != null) MyPlaylistView(id)
                                 }
                             }
 

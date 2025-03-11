@@ -84,6 +84,18 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         }
     }
 
+    fun myPlaylistData() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.likeSongsCount().onStart {
+            likedItemsCount = ResponseResult.Loading
+        }.catch {
+            likedItemsCount = ResponseResult.Error(it)
+        }.collectLatest {
+            likedItemsCount = ResponseResult.Success(it)
+        }
+    }
+
+
+
     fun clearAll() {
         historyList.clear()
         savedList.clear()

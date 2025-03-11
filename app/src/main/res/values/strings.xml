@@ -132,6 +132,9 @@
     <string name="liked_songs">Liked Songs</string>
     <string name="playlist_name">Playlist Name</string>
     <string name="albums">Albums</string>
+    <string name="no_history">No history, Browse the app to keep generating the history.</string>
+    <string name="no_saved_and_save">Nothing saved. Browse albums, playlists or podcast series, and save.</string>
+    <string name="no_playlists">No playlists</string>
     <string name="singles">Singles</string>
     <string name="album">Album</string>
     <string name="confirm">Confirm</string>
