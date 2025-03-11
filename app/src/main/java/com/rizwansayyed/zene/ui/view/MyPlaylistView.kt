@@ -68,7 +68,9 @@ fun MyPlaylistView(id: String) {
         }
 
         items(myLibraryViewModel.myPlaylistSongsList) {
-            MyPlaylistItemView(it, playerInfo, myLibraryViewModel.myPlaylistSongsList)
+            MyPlaylistItemView(it, playerInfo, myLibraryViewModel.myPlaylistSongsList) {
+                myLibraryViewModel.removeMyPlaylistItems(id, )
+            }
         }
 
         item {
@@ -111,7 +113,8 @@ fun TopLikedView() {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistItemView(
-    data: ZeneMusicData, info: MusicPlayerData?, playlistSongs: SnapshotStateList<ZeneMusicData>
+    data: ZeneMusicData, info: MusicPlayerData?, playlistSongs: SnapshotStateList<ZeneMusicData>,
+    remove: () -> Unit
 ) {
     Row(Modifier
         .padding(top = 15.dp)
@@ -150,7 +153,7 @@ fun MyPlaylistItemView(
                     contentScale = ContentScale.Crop
                 )
 
-                Box(Modifier.clickable {  }) {
+                Box(Modifier.clickable { }) {
                     ImageIcon(R.drawable.ic_delete, 20)
                 }
 

@@ -121,4 +121,9 @@ interface ZeneAPIInterface {
     suspend fun myPlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
     suspend fun likeSongsCount(): Flow<CountResponse>
     suspend fun myPlaylistsSongs(playlistId: String, page: Int): Flow<ZeneMusicDataList>
+    suspend fun removeMyPlaylistsSongs(
+        playlistId: String,
+        songID: String,
+        type: MusicDataTypes
+    ): Flow<StatusTypeResponse>
 }

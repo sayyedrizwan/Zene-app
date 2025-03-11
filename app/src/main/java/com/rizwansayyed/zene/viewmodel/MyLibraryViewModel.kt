@@ -101,6 +101,18 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         }
     }
 
+    fun removeMyPlaylistItems(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.removeMyPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
+            myPlaylistSongsIsLoading = true
+        }.catch {
+            myPlaylistSongsIsLoading = false
+        }.collectLatest {
+            myPlaylistSongsPage += 1
+            myPlaylistSongsIsLoading = false
+            myPlaylistSongsList.addAll(it)
+        }
+    }
+
 
     fun clearAll() {
         historyList.clear()

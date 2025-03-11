@@ -155,6 +155,23 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.myPlaylistsSongs(token, body))
     }
 
+    override suspend fun removeMyPlaylistsSongs(
+        playlistId: String, songID: String, type: MusicDataTypes
+    ) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("song_id", songID)
+            put("playlist_id", playlistId)
+            put("type", type.name)
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.removeMyPlaylistsSongs(token, body))
+    }
+
     override suspend fun likeSongsCount() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
