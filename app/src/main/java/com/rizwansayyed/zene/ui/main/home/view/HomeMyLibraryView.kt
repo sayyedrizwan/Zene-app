@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -16,16 +15,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -33,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -51,11 +56,14 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeMyLibraryView() {
     val viewModel: MyLibraryViewModel = hiltViewModel()
@@ -65,90 +73,94 @@ fun HomeMyLibraryView() {
     var historyInfo by remember { mutableStateOf(false) }
     var addNewPlaylists by remember { mutableStateOf(false) }
 
-    val state = rememberLazyListState()
+    val coroutine = rememberCoroutineScope()
+    val state = rememberLazyGridState()
     var isBottomTriggered by remember { mutableStateOf(false) }
 
-
-    LazyColumn(Modifier.fillMaxSize(), state) {
-        item { Spacer(Modifier.height(10.dp)) }
-
-        stickyHeader {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .background(DarkCharcoal)
-                    .padding(vertical = 5.dp),
-                Arrangement.Start, Alignment.CenterVertically
-            ) {
-                MyLibraryTypes.entries.forEach {
-                    ButtonWithBorder(
-                        it.names, if (selectedType == it) Color.White else Color.DarkGray
-                    ) {
-                        selectedType = it
-                    }
-
-                    if (it == MyLibraryTypes.HISTORY)
-                        AnimatedVisibility(selectedType == MyLibraryTypes.HISTORY) {
-                            ImageWithBorder(R.drawable.ic_information_circle) {
-                                historyInfo = true
-                            }
-                        }
-
-
-                    if (it == MyLibraryTypes.MY_PLAYLISTS)
-                        AnimatedVisibility(selectedType == MyLibraryTypes.MY_PLAYLISTS) {
-                            ImageWithBorder(R.drawable.ic_plus_sign) {
-                                addNewPlaylists = true
-                            }
-                        }
-                }
-            }
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val columns = remember {
+        when {
+            screenWidth < 600 -> 2
+            screenWidth < 900 -> 3
+            else -> 4
         }
-
-        item { Spacer(Modifier.height(30.dp)) }
-
-        when (selectedType) {
-            MyLibraryTypes.HISTORY -> {
-                items(viewModel.historyList) { HistoryCardItems(it) }
-
-                item { if (viewModel.historyIsLoading) CircularLoadingView() }
-            }
-
-            MyLibraryTypes.SAVED -> {
-                items(viewModel.savedList) { SavedPlaylistsPodcastView(it) }
-
-                item { if (viewModel.savedIsLoading) CircularLoadingView() }
-            }
-
-            MyLibraryTypes.MY_PLAYLISTS -> {
-
-            }
-        }
-
-        item { Spacer(Modifier.height(300.dp)) }
     }
 
+    Box(Modifier.fillMaxSize()) {
+        LazyVerticalGrid(GridCells.Fixed(columns), Modifier.fillMaxSize(), state) {
+            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(60.dp)) }
 
-    LaunchedEffect(state) {
-        snapshotFlow { state.layoutInfo }
-            .collect { layoutInfo ->
-                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                val totalItemsCount = layoutInfo.totalItemsCount
-
-                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
-                    isBottomTriggered = true
-                    when (selectedType) {
-                        MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
-                        MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
-                        MyLibraryTypes.MY_PLAYLISTS -> {}
+            when (selectedType) {
+                MyLibraryTypes.HISTORY -> {
+                    items(viewModel.historyList, span = { GridItemSpan(maxLineSpan) }) {
+                        HistoryCardItems(it)
                     }
 
-                    viewModel.savedPlaylistsList()
-                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
-                    isBottomTriggered = false
+                    item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.historyIsLoading) CircularLoadingView() }
+                }
+
+                MyLibraryTypes.SAVED -> {
+                    items(viewModel.savedList) { SavedPlaylistsPodcastView(it) }
+
+                    item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.savedIsLoading) CircularLoadingView() }
+                }
+
+                MyLibraryTypes.MY_PLAYLISTS -> {
+                    items(viewModel.myList) { SavedPlaylistsPodcastView(it) }
+
+                    item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.myIsLoading) CircularLoadingView() }
                 }
             }
+
+            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(300.dp)) }
+        }
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .background(DarkCharcoal)
+                .padding(vertical = 5.dp), Arrangement.Start, Alignment.CenterVertically
+        ) {
+            MyLibraryTypes.entries.forEach {
+                ButtonWithBorder(
+                    it.names, if (selectedType == it) Color.White else Color.DarkGray
+                ) {
+                    selectedType = it
+                }
+
+                if (it == MyLibraryTypes.HISTORY) AnimatedVisibility(selectedType == MyLibraryTypes.HISTORY) {
+                    ImageWithBorder(R.drawable.ic_information_circle) {
+                        historyInfo = true
+                    }
+                }
+
+
+                if (it == MyLibraryTypes.MY_PLAYLISTS) AnimatedVisibility(selectedType == MyLibraryTypes.MY_PLAYLISTS) {
+                    ImageWithBorder(R.drawable.ic_plus_sign) {
+                        addNewPlaylists = true
+                    }
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(state) {
+        snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
+            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val totalItemsCount = layoutInfo.totalItemsCount
+
+            if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                isBottomTriggered = true
+                when (selectedType) {
+                    MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
+                    MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
+                    MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
+                }
+            } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                isBottomTriggered = false
+            }
+        }
     }
 
     if (historyInfo) TextAlertDialog(R.string.history, R.string.history_desc) {
@@ -157,9 +169,13 @@ fun HomeMyLibraryView() {
 
     if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, null) {
         addNewPlaylists = false
-        if (it) {
-//            info?.id?.let { playerViewModel.playlistSongCheckList(page, it) }
+        if (it) coroutine.launch {
+            state.animateScrollToItem(0)
         }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { viewModel.clearAll() }
     }
 }
 
@@ -211,7 +227,43 @@ fun HistoryCardItems(data: MusicHistoryResponse) {
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun SavedPlaylistsPodcastView(modifier: SavedPlaylistsPodcastsResponseItem) {
-
+fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .padding(bottom = 15.dp)
+            .clickable {
+                if (data.isPodcast())
+                    NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
+                else
+                    NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
+            }
+    ) {
+        GlideImage(
+            data.img,
+            data.name,
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(14.dp)),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(Modifier.height(5.dp))
+        TextViewBold(data.name ?: "", 14, line = 2)
+        Box(Modifier.offset(y = (-3).dp)) {
+            if (data.isUserPodcast()) {
+                TextViewNormal(stringResource(R.string.playlist), 14, line = 1)
+            } else {
+                if (data.isPodcast())
+                    TextViewNormal(stringResource(R.string.podcasts), 14, line = 1)
+                else if (data.id?.startsWith("VL") == true)
+                    TextViewNormal(stringResource(R.string.playlist), 14, line = 1)
+                else
+                    TextViewNormal(stringResource(R.string.album), 14, line = 1)
+            }
+        }
+    }
 }

@@ -10,4 +10,7 @@ data class SavedPlaylistsPodcastsResponseItem(
     val name: String?,
     val timestamp: Long?,
     val type: String?,
-)
+) {
+    fun isPodcast() = type == "PODCAST"
+    fun isUserPodcast() = type == "USER_PLAYLISTS"
+}

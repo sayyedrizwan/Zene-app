@@ -117,4 +117,5 @@ interface ZeneAPIInterface {
     ): Flow<StatusTypeResponse>
 
     suspend fun getSavePlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
+    suspend fun myPlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
 }

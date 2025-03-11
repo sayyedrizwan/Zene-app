@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -29,7 +30,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         zeneAPI.getHistory(historyPage).onStart {
             historyIsLoading = true
         }.catch {
-            historyIsLoading = true
+            historyIsLoading = false
         }.collectLatest {
             historyPage += 1
             historyIsLoading = false
@@ -46,11 +47,40 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         zeneAPI.getSavePlaylists(savedPage).onStart {
             savedIsLoading = true
         }.catch {
-            savedIsLoading = true
+            savedIsLoading = false
         }.collectLatest {
             savedPage += 1
             savedIsLoading = false
             savedList.addAll(it)
         }
+    }
+
+
+    var myList = mutableStateListOf<SavedPlaylistsPodcastsResponseItem>()
+    var myIsLoading by mutableStateOf(false)
+    private var myPage by mutableIntStateOf(0)
+
+    fun myPlaylistsList() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.myPlaylists(myPage).onStart {
+            myIsLoading = true
+        }.catch {
+            Log.d("TAG", "myPlaylistsList: runnned on dd ${it.message}")
+            myIsLoading = false
+        }.collectLatest {
+            Log.d("TAG", "myPlaylistsList: runnned on ${it.size}")
+            myPage += 1
+            myIsLoading = false
+            myList.addAll(it)
+        }
+    }
+
+    fun clearAll() {
+        historyList.clear()
+        savedList.clear()
+        myList.clear()
+
+        historyPage = 0
+        savedPage = 0
+        myPage = 0
     }
 }

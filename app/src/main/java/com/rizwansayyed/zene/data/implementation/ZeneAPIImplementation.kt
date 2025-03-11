@@ -125,6 +125,19 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.getSavePlaylists(token, body))
     }
 
+    override suspend fun myPlaylists(page: Int) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("page", page)
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.myPlaylists(token, body))
+    }
+
     override suspend fun recentHome() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
