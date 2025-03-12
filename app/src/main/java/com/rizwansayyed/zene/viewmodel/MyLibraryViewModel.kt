@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -13,10 +14,13 @@ import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -63,7 +67,11 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     private var myPage by mutableIntStateOf(0)
     var likedItemsCount by mutableStateOf<ResponseResult<CountResponse>>(ResponseResult.Empty)
 
-    fun myPlaylistsList() = viewModelScope.launch(Dispatchers.IO) {
+    fun myPlaylistsList(forceClean: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
+        if (forceClean) {
+            myPage = 0
+            myList.clear()
+        }
         zeneAPI.myPlaylists(myPage).onStart {
             myIsLoading = true
         }.catch {
@@ -98,6 +106,26 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             myPlaylistSongsPage += 1
             myPlaylistSongsIsLoading = false
             myPlaylistSongsList.addAll(it)
+        }
+    }
+
+
+    var playlistInfo by mutableStateOf<ResponseResult<ZeneMusicData>>(ResponseResult.Empty)
+    var isPlaylistOfSameUser by mutableStateOf(false)
+
+    fun myPlaylistInfo(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+        if (playlistID.contains(LIKED_SONGS_ON_ZENE)) {
+            isPlaylistOfSameUser = true
+            return@launch
+        }
+        zeneAPI.myPlaylistInfo(playlistID).onStart {
+            playlistInfo = ResponseResult.Empty
+        }.catch {
+            playlistInfo = ResponseResult.Loading
+        }.collectLatest {
+            val email = userInfo.firstOrNull()?.email
+            isPlaylistOfSameUser = email == it.artists
+            playlistInfo = ResponseResult.Success(it)
         }
     }
 

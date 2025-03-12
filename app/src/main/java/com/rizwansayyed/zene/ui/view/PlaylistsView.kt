@@ -310,7 +310,7 @@ fun PlaylistsButtonView(
         if (data.list?.isNotEmpty() == true) MiniWithImageAndBorder(
             R.drawable.ic_play, R.string.play, MainColor
         ) {
-            startMedia(data.list.first(), data.list)
+            if (data.list.isNotEmpty()) startMedia(data.list.first(), data.list)
         }
     }
 

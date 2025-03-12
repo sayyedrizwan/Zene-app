@@ -206,6 +206,7 @@ fun HomeMyLibraryView() {
     if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, null) {
         addNewPlaylists = false
         if (it) coroutine.launch {
+            viewModel.myPlaylistsList(true)
             state.animateScrollToItem(0)
         }
     }

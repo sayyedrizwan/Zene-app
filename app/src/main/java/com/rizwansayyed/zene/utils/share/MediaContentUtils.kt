@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 
@@ -56,6 +57,7 @@ object MediaContentUtils {
     ) {
         TEMP_ZENE_MUSIC_DATA_LIST.clear()
         TEMP_ZENE_MUSIC_DATA_LIST.addAll(l.toTypedArray())
+
         when (data?.type()) {
             NONE -> {}
             SONGS, AI_MUSIC, RADIO, PODCAST_AUDIO -> startAppService(context, data, isNew)
@@ -71,7 +73,7 @@ object MediaContentUtils {
             ARTISTS -> NavigationUtils.triggerHomeNav("$NAV_ARTIST_PAGE${data.id}")
             PODCAST_CATEGORIES -> {}
             NEWS -> openCustomBrowser(data.id)
-            MOVIES -> {}
+            MOVIES ->  NavigationUtils.triggerHomeNav("$NAV_MOVIES_PAGE${data.id}")
             TEXT -> {}
             null -> {}
         }

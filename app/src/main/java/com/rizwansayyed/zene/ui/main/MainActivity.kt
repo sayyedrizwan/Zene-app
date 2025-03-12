@@ -62,6 +62,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
@@ -154,6 +155,10 @@ class MainActivity : ComponentActivity() {
                                 composable("$NAV_MY_PLAYLIST_PAGE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
                                     if (id != null) MyPlaylistView(id)
+                                }
+                                composable("$NAV_MOVIES_PAGE{id}") { backStackEntry ->
+                                    val id = backStackEntry.arguments?.getString("id")
+//                                    if (id != null) MyPlaylistView(id)
                                 }
                             }
 

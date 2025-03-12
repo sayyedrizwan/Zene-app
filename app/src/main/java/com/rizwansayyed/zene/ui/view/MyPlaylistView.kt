@@ -36,11 +36,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.BlackGray
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
@@ -65,6 +67,8 @@ fun MyPlaylistView(id: String) {
 
         if (id.contains(LIKED_SONGS_ON_ZENE)) {
             item { TopLikedView() }
+        } else {
+            item { MyPlaylistTopView(myLibraryViewModel) }
         }
 
         itemsIndexed(myLibraryViewModel.myPlaylistSongsList) { i, v ->
@@ -78,6 +82,7 @@ fun MyPlaylistView(id: String) {
             TextViewNormal(stringResource(R.string.no_items_in_your_playlists), 15, center = true)
         }
 
+
         item {
             if (myLibraryViewModel.myPlaylistSongsIsLoading) CircularLoadingView()
         }
@@ -85,7 +90,10 @@ fun MyPlaylistView(id: String) {
         item { Spacer(Modifier.height(300.dp)) }
     }
 
-    LaunchedEffect(Unit) { myLibraryViewModel.myPlaylistSongsData(id) }
+    LaunchedEffect(Unit) {
+        myLibraryViewModel.myPlaylistSongsData(id)
+        myLibraryViewModel.myPlaylistInfo(id)
+    }
 
 
     LaunchedEffect(state) {
@@ -117,6 +125,45 @@ fun TopLikedView() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
+fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 5.dp)
+            .padding(bottom = 40.dp)
+    ) {
+        when (val v = myLibraryViewModel.playlistInfo) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> CircularLoadingView()
+            is ResponseResult.Success -> {
+                GlideImage(
+                    v.data.thumbnail, v.data.name,
+                    Modifier
+                        .size(250.dp)
+                        .clip(RoundedCornerShape(20)),
+                    contentScale = ContentScale.Crop
+                )
+                TextViewBoldBig(v.data.name ?: "", 55)
+
+                Row(Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.weight(1f))
+                    if (myLibraryViewModel.myPlaylistSongsList.isNotEmpty()) MiniWithImageAndBorder(
+                        R.drawable.ic_play, R.string.play, MainColor
+                    ) {
+                        if (myLibraryViewModel.myPlaylistSongsList.isNotEmpty()) startMedia(
+                            myLibraryViewModel.myPlaylistSongsList.first(),
+                            myLibraryViewModel.myPlaylistSongsList
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
 fun MyPlaylistItemView(
     data: ZeneMusicData,
     info: MusicPlayerData?,
@@ -143,7 +190,6 @@ fun MyPlaylistItemView(
             Arrangement.Center,
             Alignment.CenterVertically
         ) {
-
             Box {
                 GlideImage(
                     data.thumbnail,
