@@ -182,6 +182,14 @@ fun HomeMyLibraryView() {
     }
 
     LaunchedEffect(state) {
+        when (selectedType) {
+            MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
+            MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
+            MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
+        }
+    }
+
+    LaunchedEffect(state) {
         snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
             val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val totalItemsCount = layoutInfo.totalItemsCount

@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -18,6 +17,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
@@ -32,15 +32,19 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var historyIsLoading by mutableStateOf(false)
     private var historyPage by mutableIntStateOf(0)
 
-    fun songHistoryList() = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.getHistory(historyPage).onStart {
-            historyIsLoading = true
-        }.catch {
-            historyIsLoading = false
-        }.collectLatest {
-            historyPage += 1
-            historyIsLoading = false
-            historyList.addAll(it)
+    private var historyCheckJob: Job? = null
+    fun songHistoryList() {
+        historyCheckJob?.cancel()
+        historyCheckJob = viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.getHistory(historyPage).onStart {
+                historyIsLoading = true
+            }.catch {
+                historyIsLoading = false
+            }.collectLatest {
+                historyPage += 1
+                historyIsLoading = false
+                historyList.addAll(it)
+            }
         }
     }
 
@@ -49,37 +53,46 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var savedIsLoading by mutableStateOf(false)
     private var savedPage by mutableIntStateOf(0)
 
-    fun savedPlaylistsList() = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.getSavePlaylists(savedPage).onStart {
-            savedIsLoading = true
-        }.catch {
-            savedIsLoading = false
-        }.collectLatest {
-            savedPage += 1
-            savedIsLoading = false
-            savedList.addAll(it)
+    private var savedPlaylistCheckJob: Job? = null
+
+    fun savedPlaylistsList() {
+        savedPlaylistCheckJob?.cancel()
+        savedPlaylistCheckJob = viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.getSavePlaylists(savedPage).onStart {
+                savedIsLoading = true
+            }.catch {
+                savedIsLoading = false
+            }.collectLatest {
+                savedPage += 1
+                savedIsLoading = false
+                savedList.addAll(it)
+            }
         }
     }
-
 
     var myList = mutableStateListOf<SavedPlaylistsPodcastsResponseItem>()
     var myIsLoading by mutableStateOf(false)
     private var myPage by mutableIntStateOf(0)
     var likedItemsCount by mutableStateOf<ResponseResult<CountResponse>>(ResponseResult.Empty)
 
-    fun myPlaylistsList(forceClean: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
-        if (forceClean) {
-            myPage = 0
-            myList.clear()
-        }
-        zeneAPI.myPlaylists(myPage).onStart {
-            myIsLoading = true
-        }.catch {
-            myIsLoading = false
-        }.collectLatest {
-            myPage += 1
-            myIsLoading = false
-            myList.addAll(it)
+    private var myPlaylistCheckJob: Job? = null
+
+    fun myPlaylistsList(forceClean: Boolean = false) {
+        myPlaylistCheckJob?.cancel()
+        myPlaylistCheckJob = viewModelScope.launch(Dispatchers.IO) {
+            if (forceClean) {
+                myPage = 0
+                myList.clear()
+            }
+            zeneAPI.myPlaylists(myPage).onStart {
+                myIsLoading = true
+            }.catch {
+                myIsLoading = false
+            }.collectLatest {
+                myPage += 1
+                myIsLoading = false
+                myList.addAll(it)
+            }
         }
     }
 
@@ -97,15 +110,20 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var myPlaylistSongsIsLoading by mutableStateOf(false)
     private var myPlaylistSongsPage by mutableIntStateOf(0)
 
-    fun myPlaylistSongsData(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
-            myPlaylistSongsIsLoading = true
-        }.catch {
-            myPlaylistSongsIsLoading = false
-        }.collectLatest {
-            myPlaylistSongsPage += 1
-            myPlaylistSongsIsLoading = false
-            myPlaylistSongsList.addAll(it)
+    private var myPlaylistSongsCheckJob: Job? = null
+
+    fun myPlaylistSongsData(playlistID: String) {
+        myPlaylistSongsCheckJob?.cancel()
+        myPlaylistSongsCheckJob = viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
+                myPlaylistSongsIsLoading = true
+            }.catch {
+                myPlaylistSongsIsLoading = false
+            }.collectLatest {
+                myPlaylistSongsPage += 1
+                myPlaylistSongsIsLoading = false
+                myPlaylistSongsList.addAll(it)
+            }
         }
     }
 

@@ -24,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,7 +71,7 @@ fun MyPlaylistView(id: String) {
         }
 
         itemsIndexed(myLibraryViewModel.myPlaylistSongsList) { i, v ->
-            MyPlaylistItemView(v, playerInfo, myLibraryViewModel.myPlaylistSongsList) { status ->
+            MyPlaylistItemView(v, playerInfo, myLibraryViewModel) { status ->
                 if (status) myLibraryViewModel.removeMyPlaylistItems(id, v, i)
             }
         }
@@ -154,22 +153,24 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                 Spacer(Modifier.height(50.dp))
 
                 Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                    Box(Modifier
-                        .padding(horizontal = 7.dp)
-                        .clickable { changeNameView = true }) {
-                        ImageIcon(R.drawable.ic_edit, 24)
-                    }
+                    if (myLibraryViewModel.isPlaylistOfSameUser) {
+                        Box(Modifier
+                            .padding(horizontal = 7.dp)
+                            .clickable { changeNameView = true }) {
+                            ImageIcon(R.drawable.ic_edit, 24)
+                        }
 
-                    Box(Modifier
-                        .padding(horizontal = 7.dp)
-                        .clickable { changeImageView = true }) {
-                        ImageIcon(R.drawable.ic_image_edit, 24)
-                    }
+                        Box(Modifier
+                            .padding(horizontal = 7.dp)
+                            .clickable { changeImageView = true }) {
+                            ImageIcon(R.drawable.ic_image_edit, 24)
+                        }
 
-                    Box(Modifier
-                        .padding(horizontal = 7.dp)
-                        .clickable { deleteView = true }) {
-                        ImageIcon(R.drawable.ic_delete, 24)
+                        Box(Modifier
+                            .padding(horizontal = 7.dp)
+                            .clickable { deleteView = true }) {
+                            ImageIcon(R.drawable.ic_delete, 24)
+                        }
                     }
 
                     Spacer(Modifier.weight(1f))
@@ -190,8 +191,8 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistItemView(
-    data: ZeneMusicData, info: MusicPlayerData?, playlistSongs: SnapshotStateList<ZeneMusicData>,
-    remove: (Boolean) -> Unit
+    data: ZeneMusicData, info: MusicPlayerData?,
+    viewModel: MyLibraryViewModel, remove: (Boolean) -> Unit
 ) {
     var confirmationSheet by remember { mutableStateOf(false) }
 
@@ -202,7 +203,8 @@ fun MyPlaylistItemView(
         .clip(RoundedCornerShape(13.dp))
         .background(BlackGray)
         .clickable {
-            val list = playlistSongs.filter { it.type() != MusicDataTypes.VIDEOS }
+            val list =
+                viewModel.myPlaylistSongsList.filter { it.type() != MusicDataTypes.VIDEOS }
             startMedia(data, list)
         }
         .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center) {
@@ -263,7 +265,7 @@ fun MyPlaylistItemView(
         }
 
 
-        Box(Modifier
+        if (viewModel.isPlaylistOfSameUser) Box(Modifier
             .align(Alignment.TopEnd)
             .clickable { confirmationSheet = true }) {
             ImageIcon(R.drawable.ic_delete, 20)
