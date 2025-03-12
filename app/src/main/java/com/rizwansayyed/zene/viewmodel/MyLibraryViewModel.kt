@@ -154,6 +154,10 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
                 .onStart {}.catch {}.collectLatest {}
         }
 
+    fun deleteMyPlaylist(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.deleteMyPlaylists(playlistID).onStart {}.catch {}.collectLatest {}
+    }
+
 
     fun clearAll() {
         historyList.clear()

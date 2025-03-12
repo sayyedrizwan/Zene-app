@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -42,9 +43,14 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyPlaylistView(id: String) {
@@ -53,6 +59,8 @@ fun MyPlaylistView(id: String) {
 
     val state = rememberLazyListState()
     var isBottomTriggered by remember { mutableStateOf(false) }
+
+
 
     LazyColumn(
         Modifier
@@ -130,6 +138,8 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
     var changeImageView by remember { mutableStateOf(false) }
     var deleteView by remember { mutableStateOf(false) }
 
+    val coroutines = rememberCoroutineScope()
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -171,6 +181,10 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                             .clickable { deleteView = true }) {
                             ImageIcon(R.drawable.ic_delete, 24)
                         }
+                    } else {
+                        LaunchedEffect(Unit) {
+                            "not mine save it".toast()
+                        }
                     }
 
                     Spacer(Modifier.weight(1f))
@@ -183,6 +197,17 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                         )
                     }
                 }
+
+                if (deleteView) TextAlertDialog(R.string.delete_playlist, R.string.delete_playlist_desc, {
+                    deleteView = false
+                }, {
+                    deleteView = false
+                    coroutines.launch {
+                        v.data.id?.let { myLibraryViewModel.deleteMyPlaylist(it) }
+                        delay(500)
+                        NavigationUtils.triggerHomeNav(NAV_GO_BACK)
+                    }
+                })
             }
         }
     }

@@ -81,6 +81,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SIMILAR_PODCASTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_MY_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_GET_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_LOGIN_API
@@ -426,6 +427,12 @@ interface ZeneAPIService {
     suspend fun myPlaylists(
         @Header("token") token: String, @Body data: RequestBody
     ): SavedPlaylistsPodcastsResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_DELETE_MY_PLAYLIST_API)
+    suspend fun deleteMyPlaylists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_MY_PLAYLIST_INFO_API)

@@ -166,6 +166,8 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="delete_playlist">Delete Playlist</string>
+    <string name="delete_playlist_desc">Are you sure want to delete playlist?</string>
     <string name="add_to_queue">Add to Queue</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
