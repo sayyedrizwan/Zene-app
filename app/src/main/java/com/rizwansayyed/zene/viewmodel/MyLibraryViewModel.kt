@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
+import com.rizwansayyed.zene.data.model.MyLibraryTypes
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -27,6 +28,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
+
+    var selectedType by mutableStateOf(MyLibraryTypes.HISTORY)
+
+    fun setType(v: MyLibraryTypes) {
+        selectedType = v
+    }
+
 
     var historyList = mutableStateListOf<MusicHistoryResponse>()
     var historyIsLoading by mutableStateOf(false)

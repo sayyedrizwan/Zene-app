@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +62,8 @@ import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.utils.RefreshPlaylistManager.RefreshPlaylistListener
+import com.rizwansayyed.zene.utils.RefreshPlaylistManager.setRefreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
@@ -74,7 +75,6 @@ import kotlinx.coroutines.launch
 fun HomeMyLibraryView() {
     val viewModel: MyLibraryViewModel = hiltViewModel()
     val playerViewModel: PlayerViewModel = hiltViewModel()
-    var selectedType by remember { mutableStateOf(MyLibraryTypes.HISTORY) }
 
     var historyInfo by remember { mutableStateOf(false) }
     var addNewPlaylists by remember { mutableStateOf(false) }
@@ -96,7 +96,7 @@ fun HomeMyLibraryView() {
         LazyVerticalGrid(GridCells.Fixed(columns), Modifier.fillMaxSize(), state) {
             item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(60.dp)) }
 
-            when (selectedType) {
+            when (viewModel.selectedType) {
                 MyLibraryTypes.HISTORY -> {
                     items(viewModel.historyList) { HistoryCardItems(it) }
 
@@ -160,19 +160,17 @@ fun HomeMyLibraryView() {
         ) {
             MyLibraryTypes.entries.forEach {
                 ButtonWithBorder(
-                    it.names, if (selectedType == it) Color.White else Color.DarkGray
-                ) {
-                    selectedType = it
-                }
+                    it.names, if (viewModel.selectedType == it) Color.White else Color.DarkGray
+                ) { viewModel.setType(it) }
 
-                if (it == MyLibraryTypes.HISTORY) AnimatedVisibility(selectedType == MyLibraryTypes.HISTORY) {
+                if (it == MyLibraryTypes.HISTORY) AnimatedVisibility(viewModel.selectedType == MyLibraryTypes.HISTORY) {
                     ImageWithBorder(R.drawable.ic_information_circle) {
                         historyInfo = true
                     }
                 }
 
 
-                if (it == MyLibraryTypes.MY_PLAYLISTS) AnimatedVisibility(selectedType == MyLibraryTypes.MY_PLAYLISTS) {
+                if (it == MyLibraryTypes.MY_PLAYLISTS) AnimatedVisibility(viewModel.selectedType == MyLibraryTypes.MY_PLAYLISTS) {
                     ImageWithBorder(R.drawable.ic_plus_sign) {
                         addNewPlaylists = true
                     }
@@ -182,7 +180,7 @@ fun HomeMyLibraryView() {
     }
 
     LaunchedEffect(state) {
-        when (selectedType) {
+        when (viewModel.selectedType) {
             MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
             MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
             MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
@@ -196,7 +194,7 @@ fun HomeMyLibraryView() {
 
             if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
                 isBottomTriggered = true
-                when (selectedType) {
+                when (viewModel.selectedType) {
                     MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
                     MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
                     MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
@@ -219,9 +217,18 @@ fun HomeMyLibraryView() {
         }
     }
 
-    DisposableEffect(Unit) {
+    LaunchedEffect(Unit) {
         viewModel.likedItemCount()
-        onDispose { viewModel.clearAll() }
+
+        setRefreshPlaylistState(object : RefreshPlaylistListener {
+            override fun refresh() {
+                coroutine.launch {
+                    viewModel.myPlaylistsList(true)
+                    state.animateScrollToItem(0)
+                }
+            }
+        })
+
     }
 }
 

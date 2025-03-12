@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,11 +47,17 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
+import com.rizwansayyed.zene.utils.RefreshPlaylistManager.refreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MyPlaylistView(id: String) {
@@ -59,7 +66,6 @@ fun MyPlaylistView(id: String) {
 
     val state = rememberLazyListState()
     var isBottomTriggered by remember { mutableStateOf(false) }
-
 
 
     LazyColumn(
@@ -97,6 +103,7 @@ fun MyPlaylistView(id: String) {
         item { Spacer(Modifier.height(300.dp)) }
     }
 
+
     LaunchedEffect(Unit) {
         myLibraryViewModel.myPlaylistSongsData(id)
         myLibraryViewModel.myPlaylistInfo(id)
@@ -115,6 +122,10 @@ fun MyPlaylistView(id: String) {
                 isBottomTriggered = false
             }
         }
+    }
+
+    BackHandler {
+        NavigationUtils.triggerHomeNav(NAV_GO_BACK)
     }
 }
 
@@ -152,7 +163,8 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
             ResponseResult.Loading -> CircularLoadingView()
             is ResponseResult.Success -> {
                 GlideImage(
-                    v.data.thumbnail, v.data.name,
+                    v.data.thumbnail,
+                    v.data.name,
                     Modifier
                         .size(250.dp)
                         .clip(RoundedCornerShape(20)),
@@ -164,15 +176,17 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
 
                 Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                     if (myLibraryViewModel.isPlaylistOfSameUser) {
-                        Box(Modifier
-                            .padding(horizontal = 7.dp)
-                            .clickable { changeNameView = true }) {
+                        Box(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .clickable { changeNameView = true }) {
                             ImageIcon(R.drawable.ic_edit, 24)
                         }
 
-                        Box(Modifier
-                            .padding(horizontal = 7.dp)
-                            .clickable { changeImageView = true }) {
+                        Box(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .clickable { changeImageView = true }) {
                             ImageIcon(R.drawable.ic_image_edit, 24)
                         }
 
@@ -198,16 +212,24 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                     }
                 }
 
-                if (deleteView) TextAlertDialog(R.string.delete_playlist, R.string.delete_playlist_desc, {
-                    deleteView = false
-                }, {
-                    deleteView = false
-                    coroutines.launch {
-                        v.data.id?.let { myLibraryViewModel.deleteMyPlaylist(it) }
-                        delay(500)
-                        NavigationUtils.triggerHomeNav(NAV_GO_BACK)
-                    }
-                })
+                if (deleteView) TextAlertDialog(R.string.delete_playlist,
+                    R.string.delete_playlist_desc,
+                    {
+                        deleteView = false
+                    },
+                    {
+                        deleteView = false
+                        coroutines.launch {
+                            v.data.id?.let { myLibraryViewModel.deleteMyPlaylist(it) }
+                            delay(500)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                delay(1.seconds)
+                                refreshPlaylistState()
+                                if (isActive) cancel()
+                            }
+                            NavigationUtils.triggerHomeNav(NAV_GO_BACK)
+                        }
+                    })
             }
         }
     }
@@ -216,8 +238,10 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistItemView(
-    data: ZeneMusicData, info: MusicPlayerData?,
-    viewModel: MyLibraryViewModel, remove: (Boolean) -> Unit
+    data: ZeneMusicData,
+    info: MusicPlayerData?,
+    viewModel: MyLibraryViewModel,
+    remove: (Boolean) -> Unit
 ) {
     var confirmationSheet by remember { mutableStateOf(false) }
 
@@ -228,8 +252,7 @@ fun MyPlaylistItemView(
         .clip(RoundedCornerShape(13.dp))
         .background(BlackGray)
         .clickable {
-            val list =
-                viewModel.myPlaylistSongsList.filter { it.type() != MusicDataTypes.VIDEOS }
+            val list = viewModel.myPlaylistSongsList.filter { it.type() != MusicDataTypes.VIDEOS }
             startMedia(data, list)
         }
         .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center) {
@@ -290,9 +313,10 @@ fun MyPlaylistItemView(
         }
 
 
-        if (viewModel.isPlaylistOfSameUser) Box(Modifier
-            .align(Alignment.TopEnd)
-            .clickable { confirmationSheet = true }) {
+        if (viewModel.isPlaylistOfSameUser) Box(
+            Modifier
+                .align(Alignment.TopEnd)
+                .clickable { confirmationSheet = true }) {
             ImageIcon(R.drawable.ic_delete, 20)
         }
     }
