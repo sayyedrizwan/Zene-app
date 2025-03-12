@@ -101,17 +101,12 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         }
     }
 
-    fun removeMyPlaylistItems(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.removeMyPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
-            myPlaylistSongsIsLoading = true
-        }.catch {
-            myPlaylistSongsIsLoading = false
-        }.collectLatest {
-            myPlaylistSongsPage += 1
-            myPlaylistSongsIsLoading = false
-            myPlaylistSongsList.addAll(it)
+    fun removeMyPlaylistItems(playlistID: String, data: ZeneMusicData, index: Int) =
+        viewModelScope.launch(Dispatchers.IO) {
+            myPlaylistSongsList.removeAt(index)
+            zeneAPI.removeMyPlaylistsSongs(playlistID, data.id ?: "", data.type)
+                .onStart {}.catch {}.collectLatest {}
         }
-    }
 
 
     fun clearAll() {

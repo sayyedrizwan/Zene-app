@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -53,12 +53,12 @@ fun MyPlaylistView(id: String) {
     val state = rememberLazyListState()
     var isBottomTriggered by remember { mutableStateOf(false) }
 
-
     LazyColumn(
         Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(horizontal = 5.dp), state,
+            .padding(horizontal = 5.dp),
+        state,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item { Spacer(Modifier.height(100.dp)) }
@@ -67,10 +67,15 @@ fun MyPlaylistView(id: String) {
             item { TopLikedView() }
         }
 
-        items(myLibraryViewModel.myPlaylistSongsList) {
-            MyPlaylistItemView(it, playerInfo, myLibraryViewModel.myPlaylistSongsList) {
-                myLibraryViewModel.removeMyPlaylistItems(id, )
+        itemsIndexed(myLibraryViewModel.myPlaylistSongsList) { i, v ->
+            MyPlaylistItemView(v, playerInfo, myLibraryViewModel.myPlaylistSongsList) { status ->
+                if (status) myLibraryViewModel.removeMyPlaylistItems(id, v, i)
             }
+        }
+
+        if (!myLibraryViewModel.myPlaylistSongsIsLoading && myLibraryViewModel.myPlaylistSongsList.isEmpty()) item {
+            Spacer(Modifier.height(60.dp))
+            TextViewNormal(stringResource(R.string.no_items_in_your_playlists), 15, center = true)
         }
 
         item {
@@ -113,10 +118,14 @@ fun TopLikedView() {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistItemView(
-    data: ZeneMusicData, info: MusicPlayerData?, playlistSongs: SnapshotStateList<ZeneMusicData>,
-    remove: () -> Unit
+    data: ZeneMusicData,
+    info: MusicPlayerData?,
+    playlistSongs: SnapshotStateList<ZeneMusicData>,
+    remove: (Boolean) -> Unit
 ) {
-    Row(Modifier
+    var confirmationSheet by remember { mutableStateOf(false) }
+
+    Box(Modifier
         .padding(top = 15.dp)
         .padding(horizontal = 5.dp, vertical = 10.dp)
         .fillMaxWidth()
@@ -126,67 +135,109 @@ fun MyPlaylistItemView(
             val list = playlistSongs.filter { it.type() != MusicDataTypes.VIDEOS }
             startMedia(data, list)
         }
-        .padding(horizontal = 15.dp, vertical = 25.dp),
-        Arrangement.Center,
-        Alignment.CenterVertically) {
-
-        GlideImage(
-            data.thumbnail,
-            data.name,
+        .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center) {
+        Row(
             Modifier
-                .padding(end = 10.dp)
-                .size(90.dp),
-            contentScale = ContentScale.Crop
-        )
+                .fillMaxWidth()
+                .padding(horizontal = 5.dp, vertical = 10.dp),
+            Arrangement.Center,
+            Alignment.CenterVertically
+        ) {
 
-        Column(Modifier.weight(1f), Arrangement.Center, Alignment.Start) {
-            TextViewSemiBold(data.name ?: "", 15, line = 2)
-            if ((data.artists?.trim()?.length ?: 0) > 3) {
-                TextViewNormal(data.artists!!, 13, line = 1)
-            }
-
-            Spacer(Modifier.height(14.dp))
-
-            Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-                if (info?.data?.id == data.id) GlideImage(
-                    R.raw.song_playing_wave, "", Modifier.size(24.dp),
+            Box {
+                GlideImage(
+                    data.thumbnail,
+                    data.name,
+                    Modifier
+                        .padding(end = 10.dp)
+                        .size(90.dp),
                     contentScale = ContentScale.Crop
                 )
 
-                Box(Modifier.clickable { }) {
-                    ImageIcon(R.drawable.ic_delete, 20)
-                }
+                if (info?.data?.id == data.id) GlideImage(
+                    R.raw.song_playing_wave,
+                    "",
+                    Modifier
+                        .size(30.dp)
+                        .align(Alignment.Center),
+                    contentScale = ContentScale.Crop
+                )
 
-                if (data.type() == MusicDataTypes.SONGS) {
-                    ImageIcon(R.drawable.ic_music_note, 20)
-                } else if (data.type() == MusicDataTypes.AI_MUSIC) {
-                    ImageIcon(R.drawable.ic_robot_singing, 20)
-                } else if (data.type() == MusicDataTypes.PODCAST_AUDIO) {
-                    ImageIcon(R.drawable.ic_podcast, 20)
-                } else if (data.type() == MusicDataTypes.RADIO) {
-                    ImageIcon(R.drawable.ic_radio, 20)
-                } else if (data.type() == MusicDataTypes.VIDEOS) {
-                    ImageIcon(R.drawable.ic_video_replay, 20)
+                Box(
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(2.dp)
+                        .clip(RoundedCornerShape(100))
+                        .background(Color.Black)
+                        .padding(5.dp)
+                ) {
+                    if (data.type() == MusicDataTypes.SONGS) {
+                        ImageIcon(R.drawable.ic_music_note, 20)
+                    } else if (data.type() == MusicDataTypes.AI_MUSIC) {
+                        ImageIcon(R.drawable.ic_robot_singing, 20)
+                    } else if (data.type() == MusicDataTypes.PODCAST_AUDIO) {
+                        ImageIcon(R.drawable.ic_podcast, 20)
+                    } else if (data.type() == MusicDataTypes.RADIO) {
+                        ImageIcon(R.drawable.ic_radio, 20)
+                    } else if (data.type() == MusicDataTypes.VIDEOS) {
+                        ImageIcon(R.drawable.ic_video_replay, 20)
+                    }
                 }
             }
 
-//            if (data.type() == MusicDataTypes.PODCAST_AUDIO) TextViewNormal(
-//                stringResource(R.string.podcast), 13, line = 1
-//            )
-//            else if (data.type() == MusicDataTypes.AI_MUSIC) TextViewNormal(
-//                stringResource(R.string.ai_song), 13, line = 1
-//            )
-//            else if (data.type() == MusicDataTypes.VIDEOS) TextViewNormal(
-//                stringResource(R.string.video), 13, line = 1
-//            )
-//            else if (data.type() == MusicDataTypes.SONGS) TextViewNormal(
-//                stringResource(R.string.song), 13, line = 1
-//            )
+            Column(Modifier.weight(1f), Arrangement.Center, Alignment.Start) {
+                TextViewSemiBold(data.name ?: "", 15, line = 2)
+                if ((data.artists?.trim()?.length ?: 0) > 3) {
+                    TextViewNormal(data.artists!!, 13, line = 1)
+                }
+
+//                Spacer(Modifier.height(14.dp))
+
+//                Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
+//                    if (info?.data?.id == data.id) GlideImage(
+//                        R.raw.song_playing_wave,
+//                        "",
+//                        Modifier.size(24.dp),
+//                        contentScale = ContentScale.Crop
+//                    )
+//
+//                    Box(Modifier.clickable { confirmationSheet = true }) {
+//                        ImageIcon(R.drawable.ic_delete, 20)
+//                    }
+//
+//                    if (data.type() == MusicDataTypes.SONGS) {
+//                        ImageIcon(R.drawable.ic_music_note, 20)
+//                    } else if (data.type() == MusicDataTypes.AI_MUSIC) {
+//                        ImageIcon(R.drawable.ic_robot_singing, 20)
+//                    } else if (data.type() == MusicDataTypes.PODCAST_AUDIO) {
+//                        ImageIcon(R.drawable.ic_podcast, 20)
+//                    } else if (data.type() == MusicDataTypes.RADIO) {
+//                        ImageIcon(R.drawable.ic_radio, 20)
+//                    } else if (data.type() == MusicDataTypes.VIDEOS) {
+//                        ImageIcon(R.drawable.ic_video_replay, 20)
+//                    }
+//                }
+            }
         }
 
-//        if (info?.data?.id == data.id) GlideImage(
-//            R.raw.song_playing_wave, "", Modifier.size(24.dp), contentScale = ContentScale.Crop
-//        )
-//        else ImageIcon(R.drawable.ic_play, 25)
+
+        Box(Modifier
+            .align(Alignment.TopEnd)
+            .clickable { confirmationSheet = true }) {
+            ImageIcon(R.drawable.ic_delete, 20)
+        }
     }
+
+    if (confirmationSheet) TextAlertDialog(R.string.remove_media_from_playlist,
+        R.string.remove_media_from_playlist_desc,
+        {
+            confirmationSheet = false
+            remove(false)
+        },
+        {
+            confirmationSheet = false
+            remove(true)
+        })
+
+
 }

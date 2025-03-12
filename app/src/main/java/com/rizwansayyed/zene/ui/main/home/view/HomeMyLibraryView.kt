@@ -263,50 +263,6 @@ fun HistoryCardItems(data: MusicHistoryResponse) {
             }
         }
     }
-
-//    Row(Modifier
-//        .padding(10.dp)
-//        .fillMaxWidth()
-//        .clip(RoundedCornerShape(7.dp))
-//        .background(Color.Black)
-//        .clickable { startMedia(data.asMusicData()) }
-//        .padding(10.dp),
-//        Arrangement.Center,
-//        Alignment.CenterVertically) {
-//        GlideImage(
-//            data.thumbnail,
-//            data.name,
-//            Modifier
-//                .padding(horizontal = 5.dp)
-//                .height(90.dp)
-//                .aspectRatio(1f)
-//                .clip(RoundedCornerShape(14.dp)),
-//            contentScale = ContentScale.Fit
-//        )
-//        Column(
-//            Modifier
-//                .padding(horizontal = 4.dp)
-//                .weight(1f), Arrangement.Center, Alignment.Start
-//        ) {
-//            TextViewBold(data.name ?: "", 13, line = 2)
-//            if ((data.artists?.length ?: 0) > 3) Box(Modifier.offset(y = (-2).dp)) {
-//                TextViewNormal(data.artists!!, 12, line = 1)
-//            }
-//        }
-//
-//        if (data.asMusicData().type() == MusicDataTypes.SONGS) {
-//            ImageIcon(R.drawable.ic_music_note, 20)
-//        } else if (data.asMusicData().type() == MusicDataTypes.AI_MUSIC) {
-//            ImageIcon(R.drawable.ic_robot_singing, 20)
-//        } else if (data.asMusicData().type() == MusicDataTypes.PODCAST) {
-//            ImageIcon(R.drawable.ic_podcast, 20)
-//        } else if (data.asMusicData().type() == MusicDataTypes.RADIO) {
-//            ImageIcon(R.drawable.ic_radio, 20)
-//        } else if (data.asMusicData().type() == MusicDataTypes.VIDEOS) {
-//            ImageIcon(R.drawable.ic_video_replay, 20)
-//        }
-//
-//    }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)

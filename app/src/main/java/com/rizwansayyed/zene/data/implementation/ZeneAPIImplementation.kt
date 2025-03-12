@@ -156,7 +156,7 @@ class ZeneAPIImplementation @Inject constructor(
     }
 
     override suspend fun removeMyPlaylistsSongs(
-        playlistId: String, songID: String, type: MusicDataTypes
+        playlistId: String, songID: String, type: String?
     ) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -164,7 +164,7 @@ class ZeneAPIImplementation @Inject constructor(
         val json = JSONObject().apply {
             put("song_id", songID)
             put("playlist_id", playlistId)
-            put("type", type.name)
+            put("type", type)
             put("email", email)
         }
 

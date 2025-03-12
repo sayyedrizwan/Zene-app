@@ -53,6 +53,8 @@
     <string name="my_playlists">My Playlists</string>
     <string name="my_playlist">My Playlist</string>
     <string name="your_mixes">Your mixes</string>
+    <string name="remove_media_from_playlist">Remove Media from Playlist</string>
+    <string name="remove_media_from_playlist_desc">Remove media from your playlist with ease.</string>
     <string name="sleep_timer">Sleep Timer</string>
     <string name="minutes">minutes</string>
     <string name="one_hour">1 hour</string>
@@ -136,6 +138,7 @@
     <string name="no_history">No history, Browse the app to keep generating the history.</string>
     <string name="no_saved_and_save">Nothing saved. Browse albums, playlists or podcast series, and save.</string>
     <string name="no_playlists">No playlists</string>
+    <string name="no_items_in_your_playlists">No items in your playlists</string>
     <string name="singles">Singles</string>
     <string name="album">Album</string>
     <string name="confirm">Confirm</string>

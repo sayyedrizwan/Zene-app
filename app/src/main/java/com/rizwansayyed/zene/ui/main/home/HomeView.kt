@@ -36,7 +36,6 @@ import kotlin.time.Duration.Companion.seconds
 fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
-    val saveableStateHolder = rememberSaveableStateHolder()
 
     Column(Modifier.fillMaxSize()) {
         Box(
