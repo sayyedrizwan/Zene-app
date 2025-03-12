@@ -49,7 +49,7 @@ import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 
 @Composable
 fun MyPlaylistView(id: String) {
-    val myLibraryViewModel: MyLibraryViewModel = hiltViewModel()
+    val myLibraryViewModel: MyLibraryViewModel = hiltViewModel(key = id)
     val playerInfo by musicPlayerDB.collectAsState(null)
 
     val state = rememberLazyListState()
@@ -123,9 +123,14 @@ fun TopLikedView() {
     }
 }
 
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
+    var changeNameView by remember { mutableStateOf(false) }
+    var changeImageView by remember { mutableStateOf(false) }
+    var deleteView by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -146,7 +151,27 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                 )
                 TextViewBoldBig(v.data.name ?: "", 55)
 
-                Row(Modifier.fillMaxWidth()) {
+                Spacer(Modifier.height(50.dp))
+
+                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                    Box(Modifier
+                        .padding(horizontal = 7.dp)
+                        .clickable { changeNameView = true }) {
+                        ImageIcon(R.drawable.ic_edit, 24)
+                    }
+
+                    Box(Modifier
+                        .padding(horizontal = 7.dp)
+                        .clickable { changeImageView = true }) {
+                        ImageIcon(R.drawable.ic_image_edit, 24)
+                    }
+
+                    Box(Modifier
+                        .padding(horizontal = 7.dp)
+                        .clickable { deleteView = true }) {
+                        ImageIcon(R.drawable.ic_delete, 24)
+                    }
+
                     Spacer(Modifier.weight(1f))
                     if (myLibraryViewModel.myPlaylistSongsList.isNotEmpty()) MiniWithImageAndBorder(
                         R.drawable.ic_play, R.string.play, MainColor
@@ -165,9 +190,7 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistItemView(
-    data: ZeneMusicData,
-    info: MusicPlayerData?,
-    playlistSongs: SnapshotStateList<ZeneMusicData>,
+    data: ZeneMusicData, info: MusicPlayerData?, playlistSongs: SnapshotStateList<ZeneMusicData>,
     remove: (Boolean) -> Unit
 ) {
     var confirmationSheet by remember { mutableStateOf(false) }
@@ -236,33 +259,6 @@ fun MyPlaylistItemView(
                 if ((data.artists?.trim()?.length ?: 0) > 3) {
                     TextViewNormal(data.artists!!, 13, line = 1)
                 }
-
-//                Spacer(Modifier.height(14.dp))
-
-//                Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-//                    if (info?.data?.id == data.id) GlideImage(
-//                        R.raw.song_playing_wave,
-//                        "",
-//                        Modifier.size(24.dp),
-//                        contentScale = ContentScale.Crop
-//                    )
-//
-//                    Box(Modifier.clickable { confirmationSheet = true }) {
-//                        ImageIcon(R.drawable.ic_delete, 20)
-//                    }
-//
-//                    if (data.type() == MusicDataTypes.SONGS) {
-//                        ImageIcon(R.drawable.ic_music_note, 20)
-//                    } else if (data.type() == MusicDataTypes.AI_MUSIC) {
-//                        ImageIcon(R.drawable.ic_robot_singing, 20)
-//                    } else if (data.type() == MusicDataTypes.PODCAST_AUDIO) {
-//                        ImageIcon(R.drawable.ic_podcast, 20)
-//                    } else if (data.type() == MusicDataTypes.RADIO) {
-//                        ImageIcon(R.drawable.ic_radio, 20)
-//                    } else if (data.type() == MusicDataTypes.VIDEOS) {
-//                        ImageIcon(R.drawable.ic_video_replay, 20)
-//                    }
-//                }
             }
         }
 

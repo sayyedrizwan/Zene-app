@@ -88,15 +88,29 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             }
         }
 
-    fun playlistSongCheckList(page: Int, songId: String) = viewModelScope.launch(Dispatchers.IO) {
-        if (page == 0) checksPlaylistsSongLists.clear()
-        zeneAPI.playlistSongCheck(songId, page).onStart {
-            checksPlaylistsSongListsLoading = true
-        }.catch {
-            checksPlaylistsSongListsLoading = false
-        }.collectLatest {
-            checksPlaylistsSongListsLoading = false
-            checksPlaylistsSongLists.addAll(it)
+    private var playlistSongCheckJob: Job? = null
+    private var playlistPage: Int = 0
+    fun clearPlaylistCheckList() {
+        playlistPage = 0
+        checksPlaylistsSongLists.clear()
+    }
+    fun playlistSongCheckList(songId: String) {
+        playlistSongCheckJob?.cancel()
+        playlistSongCheckJob = viewModelScope.launch(Dispatchers.IO) {
+            if (playlistPage == 0) {
+                itemAddedToPlaylists.clear()
+                checksPlaylistsSongLists.clear()
+            }
+
+            zeneAPI.playlistSongCheck(songId, playlistPage).onStart {
+                checksPlaylistsSongListsLoading = true
+            }.catch {
+                checksPlaylistsSongListsLoading = false
+            }.collectLatest {
+                checksPlaylistsSongListsLoading = false
+                checksPlaylistsSongLists.addAll(it)
+                playlistPage += 1
+            }
         }
     }
 

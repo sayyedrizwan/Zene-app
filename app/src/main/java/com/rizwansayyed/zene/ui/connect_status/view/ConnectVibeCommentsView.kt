@@ -58,8 +58,6 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.ui.connect_status.ConnectCommentListener
 import com.rizwansayyed.zene.ui.connect_status.ConnectCommentListenerManager
-import com.rizwansayyed.zene.ui.connect_status.ConnectStatusCallbackManager
-import com.rizwansayyed.zene.ui.connect_status.ConnectStatusListener
 import com.rizwansayyed.zene.ui.main.connect.connectview.openConnectUserProfile
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -82,7 +80,7 @@ import kotlin.time.Duration.Companion.seconds
 )
 @Composable
 fun ConnectVibeCommentsView(data: ConnectFeedDataResponse?, close: () -> Unit) {
-    val viewModel: GifViewModel = hiltViewModel()
+    val viewModel: GifViewModel = hiltViewModel(key = data?.id?.toString())
     var page by remember { mutableIntStateOf(0) }
     var showGifAlert by remember { mutableStateOf(false) }
     val state = rememberLazyListState()

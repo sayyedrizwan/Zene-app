@@ -80,7 +80,7 @@ enum class PlaylistsType(val type: String) {
 
 @Composable
 fun PlaylistView(id: String, type: PlaylistsType) {
-    val homeViewModel: HomeViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel(key = id)
     val context = LocalContext.current.applicationContext
     val playerInfo by musicPlayerDB.collectAsState(null)
 
@@ -339,7 +339,6 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
     val width = (LocalConfiguration.current.screenWidthDp / 1.5).dp
     var fullDesc by remember { mutableStateOf(false) }
     var shouldShowArrow by remember { mutableStateOf(false) }
-
 
     GlideImage(
         v.thumbnail, v.name,

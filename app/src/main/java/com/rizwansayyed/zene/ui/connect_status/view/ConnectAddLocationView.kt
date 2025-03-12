@@ -64,7 +64,6 @@ fun ConnectAddLocation(viewModel: ConnectViewModel) {
     ) {
         ConnectAddLocationDialog {
             showAlert = false
-            Log.d("TAG", "ConnectAddLocation: runnred $it")
             viewModel.updateVibeLocationInfo(it)
         }
     }

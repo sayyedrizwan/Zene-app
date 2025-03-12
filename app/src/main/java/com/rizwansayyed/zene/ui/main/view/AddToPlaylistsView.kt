@@ -74,14 +74,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
-    var addNewPlaylists by remember { mutableStateOf(false) }
-    val playerViewModel: PlayerViewModel = hiltViewModel()
-
-    var page by remember { mutableIntStateOf(0) }
-    val state = rememberLazyListState()
-    var isBottomTriggered by remember { mutableStateOf(false) }
-
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        var addNewPlaylists by remember { mutableStateOf(false) }
+        val playerViewModel: PlayerViewModel = hiltViewModel(key = info?.id)
+
+        val state = rememberLazyListState()
+        var isBottomTriggered by remember { mutableStateOf(false) }
+
         LazyColumn(
             Modifier
                 .fillMaxSize()
@@ -138,30 +137,30 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
                 Spacer(Modifier.height(40.dp))
             }
         }
-    }
 
-    LaunchedEffect(state) {
-        snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
-            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            val totalItemsCount = layoutInfo.totalItemsCount
+        LaunchedEffect(Unit) {
+            info?.id?.let { playerViewModel.playlistSongCheckList(it) }
+        }
+        LaunchedEffect(state) {
+            snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
+                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItemsCount = layoutInfo.totalItemsCount
 
-            if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
-                isBottomTriggered = true
-                info?.id?.let { playerViewModel.playlistSongCheckList(page, it) }
-                page += 1
-            } else if (lastVisibleItemIndex < totalItemsCount - 1) {
-                isBottomTriggered = false
+                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                    isBottomTriggered = true
+                    info?.id?.let { playerViewModel.playlistSongCheckList(it) }
+                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                    isBottomTriggered = false
+                }
             }
         }
-    }
 
-
-    if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, info) {
-        addNewPlaylists = false
-        if (it) {
-            page = 0
-            info?.id?.let { playerViewModel.playlistSongCheckList(page, it) }
-            page += 1
+        if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, info) {
+            addNewPlaylists = false
+            if (it) {
+                playerViewModel.clearPlaylistCheckList()
+                info?.id?.let { playerViewModel.playlistSongCheckList(it) }
+            }
         }
     }
 }

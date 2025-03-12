@@ -385,10 +385,10 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?, openEmoji: () -> Unit) 
 @OptIn(UnstableApi::class)
 @Composable
 fun ConnectVibeMediaItemAlert(item: ConnectFeedDataResponse?, close: () -> Unit) {
-    val context = LocalContext.current.applicationContext
     Dialog(
         close, DialogProperties(usePlatformDefaultWidth = false)
     ) {
+        val context = LocalContext.current.applicationContext
         Box(
             Modifier
                 .fillMaxWidth()

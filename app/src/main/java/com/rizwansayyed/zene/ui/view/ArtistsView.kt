@@ -59,7 +59,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ArtistsView(artistsID: String) {
-    val viewModel: HomeViewModel = hiltViewModel()
+    val viewModel: HomeViewModel = hiltViewModel(key = artistsID)
     val context = LocalContext.current
 
     Box(
