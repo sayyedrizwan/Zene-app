@@ -3,15 +3,10 @@ package com.rizwansayyed.zene.widgets.playingsongbig
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
-import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
@@ -37,14 +32,12 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.unit.ColorProvider
-import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
-import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -52,7 +45,6 @@ import com.rizwansayyed.zene.widgets.utils.GlanceImage
 import com.rizwansayyed.zene.widgets.utils.GlanceImageIcon
 import com.rizwansayyed.zene.widgets.utils.GlanceTextItemBold
 import com.rizwansayyed.zene.widgets.utils.GlanceTextItemNormal
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -69,7 +61,7 @@ class PlayingSongWidget : GlanceAppWidget() {
                     }
                 }, Alignment.Center
             ) {
-                PlayingMusicUI(music)
+                PlayingMusicUI(music, context)
 
                 Box(GlanceModifier.padding(5.dp).fillMaxSize(), Alignment.TopStart) {
                     Image(
@@ -83,8 +75,7 @@ class PlayingSongWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun PlayingMusicUI(music: MusicPlayerData?) {
-        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    fun PlayingMusicUI(music: MusicPlayerData?, context: Context) {
         val coroutine = rememberCoroutineScope()
 
         val isLoopEnabled by isLoopDB.collectAsState(false)
@@ -96,7 +87,7 @@ class PlayingSongWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(7.dp).fillMaxSize(),
                 Alignment.CenterHorizontally, Alignment.CenterVertically,
             ) {
-                if (bitmap != null) GlanceImage(bitmap!!, 80)
+                GlanceImage(music.data.thumbnail, 80, context)
 
                 Column(
                     GlanceModifier.defaultWeight().padding(horizontal = 8.dp),
@@ -154,21 +145,6 @@ class PlayingSongWidget : GlanceAppWidget() {
                         )
 
                         else -> GlanceImageIcon(R.drawable.ic_play, 20)
-                    }
-                }
-            }
-
-            LaunchedEffect(music.data.thumbnail) {
-                coroutine.launch(Dispatchers.IO) {
-                    if (music.data.thumbnail != null) {
-                        try {
-                            val b =
-                                Glide.with(context).asBitmap().load(music.data.thumbnail).submit()
-                                    .get()
-                            bitmap = b
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
                     }
                 }
             }

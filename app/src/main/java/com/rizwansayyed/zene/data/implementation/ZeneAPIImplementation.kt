@@ -172,7 +172,7 @@ class ZeneAPIImplementation @Inject constructor(
 
         val json = JSONObject().apply {
             put("page", page)
-            put("playlistId", playlistId)
+            put("playlist_id", playlistId)
             put("email", email)
             put("country", country)
         }

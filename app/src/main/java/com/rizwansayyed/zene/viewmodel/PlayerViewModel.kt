@@ -1,10 +1,10 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
@@ -22,6 +22,8 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.widgets.likedsongs.LikedMediaWidgets
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -94,6 +96,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         playlistPage = 0
         checksPlaylistsSongLists.clear()
     }
+
     fun playlistSongCheckList(songId: String) {
         playlistSongCheckJob?.cancel()
         playlistSongCheckJob = viewModelScope.launch(Dispatchers.IO) {
@@ -129,7 +132,11 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         isItemLiked[data?.id] = if (doLike) LikeItemType.LIKE else LikeItemType.NONE
 
-        zeneAPI.addRemoveLikeItem(data, doLike).catch { }.collectLatest { }
+        zeneAPI.addRemoveLikeItem(data, doLike).catch {
+            LikedMediaWidgets().updateAll(context)
+        }.collectLatest {
+            LikedMediaWidgets().updateAll(context)
+        }
     }
 
     fun addMediaToPlaylist(id: String, state: Boolean, info: ZeneMusicData?) =

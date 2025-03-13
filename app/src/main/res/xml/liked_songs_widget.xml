@@ -1,0 +1,8 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/liked_songs_widget_desc"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:minWidth="200dp"
+    android:minHeight="50dp"
+    android:previewImage="@drawable/small_music_player_widgets"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen" />

@@ -340,7 +340,7 @@ fun LikedPlaylistsView(data: MyLibraryViewModel) {
         }) {
         GlideImage(
             "https://i.ibb.co/xq4CWHCz/liked-thumb-img.png",
-            stringResource(R.string.liked_songs),
+            stringResource(R.string.liked_items),
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
@@ -348,7 +348,7 @@ fun LikedPlaylistsView(data: MyLibraryViewModel) {
             contentScale = ContentScale.Crop
         )
         Spacer(Modifier.height(5.dp))
-        TextViewBold(stringResource(R.string.liked_songs), 14, line = 2)
+        TextViewBold(stringResource(R.string.liked_items), 14, line = 2)
         Box(Modifier.offset(y = (-3).dp)) {
             when (val v = data.likedItemsCount) {
                 ResponseResult.Empty -> {}

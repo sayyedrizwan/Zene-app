@@ -53,8 +53,10 @@ object MediaContentUtils {
     }
 
     fun startMedia(
-        data: ZeneMusicData?, l: List<ZeneMusicData?> = emptyList(), isNew: Boolean = false
+        data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList(), isNew: Boolean = false
     ) {
+        val l = list.filter { it?.type() != VIDEOS }
+
         TEMP_ZENE_MUSIC_DATA_LIST.clear()
         TEMP_ZENE_MUSIC_DATA_LIST.addAll(l.toTypedArray())
 
@@ -73,7 +75,7 @@ object MediaContentUtils {
             ARTISTS -> NavigationUtils.triggerHomeNav("$NAV_ARTIST_PAGE${data.id}")
             PODCAST_CATEGORIES -> {}
             NEWS -> openCustomBrowser(data.id)
-            MOVIES ->  NavigationUtils.triggerHomeNav("$NAV_MOVIES_PAGE${data.id}")
+            MOVIES -> NavigationUtils.triggerHomeNav("$NAV_MOVIES_PAGE${data.id}")
             TEXT -> {}
             null -> {}
         }

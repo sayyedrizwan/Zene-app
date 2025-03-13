@@ -137,7 +137,7 @@ fun TopLikedView() {
             .padding(horizontal = 5.dp)
             .padding(bottom = 40.dp)
     ) {
-        TextViewBoldBig(stringResource(R.string.liked_songs), 55)
+        TextViewBoldBig(stringResource(R.string.liked_items), 55)
     }
 }
 
@@ -252,8 +252,7 @@ fun MyPlaylistItemView(
         .clip(RoundedCornerShape(13.dp))
         .background(BlackGray)
         .clickable {
-            val list = viewModel.myPlaylistSongsList.filter { it.type() != MusicDataTypes.VIDEOS }
-            startMedia(data, list)
+            startMedia(data, viewModel.myPlaylistSongsList)
         }
         .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center) {
         Row(

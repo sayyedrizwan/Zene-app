@@ -3,15 +3,9 @@ package com.rizwansayyed.zene.widgets.playingsongsmall
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
-import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
@@ -33,27 +27,21 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.unit.ColorProvider
-import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
-import com.rizwansayyed.zene.di.ZeneBaseApplication
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.widgets.utils.GlanceImage
 import com.rizwansayyed.zene.widgets.utils.GlanceImageIcon
 import com.rizwansayyed.zene.widgets.utils.GlanceTextItemBold
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class PlayingSongWidgetSmall : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val music by musicPlayerDB.collectAsState(null)
-            var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-            val coroutine = rememberCoroutineScope()
 
             Box(
                 GlanceModifier.background(MainColor).cornerRadius(20.dp).fillMaxSize().clickable {
@@ -66,7 +54,7 @@ class PlayingSongWidgetSmall : GlanceAppWidget() {
             ) {
 
                 if (music?.data != null) {
-                    if (bitmap != null) GlanceImage(bitmap!!, null, 0)
+                    GlanceImage(music?.data?.thumbnail, null, context, 0)
                     ShowPlayPauseImage(music!!)
                 } else {
                     GlanceTextItemBold(LocalContext.current.getString(R.string.no_song_played))
@@ -78,20 +66,6 @@ class PlayingSongWidgetSmall : GlanceAppWidget() {
                         contentDescription = null,
                         modifier = GlanceModifier.size(20.dp)
                     )
-                }
-            }
-
-            LaunchedEffect(music?.data?.thumbnail) {
-                coroutine.launch(Dispatchers.IO) {
-                    if (music?.data?.thumbnail != null) {
-                        try {
-                            val b = Glide.with(ZeneBaseApplication.context).asBitmap()
-                                .load(music?.data?.thumbnail).submit().get()
-                            bitmap = b
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
                 }
             }
         }
