@@ -298,6 +298,7 @@ class ZeneAPIImplementation @Inject constructor(
             put("email", email)
             put("country", country)
             put("name", q)
+            put("artists", q)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view.myplaylist
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -102,26 +104,48 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                 Row(Modifier.fillMaxWidth()) {
                     Box(
                         Modifier
-                        .padding(start = 10.dp)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { close(false) }, Alignment.Center
+                            .padding(start = 10.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { close(false) }, Alignment.Center
                     ) {
                         ImageIcon(R.drawable.ic_cancel_close, 25)
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    Box(
+                        Modifier
+                            .padding(end = 10.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                Log.d("TAG", "CustomImageOnMyPlaylist: $playlistThumbnail")
+                            }, Alignment.Center
+                    ) {
+                        ImageIcon(R.drawable.ic_tick, 25)
                     }
                 }
             }
 
             item {
                 Spacer(Modifier.height(25.dp))
-                GlideImage(
-                    playlistThumbnail, data.name, Modifier
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
                         .clip(RoundedCornerShape(13.dp))
                         .fillMaxWidth(0.7f)
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop
-                )
+                        .aspectRatio(1f)
+                        .clipToBounds()
+                ) {
+                    GlideImage(
+                        playlistThumbnail, data.name, Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.TopCenter
+                    )
+                }
             }
 
             item {
@@ -142,9 +166,8 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                     }
                 }
             }
-
-            item {
-                if (showSearchBar) {
+            if (showSearchBar) {
+                item {
                     Spacer(Modifier.height(15.dp))
 
                     TextField(
@@ -196,28 +219,34 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                         ResponseResult.Loading -> CircularLoadingView()
                         is ResponseResult.Success -> LazyRow(Modifier.fillMaxWidth()) {
                             items(v.data) {
-                                GlideImage(
-                                    it, searchText, Modifier
+                                Box(
+                                    modifier = Modifier
                                         .padding(horizontal = 10.dp)
                                         .clip(RoundedCornerShape(13.dp))
                                         .size(250.dp)
-                                        .clickable {
-                                            coroutine.launch {
-                                                focusManager.clearFocus()
-                                                playlistThumbnail = it.toUri()
-                                                state.animateScrollToItem(0)
-                                            }
-                                        },
-                                    contentScale = ContentScale.Crop
-                                )
+                                        .clipToBounds()
+                                ) {
+                                    GlideImage(
+                                        it, searchText, Modifier
+                                            .fillMaxSize()
+                                            .clickable {
+                                                coroutine.launch {
+                                                    focusManager.clearFocus()
+                                                    playlistThumbnail = it.toUri()
+                                                    state.animateScrollToItem(0)
+                                                }
+                                            },
+                                        contentScale = ContentScale.Crop,
+                                        alignment = Alignment.TopCenter
+                                    )
+                                }
                             }
                         }
                     }
                 }
+                item { Spacer(Modifier.height(350.dp)) }
+                item { Spacer(Modifier.height(200.dp)) }
             }
-
-            item { Spacer(Modifier.height(350.dp)) }
-            item { Spacer(Modifier.height(200.dp)) }
         }
     }
 }
