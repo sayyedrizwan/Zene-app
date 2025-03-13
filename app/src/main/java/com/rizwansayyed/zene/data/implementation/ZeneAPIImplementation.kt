@@ -11,7 +11,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
-import com.rizwansayyed.zene.ui.view.PlaylistsType
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
@@ -283,6 +283,21 @@ class ZeneAPIImplementation @Inject constructor(
             put("country", country)
             if (q.type() == MusicDataTypes.SONGS) put("artists", q.artists)
             put("name", q.name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.searchImages(token, body))
+    }
+
+    override suspend fun searchImages(q: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", country)
+            put("name", q)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

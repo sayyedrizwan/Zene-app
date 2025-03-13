@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.view
+package com.rizwansayyed.zene.ui.view.playlist
 
 import android.os.Build
 import androidx.compose.animation.animateContentSize
@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,17 +51,23 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
-import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
-import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
-import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
-import com.rizwansayyed.zene.ui.view.PlaylistsType.PLAYLIST_ALBUMS
-import com.rizwansayyed.zene.ui.view.PlaylistsType.PODCAST
-import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
+import com.rizwansayyed.zene.ui.view.ButtonArrowBack
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.ItemCardView
+import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
+import com.rizwansayyed.zene.ui.view.TextAlertDialog
+import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewBoldBig
+import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PLAYLIST_ALBUMS
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
@@ -183,79 +188,6 @@ fun PlaylistView(id: String, type: PlaylistsType) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun PodcastItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusicDataList) {
-    Row(Modifier
-        .padding(top = 15.dp)
-        .padding(horizontal = 5.dp, vertical = 10.dp)
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(13.dp))
-        .background(BlackGray)
-        .clickable { startMedia(data, list) }
-        .padding(horizontal = 15.dp, vertical = 25.dp),
-        Arrangement.Center,
-        Alignment.CenterVertically) {
-        Column(Modifier.weight(1f)) {
-            TextViewSemiBold(data.name ?: "", 16, line = 3)
-            Spacer(Modifier.height(10.dp))
-            TextViewNormal(data.artists ?: "", 13, line = 3)
-            Spacer(Modifier.height(10.dp))
-            Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
-                Spacer(Modifier.width(2.dp))
-                ImageIcon(R.drawable.ic_clock, 16)
-                Spacer(Modifier.width(5.dp))
-                TextViewNormal(data.timeAgo(), 15)
-
-                Spacer(Modifier.weight(1f))
-                ImageIcon(R.drawable.ic_play, 17)
-                Spacer(Modifier.width(5.dp))
-                TextViewNormal(formatDurationsForVideo(data.extraInfo?.toFloatOrNull() ?: 0f), 15)
-            }
-        }
-
-        if (info?.data?.id == data.id) GlideImage(
-            R.raw.song_playing_wave, "", Modifier.size(24.dp), contentScale = ContentScale.Crop
-        )
-        else ImageIcon(R.drawable.ic_play, 25)
-    }
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun PlaylistsItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusicDataList) {
-    Row(Modifier
-        .padding(top = 15.dp)
-        .padding(horizontal = 5.dp, vertical = 10.dp)
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(13.dp))
-        .background(BlackGray)
-        .clickable { startMedia(data, list) }
-        .padding(horizontal = 15.dp, vertical = 25.dp),
-        Arrangement.Center,
-        Alignment.CenterVertically) {
-        GlideImage(
-            data.thumbnail,
-            data.name,
-            Modifier
-                .padding(end = 10.dp)
-                .size(60.dp),
-            contentScale = ContentScale.Crop
-        )
-
-        Column(Modifier.weight(1f), Arrangement.Center, Alignment.Start) {
-            TextViewSemiBold(data.name ?: "", 15, line = 3)
-            Spacer(Modifier.height(2.dp))
-            TextViewNormal(data.artists ?: "", 12, line = 1)
-        }
-
-        if (info?.data?.id == data.id) GlideImage(
-            R.raw.song_playing_wave, "", Modifier.size(24.dp), contentScale = ContentScale.Crop
-        )
-        else ImageIcon(R.drawable.ic_play, 25)
-    }
-}
-
 @Composable
 fun PlaylistsButtonView(
     data: PodcastPlaylistResponse, viewModel: HomeViewModel, type: PlaylistsType
@@ -331,107 +263,4 @@ fun PlaylistsButtonView(
             generateHomeScreenShortcut(data.info)
             showAddToHomeScreen = false
         })
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
-    val width = (LocalConfiguration.current.screenWidthDp / 1.5).dp
-    var fullDesc by remember { mutableStateOf(false) }
-    var shouldShowArrow by remember { mutableStateOf(false) }
-
-    GlideImage(
-        v.thumbnail, v.name,
-        modifier = Modifier
-            .size(width)
-            .clip(RoundedCornerShape(14.dp)),
-        contentScale = ContentScale.Crop
-    )
-    Spacer(Modifier.height(15.dp))
-    TextViewBoldBig(v.name ?: "", 40, center = true)
-    Spacer(Modifier.height(15.dp))
-    when (type) {
-        PODCAST -> TextViewSemiBold(stringResource(R.string.podcast), 17, center = true)
-        else -> {
-            TextViewSemiBold(
-                stringResource(
-                    if (v.type() == MusicDataTypes.ALBUMS) R.string.album else R.string.playlist
-                ), 17, center = true
-            )
-
-            if (v.type() == MusicDataTypes.ALBUMS) {
-                Spacer(Modifier.height(15.dp))
-                TextViewNormal(v.extra ?: "", 17, center = true)
-            }
-        }
-    }
-
-    if ((v.artists?.trim()?.length ?: 0) > 5) {
-        Spacer(Modifier.height(15.dp))
-        Text(
-            v.artists ?: "",
-            Modifier
-                .fillMaxWidth()
-                .animateContentSize(),
-            Color.White, 14.sp, null, FontWeight.Normal, proximanOverFamily,
-            textAlign = TextAlign.Center, maxLines = if (fullDesc) 1000 else 3,
-            overflow = TextOverflow.Ellipsis,
-            onTextLayout = { textLayoutResult ->
-                shouldShowArrow = textLayoutResult.lineCount > 2
-            },
-        )
-
-        Spacer(Modifier.height(5.dp))
-
-        if (shouldShowArrow) Box(Modifier
-            .rotate(if (fullDesc) 180f else 0f)
-            .clickable { fullDesc = !fullDesc }) {
-            ImageIcon(R.drawable.ic_arrow_down, 28)
-        }
-    }
-    Spacer(Modifier.height(30.dp))
-}
-
-@Composable
-fun AddSongToQueue(data: PodcastPlaylistResponse, close: () -> Unit) {
-    AlertDialog(title = {
-        TextViewNormal(stringResource(R.string.add_to_queue), 17, line = 2, center = false)
-    }, text = {
-        TextViewNormal(stringResource(R.string.queue_desc), 16, center = false)
-    }, onDismissRequest = {
-        close()
-    }, confirmButton = {
-        Row {
-            TextButton(onClick = {
-                close()
-                TEMP_ZENE_MUSIC_DATA_LIST.clear()
-                TEMP_ZENE_MUSIC_DATA_LIST.addAll(data.list?.toTypedArray() ?: emptyArray())
-                if (getPlayerS() == null)
-                    startMedia(data.list?.first(), data.list?.toList() ?: emptyList())
-                else
-                    getPlayerS()?.addListsToNext(data.list?.toList() ?: emptyList())
-            }) {
-                TextViewNormal(stringResource(R.string.play_next), 15)
-            }
-            Spacer(Modifier.width(10.dp))
-            TextButton(onClick = {
-                close()
-                TEMP_ZENE_MUSIC_DATA_LIST.clear()
-                TEMP_ZENE_MUSIC_DATA_LIST.addAll(data.list?.toTypedArray() ?: emptyArray())
-
-                if (getPlayerS() == null)
-                    startMedia(data.list?.first(), data.list?.toList() ?: emptyList())
-                else
-                    getPlayerS()?.addListsToQueue(data.list?.toList() ?: emptyList())
-            }) {
-                TextViewNormal(stringResource(R.string.add_to_queue), 15)
-            }
-        }
-    }, dismissButton = {
-        TextButton(onClick = {
-            close()
-        }) {
-            TextViewNormal(stringResource(R.string.cancel), 15)
-        }
-    })
 }

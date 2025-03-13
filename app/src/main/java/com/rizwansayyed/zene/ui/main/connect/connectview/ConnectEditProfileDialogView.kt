@@ -183,21 +183,12 @@ fun ConnectEditProfileView() {
     var nameText by remember { mutableStateOf("") }
     var usernameText by remember { mutableStateOf("") }
 
-
     val cropImage = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
-            // Use the cropped image URI.
             val croppedImageUri = result.uriContent
             croppedImageUri?.toString()?.let { p -> profilePic = p }
-//            val croppedImageFilePath = result.getUriFilePath(this) // optional usage
-            // Process the cropped image URI as needed.
-        } else {
-            // An error occurred.
-            val exception = result.error
-            // Handle the error.
         }
     }
-
 
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         cropImage.launch(

@@ -20,12 +20,14 @@ import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : ViewModel() {
@@ -181,6 +183,24 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
                 playlistNameStatus = ResponseResult.Success(it)
             }
         }
+
+
+    var searchImages by mutableStateOf<ResponseResult<List<String>>>(ResponseResult.Empty)
+    private var searchImageJob: Job? = null
+    fun searchImage(q: String) {
+        searchImageJob?.cancel()
+        searchImageJob = viewModelScope.launch(Dispatchers.IO) {
+            searchImages = ResponseResult.Loading
+            delay(1.seconds)
+            zeneAPI.searchImages(q).onStart {
+                searchImages = ResponseResult.Loading
+            }.catch {
+                searchImages = ResponseResult.Error(it)
+            }.collectLatest {
+                searchImages = ResponseResult.Success(it)
+            }
+        }
+    }
 
 
     fun clearAll() {

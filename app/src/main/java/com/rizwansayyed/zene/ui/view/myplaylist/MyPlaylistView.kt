@@ -1,6 +1,5 @@
-package com.rizwansayyed.zene.ui.view
+package com.rizwansayyed.zene.ui.view.myplaylist
 
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -22,11 +21,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -52,9 +54,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.MusicDataTypes
@@ -64,6 +70,14 @@ import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
+import com.rizwansayyed.zene.ui.view.TextAlertDialog
+import com.rizwansayyed.zene.ui.view.TextViewBoldBig
+import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
@@ -77,7 +91,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -266,232 +279,10 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                     changeNameView = false
                 }
 
-                if (changeImageView) CustomImageOnPlaylist(v.data) {
+                if (changeImageView) CustomImageOnMyPlaylist(v.data) {
                     if (it) myLibraryViewModel.myPlaylistInfo(v.data.id ?: "")
                     changeImageView = false
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun EditPlaylistNameDialog(data: ZeneMusicData, close: (Boolean) -> Unit) {
-    Dialog(onDismissRequest = { close(false) }) {
-        val viewModel: MyLibraryViewModel = hiltViewModel(key = data.name)
-        val titleNameChange = stringResource(R.string.edit_your_playlist_new_name)
-        var name by remember { mutableStateOf(data.name ?: "") }
-        var loading by remember { mutableStateOf(false) }
-        val focusManager = LocalFocusManager.current
-
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.5f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MainColor), Arrangement.Center, Alignment.CenterHorizontally
-        ) {
-            TextViewNormal(titleNameChange, 16)
-            Spacer(Modifier.height(10.dp))
-
-            TextField(
-                name,
-                { if (it.length <= 100) name = it },
-                Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions { focusManager.clearFocus() },
-                placeholder = {
-                    TextViewNormal(
-                        stringResource(R.string.playlist_name), 17, Color.Gray, center = true
-                    )
-                },
-                textStyle = TextStyle(textAlign = TextAlign.Center, fontSize = 17.sp),
-                shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = BlackGray,
-                    unfocusedContainerColor = BlackGray,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.White
-                ),
-                singleLine = true
-            )
-
-            Spacer(Modifier.height(10.dp))
-
-            if (loading) {
-                CircularLoadingView()
-            } else {
-                if (name.length > 3) ButtonWithBorder(R.string.save) {
-                    viewModel.updateMyPlaylistName(data.id, name)
-                }
-            }
-
-            Spacer(Modifier.height(10.dp))
-        }
-
-        LaunchedEffect(viewModel.playlistNameStatus) {
-            when (viewModel.playlistNameStatus) {
-                ResponseResult.Empty -> loading = false
-                is ResponseResult.Error -> {}
-                ResponseResult.Loading -> loading = true
-                is ResponseResult.Success -> {
-                    loading = false
-                    close(true)
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun MyPlaylistItemView(
-    data: ZeneMusicData,
-    info: MusicPlayerData?,
-    viewModel: MyLibraryViewModel,
-    remove: (Boolean) -> Unit
-) {
-    var confirmationSheet by remember { mutableStateOf(false) }
-
-    Box(Modifier
-        .padding(top = 15.dp)
-        .padding(horizontal = 5.dp, vertical = 10.dp)
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(13.dp))
-        .background(BlackGray)
-        .clickable {
-            startMedia(data, viewModel.myPlaylistSongsList)
-        }
-        .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp, vertical = 10.dp),
-            Arrangement.Center,
-            Alignment.CenterVertically
-        ) {
-            Box {
-                GlideImage(
-                    data.thumbnail,
-                    data.name,
-                    Modifier
-                        .padding(end = 10.dp)
-                        .size(90.dp),
-                    contentScale = ContentScale.Crop
-                )
-
-                if (info?.data?.id == data.id) GlideImage(
-                    R.raw.song_playing_wave,
-                    "",
-                    Modifier
-                        .size(30.dp)
-                        .align(Alignment.Center),
-                    contentScale = ContentScale.Crop
-                )
-
-                Box(
-                    Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(2.dp)
-                        .clip(RoundedCornerShape(100))
-                        .background(Color.Black)
-                        .padding(5.dp)
-                ) {
-                    if (data.type() == MusicDataTypes.SONGS) {
-                        ImageIcon(R.drawable.ic_music_note, 20)
-                    } else if (data.type() == MusicDataTypes.AI_MUSIC) {
-                        ImageIcon(R.drawable.ic_robot_singing, 20)
-                    } else if (data.type() == MusicDataTypes.PODCAST_AUDIO) {
-                        ImageIcon(R.drawable.ic_podcast, 20)
-                    } else if (data.type() == MusicDataTypes.RADIO) {
-                        ImageIcon(R.drawable.ic_radio, 20)
-                    } else if (data.type() == MusicDataTypes.VIDEOS) {
-                        ImageIcon(R.drawable.ic_video_replay, 20)
-                    }
-                }
-            }
-
-            Column(Modifier.weight(1f), Arrangement.Center, Alignment.Start) {
-                TextViewSemiBold(data.name ?: "", 15, line = 2)
-                if ((data.artists?.trim()?.length ?: 0) > 3) {
-                    TextViewNormal(data.artists!!, 13, line = 1)
-                }
-            }
-        }
-
-
-        if (viewModel.isPlaylistOfSameUser) Box(Modifier
-            .align(Alignment.TopEnd)
-            .clickable { confirmationSheet = true }) {
-            ImageIcon(R.drawable.ic_delete, 20)
-        }
-    }
-
-    if (confirmationSheet) TextAlertDialog(R.string.remove_media_from_playlist,
-        R.string.remove_media_from_playlist_desc,
-        {
-            confirmationSheet = false
-            remove(false)
-        },
-        {
-            confirmationSheet = false
-            remove(true)
-        })
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun CustomImageOnPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
-    Dialog(
-        { close(false) }, DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        var playlistThumbnail by remember { mutableStateOf(data.thumbnail) }
-        var playlistThumbnailURI by remember { mutableStateOf<Uri?>(null) }
-        val pickMedia =
-            rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) playlistThumbnailURI = uri
-            }
-
-        Column(
-            Modifier
-                .fillMaxSize()
-                .background(MainColor),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.height(25.dp))
-            Row(Modifier.fillMaxWidth()) {
-                Box(Modifier
-                    .padding(start = 10.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { close(false) }, Alignment.Center
-                ) {
-                    ImageIcon(R.drawable.ic_cancel_close, 25)
-                }
-            }
-            Spacer(Modifier.height(25.dp))
-            GlideImage(
-                playlistThumbnailURI, data.name, Modifier
-                    .clip(RoundedCornerShape(13.dp))
-                    .fillMaxWidth(0.7f)
-                    .aspectRatio(1f)
-            )
-            Spacer(Modifier.height(25.dp))
-            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
-                Box(Modifier.clickable {
-                    pickMedia.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }) {
-                    ImageIcon(R.drawable.ic_folder, 25)
-                }
-                Spacer(Modifier.width(15.dp))
-                ImageIcon(R.drawable.ic_search, 25)
             }
         }
     }

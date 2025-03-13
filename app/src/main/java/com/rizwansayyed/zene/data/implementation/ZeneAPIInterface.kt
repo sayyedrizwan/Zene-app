@@ -33,7 +33,7 @@ import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
-import com.rizwansayyed.zene.ui.view.PlaylistsType
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
 
@@ -128,4 +128,5 @@ interface ZeneAPIInterface {
     suspend fun myPlaylistInfo(id: String): Flow<ZeneMusicData>
     suspend fun deleteMyPlaylists(id: String): Flow<StatusTypeResponse>
     suspend fun nameUserPlaylist(id: String, name: String): Flow<StatusTypeResponse>
+    suspend fun searchImages(q: String): Flow<List<String>>
 }

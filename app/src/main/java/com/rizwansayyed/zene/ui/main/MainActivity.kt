@@ -53,9 +53,9 @@ import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ArtistsView
 import com.rizwansayyed.zene.ui.view.LockScreenOrientation
-import com.rizwansayyed.zene.ui.view.MyPlaylistView
-import com.rizwansayyed.zene.ui.view.PlaylistView
-import com.rizwansayyed.zene.ui.view.PlaylistsType
+import com.rizwansayyed.zene.ui.view.myplaylist.MyPlaylistView
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistView
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.HomeNavigationListener
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
