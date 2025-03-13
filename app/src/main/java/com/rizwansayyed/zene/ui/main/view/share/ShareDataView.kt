@@ -175,7 +175,7 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
                                 centerCrop = !centerCrop
                             }
 
-                            ImageWithBorder(R.drawable.ic_arrow_right) {
+                            if (pagerState.canScrollForward) ImageWithBorder(R.drawable.ic_arrow_right) {
                                 coroutine.launch {
                                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                 }

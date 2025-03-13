@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.MyLibraryTypes
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
+import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
@@ -150,7 +151,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             playlistInfo = ResponseResult.Loading
         }.collectLatest {
             val email = userInfo.firstOrNull()?.email
-            isPlaylistOfSameUser = email == it.artists
+            isPlaylistOfSameUser = email == it.extra
             playlistInfo = ResponseResult.Success(it)
         }
     }
@@ -165,6 +166,21 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     fun deleteMyPlaylist(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.deleteMyPlaylists(playlistID).onStart {}.catch {}.collectLatest {}
     }
+
+
+    var playlistNameStatus by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
+
+    fun updateMyPlaylistName(playlistID: String?, title: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistID ?: return@launch
+            zeneAPI.nameUserPlaylist(playlistID, title).onStart {
+                playlistNameStatus = ResponseResult.Loading
+            }.catch {
+                playlistNameStatus = ResponseResult.Error(it)
+            }.collectLatest {
+                playlistNameStatus = ResponseResult.Success(it)
+            }
+        }
 
 
     fun clearAll() {

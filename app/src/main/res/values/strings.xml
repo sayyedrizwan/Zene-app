@@ -56,6 +56,7 @@
     <string name="your_mixes">Your mixes</string>
     <string name="remove_media_from_playlist">Remove Media from Playlist</string>
     <string name="remove_media_from_playlist_desc">Remove media from your playlist with ease.</string>
+    <string name="edit_your_playlist_new_name">Edit your playlist new name</string>
     <string name="sleep_timer">Sleep Timer</string>
     <string name="minutes">minutes</string>
     <string name="one_hour">1 hour</string>
@@ -290,6 +291,7 @@
     <string name="no_lyrics_found">No Lyrics Found</string>
     <string name="added_to_your_library">Added to your library</string>
     <string name="removed_to_your_library">Removed from your library</string>
+    <string name="save">Save</string>
 
 
     <!--    notification channels-->

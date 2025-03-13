@@ -171,7 +171,8 @@ object ShareContentUtils {
     }
 
     fun generateShareUrl(data: ZeneMusicData?): String {
-        val id = encryptSharingId(data?.id)
+//        val id = encryptSharingId(data?.id)
+        val id = data?.id
 
         return when (data?.type()) {
             NONE -> ZENE_URL

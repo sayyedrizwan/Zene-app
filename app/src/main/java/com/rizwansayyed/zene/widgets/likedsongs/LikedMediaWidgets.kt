@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.widgets.likedsongs
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +41,7 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
@@ -110,7 +112,14 @@ class LikedMediaWidgets : GlanceAppWidget() {
                         Alignment.Horizontal.CenterHorizontally,
                         Alignment.Vertical.CenterVertically
                     ) {
-                        GlanceImageIcon(R.mipmap.logo, 39, null)
+                        Box(GlanceModifier.clickable {
+                            Intent(context, MainActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                context.startActivity(this)
+                            }
+                        }) {
+                            GlanceImageIcon(R.mipmap.logo, 39, null)
+                        }
                         Spacer(GlanceModifier.width(10.dp))
                         GlanceTextItemBold(LocalContext.current.getString(R.string.liked_items), 18)
                         Spacer(GlanceModifier.defaultWeight())

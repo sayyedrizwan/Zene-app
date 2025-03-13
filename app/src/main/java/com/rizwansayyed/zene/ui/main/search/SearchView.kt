@@ -139,6 +139,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
                             }
                         }
                     }
+
                     if (v.data.artists?.isNotEmpty() == true) item {
                         Spacer(Modifier.height(30.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
