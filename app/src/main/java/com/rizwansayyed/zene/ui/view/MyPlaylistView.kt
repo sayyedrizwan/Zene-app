@@ -1,8 +1,13 @@
 package com.rizwansayyed.zene.ui.view
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -71,6 +77,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -443,6 +450,11 @@ fun CustomImageOnPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
         { close(false) }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
         var playlistThumbnail by remember { mutableStateOf(data.thumbnail) }
+        var playlistThumbnailURI by remember { mutableStateOf<Uri?>(null) }
+        val pickMedia =
+            rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                if (uri != null) playlistThumbnailURI = uri
+            }
 
         Column(
             Modifier
@@ -450,13 +462,37 @@ fun CustomImageOnPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                 .background(MainColor),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(25.dp))
+            Row(Modifier.fillMaxWidth()) {
+                Box(Modifier
+                    .padding(start = 10.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { close(false) }, Alignment.Center
+                ) {
+                    ImageIcon(R.drawable.ic_cancel_close, 25)
+                }
+            }
+            Spacer(Modifier.height(25.dp))
             GlideImage(
-                playlistThumbnail, data.name, Modifier
+                playlistThumbnailURI, data.name, Modifier
                     .clip(RoundedCornerShape(13.dp))
                     .fillMaxWidth(0.7f)
                     .aspectRatio(1f)
             )
+            Spacer(Modifier.height(25.dp))
+            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                Box(Modifier.clickable {
+                    pickMedia.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }) {
+                    ImageIcon(R.drawable.ic_folder, 25)
+                }
+                Spacer(Modifier.width(15.dp))
+                ImageIcon(R.drawable.ic_search, 25)
+            }
         }
     }
 }
