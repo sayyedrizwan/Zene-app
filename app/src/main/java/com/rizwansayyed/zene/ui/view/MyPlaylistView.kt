@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -190,17 +191,15 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
 
                 Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                     if (myLibraryViewModel.isPlaylistOfSameUser) {
-                        Box(
-                            Modifier
-                                .padding(horizontal = 7.dp)
-                                .clickable { changeNameView = true }) {
+                        Box(Modifier
+                            .padding(horizontal = 7.dp)
+                            .clickable { changeNameView = true }) {
                             ImageIcon(R.drawable.ic_edit, 24)
                         }
 
-                        Box(
-                            Modifier
-                                .padding(horizontal = 7.dp)
-                                .clickable { changeImageView = true }) {
+                        Box(Modifier
+                            .padding(horizontal = 7.dp)
+                            .clickable { changeImageView = true }) {
                             ImageIcon(R.drawable.ic_image_edit, 24)
                         }
 
@@ -283,9 +282,7 @@ fun EditPlaylistNameDialog(data: ZeneMusicData, close: (Boolean) -> Unit) {
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
                 .clip(RoundedCornerShape(16.dp))
-                .background(MainColor),
-            Arrangement.Center,
-            Alignment.CenterHorizontally
+                .background(MainColor), Arrangement.Center, Alignment.CenterHorizontally
         ) {
             TextViewNormal(titleNameChange, 16)
             Spacer(Modifier.height(10.dp))
@@ -420,10 +417,9 @@ fun MyPlaylistItemView(
         }
 
 
-        if (viewModel.isPlaylistOfSameUser) Box(
-            Modifier
-                .align(Alignment.TopEnd)
-                .clickable { confirmationSheet = true }) {
+        if (viewModel.isPlaylistOfSameUser) Box(Modifier
+            .align(Alignment.TopEnd)
+            .clickable { confirmationSheet = true }) {
             ImageIcon(R.drawable.ic_delete, 20)
         }
     }
@@ -440,17 +436,27 @@ fun MyPlaylistItemView(
         })
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CustomImageOnPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
     Dialog(
         { close(false) }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
+        var playlistThumbnail by remember { mutableStateOf(data.thumbnail) }
+
         Column(
             Modifier
                 .fillMaxSize()
-                .background(MainColor)
+                .background(MainColor),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            Spacer(Modifier.height(50.dp))
+            GlideImage(
+                playlistThumbnail, data.name, Modifier
+                    .clip(RoundedCornerShape(13.dp))
+                    .fillMaxWidth(0.7f)
+                    .aspectRatio(1f)
+            )
         }
     }
 }
