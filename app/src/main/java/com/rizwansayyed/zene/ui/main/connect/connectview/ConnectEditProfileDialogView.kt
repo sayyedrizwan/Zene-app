@@ -191,7 +191,7 @@ fun ConnectEditProfileView() {
     }
 
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-        cropImage.launch(
+        if (it != null) cropImage.launch(
             CropImageContractOptions(
                 it, CropImageOptions(fixAspectRatio = true)
             )

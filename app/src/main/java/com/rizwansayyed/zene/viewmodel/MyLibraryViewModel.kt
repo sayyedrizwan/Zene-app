@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -16,6 +18,7 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.ui.connect_status.view.saveFileToAppDirectory
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -181,6 +184,21 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
                 playlistNameStatus = ResponseResult.Error(it)
             }.collectLatest {
                 playlistNameStatus = ResponseResult.Success(it)
+            }
+        }
+
+
+    fun updateMyPlaylistImage(id: String?, thumbnail: Uri?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.updateImageUserPlaylist(id, thumbnail).onStart {
+                Log.d("TAG", "updateMyPlaylistImage: eubr 111")
+//            likedItemsCount = ResponseResult.Loading
+            }.catch {
+                Log.d("TAG", "updateMyPlaylistImage: eubr 111 ${it.message}")
+//            likedItemsCount = ResponseResult.Error(it)
+            }.collectLatest {
+                Log.d("TAG", "updateMyPlaylistImage: eubr 111 ${it}")
+//            likedItemsCount = ResponseResult.Success(it)
             }
         }
 

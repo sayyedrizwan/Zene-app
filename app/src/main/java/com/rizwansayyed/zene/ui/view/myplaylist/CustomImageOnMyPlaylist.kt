@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.view.myplaylist
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,6 +60,7 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import kotlinx.coroutines.launch
 
@@ -88,7 +88,7 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
 
         val pickMedia =
             rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                cropImage.launch(
+                if (uri != null) cropImage.launch(
                     CropImageContractOptions(uri, CropImageOptions(fixAspectRatio = true))
                 )
             }
@@ -122,7 +122,10 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
                             ) {
-                                Log.d("TAG", "CustomImageOnMyPlaylist: $playlistThumbnail")
+                                if (data.thumbnail == playlistThumbnail.toString())
+                                    close(false)
+                                else
+                                    viewModel.updateMyPlaylistImage(data.id, playlistThumbnail)
                             }, Alignment.Center
                     ) {
                         ImageIcon(R.drawable.ic_tick, 25)

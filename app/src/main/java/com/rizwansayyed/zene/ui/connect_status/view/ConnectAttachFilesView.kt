@@ -3,6 +3,7 @@
 package com.rizwansayyed.zene.ui.connect_status.view
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -241,7 +242,7 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
     }
 }
 
-private fun saveFileToAppDirectory(uri: Uri): File {
+fun saveFileToAppDirectory(uri: Uri, reduceSize: Boolean = false): File {
     vibeVideoFile.delete()
     vibeImageFile.delete()
 
@@ -249,9 +250,38 @@ private fun saveFileToAppDirectory(uri: Uri): File {
     val inputStream = contentResolver.openInputStream(uri)
     val mimeType = contentResolver.getType(uri)
     val file = if (isFileExtensionVideo(mimeType)) vibeVideoFile else vibeImageFile
-    inputStream?.use { input ->
-        file.outputStream().use { output ->
-            input.copyTo(output)
+
+    if (reduceSize && file == vibeImageFile) {
+        val bitmap = contentResolver.openInputStream(uri)?.use { input ->
+            BitmapFactory.decodeStream(input)
+        }
+
+        bitmap?.let {
+            var quality = 70
+            file.outputStream().use { output ->
+                it.compress(Bitmap.CompressFormat.JPEG, quality, output)
+            }
+
+            if (file.length() > 300 * 1024) {
+                quality = 40
+                file.outputStream().use { output ->
+                    it.compress(Bitmap.CompressFormat.JPEG, quality, output)
+                }
+            }
+
+            if (file.length() > 300 * 1024) {
+                quality = 20
+                file.outputStream().use { output ->
+                    it.compress(Bitmap.CompressFormat.JPEG, quality, output)
+                }
+            }
+        }
+
+    } else {
+        inputStream?.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
         }
     }
     return file

@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.data.implementation
 
+import android.net.Uri
 import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
@@ -129,4 +130,5 @@ interface ZeneAPIInterface {
     suspend fun deleteMyPlaylists(id: String): Flow<StatusTypeResponse>
     suspend fun nameUserPlaylist(id: String, name: String): Flow<StatusTypeResponse>
     suspend fun searchImages(q: String): Flow<List<String>>
+    suspend fun updateImageUserPlaylist(id: String?, file: Uri?): Flow<StatusTypeResponse>
 }

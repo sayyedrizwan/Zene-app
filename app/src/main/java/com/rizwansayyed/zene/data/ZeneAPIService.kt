@@ -97,6 +97,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SAVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_IMAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_NAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_VERIFY_NUMBER_OTP_API
@@ -445,6 +446,12 @@ interface ZeneAPIService {
     @POST(ZENE_USER_UPDATE_PLAYLIST_NAME_API)
     suspend fun nameUserPlaylist(
         @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+
+    @POST(ZENE_USER_UPDATE_PLAYLIST_IMAGE_API)
+    suspend fun updateUserPlaylistImage(
+        @Header("token") token: String, @Body data: RequestBody?
     ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")

@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.data.implementation
 
+import android.net.Uri
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
@@ -11,6 +13,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
+import com.rizwansayyed.zene.ui.connect_status.view.saveFileToAppDirectory
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
@@ -176,6 +179,27 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.nameUserPlaylist(token, body))
+    }
+
+    override suspend fun updateImageUserPlaylist(id: String?, file: Uri?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val body = MultipartBody.Builder().setType(MultipartBody.FORM)
+
+        if (file != null && !file.toString().contains("https://")) {
+            val savedFile = saveFileToAppDirectory(file, true)
+            if (savedFile.exists()) {
+                val upload = savedFile.asRequestBody("application/octet-stream".toMediaTypeOrNull())
+                body.addFormDataPart("file", savedFile.name, upload)
+            }
+        }
+
+        body.addFormDataPart("image", file.toString())
+        body.addFormDataPart("email", email)
+        if (id != null) body.addFormDataPart("id", id)
+
+        emit(zeneAPI.updateUserPlaylistImage(token, body.build()))
     }
 
 
