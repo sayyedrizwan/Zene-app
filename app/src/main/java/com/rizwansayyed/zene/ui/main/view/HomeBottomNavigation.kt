@@ -38,7 +38,6 @@ import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -93,7 +92,6 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
     val context = LocalContext.current.applicationContext
     val player by DataStorageManager.musicPlayerDB.collectAsState(null)
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
-    var loadedImage by remember { mutableStateOf<Bitmap?>(null) }
 
     if (player?.data?.id != null) Row(Modifier
         .clickable(
@@ -114,7 +112,7 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
         .padding(10.dp), Arrangement.Absolute.SpaceBetween, Alignment.CenterVertically
     ) {
         GlideImage(
-            loadedImage,
+            player?.data?.thumbnail,
             player?.data?.name,
             Modifier
                 .size(40.dp)
@@ -161,7 +159,6 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
             .apply(RequestOptions.skipMemoryCacheOf(true))
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, p1: Transition<in Bitmap>?) {
-                    loadedImage = resource
                     Palette.from(resource).generate { palette ->
                         palette?.let {
                             val vibrant = it.vibrantSwatch?.rgb?.let { Color(it) } ?: MainColor

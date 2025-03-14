@@ -18,6 +18,8 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.squareup.moshi.Moshi
@@ -496,6 +498,17 @@ object MainUtils {
             true
         } catch (e: PackageManager.NameNotFoundException) {
             false
+        }
+    }
+
+    fun clearImagesCache() {
+       CoroutineScope(Dispatchers.Main).launch {
+            Glide.get(context).clearMemory()
+            if (isActive) cancel()
+        }
+        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+            Glide.get(context).clearDiskCache()
+            if (isActive) cancel()
         }
     }
 }

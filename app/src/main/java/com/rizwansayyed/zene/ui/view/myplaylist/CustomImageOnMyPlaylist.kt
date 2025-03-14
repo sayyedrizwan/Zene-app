@@ -28,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +59,11 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -74,6 +76,7 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
         val viewModel: MyLibraryViewModel = hiltViewModel()
         val focusManager = LocalFocusManager.current
         var showSearchBar by remember { mutableStateOf(false) }
+        var isLoading by remember { mutableStateOf(false) }
         var searchText by remember { mutableStateOf("") }
         var playlistThumbnail by remember { mutableStateOf(data.thumbnail?.toUri()) }
         val state = rememberLazyListState()
@@ -93,42 +96,57 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                 )
             }
 
+        LaunchedEffect(viewModel.playlistImageStatus) {
+            when (val v = viewModel.playlistImageStatus) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> isLoading = true
+                is ResponseResult.Success -> {
+                    if (v.data.status == true) {
+                        delay(500)
+                        close(true)
+                    } else {
+                        close(false)
+                    }
+                }
+            }
+        }
+
         LazyColumn(
             Modifier
                 .fillMaxSize()
-                .background(MainColor), state,
+                .background(MainColor),
+            state,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Spacer(Modifier.height(25.dp))
                 Row(Modifier.fillMaxWidth()) {
-                    Box(
-                        Modifier
-                            .padding(start = 10.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) { close(false) }, Alignment.Center
+                    Box(Modifier
+                        .padding(start = 10.dp)
+                        .clickable(indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            close(
+                                false
+                            )
+                        }, Alignment.Center
                     ) {
                         ImageIcon(R.drawable.ic_cancel_close, 25)
                     }
 
                     Spacer(Modifier.weight(1f))
 
-                    Box(
-                        Modifier
-                            .padding(end = 10.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                if (data.thumbnail == playlistThumbnail.toString())
-                                    close(false)
-                                else
-                                    viewModel.updateMyPlaylistImage(data.id, playlistThumbnail)
-                            }, Alignment.Center
+                    Box(Modifier
+                        .padding(end = 10.dp)
+                        .clickable(indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            if (isLoading) return@clickable
+                            if (data.thumbnail == playlistThumbnail.toString()) close(false)
+                            else viewModel.updateMyPlaylistImage(data.id, playlistThumbnail)
+                        }, Alignment.Center
                     ) {
-                        ImageIcon(R.drawable.ic_tick, 25)
+                        if (isLoading) CircularLoadingViewSmall()
+                        else ImageIcon(R.drawable.ic_tick, 25)
                     }
                 }
             }
@@ -144,7 +162,9 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                         .clipToBounds()
                 ) {
                     GlideImage(
-                        playlistThumbnail, data.name, Modifier.fillMaxSize(),
+                        playlistThumbnail,
+                        data.name,
+                        Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.TopCenter
                     )
@@ -230,7 +250,9 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                                         .clipToBounds()
                                 ) {
                                     GlideImage(
-                                        it, searchText, Modifier
+                                        it,
+                                        searchText,
+                                        Modifier
                                             .fillMaxSize()
                                             .clickable {
                                                 coroutine.launch {

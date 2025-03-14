@@ -1,13 +1,11 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
@@ -23,6 +21,7 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compr
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreview
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
+import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
@@ -175,14 +174,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.media = file?.absolutePath
-        viewModelScope.launch(Dispatchers.Main) {
-            Glide.get(context).clearMemory()
-            if (isActive) cancel()
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            Glide.get(context).clearDiskCache()
-            if (isActive) cancel()
-        }
+        clearImagesCache()
 
         if (v.media?.contains(".jpg") == true) {
             val compressed = compressImageHighQuality(
