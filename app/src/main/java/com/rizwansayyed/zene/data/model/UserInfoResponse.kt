@@ -2,9 +2,9 @@ package com.rizwansayyed.zene.data.model
 
 data class UserInfoResponse(
     val email: String?,
-    val name: String?,
+    var name: String?,
     val photo: String?,
-    val username: String?,
+    var username: String?,
     val phoneNumber: String?,
     var status: String?,
     val authToken: String?,

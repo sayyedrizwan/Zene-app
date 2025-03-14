@@ -29,7 +29,6 @@ class ZeneBaseApplication : Application() {
         context = this
         EmojiCompat.init(BundledEmojiCompatConfig(context, ContextCompat.getMainExecutor(this)))
 
-
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)
             try {

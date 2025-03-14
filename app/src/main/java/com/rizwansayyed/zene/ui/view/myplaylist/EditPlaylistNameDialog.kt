@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -54,7 +55,6 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
-
 
 @Composable
 fun EditPlaylistNameDialog(data: ZeneMusicData, close: (Boolean) -> Unit) {
@@ -106,8 +106,14 @@ fun EditPlaylistNameDialog(data: ZeneMusicData, close: (Boolean) -> Unit) {
             if (loading) {
                 CircularLoadingView()
             } else {
-                if (name.length > 3) ButtonWithBorder(R.string.save) {
-                    viewModel.updateMyPlaylistName(data.id, name)
+                Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                    ButtonWithBorder(R.string.close) {
+                        close(false)
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    if (name.trim().length > 3) ButtonWithBorder(R.string.save) {
+                        viewModel.updateMyPlaylistName(data.id, name)
+                    }
                 }
             }
 
@@ -205,16 +211,14 @@ fun MyPlaylistItemView(
         }
 
 
-        if (viewModel.isPlaylistOfSameUser) Box(
-            Modifier
+        if (viewModel.isPlaylistOfSameUser) Box(Modifier
             .align(Alignment.TopEnd)
             .clickable { confirmationSheet = true }) {
             ImageIcon(R.drawable.ic_delete, 20)
         }
     }
 
-    if (confirmationSheet) TextAlertDialog(
-        R.string.remove_media_from_playlist,
+    if (confirmationSheet) TextAlertDialog(R.string.remove_media_from_playlist,
         R.string.remove_media_from_playlist_desc,
         {
             confirmationSheet = false
