@@ -43,6 +43,8 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
@@ -81,6 +83,8 @@ class HomeViewModel @Inject constructor(
         ResponseResult.Empty
     )
 
+
+    var checkUsernameInfo by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
@@ -392,4 +396,27 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+
+    private var checkUsernameJob: Job? = null
+    fun checkUsername(username: String) {
+        checkUsernameJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(500)
+            zeneAPI.checkUsername(username).onStart {
+                checkUsernameInfo = ResponseResult.Loading
+            }.catch {
+                checkUsernameInfo = ResponseResult.Error(it)
+            }.collectLatest {
+                checkUsernameInfo = ResponseResult.Success(it.status ?: false)
+            }
+        }
+    }
+
+
+    fun updateUsername(username: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.updateUsername(username).onStart { }.catch {}.collectLatest {}
+    }
+
+    fun updateName(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.updateName(name).onStart {}.catch {}.collectLatest {}
+    }
 }

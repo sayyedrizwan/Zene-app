@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.ui.settings.dialog.EditProfileNameDialog
@@ -29,9 +30,11 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
 fun SettingsPersonalInfo(userInfo: UserInfoResponse?) {
+    val viewModel: HomeViewModel = hiltViewModel()
     var nameUpdateView by remember { mutableStateOf(false) }
     var usernameNameUpdateView by remember { mutableStateOf(false) }
 
@@ -55,12 +58,14 @@ fun SettingsPersonalInfo(userInfo: UserInfoResponse?) {
         stringResource(R.string.phone_number), userInfo?.phoneNumber, R.drawable.ic_telephone
     ) {}
 
-    if (nameUpdateView) EditProfileNameDialog {
+    if (nameUpdateView) EditProfileNameDialog(viewModel) {
         nameUpdateView = false
+        if (it) viewModel.userInfo()
     }
 
-    if (usernameNameUpdateView) EditProfileUsernameDialog {
+    if (usernameNameUpdateView) EditProfileUsernameDialog(viewModel) {
         usernameNameUpdateView = false
+        if (it) viewModel.userInfo()
     }
 }
 

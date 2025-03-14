@@ -131,4 +131,7 @@ interface ZeneAPIInterface {
     suspend fun nameUserPlaylist(id: String, name: String): Flow<StatusTypeResponse>
     suspend fun searchImages(q: String): Flow<List<String>>
     suspend fun updateImageUserPlaylist(id: String?, file: Uri?): Flow<StatusTypeResponse>
+    suspend fun checkUsername(username: String): Flow<StatusTypeResponse>
+    suspend fun updateUsername(username: String): Flow<StatusTypeResponse>
+    suspend fun updateName(name: String): Flow<StatusTypeResponse>
 }

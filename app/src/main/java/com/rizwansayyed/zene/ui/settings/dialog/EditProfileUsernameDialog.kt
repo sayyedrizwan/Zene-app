@@ -17,6 +17,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,23 +35,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @Composable
-fun EditProfileUsernameDialog(close: (Boolean) -> Unit) {
+fun EditProfileUsernameDialog(viewModel: HomeViewModel, close: (Boolean) -> Unit) {
     Dialog(onDismissRequest = { close(false) }) {
         var username by remember { mutableStateOf("") }
+        var isUserDifferent by remember { mutableStateOf(false) }
+        val savedUsername by userInfo.collectAsState(null)
         val enterYourUsername = stringResource(R.string.enter_a_username)
         val focusManager = LocalFocusManager.current
-        val coroutine = rememberCoroutineScope()
 
         Column(
             Modifier
@@ -62,39 +69,62 @@ fun EditProfileUsernameDialog(close: (Boolean) -> Unit) {
             TextViewNormal(enterYourUsername, 16)
             Spacer(Modifier.height(10.dp))
 
-            TextField(
-                username,
-                { if (it.length <= 30) username = it },
+            Row(
                 Modifier
-                    .padding(10.dp)
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions { focusManager.clearFocus() },
-                textStyle = TextStyle(textAlign = TextAlign.Center, fontSize = 17.sp),
-                shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = BlackGray,
-                    unfocusedContainerColor = BlackGray,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.White
-                ),
-                singleLine = true
-            )
+                    .padding(10.dp), Arrangement.SpaceEvenly, Alignment.CenterVertically
+            ) {
+                TextField(
+                    username, {
+                        if (it.length <= 38) {
+                            username = it.lowercase().trim()
+                            if (it.trim().length >= 3) viewModel.checkUsername(it.lowercase().trim())
+                        }
+                    },
+                    Modifier
+                        .weight(1f)
+                        .padding(vertical = 4.dp),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions { focusManager.clearFocus() },
+                    textStyle = TextStyle(textAlign = TextAlign.Center, fontSize = 17.sp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = BlackGray,
+                        unfocusedContainerColor = BlackGray,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        cursorColor = Color.White
+                    ),
+                    singleLine = true
+                )
+                Spacer(Modifier.width(4.dp))
 
+                if (username.trim() != savedUsername?.username)
+                    when (val v = viewModel.checkUsernameInfo) {
+                        ResponseResult.Empty -> {}
+                        is ResponseResult.Error -> {}
+                        ResponseResult.Loading -> CircularLoadingViewSmall()
+                        is ResponseResult.Success -> if (username.trim().length > 3) {
+                            isUserDifferent = v.data
+                            if (v.data)
+                                ImageIcon(R.drawable.ic_tick, 19, Color.Green)
+                            else
+                                ImageIcon(R.drawable.ic_cancel_close, 19, Color.Red)
+                        }
+                    }
+            }
             Spacer(Modifier.height(10.dp))
 
             Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                 ButtonWithBorder(R.string.close) {
                     close(false)
                 }
-                Spacer(Modifier.width(10.dp))
-                if (username.trim().length > 3) ButtonWithBorder(R.string.save) {
-                    coroutine.launch {
-                        val info = userInfo.firstOrNull()
-                        info?.username = username
-                        userInfo = flowOf(info)
+
+                if (username.trim().length > 3 && isUserDifferent) {
+                    Spacer(Modifier.width(10.dp))
+                    ButtonWithBorder(R.string.save) {
+                        viewModel.updateUsername(username)
+                        close(true)
                     }
                 }
             }

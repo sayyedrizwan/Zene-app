@@ -34,23 +34,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 @Composable
-fun EditProfileNameDialog(close: (Boolean) -> Unit) {
-    Dialog(onDismissRequest = { close(false) }) {
+fun EditProfileNameDialog(viewModel: HomeViewModel, close: (Boolean) -> Unit) {
+    Dialog({ close(false) }) {
         var name by remember { mutableStateOf("") }
         val enterYourName = stringResource(R.string.enter_your_name)
         val focusManager = LocalFocusManager.current
-        val coroutine = rememberCoroutineScope()
 
         Column(
             Modifier
@@ -64,7 +63,7 @@ fun EditProfileNameDialog(close: (Boolean) -> Unit) {
 
             TextField(
                 name,
-                { if (it.length <= 30) name = it },
+                { if (it.length <= 40) name = it },
                 Modifier
                     .padding(10.dp)
                     .fillMaxWidth()
@@ -91,11 +90,8 @@ fun EditProfileNameDialog(close: (Boolean) -> Unit) {
                 }
                 Spacer(Modifier.width(10.dp))
                 if (name.trim().length > 3) ButtonWithBorder(R.string.save) {
-                    coroutine.launch {
-                        val info = userInfo.firstOrNull()
-                        info?.name = name
-                        userInfo = flowOf(info)
-                    }
+                    viewModel.updateName(name)
+                    close(true)
                 }
             }
 

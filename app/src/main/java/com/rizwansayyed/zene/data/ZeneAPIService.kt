@@ -81,6 +81,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SIMILAR_PODCASTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_USERNAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_MY_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_GET_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
@@ -97,9 +98,11 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SAVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_NAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_IMAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_NAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_USERNAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_VERIFY_NUMBER_OTP_API
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -122,6 +125,24 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_ADD_HISTORY_API)
     suspend fun addHistory(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_CHECK_USERNAME_API)
+    suspend fun checkUsername(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_UPDATE_USERNAME_API)
+    suspend fun updateUsername(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_UPDATE_NAME_API)
+    suspend fun updateName(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 
