@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -85,6 +86,7 @@ class HomeViewModel @Inject constructor(
 
 
     var checkUsernameInfo by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
+    var updateProfilePhotoInfo by mutableStateOf(false)
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
@@ -418,5 +420,16 @@ class HomeViewModel @Inject constructor(
 
     fun updateName(name: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.updateName(name).onStart {}.catch {}.collectLatest {}
+    }
+
+    fun updateProfilePhoto(photo: Uri?) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.updatePhoto(photo).onStart {
+            updateProfilePhotoInfo = true
+        }.catch {
+            updateProfilePhotoInfo = false
+        }.collectLatest {
+            updateProfilePhotoInfo = false
+            userInfo()
+        }
     }
 }

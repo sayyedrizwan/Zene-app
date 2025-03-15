@@ -68,13 +68,9 @@ class PhoneVerificationActivity : FragmentActivity() {
                         }
                     }
 
-                    LaunchedEffect(Unit) {
-                        viewModel.checkLastOTPVerifiedInWeek()
-                    }
+                    LaunchedEffect(Unit) { viewModel.checkLastOTPVerifiedInWeek() }
 
-                    ButtonArrowBack(Modifier.align(Alignment.TopStart)) {
-                        finish()
-                    }
+                    ButtonArrowBack(Modifier.align(Alignment.TopStart)) { finish() }
                 }
             }
         }

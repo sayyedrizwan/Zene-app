@@ -140,6 +140,26 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.updateName(token, body))
     }
 
+
+    override suspend fun updatePhoto(file: Uri?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val body = MultipartBody.Builder().setType(MultipartBody.FORM)
+
+        if (file != null && !file.toString().contains("https://")) {
+            val savedFile = saveFileToAppDirectory(file, true)
+            if (savedFile.exists()) {
+                val upload = savedFile.asRequestBody("application/octet-stream".toMediaTypeOrNull())
+                body.addFormDataPart("file", savedFile.name, upload)
+            }
+        }
+        body.addFormDataPart("email", email)
+
+        emit(zeneAPI.updateProfilePhoto(token, body.build()))
+    }
+
+
     override suspend fun getHistory(page: Int) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
