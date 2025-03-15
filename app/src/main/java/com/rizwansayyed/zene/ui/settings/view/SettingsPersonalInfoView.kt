@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.settings.view
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,11 +20,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.ui.phoneverification.PhoneVerificationActivity
 import com.rizwansayyed.zene.ui.settings.dialog.EditProfileNameDialog
 import com.rizwansayyed.zene.ui.settings.dialog.EditProfileUsernameDialog
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -35,6 +38,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 @Composable
 fun SettingsPersonalInfo(userInfo: UserInfoResponse?) {
     val viewModel: HomeViewModel = hiltViewModel()
+    val context = LocalContext.current
     var nameUpdateView by remember { mutableStateOf(false) }
     var usernameNameUpdateView by remember { mutableStateOf(false) }
 
@@ -56,7 +60,12 @@ fun SettingsPersonalInfo(userInfo: UserInfoResponse?) {
 
     PersonalInfoWith(
         stringResource(R.string.phone_number), userInfo?.phoneNumber, R.drawable.ic_telephone
-    ) {}
+    ) {
+        Intent(context, PhoneVerificationActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(this)
+        }
+    }
 
     if (nameUpdateView) EditProfileNameDialog(viewModel) {
         nameUpdateView = false
@@ -69,20 +78,16 @@ fun SettingsPersonalInfo(userInfo: UserInfoResponse?) {
     }
 }
 
-
 @Composable
 fun PersonalInfoWith(top: String, bottom: String?, img: Int, click: (() -> Unit)?) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) { if (click != null) click() }
-            .padding(horizontal = 5.dp, vertical = 15.dp),
+    Row(Modifier
+        .fillMaxWidth()
+        .clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) { if (click != null) click() }
+        .padding(horizontal = 5.dp, vertical = 15.dp),
         Arrangement.Center,
-        Alignment.CenterVertically
-    ) {
+        Alignment.CenterVertically) {
         Spacer(Modifier.width(5.dp))
         ImageIcon(img, 26)
 
@@ -93,7 +98,8 @@ fun PersonalInfoWith(top: String, bottom: String?, img: Int, click: (() -> Unit)
                 .padding(horizontal = 5.dp)
         ) {
             TextViewLight(top, 14, line = 1)
-            TextViewNormal(bottom ?: "", 16, line = 1)
+            if ((bottom?.trim()?.length ?: 0) > 6) TextViewNormal(bottom ?: "", 16, line = 1)
+            else TextViewNormal("-", 16, line = 1)
         }
 
         if (click != null) Row(Modifier.rotate(-90f)) {

@@ -295,6 +295,8 @@
     <string name="removed_to_your_library">Removed from your library</string>
     <string name="save">Save</string>
     <string name="update">Update</string>
+    <string name="error_while_connecting_please_try_again_later">Error while connecting… Please try again later…</string>
+    <string name="number_already_verified_this_week">You recently verified a number. You can verify a new number again one week after your last verification.</string>
 
 
     <!--    notification channels-->

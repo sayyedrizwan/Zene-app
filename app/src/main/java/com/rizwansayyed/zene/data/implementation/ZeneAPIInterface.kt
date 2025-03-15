@@ -134,4 +134,5 @@ interface ZeneAPIInterface {
     suspend fun checkUsername(username: String): Flow<StatusTypeResponse>
     suspend fun updateUsername(username: String): Flow<StatusTypeResponse>
     suspend fun updateName(name: String): Flow<StatusTypeResponse>
+    suspend fun checkNumberVerified(): Flow<StatusTypeResponse>
 }

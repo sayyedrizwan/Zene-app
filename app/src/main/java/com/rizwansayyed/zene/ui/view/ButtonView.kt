@@ -28,8 +28,8 @@ import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 
 @Composable
-fun ButtonArrowBack() {
-    Box(Modifier
+fun ButtonArrowBack(modifier: Modifier = Modifier, click: (() -> Unit)? = null) {
+    Box(modifier
         .padding(top = 45.dp)
         .padding(6.dp)
         .rotate(180f)
@@ -39,7 +39,7 @@ fun ButtonArrowBack() {
         .clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() }
-        ) { NavigationUtils.triggerHomeNav(NAV_GO_BACK) }) {
+        ) { if (click == null) NavigationUtils.triggerHomeNav(NAV_GO_BACK) else click() }) {
         ImageIcon(R.drawable.ic_arrow_right, 27)
     }
 }

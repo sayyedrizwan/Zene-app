@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
@@ -33,11 +32,10 @@ class PhoneNumberViewModel @Inject constructor(
     private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {
 
-    private val cacheHelper = CacheHelper()
-
     var countryCode by mutableStateOf("1")
     var countryCodeLists = mutableListOf<String>()
     var phoneNumber by mutableStateOf("")
+    var isPhoneNumberWasVerifiedLatest by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
 
     var contactsUsers = mutableStateListOf<ContactData>()
     var usersOfZene = mutableStateListOf<ConnectUserResponse>()
@@ -92,6 +90,16 @@ class PhoneNumberViewModel @Inject constructor(
 
             delay(1.seconds)
             optVerify = ResponseResult.Success(it)
+        }
+    }
+
+    fun checkLastOTPVerifiedInWeek() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.checkNumberVerified().onStart {
+            isPhoneNumberWasVerifiedLatest = ResponseResult.Loading
+        }.catch {
+            isPhoneNumberWasVerifiedLatest = ResponseResult.Error(it)
+        }.collectLatest {
+            isPhoneNumberWasVerifiedLatest = ResponseResult.Success(it.status ?: false)
         }
     }
 

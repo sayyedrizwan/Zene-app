@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +25,9 @@ import com.rizwansayyed.zene.ui.main.connect.view.VerifyPhoneNumberOTPView
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerVerifyView
 import com.rizwansayyed.zene.ui.phoneverification.view.VerifyPhoneNumberView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.PhoneNumberViewModel
@@ -42,50 +45,78 @@ class PhoneVerificationActivity : FragmentActivity() {
         enableEdgeToEdge()
         setContent {
             ZeneTheme {
-                var isTrueCaller by remember { mutableStateOf(true) }
-                val tooManyAttempt = stringResource(R.string.too_many_attempts_to_phone_number)
-
                 Box(
                     Modifier
                         .fillMaxSize()
-                        .background(Color.Black)
+                        .background(Color.Black),
+                    Alignment.Center
                 ) {
+                    when (val v = viewModel.isPhoneNumberWasVerifiedLatest) {
+                        ResponseResult.Empty -> {}
+                        is ResponseResult.Error -> TextViewBold(
+                            stringResource(R.string.error_while_connecting_please_try_again_later),
+                            20, center = true
+                        )
 
-                    if (isTrueCaller) {
-                        TrueCallerVerifyView(homeViewModel) {
-                            isTrueCaller = false
-                        }
-                    } else {
-                        when (val v = viewModel.phoneNumberVerify) {
-                            ResponseResult.Empty -> VerifyPhoneNumberView(viewModel)
-                            is ResponseResult.Error -> {}
-                            ResponseResult.Loading -> Box(
-                                Modifier.fillMaxSize(), Alignment.Center
-                            ) {
-                                CircularLoadingView()
-                            }
-
-                            is ResponseResult.Success -> {
-                                if (v.data.status == true)
-                                    VerifyPhoneNumberOTPView(viewModel)
-                                else
-                                    VerifyPhoneNumberView(viewModel)
-
-                                LaunchedEffect(Unit) {
-                                    if (v.data.status == false && v.data.message?.contains("too many attempts") == true) {
-                                        tooManyAttempt.toast()
-                                    }
-                                }
-                            }
+                        ResponseResult.Loading -> CircularLoadingView()
+                        is ResponseResult.Success -> {
+                            if (v.data) TextViewBold(
+                                stringResource(R.string.number_already_verified_this_week),
+                                20, center = true
+                            ) else
+                                FullVerify()
                         }
                     }
 
                     LaunchedEffect(Unit) {
-                        isTrueCaller = homeViewModel.trueCallerUtils.isTrueCallerInstalled()
-                        homeViewModel.trueCallerUtils.start(this@PhoneVerificationActivity)
+                        viewModel.checkLastOTPVerifiedInWeek()
+                    }
+
+                    ButtonArrowBack(Modifier.align(Alignment.TopStart)) {
+                        finish()
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    fun FullVerify() {
+        var isTrueCaller by remember { mutableStateOf(true) }
+        val tooManyAttempt = stringResource(R.string.too_many_attempts_to_phone_number)
+
+        if (isTrueCaller) {
+            TrueCallerVerifyView(homeViewModel) {
+                isTrueCaller = false
+            }
+        } else {
+            when (val v = viewModel.phoneNumberVerify) {
+                ResponseResult.Empty -> VerifyPhoneNumberView(viewModel)
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> Box(
+                    Modifier.fillMaxSize(), Alignment.Center
+                ) {
+                    CircularLoadingView()
+                }
+
+                is ResponseResult.Success -> {
+                    if (v.data.status == true)
+                        VerifyPhoneNumberOTPView(viewModel)
+                    else
+                        VerifyPhoneNumberView(viewModel)
+
+                    LaunchedEffect(Unit) {
+                        if (v.data.status == false && v.data.message?.contains("too many attempts") == true) {
+                            tooManyAttempt.toast()
+                        }
+                    }
+                }
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            isTrueCaller = homeViewModel.trueCallerUtils.isTrueCallerInstalled()
+            homeViewModel.trueCallerUtils.start(this@PhoneVerificationActivity)
         }
     }
 

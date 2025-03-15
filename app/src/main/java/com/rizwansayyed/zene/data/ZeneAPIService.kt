@@ -81,6 +81,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SIMILAR_PODCASTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_NUMBER_VERIFIED_THIS_WEEK_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_USERNAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_MY_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_GET_HISTORY_API
@@ -245,6 +246,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_VERIFY_NUMBER_OTP_API)
     suspend fun verifyPhoneNumber(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_CHECK_NUMBER_VERIFIED_THIS_WEEK_API)
+    suspend fun checkNumberVerified(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 
