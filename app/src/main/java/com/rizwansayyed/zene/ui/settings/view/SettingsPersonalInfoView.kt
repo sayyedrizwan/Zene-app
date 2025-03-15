@@ -86,8 +86,7 @@ fun PersonalInfoWith(top: String, bottom: String?, img: Int, click: (() -> Unit)
             indication = null,
             interactionSource = remember { MutableInteractionSource() }) { if (click != null) click() }
         .padding(horizontal = 5.dp, vertical = 15.dp),
-        Arrangement.Center,
-        Alignment.CenterVertically) {
+        Arrangement.Center, Alignment.CenterVertically) {
         Spacer(Modifier.width(5.dp))
         ImageIcon(img, 26)
 

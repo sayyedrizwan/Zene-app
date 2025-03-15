@@ -8,6 +8,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.smoothSongTransitionSettings
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class ExoPlaybackService(val context: PlayerForegroundService) {
     private var mediaSession: MediaSession? = null
@@ -60,8 +62,9 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
 
     suspend fun playingStatus() {
         try {
-            val duration = exoPlayer?.duration.toString()
-            val currentTS = exoPlayer?.currentPosition.toString()
+            val isSmooth = smoothSongTransitionSettings.firstOrNull() ?: false
+            val duration = exoPlayer?.duration ?: 0
+            val currentTS = exoPlayer?.currentPosition ?: 0
             val playSpeed = exoPlayer?.playbackState.toString()
             val state = if (context.currentPlayingSong?.type() == MusicDataTypes.RADIO) {
                 if (exoPlayer?.isPlaying == true) YoutubePlayerState.PLAYING else YoutubePlayerState.PAUSE
@@ -69,13 +72,22 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
                 if (exoPlayer?.isPlaying == true) YoutubePlayerState.PLAYING else if (exoPlayer?.isLoading == true) YoutubePlayerState.BUFFERING else YoutubePlayerState.PAUSE
             }
 
-            context.visiblePlayerNotification(state, currentTS, duration, playSpeed)
+            context.visiblePlayerNotification(
+                state, currentTS.toString(), duration.toString(), playSpeed
+            )
 
             val playerInfo = musicPlayerDB.firstOrNull()
             playerInfo?.state = state
             playerInfo?.speed = playSpeed
-            playerInfo?.currentDuration = currentTS
-            playerInfo?.totalDuration = duration
+            playerInfo?.currentDuration = currentTS.toString()
+            playerInfo?.totalDuration = duration.toString()
+
+            try {
+                if (isSmooth && (duration > 0 && (duration - currentTS) <= 15.seconds.inWholeMilliseconds)) context.songEnded()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             musicPlayerDB = flowOf(playerInfo)
         } catch (e: Exception) {
             e.message

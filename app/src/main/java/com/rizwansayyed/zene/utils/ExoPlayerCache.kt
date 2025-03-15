@@ -19,7 +19,6 @@ object ExoPlayerCache {
         5000, 10000, 1500, 2000
     ).build()
 
-
     fun getInstance(context: Context): Pair<DefaultTrackSelector, CacheDataSource.Factory> {
         simpleCache ?: synchronized(this) {
             val cacheDir = File(context.cacheDir, "exo_cache").apply {

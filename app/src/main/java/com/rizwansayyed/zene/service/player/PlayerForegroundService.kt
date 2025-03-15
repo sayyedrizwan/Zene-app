@@ -3,15 +3,18 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager.autoPausePlayerSettings
 import com.rizwansayyed.zene.datastore.DataStorageManager.isLoopDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.smoothSongTransitionSettings
 import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
@@ -93,6 +96,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             currentPlayingSong?.let { zeneAPI.addHistory(it).catch { }.collectLatest { } }
             if (isActive) cancel()
         }
+
+
         return START_STICKY
     }
 
@@ -120,6 +125,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         @JavascriptInterface
         fun videoState(playerState: Int, currentTS: String, duration: String, playSpeed: String) {
             CoroutineScope(Dispatchers.IO).launch {
+                val isSmooth = smoothSongTransitionSettings.firstOrNull() ?: false
+
                 val state = YoutubePlayerState.entries.first { it.v == playerState }
                 visiblePlayerNotification(state, currentTS, duration, playSpeed)
 
@@ -128,6 +135,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 playerInfo?.speed = playSpeed
                 playerInfo?.currentDuration = currentTS
                 playerInfo?.totalDuration = duration
+
+                try {
+                    if (isSmooth && (duration.toFloat() - currentTS.toFloat()) <= 5) songEnded()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
                 musicPlayerDB = flowOf(playerInfo)
                 if (isActive) cancel()
             }
@@ -170,6 +184,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 else exoPlayerSession.playingStatus()
             }
         }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            musicPlayerDB.catch { }.collectLatest {
+                Log.d("TAG", "onCreate: runnnedd onnnd")
+                songsLists = it?.lists?.toTypedArray() ?: emptyArray()
+            }
+        }
     }
 
     private fun loadAVideo(videoID: String?) = CoroutineScope(Dispatchers.Main).launch {
@@ -186,14 +207,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     private fun saveEmpty(list: List<ZeneMusicData?>) = CoroutineScope(Dispatchers.IO).launch {
-        val doContain = list.any { it?.id == currentPlayingSong!!.id }
-        val finalList = if (doContain) list else ArrayList<ZeneMusicData?>().apply {
-            add(currentPlayingSong)
+        val finalList = ArrayList<ZeneMusicData?>().apply {
+            if (!list.any { it?.id == currentPlayingSong?.id }) add(currentPlayingSong)
             addAll(list)
         }
         val d = MusicPlayerData(
             finalList, currentPlayingSong, YoutubePlayerState.BUFFERING, "0", "1.0", "0"
         )
+
         musicPlayerDB = flowOf(d)
         if (isActive) cancel()
     }
@@ -285,6 +306,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             sleepTimerNotification()
             return@launch
         }
+
+        val autoPauseSettings = autoPausePlayerSettings.firstOrNull() ?: false
+        if (autoPauseSettings) {
+            pause()
+            return@launch
+        }
+
         val isLoop = isLoopDB.firstOrNull() ?: false
         if (isLoop) {
             playSongs(false)
@@ -317,6 +345,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 playSongs(false)
                 return@launch
             }
+
 
             val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
             val info =

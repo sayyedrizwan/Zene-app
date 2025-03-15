@@ -9,13 +9,14 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.data.model.IPResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.AUTO_PAUSE_PLAYER_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_STORE_KEY
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_LOOP_DB
-import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_PLAYER_GRID_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_SHUFFLE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SONG_SPEED_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_PLAYER_CC_DB
@@ -48,9 +49,10 @@ object DataStorageManager {
         val SONG_SPEED_DB = stringPreferencesKey("song_speed_db")
         val IS_SHUFFLE_DB = booleanPreferencesKey("is_shuffle_db")
         val IS_LOOP_DB = booleanPreferencesKey("is_loop_db")
-        val IS_PLAYER_GRID_DB = booleanPreferencesKey("is_player_grid_db")
         val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
         val MUSIC_PLAYER_DB = stringPreferencesKey("music_player_db")
+        val AUTO_PAUSE_PLAYER_SETTINGS_DB = booleanPreferencesKey("auto_pause_player_settings_db")
+        val SMOOTH_SONG_TRANSITION_SETTINGS_DB = booleanPreferencesKey("smooth_song_transition_settings_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -159,13 +161,25 @@ object DataStorageManager {
             if (isActive) cancel()
         }
 
-    var isPlayerGridDB: Flow<Boolean>
+    var autoPausePlayerSettings: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[IS_PLAYER_GRID_DB] ?: true
+            it[AUTO_PAUSE_PLAYER_SETTINGS_DB] ?: false
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
-                it[IS_PLAYER_GRID_DB] = value.first()
+                it[AUTO_PAUSE_PLAYER_SETTINGS_DB] = value.first()
+            }
+            if (isActive) cancel()
+        }
+
+
+    var smoothSongTransitionSettings: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] ?: false
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] = value.first()
             }
             if (isActive) cancel()
         }

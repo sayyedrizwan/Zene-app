@@ -248,6 +248,7 @@
     <string name="share_your_music_desc">Let your friends know what you’re vibing to! Share your currently playing song or top tracks with them.</string>
     <string name="once_you_shared_a_vibe_cannot_delete">Once you shared a vibe you cannot delete it, It will auto expire after 24 hours. Do you sure want to continue?</string>
     <string name="personal_info">Personal Info</string>
+    <string name="playback_control">Playback Control</string>
     <string name="email_address">Email Address</string>
     <string name="username">Username</string>
     <string name="phone_number">Phone Number</string>
@@ -297,6 +298,10 @@
     <string name="update">Update</string>
     <string name="error_while_connecting_please_try_again_later">Error while connecting… Please try again later…</string>
     <string name="number_already_verified_this_week">You recently verified a number. You can verify a new number again one week after your last verification.</string>
+    <string name="smooth_song_transition">Smooth Transition</string>
+    <string name="smooth_song_transition_desc">Automatically start the next song when only 5–7 seconds remain and podcast 10–15 seconds remain, skipping the ending silence.</string>
+    <string name="auto_pause_song">Auto Pause Song</string>
+    <string name="auto_pause_song_desc">Song will be auto paused every time the song ends.</string>
 
 
     <!--    notification channels-->
