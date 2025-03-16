@@ -183,4 +183,15 @@ object DataStorageManager {
             }
             if (isActive) cancel()
         }
+
+    var pauseHistorySettings: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] ?: false
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] = value.first()
+            }
+            if (isActive) cancel()
+        }
 }

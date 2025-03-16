@@ -2,6 +2,9 @@ package com.rizwansayyed.zene.utils
 
 object URLSUtils {
 
+    const val ZENE_FAQ_URL = "https://www.zenemusic.co/faq"
+
+
     const val ZENE_URL = "https://www.zenemusic.co"
     const val ZENE_URL_CONNECT = "/connect"
     const val ZENE_URL_SEARCH = "/search"

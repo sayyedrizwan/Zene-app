@@ -356,15 +356,6 @@ object MainUtils {
         return timeDifferenceInSec
     }
 
-    @SuppressLint("DefaultLocale")
-    fun formatMillisecondsToRead(ms: Long): String {
-        val hours = TimeUnit.MILLISECONDS.toHours(ms)
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    }
-
     fun openShareConnectShareSMS(url: String, number: String?) {
         val uri = Uri.parse(java.lang.String.format("smsto:%s", number))
         val smsIntent = Intent(Intent.ACTION_SENDTO, uri)
@@ -446,7 +437,6 @@ object MainUtils {
         return reader.use { it.readText() }
     }
 
-    @SuppressLint("DefaultLocale")
     fun formatDurationsForVideo(totalSeconds: Float): String {
         try {
             val total = totalSeconds.toInt()
@@ -456,16 +446,15 @@ object MainUtils {
             val totalSecs = total % 60
 
             return if (totalHours > 0) {
-                String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
+                String.format(Locale.getDefault(), "%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
             } else {
-                String.format("%02d:%02d", totalMinutes, totalSecs)
+                String.format(Locale.getDefault(), "%02d:%02d", totalMinutes, totalSecs)
             }
         } catch (e: Exception) {
             return "0:00"
         }
     }
 
-    @SuppressLint("DefaultLocale")
     fun formatMSDurationsForVideo(totalMS: Float): String {
         val totalSeconds = totalMS / 1000
         val hours = (totalSeconds / 3600).toInt()
@@ -473,9 +462,9 @@ object MainUtils {
         val seconds = (totalSeconds % 60).toInt()
 
         return if (hours > 0) {
-            String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
         } else {
-            String.format("%02d:%02d", minutes, seconds)
+            String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
         }
     }
 

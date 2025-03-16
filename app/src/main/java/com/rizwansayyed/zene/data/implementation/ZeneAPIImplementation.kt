@@ -7,8 +7,10 @@ import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
+import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.pauseHistorySettings
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
@@ -86,6 +88,12 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun addHistory(data: ZeneMusicData) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
+        val pauseHistory = pauseHistorySettings.firstOrNull() ?: false
+
+        if (pauseHistory) {
+            emit(StatusTypeResponse(false, ""))
+            return@flow
+        }
 
         val json = JSONObject().apply {
             put("id", data.id)

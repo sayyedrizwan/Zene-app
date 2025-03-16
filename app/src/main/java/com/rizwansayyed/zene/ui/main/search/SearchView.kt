@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -278,7 +279,11 @@ fun SearchView(homeViewModel: HomeViewModel) {
                     Box(Modifier.padding(horizontal = 6.dp)) {
 
                         TextViewBold(
-                            String.format(stringResource(R.string.trending_songs), inInfo?.country),
+                            String.format(
+                                Locale.getDefault(),
+                                stringResource(R.string.trending_songs),
+                                inInfo?.country
+                            ),
                             19
                         )
                     }

@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.settings.view.SettingsExtraView
 import com.rizwansayyed.zene.ui.settings.view.SettingsPersonalInfo
 import com.rizwansayyed.zene.ui.settings.view.SettingsPlaybackView
 import com.rizwansayyed.zene.ui.settings.view.SettingsProfilePhotoView
@@ -33,6 +34,10 @@ fun SettingsView() {
             item { Spacer(Modifier.height(50.dp)) }
 
             item { SettingsPlaybackView() }
+
+            item { Spacer(Modifier.height(50.dp)) }
+
+            item { SettingsExtraView() }
 
             item { Spacer(Modifier.height(300.dp)) }
         }

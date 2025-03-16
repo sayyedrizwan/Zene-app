@@ -238,6 +238,9 @@
     <string name="compress_processing_video">Compressing and Processing the media file…</string>
     <string name="uploading_please_wait">Uploading… Please wait…</string>
     <string name="share">Share</string>
+    <string name="share_app">Share App</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="log_out">Log Out</string>
     <string name="copied_link">Copied Link</string>
     <string name="please_enter_valid_caption">Please enter a valid caption</string>
     <string name="error_uploading_please_try_again_later">Error uploading. Please try again later.</string>
@@ -298,10 +301,18 @@
     <string name="update">Update</string>
     <string name="error_while_connecting_please_try_again_later">Error while connecting… Please try again later…</string>
     <string name="number_already_verified_this_week">You recently verified a number. You can verify a new number again one week after your last verification.</string>
+    <string name="pause_history">Pause History</string>
+    <string name="pause_history_desc">Pausing your history will disable personalized suggestions. The app will not recommend songs, podcasts, or videos based on your new activity.</string>
     <string name="smooth_song_transition">Smooth Transition</string>
     <string name="smooth_song_transition_desc">Automatically start the next song when only 5–7 seconds remain and podcast 10–15 seconds remain, skipping the ending silence.</string>
-    <string name="auto_pause_song">Auto Pause Song</string>
-    <string name="auto_pause_song_desc">Song will be auto paused every time the song ends.</string>
+    <string name="auto_pause_song">Auto Pause</string>
+    <string name="auto_pause_song_desc">Playing media will be auto paused every time the it ends.</string>
+    <string name="help_faq">Help/FAQ</string>
+    <string name="feedback">Feedback</string>
+    <string name="storage">Storage</string>
+    <string name="earphone_tracker_finder">Earphone tracker &amp; finder</string>
+    <string name="equalizer">Equalizer</string>
+
 
 
     <!--    notification channels-->

@@ -44,10 +44,11 @@ object MediaContentUtils {
         val builder = CustomTabsIntent.Builder().setDefaultColorSchemeParams(toolbarColor)
             .setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, toolbarColor)
             .setUrlBarHidingEnabled(true).setShowTitle(true)
-            .setSendToExternalDefaultHandlerEnabled(true)
+            .setSendToExternalDefaultHandlerEnabled(false)
 
         val intent = builder.build().apply {
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
+            intent.setFlags(FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.setPackage("com.android.chrome")
         }
         intent.launchUrl(context, Uri.parse(url))
     }

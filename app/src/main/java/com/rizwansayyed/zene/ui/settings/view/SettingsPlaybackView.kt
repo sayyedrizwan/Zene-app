@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.autoPausePlayerSettings
+import com.rizwansayyed.zene.datastore.DataStorageManager.pauseHistorySettings
 import com.rizwansayyed.zene.datastore.DataStorageManager.smoothSongTransitionSettings
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -37,6 +38,7 @@ import kotlinx.coroutines.launch
 fun SettingsPlaybackView() {
     val autoPausePlayer by autoPausePlayerSettings.collectAsState(false)
     val smoothSongTransition by smoothSongTransitionSettings.collectAsState(false)
+    val pauseHistory by pauseHistorySettings.collectAsState(false)
 
     val coroutine = rememberCoroutineScope()
 
@@ -50,8 +52,14 @@ fun SettingsPlaybackView() {
         coroutine.launch { autoPausePlayerSettings = flowOf(it) }
     }
 
-    SettingsSwitchView(smoothSongTransition, R.string.smooth_song_transition, R.string.smooth_song_transition_desc) {
+    SettingsSwitchView(
+        smoothSongTransition, R.string.smooth_song_transition, R.string.smooth_song_transition_desc
+    ) {
         coroutine.launch { smoothSongTransitionSettings = flowOf(it) }
+    }
+
+    SettingsSwitchView(pauseHistory, R.string.pause_history, R.string.pause_history_desc) {
+        coroutine.launch { pauseHistorySettings = flowOf(it) }
     }
 }
 
