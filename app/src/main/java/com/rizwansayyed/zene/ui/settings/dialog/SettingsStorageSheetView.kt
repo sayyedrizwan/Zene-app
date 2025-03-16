@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.ui.settings.view
+package com.rizwansayyed.zene.ui.settings.dialog
 
 import android.app.usage.StorageStatsManager
 import android.content.Context
@@ -218,6 +218,7 @@ fun SettingsStorageSheetView(close: () -> Unit) {
         }
     }
 }
+
 
 data class StorageInfo(
     val totalSpaceBytes: Long,

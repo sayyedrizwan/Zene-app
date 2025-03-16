@@ -2,6 +2,7 @@
     <string name="app_name">Zene</string>
     <string name="app_name_luxe">Zene Luxe</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
+    <string name="zene_share_desc">Check out Zene! Free music, podcasts &amp; radio. I’m hooked. 📻, All free. Give it a try! 🎧✨</string>
     <string name="app_desc">Free Music, Podcasts, Videos &amp; More – All Your Entertainment in One Place!</string>
     <string name="full_player_widget_desc">Control your favourite tunes and podcasts, right from your home screen.</string>
     <string name="small_player_widget_desc">Play/Pause your favourite tunes and podcasts, right from your home screen.</string>
@@ -247,6 +248,7 @@
     <string name="share">Share</string>
     <string name="share_app">Share App</string>
     <string name="rate_us">Rate Us</string>
+    <string name="rate_us_desc">If you’re enjoying Zene, please rate us! It helps us grow and continue bringing you great music &amp; podcasts.</string>
     <string name="log_out">Log Out</string>
     <string name="copied_link">Copied Link</string>
     <string name="please_enter_valid_caption">Please enter a valid caption</string>

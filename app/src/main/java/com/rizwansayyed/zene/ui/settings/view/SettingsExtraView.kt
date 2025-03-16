@@ -35,6 +35,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.settings.dialog.SettingsShareSheetView
+import com.rizwansayyed.zene.ui.settings.dialog.SettingsStorageSheetView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -42,6 +44,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MAIL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 
@@ -51,6 +54,7 @@ fun SettingsExtraView() {
     val context = LocalActivity.current
     var showStorageSheet by remember { mutableStateOf(false) }
     var feedbackSheet by remember { mutableStateOf(false) }
+    var rateUsSheet by remember { mutableStateOf(false) }
 
     Spacer(Modifier.height(13.dp))
 
@@ -104,12 +108,19 @@ fun SettingsExtraView() {
         feedbackSheet = true
     }
 
+    val shareDesc = stringResource(R.string.zene_share_desc)
     SettingsExtraView(R.string.share_app, R.drawable.ic_share) {
-
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "$shareDesc \n${ZENE_HOME}")
+            type = "text/plain"
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context?.startActivity(this)
+        }
     }
 
     SettingsExtraView(R.string.rate_us, R.drawable.ic_star) {
-
+        rateUsSheet = true
     }
 
     SettingsExtraView(R.string.log_out, R.drawable.ic_logout) {
@@ -123,6 +134,10 @@ fun SettingsExtraView() {
 
     if (feedbackSheet) FeedbackAlertSheetView {
         feedbackSheet = false
+    }
+
+    if (rateUsSheet) SettingsShareSheetView {
+        rateUsSheet = false
     }
 }
 
