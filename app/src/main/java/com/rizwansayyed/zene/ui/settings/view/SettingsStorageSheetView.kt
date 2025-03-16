@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +38,10 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +50,8 @@ fun SettingsStorageSheetView(close: () -> Unit) {
         close, Modifier.fillMaxWidth(), contentColor = MainColor, containerColor = MainColor
     ) {
         val context = LocalContext.current
-        var storageInfo = remember { mutableStateOf<StorageInfo?>(null) }
+        val storageInfo = remember { mutableStateOf<StorageInfo?>(null) }
+        val coroutine = rememberCoroutineScope()
 
         Column(Modifier.fillMaxWidth()) {
             Spacer(Modifier.height(30.dp))
@@ -188,7 +193,11 @@ fun SettingsStorageSheetView(close: () -> Unit) {
                         TextViewNormal(stringResource(R.string.clear_app_cache))
                         Spacer(modifier = Modifier.weight(1f))
                         ButtonWithBorder(R.string.clear) {
-
+                            coroutine.launch {
+                                context.cacheDir.deleteRecursively()
+                                delay(1.seconds)
+                                close()
+                            }
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                     }
