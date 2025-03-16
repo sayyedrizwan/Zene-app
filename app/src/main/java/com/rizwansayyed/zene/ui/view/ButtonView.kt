@@ -154,7 +154,7 @@ fun TextWithBgAndBorder(txt: String, color: Color = MainColor, click: () -> Unit
 }
 
 @Composable
-fun ButtonHeavy(text: String, click: () -> Unit) {
+fun ButtonHeavy(text: String, color: Color = MainColor, click: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(horizontal = 10.dp)
@@ -163,7 +163,7 @@ fun ButtonHeavy(text: String, click: () -> Unit) {
                 click()
             }
             .clip(RoundedCornerShape(14.dp))
-            .background(MainColor)
+            .background(color)
             .padding(vertical = 13.dp, horizontal = 5.dp),
         Arrangement.Center, Alignment.CenterVertically
     ) {

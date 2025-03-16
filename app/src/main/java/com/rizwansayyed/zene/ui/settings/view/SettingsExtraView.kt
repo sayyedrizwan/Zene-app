@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
+import android.net.Uri
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,13 +31,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MAIL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 
 
@@ -42,6 +50,7 @@ import com.rizwansayyed.zene.utils.share.MediaContentUtils
 fun SettingsExtraView() {
     val context = LocalActivity.current
     var showStorageSheet by remember { mutableStateOf(false) }
+    var feedbackSheet by remember { mutableStateOf(false) }
 
     Spacer(Modifier.height(13.dp))
 
@@ -92,7 +101,7 @@ fun SettingsExtraView() {
     }
 
     SettingsExtraView(R.string.feedback, R.drawable.ic_mailbox) {
-
+        feedbackSheet = true
     }
 
     SettingsExtraView(R.string.share_app, R.drawable.ic_share) {
@@ -110,6 +119,10 @@ fun SettingsExtraView() {
 
     if (showStorageSheet) SettingsStorageSheetView {
         showStorageSheet = false
+    }
+
+    if (feedbackSheet) FeedbackAlertSheetView {
+        feedbackSheet = false
     }
 }
 
@@ -138,6 +151,41 @@ fun SettingsExtraView(top: Int, img: Int, click: (() -> Unit)?) {
 
         if (click != null) Row(Modifier.rotate(-90f)) {
             ImageIcon(R.drawable.ic_arrow_down, 26)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FeedbackAlertSheetView(close: () -> Unit) {
+    ModalBottomSheet(
+        close, Modifier.fillMaxWidth(), contentColor = MainColor, containerColor = MainColor
+    ) {
+        val context = LocalContext.current
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 9.dp), Arrangement.Center, Alignment.Start
+        ) {
+            Spacer(Modifier.height(30.dp))
+            TextViewBold(stringResource(R.string.have_suggestions_or_issues), 19)
+            Spacer(Modifier.height(5.dp))
+            TextViewNormal(stringResource(R.string.have_suggestions_or_issues_desc), 16)
+            Spacer(Modifier.height(50.dp))
+
+            ButtonHeavy(stringResource(R.string.send_feedback), Color.Black) {
+                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                    val uriText = "mailto:$ZENE_MAIL" +
+                            "?subject=" + Uri.encode("Feedback on the Android App") +
+                            "&body=" + Uri.encode("<<<<<Feedback>>>>>")
+                    data = Uri.parse(uriText)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(intent)
+            }
+
+
+            Spacer(Modifier.height(100.dp))
         }
     }
 }

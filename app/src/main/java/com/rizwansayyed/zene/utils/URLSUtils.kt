@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.utils
 
 object URLSUtils {
 
+    const val ZENE_MAIL = "knocknock@zenemusic.co"
     const val ZENE_FAQ_URL = "https://www.zenemusic.co/faq"
 
 

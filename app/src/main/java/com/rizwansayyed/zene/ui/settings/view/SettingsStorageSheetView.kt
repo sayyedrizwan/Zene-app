@@ -86,6 +86,7 @@ fun SettingsStorageSheetView(close: () -> Unit) {
                                 .background(Color.Gray)
                         )
                         TextViewNormal(stringResource(R.string.free_space))
+                        TextViewNormal(formatSize(storageInfo.freeSpaceBytes))
                         TextViewNormal(
                             " (${
                                 String.format(Locale.getDefault(), "%.2f", freePercent)
@@ -107,6 +108,7 @@ fun SettingsStorageSheetView(close: () -> Unit) {
                                 .background(Color.Green)
                         )
                         TextViewNormal(stringResource(R.string.used_space))
+                        TextViewNormal(formatSize(used.toLong()))
                         TextViewNormal(
                             " (${
                                 String.format(Locale.getDefault(), "%.2f", usedPercent)
@@ -128,6 +130,7 @@ fun SettingsStorageSheetView(close: () -> Unit) {
                                 .background(Color.Cyan)
                         )
                         TextViewNormal(stringResource(R.string.zene_storage_used))
+                        TextViewNormal(formatSize(appUsed.toLong()))
                         TextViewNormal(
                             " (${
                                 String.format(Locale.getDefault(), "%.2f", appPercent)

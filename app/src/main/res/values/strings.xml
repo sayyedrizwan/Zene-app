@@ -179,6 +179,7 @@
     <string name="delete_playlist">Delete Playlist</string>
     <string name="delete_playlist_desc">Are you sure want to delete playlist?</string>
     <string name="add_to_queue">Add to Queue</string>
+    <string name="send_feedback">Send Feedback</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
     <string name="queue_desc">Queue up your favorite playlists and podcasts to play next or at the end without interrupting your current vibe.</string>
@@ -318,6 +319,8 @@
     <string name="storage">Storage</string>
     <string name="earphone_tracker_finder">Earphone tracker &amp; finder</string>
     <string name="equalizer">Equalizer</string>
+    <string name="have_suggestions_or_issues">Have suggestions or facing any issues?</string>
+    <string name="have_suggestions_or_issues_desc">We’d love to hear from you! Your feedback helps us improve and shape the app better for you. Feel free to share any ideas, feature requests, or problems you’re experiencing.\n\n We’re always open and listening! 😊</string>
 
 
 
