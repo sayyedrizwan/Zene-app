@@ -171,6 +171,11 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="free_space">Free Space:</string>
+    <string name="used_space">Used Space:</string>
+    <string name="zene_storage_used">Zene Storage Used:</string>
+    <string name="total_storage">Total Storage:</string>
+    <string name="clear_app_cache">Clear App Cache</string>
     <string name="delete_playlist">Delete Playlist</string>
     <string name="delete_playlist_desc">Are you sure want to delete playlist?</string>
     <string name="add_to_queue">Add to Queue</string>
@@ -179,6 +184,7 @@
     <string name="queue_desc">Queue up your favorite playlists and podcasts to play next or at the end without interrupting your current vibe.</string>
     <string name="items">Items</string>
     <string name="close">Close</string>
+    <string name="clear">Clear</string>
     <string name="post_a_gif">Post a GIF</string>
     <string name="create">Create</string>
     <string name="create_playlist">Create Playlist</string>

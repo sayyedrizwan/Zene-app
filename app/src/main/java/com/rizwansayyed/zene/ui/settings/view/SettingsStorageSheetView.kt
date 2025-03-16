@@ -7,21 +7,35 @@ import android.os.Environment
 import android.os.StatFs
 import android.os.storage.StorageManager
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import java.util.Locale
 
@@ -37,33 +51,149 @@ fun SettingsStorageSheetView(close: () -> Unit) {
         Column(Modifier.fillMaxWidth()) {
             Spacer(Modifier.height(30.dp))
 
-            storageInfo.value?.let { info ->
-                val total = info.totalSpaceBytes.toDouble()
-                val used = total - info.freeSpaceBytes
+            storageInfo.value?.let { storageInfo ->
+                val total = storageInfo.totalSpaceBytes.toDouble()
+                val free = storageInfo.freeSpaceBytes.toDouble()
+                val used = total - free
+                val appUsed =
+                    storageInfo.appSizeBytes.toDouble() + storageInfo.appCacheBytes.toDouble()
+
                 val usedPercent = (used / total) * 100
+                val freePercent = (free / total) * 100
+                val appPercent = (appUsed / total) * 100
 
-                Column(modifier = Modifier.padding(16.dp)) {
-                    TextViewNormal("Total: ${formatSize(info.totalSpaceBytes)}")
-                    TextViewNormal("Free: ${formatSize(info.freeSpaceBytes)}")
-                    TextViewNormal(
-                        "Used: ${formatSize((total - info.freeSpaceBytes).toLong())} (${
-                            String.format(
-                                "%.2f",
-                                usedPercent
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp),
+                        Arrangement.Start, Alignment.CenterVertically
+                    ) {
+                        Spacer(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .size(12.dp)
+                                .clip(RoundedCornerShape(100))
+                                .background(Color.Gray)
+                        )
+                        TextViewNormal(stringResource(R.string.free_space))
+                        TextViewNormal(
+                            " (${
+                                String.format(Locale.getDefault(), "%.2f", freePercent)
+                            }%)"
+                        )
+                    }
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp),
+                        Arrangement.Start, Alignment.CenterVertically
+                    ) {
+                        Spacer(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .size(12.dp)
+                                .clip(RoundedCornerShape(100))
+                                .background(Color.Green)
+                        )
+                        TextViewNormal(stringResource(R.string.used_space))
+                        TextViewNormal(
+                            " (${
+                                String.format(Locale.getDefault(), "%.2f", usedPercent)
+                            }%)"
+                        )
+                    }
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp),
+                        Arrangement.Start, Alignment.CenterVertically
+                    ) {
+                        Spacer(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .size(12.dp)
+                                .clip(RoundedCornerShape(100))
+                                .background(Color.Cyan)
+                        )
+                        TextViewNormal(stringResource(R.string.zene_storage_used))
+                        TextViewNormal(
+                            " (${
+                                String.format(Locale.getDefault(), "%.2f", appPercent)
+                            }%)"
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(26.dp)
+                            .clip(RoundedCornerShape(13.dp))
+                            .background(Color.Gray.copy(alpha = 0.3f))
+                    ) {
+                        Row(Modifier.fillMaxHeight()) {
+                            Box(
+                                modifier = Modifier
+                                    .weight(usedPercent.toFloat())
+                                    .fillMaxHeight()
+                                    .background(Color.Green)
                             )
-                        }%)"
-                    )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .weight(freePercent.toFloat())
+                                    .fillMaxHeight()
+                                    .background(Color.Gray)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(appPercent.toFloat() / 100f)
+                                .background(Color.Cyan)
+                        )
+                    }
 
-                    TextViewNormal("App Size: ${formatSize(info.appSizeBytes)}")
-                    TextViewNormal("App Data: ${formatSize(info.appDataBytes)}")
-                    TextViewNormal("App Cache: ${formatSize(info.appCacheBytes)}")
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    // Example: Cache % Usage
-                    val cachePercent = (info.appCacheBytes.toDouble() / total) * 100
-                    TextViewNormal("App Cache Usage: ${String.format("%.2f", cachePercent)}%")
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp),
+                        Arrangement.Start, Alignment.CenterVertically
+                    ) {
+                        Spacer(modifier = Modifier.width(10.dp))
+                        TextViewNormal(stringResource(R.string.total_storage))
+                        Spacer(modifier = Modifier.width(5.dp))
+                        TextViewNormal(formatSize(storageInfo.totalSpaceBytes))
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp),
+                        Arrangement.Start, Alignment.CenterVertically
+                    ) {
+                        Spacer(modifier = Modifier.width(10.dp))
+                        TextViewNormal(stringResource(R.string.clear_app_cache))
+                        Spacer(modifier = Modifier.weight(1f))
+                        ButtonWithBorder(R.string.clear) {
+
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                    }
                 }
+
             }
 
             Spacer(Modifier.height(70.dp))
