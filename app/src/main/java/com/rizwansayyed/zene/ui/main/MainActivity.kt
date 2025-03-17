@@ -30,6 +30,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
@@ -53,6 +54,7 @@ import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ArtistsView
 import com.rizwansayyed.zene.ui.view.LockScreenOrientation
+import com.rizwansayyed.zene.ui.view.movies.MoviesView
 import com.rizwansayyed.zene.ui.view.myplaylist.MyPlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
@@ -68,6 +70,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.setNavigationCallback
+import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
 import com.rizwansayyed.zene.utils.share.IntentCheckUtils
@@ -158,7 +161,7 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable("$NAV_MOVIES_PAGE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
-//                                    if (id != null) MyPlaylistView(id)
+                                    if (id != null) MoviesView(id)
                                 }
                             }
 
@@ -182,6 +185,7 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(userInfo?.email) {
                         delay(500)
+                        navController.navigate("${NAV_MOVIES_PAGE}^us^tv-show^adolescence-2025")
                         setNavigationCallback(object : HomeNavigationListener {
                             override fun navigate(path: String) {
                                 if (path == NAV_GO_BACK) {
@@ -198,6 +202,10 @@ class MainActivity : ComponentActivity() {
                                         restoreState = false
                                     }
                                 }
+                            }
+
+                            override fun longPress(value: ZeneMusicData) {
+                                navigationViewModel.setShowMediaInfo(value)
                             }
                         })
 

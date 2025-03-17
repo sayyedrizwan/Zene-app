@@ -1,8 +1,11 @@
 package com.rizwansayyed.zene.utils
 
+import com.rizwansayyed.zene.data.model.ZeneMusicData
+
 
 interface HomeNavigationListener {
     fun navigate(path: String)
+    fun longPress(value: ZeneMusicData)
 }
 
 object NavigationUtils {

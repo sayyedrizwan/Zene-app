@@ -50,6 +50,7 @@ object URLSUtils {
     const val ZENE_SEARCH_GIF_API = "search/search-gif"
     const val ZENE_SEARCH_IMG_API = "search/search-img"
 
+
     const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API =
         "connect/users-search-via-phonenumber"
     const val ZENE_CONNECT_SEARCH_API = "connect/search"
@@ -80,6 +81,7 @@ object URLSUtils {
     const val ZENE_INFO_PLAYLISTS_API = "info/playlists-info"
     const val ZENE_INFO_ARTIST_API = "info/artist-info"
     const val ZENE_INFO_ARTIST_FOLLOW_API = "info/artist-follow"
+    const val ZENE_INFO_MOVIE_SHOW_INFO_API = "info/movie-show-info"
 
     const val ZENE_PODCAST_PODCAST_INFO_API = "podcast-radio/podcast-info"
     const val ZENE_PODCAST_PODCAST_MEDIA_URL_API = "podcast-radio/podcast-media-url"
@@ -97,7 +99,8 @@ object URLSUtils {
     const val ZENE_USER_UPDATE_CONNECT_STATUS_API = "users/update-connect-status"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"
     const val ZENE_USER_SEND_NUMBER_OTP_API = "users/send-number-otp"
-    const val ZENE_USER_CHECK_NUMBER_VERIFIED_THIS_WEEK_API = "users/check-number-verified-this-week"
+    const val ZENE_USER_CHECK_NUMBER_VERIFIED_THIS_WEEK_API =
+        "users/check-number-verified-this-week"
     const val ZENE_USER_VERIFY_NUMBER_OTP_API = "users/verify-number-otp"
     const val ZENE_USER_ADD_HISTORY_API = "users/add-history"
     const val ZENE_USER_CHECK_USERNAME_API = "users/check-username"
@@ -120,7 +123,8 @@ object URLSUtils {
     const val ZENE_USER_UPDATE_PLAYLIST_IMAGE_API = "users-playlists/update-playlist-image"
     const val ZENE_USER_MY_PLAYLISTS_SONGS_API = "users-playlists/my-playlists-songs"
     const val ZENE_USER_PLAYLIST_LIKE_COUNT_API = "users-playlists/like-count"
-    const val ZENE_USER_PLAYLIST_REMOVE_MEDIA_PLAYLISTS_API = "users-playlists/remove-media-playlists"
+    const val ZENE_USER_PLAYLIST_REMOVE_MEDIA_PLAYLISTS_API =
+        "users-playlists/remove-media-playlists"
 
     const val ZENE_CONTACT_CACHE = "zene_contact_cache"
 

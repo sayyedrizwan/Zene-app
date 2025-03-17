@@ -64,6 +64,9 @@
     <string name="end_of_track">End of track</string>
     <string name="turn_off">Turn Off</string>
     <string name="trending_artists">Trending Artists</string>
+    <string name="on_trending">On Trending</string>
+    <string name="releasing_on">Releasing On</string>
+    <string name="releasing_soon">Releasing Soon</string>
     <string name="artist">Artist</string>
     <string name="artists">Artists</string>
     <string name="similar_artists">Similar Artists</string>

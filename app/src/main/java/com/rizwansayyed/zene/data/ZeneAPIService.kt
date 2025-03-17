@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
+import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.NewPlaylistResponse
@@ -51,6 +52,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_FOLLOW_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_MOVIE_SHOW_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_RADIO_INFO_API
@@ -558,5 +560,11 @@ interface ZeneAPIService {
     suspend fun similarRadio(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_INFO_MOVIE_SHOW_INFO_API)
+    suspend fun moviesTvShowsInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MoviesTvShowResponse
 
 }

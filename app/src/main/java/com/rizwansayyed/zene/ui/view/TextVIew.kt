@@ -88,12 +88,12 @@ fun TextViewLight(
 }
 
 @Composable
-fun TextViewBorder(text: String, click: () -> Unit) {
+fun TextViewBorder(text: String, color: Color = Color.Black, click: () -> Unit) {
     Row(
         Modifier
             .padding(4.dp)
             .clip(RoundedCornerShape(80))
-            .background(Color.Black)
+            .background(color)
             .clickable { click() }
             .padding(horizontal = 15.dp, vertical = 9.dp),
     ) {

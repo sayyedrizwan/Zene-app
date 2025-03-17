@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,6 +19,7 @@ import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
+import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
@@ -87,6 +89,8 @@ class HomeViewModel @Inject constructor(
 
     var checkUsernameInfo by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
     var updateProfilePhotoInfo by mutableStateOf(false)
+
+    var movieShowInfo by mutableStateOf<ResponseResult<MoviesTvShowResponse>>(ResponseResult.Empty)
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
@@ -430,6 +434,16 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             updateProfilePhotoInfo = false
             userInfo()
+        }
+    }
+
+    fun moviesTvShowsInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.moviesTvShowsInfo(id).onStart {
+            movieShowInfo = ResponseResult.Loading
+        }.catch {
+            movieShowInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            movieShowInfo = ResponseResult.Success(it)
         }
     }
 }

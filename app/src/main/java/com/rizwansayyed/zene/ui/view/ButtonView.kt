@@ -104,6 +104,19 @@ fun ButtonWithBorder(txt: Int, border: Color = Color.White, click: () -> Unit) {
 }
 
 @Composable
+fun ButtonWithBorder(txt: String, border: Color = Color.White) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .border(0.8.dp, border, RoundedCornerShape(14.dp))
+            .padding(vertical = 7.dp, horizontal = 14.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        TextViewNormal(txt, 14, center = false)
+    }
+}
+
+@Composable
 fun ImageWithBorder(img: Int, border: Color = Color.White, click: () -> Unit) {
     Row(
         modifier = Modifier

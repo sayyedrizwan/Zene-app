@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
+import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
@@ -136,4 +137,5 @@ interface ZeneAPIInterface {
     suspend fun updateName(name: String): Flow<StatusTypeResponse>
     suspend fun checkNumberVerified(): Flow<StatusTypeResponse>
     suspend fun updatePhoto(file: Uri?): Flow<StatusTypeResponse>
+    suspend fun moviesTvShowsInfo(id: String?): Flow<MoviesTvShowResponse>
 }
