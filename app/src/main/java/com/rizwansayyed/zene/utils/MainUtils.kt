@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.utils
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.AppOpsManager.OPSTR_PICTURE_IN_PICTURE
 import android.content.ClipData
@@ -18,10 +17,10 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MAIL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
@@ -446,7 +445,13 @@ object MainUtils {
             val totalSecs = total % 60
 
             return if (totalHours > 0) {
-                String.format(Locale.getDefault(), "%02d:%02d:%02d", totalHours, totalMinutes, totalSecs)
+                String.format(
+                    Locale.getDefault(),
+                    "%02d:%02d:%02d",
+                    totalHours,
+                    totalMinutes,
+                    totalSecs
+                )
             } else {
                 String.format(Locale.getDefault(), "%02d:%02d", totalMinutes, totalSecs)
             }
@@ -491,13 +496,39 @@ object MainUtils {
     }
 
     fun clearImagesCache() {
-       CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             Glide.get(context).clearMemory()
             if (isActive) cancel()
         }
         CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
             Glide.get(context).clearDiskCache()
             if (isActive) cancel()
+        }
+    }
+
+    fun openFeedbackMail() {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            val uriText = "mailto:$ZENE_MAIL" +
+                    "?subject=" + Uri.encode("Feedback on the Android App") +
+                    "&body=" + Uri.encode("<<<<<Feedback>>>>>")
+            data = Uri.parse(uriText)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+    }
+
+    fun openAppOnPlayStore() {
+        try {
+            Intent(
+                Intent.ACTION_VIEW, Uri.parse("market://details?id=${context.packageName}")
+            ).apply {
+                context.startActivity(this)
+            }
+        } catch (e: Exception) {
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+            ).apply { context.startActivity(this) }
         }
     }
 }

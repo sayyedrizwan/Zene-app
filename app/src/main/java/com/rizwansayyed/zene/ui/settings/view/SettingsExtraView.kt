@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
-import android.net.Uri
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsShareSheetView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsStorageSheetView
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -42,11 +43,18 @@ import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
+import com.rizwansayyed.zene.utils.MainUtils.openFeedbackMail
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MAIL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
@@ -55,6 +63,7 @@ fun SettingsExtraView() {
     var showStorageSheet by remember { mutableStateOf(false) }
     var feedbackSheet by remember { mutableStateOf(false) }
     var rateUsSheet by remember { mutableStateOf(false) }
+    var logoutSheet by remember { mutableStateOf(false) }
 
     Spacer(Modifier.height(13.dp))
 
@@ -65,18 +74,14 @@ fun SettingsExtraView() {
     SettingsExtraView(R.string.equalizer, R.drawable.ic_setting_equlizer) {
         val audioManager = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val sessionId = audioManager.generateAudioSessionId()
-        if (sessionId == AudioEffect.ERROR_BAD_VALUE) {
-            "No Session Id".toast()
-        } else {
-            try {
-                val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, "your app package name")
-                effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
-                effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                context.startActivityForResult(effects, 0)
-            } catch (notFound: ActivityNotFoundException) {
-                "There is no equalizer".toast()
-            }
+        try {
+            val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+            effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, "your app package name")
+            effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
+            effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            context.startActivityForResult(effects, 0)
+        } catch (notFound: ActivityNotFoundException) {
+            "There is no default equalizer".toast()
         }
     }
 
@@ -124,9 +129,8 @@ fun SettingsExtraView() {
     }
 
     SettingsExtraView(R.string.log_out, R.drawable.ic_logout) {
-
+        logoutSheet = true
     }
-
 
     if (showStorageSheet) SettingsStorageSheetView {
         showStorageSheet = false
@@ -138,6 +142,10 @@ fun SettingsExtraView() {
 
     if (rateUsSheet) SettingsShareSheetView {
         rateUsSheet = false
+    }
+
+    if (logoutSheet) LogoutSheetView {
+        logoutSheet = false
     }
 }
 
@@ -176,7 +184,6 @@ fun FeedbackAlertSheetView(close: () -> Unit) {
     ModalBottomSheet(
         close, Modifier.fillMaxWidth(), contentColor = MainColor, containerColor = MainColor
     ) {
-        val context = LocalContext.current
         Column(
             Modifier
                 .fillMaxWidth()
@@ -189,14 +196,8 @@ fun FeedbackAlertSheetView(close: () -> Unit) {
             Spacer(Modifier.height(50.dp))
 
             ButtonHeavy(stringResource(R.string.send_feedback), Color.Black) {
-                val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    val uriText = "mailto:$ZENE_MAIL" +
-                            "?subject=" + Uri.encode("Feedback on the Android App") +
-                            "&body=" + Uri.encode("<<<<<Feedback>>>>>")
-                    data = Uri.parse(uriText)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                context.startActivity(intent)
+                openFeedbackMail()
+                close()
             }
 
 
@@ -204,3 +205,40 @@ fun FeedbackAlertSheetView(close: () -> Unit) {
         }
     }
 }
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LogoutSheetView(close: () -> Unit) {
+    ModalBottomSheet(
+        close, Modifier.fillMaxWidth(), contentColor = MainColor, containerColor = MainColor
+    ) {
+        val context = LocalContext.current
+        val coroutine = rememberCoroutineScope()
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 9.dp), Arrangement.Center, Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(30.dp))
+            TextViewBold(stringResource(R.string.are_you_sure_want_to_log_out), 19)
+            Spacer(Modifier.height(50.dp))
+
+            ButtonHeavy(stringResource(R.string.log_out), Color.Black) {
+                context.cacheDir.deleteRecursively()
+                clearImagesCache()
+                close()
+                coroutine.launch {
+                    triggerHomeNav(NAV_MAIN_PAGE)
+                    DataStorageManager.userInfo = flowOf(null)
+                }
+            }
+
+
+            Spacer(Modifier.height(100.dp))
+        }
+    }
+}
+
+
