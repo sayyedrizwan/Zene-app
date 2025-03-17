@@ -50,6 +50,7 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_POLICY_URL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -126,6 +127,10 @@ fun SettingsExtraView() {
 
     SettingsExtraView(R.string.rate_us, R.drawable.ic_star) {
         rateUsSheet = true
+    }
+
+    SettingsExtraView(R.string.privacy_policy, R.drawable.ic_policy) {
+        MediaContentUtils.openCustomBrowser(ZENE_PRIVACY_POLICY_URL)
     }
 
     SettingsExtraView(R.string.log_out, R.drawable.ic_logout) {

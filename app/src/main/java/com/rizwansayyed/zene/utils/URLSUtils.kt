@@ -4,6 +4,7 @@ object URLSUtils {
 
     const val ZENE_MAIL = "knocknock@zenemusic.co"
     const val ZENE_FAQ_URL = "https://www.zenemusic.co/faq"
+    const val ZENE_PRIVACY_POLICY_URL = "https://www.zenemusic.co/privacy-policy"
     const val ZENE_HOME = "https://www.zenemusic.co/home"
 
 
