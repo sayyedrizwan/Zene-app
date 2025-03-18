@@ -54,6 +54,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_FOLLOW_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_MOVIE_SHOW_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_SEASON_MOVIE_SHOW_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_RADIO_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API
@@ -566,5 +567,11 @@ interface ZeneAPIService {
     suspend fun moviesTvShowsInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): MoviesTvShowResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_INFO_SEASON_MOVIE_SHOW_INFO_API)
+    suspend fun seasonMoviesTvShowsInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
 
 }

@@ -91,6 +91,7 @@ class HomeViewModel @Inject constructor(
     var updateProfilePhotoInfo by mutableStateOf(false)
 
     var movieShowInfo by mutableStateOf<ResponseResult<MoviesTvShowResponse>>(ResponseResult.Empty)
+    var seasonsMovieShowInfo by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
@@ -444,6 +445,16 @@ class HomeViewModel @Inject constructor(
             movieShowInfo = ResponseResult.Error(it)
         }.collectLatest {
             movieShowInfo = ResponseResult.Success(it)
+        }
+    }
+
+    fun moviesTvShowsSeasonsInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.seasonMoviesTvShowsInfo(id).onStart {
+            seasonsMovieShowInfo = ResponseResult.Loading
+        }.catch {
+            seasonsMovieShowInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            seasonsMovieShowInfo = ResponseResult.Success(it)
         }
     }
 }

@@ -82,6 +82,7 @@ object URLSUtils {
     const val ZENE_INFO_ARTIST_API = "info/artist-info"
     const val ZENE_INFO_ARTIST_FOLLOW_API = "info/artist-follow"
     const val ZENE_INFO_MOVIE_SHOW_INFO_API = "info/movie-show-info"
+    const val ZENE_INFO_SEASON_MOVIE_SHOW_INFO_API = "info/season-movie-show-info"
 
     const val ZENE_PODCAST_PODCAST_INFO_API = "podcast-radio/podcast-info"
     const val ZENE_PODCAST_PODCAST_MEDIA_URL_API = "podcast-radio/podcast-media-url"

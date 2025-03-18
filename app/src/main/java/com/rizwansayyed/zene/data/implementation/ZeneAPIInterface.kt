@@ -138,4 +138,5 @@ interface ZeneAPIInterface {
     suspend fun checkNumberVerified(): Flow<StatusTypeResponse>
     suspend fun updatePhoto(file: Uri?): Flow<StatusTypeResponse>
     suspend fun moviesTvShowsInfo(id: String?): Flow<MoviesTvShowResponse>
+    suspend fun seasonMoviesTvShowsInfo(id: String?): Flow<ZeneMusicDataList>
 }
