@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.view.movies
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -17,8 +16,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.movies.view.MoviesCastInfoView
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesCategories
+import com.rizwansayyed.zene.ui.view.movies.view.MoviesClipsTrailerView
+import com.rizwansayyed.zene.ui.view.movies.view.MoviesInfoView
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesTopView
+import com.rizwansayyed.zene.ui.view.movies.view.SimilarMoviesClipsView
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
@@ -39,6 +42,12 @@ fun MoviesView(id: String) {
 
                     item { MoviesTopView(v.data) }
                     item { MoviesCategories(v.data) }
+                    item { Spacer(Modifier.height(10.dp)) }
+                    item { MoviesInfoView(v.data) }
+                    item { Spacer(Modifier.height(10.dp)) }
+                    item { MoviesClipsTrailerView(v.data) }
+                    item { MoviesCastInfoView(v.data) }
+                    item { SimilarMoviesClipsView(v.data) }
 
                     item { Spacer(Modifier.height(350.dp)) }
                 }

@@ -55,6 +55,9 @@
     <string name="my_playlists">My Playlists</string>
     <string name="my_playlist">My Playlist</string>
     <string name="your_mixes">Your mixes</string>
+    <string name="trailers_teasers_featurettes">Trailers, Teasers, Featurettes</string>
+    <string name="similar_movies_shows">Similar Movies/Shows</string>
+    <string name="cast_crew">Cast/Crew</string>
     <string name="remove_media_from_playlist">Remove Media from Playlist</string>
     <string name="remove_media_from_playlist_desc">Remove media from your playlist with ease.</string>
     <string name="edit_your_playlist_new_name">Edit your playlist new name</string>
@@ -138,6 +141,7 @@
     <string name="ent_">ent.</string>
     <string name="grant">Grant</string>
     <string name="play">Play</string>
+    <string name="watch">Watch</string>
     <string name="playlists">Playlists</string>
     <string name="playlist">Playlist</string>
     <string name="liked_items">Liked Items</string>

@@ -185,7 +185,7 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(userInfo?.email) {
                         delay(500)
-                        navController.navigate("${NAV_MOVIES_PAGE}^us^tv-show^adolescence-2025")
+                        navController.navigate("${NAV_MOVIES_PAGE}^us^tv-show^friends")
                         setNavigationCallback(object : HomeNavigationListener {
                             override fun navigate(path: String) {
                                 if (path == NAV_GO_BACK) {

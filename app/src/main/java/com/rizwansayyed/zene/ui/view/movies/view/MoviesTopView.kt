@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBoldBig
 import com.rizwansayyed.zene.ui.view.TextViewBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -59,7 +60,7 @@ fun MoviesTopView(data: MoviesTvShowResponse) {
             Alignment.CenterVertically) {
             ImageIcon(R.drawable.ic_play_filled, 18, Color.Black)
             Spacer(Modifier.width(10.dp))
-            TextViewBold(stringResource(R.string.play), 17, Color.Black, center = false)
+            TextViewBold(stringResource(R.string.watch), 17, Color.Black, center = false)
         }
     }
 }
@@ -82,6 +83,9 @@ fun MoviesCategories(data: MoviesTvShowResponse) {
 
         Column(Modifier.padding(top = 20.dp, start = 10.dp)) {
             TextViewBoldBig(data.name ?: "", 45)
+            Spacer(Modifier.height(2.dp))
+            TextViewSemiBold(data.type ?: "", 15)
+            Spacer(Modifier.height(5.dp))
             TextViewNormal(data.description ?: "", 15)
         }
 

@@ -7,7 +7,7 @@ import java.util.Locale
 data class MoviesTvShowResponse(
     val categories: String?,
     val certification: String?,
-    val clips: List<Any?>?,
+    val clips: ZeneMusicDataList?,
     val cover: String?,
     val credits: List<Credit?>?,
     val description: String?,
