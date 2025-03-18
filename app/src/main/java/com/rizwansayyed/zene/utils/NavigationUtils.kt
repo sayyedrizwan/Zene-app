@@ -16,7 +16,7 @@ object NavigationUtils {
     const val NAV_PLAYLIST_PAGE = "playlist/"
     const val NAV_MY_PLAYLIST_PAGE = "my-playlist/"
     const val NAV_ARTIST_PAGE = "artist/"
-    const val NAV_MOVIES_PAGE = "movies/"
+    const val NAV_MOVIES_PAGE = "movies-show/"
     const val NAV_CONNECT_PROFILE_PAGE = "connect_profile/"
 
     private var callback: HomeNavigationListener? = null

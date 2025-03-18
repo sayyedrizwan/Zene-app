@@ -15,6 +15,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +30,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
+import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -38,6 +43,9 @@ import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MoviesTopView(data: MoviesTvShowResponse) {
+    var showShareView by remember { mutableStateOf(false) }
+    var showPlayToView by remember { mutableStateOf(false) }
+
     Box(Modifier.fillMaxWidth()) {
         GlideImage(
             data.poster,
@@ -52,7 +60,7 @@ fun MoviesTopView(data: MoviesTvShowResponse) {
             .padding(bottom = 15.dp, start = 5.dp)
             .align(Alignment.BottomStart)
             .padding(horizontal = 10.dp)
-            .clickable {}
+            .clickable { showPlayToView = true }
             .clip(RoundedCornerShape(18.dp))
             .background(Color.White)
             .padding(vertical = 10.dp, horizontal = 25.dp),
@@ -62,6 +70,23 @@ fun MoviesTopView(data: MoviesTvShowResponse) {
             Spacer(Modifier.width(10.dp))
             TextViewBold(stringResource(R.string.watch), 17, Color.Black, center = false)
         }
+
+        Row(modifier = Modifier
+            .padding(bottom = 15.dp, start = 5.dp)
+            .align(Alignment.BottomEnd)
+            .padding(horizontal = 10.dp)
+            .clickable { showShareView = true }
+            .clip(RoundedCornerShape(18.dp))
+            .background(Color.White)
+            .padding(vertical = 10.dp, horizontal = 15.dp),
+            Arrangement.Center, Alignment.CenterVertically) {
+            ImageIcon(R.drawable.ic_share, 24, Color.Black)
+        }
+    }
+
+
+    if (showShareView) ShareDataView(data.asMusicData()) {
+        showShareView = false
     }
 }
 

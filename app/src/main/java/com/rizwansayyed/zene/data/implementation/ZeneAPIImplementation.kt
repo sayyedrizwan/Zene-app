@@ -367,11 +367,11 @@ class ZeneAPIImplementation @Inject constructor(
             return@flow
         }
 
-
         val json = JSONObject().apply {
             put("email", email)
             put("country", country)
-            if (q.type() == MusicDataTypes.SONGS) put("artists", q.artists)
+            put("type", q.type)
+            put("artists", q.artists)
             put("name", q.name)
         }
 

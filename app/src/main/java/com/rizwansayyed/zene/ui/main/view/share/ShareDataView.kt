@@ -128,7 +128,7 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
                                 Column(
                                     Modifier
                                         .align(Alignment.Center)
-                                        .alpha(0.75f)
+                                        .alpha(0.79f)
                                         .fillMaxWidth(0.6f)
                                         .clip(RoundedCornerShape(10.dp))
                                         .background(backgroundColor)
@@ -145,7 +145,7 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
 
                                     Spacer(Modifier.height(5.dp))
                                     TextViewSemiBold(data?.name ?: "", 18, textColor, line = 2)
-                                    TextViewNormal(data?.artists ?: "", 15, textColor, line = 1)
+                                    TextViewNormal(data?.artists ?: "", 15, textColor, line = 3)
                                     Spacer(Modifier.height(10.dp))
                                     Row(
                                         Modifier.fillMaxWidth(),

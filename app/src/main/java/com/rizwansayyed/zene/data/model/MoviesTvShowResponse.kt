@@ -27,6 +27,12 @@ data class MoviesTvShowResponse(
     val type: String?
 ) {
 
+    fun asMusicData(): ZeneMusicData {
+        return ZeneMusicData(
+            description, smallId, name, "", poster, MusicDataTypes.MOVIES_SHOW.name
+        )
+    }
+
     fun readReleaseDate(): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val date = inputFormat.parse(releaseOn ?: "") ?: return ""

@@ -55,7 +55,7 @@ import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES
+import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES_SHOW
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NEWS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NONE
 import com.rizwansayyed.zene.data.model.MusicDataTypes.PLAYLISTS
@@ -158,7 +158,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                                 ImageIcon(R.drawable.ic_podcast, 18)
 
                             NEWS -> ImageIcon(R.drawable.ic_news, 18)
-                            MOVIES -> ImageIcon(R.drawable.ic_camera_video, 18)
+                            MOVIES_SHOW -> ImageIcon(R.drawable.ic_camera_video, 18)
                             null -> {}
                             TEXT -> {}
                             VIDEOS -> ImageIcon(R.drawable.ic_video_replay, 18)
@@ -278,7 +278,7 @@ fun ConnectVibeItemOnlyCaption(
                         NEWS ->
                             TextViewNormal(stringResource(R.string.news), 14, center = true)
 
-                        MOVIES ->
+                        MOVIES_SHOW ->
                             TextViewNormal(stringResource(R.string.movie), 14, center = true)
 
                         AI_MUSIC ->

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES
+import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES_SHOW
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NEWS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NONE
 import com.rizwansayyed.zene.data.model.MusicDataTypes.PLAYLISTS
@@ -76,7 +76,7 @@ object MediaContentUtils {
             ARTISTS -> NavigationUtils.triggerHomeNav("$NAV_ARTIST_PAGE${data.id}")
             PODCAST_CATEGORIES -> {}
             NEWS -> openCustomBrowser(data.id)
-            MOVIES -> NavigationUtils.triggerHomeNav("$NAV_MOVIES_PAGE${data.id?.replace("/", "^")}")
+            MOVIES_SHOW -> NavigationUtils.triggerHomeNav("$NAV_MOVIES_PAGE${data.id}")
             TEXT -> {}
             null -> {}
         }

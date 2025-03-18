@@ -13,7 +13,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
-import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES
+import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES_SHOW
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NEWS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NONE
 import com.rizwansayyed.zene.data.model.MusicDataTypes.PLAYLISTS
@@ -103,7 +103,7 @@ object ShareContentUtils {
                 context.resources.getString(R.string.enjoy_free_news_on_zene), data.name
             )
 
-            MOVIES -> String.format(
+            MOVIES_SHOW -> String.format(
                 context.resources.getString(R.string.about_movie_on_zene), data.name
             )
 
@@ -185,7 +185,7 @@ object ShareContentUtils {
             PODCAST_AUDIO -> "$ZENE_URL/podcast/${data.id}"
             PODCAST_CATEGORIES -> ZENE_URL
             NEWS -> "$ZENE_URL/news/${data.id}"
-            MOVIES -> "$ZENE_URL/m/${data.id}"
+            MOVIES_SHOW -> "$ZENE_URL/m/${data.id}"
             AI_MUSIC -> "$ZENE_URL/ai_music/${data.id}"
             TEXT -> ZENE_URL
             null -> ZENE_URL
