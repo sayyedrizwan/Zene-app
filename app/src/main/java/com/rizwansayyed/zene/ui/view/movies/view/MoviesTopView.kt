@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +41,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBoldBig
 import com.rizwansayyed.zene.ui.view.TextViewBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.share.MediaContentUtils
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -79,7 +82,8 @@ fun MoviesTopView(data: MoviesTvShowResponse) {
             .clip(RoundedCornerShape(18.dp))
             .background(Color.White)
             .padding(vertical = 10.dp, horizontal = 15.dp),
-            Arrangement.Center, Alignment.CenterVertically) {
+            Arrangement.Center,
+            Alignment.CenterVertically) {
             ImageIcon(R.drawable.ic_share, 24, Color.Black)
         }
     }
@@ -87,6 +91,9 @@ fun MoviesTopView(data: MoviesTvShowResponse) {
 
     if (showShareView) ShareDataView(data.asMusicData()) {
         showShareView = false
+    }
+    if (showPlayToView) MoviesPlayMediaSheet(data) {
+        showPlayToView = false
     }
 }
 
@@ -100,9 +107,7 @@ fun MoviesCategories(data: MoviesTvShowResponse) {
 
                 }
             } else if (data.rank in 51..100) {
-                TextViewBorder("#${data.rank}", MainColor) {
-
-                }
+                TextViewBorder("#${data.rank}", MainColor) { }
             }
         }
 
@@ -151,6 +156,46 @@ fun MoviesCategories(data: MoviesTvShowResponse) {
                     ButtonWithBorder(it)
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
+@Composable
+fun MoviesPlayMediaSheet(data: MoviesTvShowResponse, close: () -> Unit) {
+    ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
+        Column(Modifier.fillMaxWidth()) {
+            Spacer(Modifier.height(10.dp))
+
+            data.ott?.forEach { ott ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { MediaContentUtils.openCustomBrowser(ott?.web) }
+                        .padding(vertical = 15.dp, horizontal = 13.dp),
+                    Arrangement.Start,
+                    Alignment.CenterVertically
+                ) {
+                    GlideImage(ott?.icon, ott?.ottName, Modifier.width(80.dp))
+                    Column(
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 5.dp)
+                    ) {
+                        TextViewBold(ott?.ottName ?: "", 18)
+                        TextViewNormal(
+                            "${stringResource(R.string.starting_from)} ${ott?.price}", 18
+                        )
+                        TextViewNormal(ott?.quality ?: "", 18)
+
+                        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
+                            ott?.audio?.forEach { ButtonWithBorder(it ?: "") }
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(80.dp))
         }
     }
 }

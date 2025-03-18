@@ -80,7 +80,7 @@ data class MoviesTvShowResponse(
         val audio: List<String?>?,
         val icon: String?,
         val ottName: String?,
-        val prime: Any?,
+        val price: String?,
         val quality: String?,
         val web: String?
     )
