@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.ui.view.movies.view.MoviesCastInfoView
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesCategories
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesClipsTrailerView
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesInfoView
+import com.rizwansayyed.zene.ui.view.movies.view.MoviesSeasonsView
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesTopView
 import com.rizwansayyed.zene.ui.view.movies.view.SimilarMoviesClipsView
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -44,6 +45,8 @@ fun MoviesView(id: String) {
                     item { MoviesCategories(v.data) }
                     item { Spacer(Modifier.height(10.dp)) }
                     item { MoviesInfoView(v.data) }
+                    item { Spacer(Modifier.height(10.dp)) }
+                    item { MoviesSeasonsView(v.data) }
                     item { Spacer(Modifier.height(10.dp)) }
                     item { MoviesClipsTrailerView(v.data) }
                     item { MoviesCastInfoView(v.data) }

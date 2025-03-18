@@ -8,6 +8,7 @@ data class MoviesTvShowResponse(
     val categories: String?,
     val certification: String?,
     val clips: ZeneMusicDataList?,
+    val seasons: ZeneMusicDataList?,
     val cover: String?,
     val credits: List<Credit?>?,
     val description: String?,
