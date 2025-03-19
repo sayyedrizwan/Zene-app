@@ -63,7 +63,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-val delimiters = arrayOf(",", "&", " and ")
+val delimiters = arrayOf(",", "&", " and ", " | ")
 
 @Composable
 fun MusicPlayerView(navViewModel: NavigationViewModel) {
