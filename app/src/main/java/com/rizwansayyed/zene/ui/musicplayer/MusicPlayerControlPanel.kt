@@ -87,8 +87,7 @@ fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
                 .aspectRatio(1f)
         ) {
             GlideImage(
-                data?.lists?.get(page)?.thumbnail,
-                data?.lists?.get(page)?.name,
+                data?.lists?.get(page)?.thumbnail, data?.lists?.get(page)?.name,
                 Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
