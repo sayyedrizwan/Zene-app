@@ -20,6 +20,8 @@
     <string name="no_song_played">No song played.</string>
     <string name="music">Music</string>
     <string name="podcasts_series">Podcasts Series</string>
+    <string name="view_podcast_series">View podcast series</string>
+    <string name="go_to_album">Go to album</string>
     <string name="podcasts">Podcasts</string>
     <string name="podcast">Podcast</string>
     <string name="radios">Radios</string>
@@ -147,6 +149,8 @@
     <string name="playlists">Playlists</string>
     <string name="playlist">Playlist</string>
     <string name="liked_items">Liked Items</string>
+    <string name="like">Like</string>
+    <string name="liked">Liked</string>
     <string name="login_to_view_liked_items">Login to view liked items</string>
     <string name="playlist_name">Playlist Name</string>
     <string name="albums">Albums</string>
@@ -168,8 +172,8 @@
     <string name="chats">Chats</string>
     <string name="send_location">Send Location</string>
     <string name="open_location">Open Location</string>
-    <string name="open_podcast_series">Open Podcast Series</string>
-    <string name="open_episode_page">Open Episode Page</string>
+    <string name="open_podcast_series">Open podcast series</string>
+    <string name="open_episode_page">Open episode page</string>
     <string name="episode">Episode</string>
     <string name="open_home_page">Open Home Page</string>
     <string name="update_profile_photo">Update Profile Photo</string>
@@ -255,6 +259,7 @@
     <string name="share_notification">Silent Notifications</string>
     <string name="compress_processing_video">Compressing and Processing the media file…</string>
     <string name="uploading_please_wait">Uploading… Please wait…</string>
+    <string name="add_shortcut_to_home_screen">Add shortcut to home screen</string>
     <string name="share">Share</string>
     <string name="share_app">Share App</string>
     <string name="rate_us">Rate Us</string>
@@ -316,6 +321,7 @@
     <string name="similar_radios">Similar Radios</string>
     <string name="no_lyrics_found">No Lyrics Found</string>
     <string name="added_to_your_library">Added to your library</string>
+    <string name="add_to_your_library">Add to your library</string>
     <string name="removed_to_your_library">Removed from your library</string>
     <string name="save">Save</string>
     <string name="update">Update</string>

@@ -128,8 +128,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp),
-                    Arrangement.Center,
-                    Alignment.CenterVertically
+                    Arrangement.Center, Alignment.CenterVertically
                 ) {
                     SongTextAndArtists(player?.lists, pagerState, Modifier.weight(1f))
 
