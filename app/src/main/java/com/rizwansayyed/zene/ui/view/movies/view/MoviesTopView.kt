@@ -176,7 +176,6 @@ fun MoviesPlayMediaSheet(data: MoviesTvShowResponse, close: () -> Unit) {
                     Arrangement.Start,
                     Alignment.CenterVertically
                 ) {
-                    GlideImage(ott?.icon, ott?.ottName, Modifier.width(80.dp))
                     Column(
                         Modifier
                             .weight(1f)
@@ -184,13 +183,16 @@ fun MoviesPlayMediaSheet(data: MoviesTvShowResponse, close: () -> Unit) {
                     ) {
                         TextViewBold(ott?.ottName ?: "", 18)
                         TextViewNormal(
-                            "${stringResource(R.string.starting_from)} ${ott?.price}", 18
+                            "${stringResource(R.string.starting_from)} ${ott?.price}", 14
                         )
-                        TextViewNormal(ott?.quality ?: "", 18)
 
-                        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
-                            ott?.audio?.forEach { ButtonWithBorder(it ?: "") }
-                        }
+                        TextViewNormal(ott?.audio?.joinToString(", ") ?: "", 14)
+                    }
+
+                    Column(Modifier, Arrangement.Center, Alignment.CenterHorizontally) {
+                        GlideImage(ott?.icon, ott?.ottName, Modifier.width(80.dp))
+                        Spacer(Modifier.height(10.dp))
+                        ImageIcon(R.drawable.ic_arrow_right, 20)
                     }
                 }
             }
