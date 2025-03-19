@@ -50,7 +50,6 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
-import com.rizwansayyed.zene.viewmodel.InfoSheetViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
@@ -60,7 +59,6 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
     if (viewModel.showMediaInfoSheet != null) ModalBottomSheet(
         { viewModel.setShowMediaInfo(null) }, contentColor = MainColor, containerColor = MainColor
     ) {
-        val infoViewModel: InfoSheetViewModel = hiltViewModel()
         val playerViewModel: PlayerViewModel = hiltViewModel(key = viewModel.showMediaInfoSheet?.id)
         var showShare by remember { mutableStateOf(false) }
         var showAddToHomeScreen by remember { mutableStateOf(false) }
@@ -69,12 +67,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
             stickyHeader { MediaItemView(viewModel.showMediaInfoSheet!!) }
 
             item {
-                if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS ||
-                    viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO ||
-                    viewModel.showMediaInfoSheet?.type() == MusicDataTypes.RADIO ||
-                    viewModel.showMediaInfoSheet?.type() == MusicDataTypes.VIDEOS ||
-                    viewModel.showMediaInfoSheet?.type() == MusicDataTypes.AI_MUSIC
-                ) {
+                if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.RADIO || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.VIDEOS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.AI_MUSIC) {
                     LongPressSheetItem(R.drawable.ic_play, R.string.play) {
                         startMedia(viewModel.showMediaInfoSheet)
                         viewModel.setShowMediaInfo(null)
@@ -96,7 +89,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                 }
             }
 
-            item {
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS && viewModel.showMediaInfoSheet?.artistsList?.isNotEmpty() == true) item {
                 viewModel.showMediaInfoSheet?.artistsList?.forEach {
                     LongPressSheetItem(
                         R.drawable.ic_artists, txtS = "${stringResource(R.string.view)} ${it?.name}"
@@ -108,52 +101,45 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                     }
                 }
             }
-
-            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO) {
-                if (viewModel.showMediaInfoSheet!!.secId != null) item {
-                    LongPressSheetItem(R.drawable.ic_podcast, R.string.view_podcast_series) {
-                        triggerHomeNav("$NAV_PODCAST_PAGE${viewModel.showMediaInfoSheet?.secId}")
-                        viewModel.setShowMediaInfo(null)
-                    }
-                }
-                else {
-                    when (val v = playerViewModel.playerPodcastInfo) {
-                        ResponseResult.Empty -> {}
-                        is ResponseResult.Error -> {}
-                        ResponseResult.Loading -> item {
-                            Row(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 10.dp, vertical = 15.dp)
-                            ) { CircularLoadingViewSmall() }
+            else
+                if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO) {
+                    if (viewModel.showMediaInfoSheet!!.secId != null) item {
+                        LongPressSheetItem(R.drawable.ic_podcast, R.string.view_podcast_series) {
+                            triggerHomeNav("$NAV_PODCAST_PAGE${viewModel.showMediaInfoSheet?.secId}")
+                            viewModel.setShowMediaInfo(null)
                         }
+                    }
+                    else {
+                        when (val v = playerViewModel.playerPodcastInfo) {
+                            ResponseResult.Empty -> {}
+                            is ResponseResult.Error -> {}
+                            ResponseResult.Loading -> item {
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp, vertical = 15.dp)
+                                ) { CircularLoadingViewSmall() }
+                            }
 
-                        is ResponseResult.Success -> item {
-                            LongPressSheetItem(
-                                R.drawable.ic_podcast, R.string.view_podcast_series
-                            ) {
-                                triggerHomeNav("$NAV_PODCAST_PAGE${v.data.series?.slug}")
-                                viewModel.setShowMediaInfo(null)
+                            is ResponseResult.Success -> item {
+                                LongPressSheetItem(
+                                    R.drawable.ic_podcast, R.string.view_podcast_series
+                                ) {
+                                    triggerHomeNav("$NAV_PODCAST_PAGE${v.data.series?.slug}")
+                                    viewModel.setShowMediaInfo(null)
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PLAYLISTS
-            ) item {
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PLAYLISTS) item {
                 LongPressSheetItem(R.drawable.ic_layer_add, R.string.add_to_your_library) {
 
                 }
             }
 
-            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.RADIO ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.VIDEOS ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.AI_MUSIC
-            ) item {
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.RADIO || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.VIDEOS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.AI_MUSIC) item {
                 when (playerViewModel.isItemLiked[viewModel.showMediaInfoSheet!!.id]) {
                     LikeItemType.LOADING -> Row(
                         Modifier
@@ -161,15 +147,19 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                             .padding(horizontal = 10.dp, vertical = 15.dp)
                     ) { CircularLoadingViewSmall() }
 
-                    LikeItemType.LIKE ->
-                        LongPressSheetItem(R.drawable.ic_thumbs_up, R.string.liked) {
-                            playerViewModel.likeAItem(viewModel.showMediaInfoSheet!!, false)
-                        }
+                    LikeItemType.LIKE -> LongPressSheetItem(
+                        R.drawable.ic_thumbs_up,
+                        R.string.liked
+                    ) {
+                        playerViewModel.likeAItem(viewModel.showMediaInfoSheet!!, false)
+                    }
 
-                    LikeItemType.NONE, null ->
-                        LongPressSheetItem(R.drawable.ic_thumbs_up, R.string.like) {
-                            playerViewModel.likeAItem(viewModel.showMediaInfoSheet!!, false)
-                        }
+                    LikeItemType.NONE, null -> LongPressSheetItem(
+                        R.drawable.ic_thumbs_up,
+                        R.string.like
+                    ) {
+                        playerViewModel.likeAItem(viewModel.showMediaInfoSheet!!, true)
+                    }
                 }
             }
 
@@ -211,18 +201,20 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
             })
 
         LaunchedEffect(Unit) {
-            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.RADIO ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.VIDEOS ||
-                viewModel.showMediaInfoSheet?.type() == MusicDataTypes.AI_MUSIC
-            ) playerViewModel.likedMediaItem(
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.RADIO || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.VIDEOS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.AI_MUSIC) playerViewModel.likedMediaItem(
                 viewModel.showMediaInfoSheet!!.id, viewModel.showMediaInfoSheet!!.type()
             )
 
-            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO &&
-                viewModel.showMediaInfoSheet!!.secId == null
-            ) playerViewModel.playerPodcastInfo(viewModel.showMediaInfoSheet!!.id!!)
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO && viewModel.showMediaInfoSheet!!.secId == null) playerViewModel.playerPodcastInfo(
+                viewModel.showMediaInfoSheet!!.id!!
+            )
+
+
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS && viewModel.showMediaInfoSheet?.artistsList?.isEmpty() == true) playerViewModel.similarArtistsAlbumOfSong(
+                viewModel.showMediaInfoSheet!!.id!!
+            ) {
+                viewModel.updateArtistsAndAlbums(it)
+            }
         }
     }
 }

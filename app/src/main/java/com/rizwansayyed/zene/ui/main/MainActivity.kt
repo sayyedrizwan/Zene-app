@@ -152,10 +152,6 @@ class MainActivity : ComponentActivity() {
                                     val id = backStackEntry.arguments?.getString("id")
                                     if (id != null) ArtistsView(id)
                                 }
-                                composable("$NAV_ARTIST_PAGE{id}") { backStackEntry ->
-                                    val id = backStackEntry.arguments?.getString("id")
-                                    if (id != null) ArtistsView(id)
-                                }
                                 composable("$NAV_MY_PLAYLIST_PAGE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
                                     if (id != null) MyPlaylistView(id)

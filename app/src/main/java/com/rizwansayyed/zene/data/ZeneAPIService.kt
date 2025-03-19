@@ -57,6 +57,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_SEASON_MOVIE_SHOW_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_RADIO_INFO_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_ARTISTS_ALBUM_SONG_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_SONGS_API
@@ -364,6 +365,12 @@ interface ZeneAPIService {
     suspend fun getCommentOfVibes(
         @Header("token") token: String, @Body data: RequestBody
     ): List<VibesCommentsResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_SIMILAR_ARTISTS_ALBUM_SONG_API)
+    suspend fun similarArtistsAlbumOfSong(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicData
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_SIMILAR_VIDEOS_API)

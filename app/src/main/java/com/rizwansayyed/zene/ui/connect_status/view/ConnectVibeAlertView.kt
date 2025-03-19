@@ -10,6 +10,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,11 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes.SONGS
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
@@ -30,6 +37,7 @@ import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapLocation
 import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapNameLocation
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,29 +90,42 @@ fun MusicDataSheet(data: ConnectFeedDataResponse?, close: () -> Unit) {
     ModalBottomSheet(
         { close() }, contentColor = MainColor, containerColor = MainColor
     ) {
+        val playerViewModel: PlayerViewModel = hiltViewModel(key = data?.getMusicData()?.id)
+        var mediaItem by remember { mutableStateOf<ZeneMusicData?>(null) }
+
         Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
             Spacer(Modifier.height(10.dp))
             GlideImage(
-                data?.getMusicData()?.thumbnail,
-                data?.getMusicData()?.name,
+                mediaItem?.thumbnail, mediaItem?.name,
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
                     .size(100.dp),
                 contentScale = ContentScale.Crop
             )
             Spacer(Modifier.height(20.dp))
-            TextViewNormal(data?.getMusicData()?.name ?: "", 20, center = true)
+            TextViewNormal(mediaItem?.name ?: "", 20, center = true)
             Spacer(Modifier.height(5.dp))
-            TextViewNormal(data?.getMusicData()?.artists ?: "", 14, center = true)
+            TextViewNormal(mediaItem?.artists ?: "", 14, center = true)
             Spacer(Modifier.height(10.dp))
-            if (data?.getMusicData()?.type() == SONGS) ButtonWithBorder(R.string.play) {
-                startMedia(data.getMusicData())
+            if (mediaItem?.type() == SONGS) ButtonWithBorder(R.string.play) {
+                close()
+                startMedia(mediaItem)
             }
             else ButtonWithBorder(R.string.view) {
-                startMedia(data?.getMusicData())
+                close()
+                startMedia(mediaItem)
             }
 
             Spacer(Modifier.height(50.dp))
+        }
+
+        LaunchedEffect(Unit) {
+            mediaItem = data?.getMusicData()
+            if (data?.getMusicData()?.type() == SONGS) {
+                playerViewModel.similarArtistsAlbumOfSong(data.jazz_id ?: "") {
+                    mediaItem = it
+                }
+            }
         }
     }
 }

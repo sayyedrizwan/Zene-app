@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -173,6 +174,14 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             playerLyrics = ResponseResult.Success(it)
         }
     }
+
+    fun similarArtistsAlbumOfSong(id: String, response: (ZeneMusicData) -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.similarArtistsAlbumOfSong(id).onStart {}.catch {}.collectLatest {
+                response(it)
+            }
+        }
+
 
     fun playerPodcastInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.playerPodcastInfo(id).onStart {

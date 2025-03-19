@@ -260,7 +260,7 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
             .padding(horizontal = 7.dp)
     ) {
         Spacer(Modifier.height(40.dp))
-        TextViewBold(data.data?.name ?: "", 50)
+        TextViewBoldBig(data.data?.name ?: "", 50)
     }
 
     Box(Modifier

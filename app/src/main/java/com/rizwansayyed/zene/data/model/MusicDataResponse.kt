@@ -101,8 +101,8 @@ data class ZeneMusicData(
     val extraInfo: String? = null,
     val secId: String? = null,
     val isExpire: Boolean? = false,
-    val artistsList: List<ExtraData?> = emptyList(),
-    val albumInfo: ExtraData? = null
+    var artistsList: List<ExtraData?> = emptyList(),
+    var albumInfo: ExtraData? = null
 ) {
     data class ExtraData(val name: String?, val id: String?)
 

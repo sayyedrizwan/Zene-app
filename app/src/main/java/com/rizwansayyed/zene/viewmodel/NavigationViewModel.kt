@@ -35,4 +35,12 @@ class NavigationViewModel : ViewModel() {
     fun setShowMediaInfo(value: ZeneMusicData?) {
         showMediaInfoSheet = value
     }
+
+    fun updateArtistsAndAlbums(value: ZeneMusicData?) {
+        val infos = showMediaInfoSheet
+        infos?.artistsList = value?.artistsList ?: emptyList()
+        infos?.albumInfo = value?.albumInfo
+        showMediaInfoSheet = null
+        showMediaInfoSheet = infos
+    }
 }

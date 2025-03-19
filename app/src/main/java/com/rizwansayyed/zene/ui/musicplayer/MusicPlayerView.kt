@@ -55,6 +55,7 @@ import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
@@ -130,7 +131,9 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                         .padding(horizontal = 10.dp),
                     Arrangement.Center, Alignment.CenterVertically
                 ) {
-                    SongTextAndArtists(player?.lists, pagerState, Modifier.weight(1f))
+                    SongTextAndArtists(player?.lists, pagerState, Modifier.weight(1f)) {
+                        navViewModel.setMusicPlayer(false)
+                    }
 
                     LikeSongView(player, viewModel, pagerState)
                 }
@@ -241,7 +244,9 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 }
 
 @Composable
-fun SongTextAndArtists(data: List<ZeneMusicData?>?, pagerState: PagerState, modifier: Modifier) {
+fun SongTextAndArtists(
+    data: List<ZeneMusicData?>?, pagerState: PagerState, modifier: Modifier, close: () -> Unit
+) {
     if (data?.isNotEmpty() == true) Column(modifier) {
         Text(
             data[pagerState.currentPage]?.name ?: "",
@@ -257,13 +262,39 @@ fun SongTextAndArtists(data: List<ZeneMusicData?>?, pagerState: PagerState, modi
 
         Spacer(Modifier.height(1.dp))
 
-        if (data[pagerState.currentPage]?.type() == MusicDataTypes.SONGS || data[pagerState.currentPage]?.type() == MusicDataTypes.RADIO) {
+        if (data[pagerState.currentPage]?.type() == MusicDataTypes.SONGS) {
             Row(
                 Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
                 Arrangement.Start,
                 Alignment.CenterVertically
+            ) {
+                data[pagerState.currentPage]?.artistsList?.forEachIndexed { index, artist ->
+                    Box(Modifier.clickable {
+                        triggerHomeNav("$NAV_ARTIST_PAGE${artist?.id}")
+                        close()
+                    }) {
+                        TextViewNormal(artist?.name ?: "", 14)
+                    }
+                    Spacer(Modifier.width(2.dp))
+                    when {
+                        index == (data[pagerState.currentPage]?.artistsList?.size
+                            ?: 0) - 2 -> TextViewNormal(" & ", 14)
+
+                        index < (data[pagerState.currentPage]?.artistsList?.size
+                            ?: 0) - 2 -> TextViewNormal(", ", 14)
+                    }
+
+                    Spacer(Modifier.width(2.dp))
+                }
+            }
+        } else if (data[pagerState.currentPage]?.type() == MusicDataTypes.RADIO) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                Arrangement.Start, Alignment.CenterVertically
             ) {
                 data[pagerState.currentPage]?.artists?.split(*delimiters)?.forEach {
                     TextViewNormal(it, 14)

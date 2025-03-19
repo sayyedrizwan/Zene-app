@@ -224,8 +224,8 @@ fun ConnectVibeItemOnlyCaption(
                 if (data.getMusicData() != null) {
                     Box(
                         Modifier
-                            .width(170.dp)
-                            .clickable { openSong() }, Alignment.Center
+                            .clickable { openSong() }
+                            .width(170.dp), Alignment.Center
                     ) {
                         Spacer(
                             Modifier

@@ -842,6 +842,21 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.getCommentOfVibes(token, body))
     }
 
+    override suspend fun similarArtistsAlbumOfSong(id: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.similarArtistsAlbumOfSong(token, body))
+    }
+
     override suspend fun similarVideos(id: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

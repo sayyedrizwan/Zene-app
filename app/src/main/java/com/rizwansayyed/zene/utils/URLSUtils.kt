@@ -71,6 +71,7 @@ object URLSUtils {
     const val ZENE_PLAYER_PODCAST_INFO_API = "player/podcast-info"
     const val ZENE_PLAYER_RADIO_INFO_API = "player/radio-info"
     const val ZENE_PLAYER_SIMILAR_VIDEOS_API = "player/similar-videos"
+    const val ZENE_PLAYER_SIMILAR_ARTISTS_ALBUM_SONG_API = "player/similar-artists-album-of-song"
     const val ZENE_PLAYER_SIMILAR_SONGS_API = "player/similar-songs"
     const val ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API = "player/similar-playlists-songs"
     const val ZENE_PLAYER_SONGS_LYRICS_API = "player/song-lyrics"
@@ -84,7 +85,7 @@ object URLSUtils {
     const val ZENE_INFO_MOVIE_SHOW_INFO_API = "info/movie-show-info"
     const val ZENE_INFO_SEASON_MOVIE_SHOW_INFO_API = "info/season-movie-show-info"
 
-    const val ZENE_PODCAST_PODCAST_INFO_API = "podcast-radio/podcast-info"
+    const val ZENE_PODCAST_PODCAST_INFO_API = "podcast-radio/podcast-audio-info"
     const val ZENE_PODCAST_PODCAST_MEDIA_URL_API = "podcast-radio/podcast-media-url"
     const val ZENE_RADIO_MEDIA_URL_API = "podcast-radio/radio-media-url"
     const val ZENE_SIMILAR_PODCASTS_API = "podcast-radio/similar-podcasts"
