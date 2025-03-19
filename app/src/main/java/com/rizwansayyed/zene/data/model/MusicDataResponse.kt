@@ -100,8 +100,12 @@ data class ZeneMusicData(
     val extra: String? = null,
     val extraInfo: String? = null,
     val secId: String? = null,
-    val isExpire: Boolean? = false
+    val isExpire: Boolean? = false,
+    val artistsList: List<ExtraData?> = emptyList(),
+    val albumInfo: ExtraData? = null
 ) {
+    data class ExtraData(val name: String?, val id: String?)
+
     fun podcastTimestamp(): Boolean {
         if (extra?.contains("s ago") == true) return true
         else if (extra?.contains("m ago") == true) return true

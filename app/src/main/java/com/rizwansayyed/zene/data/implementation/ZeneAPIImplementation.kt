@@ -871,14 +871,13 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.similarSongs(token, body))
     }
 
-    override suspend fun playerPodcastInfo(id: String, path: String) = flow {
+    override suspend fun playerPodcastInfo(id: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
         val json = JSONObject().apply {
             put("email", email)
             put("id", id)
-            put("path", path)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

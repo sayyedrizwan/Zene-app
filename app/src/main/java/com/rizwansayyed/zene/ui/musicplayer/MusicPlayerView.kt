@@ -232,7 +232,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             if (player?.data?.type() == MusicDataTypes.AI_MUSIC) {
                 viewModel.getAISongLyrics(player?.data?.id!!)
             } else if (player?.data?.type() == MusicDataTypes.PODCAST_AUDIO) {
-                viewModel.playerPodcastInfo(player?.data?.id!!, player?.data?.path!!)
+                viewModel.playerPodcastInfo(player?.data?.id!!)
             } else if (player?.data?.type() == MusicDataTypes.RADIO) {
                 viewModel.playerRadioInfo(player?.data?.id!!)
             } else viewModel.getSongLyrics()

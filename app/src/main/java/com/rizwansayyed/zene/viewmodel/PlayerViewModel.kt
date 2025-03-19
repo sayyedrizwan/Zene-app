@@ -174,8 +174,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun playerPodcastInfo(id: String, path: String) = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.playerPodcastInfo(id, path).onStart {
+    fun playerPodcastInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playerPodcastInfo(id).onStart {
             playerPodcastInfo = ResponseResult.Loading
         }.catch {
             playerPodcastInfo = ResponseResult.Error(it)
