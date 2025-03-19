@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -358,6 +357,17 @@ class HomeViewModel @Inject constructor(
             }
             isPlaylistAdded = it.isAdded ?: false
             playlistsData = ResponseResult.Success(it)
+        }
+    }
+
+    fun isPlaylistsAdded(id: String, type: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.isPlaylistAdded(id, type).onStart {
+            playlistsData = ResponseResult.Loading
+        }.catch {
+            playlistsData = ResponseResult.Error(it)
+        }.collectLatest {
+            isPlaylistAdded = it.status ?: false
+            playlistsData = ResponseResult.Success(PodcastPlaylistResponse(null, null, null, null))
         }
     }
 

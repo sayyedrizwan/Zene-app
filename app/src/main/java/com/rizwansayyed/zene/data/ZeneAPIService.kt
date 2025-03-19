@@ -55,6 +55,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_FOLLOW_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_MOVIE_SHOW_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_SEASON_MOVIE_SHOW_INFO_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_IS_PLAYLIST_ADDED_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_RADIO_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_ARTISTS_ALBUM_SONG_API
@@ -371,6 +372,12 @@ interface ZeneAPIService {
     suspend fun similarArtistsAlbumOfSong(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicData
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_IS_PLAYLIST_ADDED_API)
+    suspend fun isPlaylistAdded(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_SIMILAR_VIDEOS_API)

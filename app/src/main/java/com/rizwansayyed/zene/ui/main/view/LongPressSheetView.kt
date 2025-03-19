@@ -36,6 +36,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
+import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -44,12 +45,14 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
@@ -60,6 +63,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
         { viewModel.setShowMediaInfo(null) }, contentColor = MainColor, containerColor = MainColor
     ) {
         val playerViewModel: PlayerViewModel = hiltViewModel(key = viewModel.showMediaInfoSheet?.id)
+        val homeViewModel: HomeViewModel = hiltViewModel(key = viewModel.showMediaInfoSheet?.id)
         var showShare by remember { mutableStateOf(false) }
         var showAddToHomeScreen by remember { mutableStateOf(false) }
 
@@ -133,9 +137,43 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                     }
                 }
 
-            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PLAYLISTS) item {
-                LongPressSheetItem(R.drawable.ic_layer_add, R.string.add_to_your_library) {
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PLAYLISTS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.ALBUMS) item {
+                when (homeViewModel.playlistsData) {
+                    ResponseResult.Empty -> {}
+                    is ResponseResult.Error -> {}
+                    ResponseResult.Loading -> Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp, vertical = 15.dp)
+                    ) { CircularLoadingViewSmall() }
 
+                    is ResponseResult.Success -> {
+                        if (homeViewModel.isPlaylistAdded) LongPressSheetItem(
+                            R.drawable.ic_tick, R.string.added_to_your_library
+                        ) {
+                            val p = PodcastPlaylistResponse(
+                                info = viewModel.showMediaInfoSheet,
+                                list = null,
+                                isAdded = false,
+                                isExpire = false
+                            )
+                            val type =
+                                if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST) PlaylistsType.PODCAST else PlaylistsType.PLAYLIST_ALBUMS
+                            homeViewModel.addToPlaylists(false, p, type)
+                        } else LongPressSheetItem(
+                            R.drawable.ic_layer_add, R.string.add_to_your_library
+                        ) {
+                            val p = PodcastPlaylistResponse(
+                                info = viewModel.showMediaInfoSheet,
+                                list = null,
+                                isAdded = false,
+                                isExpire = false
+                            )
+                            val type =
+                                if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST) PlaylistsType.PODCAST else PlaylistsType.PLAYLIST_ALBUMS
+                            homeViewModel.addToPlaylists(true, p, type)
+                        }
+                    }
                 }
             }
 
@@ -208,6 +246,13 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
             if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST_AUDIO && viewModel.showMediaInfoSheet!!.secId == null) playerViewModel.playerPodcastInfo(
                 viewModel.showMediaInfoSheet!!.id!!
             )
+
+            if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PLAYLISTS || viewModel.showMediaInfoSheet?.type() == MusicDataTypes.ALBUMS) {
+                val type =
+                    if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.PODCAST) PlaylistsType.PODCAST else PlaylistsType.PLAYLIST_ALBUMS
+
+                homeViewModel.isPlaylistsAdded(viewModel.showMediaInfoSheet!!.id!!, type.type)
+            }
 
 
             if (viewModel.showMediaInfoSheet?.type() == MusicDataTypes.SONGS && viewModel.showMediaInfoSheet?.artistsList?.isEmpty() == true) playerViewModel.similarArtistsAlbumOfSong(

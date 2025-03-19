@@ -857,6 +857,20 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.similarArtistsAlbumOfSong(token, body))
     }
 
+    override suspend fun isPlaylistAdded(id: String, type: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+            put("type", type)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.isPlaylistAdded(token, body))
+    }
+
     override suspend fun similarVideos(id: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
