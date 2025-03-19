@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.ui.view
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,15 +28,19 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemSmallCardView(data: ZeneMusicData?) {
-    Column(Modifier
-        .clickable { startMedia(data) }
-        .padding(horizontal = 9.dp)
-        .width(105.dp)) {
+    Column(
+        Modifier
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data) })
+            .padding(horizontal = 9.dp)
+            .width(105.dp)
+    ) {
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
@@ -52,13 +58,16 @@ fun ItemSmallCardView(data: ZeneMusicData?) {
 }
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemYoutubeCardView(data: ZeneMusicData?) {
-    Column(Modifier
-        .clickable { startMedia(data) }
-        .padding(horizontal = 4.dp)
-        .width(255.dp)) {
+    Column(
+        Modifier
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data) })
+            .padding(horizontal = 4.dp)
+            .width(255.dp)
+    ) {
         Box(Modifier.fillMaxWidth()) {
             GlideImage(
                 data?.thumbnail, data?.name, Modifier
@@ -72,10 +81,13 @@ fun ItemYoutubeCardView(data: ZeneMusicData?) {
 }
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
-    Box(Modifier.clickable { startMedia(data) }) {
+    Box(
+        Modifier.combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            onClick = { startMedia(data) })
+    ) {
         GlideImage(
             data?.thumbnail,
             data?.name,
@@ -125,15 +137,18 @@ fun MoviesImageCardConnect(data: ZeneMusicData?, click: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun NewsItemCard(data: ZeneMusicData?) {
-    Row(Modifier
-        .clickable { startMedia(data) }
-        .padding(vertical = 20.dp)
-        .fillMaxWidth(),
+    Row(
+        Modifier
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data) })
+            .padding(vertical = 20.dp)
+            .fillMaxWidth(),
         Arrangement.Center,
-        Alignment.CenterVertically) {
+        Alignment.CenterVertically
+    ) {
         GlideImage(
             data?.thumbnail,
             data?.name,
@@ -152,13 +167,16 @@ fun NewsItemCard(data: ZeneMusicData?) {
 }
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemCardView(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList()) {
-    Column(Modifier
-        .clickable { startMedia(data, list) }
-        .padding(horizontal = 9.dp)
-        .width(175.dp)) {
+    Column(
+        Modifier
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data, list) })
+            .padding(horizontal = 9.dp)
+            .width(175.dp)
+    ) {
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
@@ -183,13 +201,16 @@ fun ItemCardView(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList())
 }
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemArtistsCardView(data: ZeneMusicData?) {
-    Column(Modifier
-        .clickable { startMedia(data) }
-        .padding(horizontal = 5.dp)
-        .width(155.dp)) {
+    Column(
+        Modifier
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data) })
+            .padding(horizontal = 5.dp)
+            .width(155.dp)
+    ) {
         Box(Modifier.fillMaxWidth(), Alignment.Center) {
             Spacer(
                 Modifier
@@ -212,13 +233,16 @@ fun ItemArtistsCardView(data: ZeneMusicData?) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PodcastViewItems(data: ZeneMusicData?) {
-    Box(Modifier
-        .clickable { startMedia(data) }
-        .fillMaxWidth()
-        .padding(3.dp)) {
+    Box(
+        Modifier
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data) })
+            .fillMaxWidth()
+            .padding(3.dp)
+    ) {
         GlideImage(data?.thumbnail, data?.name, Modifier.fillMaxWidth())
 
         if ((data?.extra ?: "").length > 3) Row(
@@ -235,14 +259,17 @@ fun PodcastViewItems(data: ZeneMusicData?) {
 }
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun VideoCardView(data: ZeneMusicData?) {
-    Column(Modifier
-        .clickable { startMedia(data) }
-        .padding(horizontal = 9.dp)
-        .padding(bottom = 19.dp)
-        .width(245.dp)) {
+    Column(
+        Modifier
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data) })
+            .padding(horizontal = 9.dp)
+            .padding(bottom = 19.dp)
+            .width(245.dp)
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()
@@ -279,11 +306,12 @@ fun VideoCardView(data: ZeneMusicData?) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FullVideoCardView(data: ZeneMusicData?) {
     Row(Modifier
-        .clickable { startMedia(data) }
+        .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            onClick = { startMedia(data) })
         .padding(horizontal = 5.dp, vertical = 10.dp)) {
         Box(
             Modifier

@@ -46,6 +46,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SEARCH
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.search.SearchView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
+import com.rizwansayyed.zene.ui.main.view.LongPressSheetView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
 import com.rizwansayyed.zene.ui.musicplayer.MusicPlayerView
@@ -70,7 +71,6 @@ import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.setNavigationCallback
-import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
 import com.rizwansayyed.zene.utils.share.IntentCheckUtils
@@ -174,7 +174,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             MusicPlayerView(navigationViewModel)
-
+                            LongPressSheetView(navigationViewModel)
                             BackHandler {
                                 if (!navController.popBackStack()) {
                                     finish()
@@ -185,7 +185,6 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(userInfo?.email) {
                         delay(500)
-                        navController.navigate("${NAV_MOVIES_PAGE}^us^tv-show^friends")
                         setNavigationCallback(object : HomeNavigationListener {
                             override fun navigate(path: String) {
                                 if (path == NAV_GO_BACK) {
@@ -204,7 +203,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            override fun longPress(value: ZeneMusicData) {
+                            override fun longPress(value: ZeneMusicData?) {
                                 navigationViewModel.setShowMediaInfo(value)
                             }
                         })

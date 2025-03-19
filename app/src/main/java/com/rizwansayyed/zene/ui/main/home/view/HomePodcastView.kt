@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -29,10 +30,14 @@ import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.PodcastViewItems
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
+import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalGlideComposeApi::class)
+@OptIn(
+    ExperimentalLayoutApi::class, ExperimentalGlideComposeApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun HomePodcastView(homeViewModel: HomeViewModel) {
     LazyVerticalGrid(GridCells.Fixed(3), Modifier.fillMaxSize()) {
@@ -116,11 +121,14 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
 
 
                 items(v.data.explore ?: emptyList(), span = { GridItemSpan(1) }) {
-                    GlideImage(it?.thumbnail,
+                    GlideImage(
+                        it?.thumbnail,
                         it?.name,
                         Modifier
-                            .clickable { startMedia(it) }
-                            .fillMaxWidth())
+                            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(it) },
+                                onClick = { startMedia(it) })
+                            .fillMaxWidth()
+                    )
                 }
             }
         }

@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.ui.view.playlist
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,10 +31,11 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
+import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PodcastItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusicDataList) {
     Row(Modifier
@@ -41,7 +44,11 @@ fun PodcastItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusic
         .fillMaxWidth()
         .clip(RoundedCornerShape(13.dp))
         .background(BlackGray)
-        .clickable { startMedia(data, list) }
+        .combinedClickable(onLongClick = {
+            NavigationUtils.triggerInfoSheet(data)
+        }, onClick = {
+            startMedia(data, list)
+        })
         .padding(horizontal = 15.dp, vertical = 25.dp),
         Arrangement.Center,
         Alignment.CenterVertically) {
@@ -70,7 +77,7 @@ fun PodcastItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusic
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistsItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMusicDataList) {
     Row(Modifier
@@ -79,7 +86,11 @@ fun PlaylistsItemView(data: ZeneMusicData, info: MusicPlayerData?, list: ZeneMus
         .fillMaxWidth()
         .clip(RoundedCornerShape(13.dp))
         .background(BlackGray)
-        .clickable { startMedia(data, list) }
+        .combinedClickable(onLongClick = {
+            NavigationUtils.triggerInfoSheet(data)
+        }, onClick = {
+            startMedia(data, list)
+        })
         .padding(horizontal = 15.dp, vertical = 25.dp),
         Arrangement.Center,
         Alignment.CenterVertically) {

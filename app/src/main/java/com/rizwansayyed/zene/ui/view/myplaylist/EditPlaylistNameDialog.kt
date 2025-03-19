@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.ui.view.myplaylist
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +55,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 
@@ -134,7 +137,7 @@ fun EditPlaylistNameDialog(data: ZeneMusicData, close: (Boolean) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MyPlaylistItemView(
     data: ZeneMusicData,
@@ -150,9 +153,11 @@ fun MyPlaylistItemView(
         .fillMaxWidth()
         .clip(RoundedCornerShape(13.dp))
         .background(BlackGray)
-        .clickable {
+        .combinedClickable(onLongClick = {
+            NavigationUtils.triggerInfoSheet(data)
+        }, onClick = {
             startMedia(data, viewModel.myPlaylistSongsList)
-        }
+        })
         .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center) {
         Row(
             Modifier

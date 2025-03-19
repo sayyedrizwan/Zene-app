@@ -5,7 +5,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 
 interface HomeNavigationListener {
     fun navigate(path: String)
-    fun longPress(value: ZeneMusicData)
+    fun longPress(value: ZeneMusicData?)
 }
 
 object NavigationUtils {
@@ -27,5 +27,9 @@ object NavigationUtils {
 
     fun triggerHomeNav(path: String) {
         callback?.navigate(path)
+    }
+
+    fun triggerInfoSheet(v: ZeneMusicData?) {
+        callback?.longPress(v)
     }
 }

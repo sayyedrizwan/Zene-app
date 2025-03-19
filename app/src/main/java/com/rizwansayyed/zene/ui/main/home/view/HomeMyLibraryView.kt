@@ -1,8 +1,10 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -232,7 +234,7 @@ fun HomeMyLibraryView() {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HistoryCardItems(data: MusicHistoryResponse) {
     Box(
@@ -240,7 +242,8 @@ fun HistoryCardItems(data: MusicHistoryResponse) {
             .fillMaxWidth()
             .padding(5.dp)
             .padding(bottom = 15.dp)
-            .clickable { startMedia(data.asMusicData()) }, Alignment.Center
+            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data.asMusicData()) },
+                onClick = { startMedia(data.asMusicData()) }), Alignment.Center
     ) {
 
         Column(Modifier.fillMaxWidth()) {
