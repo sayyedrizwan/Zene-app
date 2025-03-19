@@ -67,7 +67,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             }
         }
         Spacer(Modifier.width(3.dp))
-        LuxCards() {
+        LuxCards {
             viewModel.setHomeSections(HomeSectionSelector.LUX)
         }
 

@@ -112,12 +112,6 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                         navViewModel.setHomeSections(HomeSectionSelector.LUX)
                     }
                 }
-
-                IconButton({
-
-                }) {
-                    ImageIcon(R.drawable.ic_more_vertical_circle, 24)
-                }
             }
 
             Spacer(Modifier.height(40.dp))
@@ -275,15 +269,15 @@ fun SongTextAndArtists(
                         triggerHomeNav("$NAV_ARTIST_PAGE${artist?.id}")
                         close()
                     }) {
-                        TextViewNormal(artist?.name ?: "", 14)
+                        TextViewNormal(artist?.name ?: "", 15)
                     }
                     Spacer(Modifier.width(2.dp))
                     when {
                         index == (data[pagerState.currentPage]?.artistsList?.size
-                            ?: 0) - 2 -> TextViewNormal(" & ", 14)
+                            ?: 0) - 2 -> TextViewNormal(" & ", 15)
 
                         index < (data[pagerState.currentPage]?.artistsList?.size
-                            ?: 0) - 2 -> TextViewNormal(", ", 14)
+                            ?: 0) - 2 -> TextViewNormal(", ", 15)
                     }
 
                     Spacer(Modifier.width(2.dp))
