@@ -113,9 +113,10 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
     fun updateAddStatus(data: ConnectUserInfoResponse, remove: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
-            connectUserInfo = ResponseResult.Empty
             data.myStatus?.isConnected = if (remove) null else false
             data.didRequestToYou = false
+            connectUserInfo = ResponseResult.Empty
+            delay(100)
             connectUserInfo = ResponseResult.Success(data)
             data.user?.email ?: return@launch
             doRemove(data.user.email, remove, false)

@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
@@ -31,8 +32,11 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
 
     companion object {
         const val CONNECT_LOCATION_SHARING_TYPE = "CONNECT_LOCATION_SHARE"
+        const val CONNECT_OPEN_PROFILE_TYPE = "CONNECT_OPEN_PROFILE"
         const val FCM_TITLE = "title"
         const val FCM_BODY = "body"
+        const val FCM_IMAGE = "image"
+        const val FCM_EMAIL = "email"
         const val FCM_TYPE = "type"
         const val FCM_LAT = "lat"
         const val FCM_LON = "lon"
@@ -51,10 +55,22 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+        message.notification?.let {
+            val type = message.data[FCM_TYPE]
+            if (type == CONNECT_LOCATION_SHARING_TYPE)
+                connectLocationAlert(message.data)
+
+            if (type == CONNECT_OPEN_PROFILE_TYPE)
+                connectFriendRequestAlert(message.data)
+        }
+
         message.data.let {
             val type = message.data[FCM_TYPE]
             if (type == CONNECT_LOCATION_SHARING_TYPE)
                 connectLocationAlert(message.data)
+
+            if (type == CONNECT_OPEN_PROFILE_TYPE)
+                connectFriendRequestAlert(message.data)
         }
     }
 
@@ -78,6 +94,24 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
                 setIntent(intent)
                 generate()
             }
+        }
+    }
+
+    private fun connectFriendRequestAlert(data: MutableMap<String, String>) {
+        val title = data[FCM_TITLE]
+        val body = data[FCM_BODY]
+        val image = data[FCM_IMAGE]
+        val email = data[FCM_EMAIL]
+
+        NotificationUtils(title ?: "", body ?: "").apply {
+            val intent = Intent(c, MainActivity::class.java).apply {
+                putExtra(Intent.ACTION_SENDTO, CONNECT_OPEN_PROFILE_TYPE)
+                putExtra(FCM_EMAIL, email)
+            }
+            channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
+            setIntent(intent)
+            setSmallImage(image)
+            generate()
         }
     }
 }

@@ -242,6 +242,7 @@
     <string name="too_many_attempts_to_phone_number">You have tried too many attempts to verify phone number. Try again later.</string>
     <string name="otp_already_send_please_try_again">OTP is already send please wait for a minute and then try again.</string>
     <string name="enter_a_valid_name_or_username">Enter a valid name or username</string>
+    <string name="enter_a_valid_username">Enter a valid username</string>
     <string name="listening_to">Listening to</string>
     <string name="to_location">To Location</string>
     <string name="direction">Direction</string>

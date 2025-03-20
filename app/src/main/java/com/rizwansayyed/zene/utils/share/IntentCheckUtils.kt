@@ -2,14 +2,18 @@ package com.rizwansayyed.zene.utils.share
 
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
+import android.util.Log
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_LOCATION_SHARING_TYPE
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_BODY
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_EMAIL
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LAT
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LON
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TITLE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TYPE
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
+import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
@@ -25,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 data class IntentFCMNotification(
     val title: String, val body: String, val type: String, val lat: String?, val long: String?
@@ -43,6 +48,13 @@ class IntentCheckUtils(intent: Intent, navViewModel: NavigationViewModel) {
                     intent.getStringExtra(FCM_LON) ?: "",
                 )
                 navViewModel.setHomeInfoNavigation(n)
+            }
+        }
+
+        if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_OPEN_PROFILE_TYPE) {
+            navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
+            intent.getStringExtra(FCM_EMAIL)?.let {
+                triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
             }
         }
 

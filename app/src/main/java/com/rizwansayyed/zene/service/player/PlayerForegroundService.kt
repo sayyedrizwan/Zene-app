@@ -187,7 +187,6 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
         CoroutineScope(Dispatchers.IO).launch {
             musicPlayerDB.catch { }.collectLatest {
-                Log.d("TAG", "onCreate: runnnedd onnnd")
                 songsLists = it?.lists?.toTypedArray() ?: emptyArray()
             }
         }

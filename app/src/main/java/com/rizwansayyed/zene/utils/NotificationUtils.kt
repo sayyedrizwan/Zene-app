@@ -6,14 +6,18 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
-import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NotificationUtils(
     private val title: String, private val desc: String
@@ -26,7 +30,8 @@ class NotificationUtils(
         val CONNECT_UPDATES_NAME_DESC =
             context.resources.getString(R.string.connect_updates_name_desc)
 
-        val SLEEP_TIMER_NOTIFICATION = context.resources.getString(R.string.sleep_timer_notification)
+        val SLEEP_TIMER_NOTIFICATION =
+            context.resources.getString(R.string.sleep_timer_notification)
         val SLEEP_TIMER_NOTIFICATION_DESC =
             context.resources.getString(R.string.sleep_timer_notification_desc)
     }
@@ -38,25 +43,23 @@ class NotificationUtils(
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
 
+    private var loadSmallImage: String? = null
+
     private var channelName = OTHER_NOTIFICATION
     private var channelDesc = OTHER_NOTIFICATION_DESC
 
     fun setIntent(v: Intent) = apply { intent = v }
+    fun setSmallImage(v: String?) = apply { loadSmallImage = v }
     fun channel(name: String, desc: String) = apply {
         channelName = name
         channelDesc = desc
     }
 
     @SuppressLint("MissingPermission")
-    fun generate() {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+    fun generate() = CoroutineScope(Dispatchers.IO).launch {
         val pendingIntent = PendingIntent.getActivity(
             context,
-            (11..999).random(),
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            (11..999).random(), intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val channelId = channelName.lowercase().replace(" ", "_")
@@ -69,19 +72,30 @@ class NotificationUtils(
             notificationManager.createNotificationChannel(channel)
         }
 
+        val bitmap = loadImageFromURL()
+
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.zene_logo)
             .setContentTitle(title).setContentText(desc)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setStyle(NotificationCompat.BigTextStyle().bigText(desc))
 
+        if (bitmap != null) builder.setLargeIcon(bitmap)
+
         with(NotificationManagerCompat.from(context)) {
-            notify(
-                (11..999).random(), builder.build()
-            )
+            notify((11..999).random(), builder.build())
         }
     }
 
+    private suspend fun loadImageFromURL() = withContext(Dispatchers.IO) {
+        if (loadSmallImage == null) return@withContext null
+        return@withContext try {
+            Glide.with(context).asBitmap().load(loadSmallImage).transform(CircleCrop()).submit()
+                .get()
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

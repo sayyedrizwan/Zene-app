@@ -59,6 +59,7 @@ import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -130,7 +131,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             }
         }
 
-        if (data.isConnected() == FRIENDS) {
+        if (data.isConnected() == FRIENDS || data.isConnected() == ME) {
             item {
                 Row(Modifier.fillMaxWidth()) {
                     TextSimpleCards(showPosts, stringResource(R.string.vibes_status)) {
@@ -146,7 +147,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 
         item { Spacer(Modifier.height(20.dp)) }
 
-        if (data.isConnected() == FRIENDS) {
+        if (data.isConnected() == FRIENDS || data.isConnected() == ME) {
             if (showPosts) {
                 if (data.vibes?.isEmpty() == true) item {
                     TextViewBold(stringResource(R.string.no_posts), 19, center = true)
@@ -349,7 +350,11 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                     viewModel.updateAddStatus(data, false)
                 }
 
-                ME -> {}
+                ME -> {
+                    ButtonWithBorder(R.string.share) {
+                        shareConnectURL()
+                    }
+                }
             }
         }
     }

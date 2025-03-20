@@ -117,8 +117,14 @@
             android:clearTaskOnLaunch="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:launchMode="singleInstance"
-            android:supportsPictureInPicture="true" />
+            android:supportsPictureInPicture="true">
+            <intent-filter>
+                <action android:name="FRIEND_REQUEST_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity android:name=".ui.phoneverification.PhoneVerificationActivity" />
         <activity

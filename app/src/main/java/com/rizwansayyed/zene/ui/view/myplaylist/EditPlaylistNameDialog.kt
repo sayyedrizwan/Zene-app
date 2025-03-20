@@ -79,8 +79,7 @@ fun EditPlaylistNameDialog(data: ZeneMusicData, close: (Boolean) -> Unit) {
             Spacer(Modifier.height(10.dp))
 
             TextField(
-                name,
-                { if (it.length <= 100) name = it },
+                name, { name = if (it.length <= 100) it else it.take(100) },
                 Modifier
                     .padding(10.dp)
                     .fillMaxWidth()
@@ -147,18 +146,20 @@ fun MyPlaylistItemView(
 ) {
     var confirmationSheet by remember { mutableStateOf(false) }
 
-    Box(Modifier
-        .padding(top = 15.dp)
-        .padding(horizontal = 5.dp, vertical = 10.dp)
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(13.dp))
-        .background(BlackGray)
-        .combinedClickable(onLongClick = {
-            NavigationUtils.triggerInfoSheet(data)
-        }, onClick = {
-            startMedia(data, viewModel.myPlaylistSongsList)
-        })
-        .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center) {
+    Box(
+        Modifier
+            .padding(top = 15.dp)
+            .padding(horizontal = 5.dp, vertical = 10.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(13.dp))
+            .background(BlackGray)
+            .combinedClickable(onLongClick = {
+                NavigationUtils.triggerInfoSheet(data)
+            }, onClick = {
+                startMedia(data, viewModel.myPlaylistSongsList)
+            })
+            .padding(horizontal = 10.dp, vertical = 15.dp), Alignment.Center
+    ) {
         Row(
             Modifier
                 .fillMaxWidth()

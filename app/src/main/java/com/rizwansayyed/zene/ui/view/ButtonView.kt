@@ -104,6 +104,23 @@ fun ButtonWithBorder(txt: Int, border: Color = Color.White, click: () -> Unit) {
 }
 
 @Composable
+fun ImageWithBgRound(image: Int, bg: Color = Color.White, click: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 4.dp)
+            .clip(RoundedCornerShape(100))
+            .background(bg)
+            .clickable {
+                click()
+            }
+            .padding(7.dp),
+        Arrangement.Center, Alignment.CenterVertically
+    ) {
+        ImageIcon(image, 19, Color.Black)
+    }
+}
+
+@Composable
 fun ButtonWithBorder(txt: String, border: Color = Color.White) {
     Row(
         modifier = Modifier

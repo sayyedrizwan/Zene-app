@@ -25,6 +25,8 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.SONGS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.TEXT
 import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
 import com.rizwansayyed.zene.utils.MainUtils.copyTextToClipboard
@@ -33,6 +35,11 @@ import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
+import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.math.BigInteger
@@ -44,6 +51,23 @@ enum class SharingContentType {
 }
 
 object ShareContentUtils {
+
+    fun shareConnectURL() = CoroutineScope(Dispatchers.IO).launch {
+        val userInfo = userInfo.firstOrNull() ?: return@launch
+        if ((userInfo.username?.length ?: 0) <= 1) {
+            context.resources.getString(R.string.enter_a_valid_username)
+            return@launch
+        }
+
+        val url = connectShareURL(userInfo.username ?: "")
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(this)
+        }
+    }
 
     fun shareTheData(data: ZeneMusicData?, type: SharingContentType, view: ComposeView) {
         val fileSharingImg = File(context.cacheDir, "sharing_img.jpg")

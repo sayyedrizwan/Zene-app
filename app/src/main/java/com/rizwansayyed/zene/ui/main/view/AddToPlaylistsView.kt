@@ -27,7 +27,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -239,7 +238,7 @@ fun CreateAPlaylistsView(
 
             TextField(
                 search,
-                { if (it.length <= 100) search = it },
+                { search = if (it.length <= 100) it else it.take(100) },
                 Modifier
                     .padding(10.dp)
                     .fillMaxWidth()

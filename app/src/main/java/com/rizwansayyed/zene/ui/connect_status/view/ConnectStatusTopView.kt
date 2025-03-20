@@ -59,7 +59,7 @@ fun ConnectStatusTopHeaderView() {
 fun ConnectStatusCaptionView(caption: MutableState<String>) {
     TextField(
         caption.value,
-        { if (it.length <= 200) caption.value = it },
+        { caption.value = if (it.length <= 200) it else it.take(200) },
         Modifier
             .padding(10.dp)
             .fillMaxWidth()

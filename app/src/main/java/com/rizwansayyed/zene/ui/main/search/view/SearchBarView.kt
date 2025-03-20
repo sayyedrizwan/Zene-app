@@ -46,7 +46,7 @@ fun SearchBarView(
                 text = search.value, selection = TextRange(search.value.length)
             ),
             {
-                if (it.text.length <= 700) search.value = it.text
+                search.value = if (it.text.length <= 100) it.text else it.text.take(100)
                 if (it.text.trim().isEmpty()) onSearch("")
             },
             Modifier
