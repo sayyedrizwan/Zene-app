@@ -1,10 +1,18 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.DisplayMetrics
+import android.view.WindowManager
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.IconButton
@@ -19,12 +27,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -33,81 +46,11 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 
-@Composable
-fun ConnectProfileMessageButton(
-    user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
-) {
-    var messageText by remember { mutableStateOf("") }
-
-    TextViewBold(stringResource(R.string.chats), 19, Color.White)
-    Spacer(Modifier.height(25.dp))
-
-    if ((user.message?.message?.length ?: 0) > 3) {
-        if (user.message?.fromCurrentUser == true) {
-            TextViewNormal("Me: ${user.message.message}", 15, Color.White)
-        } else TextViewNormal("${user.user?.name}: ${user.message?.message}", 15, Color.White)
-    }
-
-    Spacer(Modifier.height(15.dp))
-
-    if (user.message?.fromCurrentUser != true || (user.message.message?.length ?: 0) < 3) TextField(
-        messageText,
-        {
-            if (it.length <= 140) messageText = it
-        },
-        Modifier
-            .padding(top = 20.dp)
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-        placeholder = {
-            TextViewNormal(
-                stringResource(R.string.enter_your_message), 14, color = Color.Black
-            )
-        },
-        trailingIcon = {
-            if (messageText.length > 3) {
-                IconButton({
-                    viewModel.sendConnectMessage(user.user?.email, messageText)
-                    close()
-                }) {
-                    ImageIcon(R.drawable.ic_sent, 24, Color.Black)
-                }
-            }
-        },
-        shape = RoundedCornerShape(8.dp),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.Black,
-            focusedTextColor = Color.Black,
-            disabledTextColor = Color.Black,
-            unfocusedTextColor = Color.Black
-        ),
-        singleLine = true
-    )
-
-    Spacer(Modifier.height(50.dp))
-
-    TextViewNormal(
-        stringResource(R.string.you_cant_send_a_new_message_until_you_got_reply),
-        15,
-        Color.White,
-        true
-    )
-
-
-    Spacer(Modifier.height(80.dp))
-}
-
 @SuppressLint("MissingPermission")
 @Composable
 fun ConnectLocationButton(
     user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
 ) {
-    val context = LocalContext.current.applicationContext
     var areaName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 

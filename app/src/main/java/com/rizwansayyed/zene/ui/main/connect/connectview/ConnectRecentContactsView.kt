@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.connectview
 
 import android.Manifest
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -41,7 +40,6 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -78,16 +76,22 @@ fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
             Spacer(Modifier.height(10.dp))
         }
 
-        if ((user.message?.message?.length
-                ?: 0) > 3 && user.message?.fromCurrentUser == false
-        ) Spacer(
+        if ((user.unReadMessages ?: 0) > 0) Row(
             Modifier
                 .align(Alignment.TopStart)
-                .offset(x = 9.dp, y = 9.dp)
-                .size(10.dp)
+                .offset(y = 2.dp)
                 .clip(RoundedCornerShape(50))
                 .background(Color.Red)
-        )
+                .padding(horizontal = 5.dp),
+            Arrangement.Center, Alignment.CenterVertically
+        ) {
+            ImageIcon(R.drawable.ic_message_multiple, 15)
+            Spacer(Modifier.width(2.dp))
+            if (user.unReadMessages!! <= 9)
+                TextViewBold(user.unReadMessages.toString(), 15)
+            else
+                TextViewBold("${user.unReadMessages}+", 15)
+        }
 
         if (user.songDetails?.thumbnail != null) GlideImage(
             user.songDetails.thumbnail,

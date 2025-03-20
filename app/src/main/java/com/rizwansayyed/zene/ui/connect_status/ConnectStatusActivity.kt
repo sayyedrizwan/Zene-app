@@ -78,7 +78,7 @@ class ConnectStatusActivity : ComponentActivity() {
                 val pleaseEnterACaption =
                     stringResource(R.string.error_uploading_please_try_again_later)
 
-                LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE, false)
+                LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT, false)
 
                 Box(
                     Modifier

@@ -74,7 +74,7 @@ fun ConnectUserProfileView(email: String) {
         job = lifecycleScope.launch {
             while (true) {
                 connectViewModel.connectUserInfo(email)
-                delay(15.seconds)
+                delay(9.seconds)
             }
         }
         onPauseOrDispose {

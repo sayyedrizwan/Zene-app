@@ -254,7 +254,6 @@
     <string name="live_streaming">Live Streaming</string>
     <string name="candid_desc">Candid shot! No filters, no edits—just as it was captured in-app.</string>
     <string name="attach">Attach</string>
-    <string name="you_cant_send_a_new_message_until_you_got_reply">You can\'t send a new message until you got a reply.</string>
     <string name="do_you_want_to_play_this_song">Do you want to play the song?</string>
     <string name="share_notification">Silent Notifications</string>
     <string name="compress_processing_video">Compressing and Processing the media file…</string>

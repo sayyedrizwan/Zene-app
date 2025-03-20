@@ -12,7 +12,7 @@ data class ConnectUserInfoResponse(
     val otherStatus: Status?,
     val topSongs: List<ZeneMusicData>?,
     val user: ConnectUserResponse?,
-    val message: UserMessage?,
+    val unReadMessages: Int?,
     val vibes: List<ConnectFeedDataResponse?>?,
 ) {
     data class Status(
@@ -29,9 +29,6 @@ data class ConnectUserInfoResponse(
         return@runBlocking if (myStatus.isConnected == true) ConnectedUserStatus.FRIENDS else ConnectedUserStatus.REQUESTED
     }
 }
-
-data class UserMessage(var fromCurrentUser: Boolean?, var message: String?)
-
 
 enum class ConnectedUserStatus {
     FRIENDS, REQUESTED, NONE, ME

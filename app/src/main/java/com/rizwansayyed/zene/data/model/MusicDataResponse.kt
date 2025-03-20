@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.model
 
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -66,10 +67,14 @@ data class MediaLikedResponse(val isLiked: Boolean?)
 
 data class PodcastPlaylistResponse(
     val info: ZeneMusicData?,
-    val list: ZeneMusicDataList?,
-    val isAdded: Boolean?,
-    val isExpire: Boolean?
-)
+    val list: ZeneMusicDataList? = null,
+    val isAdded: Boolean? = null,
+    val isExpire: Boolean? = null
+) {
+    fun type(): PlaylistsType {
+        return if (info?.type() == MusicDataTypes.PODCAST) PlaylistsType.PODCAST else PlaylistsType.PLAYLIST_ALBUMS
+    }
+}
 
 data class ArtistsResponse(
     val data: ZeneMusicData?,

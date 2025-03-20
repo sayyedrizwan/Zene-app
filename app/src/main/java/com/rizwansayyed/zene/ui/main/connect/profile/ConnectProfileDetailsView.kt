@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -45,6 +46,7 @@ import com.rizwansayyed.zene.data.model.ConnectedUserStatus.NONE
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.REQUESTED
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
+import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.AlertDialogWithImage
@@ -99,15 +101,20 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                             ImageWithBorder(R.drawable.ic_message_multiple) {
                                 showSendMessage = true
                             }
-                            if ((data.message?.message?.length
-                                    ?: 0) > 3 && data.message?.fromCurrentUser == false
-                            ) Spacer(
+
+                            if ((data.unReadMessages ?: 0) > 0) Box(
                                 Modifier
                                     .align(Alignment.TopEnd)
-                                    .size(10.dp)
+                                    .offset(y = (-7).dp)
                                     .clip(RoundedCornerShape(50))
                                     .background(Color.Red)
-                            )
+                                    .padding(horizontal = 9.dp)
+                            ) {
+                                if (data.unReadMessages!! <= 9)
+                                    TextViewBold(data.unReadMessages.toString(), 10)
+                                else
+                                    TextViewBold("${data.unReadMessages}+", 10)
+                            }
                         }
 
                         ImageWithBorder(R.drawable.ic_music_note) {
@@ -195,18 +202,8 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         item { Spacer(Modifier.height(150.dp)) }
     }
 
-    if (showSendMessage) ModalBottomSheet(
-        { showSendMessage = false }, contentColor = MainColor, containerColor = MainColor
-    ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        ) {
-            ConnectProfileMessageButton(data, viewModel) {
-                showSendMessage = false
-            }
-        }
+    if (showSendMessage) ConnectProfileMessagingView(data, viewModel) {
+        showSendMessage = false
     }
 
     if (sendLocation) ModalBottomSheet(
