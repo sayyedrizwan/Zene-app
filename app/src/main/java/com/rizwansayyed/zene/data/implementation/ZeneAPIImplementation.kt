@@ -71,6 +71,8 @@ class ZeneAPIImplementation @Inject constructor(
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
         val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
+        val location = BackgroundLocationTracking.getLatestLocation()
+
         val json = JSONObject().apply {
             put("email", info?.email ?: "")
             put("name", info?.name ?: "")
@@ -79,6 +81,7 @@ class ZeneAPIImplementation @Inject constructor(
             put("ip", ip.query)
             put("device", "Android ${getDeviceInfo()}")
             put("country", "${ip.city}, ${ip.regionName}, ${ip.country}")
+            put("location", "${location?.latitude}, ${location?.longitude}")
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -697,6 +700,19 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.sendConnectMessage(token, body))
+    }
+
+    override suspend fun markConnectMessageToRead(toEmail: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toEmail", toEmail)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.markMessageAsRead(token, body))
     }
 
     override suspend fun sendConnectLocation(toEmail: String) = flow {

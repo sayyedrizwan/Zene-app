@@ -15,7 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
@@ -36,7 +36,9 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+
 
 @Composable
 fun ConnectProfileMessagingView(
@@ -64,12 +66,18 @@ fun ConnectProfileMessagingView(
             }
         }
 
-        DisposableEffect(Unit) {
+        @Suppress("DEPRECATION")
+        LifecycleResumeEffect(Unit) {
             window?.statusBarColor = MainColor.toArgb()
             window?.navigationBarColor = MainColor.toArgb()
-            onDispose {
+            currentOpenedChatProfile = user.user?.email
+
+            viewModel.markConnectMessageToRead(user.user?.email)
+
+            onPauseOrDispose {
                 window?.statusBarColor = Color.Transparent.toArgb()
                 window?.navigationBarColor = Color.Transparent.toArgb()
+                currentOpenedChatProfile = null
             }
         }
     }
@@ -100,6 +108,7 @@ fun ConnectProfileMessage(
                 if (messageText.isNotEmpty()) {
                     IconButton({
                         viewModel.sendConnectMessage(user.user?.email, messageText)
+                        messageText = ""
                     }) {
                         ImageIcon(R.drawable.ic_sent, 24, Color.Black)
                     }

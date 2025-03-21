@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_VIBES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_GET_COMMENT_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_MARK_MESSAGE_AS_READ_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_LOCATION_API
@@ -317,6 +318,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_MESSAGE_API)
     suspend fun sendConnectMessage(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_MARK_MESSAGE_AS_READ_API)
+    suspend fun markMessageAsRead(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 

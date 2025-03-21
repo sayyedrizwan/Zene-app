@@ -109,6 +109,7 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
             }
         }
     }
+
     LaunchedEffect(Unit) {
         try {
             val lat = user?.location?.substringBefore(",")?.trim()?.toDouble()

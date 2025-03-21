@@ -111,10 +111,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                                     .background(Color.Red)
                                     .padding(horizontal = 9.dp)
                             ) {
-                                if (data.unReadMessages!! <= 9)
-                                    TextViewBold(data.unReadMessages.toString(), 10)
-                                else
-                                    TextViewBold("${data.unReadMessages}+", 10)
+                                TextViewBold(data.unReadMessages.toString(), 10)
                             }
                         }
 
@@ -283,6 +280,7 @@ fun UsersSettingsOfView(data: ConnectUserInfoResponse) {
                     SnackBarManager.showMessage(notificationSilent)
                 }
         }
+        Spacer(Modifier.height(30.dp))
     }
 }
 

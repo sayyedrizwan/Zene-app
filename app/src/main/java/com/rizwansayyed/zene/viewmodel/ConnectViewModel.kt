@@ -151,14 +151,17 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun sendConnectMessage(email: String?, message: String) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
-            zeneAPI.sendConnectMessage(email, message).catch { }.collectLatest {
-                connectUserInfo(email)
-            }
+            zeneAPI.sendConnectMessage(email, message).catch { }.collectLatest { }
         }
 
     fun sendConnectLocation(email: String?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
         zeneAPI.sendConnectLocation(email).catch { }.collectLatest { }
+    }
+
+    fun markConnectMessageToRead(email: String?) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.markConnectMessageToRead(email).catch { }.collectLatest { }
     }
 
 

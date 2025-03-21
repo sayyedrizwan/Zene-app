@@ -87,10 +87,7 @@ fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
         ) {
             ImageIcon(R.drawable.ic_message_multiple, 15)
             Spacer(Modifier.width(2.dp))
-            if (user.unReadMessages!! <= 9)
-                TextViewBold(user.unReadMessages.toString(), 15)
-            else
-                TextViewBold("${user.unReadMessages}+", 15)
+            TextViewBold(user.unReadMessages.toString(), 15)
         }
 
         if (user.songDetails?.thumbnail != null) GlideImage(

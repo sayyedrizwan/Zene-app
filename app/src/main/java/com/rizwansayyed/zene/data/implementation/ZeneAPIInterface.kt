@@ -141,4 +141,5 @@ interface ZeneAPIInterface {
     suspend fun seasonMoviesTvShowsInfo(id: String?): Flow<ZeneMusicDataList>
     suspend fun similarArtistsAlbumOfSong(id: String): Flow<ZeneMusicData>
     suspend fun isPlaylistAdded(id: String, type: String): Flow<StatusTypeResponse>
+    suspend fun markConnectMessageToRead(toEmail: String): Flow<StatusTypeResponse>
 }
