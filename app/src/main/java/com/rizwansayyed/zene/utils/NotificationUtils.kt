@@ -6,9 +6,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.Person
+import androidx.core.graphics.drawable.IconCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.rizwansayyed.zene.R
@@ -87,29 +90,16 @@ class NotificationUtils(
 
         val smallIconBitmap = loadImageFromURL(loadSmallImage)
 
-        val builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.zene_logo)
-            .setContentTitle(title).setContentText(desc)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
+        val builder =
+            NotificationCompat.Builder(context, channelId).setSmallIcon(R.drawable.zene_logo)
+                .setContentTitle(title).setContentText(desc)
+                .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(pendingIntent)
+                .setAutoCancel(true)
 
         if (emailConv == null) builder.setStyle(NotificationCompat.BigTextStyle().bigText(desc))
-        else {
-            val msgStyle = NotificationCompat.MessagingStyle(getNameGroupName(emailConv))
+        else generateChatConv(smallIconBitmap, builder)
 
-            getAGroupMessage(emailConv).forEach {
-                val messageDetails = NotificationCompat.MessagingStyle.Message(
-                    it, System.currentTimeMillis(), getNameGroupName(emailConv)
-                )
-
-                msgStyle.addMessage(messageDetails)
-            }
-
-            builder.setStyle(msgStyle)
-        }
-
-        if (smallIconBitmap != null) {
+        if (smallIconBitmap != null && emailConv == null) {
             builder.setLargeIcon(smallIconBitmap)
         }
 
@@ -117,6 +107,23 @@ class NotificationUtils(
             if (emailConv == null) notify((11..999).random(), builder.build())
             else notify(emailConv, emailConv.hashCode().absoluteValue, builder.build())
         }
+    }
+
+    private fun generateChatConv(smallIconBitmap: Bitmap?, builder: NotificationCompat.Builder) {
+        val user = Person.Builder().setName(getNameGroupName(emailConv)).apply {
+            if (smallIconBitmap != null) setIcon(
+                IconCompat.createWithAdaptiveBitmap(smallIconBitmap)
+            )
+        }.build()
+
+        val msgStyle = NotificationCompat.MessagingStyle(user)
+
+        getAGroupMessage(emailConv).forEach {
+            val msg = NotificationCompat.MessagingStyle.Message(it.msg, it.ts, user)
+            msgStyle.addMessage(msg)
+        }
+
+        builder.setStyle(msgStyle)
     }
 
     private suspend fun loadImageFromURL(url: String?) = withContext(Dispatchers.IO) {

@@ -2,26 +2,25 @@ package com.rizwansayyed.zene.utils
 
 object ChatTempDataUtils {
 
+    data class ChatTemData(val msg: String, val ts: Long)
+
     var currentOpenedChatProfile: String? = null
     var doOpenChatOnConnect = false
-    private var messageGroup: HashMap<String, Array<String>> = HashMap()
+    private var messageGroup: HashMap<String, Array<ChatTemData>> = HashMap()
     private var nameGroup: HashMap<String, String> = HashMap()
 
     fun clearAMessage(email: String) {
         messageGroup.remove(email)
-    }
-
-    fun clearAName(email: String) {
         nameGroup.remove(email)
     }
 
     fun addAMessage(email: String?, message: String?) {
         email ?: return
         message ?: return
-        val array = ArrayList<String>(10)
+        val array = ArrayList<ChatTemData>(10)
         val list = messageGroup[email] ?: emptyArray()
         array.addAll(list)
-        array.add(0, message)
+        array.add(0, ChatTemData(message, System.currentTimeMillis()))
         messageGroup[email] = array.toTypedArray()
     }
 

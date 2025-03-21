@@ -37,7 +37,6 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
-import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAName
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversationNotification
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -110,7 +109,6 @@ fun ConnectProfileMessagingView(
             currentOpenedChatProfile = user.user?.email
 
             clearAMessage(user.user?.email ?: "")
-            clearAName(user.user?.email ?: "")
             clearConversationNotification(user.user?.email ?: "")
 
             job?.cancel()
