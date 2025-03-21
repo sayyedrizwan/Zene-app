@@ -11,6 +11,10 @@ object ChatTempDataUtils {
         messageGroup.remove(email)
     }
 
+    fun clearAName(email: String) {
+        nameGroup.remove(email)
+    }
+
     fun addAMessage(email: String?, message: String?) {
         email ?: return
         message ?: return

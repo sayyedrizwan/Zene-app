@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAName
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
@@ -159,7 +160,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         val image = data[FCM_IMAGE]
         val email = data[FCM_EMAIL]
 
-//        if (email == currentOpenedChatProfile) return
+        if (email == currentOpenedChatProfile) return
 
         addAMessage(email, body)
         addAName(email, name)

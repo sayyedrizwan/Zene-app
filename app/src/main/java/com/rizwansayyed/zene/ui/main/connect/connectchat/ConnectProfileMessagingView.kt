@@ -36,7 +36,10 @@ import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAName
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
+import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversationNotification
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -68,7 +71,10 @@ fun ConnectProfileMessagingView(
                 }
 
                 if (viewModel.isRecentChatLoading == 2 && viewModel.recentChatItems.isEmpty()) item {
-                    TextViewSemiBold(stringResource(R.string.break_the_ice_start_conversation), center = true)
+                    TextViewSemiBold(
+                        stringResource(R.string.break_the_ice_start_conversation),
+                        center = true
+                    )
                 }
 
                 items(viewModel.recentChatItems, key = { it._id!! }) {
@@ -102,6 +108,10 @@ fun ConnectProfileMessagingView(
             window?.statusBarColor = MainColor.toArgb()
             window?.navigationBarColor = MainColor.toArgb()
             currentOpenedChatProfile = user.user?.email
+
+            clearAMessage(user.user?.email ?: "")
+            clearAName(user.user?.email ?: "")
+            clearConversationNotification(user.user?.email ?: "")
 
             job?.cancel()
             job = coroutines.launch {

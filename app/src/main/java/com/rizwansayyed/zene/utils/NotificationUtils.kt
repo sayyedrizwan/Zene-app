@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
@@ -22,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
+
 
 class NotificationUtils(
     private val title: String, private val desc: String
@@ -38,10 +38,15 @@ class NotificationUtils(
             context.resources.getString(R.string.sleep_timer_notification)
         val SLEEP_TIMER_NOTIFICATION_DESC =
             context.resources.getString(R.string.sleep_timer_notification_desc)
-    }
 
-    private val notificationManager: NotificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        private val notificationManager: NotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+
+        fun clearConversationNotification(email: String) {
+            notificationManager.cancel(email, email.hashCode().absoluteValue)
+        }
+    }
 
     private var intent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -110,7 +115,7 @@ class NotificationUtils(
 
         with(NotificationManagerCompat.from(context)) {
             if (emailConv == null) notify((11..999).random(), builder.build())
-            else notify(emailConv.hashCode().absoluteValue, builder.build())
+            else notify(emailConv, emailConv.hashCode().absoluteValue, builder.build())
         }
     }
 
