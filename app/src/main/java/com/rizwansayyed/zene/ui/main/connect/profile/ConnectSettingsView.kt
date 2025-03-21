@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -28,6 +32,10 @@ import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 
 @Composable
 fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
+    var lastListeningSong by remember { mutableStateOf(response.myStatus?.lastListeningSong) }
+    var locationSharing by remember { mutableStateOf(response.myStatus?.locationSharing) }
+    var silentNotification by remember { mutableStateOf(response.myStatus?.silentNotification) }
+
     Spacer(Modifier.height(20.dp))
     TextViewBold(stringResource(R.string.settings_), 20)
 
@@ -36,9 +44,10 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
         R.drawable.ic_music_note,
         R.string.share_your_music,
         R.string.share_your_music_desc,
-        response.myStatus?.lastListeningSong
+        lastListeningSong
     ) {
         response.myStatus?.lastListeningSong = it
+        lastListeningSong = it
         viewModel.updateSettingsStatus(response)
     }
 
@@ -47,9 +56,10 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
         R.drawable.ic_location,
         R.string.share_your_location,
         R.string.share_your_location_desc,
-        response.myStatus?.locationSharing
+        locationSharing
     ) {
         response.myStatus?.locationSharing = it
+        locationSharing = it
         viewModel.updateSettingsStatus(response)
 
     }
@@ -59,9 +69,10 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
         R.drawable.ic_notification_off,
         R.string.share_notification,
         R.string.share_notification_desc,
-        response.myStatus?.silentNotification
+        silentNotification
     ) {
         response.myStatus?.silentNotification = it
+        silentNotification = it
         viewModel.updateSettingsStatus(response)
     }
 

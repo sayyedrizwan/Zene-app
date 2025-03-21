@@ -111,9 +111,9 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
     }
     LaunchedEffect(Unit) {
         try {
-            val lat = user?.location?.substringBefore(",")?.trim()?.toDouble() ?: 0.0
-            val lon = user?.location?.substringAfter(",")?.trim()?.toDouble() ?: 0.0
-            currentLatLng = LatLng(lat, lon)
+            val lat = user?.location?.substringBefore(",")?.trim()?.toDouble()
+            val lon = user?.location?.substringAfter(",")?.trim()?.toDouble()
+            if (lat != null && lon != null) currentLatLng = LatLng(lat, lon)
             locationZoom = 18f
         } catch (e: Exception) {
             e.printStackTrace()

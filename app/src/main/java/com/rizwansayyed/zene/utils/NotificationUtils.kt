@@ -59,7 +59,9 @@ class NotificationUtils(
     fun generate() = CoroutineScope(Dispatchers.IO).launch {
         val pendingIntent = PendingIntent.getActivity(
             context,
-            (11..999).random(), intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            (11..999).random(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val channelId = channelName.lowercase().replace(" ", "_")
@@ -72,7 +74,7 @@ class NotificationUtils(
             notificationManager.createNotificationChannel(channel)
         }
 
-        val bitmap = loadImageFromURL()
+        val smallIconBitmap = loadImageFromURL(loadSmallImage)
 
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.zene_logo)
@@ -82,18 +84,19 @@ class NotificationUtils(
             .setAutoCancel(true)
             .setStyle(NotificationCompat.BigTextStyle().bigText(desc))
 
-        if (bitmap != null) builder.setLargeIcon(bitmap)
+        if (smallIconBitmap != null) {
+            builder.setLargeIcon(smallIconBitmap)
+        }
 
         with(NotificationManagerCompat.from(context)) {
             notify((11..999).random(), builder.build())
         }
     }
 
-    private suspend fun loadImageFromURL() = withContext(Dispatchers.IO) {
-        if (loadSmallImage == null) return@withContext null
+    private suspend fun loadImageFromURL(url: String?) = withContext(Dispatchers.IO) {
+        if (url == null) return@withContext null
         return@withContext try {
-            Glide.with(context).asBitmap().load(loadSmallImage).transform(CircleCrop()).submit()
-                .get()
+            Glide.with(context).asBitmap().load(url).transform(CircleCrop()).submit().get()
         } catch (e: Exception) {
             null
         }

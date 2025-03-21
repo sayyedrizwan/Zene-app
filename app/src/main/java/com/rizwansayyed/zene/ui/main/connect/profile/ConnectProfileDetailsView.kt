@@ -157,7 +157,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                     ConnectVibeItemView(it)
                 }
             } else {
-                item { UsersSettingsOfView(data) }
+                if (data.isConnected() != ME) item { UsersSettingsOfView(data) }
 
                 item {
                     if (data.songDetails?.id != null && data.songDetails.name != null) {
@@ -165,19 +165,12 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                         Spacer(Modifier.height(50.dp))
                     }
                 }
-                item {
-                    if (data.otherStatus?.locationSharing == true) {
-                        if (data.user?.isUserLocation() == true) {
-                            ConnectUserMapView(data.user)
-                            Spacer(Modifier.height(50.dp))
-                        } else {
-                            Spacer(Modifier.height(20.dp))
-                            TextViewBold(stringResource(R.string.song_sharing_is_disabled_by_user))
-                            Spacer(Modifier.height(20.dp))
-                        }
-                    }
+                if (data.otherStatus?.locationSharing == true || data.isConnected() == ME) item {
+                    ConnectUserMapView(data.user)
+                    Spacer(Modifier.height(50.dp))
                 }
-                item {
+
+                if (data.otherStatus?.lastListeningSong == true || data.isConnected() == ME) item {
                     if (data.topSongs?.isNotEmpty() == true) {
                         ConnectTopListenedView(data.topSongs)
                     } else {
@@ -200,6 +193,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             }
         }
 
+        if (data.isConnected() == ME) item { Spacer(Modifier.height(100.dp)) }
         item { Spacer(Modifier.height(150.dp)) }
     }
 

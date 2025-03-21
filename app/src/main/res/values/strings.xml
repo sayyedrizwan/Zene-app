@@ -224,7 +224,6 @@
     <string name="songs_trending_near_you">Songs trending near you</string>
     <string name="songs">Songs</string>
     <string name="song">Song</string>
-    <string name="song_sharing_is_disabled_by_user">Song sharing is disabled by user</string>
     <string name="no_listened_song_found_of_user">No listened song found of user</string>
     <string name="playback_speed_of_video">Playback Speed of Video</string>
     <string name="in_your_contacts">In your contacts</string>
@@ -343,6 +342,11 @@
     <string name="have_suggestions_or_issues_desc">We’d love to hear from you! Your feedback helps us improve and shape the app better for you. Feel free to share any ideas, feature requests, or problems you’re experiencing.\n\n We’re always open and listening! 😊</string>
     <string name="no_5_star_share_feedback">No 5 star, Share some feedback! 🥹</string>
     <string name="love_the_app_rate_us_on_play_store">Love the App, Rate Us on Play Store 😊</string>
+    <string name="shared_their_current_location_tap_to_view">%s shared their current location. Tap for one time view</string>
+    <string name="sent_you_a_friend_request">%s sent you a friend request.</string>
+    <string name="tap_to_view_their_friend_request">Tap to view their friend request.</string>
+    <string name="is_now_your_friend">%s is now your friend! 🎉</string>
+    <string name="is_now_your_friend_desc">Time to share your favorite tracks, podcasts, and more. Let\'s get the conversation started!</string>
 
 
 
