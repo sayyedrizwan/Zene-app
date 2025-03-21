@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
@@ -162,6 +163,18 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun markConnectMessageToRead(email: String?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
         zeneAPI.markConnectMessageToRead(email).catch { }.collectLatest { }
+    }
+
+
+    var recentChatItems = mutableStateListOf<ConnectChatMessageResponse>()
+
+    fun getChatConnectRecentMessage(email: String?) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.getChatConnectRecentMessage(email).catch {}.collectLatest {
+            it.forEach { v ->
+                if (!recentChatItems.any { it._id == v._id }) recentChatItems.add(v)
+            }
+        }
     }
 
 

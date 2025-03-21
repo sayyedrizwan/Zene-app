@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.data.implementation
 import android.net.Uri
 import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ArtistsResponse
+import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
@@ -142,4 +143,5 @@ interface ZeneAPIInterface {
     suspend fun similarArtistsAlbumOfSong(id: String): Flow<ZeneMusicData>
     suspend fun isPlaylistAdded(id: String, type: String): Flow<StatusTypeResponse>
     suspend fun markConnectMessageToRead(toEmail: String): Flow<StatusTypeResponse>
+    suspend fun getChatConnectRecentMessage(toEmail: String): Flow<List<ConnectChatMessageResponse>>
 }

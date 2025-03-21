@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data
 
 import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ArtistsResponse
+import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
@@ -38,6 +39,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_MEDIA_URL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_SIMILAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CHAT_RECENT_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_VIBES_API
@@ -314,6 +316,12 @@ interface ZeneAPIService {
     suspend fun updateConnectSettings(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_CHAT_RECENT_MESSAGE_API)
+    suspend fun getChatConnectRecentMessage(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<ConnectChatMessageResponse>
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_MESSAGE_API)
