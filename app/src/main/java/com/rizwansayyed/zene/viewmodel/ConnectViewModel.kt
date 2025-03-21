@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -149,10 +150,18 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
+    var sendConnectMessageLoading by mutableStateOf(false)
     fun sendConnectMessage(email: String?, message: String) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
-            zeneAPI.sendConnectMessage(email, message).catch { }.collectLatest { }
+            zeneAPI.sendConnectMessage(email, message).onStart {
+                sendConnectMessageLoading = true
+            }.catch {
+                sendConnectMessageLoading = false
+            }.collectLatest {
+                sendConnectMessageLoading = false
+                getChatConnectRecentMessage(email)
+            }
         }
 
     fun sendConnectLocation(email: String?) = viewModelScope.launch(Dispatchers.IO) {
@@ -167,12 +176,18 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
 
     var recentChatItems = mutableStateListOf<ConnectChatMessageResponse>()
+    var isRecentChatLoading by mutableIntStateOf(0)
 
     fun getChatConnectRecentMessage(email: String?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
-        zeneAPI.getChatConnectRecentMessage(email).catch {}.collectLatest {
+        zeneAPI.getChatConnectRecentMessage(email).onStart {
+           if (isRecentChatLoading == 0) isRecentChatLoading = 1
+        }.catch {
+            isRecentChatLoading = 2
+        }.collectLatest {
+            isRecentChatLoading = 2
             it.forEach { v ->
-                if (!recentChatItems.any { it._id == v._id }) recentChatItems.add(v)
+                if (!recentChatItems.any { c -> c._id == v._id }) recentChatItems.add(v)
             }
         }
     }

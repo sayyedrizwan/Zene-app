@@ -186,6 +186,7 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="break_the_ice_start_conversation">Be the first to break the ice! ❄️ Start the conversation… 😊</string>
     <string name="free_space">Free Space:</string>
     <string name="used_space">Used Space:</string>
     <string name="zene_storage_used">Zene Storage Used:</string>
@@ -346,6 +347,7 @@
     <string name="sent_you_a_friend_request">%s sent you a friend request.</string>
     <string name="tap_to_view_their_friend_request">Tap to view their friend request.</string>
     <string name="is_now_your_friend">%s is now your friend! 🎉</string>
+    <string name="send_you_a_message">%s send you a message!</string>
     <string name="is_now_your_friend_desc">Time to share your favorite tracks, podcasts, and more. Let\'s get the conversation started!</string>
 
 

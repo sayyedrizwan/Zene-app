@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +24,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ConnectProfileMessageView(
@@ -73,6 +77,8 @@ fun ConnectProfileMessageView(
             singleLine = false,
             maxLines = 4
         )
+
+        if (viewModel.sendConnectMessageLoading) CircularLoadingViewSmall()
 
         AnimatedVisibility(messageText.isEmpty()) {
             Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {

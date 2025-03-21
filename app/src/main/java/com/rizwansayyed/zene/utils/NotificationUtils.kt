@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
@@ -14,10 +15,13 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.MainActivity
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.getAGroupMessage
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.getNameGroupName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.absoluteValue
 
 class NotificationUtils(
     private val title: String, private val desc: String
@@ -44,12 +48,14 @@ class NotificationUtils(
     }
 
     private var loadSmallImage: String? = null
+    private var emailConv: String? = null
 
     private var channelName = OTHER_NOTIFICATION
     private var channelDesc = OTHER_NOTIFICATION_DESC
 
     fun setIntent(v: Intent) = apply { intent = v }
     fun setSmallImage(v: String?) = apply { loadSmallImage = v }
+    fun generateMessageConv(v: String?) = apply { emailConv = v }
     fun channel(name: String, desc: String) = apply {
         channelName = name
         channelDesc = desc
@@ -82,14 +88,29 @@ class NotificationUtils(
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(desc))
+
+        if (emailConv == null) builder.setStyle(NotificationCompat.BigTextStyle().bigText(desc))
+        else {
+            val msgStyle = NotificationCompat.MessagingStyle(getNameGroupName(emailConv))
+
+            getAGroupMessage(emailConv).forEach {
+                val messageDetails = NotificationCompat.MessagingStyle.Message(
+                    it, System.currentTimeMillis(), getNameGroupName(emailConv)
+                )
+
+                msgStyle.addMessage(messageDetails)
+            }
+
+            builder.setStyle(msgStyle)
+        }
 
         if (smallIconBitmap != null) {
             builder.setLargeIcon(smallIconBitmap)
         }
 
         with(NotificationManagerCompat.from(context)) {
-            notify((11..999).random(), builder.build())
+            if (emailConv == null) notify((11..999).random(), builder.build())
+            else notify(emailConv.hashCode().absoluteValue, builder.build())
         }
     }
 

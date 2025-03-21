@@ -9,6 +9,8 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.MainActivity
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAMessage
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAName
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
@@ -38,6 +40,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_OPEN_PROFILE_TYPE = "CONNECT_OPEN_PROFILE"
         const val CONNECT_SEND_FRIEND_REQUEST = "CONNECT_SEND_FRIEND_REQUEST"
         const val CONNECT_ACCEPTED_FRIEND_REQUEST = "CONNECT_ACCEPTED_FRIEND_REQUEST"
+        const val CONNECT_SEND_CHAT_MESSAGE = "CONNECT_SEND_CHAT_MESSAGE"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
         const val FCM_BODY = "body"
@@ -65,14 +68,10 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             val type = message.data[FCM_TYPE]
             accessNewToken()
 
-            if (type == CONNECT_LOCATION_SHARING_TYPE)
-                connectLocationAlert(message.data)
-
-            if (type == CONNECT_SEND_FRIEND_REQUEST)
-                connectFriendRequestAlert(message.data)
-
-            if (type == CONNECT_ACCEPTED_FRIEND_REQUEST)
-                connectAcceptedRequestAlert(message.data)
+            if (type == CONNECT_LOCATION_SHARING_TYPE) connectLocationAlert(message.data)
+            if (type == CONNECT_SEND_FRIEND_REQUEST) connectFriendRequestAlert(message.data)
+            if (type == CONNECT_ACCEPTED_FRIEND_REQUEST) connectAcceptedRequestAlert(message.data)
+            if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
         }
     }
 
@@ -150,6 +149,34 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
             setIntent(intent)
             setSmallImage(image)
+            generate()
+        }
+    }
+
+    private fun connectChatMessageAlert(data: MutableMap<String, String>) {
+        val name = data[FCM_NAME]
+        val body = data[FCM_BODY]
+        val image = data[FCM_IMAGE]
+        val email = data[FCM_EMAIL]
+
+//        if (email == currentOpenedChatProfile) return
+
+        addAMessage(email, body)
+        addAName(email, name)
+
+        val title = String.format(
+            Locale.getDefault(), context.getString(R.string.send_you_a_message), name
+        )
+
+        NotificationUtils(title, body ?: "").apply {
+            val intent = Intent(c, MainActivity::class.java).apply {
+                putExtra(Intent.ACTION_SENDTO, CONNECT_SEND_CHAT_MESSAGE)
+                putExtra(FCM_EMAIL, email)
+            }
+            channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
+            setIntent(intent)
+            setSmallImage(image)
+            generateMessageConv(email)
             generate()
         }
     }

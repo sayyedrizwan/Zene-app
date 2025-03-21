@@ -58,6 +58,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -196,6 +197,13 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 
     if (showSendMessage) ConnectProfileMessagingView(data, viewModel) {
         showSendMessage = false
+    }
+
+    LaunchedEffect(Unit) {
+        if (doOpenChatOnConnect) {
+            showSendMessage = true
+            doOpenChatOnConnect  = false
+        }
     }
 
     if (sendLocation) ModalBottomSheet(
