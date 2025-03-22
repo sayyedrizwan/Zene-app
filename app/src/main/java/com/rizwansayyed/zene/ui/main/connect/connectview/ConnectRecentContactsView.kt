@@ -83,11 +83,13 @@ fun ConnectFriendsLists(user: ConnectUserInfoResponse) {
                 .clip(RoundedCornerShape(50))
                 .background(Color.Red)
                 .padding(horizontal = 5.dp),
-            Arrangement.Center, Alignment.CenterVertically
+            Arrangement.Center,
+            Alignment.CenterVertically
         ) {
             ImageIcon(R.drawable.ic_message_multiple, 15)
             Spacer(Modifier.width(2.dp))
-            TextViewBold(user.unReadMessages.toString(), 15)
+            if ((user.unReadMessages ?: 0) >= 9) TextViewBold("9+", 15)
+            else TextViewBold(user.unReadMessages.toString(), 15)
         }
 
         if (user.songDetails?.thumbnail != null) GlideImage(

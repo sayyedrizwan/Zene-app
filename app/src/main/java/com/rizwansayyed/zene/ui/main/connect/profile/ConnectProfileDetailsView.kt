@@ -112,7 +112,8 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                                     .background(Color.Red)
                                     .padding(horizontal = 9.dp)
                             ) {
-                                TextViewBold(data.unReadMessages.toString(), 10)
+                                if ((data.unReadMessages ?: 0) >= 9) TextViewBold("9+", 10)
+                                else TextViewBold(data.unReadMessages.toString(), 10)
                             }
                         }
 
@@ -202,7 +203,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     LaunchedEffect(Unit) {
         if (doOpenChatOnConnect) {
             showSendMessage = true
-            doOpenChatOnConnect  = false
+            doOpenChatOnConnect = false
         }
     }
 
