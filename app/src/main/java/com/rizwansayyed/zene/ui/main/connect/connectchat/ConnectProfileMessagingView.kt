@@ -100,7 +100,10 @@ fun ConnectProfileMessagingView(
         }
 
         LaunchedEffect(viewModel.recentChatItems.map { it._id }) {
-            if (isAtBottom) state.animateScrollToItem(state.layoutInfo.totalItemsCount)
+            if (isAtBottom) coroutines.launch {
+                delay(500)
+                state.animateScrollToItem(state.layoutInfo.totalItemsCount)
+            }
         }
 
         @Suppress("DEPRECATION") LifecycleResumeEffect(Unit) {
