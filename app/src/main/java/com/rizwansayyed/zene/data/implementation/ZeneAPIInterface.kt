@@ -143,5 +143,5 @@ interface ZeneAPIInterface {
     suspend fun similarArtistsAlbumOfSong(id: String): Flow<ZeneMusicData>
     suspend fun isPlaylistAdded(id: String, type: String): Flow<StatusTypeResponse>
     suspend fun markConnectMessageToRead(toEmail: String): Flow<StatusTypeResponse>
-    suspend fun getChatConnectRecentMessage(toEmail: String): Flow<List<ConnectChatMessageResponse>>
+    suspend fun getChatConnectRecentMessage(toEmail: String, lastId: String?): Flow<List<ConnectChatMessageResponse>>
 }

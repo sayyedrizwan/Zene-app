@@ -1,8 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,6 +16,7 @@ import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusCallbackManager
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
@@ -25,7 +24,6 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeM
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
@@ -36,6 +34,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -152,51 +151,10 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
-    var sendConnectMessageLoading by mutableStateOf(false)
-    fun sendConnectMessage(email: String?, message: String) =
-        viewModelScope.launch(Dispatchers.IO) {
-            email ?: return@launch
-            zeneAPI.sendConnectMessage(email, message).onStart {
-                sendConnectMessageLoading = true
-            }.catch {
-                sendConnectMessageLoading = false
-            }.collectLatest {
-                sendConnectMessageLoading = false
-                getChatConnectRecentMessage(email)
-            }
-        }
-
     fun sendConnectLocation(email: String?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
-        zeneAPI.sendConnectLocation(email).catch { }.collectLatest { }
+        zeneAPI.sendConnectLocation(email).catch {}.collectLatest {}
     }
-
-    fun markConnectMessageToRead(email: String?) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
-        zeneAPI.markConnectMessageToRead(email).catch { }.collectLatest { }
-    }
-
-
-    var recentChatItems = mutableStateListOf<ConnectChatMessageResponse>()
-    var isRecentChatLoading by mutableIntStateOf(0)
-
-    fun getChatConnectRecentMessage(email: String?) = viewModelScope.launch(Dispatchers.IO) {
-        Log.d("TAG", "getChatConnectRecentMessage: datata ${email}")
-        email ?: return@launch
-        zeneAPI.getChatConnectRecentMessage(email).onStart {
-           if (isRecentChatLoading == 0) isRecentChatLoading = 1
-        }.catch {
-            Log.d("TAG", "getChatConnectRecentMessage: datata ${it.message}")
-            isRecentChatLoading = 2
-        }.collectLatest {
-            Log.d("TAG", "getChatConnectRecentMessage: datata ${it.size}")
-            isRecentChatLoading = 2
-            it.forEach { v ->
-                if (!recentChatItems.any { c -> c._id == v._id }) recentChatItems.add(v)
-            }
-        }
-    }
-
 
     var connectFileSelected by mutableStateOf<ConnectFeedDataResponse?>(null)
     var loadingTypeForFile by mutableStateOf("")

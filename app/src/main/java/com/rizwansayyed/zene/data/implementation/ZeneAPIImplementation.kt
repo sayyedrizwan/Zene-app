@@ -702,13 +702,14 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sendConnectMessage(token, body))
     }
 
-    override suspend fun getChatConnectRecentMessage(toEmail: String) = flow {
+    override suspend fun getChatConnectRecentMessage(toEmail: String, lastId: String?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
         val json = JSONObject().apply {
             put("email", email)
             put("toEmail", toEmail)
+            put("lastId", lastId)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

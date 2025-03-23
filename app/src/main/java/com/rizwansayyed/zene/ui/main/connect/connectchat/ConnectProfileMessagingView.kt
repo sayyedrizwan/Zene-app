@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -39,29 +40,64 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversationNotification
+import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
-import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun ConnectProfileMessagingView(
-    user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
-) {
+fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         val homeViewModel: HomeViewModel = hiltViewModel()
+        val viewModel: ConnectChatViewModel = hiltViewModel(key = user.user?.name)
+
         val window = LocalActivity.current?.window
         val connectChatSocket: ConnectSocketChatViewModel = hiltViewModel(key = user.user?.email)
         val coroutines = rememberCoroutineScope()
         val state = rememberLazyListState()
         val userInfo by DataStorageManager.userInfo.collectAsState(null)
         var isAtBottom by remember { mutableStateOf(true) }
-        var job by remember { mutableStateOf<Job?>(null) }
+        var isAtTop by remember { mutableStateOf(true) }
+
+        LaunchedEffect(state) {
+            snapshotFlow {
+                state.firstVisibleItemIndex == 0 && state.firstVisibleItemScrollOffset == 0
+            }.distinctUntilChanged().collectLatest { atTop ->
+                if (atTop && !isAtTop) {
+                    isAtTop = true
+                    viewModel.getChatConnectRecentMessage(user.user?.email) { id ->
+                        coroutines.launch {
+                            val position = viewModel.recentChatItems.indexOfLast { it._id == id }
+                            try {
+                                state.scrollToItem(position - 2)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                } else if (!atTop) {
+                    isAtTop = false
+                }
+            }
+        }
+
+        LaunchedEffect(state) {
+            snapshotFlow { state.firstVisibleItemIndex to state.firstVisibleItemScrollOffset }
+                .collectLatest { (index, offset) ->
+                    isAtTop = index == 0 && offset == 0
+                }
+        }
+
+        LaunchedEffect(viewModel.sendConnectMessageLoading) {
+            if (!viewModel.sendConnectMessageLoading)
+                state.animateScrollToItem(state.layoutInfo.totalItemsCount)
+        }
+
 
         Column(
             Modifier
@@ -71,11 +107,12 @@ fun ConnectProfileMessagingView(
             ConnectTopProfileView(Modifier.weight(1f), user, connectChatSocket, close)
 
             LazyColumn(Modifier.weight(8f), state, verticalArrangement = Arrangement.Bottom) {
-                if (viewModel.isRecentChatLoading == 1) item {
+                if (viewModel.isRecentChatLoading) item {
+                    Spacer(Modifier.height(60.dp))
                     CircularLoadingView()
                 }
 
-                if (viewModel.isRecentChatLoading == 2 && viewModel.recentChatItems.isEmpty()) item {
+                if (!viewModel.isRecentChatLoading && viewModel.recentChatItems.isEmpty()) item {
                     TextViewSemiBold(
                         stringResource(R.string.break_the_ice_start_conversation),
                         center = true
@@ -113,34 +150,22 @@ fun ConnectProfileMessagingView(
         }
 
         @Suppress("DEPRECATION") LifecycleResumeEffect(Unit) {
-            coroutines.launch {
-                delay(800)
-                window?.statusBarColor = MainColor.toArgb()
-                window?.navigationBarColor = MainColor.toArgb()
-                currentOpenedChatProfile = user.user?.email
+            window?.statusBarColor = MainColor.toArgb()
+            window?.navigationBarColor = MainColor.toArgb()
+            currentOpenedChatProfile = user.user?.email
 
-                clearAMessage(user.user?.email ?: "")
-                clearConversationNotification(user.user?.email ?: "")
-                viewModel.getChatConnectRecentMessage(user.user?.email)
-//                job?.cancel()
-//                job = coroutines.launch {
-//                    while (true) {
-//                        viewModel.getChatConnectRecentMessage(user.user?.email)
-//                        delay(2.seconds)
-//                    }
-//                }
+            clearAMessage(user.user?.email ?: "")
+            clearConversationNotification(user.user?.email ?: "")
+            viewModel.getChatConnectRecentMessage(user.user?.email) {}
 
-                viewModel.markConnectMessageToRead(user.user?.email)
-                user.user?.email?.let { connectChatSocket.connect(it) }
+            viewModel.markConnectMessageToRead(user.user?.email)
+            user.user?.email?.let { connectChatSocket.connect(it) }
 
-//                ConnectUserLiveConnection.startConnection(user.user?.email)
-            }
             onPauseOrDispose {
                 window?.statusBarColor = Color.Transparent.toArgb()
                 window?.navigationBarColor = Color.Transparent.toArgb()
                 currentOpenedChatProfile = null
                 viewModel.markConnectMessageToRead(user.user?.email)
-                user.user?.email?.let { viewModel.connectUserInfo(it) }
                 connectChatSocket.disconnect()
                 homeViewModel.userInfo()
             }

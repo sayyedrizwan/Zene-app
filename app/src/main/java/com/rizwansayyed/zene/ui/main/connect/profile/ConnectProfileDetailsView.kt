@@ -196,8 +196,9 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         item { Spacer(Modifier.height(150.dp)) }
     }
 
-    if (showSendMessage) ConnectProfileMessagingView(data, viewModel) {
+    if (showSendMessage) ConnectProfileMessagingView(data) {
         showSendMessage = false
+        data.user?.email?.let { email -> viewModel.connectUserInfo(email) }
     }
 
     LaunchedEffect(Unit) {
@@ -288,6 +289,7 @@ fun UsersSettingsOfView(data: ConnectUserInfoResponse) {
 @Composable
 fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
     val context = LocalContext.current.applicationContext
+
     var areaName by remember { mutableStateOf("") }
     var showRequestSentAlert by remember { mutableStateOf(false) }
     var unFriendAlert by remember { mutableStateOf(false) }

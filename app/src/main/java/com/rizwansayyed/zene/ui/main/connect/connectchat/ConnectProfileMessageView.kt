@@ -28,13 +28,14 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun ConnectProfileMessageView(
-    viewModel: ConnectViewModel, user: ConnectUserInfoResponse
+    viewModel: ConnectChatViewModel, user: ConnectUserInfoResponse
 ) {
     var messageText by remember { mutableStateOf("") }
 
