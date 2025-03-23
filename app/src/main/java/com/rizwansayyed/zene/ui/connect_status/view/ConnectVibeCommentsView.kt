@@ -200,8 +200,8 @@ fun ConnectVibeCommentsView(data: ConnectFeedDataResponse?, close: () -> Unit) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun GifAlert(id: Int?, viewModel: GifViewModel, close: () -> Unit) {
-    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+fun GifAlert(id: Int?, viewModel: GifViewModel, close: (String?) -> Unit) {
+    Dialog({ close(null) }, DialogProperties(usePlatformDefaultWidth = false)) {
         var search by remember { mutableStateOf("") }
         val focusManager = LocalFocusManager.current
 
@@ -301,7 +301,6 @@ fun GifAlert(id: Int?, viewModel: GifViewModel, close: () -> Unit) {
         }) {
             addAGif?.let { viewModel.postAGif(it, id) }
             addAGif = null
-            close()
         }
     }
 }

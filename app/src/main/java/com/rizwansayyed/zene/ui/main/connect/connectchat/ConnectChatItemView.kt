@@ -1,30 +1,44 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeMediaItemAlert
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
+import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.SnackBarManager
 
 @Composable
 fun ConnectChatItemView(
@@ -37,19 +51,26 @@ fun ConnectChatItemView(
         Arrangement.End,
         Alignment.Bottom
     ) {
-        ProfileImageOfUser(otherUser?.profile_photo, otherUser?.name)
-        MessageItemView(data, data.from == otherUser?.email)
-
+        if (data.from == otherUser?.email) {
+            ProfileImageOfUser(otherUser?.profile_photo, otherUser?.name)
+            MessageItemView(data, true)
+        }
         Spacer(Modifier.weight(1f))
 
-        MessageItemView(data, data.from != otherUser?.email)
-        ProfileImageOfUser(userInfo?.photo, userInfo?.name)
+        if (data.from == userInfo?.email) {
+            MessageItemView(data, false)
+            ProfileImageOfUser(userInfo?.photo, userInfo?.name)
+        }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
+    var showMediaDialog by remember { mutableStateOf(false) }
+
+    val candidMeaning = stringResource(R.string.candid_desc)
+
     BoxWithConstraints(Modifier) {
         val maxWidth = maxWidth * 0.6f
         Box(
@@ -67,10 +88,30 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
                 .padding(horizontal = 12.dp)
                 .widthIn(max = maxWidth)
         ) {
-            if (data.candid_media != null || data.candid_thumbnail != null) {
-                GlideImage(data.candid_thumbnail, "", Modifier.height(180.dp))
+            if (data.candid_media != null) {
+                Column {
+                    Box(Modifier.clickable { showMediaDialog = true }, Alignment.Center) {
+                        if (data.candid_thumbnail != null)
+                            GlideImage(data.candid_thumbnail, "", Modifier.height(250.dp))
+                        else
+                            GlideImage(data.candid_media, "", Modifier.height(250.dp))
+
+                        if (data.candid_media.contains(".mp4"))
+                            ImageWithBgRound(R.drawable.ic_play) {
+                                showMediaDialog = true
+                            }
+                    }
+                    Spacer(Modifier.width(7.dp))
+                    Box(Modifier.clickable { candidMeaning.toast() }) {
+                        TextViewSemiBold(stringResource(R.string.candid), 14, Color.White)
+                    }
+                }
             } else TextViewBold(data.message ?: "", 16, Color.White)
         }
+    }
+
+    if (showMediaDialog) ConnectVibeMediaItemAlert(data.candid_media) {
+        showMediaDialog = false
     }
 }
 

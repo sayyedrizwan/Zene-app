@@ -38,9 +38,10 @@ data class ConnectFeedDataResponse(
         else if (minutes < 60) minutes.toString() + "m ago"
         else hours.toString() + "h ago"
     }
+}
 
-    fun isMediaVideo(): Boolean {
-        val videoExtensions = listOf("mp4", "mkv", "avi", "mov", "wmv", "flv", "webm")
-        return videoExtensions.any { media?.endsWith(".$it", ignoreCase = true) == true }
-    }
+
+fun isMediaVideo(media: String?): Boolean {
+    val videoExtensions = listOf("mp4", "mkv", "avi", "mov", "wmv", "flv", "webm")
+    return videoExtensions.any { media?.endsWith(".$it", ignoreCase = true) == true }
 }

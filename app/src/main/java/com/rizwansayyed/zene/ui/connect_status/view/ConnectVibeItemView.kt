@@ -66,6 +66,7 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.RADIO
 import com.rizwansayyed.zene.data.model.MusicDataTypes.SONGS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.TEXT
 import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
+import com.rizwansayyed.zene.data.model.isMediaVideo
 import com.rizwansayyed.zene.ui.main.connect.connectview.openConnectUserProfile
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -329,7 +330,7 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?, openEmoji: () -> Unit) 
             ) {
                 it.diskCacheStrategy(DiskCacheStrategy.NONE)
             }
-            if (data?.isMediaVideo() == false) Box(
+            if (!isMediaVideo(data?.media)) Box(
                 Modifier
                     .fillMaxWidth(0.6f)
                     .align(Alignment.BottomCenter)
@@ -348,7 +349,7 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?, openEmoji: () -> Unit) 
                 }
             }
 
-            if (data?.isMediaVideo() == true) Row(
+            if (isMediaVideo(data?.media)) Row(
                 Modifier
                     .padding(9.dp)
                     .align(Alignment.Center)
@@ -377,14 +378,14 @@ fun ConnectVibeItemMedia(data: ConnectFeedDataResponse?, openEmoji: () -> Unit) 
     }
     Spacer(Modifier.height(30.dp))
 
-    if (showMediaDialog) ConnectVibeMediaItemAlert(data) {
+    if (showMediaDialog) ConnectVibeMediaItemAlert(data?.media) {
         showMediaDialog = false
     }
 }
 
 @OptIn(UnstableApi::class)
 @Composable
-fun ConnectVibeMediaItemAlert(item: ConnectFeedDataResponse?, close: () -> Unit) {
+fun ConnectVibeMediaItemAlert(item: String?, close: () -> Unit) {
     Dialog(
         close, DialogProperties(usePlatformDefaultWidth = false)
     ) {
@@ -394,14 +395,14 @@ fun ConnectVibeMediaItemAlert(item: ConnectFeedDataResponse?, close: () -> Unit)
                 .fillMaxWidth()
                 .background(Color.Black), Alignment.Center
         ) {
-            if (item?.isMediaVideo() == true) {
+            if (isMediaVideo(item)) {
                 val exoPlayer = remember {
                     val exo = ExoPlayerCache.getInstance(context)
 
                     ExoPlayer.Builder(context).setTrackSelector(exo.first)
                         .setLoadControl(ExoPlayerCache.loadControl).build().apply {
                             val mediaSource = ProgressiveMediaSource.Factory(exo.second)
-                                .createMediaSource(MediaItem.fromUri(item.media ?: ""))
+                                .createMediaSource(MediaItem.fromUri(item ?: ""))
                             setMediaSource(mediaSource)
                             setMediaSource(mediaSource)
                             prepare()
@@ -432,10 +433,7 @@ fun ConnectVibeMediaItemAlert(item: ConnectFeedDataResponse?, close: () -> Unit)
                 }
             } else {
                 GlideImage(
-                    item?.media,
-                    item?.caption,
-                    Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
+                    item, "", Modifier.fillMaxSize(), contentScale = ContentScale.Fit
                 )
             }
         }

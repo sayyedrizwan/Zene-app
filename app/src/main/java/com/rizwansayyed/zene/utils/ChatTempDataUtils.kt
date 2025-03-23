@@ -20,7 +20,7 @@ object ChatTempDataUtils {
         val array = ArrayList<ChatTemData>(10)
         val list = messageGroup[email] ?: emptyArray()
         array.addAll(list)
-        array.add(0, ChatTemData(message, System.currentTimeMillis()))
+        array.add(ChatTemData(message, System.currentTimeMillis()))
         messageGroup[email] = array.toTypedArray()
     }
 

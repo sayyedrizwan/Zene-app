@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapAlertNew
+import com.rizwansayyed.zene.ui.connect_status.view.GifAlert
 import com.rizwansayyed.zene.ui.connect_status.view.permissions
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -46,6 +47,7 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
     val connectViewModel: ConnectViewModel = hiltViewModel()
     var messageText by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
+    var showGifAlert by remember { mutableStateOf(false) }
 
     val needPermission = stringResource(R.string.need_camera_microphone_permission_to_photo)
 
@@ -109,7 +111,7 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
                 }
 
                 ImageWithBgRound(R.drawable.ic_gif) {
-
+                    showGifAlert = true
                 }
 
                 ImageWithBgRound(R.drawable.ic_file_add) {
@@ -119,6 +121,10 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
         }
     }
 
+
+    if (showGifAlert) GifAlert(data?.id, viewModel) {
+        showGifAlert = false
+    }
 
     if (showAlert) Dialog(
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
