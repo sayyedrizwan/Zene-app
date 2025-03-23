@@ -116,7 +116,7 @@ fun ImageWithBgRound(image: Int, bg: Color = Color.White, click: () -> Unit) {
             .padding(7.dp),
         Arrangement.Center, Alignment.CenterVertically
     ) {
-        ImageIcon(image, 19, Color.Black)
+        ImageIcon(image, 21, Color.Black)
     }
 }
 

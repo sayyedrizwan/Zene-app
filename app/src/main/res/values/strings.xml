@@ -140,6 +140,7 @@
     <string name="add_location">Add Location</string>
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
+    <string name="last_seen">Last seen %s</string>
     <string name="connect_">Connect</string>
     <string name="entertainment">entertainment</string>
     <string name="ent_">ent.</string>

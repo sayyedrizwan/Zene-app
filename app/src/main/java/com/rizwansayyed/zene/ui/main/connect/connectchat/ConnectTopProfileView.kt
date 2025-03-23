@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import java.util.Locale
 
 @Composable
 fun ConnectTopProfileView(modifier: Modifier, user: ConnectUserInfoResponse, close: () -> Unit) {
@@ -30,6 +33,13 @@ fun ConnectTopProfileView(modifier: Modifier, user: ConnectUserInfoResponse, clo
                 .weight(1f)
         ) {
             TextViewSemiBold(user.user?.name ?: "", 16, center = true)
+            user.user?.getLastSeen()?.let {
+                TextViewNormal(
+                    String.format(
+                        Locale.getDefault(), stringResource(R.string.last_seen), it
+                    ), 14, center = true
+                )
+            }
         }
 
         Box(Modifier

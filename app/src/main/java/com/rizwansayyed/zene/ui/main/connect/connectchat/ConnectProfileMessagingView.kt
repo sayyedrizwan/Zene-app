@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.main.connect.utils.ConnectUserLiveConnection
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -101,29 +102,32 @@ fun ConnectProfileMessagingView(
 
         LaunchedEffect(viewModel.recentChatItems.map { it._id }) {
             if (isAtBottom) coroutines.launch {
-                delay(500)
+                delay(1.seconds)
                 state.animateScrollToItem(state.layoutInfo.totalItemsCount)
             }
         }
 
         @Suppress("DEPRECATION") LifecycleResumeEffect(Unit) {
-            window?.statusBarColor = MainColor.toArgb()
-            window?.navigationBarColor = MainColor.toArgb()
-            currentOpenedChatProfile = user.user?.email
+            coroutines.launch {
+                delay(800)
+                window?.statusBarColor = MainColor.toArgb()
+                window?.navigationBarColor = MainColor.toArgb()
+                currentOpenedChatProfile = user.user?.email
 
-            clearAMessage(user.user?.email ?: "")
-            clearConversationNotification(user.user?.email ?: "")
+                clearAMessage(user.user?.email ?: "")
+                clearConversationNotification(user.user?.email ?: "")
 
-            job?.cancel()
-            job = coroutines.launch {
-                while (true) {
-                    viewModel.getChatConnectRecentMessage(user.user?.email)
-                    delay(2.seconds)
+                job?.cancel()
+                job = coroutines.launch {
+                    while (true) {
+                        viewModel.getChatConnectRecentMessage(user.user?.email)
+                        delay(2.seconds)
+                    }
                 }
+
+                viewModel.markConnectMessageToRead(user.user?.email)
+                ConnectUserLiveConnection.startConnection(user.user?.email)
             }
-
-            viewModel.markConnectMessageToRead(user.user?.email)
-
             onPauseOrDispose {
                 window?.statusBarColor = Color.Transparent.toArgb()
                 window?.navigationBarColor = Color.Transparent.toArgb()

@@ -175,5 +175,9 @@ dependencies {
 
     implementation(libs.glance.appwidget)
 
+    implementation("io.github.webrtc-sdk:android:125.6422.07")
+
+    //  implementation("io.getstream:stream-webrtc-android:1.3.8")
+
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }

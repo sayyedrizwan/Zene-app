@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
+import com.rizwansayyed.zene.ui.main.connect.utils.ConnectUserLiveConnection
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
@@ -230,5 +231,7 @@ class MainActivity : ComponentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
+
+        ConnectUserLiveConnection.startConnection("sayyedzafreen4@gmail.com")
     }
 }
