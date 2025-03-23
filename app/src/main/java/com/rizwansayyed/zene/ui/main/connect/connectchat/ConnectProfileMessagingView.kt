@@ -33,7 +33,6 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.ui.main.connect.utils.ConnectUserLiveConnection
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -126,7 +125,7 @@ fun ConnectProfileMessagingView(
                 }
 
                 viewModel.markConnectMessageToRead(user.user?.email)
-                ConnectUserLiveConnection.startConnection(user.user?.email)
+//                ConnectUserLiveConnection.startConnection(user.user?.email)
             }
             onPauseOrDispose {
                 window?.statusBarColor = Color.Transparent.toArgb()

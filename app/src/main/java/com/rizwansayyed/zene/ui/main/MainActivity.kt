@@ -33,11 +33,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
-import com.rizwansayyed.zene.ui.main.connect.utils.ConnectUserLiveConnection
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
@@ -80,6 +80,8 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import org.webrtc.PeerConnectionFactory
+import org.webrtc.SessionDescription
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -226,12 +228,14 @@ class MainActivity : ComponentActivity() {
         IntentCheckUtils(intent, navigationViewModel)
     }
 
+    private lateinit var webRTCClient: ConnectUserLiveConnection
+
     override fun onStart() {
         super.onStart()
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
 
-        ConnectUserLiveConnection.startConnection("sayyedzafreen4@gmail.com")
+        webRTCClient = ConnectUserLiveConnection()
     }
 }
