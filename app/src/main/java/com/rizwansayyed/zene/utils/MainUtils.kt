@@ -412,14 +412,14 @@ object MainUtils {
 
     fun getAllEmojis(): List<String> {
         val emojiRanges = listOf(
-            0x1F600..0x1F64F, // Emoticons
-            0x1F300..0x1F5FF, // Symbols & pictographs
-            0x1F680..0x1F6FF, // Transport & map symbols
-            0x1F700..0x1F77F, // Alchemical symbols
-            0x1F780..0x1F7FF, // Geometric shapes
-            0x1F900..0x1F9FF, // Supplemental symbols & pictographs
-            0x2600..0x26FF,   // Miscellaneous symbols (e.g., ☀️☔☘️)
-            0x2700..0x27BF    // Dingbats (e.g., ✂️❤️✔️)
+            0x1F600..0x1F64F,
+            0x1F300..0x1F5FF,
+            0x1F680..0x1F6FF,
+            0x1F700..0x1F77F,
+            0x1F780..0x1F7FF,
+            0x1F900..0x1F9FF,
+            0x2600..0x26FF,
+            0x2700..0x27BF
         )
 
         val emojis = mutableListOf<String>()

@@ -28,19 +28,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.ui.main.connect.utils.ConnectChatSocketIO
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversationNotification
+import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,20 +54,21 @@ fun ConnectProfileMessagingView(
     user: ConnectUserInfoResponse, viewModel: ConnectViewModel, close: () -> Unit
 ) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        val homeViewModel: HomeViewModel = hiltViewModel()
         val window = LocalActivity.current?.window
-        val connectChatSocket = ConnectChatSocketIO()
-        var job by remember { mutableStateOf<Job?>(null) }
+        val connectChatSocket: ConnectSocketChatViewModel = hiltViewModel(key = user.user?.email)
         val coroutines = rememberCoroutineScope()
         val state = rememberLazyListState()
         val userInfo by DataStorageManager.userInfo.collectAsState(null)
         var isAtBottom by remember { mutableStateOf(true) }
+        var job by remember { mutableStateOf<Job?>(null) }
 
         Column(
             Modifier
                 .fillMaxSize()
                 .background(MainColor)
         ) {
-            ConnectTopProfileView(Modifier.weight(1f), user, close)
+            ConnectTopProfileView(Modifier.weight(1f), user, connectChatSocket, close)
 
             LazyColumn(Modifier.weight(8f), state, verticalArrangement = Arrangement.Bottom) {
                 if (viewModel.isRecentChatLoading == 1) item {
@@ -78,7 +82,7 @@ fun ConnectProfileMessagingView(
                     )
                 }
 
-                items(viewModel.recentChatItems, key = { it._id!! }) {
+                items(viewModel.recentChatItems) {
                     ConnectChatItemView(it, user.user, userInfo)
                 }
 
@@ -117,14 +121,14 @@ fun ConnectProfileMessagingView(
 
                 clearAMessage(user.user?.email ?: "")
                 clearConversationNotification(user.user?.email ?: "")
-
-                job?.cancel()
-                job = coroutines.launch {
-                    while (true) {
-                        viewModel.getChatConnectRecentMessage(user.user?.email)
-                        delay(2.seconds)
-                    }
-                }
+                viewModel.getChatConnectRecentMessage(user.user?.email)
+//                job?.cancel()
+//                job = coroutines.launch {
+//                    while (true) {
+//                        viewModel.getChatConnectRecentMessage(user.user?.email)
+//                        delay(2.seconds)
+//                    }
+//                }
 
                 viewModel.markConnectMessageToRead(user.user?.email)
                 user.user?.email?.let { connectChatSocket.connect(it) }
@@ -138,6 +142,7 @@ fun ConnectProfileMessagingView(
                 viewModel.markConnectMessageToRead(user.user?.email)
                 user.user?.email?.let { viewModel.connectUserInfo(it) }
                 connectChatSocket.disconnect()
+                homeViewModel.userInfo()
             }
         }
     }

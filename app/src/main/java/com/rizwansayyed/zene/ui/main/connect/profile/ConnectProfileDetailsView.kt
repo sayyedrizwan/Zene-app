@@ -49,7 +49,6 @@ import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.view.AlertDialogWithImage
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
@@ -59,6 +58,7 @@ import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
+import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -225,12 +225,10 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SongListeningTo(song: ZeneMusicData) {
-    var showPlaySong by remember { mutableStateOf(false) }
-
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable { showPlaySong = true },
+            .clickable { NavigationUtils.triggerInfoSheet(song) },
         Arrangement.Center,
         Alignment.CenterVertically
     ) {
@@ -251,12 +249,6 @@ fun SongListeningTo(song: ZeneMusicData) {
             R.raw.wave_animiation, "wave", Modifier.size(70.dp), contentScale = ContentScale.Fit
         )
     }
-
-    if (showPlaySong) AlertDialogWithImage(song.thumbnail, song.name, {
-        showPlaySong = false
-    }, {
-        showPlaySong = false
-    })
 }
 
 @Composable

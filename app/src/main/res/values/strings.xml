@@ -141,6 +141,8 @@
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
     <string name="last_seen">Last seen %s</string>
+    <string name="active_in_conversation">Active in conversation</string>
+    <string name="just_left_conversation">Just left conversation</string>
     <string name="connect_">Connect</string>
     <string name="entertainment">entertainment</string>
     <string name="ent_">ent.</string>
@@ -256,7 +258,6 @@
     <string name="live_streaming">Live Streaming</string>
     <string name="candid_desc">Candid shot! No filters, no edits—just as it was captured in-app.</string>
     <string name="attach">Attach</string>
-    <string name="do_you_want_to_play_this_song">Do you want to play the song?</string>
     <string name="share_notification">Silent Notifications</string>
     <string name="compress_processing_video">Compressing and Processing the media file…</string>
     <string name="uploading_please_wait">Uploading… Please wait…</string>

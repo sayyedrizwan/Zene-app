@@ -27,11 +27,6 @@ object URLSUtils {
 
     const val YT_VIDEO_BASE_URL = "https://www.youtube.com/"
     const val LIKED_SONGS_ON_ZENE = "_liked_songs_on_zene"
-    const val X_VIDEO_BASE_URL = "https://www.x.com/"
-
-
-    const val FB_GRAPH_ID = "https://graph.facebook.com/me"
-
 
     const val ZENE_BASE_URL_SOCKET = "http://192.168.0.100:4102"
     const val ZENE_BASE_URL_API = "http://192.168.0.100:4100"
@@ -136,4 +131,12 @@ object URLSUtils {
 
     const val IP_BASE_URL = "http://ip-api.com/"
     const val IP_JSON_API = "json"
+}
+
+object SaveParams {
+    const val NEW_JOIN_USER_SOCKET = "NEW_JOIN_USER"
+    const val OLD_JOIN_USER_SOCKET = "OLD_JOIN_USER"
+    const val USER_LEAVED_SOCKET = "USER_LEAVED"
+    const val NEW_MESSAGE_ON_SOCKET = "NEW_MESSAGE_ON"
+
 }

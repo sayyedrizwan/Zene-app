@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeM
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NotificationUtils
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
@@ -179,12 +181,15 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var isRecentChatLoading by mutableIntStateOf(0)
 
     fun getChatConnectRecentMessage(email: String?) = viewModelScope.launch(Dispatchers.IO) {
+        Log.d("TAG", "getChatConnectRecentMessage: datata ${email}")
         email ?: return@launch
         zeneAPI.getChatConnectRecentMessage(email).onStart {
            if (isRecentChatLoading == 0) isRecentChatLoading = 1
         }.catch {
+            Log.d("TAG", "getChatConnectRecentMessage: datata ${it.message}")
             isRecentChatLoading = 2
         }.collectLatest {
+            Log.d("TAG", "getChatConnectRecentMessage: datata ${it.size}")
             isRecentChatLoading = 2
             it.forEach { v ->
                 if (!recentChatItems.any { c -> c._id == v._id }) recentChatItems.add(v)
