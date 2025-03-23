@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.main.connect.utils.ConnectChatSocketIO
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -51,6 +52,7 @@ fun ConnectProfileMessagingView(
 ) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         val window = LocalActivity.current?.window
+        val connectChatSocket = ConnectChatSocketIO()
         var job by remember { mutableStateOf<Job?>(null) }
         val coroutines = rememberCoroutineScope()
         val state = rememberLazyListState()
@@ -125,6 +127,8 @@ fun ConnectProfileMessagingView(
                 }
 
                 viewModel.markConnectMessageToRead(user.user?.email)
+                user.user?.email?.let { connectChatSocket.connect(it) }
+
 //                ConnectUserLiveConnection.startConnection(user.user?.email)
             }
             onPauseOrDispose {
@@ -133,6 +137,7 @@ fun ConnectProfileMessagingView(
                 currentOpenedChatProfile = null
                 viewModel.markConnectMessageToRead(user.user?.email)
                 user.user?.email?.let { viewModel.connectUserInfo(it) }
+                connectChatSocket.disconnect()
             }
         }
     }

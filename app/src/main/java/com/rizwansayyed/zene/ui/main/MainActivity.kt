@@ -80,8 +80,6 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import org.webrtc.PeerConnectionFactory
-import org.webrtc.SessionDescription
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -228,14 +226,10 @@ class MainActivity : ComponentActivity() {
         IntentCheckUtils(intent, navigationViewModel)
     }
 
-    private lateinit var webRTCClient: ConnectUserLiveConnection
-
     override fun onStart() {
         super.onStart()
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
-
-        webRTCClient = ConnectUserLiveConnection()
     }
 }

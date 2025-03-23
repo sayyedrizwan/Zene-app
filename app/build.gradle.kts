@@ -175,5 +175,7 @@ dependencies {
 
     implementation(libs.glance.appwidget)
 
+    implementation(libs.socket.io.client)
+
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }

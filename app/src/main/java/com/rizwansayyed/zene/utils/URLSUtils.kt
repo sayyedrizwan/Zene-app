@@ -33,6 +33,7 @@ object URLSUtils {
     const val FB_GRAPH_ID = "https://graph.facebook.com/me"
 
 
+    const val ZENE_BASE_URL_SOCKET = "http://192.168.0.100:4102"
     const val ZENE_BASE_URL_API = "http://192.168.0.100:4100"
     const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"

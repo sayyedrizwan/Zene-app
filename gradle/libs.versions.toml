@@ -9,6 +9,7 @@ minsdk = "24"
 
 appversion = "164"
 securityCrypto = "1.1.0-alpha06"
+socketIoClient = "2.1.1"
 versionname = "3.02.819"
 
 
@@ -16,10 +17,10 @@ agp = "8.8.2"
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.0"
 glide = "1.0.0-beta01"
-credentials = "1.5.0-rc01"
+credentials = "1.5.0"
 datastorePreferences = "1.1.3"
 facebookLogin = "18.0.2"
-firebaseBom = "33.10.0"
+firebaseBom = "33.11.0"
 gson = "2.11.0"
 hiltAndroid = "2.52"
 googleServices = "4.4.2"
@@ -31,7 +32,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
-composeBom = "2025.02.00"
+composeBom = "2025.03.00"
 googleid = "1.1.1"
 mapsCompose = "6.4.1"
 media3Exoplayer = "1.5.1"
@@ -43,9 +44,9 @@ playServicesLocation = "21.3.0"
 emoji = "1.5.0"
 truecaller = "3.1.0"
 camera = "1.5.0-alpha06"
-material3 = "1.4.0-alpha09"
-webkit = "1.12.1"
-navigation = "2.8.8"
+material3 = "1.4.0-alpha10"
+webkit = "1.13.0"
+navigation = "2.8.9"
 paletteKtx = "1.0.0"
 room = "2.6.1"
 ksp = "2.0.21-1.0.27"
@@ -108,6 +109,7 @@ emoji = { module = "androidx.emoji2:emoji2", version.ref = "emoji" }
 emoji-picker = { module = "androidx.emoji2:emoji2-emojipicker", version.ref = "emoji" }
 emoji2-bundled = { group = "androidx.emoji2", name = "emoji2-bundled", version.ref = "emoji" }
 
+socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
 truecaller = { module = "com.truecaller.android.sdk:truecaller-sdk", version.ref = "truecaller" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
