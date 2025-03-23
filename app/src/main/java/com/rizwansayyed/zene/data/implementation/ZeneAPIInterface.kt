@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
+import com.rizwansayyed.zene.data.model.MediaStatusTypeResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
@@ -144,4 +145,7 @@ interface ZeneAPIInterface {
     suspend fun isPlaylistAdded(id: String, type: String): Flow<StatusTypeResponse>
     suspend fun markConnectMessageToRead(toEmail: String): Flow<StatusTypeResponse>
     suspend fun getChatConnectRecentMessage(toEmail: String, lastId: String?): Flow<List<ConnectChatMessageResponse>>
+    suspend fun sendConnectMediaMessage(
+        userEmail: String?, file: String?, thumbnail: String?
+    ): Flow<MediaStatusTypeResponse>
 }

@@ -7,4 +7,6 @@ data class ConnectChatMessageResponse(
     val did_read: Boolean?,
     val message: String?,
     val timestamp: Long?,
+    val candid_media: String? = null,
+    val candid_thumbnail: String? = null,
 )

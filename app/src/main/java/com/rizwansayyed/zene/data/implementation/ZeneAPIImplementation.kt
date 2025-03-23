@@ -716,6 +716,38 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.getChatConnectRecentMessage(token, body))
     }
 
+
+    override suspend fun sendConnectMediaMessage(
+        userEmail: String?, file: String?, thumbnail: String?
+    ) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val body = MultipartBody.Builder().setType(MultipartBody.FORM)
+
+        if (file != null) {
+            val f = File(file)
+            if (f.exists()) {
+                val uploader =
+                    File(file).asRequestBody("application/octet-stream".toMediaTypeOrNull())
+                body.addFormDataPart("file", f.name, uploader)
+            }
+        }
+
+        if (thumbnail != null) {
+            val f = File(thumbnail)
+            if (f.exists()) {
+                val uploader =
+                    File(thumbnail).asRequestBody("application/octet-stream".toMediaTypeOrNull())
+                body.addFormDataPart("file_thumbnail", f.name, uploader)
+            }
+        }
+        body.addFormDataPart("email", email)
+        userEmail?.let { body.addFormDataPart("toEmail", it) }
+
+        emit(zeneAPI.sendConnectMediaMessage(token, body.build()))
+    }
+
     override suspend fun markConnectMessageToRead(toEmail: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

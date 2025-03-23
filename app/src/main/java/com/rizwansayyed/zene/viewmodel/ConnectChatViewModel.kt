@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -39,10 +40,41 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
 
                 val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
                 val data = ConnectChatMessageResponse(
-                    it.message, myEmail, email,
-                    false, message.trim(), System.currentTimeMillis()
+                    it.message, myEmail, email, false, message.trim(), System.currentTimeMillis()
                 )
                 recentChatItems.add(data)
+            }
+        }
+
+
+    fun sendImageVideo(email: String?, file: String?, thumbnail: String?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            email ?: return@launch
+            sendConnectMessageLoading = true
+
+            val finalFile = if (file != null) {
+                if (file.contains(".jpg")) file else compressVideoFile(file)
+            } else null
+
+            if (finalFile != null) {
+                sendConnectMessageLoading = true
+
+                zeneAPI.sendConnectMediaMessage(email, file, thumbnail).catch {
+                    sendConnectMessageLoading = false
+                }.collectLatest {
+                    sendConnectMessageLoading = false
+
+                    if (it.status == false) return@collectLatest
+                    val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
+
+                    val data = ConnectChatMessageResponse(
+                        it.message, myEmail, email, false, "", System.currentTimeMillis(),
+                        it.media, it.thumbnail
+                    )
+                    recentChatItems.add(data)
+                }
+            } else {
+                sendConnectMessageLoading = false
             }
         }
 

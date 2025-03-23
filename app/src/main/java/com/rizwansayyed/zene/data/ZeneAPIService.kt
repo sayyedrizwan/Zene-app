@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
+import com.rizwansayyed.zene.data.model.MediaStatusTypeResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
@@ -48,6 +49,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_MARK_MESSAGE_AS_READ_A
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_LOCATION_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MEDIA_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
@@ -328,6 +330,11 @@ interface ZeneAPIService {
     suspend fun sendConnectMessage(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
+
+    @POST(ZENE_CONNECT_SEND_MEDIA_MESSAGE_API)
+    suspend fun sendConnectMediaMessage(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MediaStatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_MARK_MESSAGE_AS_READ_API)
