@@ -64,7 +64,7 @@ interface ZeneAPIInterface {
         silentNotification: Boolean
     ): Flow<StatusTypeResponse>
 
-    suspend fun sendConnectMessage(toEmail: String, message: String, gif: String?): Flow<StatusTypeResponse>
+    suspend fun sendConnectMessage(toEmail: String, message: String, gif: String?): Flow<MediaStatusTypeResponse>
     suspend fun sendConnectLocation(toEmail: String): Flow<StatusTypeResponse>
     suspend fun connectFriendsList(): Flow<List<ConnectUserInfoResponse>>
     suspend fun search(q: String): Flow<SearchDataResponse>
@@ -150,7 +150,6 @@ interface ZeneAPIInterface {
     ): Flow<MediaStatusTypeResponse>
 
     suspend fun sendConnectJamMessage(
-        toEmail: String,
-        data: ZeneMusicData?
-    ): Flow<StatusTypeResponse>
+        toEmail: String, data: ZeneMusicData?
+    ): Flow<MediaStatusTypeResponse>
 }

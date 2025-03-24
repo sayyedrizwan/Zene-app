@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SaveParams.NEW_JOIN_USER_SOCKET
+import com.rizwansayyed.zene.utils.SaveParams.NEW_MESSAGE_ON_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.OLD_JOIN_USER_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.USER_LEAVED_SOCKET
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_BASE_URL_SOCKET
@@ -26,7 +26,7 @@ import java.security.MessageDigest
 import kotlin.time.Duration.Companion.seconds
 
 class ConnectSocketChatViewModel : ViewModel() {
-    private var mSocket: Socket? = null
+    private var mSocket by mutableStateOf<Socket?>(null)
     private var roomId: String? = null
     private var myEmail: String? = null
     private var offJob: Job? = null
@@ -35,14 +35,24 @@ class ConnectSocketChatViewModel : ViewModel() {
     var newIncomingMessage by mutableStateOf<ConnectChatMessageResponse?>(null)
 
 
-    fun connect(senderEmail: String) = CoroutineScope(Dispatchers.IO).launch {
+    fun clearChatSendItem() {
+        newIncomingMessage = null
+    }
+
+
+    fun connect(senderEmail: String) = viewModelScope.launch(Dispatchers.IO) {
         myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@launch
         roomId = generateRoomId(senderEmail, myEmail!!)
 
         inLobby = false
 
         try {
-            mSocket = IO.socket(ZENE_BASE_URL_SOCKET)
+            val options = IO.Options.builder()
+                .setReconnection(true)
+                .setReconnectionDelay(15.seconds.inWholeMilliseconds)
+                .build()
+
+            mSocket = IO.socket(ZENE_BASE_URL_SOCKET, options)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -77,7 +87,7 @@ class ConnectSocketChatViewModel : ViewModel() {
                 justLeft = false
                 inLobby = true
             }
-          logd
+
             sendConnectMessage()
         }
 
@@ -85,8 +95,9 @@ class ConnectSocketChatViewModel : ViewModel() {
             val data = args.first() as JSONObject
             val message = data.getString("message")
             val type = data.getString("type")
+            val email = data.getString("email")
 
-            try {
+            if (type == NEW_MESSAGE_ON_SOCKET && email != myEmail) try {
                 val json = moshi.adapter(ConnectChatMessageResponse::class.java).fromJson(message)
                 newIncomingMessage = json
             } catch (e: Exception) {
@@ -112,22 +123,20 @@ class ConnectSocketChatViewModel : ViewModel() {
                     justLeft = true
                 }
             }
+
         }
 
         mSocket?.connect()
     }
 
-    fun sendMessage(item: ConnectChatMessageResponse) = viewModelScope.launch(Dispatchers.IO) {
-//        val json = moshi.adapter(ConnectChatMessageResponse::class.java).toJson(item)
-//        val messageJson = JSONObject(json)
-
-        "sended ${mSocket}".toast()
+    fun sendMessage(item: ConnectChatMessageResponse) {
+        val json = moshi.adapter(ConnectChatMessageResponse::class.java).toJson(item)
         val data = JSONObject()
         data.put("room", roomId)
         data.put("email", myEmail)
-//        data.put("message", "messageJson")
+        data.put("message", json)
 
-        mSocket?.emit("connectMessage", data)
+        mSocket!!.emit("connectMessage", data)
     }
 
     private fun sendConnectMessage() = viewModelScope.launch(Dispatchers.IO) {

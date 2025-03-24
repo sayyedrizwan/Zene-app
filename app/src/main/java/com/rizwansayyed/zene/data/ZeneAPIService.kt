@@ -330,13 +330,13 @@ interface ZeneAPIService {
     @POST(ZENE_CONNECT_SEND_MESSAGE_API)
     suspend fun sendConnectMessage(
         @Header("token") token: String, @Body data: RequestBody
-    ): StatusTypeResponse
+    ): MediaStatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_JAM_MESSAGE_API)
     suspend fun sendConnectJamMessage(
         @Header("token") token: String, @Body data: RequestBody
-    ): StatusTypeResponse
+    ): MediaStatusTypeResponse
 
     @POST(ZENE_CONNECT_SEND_MEDIA_MESSAGE_API)
     suspend fun sendConnectMediaMessage(

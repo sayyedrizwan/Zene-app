@@ -55,6 +55,7 @@ fun ConnectChatItemView(
             ProfileImageOfUser(otherUser?.profile_photo, otherUser?.name)
             MessageItemView(data, true)
         }
+
         Spacer(Modifier.weight(1f))
 
         if (data.from == userInfo?.email) {

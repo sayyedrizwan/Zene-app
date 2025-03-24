@@ -83,7 +83,12 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
         }
 
 
-    Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+    Row(
+        Modifier
+            .padding(bottom = 15.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 5.dp), Arrangement.Center, Alignment.CenterVertically
+    ) {
         TextField(
             messageText,
             { messageText = if (it.length <= 250) it else it.take(250) },

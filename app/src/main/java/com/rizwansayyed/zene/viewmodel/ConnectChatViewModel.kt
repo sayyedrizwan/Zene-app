@@ -33,6 +33,10 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         recentChatItemsToSend = null
     }
 
+    fun addANewItemChat(message: ConnectChatMessageResponse) {
+        recentChatItems.add(0, message)
+    }
+
     fun sendConnectMessage(email: String?, message: String, gif: String?) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
@@ -47,7 +51,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                 val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
                 val data = ConnectChatMessageResponse(
                     it.message, myEmail, email, false, message.trim(),
-                    System.currentTimeMillis(), gif = gif
+                    it.ts ?: System.currentTimeMillis(), gif = gif
                 )
                 recentChatItemsToSend = data
                 recentChatItems.add(0, data)
@@ -70,7 +74,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                 val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
                 val data = ConnectChatMessageResponse(
                     it.message, myEmail, email, false, "",
-                    System.currentTimeMillis(), jam_name = musicData.name,
+                    it.ts ?: System.currentTimeMillis(), jam_name = musicData.name,
                     jam_artists = musicData.artists, jam_id = musicData.id,
                     jam_type = musicData.type, jam_thumbnail = musicData.thumbnail,
                 )
@@ -102,7 +106,8 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                     val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
 
                     val data = ConnectChatMessageResponse(
-                        it.message, myEmail, email, false, "", System.currentTimeMillis(),
+                        it.message, myEmail, email, false, "",
+                        it.ts ?: System.currentTimeMillis(),
                         it.media, it.thumbnail
                     )
 
