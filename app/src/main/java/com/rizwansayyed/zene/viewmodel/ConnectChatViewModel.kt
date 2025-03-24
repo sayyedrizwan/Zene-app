@@ -43,7 +43,8 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                     it.message, myEmail, email, false, message.trim(),
                     System.currentTimeMillis(), gif = gif
                 )
-                recentChatItems.add(data)
+
+                recentChatItems.add(0, data)
             }
         }
 
@@ -72,7 +73,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                         it.message, myEmail, email, false, "", System.currentTimeMillis(),
                         it.media, it.thumbnail
                     )
-                    recentChatItems.add(data)
+                    recentChatItems.add(0, data)
                 }
             } else {
                 sendConnectMessageLoading = false
@@ -84,21 +85,22 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         zeneAPI.markConnectMessageToRead(email).catch { }.collectLatest { }
     }
 
-    fun getChatConnectRecentMessage(email: String?, itemAdded: (String?) -> Unit) =
+    fun getChatConnectRecentMessage(email: String?, new: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
 
-            val lastID = recentChatItems.firstOrNull()?._id
+            if (new) recentChatItems.clear()
+
+            val lastID = recentChatItems.lastOrNull()?._id
             zeneAPI.getChatConnectRecentMessage(email, lastID).onStart {
                 isRecentChatLoading = true
             }.catch {
                 isRecentChatLoading = false
             }.collectLatest {
                 isRecentChatLoading = false
-                it.reversed().forEach { v ->
-                    if (!recentChatItems.any { c -> c._id == v._id }) recentChatItems.add(0, v)
+                it.forEach { v ->
+                    if (!recentChatItems.any { c -> c._id == v._id }) recentChatItems.add(v)
                 }
-                itemAdded(lastID)
             }
         }
 }

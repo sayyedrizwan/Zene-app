@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
-import android.content.Intent
+import android.net.Uri
+import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -22,15 +24,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapAlertNew
 import com.rizwansayyed.zene.ui.connect_status.view.GifAlert
 import com.rizwansayyed.zene.ui.connect_status.view.permissions
@@ -69,8 +72,13 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
 
 
     val pickFile =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                val file = getFileFromUri(it)
+                file?.let { pickedFile ->
+                    Log.d("TAG", "ConnectProfileMessageView: dqta $pickedFile")
+                }
+            }
         }
 
 
@@ -127,9 +135,7 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
                 }
 
                 ImageWithBgRound(R.drawable.ic_file_add) {
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.setType("file/*")
-                    pickFile.launch(intent)
+                    pickFile.launch("*/*")
                 }
             }
         }
@@ -155,4 +161,33 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
         if (File(file.toString()).exists())
             viewModel.sendImageVideo(user.user?.email, file, thumbnail)
     }
+}
+
+private fun getFileFromUri(uri: Uri): File? {
+    return try {
+        val fileName = getFileName(uri) ?: "temp_file"
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.cacheDir, fileName)
+        file.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        file
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+private fun getFileName(uri: Uri): String? {
+    var name: String? = null
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    cursor?.use {
+        if (it.moveToFirst()) {
+            val index = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (index != -1) {
+                name = it.getString(index)
+            }
+        }
+    }
+    return name
 }

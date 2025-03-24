@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,15 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -44,12 +41,8 @@ import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversation
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
@@ -58,46 +51,12 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
 
         val window = LocalActivity.current?.window
         val connectChatSocket: ConnectSocketChatViewModel = hiltViewModel(key = user.user?.email)
-        val coroutines = rememberCoroutineScope()
         val state = rememberLazyListState()
         val userInfo by DataStorageManager.userInfo.collectAsState(null)
-        var isAtBottom by remember { mutableStateOf(true) }
-        var isAtTop by remember { mutableStateOf(true) }
 
-        LaunchedEffect(state) {
-            snapshotFlow {
-                state.firstVisibleItemIndex == 0 && state.firstVisibleItemScrollOffset == 0
-            }.distinctUntilChanged().collectLatest { atTop ->
-                if (atTop && !isAtTop) {
-                    isAtTop = true
-                    viewModel.getChatConnectRecentMessage(user.user?.email) { id ->
-                        coroutines.launch {
-                            val position = viewModel.recentChatItems.indexOfLast { it._id == id }
-                            try {
-                                state.scrollToItem(position, scrollOffset = -160)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-                } else if (!atTop) {
-                    isAtTop = false
-                }
-            }
+        val lastVisibleItemIndex by remember {
+            derivedStateOf { state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size - 1 }
         }
-
-        LaunchedEffect(state) {
-            snapshotFlow { state.firstVisibleItemIndex to state.firstVisibleItemScrollOffset }
-                .collectLatest { (index, offset) ->
-                    isAtTop = index == 0 && offset == 0
-                }
-        }
-
-        LaunchedEffect(viewModel.sendConnectMessageLoading) {
-            if (!viewModel.sendConnectMessageLoading)
-                state.animateScrollToItem(state.layoutInfo.totalItemsCount)
-        }
-
 
         Column(
             Modifier
@@ -106,29 +65,40 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
         ) {
             ConnectTopProfileView(Modifier.weight(1f), user, connectChatSocket, close)
 
-            LazyColumn(Modifier.weight(8f), state, verticalArrangement = Arrangement.Bottom) {
-                if (viewModel.isRecentChatLoading) item {
-                    Spacer(Modifier.height(60.dp))
-                    CircularLoadingView()
-                }
-
-                if (!viewModel.isRecentChatLoading && viewModel.recentChatItems.isEmpty()) item {
-                    TextViewSemiBold(
-                        stringResource(R.string.break_the_ice_start_conversation),
-                        center = true
-                    )
+            LazyColumn(
+                Modifier.weight(8f),
+                state, reverseLayout = true, verticalArrangement = Arrangement.Bottom
+            ) {
+                item(key = "bottom") {
+                    Spacer(Modifier.height(30.dp))
                 }
 
                 items(viewModel.recentChatItems) {
                     ConnectChatItemView(it, user.user, userInfo)
                 }
 
-                item(key = "bottom") {
-                    Spacer(Modifier.height(30.dp))
-                    DisposableEffect(Unit) {
-                        isAtBottom = true
-                        onDispose { isAtBottom = false }
+                if (viewModel.isRecentChatLoading) item {
+                    Spacer(Modifier.height(120.dp))
+                    CircularLoadingView()
+                }
+
+                item(key = "top1") {
+                    LaunchedEffect(Unit) {
+                        if (!viewModel.isRecentChatLoading)
+                            viewModel.getChatConnectRecentMessage(user.user?.email, false)
                     }
+                }
+
+                item(key = "top2") {
+                    Spacer(Modifier.height(90.dp))
+                }
+
+
+                if (!viewModel.isRecentChatLoading && viewModel.recentChatItems.isEmpty()) item {
+                    TextViewSemiBold(
+                        stringResource(R.string.break_the_ice_start_conversation),
+                        center = true
+                    )
                 }
             }
 
@@ -142,10 +112,15 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
             }
         }
 
-        LaunchedEffect(viewModel.recentChatItems.map { it._id }) {
-            if (isAtBottom) coroutines.launch {
-                delay(1.seconds)
-                state.animateScrollToItem(state.layoutInfo.totalItemsCount)
+
+        LaunchedEffect(viewModel.sendConnectMessageLoading) {
+            if (!viewModel.sendConnectMessageLoading)
+                state.animateScrollToItem(0)
+        }
+
+        LaunchedEffect(lastVisibleItemIndex) {
+            if ((lastVisibleItemIndex == viewModel.recentChatItems.size - 3) && viewModel.recentChatItems.isNotEmpty()) {
+                viewModel.getChatConnectRecentMessage(user.user?.email, false)
             }
         }
 
@@ -156,7 +131,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
 
             clearAMessage(user.user?.email ?: "")
             clearConversationNotification(user.user?.email ?: "")
-            viewModel.getChatConnectRecentMessage(user.user?.email) {}
+            viewModel.getChatConnectRecentMessage(user.user?.email, true)
 
             viewModel.markConnectMessageToRead(user.user?.email)
             user.user?.email?.let { connectChatSocket.connect(it) }
