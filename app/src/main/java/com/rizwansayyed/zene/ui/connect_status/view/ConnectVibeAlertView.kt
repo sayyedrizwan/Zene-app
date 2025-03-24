@@ -122,7 +122,7 @@ fun MusicDataSheet(data: ConnectFeedDataResponse?, close: () -> Unit) {
         LaunchedEffect(Unit) {
             mediaItem = data?.getMusicData()
             if (data?.getMusicData()?.type() == SONGS) {
-                playerViewModel.similarArtistsAlbumOfSong(data.jazz_id ?: "") {
+                playerViewModel.similarArtistsAlbumOfSong(data.jam_id ?: "") {
                     mediaItem = it
                 }
             }

@@ -61,7 +61,7 @@ fun ConnectAddJam(viewModel: ConnectViewModel) {
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
         AddJamDialog {
-            it?.let { z -> viewModel.updateVibeJazzInfo(z) }
+            it?.let { z -> viewModel.updateVibejamInfo(z) }
             showAlert = false
         }
     }

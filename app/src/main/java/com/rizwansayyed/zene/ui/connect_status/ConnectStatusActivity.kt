@@ -71,7 +71,7 @@ class ConnectStatusActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        readIncomingJazz(intent)
+        readIncomingjam(intent)
         setContent {
             ZeneTheme {
                 val caption = remember { mutableStateOf("") }
@@ -154,16 +154,16 @@ class ConnectStatusActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        readIncomingJazz(intent)
+        readIncomingjam(intent)
     }
 
-    private fun readIncomingJazz(intent: Intent) = lifecycleScope.launch {
+    private fun readIncomingjam(intent: Intent) = lifecycleScope.launch {
         try {
             delay(1.seconds)
             val intentJson = intent.getStringExtra(Intent.ACTION_SEND) ?: "{}"
             val json = moshi.adapter(ZeneMusicData::class.java).fromJson(intentJson)
             if (json?.id != null && json.name != null)
-                connectViewModel.updateVibeJazzInfo(json)
+                connectViewModel.updateVibejamInfo(json)
 
             delay(1.seconds)
             val intentFile = intent.getStringExtra(Intent.ACTION_ATTACH_DATA) ?: ""

@@ -226,8 +226,8 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             setContentIntent(pendingIntent)
             setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSession?.sessionToken).setShowActionsInCompactView(1)
-                    .setShowActionsInCompactView(0, 1, 2)
+                    .setMediaSession(mediaSession?.sessionToken)
+//                    .setShowActionsInCompactView(0, 1, 2)
 
             )
         }.build()

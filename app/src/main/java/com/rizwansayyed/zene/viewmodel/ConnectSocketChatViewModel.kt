@@ -1,12 +1,14 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SaveParams.NEW_JOIN_USER_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.OLD_JOIN_USER_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.USER_LEAVED_SOCKET
@@ -27,9 +29,10 @@ class ConnectSocketChatViewModel : ViewModel() {
     private var mSocket: Socket? = null
     private var roomId: String? = null
     private var myEmail: String? = null
-    var offJob: Job? = null
+    private var offJob: Job? = null
     var inLobby by mutableStateOf(false)
     var justLeft by mutableStateOf(false)
+    var newIncomingMessage by mutableStateOf<ConnectChatMessageResponse?>(null)
 
 
     fun connect(senderEmail: String) = CoroutineScope(Dispatchers.IO).launch {
@@ -43,6 +46,7 @@ class ConnectSocketChatViewModel : ViewModel() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
 
         mSocket?.on(Socket.EVENT_CONNECT) {
             val data = JSONObject()
@@ -73,29 +77,21 @@ class ConnectSocketChatViewModel : ViewModel() {
                 justLeft = false
                 inLobby = true
             }
+          logd
             sendConnectMessage()
         }
 
-        mSocket?.on("message") { args ->
-            return@on
+        mSocket?.on("connectMessage") { args ->
             val data = args.first() as JSONObject
-            val sender = data.getString("sender")
-            val email = data.getString("email")
             val message = data.getString("message")
+            val type = data.getString("type")
 
-            if (sender == "System" && message.contains("new joined the room") && email == senderEmail) {
-                inLobby = true
-                Log.d("Socket", "connect: runnned on $roomId")
-                sendConnectMessage()
+            try {
+                val json = moshi.adapter(ConnectChatMessageResponse::class.java).fromJson(message)
+                newIncomingMessage = json
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            if (sender == "System" && message.contains("left the room") && email == senderEmail) {
-                inLobby = false
-            }
-            Log.d("Socket", "Message from $sender: ${email} $message")
-            Log.d(
-                "Socket",
-                "Message from ${sender == "System"}: ${message.contains("new joined the room")} ${email == senderEmail} "
-            )
         }
 
         mSocket?.on(Socket.EVENT_DISCONNECT) {
@@ -110,9 +106,10 @@ class ConnectSocketChatViewModel : ViewModel() {
             if (email == senderEmail && type == USER_LEAVED_SOCKET) {
                 justLeft = true
                 offJob?.cancel()
-                offJob = viewModelScope.launch {
+                offJob = CoroutineScope(Dispatchers.IO).launch {
                     delay(4.seconds)
                     inLobby = false
+                    justLeft = true
                 }
             }
         }
@@ -120,15 +117,20 @@ class ConnectSocketChatViewModel : ViewModel() {
         mSocket?.connect()
     }
 
-    fun sendMessage(message: String) {
+    fun sendMessage(item: ConnectChatMessageResponse) = viewModelScope.launch(Dispatchers.IO) {
+//        val json = moshi.adapter(ConnectChatMessageResponse::class.java).toJson(item)
+//        val messageJson = JSONObject(json)
+
+        "sended ${mSocket}".toast()
         val data = JSONObject()
         data.put("room", roomId)
         data.put("email", myEmail)
-        data.put("message", message)
-        mSocket?.emit("chatMessage", data)
+//        data.put("message", "messageJson")
+
+        mSocket?.emit("connectMessage", data)
     }
 
-    private fun sendConnectMessage() = CoroutineScope(Dispatchers.IO).launch {
+    private fun sendConnectMessage() = viewModelScope.launch(Dispatchers.IO) {
         val data = JSONObject()
         data.put("room", roomId)
         data.put("email", myEmail)

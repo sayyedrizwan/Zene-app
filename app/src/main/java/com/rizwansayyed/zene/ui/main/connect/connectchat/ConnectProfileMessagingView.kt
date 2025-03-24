@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversationNotification
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
@@ -121,6 +122,19 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
         LaunchedEffect(lastVisibleItemIndex) {
             if ((lastVisibleItemIndex == viewModel.recentChatItems.size - 3) && viewModel.recentChatItems.isNotEmpty()) {
                 viewModel.getChatConnectRecentMessage(user.user?.email, false)
+            }
+        }
+
+        LaunchedEffect(viewModel.recentChatItemsToSend) {
+            if (viewModel.recentChatItemsToSend != null) {
+                connectChatSocket.sendMessage(viewModel.recentChatItemsToSend!!)
+                viewModel.clearChatSendItem()
+            }
+        }
+
+        LaunchedEffect(connectChatSocket.newIncomingMessage) {
+            if (connectChatSocket.newIncomingMessage != null) {
+                "new messages ".toast()
             }
         }
 

@@ -703,6 +703,24 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sendConnectMessage(token, body))
     }
 
+    override suspend fun sendConnectJamMessage(toEmail: String, data: ZeneMusicData?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toEmail", toEmail)
+            put("name", data?.name)
+            put("artists", data?.artists)
+            put("type", data?.type)
+            put("thumbnail", data?.thumbnail)
+            put("id", data?.id)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.sendConnectJamMessage(token, body))
+    }
+
     override suspend fun getChatConnectRecentMessage(toEmail: String, lastId: String?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -809,11 +827,11 @@ class ZeneAPIImplementation @Inject constructor(
             }
         }
         body.addFormDataPart("email", email)
-        d.jazz_type?.let { body.addFormDataPart("jazz_type", it) }
-        d.jazz_artists?.let { body.addFormDataPart("jazz_artists", it) }
-        d.jazz_thumbnail?.let { body.addFormDataPart("jazz_thumbnail", it) }
-        d.jazz_name?.let { body.addFormDataPart("jazz_name", it) }
-        d.jazz_id?.let { body.addFormDataPart("jazz_id", it) }
+        d.jam_type?.let { body.addFormDataPart("jam_type", it) }
+        d.jam_artists?.let { body.addFormDataPart("jam_artists", it) }
+        d.jam_thumbnail?.let { body.addFormDataPart("jam_thumbnail", it) }
+        d.jam_name?.let { body.addFormDataPart("jam_name", it) }
+        d.jam_id?.let { body.addFormDataPart("jam_id", it) }
         d.is_vibing?.let { body.addFormDataPart("is_vibing", it.toString()) }
         d.longitude?.let { body.addFormDataPart("longitude", it) }
         d.latitude?.let { body.addFormDataPart("latitude", it) }

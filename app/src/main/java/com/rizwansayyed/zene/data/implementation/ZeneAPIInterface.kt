@@ -148,4 +148,9 @@ interface ZeneAPIInterface {
     suspend fun sendConnectMediaMessage(
         userEmail: String?, file: String?, thumbnail: String?
     ): Flow<MediaStatusTypeResponse>
+
+    suspend fun sendConnectJamMessage(
+        toEmail: String,
+        data: ZeneMusicData?
+    ): Flow<StatusTypeResponse>
 }

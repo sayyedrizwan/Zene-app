@@ -7,11 +7,11 @@ data class ConnectFeedDataResponse(
     var caption: String? = null,
     var media_thubnail: String? = null,
     var is_vibing: Boolean? = null,
-    var jazz_name: String? = null,
-    var jazz_artists: String? = null,
-    var jazz_id: String? = null,
-    var jazz_thumbnail: String? = null,
-    var jazz_type: String? = null,
+    var jam_name: String? = null,
+    var jam_artists: String? = null,
+    var jam_id: String? = null,
+    var jam_thumbnail: String? = null,
+    var jam_type: String? = null,
     var location_name: String? = null,
     var location_address: String? = null,
     var longitude: String? = null,
@@ -22,8 +22,8 @@ data class ConnectFeedDataResponse(
     var userDetails: ConnectUserResponse? = null,
 ) {
     fun getMusicData(): ZeneMusicData? {
-        if (jazz_name == null || jazz_id == null) return null
-        return ZeneMusicData(jazz_artists, jazz_id, jazz_name, "", jazz_thumbnail, jazz_type, "")
+        if (jam_name == null || jam_id == null) return null
+        return ZeneMusicData(jam_artists, jam_id, jam_name, "", jam_thumbnail, jam_type, "")
     }
 
     fun ts(): String {

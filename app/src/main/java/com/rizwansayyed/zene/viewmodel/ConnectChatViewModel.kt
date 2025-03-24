@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,11 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
     var recentChatItems = mutableStateListOf<ConnectChatMessageResponse>()
     var isRecentChatLoading by mutableStateOf(false)
     var sendConnectMessageLoading by mutableStateOf(false)
+    var recentChatItemsToSend by mutableStateOf<ConnectChatMessageResponse?>(null)
+
+    fun clearChatSendItem() {
+        recentChatItemsToSend = null
+    }
 
     fun sendConnectMessage(email: String?, message: String, gif: String?) =
         viewModelScope.launch(Dispatchers.IO) {
@@ -43,7 +49,33 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                     it.message, myEmail, email, false, message.trim(),
                     System.currentTimeMillis(), gif = gif
                 )
+                recentChatItemsToSend = data
+                recentChatItems.add(0, data)
+            }
+        }
 
+
+    fun sendConnectJamMessage(email: String?, musicData: ZeneMusicData?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            email ?: return@launch
+            musicData ?: return@launch
+            zeneAPI.sendConnectJamMessage(email, musicData).onStart {
+                sendConnectMessageLoading = true
+            }.catch {
+                sendConnectMessageLoading = false
+            }.collectLatest {
+                sendConnectMessageLoading = false
+                if (it.status == false) return@collectLatest
+
+                val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
+                val data = ConnectChatMessageResponse(
+                    it.message, myEmail, email, false, "",
+                    System.currentTimeMillis(), jam_name = musicData.name,
+                    jam_artists = musicData.artists, jam_id = musicData.id,
+                    jam_type = musicData.type, jam_thumbnail = musicData.thumbnail,
+                )
+
+                recentChatItemsToSend = data
                 recentChatItems.add(0, data)
             }
         }
@@ -73,6 +105,8 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                         it.message, myEmail, email, false, "", System.currentTimeMillis(),
                         it.media, it.thumbnail
                     )
+
+                    recentChatItemsToSend = data
                     recentChatItems.add(0, data)
                 }
             } else {

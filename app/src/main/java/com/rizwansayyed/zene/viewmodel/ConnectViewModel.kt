@@ -196,13 +196,13 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
 
-    fun updateVibeJazzInfo(z: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateVibejamInfo(z: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
-        v.jazz_name = z.name
-        v.jazz_artists = z.artists
-        v.jazz_id = z.id
-        v.jazz_thumbnail = z.thumbnail
-        v.jazz_type = z.type
+        v.jam_name = z.name
+        v.jam_artists = z.artists
+        v.jam_id = z.id
+        v.jam_thumbnail = z.thumbnail
+        v.jam_type = z.type
         connectFileSelected = null
         delay(500)
         connectFileSelected = v

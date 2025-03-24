@@ -29,11 +29,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.ui.connect_status.view.AddJamDialog
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapAlertNew
 import com.rizwansayyed.zene.ui.connect_status.view.GifAlert
 import com.rizwansayyed.zene.ui.connect_status.view.permissions
@@ -56,6 +56,7 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
 
     var messageText by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
+    var showJamAlert by remember { mutableStateOf(false) }
     var showGifAlert by remember { mutableStateOf(false) }
 
     val needPermission = stringResource(R.string.need_camera_microphone_permission_to_photo)
@@ -134,6 +135,10 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
                     showGifAlert = true
                 }
 
+                ImageWithBgRound(R.drawable.ic_music_note) {
+                    showJamAlert = true
+                }
+
                 ImageWithBgRound(R.drawable.ic_file_add) {
                     pickFile.launch("*/*")
                 }
@@ -152,6 +157,15 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
     ) {
         ConnectVibingSnapAlertNew(connectViewModel) {
             showAlert = false
+        }
+    }
+
+    if (showJamAlert) Dialog(
+        { showJamAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        AddJamDialog {
+            viewModel.sendConnectJamMessage(user.user?.email, it)
+            showJamAlert = false
         }
     }
 

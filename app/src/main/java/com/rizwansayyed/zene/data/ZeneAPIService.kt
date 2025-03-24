@@ -48,6 +48,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_GET_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_MARK_MESSAGE_AS_READ_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_JAM_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_LOCATION_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MEDIA_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MESSAGE_API
@@ -328,6 +329,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_MESSAGE_API)
     suspend fun sendConnectMessage(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_SEND_JAM_MESSAGE_API)
+    suspend fun sendConnectJamMessage(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 

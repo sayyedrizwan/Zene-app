@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +30,14 @@ import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
 import java.util.Locale
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ConnectTopProfileView(
@@ -33,6 +46,9 @@ fun ConnectTopProfileView(
     socket: ConnectSocketChatViewModel,
     close: () -> Unit
 ) {
+    val isInLobby by remember { derivedStateOf { socket.inLobby } }
+    val justLeftLobby by remember { derivedStateOf { socket.justLeft } }
+
     Row(modifier, Arrangement.Center, Alignment.CenterVertically) {
         Box(Modifier
             .padding(5.dp)
@@ -46,17 +62,18 @@ fun ConnectTopProfileView(
                 .weight(1f)
         ) {
             TextViewSemiBold(user.user?.name ?: "", 16, center = true)
-            if (socket.inLobby) {
+
+            if (isInLobby) {
                 Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                     Spacer(
                         Modifier
                             .padding(horizontal = 7.dp)
                             .size(10.dp)
                             .clip(RoundedCornerShape(100))
-                            .background(if (socket.justLeft) Color.Red else Color.Green)
+                            .background(if (justLeftLobby) Color.Red else Color.Green)
                     )
 
-                    if (socket.justLeft)
+                    if (justLeftLobby)
                         TextViewNormal(stringResource(R.string.just_left_conversation), size = 14)
                     else
                         TextViewNormal(stringResource(R.string.active_in_conversation), size = 14)
@@ -78,5 +95,7 @@ fun ConnectTopProfileView(
             ImageIcon(R.drawable.ic_more_vertical_circle, 21)
         }
 
+
+//        LaunchedEffect() { }
     }
 }

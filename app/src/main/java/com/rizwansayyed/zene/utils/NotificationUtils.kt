@@ -47,7 +47,11 @@ class NotificationUtils(
 
 
         fun clearConversationNotification(email: String) {
-            notificationManager.cancel(email, email.hashCode().absoluteValue)
+            try {
+                notificationManager.cancel(email, email.hashCode().absoluteValue)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

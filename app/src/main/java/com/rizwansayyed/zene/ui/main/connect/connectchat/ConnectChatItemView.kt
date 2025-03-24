@@ -35,6 +35,7 @@ import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeMediaItemAlert
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
+import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -87,7 +88,9 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
                 .padding(horizontal = 12.dp)
                 .widthIn(max = maxWidth)
         ) {
-            if (data.candid_media != null) {
+            if (data.getMusicData() != null) {
+                ItemCardView(data.getMusicData())
+            } else if (data.candid_media != null) {
                 Column {
                     Box(Modifier.clickable { showMediaDialog = true }, Alignment.Center) {
                         if (data.candid_thumbnail != null)

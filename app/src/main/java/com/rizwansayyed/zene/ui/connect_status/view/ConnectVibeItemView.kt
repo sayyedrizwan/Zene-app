@@ -166,7 +166,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                             RADIO -> ImageIcon(R.drawable.ic_radio, 18)
                         }
                         Spacer(Modifier.width(4.dp))
-                        TextViewNormal("${item.jazz_name} - ${item.jazz_artists}", 14, line = 1)
+                        TextViewNormal("${item.jam_name} - ${item.jam_artists}", 14, line = 1)
                     }
                 }
 
