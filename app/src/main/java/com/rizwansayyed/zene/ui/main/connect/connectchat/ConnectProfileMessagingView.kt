@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -83,7 +85,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
         ) { innerPadding ->
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .background(MainColor)
                     .consumeWindowInsets(innerPadding),
                 state = state,
@@ -147,6 +149,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
                 viewModel.addANewItemChat(connectChatSocket.newIncomingMessage!!)
                 if (state.firstVisibleItemIndex < 5) state.animateScrollToItem(0)
 
+                viewModel.markConnectMessageToRead(user.user?.email)
                 connectChatSocket.clearChatSendItem()
             }
         }
