@@ -27,10 +27,10 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
     var isRecentChatLoading by mutableStateOf(false)
     var sendConnectMessageLoading by mutableStateOf(false)
 
-    fun sendConnectMessage(email: String?, message: String) =
+    fun sendConnectMessage(email: String?, message: String, gif: String?) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
-            zeneAPI.sendConnectMessage(email, message).onStart {
+            zeneAPI.sendConnectMessage(email, message, gif).onStart {
                 sendConnectMessageLoading = true
             }.catch {
                 sendConnectMessageLoading = false
@@ -40,7 +40,8 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
 
                 val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
                 val data = ConnectChatMessageResponse(
-                    it.message, myEmail, email, false, message.trim(), System.currentTimeMillis()
+                    it.message, myEmail, email, false, message.trim(),
+                    System.currentTimeMillis(), gif = gif
                 )
                 recentChatItems.add(data)
             }

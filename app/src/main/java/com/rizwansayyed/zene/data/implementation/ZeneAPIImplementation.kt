@@ -688,7 +688,7 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.updateConnectSettings(token, body))
     }
 
-    override suspend fun sendConnectMessage(toEmail: String, message: String) = flow {
+    override suspend fun sendConnectMessage(toEmail: String, message: String, gif: String?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
@@ -696,6 +696,7 @@ class ZeneAPIImplementation @Inject constructor(
             put("email", email)
             put("toEmail", toEmail)
             put("message", message)
+            put("gif", gif)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

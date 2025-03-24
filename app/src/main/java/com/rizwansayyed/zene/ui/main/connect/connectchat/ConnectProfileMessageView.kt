@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -40,11 +42,15 @@ import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
+import com.rizwansayyed.zene.viewmodel.GifViewModel
 import java.io.File
+
 
 @Composable
 fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUserInfoResponse) {
     val connectViewModel: ConnectViewModel = hiltViewModel()
+    val gifViewModel: GifViewModel = hiltViewModel(key = user.user?.email)
+
     var messageText by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
     var showGifAlert by remember { mutableStateOf(false) }
@@ -59,6 +65,12 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
             } else {
                 showAlert = true
             }
+        }
+
+
+    val pickFile =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
         }
 
 
@@ -80,7 +92,7 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
             trailingIcon = {
                 if (messageText.isNotEmpty()) {
                     IconButton({
-                        viewModel.sendConnectMessage(user.user?.email, messageText)
+                        viewModel.sendConnectMessage(user.user?.email, messageText, null)
                         messageText = ""
                     }) {
                         ImageIcon(R.drawable.ic_sent, 24, Color.Black)
@@ -115,14 +127,17 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
                 }
 
                 ImageWithBgRound(R.drawable.ic_file_add) {
-
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.setType("file/*")
+                    pickFile.launch(intent)
                 }
             }
         }
     }
 
 
-    if (showGifAlert) GifAlert(data?.id, viewModel) {
+    if (showGifAlert) GifAlert(null, gifViewModel) {
+        if (it != null) viewModel.sendConnectMessage(user.user?.email, messageText, it)
         showGifAlert = false
     }
 

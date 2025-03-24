@@ -38,7 +38,6 @@ import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.SnackBarManager
 
 @Composable
 fun ConnectChatItemView(
@@ -106,7 +105,9 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
                         TextViewSemiBold(stringResource(R.string.candid), 14, Color.White)
                     }
                 }
-            } else TextViewBold(data.message ?: "", 16, Color.White)
+            } else if (data.gif != null)
+                GlideImage(data.gif, data.message, Modifier.fillMaxWidth())
+            else TextViewBold(data.message ?: "", 16, Color.White)
         }
     }
 

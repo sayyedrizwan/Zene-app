@@ -74,7 +74,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
                         coroutines.launch {
                             val position = viewModel.recentChatItems.indexOfLast { it._id == id }
                             try {
-                                state.scrollToItem(position - 2)
+                                state.scrollToItem(position, scrollOffset = -160)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }

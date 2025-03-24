@@ -9,4 +9,5 @@ data class ConnectChatMessageResponse(
     val timestamp: Long?,
     val candid_media: String? = null,
     val candid_thumbnail: String? = null,
+    val gif: String? = null,
 )

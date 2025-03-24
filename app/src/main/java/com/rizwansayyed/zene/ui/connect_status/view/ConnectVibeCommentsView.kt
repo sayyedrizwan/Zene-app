@@ -234,7 +234,8 @@ fun GifAlert(id: Int?, viewModel: GifViewModel, close: (String?) -> Unit) {
                                 GlideImage(it, "gif", Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        addAGif = it
+                                        if (id == null) close(it)
+                                        else addAGif = it
                                     })
                             }
 
