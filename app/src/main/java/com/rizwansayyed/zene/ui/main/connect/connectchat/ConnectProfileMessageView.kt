@@ -1,10 +1,13 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +40,7 @@ import com.rizwansayyed.zene.ui.connect_status.view.AddJamDialog
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapAlertNew
 import com.rizwansayyed.zene.ui.connect_status.view.GifAlert
 import com.rizwansayyed.zene.ui.connect_status.view.permissions
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
@@ -44,13 +48,18 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
+import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.GifViewModel
 import java.io.File
 
 
 @Composable
-fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUserInfoResponse) {
+fun ConnectProfileMessageView(
+    viewModel: ConnectChatViewModel,
+    user: ConnectUserInfoResponse,
+    connectChatSocket: ConnectSocketChatViewModel
+) {
     val connectViewModel: ConnectViewModel = hiltViewModel()
     val gifViewModel: GifViewModel = hiltViewModel(key = user.user?.email)
 
@@ -58,6 +67,16 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
     var showAlert by remember { mutableStateOf(false) }
     var showJamAlert by remember { mutableStateOf(false) }
     var showGifAlert by remember { mutableStateOf(false) }
+
+    var isTyping by remember { mutableStateOf(false) }
+    val handler = remember { Handler(Looper.getMainLooper()) }
+    val typingTimeout = 1000L
+
+    val typingRunnable = remember { Runnable { isTyping = false } }
+
+    LaunchedEffect(isTyping) {
+        connectChatSocket.typingMessage(isTyping)
+    }
 
     val needPermission = stringResource(R.string.need_camera_microphone_permission_to_photo)
     val fileSizeIsMore = stringResource(R.string.th_file_is_large_max_size_is_20_mb)
@@ -88,13 +107,22 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
 
     Row(
         Modifier
+            .background(MainColor)
             .padding(bottom = 15.dp)
             .fillMaxWidth()
-            .padding(horizontal = 5.dp).imePadding(), Arrangement.Center, Alignment.CenterVertically
+            .padding(horizontal = 5.dp)
+            .imePadding(), Arrangement.Center, Alignment.CenterVertically
     ) {
         TextField(
             messageText,
-            { messageText = if (it.length <= 250) it else it.take(250) },
+            {
+                messageText = if (it.length <= 250) it else it.take(250)
+                if (!isTyping) {
+                    isTyping = true
+                }
+                handler.removeCallbacks(typingRunnable)
+                handler.postDelayed(typingRunnable, typingTimeout)
+            },
             Modifier
                 .padding(horizontal = 5.dp)
                 .weight(1f)

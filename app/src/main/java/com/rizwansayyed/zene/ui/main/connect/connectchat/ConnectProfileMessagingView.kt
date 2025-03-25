@@ -3,20 +3,19 @@ package com.rizwansayyed.zene.ui.main.connect.connectchat
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -41,10 +40,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus
@@ -61,7 +63,7 @@ import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit) {
@@ -84,10 +86,13 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
         val userInfo by DataStorageManager.userInfo.collectAsState(null)
 
         var showMoreMessage by remember { mutableStateOf(false) }
+        var showTypingMessage by remember { mutableStateOf(false) }
 
         val lastVisibleItemIndex by remember {
             derivedStateOf { state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size - 1 }
         }
+
+        val isTying by remember { derivedStateOf { connectChatSocket.isTyping } }
 
         Scaffold(Modifier
             .fillMaxSize()
@@ -95,7 +100,27 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
             ConnectTopProfileView(user, connectChatSocket, close)
         }, bottomBar = {
             if (user.isConnected() == ConnectedUserStatus.FRIENDS) {
-                Column(Modifier.background(MainColor).fillMaxWidth(), Arrangement.Center, Alignment.End) {
+                Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.End) {
+                    if (showTypingMessage) {
+                        Column(
+                            Modifier
+                                .padding(5.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color.Red)
+                                .clickable {
+                                    coroutine.launch {
+                                        state.animateScrollToItem(0)
+                                    }
+                                }
+                                .padding(horizontal = 14.dp, vertical = 8.dp),
+                            Arrangement.Center, Alignment.CenterHorizontally
+                        ) {
+                            GlideImage(
+                                R.raw.typing_animation, "typing", Modifier.size(55.dp, 39.dp), contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+
                     if (showMoreMessage) {
                         Column(
                             Modifier
@@ -114,7 +139,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
                             ImageIcon(R.drawable.ic_arrow_down, 15)
                         }
                     }
-                    ConnectProfileMessageView(viewModel, user)
+                    ConnectProfileMessageView(viewModel, user, connectChatSocket)
                 }
             }
         }) { innerPadding ->
@@ -135,6 +160,13 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
 
                         LaunchedEffect(showMoreMessage) {
                             showMoreMessage = false
+                            showTypingMessage = false
+                        }
+                    }
+
+                    item(key = "typing") {
+                        this@ModalBottomSheet.AnimatedVisibility(isTying, Modifier) {
+                            UserTypingAnimation(user.user)
                         }
                     }
 
@@ -158,7 +190,6 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
                     item(key = "top2") {
                         Spacer(Modifier.height(90.dp))
                     }
-
 
                     if (!viewModel.isRecentChatLoading && viewModel.recentChatItems.isEmpty()) item {
                         TextViewSemiBold(
@@ -190,13 +221,19 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
             if (connectChatSocket.newIncomingMessage != null) {
                 viewModel.addANewItemChat(connectChatSocket.newIncomingMessage!!)
                 if (state.firstVisibleItemIndex < 5) state.animateScrollToItem(0)
-                else {
-                    showMoreMessage = true
-                }
+                else showMoreMessage = true
 
                 viewModel.markConnectMessageToRead(user.user?.email)
                 connectChatSocket.clearChatSendItem()
             }
+        }
+
+        LaunchedEffect(isTying) {
+            if (isTying) {
+                if (state.firstVisibleItemIndex < 5) state.animateScrollToItem(0)
+                else showTypingMessage = true
+            } else
+                showTypingMessage = false
         }
 
         BackHandler { close() }

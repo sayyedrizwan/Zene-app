@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -80,6 +80,7 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
 
     BoxWithConstraints(Modifier) {
         val maxWidth = maxWidth * 0.6f
+
         Box(
             modifier = Modifier
                 .padding(horizontal = 7.dp)
@@ -127,6 +128,45 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
         showMediaDialog = false
     }
 }
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun UserTypingAnimation(user: ConnectUserResponse?) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 5.dp, vertical = 11.dp),
+        Arrangement.End,
+        Alignment.Bottom
+    ) {
+        ProfileImageOfUser(user?.profile_photo, user?.name)
+
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 7.dp)
+                .background(
+                    color = BlackTransparent, shape = RoundedCornerShape(
+                        topStart = 16.dp,
+                        topEnd = 16.dp,
+                        bottomEnd = 16.dp,
+                        bottomStart = 0.dp
+                    )
+                )
+                .padding(12.dp)
+                .padding(horizontal = 12.dp),
+        ) {
+            GlideImage(
+                R.raw.typing_animation, "typing", Modifier.size(55.dp, 39.dp), contentScale = ContentScale.Crop
+            )
+        }
+
+
+
+        Spacer(Modifier.weight(1f))
+
+    }
+}
+
 
 @Composable
 fun FileDownloaderItemView(data: ConnectChatMessageResponse) {

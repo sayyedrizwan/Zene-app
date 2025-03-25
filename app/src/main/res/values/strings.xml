@@ -272,7 +272,7 @@
     <string name="copied_link">Copied Link</string>
     <string name="please_enter_valid_caption">Please enter a valid caption</string>
     <string name="error_uploading_please_try_again_later">Error uploading. Please try again later.</string>
-    <string name="share_notification_desc">Need some quiet time? Mute notifications from this friend without letting them know.</string>
+    <string name="share_notification_desc">Need some quiet time? Mute notifications and messages from this friend without letting them know.</string>
     <string name="share_your_location">Share Your Location</string>
     <string name="share_your_location_desc">Keep your friends in the loop! Share your current location with someone you trust whenever needed.</string>
     <string name="share_your_music">Share Your Music</string>

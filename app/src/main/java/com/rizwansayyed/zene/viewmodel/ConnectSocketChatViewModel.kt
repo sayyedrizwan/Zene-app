@@ -32,6 +32,7 @@ class ConnectSocketChatViewModel : ViewModel() {
     private var offJob: Job? = null
     var inLobby by mutableStateOf(false)
     var justLeft by mutableStateOf(false)
+    var isTyping by mutableStateOf(false)
     var newIncomingMessage by mutableStateOf<ConnectChatMessageResponse?>(null)
 
 
@@ -45,6 +46,7 @@ class ConnectSocketChatViewModel : ViewModel() {
         roomId = generateRoomId(senderEmail, myEmail!!)
 
         inLobby = false
+        isTyping = false
 
         try {
             val options = IO.Options.builder()
@@ -74,6 +76,17 @@ class ConnectSocketChatViewModel : ViewModel() {
                 offJob?.cancel()
                 justLeft = false
                 inLobby = true
+            }
+        }
+
+        mSocket?.on("typingMessage") { args ->
+            val data = args.first() as JSONObject
+            val email = data.getString("email")
+            val typing = data.getBoolean("typing")
+
+            if (email == senderEmail) {
+                offJob?.cancel()
+                isTyping = typing
             }
         }
 
@@ -107,6 +120,7 @@ class ConnectSocketChatViewModel : ViewModel() {
 
         mSocket?.on(Socket.EVENT_DISCONNECT) {
             inLobby = false
+            isTyping = false
         }
 
         mSocket?.on("disconnectUser") { args ->
@@ -116,6 +130,7 @@ class ConnectSocketChatViewModel : ViewModel() {
 
             if (email == senderEmail && type == USER_LEAVED_SOCKET) {
                 justLeft = true
+                isTyping = true
                 offJob?.cancel()
                 offJob = CoroutineScope(Dispatchers.IO).launch {
                     delay(4.seconds)
@@ -136,7 +151,16 @@ class ConnectSocketChatViewModel : ViewModel() {
         data.put("email", myEmail)
         data.put("message", json)
 
-        mSocket!!.emit("connectMessage", data)
+        mSocket?.emit("connectMessage", data)
+    }
+
+    fun typingMessage(typing: Boolean) {
+        val data = JSONObject()
+        data.put("room", roomId)
+        data.put("email", myEmail)
+        data.put("typing", typing)
+
+        mSocket?.emit("typingMessage", data)
     }
 
     private fun sendConnectMessage() = viewModelScope.launch(Dispatchers.IO) {
