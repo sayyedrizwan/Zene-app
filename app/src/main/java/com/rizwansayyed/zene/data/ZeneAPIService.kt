@@ -48,6 +48,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_GET_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_MARK_MESSAGE_AS_READ_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_FILE_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_JAM_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_LOCATION_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MEDIA_MESSAGE_API
@@ -325,6 +326,11 @@ interface ZeneAPIService {
     suspend fun getChatConnectRecentMessage(
         @Header("token") token: String, @Body data: RequestBody
     ): List<ConnectChatMessageResponse>
+
+    @POST(ZENE_CONNECT_SEND_FILE_MESSAGE_API)
+    suspend fun sendConnectFileMessage(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MediaStatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_MESSAGE_API)

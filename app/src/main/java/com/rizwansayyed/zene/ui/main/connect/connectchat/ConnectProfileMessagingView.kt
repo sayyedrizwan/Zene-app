@@ -1,43 +1,57 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
-import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
+import com.rizwansayyed.zene.data.model.ConnectedUserStatus
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
@@ -45,90 +59,118 @@ import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversation
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit) {
-    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+    val sheetState = rememberModalBottomSheetState()
+
+    ModalBottomSheet(
+        close,
+        sheetState = sheetState,
+        contentColor = MainColor,
+        containerColor = MainColor,
+        properties = ModalBottomSheetProperties()
+    ) {
         val homeViewModel: HomeViewModel = hiltViewModel()
         val viewModel: ConnectChatViewModel = hiltViewModel(key = user.user?.name)
 
         val window = LocalActivity.current?.window
+        val coroutine = rememberCoroutineScope()
         val connectChatSocket: ConnectSocketChatViewModel = hiltViewModel()
         val state = rememberLazyListState()
         val userInfo by DataStorageManager.userInfo.collectAsState(null)
+
+        var showMoreMessage by remember { mutableStateOf(false) }
 
         val lastVisibleItemIndex by remember {
             derivedStateOf { state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size - 1 }
         }
 
-        Scaffold(
-            Modifier
-                .fillMaxWidth()
-                .background(MainColor),
-            topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MainColor,
-                        titleContentColor = MainColor,
-                    ),
-                    title = {
-                        ConnectTopProfileView(user, connectChatSocket, close)
+        Scaffold(Modifier
+            .fillMaxSize()
+            .background(MainColor), topBar = {
+            ConnectTopProfileView(user, connectChatSocket, close)
+        }, bottomBar = {
+            if (user.isConnected() == ConnectedUserStatus.FRIENDS) {
+                Column(Modifier.background(MainColor).fillMaxWidth(), Arrangement.Center, Alignment.End) {
+                    if (showMoreMessage) {
+                        Column(
+                            Modifier
+                                .padding(5.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color.Red)
+                                .clickable {
+                                    coroutine.launch {
+                                        state.animateScrollToItem(0)
+                                    }
+                                }
+                                .padding(horizontal = 14.dp, vertical = 8.dp),
+                            Arrangement.Center, Alignment.CenterHorizontally
+                        ) {
+                            ImageIcon(R.drawable.ic_message_multiple, 18)
+                            ImageIcon(R.drawable.ic_arrow_down, 15)
+                        }
                     }
-                )
-
-            },
-            bottomBar = {
-                if (user.isConnected() == FRIENDS) ConnectProfileMessageView(viewModel, user)
+                    ConnectProfileMessageView(viewModel, user)
+                }
             }
-        ) { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
+        }) { innerPadding ->
+            Box(
+                Modifier
                     .background(MainColor)
-                    .consumeWindowInsets(innerPadding),
-                state = state,
-                reverseLayout = true,
-                verticalArrangement = Arrangement.Bottom
+                    .fillMaxSize()
+                    .consumeWindowInsets(innerPadding)
             ) {
-                item(key = "bottom") {
-                    Spacer(Modifier.height(80.dp))
-                }
+                LazyColumn(
+                    Modifier.fillMaxSize(),
+                    state = state,
+                    reverseLayout = true,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    item(key = "bottom") {
+                        Spacer(Modifier.height(80.dp))
 
-                items(viewModel.recentChatItems) {
-                    ConnectChatItemView(it, user.user, userInfo)
-                }
-
-                if (viewModel.isRecentChatLoading) item {
-                    Spacer(Modifier.height(120.dp))
-                    CircularLoadingView()
-                }
-
-                item(key = "top1") {
-                    LaunchedEffect(Unit) {
-                        if (!viewModel.isRecentChatLoading)
-                            viewModel.getChatConnectRecentMessage(user.user?.email, false)
+                        LaunchedEffect(showMoreMessage) {
+                            showMoreMessage = false
+                        }
                     }
-                }
 
-                item(key = "top2") {
-                    Spacer(Modifier.height(90.dp))
-                }
+                    items(viewModel.recentChatItems) {
+                        ConnectChatItemView(it, user.user, userInfo)
+                    }
+
+                    if (viewModel.isRecentChatLoading) item {
+                        Spacer(Modifier.height(120.dp))
+                        CircularLoadingView()
+                    }
+
+                    item(key = "top1") {
+                        LaunchedEffect(Unit) {
+                            if (!viewModel.isRecentChatLoading) {
+                                viewModel.getChatConnectRecentMessage(user.user?.email, false)
+                            }
+                        }
+                    }
+
+                    item(key = "top2") {
+                        Spacer(Modifier.height(90.dp))
+                    }
 
 
-                if (!viewModel.isRecentChatLoading && viewModel.recentChatItems.isEmpty()) item {
-                    TextViewSemiBold(
-                        stringResource(R.string.break_the_ice_start_conversation),
-                        center = true
-                    )
+                    if (!viewModel.isRecentChatLoading && viewModel.recentChatItems.isEmpty()) item {
+                        TextViewSemiBold(
+                            stringResource(R.string.break_the_ice_start_conversation), center = true
+                        )
+                    }
                 }
             }
         }
 
         LaunchedEffect(viewModel.sendConnectMessageLoading) {
-            if (!viewModel.sendConnectMessageLoading)
-                state.animateScrollToItem(0)
+            if (!viewModel.sendConnectMessageLoading) state.animateScrollToItem(0)
         }
 
         LaunchedEffect(lastVisibleItemIndex) {
@@ -148,11 +190,16 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
             if (connectChatSocket.newIncomingMessage != null) {
                 viewModel.addANewItemChat(connectChatSocket.newIncomingMessage!!)
                 if (state.firstVisibleItemIndex < 5) state.animateScrollToItem(0)
+                else {
+                    showMoreMessage = true
+                }
 
                 viewModel.markConnectMessageToRead(user.user?.email)
                 connectChatSocket.clearChatSendItem()
             }
         }
+
+        BackHandler { close() }
 
         @Suppress("DEPRECATION") LifecycleResumeEffect(Unit) {
             window?.statusBarColor = MainColor.toArgb()
@@ -174,6 +221,12 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
                 connectChatSocket.disconnect()
                 homeViewModel.userInfo()
             }
+        }
+    }
+
+    LaunchedEffect(sheetState.currentValue) {
+        if (sheetState.currentValue == SheetValue.PartiallyExpanded) {
+            sheetState.expand()
         }
     }
 }

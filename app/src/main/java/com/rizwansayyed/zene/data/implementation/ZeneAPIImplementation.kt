@@ -703,6 +703,26 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sendConnectMessage(token, body))
     }
 
+    override suspend fun sendConnectFileMessage(toEmail: String?, file: File?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val body = MultipartBody.Builder().setType(MultipartBody.FORM)
+
+        if (file?.exists() == true) {
+            val uploader =
+                file.asRequestBody("application/octet-stream".toMediaTypeOrNull())
+            body.addFormDataPart("file", file.name, uploader)
+        }
+
+        body.addFormDataPart("email", email)
+        body.addFormDataPart("fileName", file?.name ?: "")
+        body.addFormDataPart("fileSize", file?.length().toString())
+        toEmail?.let { body.addFormDataPart("toEmail", it) }
+
+        emit(zeneAPI.sendConnectFileMessage(token, body.build()))
+    }
+
     override suspend fun sendConnectJamMessage(toEmail: String, data: ZeneMusicData?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

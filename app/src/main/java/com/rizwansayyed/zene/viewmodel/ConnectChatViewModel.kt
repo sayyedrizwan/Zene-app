@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -84,6 +85,29 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
             }
         }
 
+
+    fun sendFileMessage(email: String?, file: File?) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        file ?: return@launch
+        zeneAPI.sendConnectFileMessage(email, file).onStart {
+            sendConnectMessageLoading = true
+        }.catch {
+            sendConnectMessageLoading = false
+        }.collectLatest {
+            sendConnectMessageLoading = false
+            if (it.status == false) return@collectLatest
+
+            val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
+            val data = ConnectChatMessageResponse(
+                it.message, myEmail, email, false, "",
+                it.ts ?: System.currentTimeMillis(), file_path = it.media,
+                file_name = file.name, file_size = file.length().toString()
+            )
+
+            recentChatItemsToSend = data
+            recentChatItems.add(0, data)
+        }
+    }
 
     fun sendImageVideo(email: String?, file: String?, thumbnail: String?) =
         viewModelScope.launch(Dispatchers.IO) {

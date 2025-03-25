@@ -50,6 +50,7 @@ fun ConnectUserProfileView(email: String) {
             .background(Color.Black)
     ) {
         val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
         when (val v = connectViewModel.connectUserInfo) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}

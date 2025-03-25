@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface ZeneAPIInterface {
     suspend fun loginUser(tokenID: String, type: String): Flow<UserInfoResponse>
@@ -152,4 +153,6 @@ interface ZeneAPIInterface {
     suspend fun sendConnectJamMessage(
         toEmail: String, data: ZeneMusicData?
     ): Flow<MediaStatusTypeResponse>
+
+    suspend fun sendConnectFileMessage(toEmail: String?, file: File?): Flow<MediaStatusTypeResponse>
 }

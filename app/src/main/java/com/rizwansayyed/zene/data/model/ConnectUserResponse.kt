@@ -21,6 +21,7 @@ data class ConnectUserInfoResponse(
     val unReadMessages: Int?,
     val vibes: List<ConnectFeedDataResponse?>?,
 ) {
+
     data class Status(
         var isConnected: Boolean?,
         var lastListeningSong: Boolean?,

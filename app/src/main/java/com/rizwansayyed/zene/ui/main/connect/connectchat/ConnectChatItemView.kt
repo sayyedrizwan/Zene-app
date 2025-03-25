@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main.connect.connectchat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,11 +37,14 @@ import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeMediaItemAlert
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.DownloadInformation
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.downloadViewMap
 
 @Composable
 fun ConnectChatItemView(
@@ -87,36 +93,76 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
                 )
                 .padding(12.dp)
                 .padding(horizontal = 12.dp)
-                .widthIn(max = maxWidth)
+                .widthIn(max = maxWidth),
         ) {
-            if (data.getMusicData() != null) {
+            if (data.file_path != null && data.file_name != null) {
+                FileDownloaderItemView(data)
+            } else if (data.getMusicData() != null) {
                 ItemCardView(data.getMusicData())
             } else if (data.candid_media != null) {
                 Column {
                     Box(Modifier.clickable { showMediaDialog = true }, Alignment.Center) {
-                        if (data.candid_thumbnail != null)
-                            GlideImage(data.candid_thumbnail, "", Modifier.height(250.dp))
-                        else
-                            GlideImage(data.candid_media, "", Modifier.height(250.dp))
+                        if (data.candid_thumbnail != null) GlideImage(
+                            data.candid_thumbnail,
+                            "",
+                            Modifier.height(250.dp)
+                        )
+                        else GlideImage(data.candid_media, "", Modifier.height(250.dp))
 
-                        if (data.candid_media.contains(".mp4"))
-                            ImageWithBgRound(R.drawable.ic_play) {
-                                showMediaDialog = true
-                            }
+                        if (data.candid_media.contains(".mp4")) ImageWithBgRound(R.drawable.ic_play) {
+                            showMediaDialog = true
+                        }
                     }
                     Spacer(Modifier.width(7.dp))
                     Box(Modifier.clickable { candidMeaning.toast() }) {
                         TextViewSemiBold(stringResource(R.string.candid), 14, Color.White)
                     }
                 }
-            } else if (data.gif != null)
-                GlideImage(data.gif, data.message, Modifier.fillMaxWidth())
+            } else if (data.gif != null) GlideImage(data.gif, data.message, Modifier.fillMaxWidth())
             else TextViewBold(data.message ?: "", 16, Color.White)
         }
     }
 
     if (showMediaDialog) ConnectVibeMediaItemAlert(data.candid_media) {
         showMediaDialog = false
+    }
+}
+
+@Composable
+fun FileDownloaderItemView(data: ConnectChatMessageResponse) {
+    val filePath = remember { mutableStateOf(downloadViewMap[data.file_path]) }
+    val downloadInformation by remember { derivedStateOf { filePath.value?.downloadProgress } }
+    val downloadComplete by remember { derivedStateOf { filePath.value?.isDownloadComplete } }
+
+    Row(Modifier.clickable(
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() }
+    ) {
+        if (data.file_path != null && filePath.value == null) {
+            downloadViewMap[data.file_path] =
+                DownloadInformation(data.file_path, data.file_name ?: "")
+            filePath.value = downloadViewMap[data.file_path]
+        } else if (downloadComplete == true) {
+            filePath.value?.openDownloadFolder()
+        }
+    }, Arrangement.Center, Alignment.CenterVertically
+    ) {
+        ImageIcon(R.drawable.ic_folder_download, 28)
+
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(horizontal = 7.dp)
+        ) {
+            TextViewBold(data.file_name ?: "", 15, Color.White)
+            if (downloadComplete == null) {
+                TextViewSemiBold(data.fileSize(), 12, Color.White)
+            } else if (downloadComplete == true) {
+                TextViewSemiBold(stringResource(R.string.downloaded), 12, Color.White)
+            } else if (downloadInformation != null) {
+                TextViewSemiBold("${downloadInformation}%", 12, Color.White)
+            }
+        }
     }
 }
 

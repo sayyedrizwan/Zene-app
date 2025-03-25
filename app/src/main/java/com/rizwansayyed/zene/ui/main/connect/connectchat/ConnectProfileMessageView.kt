@@ -2,13 +2,13 @@ package com.rizwansayyed.zene.ui.main.connect.connectchat
 
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -60,6 +60,7 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
     var showGifAlert by remember { mutableStateOf(false) }
 
     val needPermission = stringResource(R.string.need_camera_microphone_permission_to_photo)
+    val fileSizeIsMore = stringResource(R.string.th_file_is_large_max_size_is_20_mb)
 
     val request =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -77,7 +78,9 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
             uri?.let {
                 val file = getFileFromUri(it)
                 file?.let { pickedFile ->
-                    Log.d("TAG", "ConnectProfileMessageView: dqta $pickedFile")
+                    if (isFileSizeValid(pickedFile))
+                        viewModel.sendFileMessage(user.user?.email, pickedFile)
+                    else fileSizeIsMore.toast()
                 }
             }
         }
@@ -87,7 +90,7 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
         Modifier
             .padding(bottom = 15.dp)
             .fillMaxWidth()
-            .padding(horizontal = 5.dp), Arrangement.Center, Alignment.CenterVertically
+            .padding(horizontal = 5.dp).imePadding(), Arrangement.Center, Alignment.CenterVertically
     ) {
         TextField(
             messageText,
@@ -180,6 +183,13 @@ fun ConnectProfileMessageView(viewModel: ConnectChatViewModel, user: ConnectUser
         if (File(file.toString()).exists())
             viewModel.sendImageVideo(user.user?.email, file, thumbnail)
     }
+}
+
+private fun isFileSizeValid(file: File): Boolean {
+    val sizeInBytes = file.length()
+    val sizeInMb = sizeInBytes / (1024 * 1024)
+
+    return sizeInMb <= 20
 }
 
 private fun getFileFromUri(uri: Uri): File? {

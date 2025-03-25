@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -36,7 +37,7 @@ fun ConnectTopProfileView(
     val isInLobby by remember { derivedStateOf { socket.inLobby } }
     val justLeftLobby by remember { derivedStateOf { socket.justLeft } }
 
-    Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+    Row(Modifier.background(MainColor).fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
         Box(Modifier
             .padding(5.dp)
             .clickable { close() }) {
@@ -81,8 +82,5 @@ fun ConnectTopProfileView(
             .clickable { close() }) {
             ImageIcon(R.drawable.ic_more_vertical_circle, 21)
         }
-
-
-//        LaunchedEffect() { }
     }
 }

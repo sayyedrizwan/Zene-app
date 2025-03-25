@@ -189,6 +189,7 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="downloaded">Downloaded</string>
     <string name="break_the_ice_start_conversation">Be the first to break the ice! ❄️ Start the conversation… 😊</string>
     <string name="free_space">Free Space:</string>
     <string name="used_space">Used Space:</string>
@@ -350,7 +351,10 @@
     <string name="tap_to_view_their_friend_request">Tap to view their friend request.</string>
     <string name="is_now_your_friend">%s is now your friend! 🎉</string>
     <string name="send_you_a_message">%s send you a message!</string>
+    <string name="new_message">New Message</string>
+    <string name="th_file_is_large_max_size_is_20_mb">The file is too large to send. The maximum allowed size is 20 MB.</string>
     <string name="is_now_your_friend_desc">Time to share your favorite tracks, podcasts, and more. Let\'s get the conversation started!</string>
+    <string name="downloading_file_please_wait">Downloading file… Please wait…</string>
 
 
 
