@@ -116,7 +116,10 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
                             Arrangement.Center, Alignment.CenterHorizontally
                         ) {
                             GlideImage(
-                                R.raw.typing_animation, "typing", Modifier.size(55.dp, 39.dp), contentScale = ContentScale.Crop
+                                R.raw.typing_animation,
+                                "typing",
+                                Modifier.size(55.dp, 39.dp),
+                                contentScale = ContentScale.Crop
                             )
                         }
                     }

@@ -35,6 +35,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.view.AddJamDialog
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapAlertNew
@@ -67,6 +68,7 @@ fun ConnectProfileMessageView(
     var showAlert by remember { mutableStateOf(false) }
     var showJamAlert by remember { mutableStateOf(false) }
     var showGifAlert by remember { mutableStateOf(false) }
+    var showSettingsView by remember { mutableStateOf(false) }
 
     var isTyping by remember { mutableStateOf(false) }
     val handler = remember { Handler(Looper.getMainLooper()) }
@@ -188,6 +190,10 @@ fun ConnectProfileMessageView(
         showGifAlert = false
     }
 
+    if (showSettingsView) ShowChatSettingsInfo(user.user, viewModel) {
+        showSettingsView = false
+    }
+
     if (showAlert) Dialog(
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
@@ -211,6 +217,14 @@ fun ConnectProfileMessageView(
         if (File(file.toString()).exists())
             viewModel.sendImageVideo(user.user?.email, file, thumbnail)
     }
+}
+
+
+@Composable
+fun ShowChatSettingsInfo(
+    user: ConnectUserResponse?, viewModel: ConnectChatViewModel, close: () -> Unit
+) {
+
 }
 
 private fun isFileSizeValid(file: File): Boolean {
