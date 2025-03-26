@@ -184,7 +184,6 @@ fun ConnectProfileMessageView(
         }
     }
 
-
     if (showGifAlert) GifAlert(null, gifViewModel) {
         if (it != null) viewModel.sendConnectMessage(user.user?.email, messageText, it)
         showGifAlert = false
