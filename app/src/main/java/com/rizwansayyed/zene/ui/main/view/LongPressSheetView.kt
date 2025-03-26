@@ -66,7 +66,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
         val homeViewModel: HomeViewModel = hiltViewModel(key = viewModel.showMediaInfoSheet?.id)
         var showShare by remember { mutableStateOf(false) }
         var showAddToHomeScreen by remember { mutableStateOf(false) }
-        var data by remember { mutableStateOf(viewModel.showMediaInfoSheet!!) }
+        val data by remember { mutableStateOf(viewModel.showMediaInfoSheet!!) }
 
 
         LazyColumn(Modifier.fillMaxWidth()) {
