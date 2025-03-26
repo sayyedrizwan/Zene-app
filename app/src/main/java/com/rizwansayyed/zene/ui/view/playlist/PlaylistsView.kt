@@ -85,7 +85,7 @@ enum class PlaylistsType(val type: String) {
 
 @Composable
 fun PlaylistView(id: String, type: PlaylistsType) {
-    val homeViewModel: HomeViewModel = hiltViewModel(key = id)
+    val homeViewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
     val playerInfo by musicPlayerDB.collectAsState(null)
 

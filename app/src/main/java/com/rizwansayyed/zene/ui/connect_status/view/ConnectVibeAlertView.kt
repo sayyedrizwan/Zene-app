@@ -90,7 +90,7 @@ fun MusicDataSheet(data: ConnectFeedDataResponse?, close: () -> Unit) {
     ModalBottomSheet(
         { close() }, contentColor = MainColor, containerColor = MainColor
     ) {
-        val playerViewModel: PlayerViewModel = hiltViewModel(key = data?.getMusicData()?.id)
+        val playerViewModel: PlayerViewModel = hiltViewModel()
         var mediaItem by remember { mutableStateOf<ZeneMusicData?>(null) }
 
         Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
@@ -122,7 +122,9 @@ fun MusicDataSheet(data: ConnectFeedDataResponse?, close: () -> Unit) {
         LaunchedEffect(Unit) {
             mediaItem = data?.getMusicData()
             if (data?.getMusicData()?.type() == SONGS) {
-                playerViewModel.similarArtistsAlbumOfSong(data.jam_id ?: "") {
+                playerViewModel.similarArtistsAlbumOfSong(
+                    data.jam_id ?: "", data.jam_name, data.jam_artists
+                ) {
                     mediaItem = it
                 }
             }

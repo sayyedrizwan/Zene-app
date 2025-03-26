@@ -142,7 +142,7 @@ interface ZeneAPIInterface {
     suspend fun updatePhoto(file: Uri?): Flow<StatusTypeResponse>
     suspend fun moviesTvShowsInfo(id: String?): Flow<MoviesTvShowResponse>
     suspend fun seasonMoviesTvShowsInfo(id: String?): Flow<ZeneMusicDataList>
-    suspend fun similarArtistsAlbumOfSong(id: String): Flow<ZeneMusicData>
+    suspend fun similarArtistsAlbumOfSong(id: String, name: String?, artists: String?): Flow<ZeneMusicData>
     suspend fun isPlaylistAdded(id: String, type: String): Flow<StatusTypeResponse>
     suspend fun markConnectMessageToRead(toEmail: String): Flow<StatusTypeResponse>
     suspend fun getChatConnectRecentMessage(toEmail: String, lastId: String?): Flow<List<ConnectChatMessageResponse>>

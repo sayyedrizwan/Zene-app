@@ -62,7 +62,7 @@ import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 @Composable
 fun EditPlaylistNameDialog(data: ZeneMusicData, close: (Boolean) -> Unit) {
     Dialog(onDismissRequest = { close(false) }) {
-        val viewModel: MyLibraryViewModel = hiltViewModel(key = data.name)
+        val viewModel: MyLibraryViewModel = hiltViewModel()
         val titleNameChange = stringResource(R.string.edit_your_playlist_new_name)
         var name by remember { mutableStateOf(data.name ?: "") }
         var loading by remember { mutableStateOf(false) }

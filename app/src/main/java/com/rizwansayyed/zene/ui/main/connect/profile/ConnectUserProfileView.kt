@@ -41,7 +41,7 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectUserProfileView(email: String) {
-    val connectViewModel: ConnectViewModel = hiltViewModel(key = email)
+    val connectViewModel: ConnectViewModel = hiltViewModel()
     var job by remember { mutableStateOf<Job?>(null) }
 
     Box(

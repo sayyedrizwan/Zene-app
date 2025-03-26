@@ -27,7 +27,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
 fun MoviesView(id: String) {
-    val viewModel: HomeViewModel = hiltViewModel(key = id)
+    val viewModel: HomeViewModel = hiltViewModel()
 
     Box(Modifier.fillMaxSize(), Alignment.Center) {
         when (val v = viewModel.movieShowInfo) {

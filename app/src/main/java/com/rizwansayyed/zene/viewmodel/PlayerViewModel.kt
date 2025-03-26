@@ -175,9 +175,11 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun similarArtistsAlbumOfSong(id: String, response: (ZeneMusicData) -> Unit) =
+    fun similarArtistsAlbumOfSong(
+        id: String, name: String?, artists: String?, response: (ZeneMusicData) -> Unit
+    ) =
         viewModelScope.launch(Dispatchers.IO) {
-            zeneAPI.similarArtistsAlbumOfSong(id).onStart {}.catch {}.collectLatest {
+            zeneAPI.similarArtistsAlbumOfSong(id, name, artists).onStart {}.catch {}.collectLatest {
                 response(it)
             }
         }

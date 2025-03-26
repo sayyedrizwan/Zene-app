@@ -4,10 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.utils.share.IntentFCMNotification
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class NavigationViewModel : ViewModel() {
     var homeSection by mutableStateOf(HomeSectionSelector.MUSIC)
@@ -36,7 +40,7 @@ class NavigationViewModel : ViewModel() {
         showMediaInfoSheet = value
     }
 
-    fun updateArtistsAndAlbums(value: ZeneMusicData?) {
+    fun updateArtistsAndAlbums(value: ZeneMusicData?) = viewModelScope.launch {
         val infos = showMediaInfoSheet
         infos?.artistsList = value?.artistsList ?: emptyList()
         infos?.albumInfo = value?.albumInfo

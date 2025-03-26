@@ -77,7 +77,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
         properties = ModalBottomSheetProperties()
     ) {
         val homeViewModel: HomeViewModel = hiltViewModel()
-        val viewModel: ConnectChatViewModel = hiltViewModel(key = user.user?.name)
+        val viewModel: ConnectChatViewModel = hiltViewModel()
 
         val window = LocalActivity.current?.window
         val coroutine = rememberCoroutineScope()

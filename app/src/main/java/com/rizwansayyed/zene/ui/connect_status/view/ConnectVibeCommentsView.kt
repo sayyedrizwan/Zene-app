@@ -30,6 +30,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -86,10 +87,12 @@ fun ConnectVibeCommentsView(data: ConnectFeedDataResponse?, close: () -> Unit) {
     val state = rememberLazyListState()
     var isBottomTriggered by remember { mutableStateOf(false) }
 
+    val sheetState = rememberModalBottomSheetState()
+
     ModalBottomSheet(
-        close, contentColor = Color.Black, containerColor = Color.Black
+        close, sheetState = sheetState, contentColor = Color.Black, containerColor = Color.Black
     ) {
-        LazyColumn(Modifier.fillMaxWidth(), state) {
+        LazyColumn(Modifier.fillMaxSize(), state) {
             stickyHeader {
                 Column(
                     Modifier
@@ -140,8 +143,7 @@ fun ConnectVibeCommentsView(data: ConnectFeedDataResponse?, close: () -> Unit) {
                 }
 
                 GlideImage(
-                    it.gif,
-                    it.name,
+                    it.gif, it.name,
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp, vertical = 10.dp)
@@ -163,37 +165,38 @@ fun ConnectVibeCommentsView(data: ConnectFeedDataResponse?, close: () -> Unit) {
                 Spacer(Modifier.height(200.dp))
             }
         }
-    }
 
 
-    LaunchedEffect(Unit) {
-        ConnectCommentListenerManager.setCallback(object : ConnectCommentListener {
-            override fun addedNewComment() {
-                page = 0
-                viewModel.commentGifs(data?.id, page)
-                page += 1
-            }
-        })
-    }
-
-    LaunchedEffect(state) {
-        snapshotFlow { state.layoutInfo }
-            .collect { layoutInfo ->
-                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                val totalItemsCount = layoutInfo.totalItemsCount
-
-                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
-                    isBottomTriggered = true
+        LaunchedEffect(Unit) {
+            ConnectCommentListenerManager.setCallback(object : ConnectCommentListener {
+                override fun addedNewComment() {
+                    page = 0
                     viewModel.commentGifs(data?.id, page)
                     page += 1
-                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
-                    isBottomTriggered = false
                 }
-            }
-    }
+            })
+            sheetState.expand()
+        }
 
-    if (showGifAlert) GifAlert(data?.id, viewModel) {
-        showGifAlert = false
+        LaunchedEffect(state) {
+            snapshotFlow { state.layoutInfo }
+                .collect { layoutInfo ->
+                    val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                    val totalItemsCount = layoutInfo.totalItemsCount
+
+                    if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                        isBottomTriggered = true
+                        viewModel.commentGifs(data?.id, page)
+                        page += 1
+                    } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                        isBottomTriggered = false
+                    }
+                }
+        }
+
+        if (showGifAlert) GifAlert(data?.id, viewModel) {
+            showGifAlert = false
+        }
     }
 }
 
@@ -299,9 +302,11 @@ fun GifAlert(id: Int?, viewModel: GifViewModel, close: (String?) -> Unit) {
 
         if (addAGif != null) AlertDialogWithImage(addAGif, {
             addAGif = null
+            close(null)
         }) {
             addAGif?.let { viewModel.postAGif(it, id) }
             addAGif = null
+            close(null)
         }
     }
 }

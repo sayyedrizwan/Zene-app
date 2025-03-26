@@ -83,7 +83,8 @@ fun MoviesSeasonsView(data: MoviesTvShowResponse) {
 @Composable
 fun SeasonsInfoView(seasons: ZeneMusicData, data: MoviesTvShowResponse, close: () -> Unit) {
     ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
-        val viewModel: HomeViewModel = hiltViewModel(key = "${seasons.id}_${data.id}")
+        val viewModel: HomeViewModel = hiltViewModel()
+//        val viewModel: HomeViewModel = hiltViewModel(key = "${seasons.id}_${data.id}")
         LazyColumn(Modifier.fillMaxWidth()) {
             item { Spacer(Modifier.height(10.dp)) }
 

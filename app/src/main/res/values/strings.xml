@@ -191,6 +191,7 @@
     <string name="view">View</string>
     <string name="downloaded">Downloaded</string>
     <string name="break_the_ice_start_conversation">Be the first to break the ice! ❄️ Start the conversation… 😊</string>
+    <string name="chat_settings">Chat Settings</string>
     <string name="free_space">Free Space:</string>
     <string name="used_space">Used Space:</string>
     <string name="zene_storage_used">Zene Storage Used:</string>

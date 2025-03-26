@@ -943,7 +943,7 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.getCommentOfVibes(token, body))
     }
 
-    override suspend fun similarArtistsAlbumOfSong(id: String) = flow {
+    override suspend fun similarArtistsAlbumOfSong(id: String, name: String?, artists: String?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
         val country = ipDB.firstOrNull()?.countryCode
@@ -951,6 +951,8 @@ class ZeneAPIImplementation @Inject constructor(
         val json = JSONObject().apply {
             put("email", email)
             put("id", id)
+            put("name", id)
+            put("artist", artists)
             put("country", country)
         }
 

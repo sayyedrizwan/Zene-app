@@ -14,7 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,8 +38,15 @@ fun ConnectTopProfileView(
 ) {
     val isInLobby by remember { derivedStateOf { socket.inLobby } }
     val justLeftLobby by remember { derivedStateOf { socket.justLeft } }
+    var showSettingsView by remember { mutableStateOf(false) }
 
-    Row(Modifier.background(MainColor).fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+    Row(
+        Modifier
+            .background(MainColor)
+            .fillMaxWidth(),
+        Arrangement.Center,
+        Alignment.CenterVertically
+    ) {
         Box(Modifier
             .padding(5.dp)
             .clickable { close() }) {
@@ -79,8 +88,14 @@ fun ConnectTopProfileView(
 
         Box(Modifier
             .padding(5.dp)
-            .clickable { close() }) {
+            .clickable { showSettingsView = true }) {
             ImageIcon(R.drawable.ic_more_vertical_circle, 21)
         }
     }
+
+
+    if (showSettingsView) ConnectChatSettingsView(user.user) {
+        showSettingsView = false
+    }
+
 }

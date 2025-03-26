@@ -35,7 +35,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
-import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.view.AddJamDialog
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibingSnapAlertNew
@@ -62,13 +61,12 @@ fun ConnectProfileMessageView(
     connectChatSocket: ConnectSocketChatViewModel
 ) {
     val connectViewModel: ConnectViewModel = hiltViewModel()
-    val gifViewModel: GifViewModel = hiltViewModel(key = user.user?.email)
+    val gifViewModel: GifViewModel = hiltViewModel()
 
     var messageText by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
     var showJamAlert by remember { mutableStateOf(false) }
     var showGifAlert by remember { mutableStateOf(false) }
-    var showSettingsView by remember { mutableStateOf(false) }
 
     var isTyping by remember { mutableStateOf(false) }
     val handler = remember { Handler(Looper.getMainLooper()) }
@@ -76,9 +74,7 @@ fun ConnectProfileMessageView(
 
     val typingRunnable = remember { Runnable { isTyping = false } }
 
-    LaunchedEffect(isTyping) {
-        connectChatSocket.typingMessage(isTyping)
-    }
+    LaunchedEffect(isTyping) { connectChatSocket.typingMessage(isTyping) }
 
     val needPermission = stringResource(R.string.need_camera_microphone_permission_to_photo)
     val fileSizeIsMore = stringResource(R.string.th_file_is_large_max_size_is_20_mb)
@@ -189,10 +185,6 @@ fun ConnectProfileMessageView(
         showGifAlert = false
     }
 
-    if (showSettingsView) ShowChatSettingsInfo(user.user, viewModel) {
-        showSettingsView = false
-    }
-
     if (showAlert) Dialog(
         { showAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
@@ -218,13 +210,6 @@ fun ConnectProfileMessageView(
     }
 }
 
-
-@Composable
-fun ShowChatSettingsInfo(
-    user: ConnectUserResponse?, viewModel: ConnectChatViewModel, close: () -> Unit
-) {
-
-}
 
 private fun isFileSizeValid(file: File): Boolean {
     val sizeInBytes = file.length()
