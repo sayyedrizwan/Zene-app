@@ -28,8 +28,8 @@ object URLSUtils {
     const val YT_VIDEO_BASE_URL = "https://www.youtube.com/"
     const val LIKED_SONGS_ON_ZENE = "_liked_songs_on_zene"
 
-    const val ZENE_BASE_URL_SOCKET = "http://192.168.0.100:4102"
-    const val ZENE_BASE_URL_API = "http://192.168.0.100:4100"
+    const val ZENE_BASE_URL_SOCKET = "http://192.168.0.102:4102"
+    const val ZENE_BASE_URL_API = "http://192.168.0.102:4100"
     const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
     const val ZENE_RECENT_HOME_RADIO_API = "recent/home-radio"
@@ -57,6 +57,7 @@ object URLSUtils {
     const val ZENE_CONNECT_ACCEPT_API = "connect/accept"
     const val ZENE_CONNECT_USER_SETTINGS_API = "connect/user-settings"
     const val ZENE_CONNECT_SEND_MESSAGE_API = "connect/send-message"
+    const val ZENE_CONNECT_DELETE_MESSAGE_API = "connect/delete-message"
     const val ZENE_CONNECT_SEND_MEDIA_MESSAGE_API = "connect/send-media-message"
     const val ZENE_CONNECT_SEND_FILE_MESSAGE_API = "connect/send-file-message"
     const val ZENE_CONNECT_SEND_JAM_MESSAGE_API = "connect/send-jam-message"

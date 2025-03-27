@@ -1,6 +1,8 @@
 package com.rizwansayyed.zene.data.model
 
+import android.text.format.DateFormat
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -20,13 +22,14 @@ data class ConnectUserInfoResponse(
     val user: ConnectUserResponse?,
     val unReadMessages: Int?,
     val vibes: List<ConnectFeedDataResponse?>?,
+    var expireInMinutes: Int?
 ) {
 
     data class Status(
         var isConnected: Boolean?,
         var lastListeningSong: Boolean?,
         var locationSharing: Boolean?,
-        var silentNotification: Boolean?
+        var silentNotification: Boolean?,
     )
 
     fun isConnected(): ConnectedUserStatus = runBlocking(Dispatchers.IO) {
@@ -60,54 +63,113 @@ data class ConnectUserResponse(
             return false
         }
     }
+}
 
-    fun getLastSeen(): String? {
-        last_seen ?: return null
+fun getShowLastSeenTS(ts: Long?): String? {
+    ts ?: return null
 
-        val kolkataTimeZone = TimeZone.getTimeZone("Asia/Kolkata")
-        val sdfKolkata = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        sdfKolkata.timeZone = kolkataTimeZone
-        val kolkataDateStr = sdfKolkata.format(Date(last_seen))
-        val parsedDate = sdfKolkata.parse(kolkataDateStr)!!
+    val kolkataTimeZone = TimeZone.getTimeZone("Asia/Kolkata")
+    val sdfKolkata = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    sdfKolkata.timeZone = kolkataTimeZone
+    val kolkataDateStr = sdfKolkata.format(Date(ts))
+    val parsedDate = sdfKolkata.parse(kolkataDateStr)!!
 
-        val calendar = Calendar.getInstance()
-        calendar.time = parsedDate
+    val calendar = Calendar.getInstance()
+    calendar.time = parsedDate
 
-        val localOffset = TimeZone.getDefault().getOffset(calendar.timeInMillis)
-        val utcOffset = kolkataTimeZone.getOffset(calendar.timeInMillis)
+    val localOffset = TimeZone.getDefault().getOffset(calendar.timeInMillis)
+    val utcOffset = kolkataTimeZone.getOffset(calendar.timeInMillis)
 
-        val offsetDifference = localOffset - utcOffset
-        val timestamp = calendar.timeInMillis + offsetDifference
-
-
-        val now = System.currentTimeMillis()
-        val diff = now - timestamp
-
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(diff)
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(diff)
-        val hours = TimeUnit.MILLISECONDS.toHours(diff)
-        val days = TimeUnit.MILLISECONDS.toDays(diff)
+    val offsetDifference = localOffset - utcOffset
+    val timestamp = calendar.timeInMillis + offsetDifference
 
 
-        return when {
-            seconds < 60 -> if (seconds < 10) "just now" else "$seconds seconds ago"
-            minutes < 60 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
-            hours < 24 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
-            days in 1..6 -> "$days days ago"
-            else -> {
-                val calendar = Calendar.getInstance()
-                calendar.timeInMillis = timestamp
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
 
-                val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-                val eventYear = calendar.get(Calendar.YEAR)
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(diff)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(diff)
+    val hours = TimeUnit.MILLISECONDS.toHours(diff)
+    val days = TimeUnit.MILLISECONDS.toDays(diff)
 
-                return if (currentYear == eventYear) {
-                    val sdf = SimpleDateFormat("dd MMM hh:mm a", Locale.getDefault())
-                    sdf.format(Date(timestamp))
-                } else {
-                    val sdf = SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.getDefault())
-                    sdf.format(Date(timestamp))
-                }
+
+    return when {
+        seconds < 60 -> if (seconds < 10) "just now" else "$seconds seconds ago"
+        minutes < 60 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
+        hours < 24 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
+        days in 1..6 -> "$days days ago"
+        else -> {
+            val calendars = Calendar.getInstance()
+            calendars.timeInMillis = timestamp
+
+            val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+            val eventYear = calendars.get(Calendar.YEAR)
+            val is24Hour = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
+
+            return if (currentYear == eventYear) {
+                val sdf = SimpleDateFormat("dd MMM $is24Hour", Locale.getDefault())
+                sdf.format(Date(timestamp))
+            } else {
+                val sdf = SimpleDateFormat("dd MMM yyyy $is24Hour", Locale.getDefault())
+                sdf.format(Date(timestamp))
+            }
+        }
+    }
+}
+
+fun getShowFullTS(ts: Long?): String? {
+    ts ?: return null
+
+    val kolkataTimeZone = TimeZone.getTimeZone("Asia/Kolkata")
+    val sdfKolkata = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    sdfKolkata.timeZone = kolkataTimeZone
+    val kolkataDateStr = sdfKolkata.format(Date(ts))
+    val parsedDate = sdfKolkata.parse(kolkataDateStr)!!
+
+    val calendar = Calendar.getInstance()
+    calendar.time = parsedDate
+
+    val localOffset = TimeZone.getDefault().getOffset(calendar.timeInMillis)
+    val utcOffset = kolkataTimeZone.getOffset(calendar.timeInMillis)
+
+    val offsetDifference = localOffset - utcOffset
+    val timestamp = calendar.timeInMillis + offsetDifference
+
+
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(diff)
+    val hours = TimeUnit.MILLISECONDS.toHours(diff)
+    val days = TimeUnit.MILLISECONDS.toDays(diff)
+
+    val is24Hour = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
+
+    return when {
+        seconds < 60 -> if (seconds < 10) "just now" else "$seconds seconds ago"
+        hours < 24 -> {
+            val sdf = SimpleDateFormat(is24Hour, Locale.getDefault())
+            sdf.format(Date(timestamp))
+        }
+
+        days in 1..6 -> {
+            val sdf = SimpleDateFormat("EEE $is24Hour", Locale.getDefault())
+            sdf.format(Date(timestamp))
+        }
+
+        else -> {
+            val calendars = Calendar.getInstance()
+            calendars.timeInMillis = timestamp
+
+            val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+            val eventYear = calendars.get(Calendar.YEAR)
+
+            return if (currentYear == eventYear) {
+                val sdf = SimpleDateFormat("dd MMM $is24Hour", Locale.getDefault())
+                sdf.format(Date(timestamp))
+            } else {
+                val sdf = SimpleDateFormat("dd MMM yyyy $is24Hour", Locale.getDefault())
+                sdf.format(Date(timestamp))
             }
         }
     }

@@ -60,13 +60,18 @@ import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
 import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversationNotification
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
+import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit) {
+fun ConnectProfileMessagingView(
+    user: ConnectUserInfoResponse,
+    connectViewModel: ConnectViewModel,
+    close: () -> Unit
+) {
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
@@ -97,7 +102,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
         Scaffold(Modifier
             .fillMaxSize()
             .background(MainColor), topBar = {
-            ConnectTopProfileView(user, connectChatSocket, close)
+            ConnectTopProfileView(user, connectChatSocket, connectViewModel, close)
         }, bottomBar = {
             if (user.isConnected() == ConnectedUserStatus.FRIENDS) {
                 Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.End) {
@@ -174,7 +179,7 @@ fun ConnectProfileMessagingView(user: ConnectUserInfoResponse, close: () -> Unit
                     }
 
                     items(viewModel.recentChatItems) {
-                        ConnectChatItemView(it, user.user, userInfo)
+                        ConnectChatItemView(it, user.user, userInfo, viewModel)
                     }
 
                     if (viewModel.isRecentChatLoading) item {

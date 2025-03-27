@@ -671,7 +671,8 @@ class ZeneAPIImplementation @Inject constructor(
         toEmail: String,
         lastListenSongs: Boolean,
         locationSharing: Boolean,
-        silentNotification: Boolean
+        silentNotification: Boolean,
+        expire: Int?
     ) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -682,6 +683,7 @@ class ZeneAPIImplementation @Inject constructor(
             put("lastListenSongs", lastListenSongs)
             put("locationSharing", locationSharing)
             put("silentNotification", silentNotification)
+            put("expire", expire)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -701,6 +703,19 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.sendConnectMessage(token, body))
+    }
+
+    override suspend fun deleteConnectMessage(toEmail: String?, id: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toEmail", toEmail)
+            put("id", id)
+        }
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.deleteConnectMessage(token, body))
     }
 
     override suspend fun sendConnectFileMessage(toEmail: String?, file: File?) = flow {
@@ -943,22 +958,27 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.getCommentOfVibes(token, body))
     }
 
-    override suspend fun similarArtistsAlbumOfSong(id: String, name: String?, artists: String?) = flow {
-        val email = userInfo.firstOrNull()?.email ?: ""
-        val token = userInfo.firstOrNull()?.authToken ?: ""
-        val country = ipDB.firstOrNull()?.countryCode
+    override suspend fun similarArtistsAlbumOfSong(
+        id: String,
+        name: String?,
+        artists: String?
+    ) =
+        flow {
+            val email = userInfo.firstOrNull()?.email ?: ""
+            val token = userInfo.firstOrNull()?.authToken ?: ""
+            val country = ipDB.firstOrNull()?.countryCode
 
-        val json = JSONObject().apply {
-            put("email", email)
-            put("id", id)
-            put("name", id)
-            put("artist", artists)
-            put("country", country)
+            val json = JSONObject().apply {
+                put("email", email)
+                put("id", id)
+                put("name", id)
+                put("artist", artists)
+                put("country", country)
+            }
+
+            val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+            emit(zeneAPI.similarArtistsAlbumOfSong(token, body))
         }
-
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.similarArtistsAlbumOfSong(token, body))
-    }
 
     override suspend fun isPlaylistAdded(id: String, type: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""

@@ -41,6 +41,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_SIMILAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CHAT_RECENT_MESSAGE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_DELETE_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_VIBES_API
@@ -335,6 +336,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_MESSAGE_API)
     suspend fun sendConnectMessage(
+        @Header("token") token: String, @Body data: RequestBody
+    ): MediaStatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_DELETE_MESSAGE_API)
+    suspend fun deleteConnectMessage(
         @Header("token") token: String, @Body data: RequestBody
     ): MediaStatusTypeResponse
 

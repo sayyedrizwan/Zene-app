@@ -67,6 +67,13 @@
     <string name="sleep_timer">Sleep Timer</string>
     <string name="minutes">minutes</string>
     <string name="one_hour">1 hour</string>
+    <string name="three_hours">3 hours</string>
+    <string name="six_hours">6 hours</string>
+    <string name="twelve_hours">12 hours</string>
+    <string name="one_day">1 day</string>
+    <string name="two_days">2 days</string>
+    <string name="four_days">4 days</string>
+    <string name="seven_days">7 days</string>
     <string name="end_of_track">End of track</string>
     <string name="turn_off">Turn Off</string>
     <string name="trending_artists">Trending Artists</string>
@@ -141,6 +148,8 @@
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
     <string name="last_seen">Last seen %s</string>
+    <string name="seen">seen</string>
+    <string name="not_seen">not seen</string>
     <string name="active_in_conversation">Active in conversation</string>
     <string name="just_left_conversation">Just left conversation</string>
     <string name="connect_">Connect</string>
@@ -168,6 +177,7 @@
     <string name="friends">Friends</string>
     <string name="friend_requests">Friend Requests</string>
     <string name="vibes_status">Vibe Status</string>
+    <string name="authenticate_to_view_chat">Authenticate to view chat</string>
     <string name="info">Info</string>
     <string name="upload_a_vibes">Upload a Vibes</string>
     <string name="vibes_will_be_shared_and_expire_after_24">Vibes will be shared with your friends and expire after 24 hours</string>
@@ -189,6 +199,7 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="error_while_authentication">Error while authentication. Try again later.</string>
     <string name="downloaded">Downloaded</string>
     <string name="break_the_ice_start_conversation">Be the first to break the ice! ❄️ Start the conversation… 😊</string>
     <string name="chat_settings">Chat Settings</string>
@@ -274,11 +285,15 @@
     <string name="please_enter_valid_caption">Please enter a valid caption</string>
     <string name="error_uploading_please_try_again_later">Error uploading. Please try again later.</string>
     <string name="share_notification_desc">Need some quiet time? Mute notifications and messages from this friend without letting them know.</string>
+    <string name="lock_message">Lock Message</string>
+    <string name="lock_message_desc">Lock this chat on this device.</string>
     <string name="share_your_location">Share Your Location</string>
     <string name="share_your_location_desc">Keep your friends in the loop! Share your current location with someone you trust whenever needed.</string>
     <string name="share_your_music">Share Your Music</string>
     <string name="share_your_music_desc">Let your friends know what you’re vibing to! Share your currently playing song or top tracks with them.</string>
     <string name="once_you_shared_a_vibe_cannot_delete">Once you shared a vibe you cannot delete it, It will auto expire after 24 hours. Do you sure want to continue?</string>
+    <string name="expire_message">Expire Message</string>
+    <string name="expire_message_desc">Message will expire after the selected duration.</string>
     <string name="personal_info">Personal Info</string>
     <string name="playback_control">Playback Control</string>
     <string name="email_address">Email Address</string>
@@ -356,6 +371,8 @@
     <string name="th_file_is_large_max_size_is_20_mb">The file is too large to send. The maximum allowed size is 20 MB.</string>
     <string name="is_now_your_friend_desc">Time to share your favorite tracks, podcasts, and more. Let\'s get the conversation started!</string>
     <string name="downloading_file_please_wait">Downloading file… Please wait…</string>
+    <string name="after_seen">After Seen</string>
+    <string name="thirty_minutes">30 Minutes</string>
 
 
 

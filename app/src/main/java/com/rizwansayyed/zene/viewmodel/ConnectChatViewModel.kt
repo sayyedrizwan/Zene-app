@@ -38,6 +38,13 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         recentChatItems.add(0, message)
     }
 
+    fun removeANewItemChat(email: String?, id: String?) = viewModelScope.launch(Dispatchers.IO) {
+        val position = recentChatItems.indexOfFirst { it._id == id }
+        recentChatItems.removeAt(position)
+
+        zeneAPI.deleteConnectMessage(email, id).catch {}.collectLatest { }
+    }
+
     fun sendConnectMessage(email: String?, message: String, gif: String?) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch

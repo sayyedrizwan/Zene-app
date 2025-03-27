@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main.connect.profile
 
 import android.Manifest
 import android.location.Geocoder
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -57,6 +58,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.NavigationUtils
 import com.rizwansayyed.zene.utils.SnackBarManager
@@ -69,6 +71,9 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
+    val context = LocalActivity.current
+    val bioAuthMetric = BioAuthMetric(R.string.authenticate_to_view_chat, context)
+
     var showSendMessage by remember { mutableStateOf(false) }
     var sendLocation by remember { mutableStateOf(false) }
     var showPosts by remember { mutableStateOf(true) }
@@ -101,7 +106,9 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                     ) {
                         Box {
                             ImageWithBorder(R.drawable.ic_message_multiple) {
-                                showSendMessage = true
+                                bioAuthMetric.checkAuth { auth ->
+                                    if (auth) showSendMessage = true
+                                }
                             }
 
                             if ((data.unReadMessages ?: 0) > 0) Box(
@@ -196,14 +203,19 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         item { Spacer(Modifier.height(150.dp)) }
     }
 
-    if (showSendMessage) ConnectProfileMessagingView(data) {
+    if (showSendMessage) ConnectProfileMessagingView(data, viewModel) {
         showSendMessage = false
-        data.user?.email?.let { email -> viewModel.connectUserInfo(email) }
+        data.user?.email?.let { email ->
+            viewModel.connectUserInfoEmpty()
+            viewModel.connectUserInfo(email)
+        }
     }
 
     LaunchedEffect(Unit) {
         if (doOpenChatOnConnect) {
-            showSendMessage = true
+            bioAuthMetric.checkAuth { auth ->
+                if (auth) showSendMessage = true
+            }
             doOpenChatOnConnect = false
         }
     }

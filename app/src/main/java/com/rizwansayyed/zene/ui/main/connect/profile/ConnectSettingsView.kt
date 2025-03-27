@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
@@ -24,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.ui.main.connect.connectchat.ExpiryTime
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
@@ -81,11 +85,7 @@ fun ConnectSettingsView(response: ConnectUserInfoResponse, viewModel: ConnectVie
 
 @Composable
 fun SettingsViewSwitchItems(
-    img: Int,
-    title: Int,
-    desc: Int,
-    value: Boolean?,
-    change: (Boolean) -> Unit
+    img: Int, title: Int, desc: Int, value: Boolean?, change: (Boolean) -> Unit
 ) {
     Row(
         Modifier
@@ -115,6 +115,7 @@ fun SettingsViewSwitchItems(
         })
     }
 }
+
 
 
 @Composable

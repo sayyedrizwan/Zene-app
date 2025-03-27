@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,21 +36,29 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.data.model.getShowFullTS
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeMediaItemAlert
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.DownloadInformation
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.downloadViewMap
+import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 
 @Composable
 fun ConnectChatItemView(
-    data: ConnectChatMessageResponse, otherUser: ConnectUserResponse?, userInfo: UserInfoResponse?
+    data: ConnectChatMessageResponse,
+    otherUser: ConnectUserResponse?,
+    userInfo: UserInfoResponse?,
+    viewModel: ConnectChatViewModel
 ) {
+    var showInfoOf by remember { mutableStateOf(false) }
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -58,22 +67,38 @@ fun ConnectChatItemView(
         Alignment.Bottom
     ) {
         if (data.from == otherUser?.email) {
-            ProfileImageOfUser(otherUser?.profile_photo, otherUser?.name)
-            MessageItemView(data, true)
+            ProfileImageOfUser(otherUser?.profile_photo, otherUser?.name) {
+                showInfoOf = !showInfoOf
+            }
+            MessageItemView(data, true, showInfoOf)
         }
 
         Spacer(Modifier.weight(1f))
 
         if (data.from == userInfo?.email) {
-            MessageItemView(data, false)
-            ProfileImageOfUser(userInfo?.photo, userInfo?.name)
+            MessageItemView(data, false, showInfoOf)
+            Column(Modifier, Arrangement.Center, Alignment.CenterHorizontally) {
+                if (showInfoOf) Box(Modifier
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        viewModel.removeANewItemChat(otherUser?.email, data._id)
+                    }
+                    .padding(vertical = 10.dp)) {
+                    ImageIcon(R.drawable.ic_delete, 20)
+                }
+                ProfileImageOfUser(userInfo?.photo, userInfo?.name) {
+                    showInfoOf = !showInfoOf
+                }
+            }
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
+fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean, showInfoOf: Boolean) {
     var showMediaDialog by remember { mutableStateOf(false) }
 
     val candidMeaning = stringResource(R.string.candid_desc)
@@ -81,46 +106,53 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean) {
     BoxWithConstraints(Modifier) {
         val maxWidth = maxWidth * 0.6f
 
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 7.dp)
-                .background(
-                    color = BlackTransparent, shape = RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp,
-                        bottomEnd = if (isSender) 16.dp else 0.dp,
-                        bottomStart = if (isSender) 0.dp else 16.dp
-                    )
-                )
-                .padding(12.dp)
-                .padding(horizontal = 12.dp)
-                .widthIn(max = maxWidth),
-        ) {
-            if (data.file_path != null && data.file_name != null) {
-                FileDownloaderItemView(data)
-            } else if (data.getMusicData() != null) {
-                ItemCardView(data.getMusicData())
-            } else if (data.candid_media != null) {
-                Column {
-                    Box(Modifier.clickable { showMediaDialog = true }, Alignment.Center) {
-                        if (data.candid_thumbnail != null) GlideImage(
-                            data.candid_thumbnail,
-                            "",
-                            Modifier.height(250.dp)
+        Column(Modifier.widthIn(max = maxWidth)) {
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 7.dp)
+                    .background(
+                        color = BlackTransparent, shape = RoundedCornerShape(
+                            topStart = 16.dp,
+                            topEnd = 16.dp,
+                            bottomEnd = if (isSender) 16.dp else 0.dp,
+                            bottomStart = if (isSender) 0.dp else 16.dp
                         )
-                        else GlideImage(data.candid_media, "", Modifier.height(250.dp))
+                    )
+                    .padding(12.dp)
+                    .padding(horizontal = 12.dp)
+            ) {
+                if (data.file_path != null && data.file_name != null) {
+                    FileDownloaderItemView(data)
+                } else if (data.getMusicData() != null) {
+                    ItemCardView(data.getMusicData())
+                } else if (data.candid_media != null) {
+                    Column {
+                        Box(Modifier.clickable { showMediaDialog = true }, Alignment.Center) {
+                            if (data.candid_thumbnail != null) GlideImage(
+                                data.candid_thumbnail,
+                                "",
+                                Modifier.height(250.dp)
+                            )
+                            else GlideImage(data.candid_media, "", Modifier.height(250.dp))
 
-                        if (data.candid_media.contains(".mp4")) ImageWithBgRound(R.drawable.ic_play) {
-                            showMediaDialog = true
+                            if (data.candid_media.contains(".mp4")) ImageWithBgRound(R.drawable.ic_play) {
+                                showMediaDialog = true
+                            }
+                        }
+                        Spacer(Modifier.width(7.dp))
+                        Box(Modifier.clickable { candidMeaning.toast() }) {
+                            TextViewSemiBold(stringResource(R.string.candid), 14, Color.White)
                         }
                     }
-                    Spacer(Modifier.width(7.dp))
-                    Box(Modifier.clickable { candidMeaning.toast() }) {
-                        TextViewSemiBold(stringResource(R.string.candid), 14, Color.White)
-                    }
-                }
-            } else if (data.gif != null) GlideImage(data.gif, data.message, Modifier.fillMaxWidth())
-            else TextViewBold(data.message ?: "", 16, Color.White)
+                } else if (data.gif != null) GlideImage(
+                    data.gif, data.message, Modifier.fillMaxWidth()
+                )
+                else TextViewBold(data.message ?: "", 16, Color.White)
+            }
+
+            AnimatedVisibility(showInfoOf) {
+                ShowChatInfo(data, !isSender)
+            }
         }
     }
 
@@ -139,7 +171,7 @@ fun UserTypingAnimation(user: ConnectUserResponse?) {
         Arrangement.End,
         Alignment.Bottom
     ) {
-        ProfileImageOfUser(user?.profile_photo, user?.name)
+        ProfileImageOfUser(user?.profile_photo, user?.name) {}
 
         Box(
             modifier = Modifier
@@ -156,14 +188,34 @@ fun UserTypingAnimation(user: ConnectUserResponse?) {
                 .padding(horizontal = 12.dp),
         ) {
             GlideImage(
-                R.raw.typing_animation, "typing", Modifier.size(55.dp, 39.dp), contentScale = ContentScale.Crop
+                R.raw.typing_animation,
+                "typing",
+                Modifier.size(55.dp, 39.dp),
+                contentScale = ContentScale.Crop
             )
         }
 
-
-
         Spacer(Modifier.weight(1f))
 
+    }
+}
+
+@Composable
+fun ShowChatInfo(data: ConnectChatMessageResponse, isMyChat: Boolean) {
+    Row(Modifier.padding(horizontal = 15.dp), Arrangement.End, Alignment.CenterVertically) {
+        if (isMyChat) Spacer(Modifier.weight(1f))
+        if (isMyChat) {
+            if (data.did_read == true) TextViewNormal(stringResource(R.string.seen), 15)
+            else TextViewNormal(stringResource(R.string.not_seen), 15)
+        }
+
+        if (isMyChat) TextViewNormal(" • ", 15)
+
+        getShowFullTS(data.timestamp)?.let {
+            TextViewNormal(it, 14)
+        }
+
+        if (!isMyChat) Spacer(Modifier.weight(1f))
     }
 }
 
@@ -208,10 +260,11 @@ fun FileDownloaderItemView(data: ConnectChatMessageResponse) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ProfileImageOfUser(profilePhoto: String?, name: String?) {
+fun ProfileImageOfUser(profilePhoto: String?, name: String?, click: () -> Unit) {
     GlideImage(
         profilePhoto, name, Modifier
             .clip(RoundedCornerShape(100))
+            .clickable { click() }
             .size(35.dp)
     )
 }

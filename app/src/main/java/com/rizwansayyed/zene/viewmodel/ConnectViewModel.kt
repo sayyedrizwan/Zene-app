@@ -106,6 +106,10 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
+    fun connectUserInfoEmpty() = viewModelScope.launch(Dispatchers.IO) {
+        connectUserInfo = ResponseResult.Empty
+    }
+
     fun connectUserInfo(email: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.connectUserInfo(email).onStart {
             if (connectUserInfo is ResponseResult.Empty) connectUserInfo = ResponseResult.Loading
@@ -136,7 +140,8 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
                 data.user?.email ?: "",
                 data.myStatus?.lastListeningSong ?: false,
                 data.myStatus?.locationSharing ?: false,
-                data.myStatus?.silentNotification ?: false
+                data.myStatus?.silentNotification ?: false,
+                data.expireInMinutes
             ).catch { }.collectLatest { }
         }
 

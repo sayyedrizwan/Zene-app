@@ -31,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
@@ -52,7 +53,8 @@ object DataStorageManager {
         val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
         val MUSIC_PLAYER_DB = stringPreferencesKey("music_player_db")
         val AUTO_PAUSE_PLAYER_SETTINGS_DB = booleanPreferencesKey("auto_pause_player_settings_db")
-        val SMOOTH_SONG_TRANSITION_SETTINGS_DB = booleanPreferencesKey("smooth_song_transition_settings_db")
+        val SMOOTH_SONG_TRANSITION_SETTINGS_DB =
+            booleanPreferencesKey("smooth_song_transition_settings_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -194,4 +196,14 @@ object DataStorageManager {
             }
             if (isActive) cancel()
         }
+
+    suspend fun lockChatSettings(id: String, v: Boolean? = null): Flow<Boolean?> {
+        val key = booleanPreferencesKey("${id}_lock_chat_settings_db")
+        if (v == null) return context.dataStore.data.map {
+            it[key] ?: false
+        } else {
+        context.dataStore.edit { it[key] = v }
+        return flowOf(false)
+    }
+    }
 }

@@ -62,7 +62,8 @@ interface ZeneAPIInterface {
         toEmail: String,
         lastListenSongs: Boolean,
         locationSharing: Boolean,
-        silentNotification: Boolean
+        silentNotification: Boolean,
+        expire: Int?
     ): Flow<StatusTypeResponse>
 
     suspend fun sendConnectMessage(toEmail: String, message: String, gif: String?): Flow<MediaStatusTypeResponse>
@@ -155,4 +156,5 @@ interface ZeneAPIInterface {
     ): Flow<MediaStatusTypeResponse>
 
     suspend fun sendConnectFileMessage(toEmail: String?, file: File?): Flow<MediaStatusTypeResponse>
+    suspend fun deleteConnectMessage(toEmail: String?, id: String?): Flow<MediaStatusTypeResponse>
 }

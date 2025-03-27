@@ -25,16 +25,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.data.model.getShowLastSeenTS
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
+import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import java.util.Locale
 
 @Composable
 fun ConnectTopProfileView(
-    user: ConnectUserInfoResponse, socket: ConnectSocketChatViewModel, close: () -> Unit
+    user: ConnectUserInfoResponse,
+    socket: ConnectSocketChatViewModel,
+    connectViewModel: ConnectViewModel,
+    close: () -> Unit
 ) {
     val isInLobby by remember { derivedStateOf { socket.inLobby } }
     val justLeftLobby by remember { derivedStateOf { socket.justLeft } }
@@ -76,7 +81,7 @@ fun ConnectTopProfileView(
                         TextViewNormal(stringResource(R.string.active_in_conversation), size = 14)
                 }
             } else {
-                user.user?.getLastSeen()?.let {
+                getShowLastSeenTS(user.user?.last_seen)?.let {
                     TextViewNormal(
                         String.format(
                             Locale.getDefault(), stringResource(R.string.last_seen), it
@@ -94,7 +99,7 @@ fun ConnectTopProfileView(
     }
 
 
-    if (showSettingsView) ConnectChatSettingsView(user.user) {
+    if (showSettingsView) ConnectChatSettingsView(user, connectViewModel) {
         showSettingsView = false
     }
 
