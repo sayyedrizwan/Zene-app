@@ -113,6 +113,7 @@ class ConnectSocketChatViewModel : ViewModel() {
                 offJob?.cancel()
                 justLeft = false
                 inLobby = true
+                isTyping = false
             }
 
             sendConnectMessage()
@@ -144,7 +145,7 @@ class ConnectSocketChatViewModel : ViewModel() {
 
             if (email == senderEmail && type == USER_LEAVED_SOCKET) {
                 justLeft = true
-                isTyping = true
+                isTyping = false
                 offJob?.cancel()
                 offJob = CoroutineScope(Dispatchers.IO).launch {
                     delay(4.seconds)
@@ -194,6 +195,7 @@ class ConnectSocketChatViewModel : ViewModel() {
     }
 
     fun disconnect() {
+        isTyping = false
         inLobby = false
         mSocket?.disconnect()
     }

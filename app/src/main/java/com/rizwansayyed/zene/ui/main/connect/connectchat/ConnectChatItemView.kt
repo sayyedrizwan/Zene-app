@@ -48,13 +48,14 @@ import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.DownloadInformation
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.downloadViewMap
-import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
+import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 
 @Composable
 fun ConnectChatItemView(
     data: ConnectChatMessageResponse,
     otherUser: ConnectUserResponse?,
     userInfo: UserInfoResponse?,
+    connectSocketViewModel: ConnectSocketChatViewModel,
     delete: () -> Unit
 ) {
     var showInfoOf by remember { mutableStateOf(false) }
@@ -70,13 +71,13 @@ fun ConnectChatItemView(
             ProfileImageOfUser(otherUser?.profile_photo, otherUser?.name) {
                 showInfoOf = !showInfoOf
             }
-            MessageItemView(data, true, showInfoOf)
+            MessageItemView(data, true, showInfoOf, connectSocketViewModel)
         }
 
         Spacer(Modifier.weight(1f))
 
         if (data.from == userInfo?.email) {
-            MessageItemView(data, false, showInfoOf)
+            MessageItemView(data, false, showInfoOf, connectSocketViewModel)
             Column(Modifier, Arrangement.Center, Alignment.CenterHorizontally) {
                 if (showInfoOf) Box(Modifier
                     .clickable(
@@ -98,7 +99,10 @@ fun ConnectChatItemView(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean, showInfoOf: Boolean) {
+fun MessageItemView(
+    data: ConnectChatMessageResponse,
+    isSender: Boolean, showInfoOf: Boolean, viewModel: ConnectSocketChatViewModel
+) {
     var showMediaDialog by remember { mutableStateOf(false) }
 
     val candidMeaning = stringResource(R.string.candid_desc)
@@ -151,7 +155,7 @@ fun MessageItemView(data: ConnectChatMessageResponse, isSender: Boolean, showInf
             }
 
             AnimatedVisibility(showInfoOf) {
-                ShowChatInfo(data, !isSender)
+                ShowChatInfo(data, !isSender, viewModel)
             }
         }
     }
@@ -201,12 +205,20 @@ fun UserTypingAnimation(user: ConnectUserResponse?) {
 }
 
 @Composable
-fun ShowChatInfo(data: ConnectChatMessageResponse, isMyChat: Boolean) {
+fun ShowChatInfo(
+    data: ConnectChatMessageResponse,
+    isMyChat: Boolean,
+    viewModel: ConnectSocketChatViewModel
+) {
     Row(Modifier.padding(horizontal = 15.dp), Arrangement.End, Alignment.CenterVertically) {
         if (isMyChat) Spacer(Modifier.weight(1f))
         if (isMyChat) {
-            if (data.did_read == true) TextViewNormal(stringResource(R.string.seen), 15)
-            else TextViewNormal(stringResource(R.string.not_seen), 15)
+            if (viewModel.inLobby) {
+                TextViewNormal(stringResource(R.string.seen), 15)
+            } else {
+                if (data.did_read == true) TextViewNormal(stringResource(R.string.seen), 15)
+                else TextViewNormal(stringResource(R.string.not_seen), 15)
+            }
         }
 
         if (isMyChat) TextViewNormal(" • ", 15)

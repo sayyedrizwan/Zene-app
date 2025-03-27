@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,7 @@ import com.rizwansayyed.zene.data.model.ConnectedUserStatus.ME
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.NONE
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.REQUESTED
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
@@ -65,12 +67,15 @@ import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
+    val coroutine = rememberCoroutineScope()
     val context = LocalActivity.current
     val bioAuthMetric = BioAuthMetric(R.string.authenticate_to_view_chat, context)
 
@@ -106,8 +111,15 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                     ) {
                         Box {
                             ImageWithBorder(R.drawable.ic_message_multiple) {
-                                bioAuthMetric.checkAuth { auth ->
-                                    if (auth) showSendMessage = true
+                                coroutine.launch {
+                                    val lock = DataStorageManager.lockChatSettings(data.user.email)
+                                        .firstOrNull()
+                                    if (lock == true) {
+                                        bioAuthMetric.checkAuth { auth ->
+                                            if (auth) showSendMessage = true
+                                        }
+                                    } else
+                                        showSendMessage = true
                                 }
                             }
 
@@ -213,8 +225,15 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 
     LaunchedEffect(Unit) {
         if (doOpenChatOnConnect) {
-            bioAuthMetric.checkAuth { auth ->
-                if (auth) showSendMessage = true
+            coroutine.launch {
+                val lock = DataStorageManager.lockChatSettings(data.user?.email ?: "")
+                    .firstOrNull()
+                if (lock == true) {
+                    bioAuthMetric.checkAuth { auth ->
+                        if (auth) showSendMessage = true
+                    }
+                } else
+                    showSendMessage = true
             }
             doOpenChatOnConnect = false
         }

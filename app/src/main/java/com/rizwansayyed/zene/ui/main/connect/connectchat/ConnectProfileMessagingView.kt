@@ -147,6 +147,7 @@ fun ConnectProfileMessagingView(
                             ImageIcon(R.drawable.ic_arrow_down, 15)
                         }
                     }
+
                     ConnectProfileMessageView(viewModel, user, connectChatSocket)
                 }
             }
@@ -179,7 +180,7 @@ fun ConnectProfileMessagingView(
                     }
 
                     items(viewModel.recentChatItems) {
-                        ConnectChatItemView(it, user.user, userInfo) {
+                        ConnectChatItemView(it, user.user, userInfo, connectChatSocket) {
                             viewModel.removeANewItemChat(user.user?.email, it._id, true)
                             connectChatSocket.connectDeleteMessage(it)
                         }
