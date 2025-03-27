@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_ID
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_NAME
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
+import com.rizwansayyed.zene.service.player.PlayerMediaButtonReceiver
 import com.rizwansayyed.zene.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -118,8 +119,15 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
         if (isPlaying == YoutubePlayerState.BUFFERING) state = PlaybackStateCompat.STATE_BUFFERING
 
+        val stateActions =
+            PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                    PlaybackStateCompat.ACTION_SEEK_TO
+
         val playback =
             PlaybackStateCompat.Builder().setActions(showSeek).setState(state, d, speed.toFloat())
+
+        playback.setActions(stateActions)
 
         if (context.currentPlayingSong?.type() != MusicDataTypes.RADIO)
             playback.addCustomAction(PlaybackStateCompat.CustomAction.Builder(
@@ -209,6 +217,13 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         updatePlaybackState(isPlaying, currentTS, speed)
         createNotificationChannel()
 
+        val playIntent = getMediaButtonPendingIntent(PlaybackStateCompat.ACTION_PLAY)
+        val pauseIntent = getMediaButtonPendingIntent(PlaybackStateCompat.ACTION_PAUSE)
+        val skipBackIntent =
+            getMediaButtonPendingIntent(PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+        val skipForwardIntent = getMediaButtonPendingIntent(PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+
+
         val openPlayer = Intent(context, MainActivity::class.java).apply {
             putExtra(Intent.ACTION_SENDTO, CATEGORY_APP_MUSIC)
         }
@@ -224,11 +239,21 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             setSmallIcon(R.drawable.zene_logo).setPriority(NotificationCompat.PRIORITY_HIGH)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setContentIntent(pendingIntent)
+
+            addAction(NotificationCompat.Action(R.drawable.ic_backward, "Previous", skipBackIntent))
+
+            if (isPlaying == YoutubePlayerState.PLAYING)
+                addAction(NotificationCompat.Action(R.drawable.ic_pause, "Pause", pauseIntent))
+            else
+                addAction(NotificationCompat.Action(R.drawable.ic_play, "Play", playIntent))
+
+            addAction(NotificationCompat.Action(R.drawable.ic_forward, "Next", skipForwardIntent))
+
             setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession?.sessionToken)
-//                    .setShowActionsInCompactView(0, 1, 2)
-
+                    .setShowActionsInCompactView(0, 1, 2)
+                    .setShowCancelButton(true)
             )
         }.build()
 
@@ -251,5 +276,16 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    private fun getMediaButtonPendingIntent(action: Long): PendingIntent? {
+        val intent = Intent(context, PlayerMediaButtonReceiver::class.java).apply {
+            putExtra(Intent.ACTION_VIEW, action)
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            (8888..9888).random(),
+            intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
     }
 }

@@ -202,6 +202,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <receiver android:name=".service.player.PlayerMediaButtonReceiver" />
 
         <receiver
             android:name=".widgets.playingsongbig.PlayingSongWidgetReceiver"
