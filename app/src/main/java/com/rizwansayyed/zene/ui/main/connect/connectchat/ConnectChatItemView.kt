@@ -55,7 +55,7 @@ fun ConnectChatItemView(
     data: ConnectChatMessageResponse,
     otherUser: ConnectUserResponse?,
     userInfo: UserInfoResponse?,
-    viewModel: ConnectChatViewModel
+    delete: () -> Unit
 ) {
     var showInfoOf by remember { mutableStateOf(false) }
 
@@ -83,7 +83,7 @@ fun ConnectChatItemView(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
-                        viewModel.removeANewItemChat(otherUser?.email, data._id)
+                        delete()
                     }
                     .padding(vertical = 10.dp)) {
                     ImageIcon(R.drawable.ic_delete, 20)

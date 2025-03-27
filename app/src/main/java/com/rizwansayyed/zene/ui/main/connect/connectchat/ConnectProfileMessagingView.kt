@@ -179,7 +179,10 @@ fun ConnectProfileMessagingView(
                     }
 
                     items(viewModel.recentChatItems) {
-                        ConnectChatItemView(it, user.user, userInfo, viewModel)
+                        ConnectChatItemView(it, user.user, userInfo) {
+                            viewModel.removeANewItemChat(user.user?.email, it._id, true)
+                            connectChatSocket.connectDeleteMessage(it)
+                        }
                     }
 
                     if (viewModel.isRecentChatLoading) item {
@@ -233,6 +236,14 @@ fun ConnectProfileMessagingView(
 
                 viewModel.markConnectMessageToRead(user.user?.email)
                 connectChatSocket.clearChatSendItem()
+            }
+        }
+
+        LaunchedEffect(connectChatSocket.deleteChatID) {
+            if (connectChatSocket.deleteChatID.trim().length > 3) {
+                viewModel.removeANewItemChat(
+                    user.user?.email, connectChatSocket.deleteChatID, false
+                )
             }
         }
 

@@ -140,6 +140,7 @@ object URLSUtils {
 object SaveParams {
     const val NEW_JOIN_USER_SOCKET = "NEW_JOIN_USER"
     const val OLD_JOIN_USER_SOCKET = "OLD_JOIN_USER"
+    const val DELETE_MESSAGE_ON_SOCKET = "DELETE_MESSAGE_ON"
     const val USER_LEAVED_SOCKET = "USER_LEAVED"
     const val NEW_MESSAGE_ON_SOCKET = "NEW_MESSAGE_ON"
 

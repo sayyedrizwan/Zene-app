@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.SaveParams.DELETE_MESSAGE_ON_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.NEW_JOIN_USER_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.NEW_MESSAGE_ON_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.OLD_JOIN_USER_SOCKET
@@ -33,6 +34,7 @@ class ConnectSocketChatViewModel : ViewModel() {
     var inLobby by mutableStateOf(false)
     var justLeft by mutableStateOf(false)
     var isTyping by mutableStateOf(false)
+    var deleteChatID by mutableStateOf("")
     var newIncomingMessage by mutableStateOf<ConnectChatMessageResponse?>(null)
 
 
@@ -76,6 +78,18 @@ class ConnectSocketChatViewModel : ViewModel() {
                 offJob?.cancel()
                 justLeft = false
                 inLobby = true
+            }
+        }
+
+        mSocket?.on("connectDeleteMessage") { args ->
+            val data = args.first() as JSONObject
+            val email = data.getString("email")
+            val type = data.getString("type")
+            val id = data.getString("id")
+
+            if (email == senderEmail && type == DELETE_MESSAGE_ON_SOCKET) {
+                offJob?.cancel()
+                deleteChatID = id
             }
         }
 
@@ -152,6 +166,15 @@ class ConnectSocketChatViewModel : ViewModel() {
         data.put("message", json)
 
         mSocket?.emit("connectMessage", data)
+    }
+
+    fun connectDeleteMessage(item: ConnectChatMessageResponse) {
+        val data = JSONObject()
+        data.put("room", roomId)
+        data.put("email", myEmail)
+        data.put("id", item._id)
+
+        mSocket?.emit("connectDeleteMessage", data)
     }
 
     fun typingMessage(typing: Boolean) {
