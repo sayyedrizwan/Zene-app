@@ -7,5 +7,6 @@ data class MediaStatusTypeResponse(
     val message: String?,
     val ts: Long?,
     val media: String?,
-    val thumbnail: String?
+    val thumbnail: String?,
+    val expire: Long?
 )

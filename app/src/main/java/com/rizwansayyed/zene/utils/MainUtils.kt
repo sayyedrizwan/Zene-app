@@ -531,12 +531,4 @@ object MainUtils {
             ).apply { context.startActivity(this) }
         }
     }
-
-    fun getFutureTimestamp(minutes: Int?): Long {
-        return try {
-            System.currentTimeMillis() + minutes!! * 60 * 1000
-        } catch (e: Exception) {
-            System.currentTimeMillis() + 10080 * 60 * 1000
-        }
-    }
 }
