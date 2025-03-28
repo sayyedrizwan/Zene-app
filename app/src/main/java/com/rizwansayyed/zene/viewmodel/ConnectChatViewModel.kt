@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
+import com.rizwansayyed.zene.utils.MainUtils.getFutureTimestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -48,7 +49,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
             zeneAPI.deleteConnectMessage(email, id).catch {}.collectLatest { }
         }
 
-    fun sendConnectMessage(email: String?, message: String, gif: String?) =
+    fun sendConnectMessage(email: String?, message: String, gif: String?, expireTs: Int?) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
             zeneAPI.sendConnectMessage(email, message, gif).onStart {
@@ -62,7 +63,8 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                 val myEmail = DataStorageManager.userInfo.firstOrNull()?.email
                 val data = ConnectChatMessageResponse(
                     it.message, myEmail, email, false, message.trim(),
-                    it.ts ?: System.currentTimeMillis(), gif = gif
+                    it.ts ?: System.currentTimeMillis(), gif = gif,
+                    expire_at = getFutureTimestamp(expireTs)
                 )
                 recentChatItemsToSend = data
                 recentChatItems.add(0, data)
@@ -70,7 +72,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         }
 
 
-    fun sendConnectJamMessage(email: String?, musicData: ZeneMusicData?) =
+    fun sendConnectJamMessage(email: String?, musicData: ZeneMusicData?, expireTs: Int?) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
             musicData ?: return@launch
@@ -88,6 +90,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                     it.ts ?: System.currentTimeMillis(), jam_name = musicData.name,
                     jam_artists = musicData.artists, jam_id = musicData.id,
                     jam_type = musicData.type, jam_thumbnail = musicData.thumbnail,
+                    expire_at = getFutureTimestamp(expireTs)
                 )
 
                 recentChatItemsToSend = data
@@ -96,7 +99,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         }
 
 
-    fun sendFileMessage(email: String?, file: File?) = viewModelScope.launch(Dispatchers.IO) {
+    fun sendFileMessage(email: String?, file: File?, expireTs: Int?) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
         file ?: return@launch
         zeneAPI.sendConnectFileMessage(email, file).onStart {
@@ -111,7 +114,8 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
             val data = ConnectChatMessageResponse(
                 it.message, myEmail, email, false, "",
                 it.ts ?: System.currentTimeMillis(), file_path = it.media,
-                file_name = file.name, file_size = file.length().toString()
+                file_name = file.name, file_size = file.length().toString(),
+                expire_at = getFutureTimestamp(expireTs)
             )
 
             recentChatItemsToSend = data
@@ -119,7 +123,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         }
     }
 
-    fun sendImageVideo(email: String?, file: String?, thumbnail: String?) =
+    fun sendImageVideo(email: String?, file: String?, thumbnail: String?, expireTs: Int?) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
             sendConnectMessageLoading = true
@@ -142,7 +146,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
                     val data = ConnectChatMessageResponse(
                         it.message, myEmail, email, false, "",
                         it.ts ?: System.currentTimeMillis(),
-                        it.media, it.thumbnail
+                        getFutureTimestamp(expireTs), it.media, it.thumbnail,
                     )
 
                     recentChatItemsToSend = data

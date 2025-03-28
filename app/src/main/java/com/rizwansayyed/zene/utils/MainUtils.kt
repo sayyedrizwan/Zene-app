@@ -35,9 +35,6 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -532,6 +529,14 @@ object MainUtils {
                 Intent.ACTION_VIEW,
                 Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
             ).apply { context.startActivity(this) }
+        }
+    }
+
+    fun getFutureTimestamp(minutes: Int?): Long {
+        return try {
+            System.currentTimeMillis() + minutes!! * 60 * 1000
+        } catch (e: Exception) {
+            System.currentTimeMillis() + 10080 * 60 * 1000
         }
     }
 }

@@ -49,6 +49,7 @@ import com.rizwansayyed.zene.utils.DownloadInformation
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.downloadViewMap
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
+import java.util.Locale
 
 @Composable
 fun ConnectChatItemView(
@@ -210,24 +211,31 @@ fun ShowChatInfo(
     isMyChat: Boolean,
     viewModel: ConnectSocketChatViewModel
 ) {
-    Row(Modifier.padding(horizontal = 15.dp), Arrangement.End, Alignment.CenterVertically) {
-        if (isMyChat) Spacer(Modifier.weight(1f))
-        if (isMyChat) {
-            if (viewModel.inLobby) {
-                TextViewNormal(stringResource(R.string.seen), 15)
-            } else {
-                if (data.did_read == true) TextViewNormal(stringResource(R.string.seen), 15)
-                else TextViewNormal(stringResource(R.string.not_seen), 15)
+    Column {
+        Row(Modifier.padding(horizontal = 15.dp), Arrangement.End, Alignment.CenterVertically) {
+            if (isMyChat) Spacer(Modifier.weight(1f))
+            if (isMyChat) {
+                if (viewModel.inLobby) {
+                    TextViewNormal(stringResource(R.string.seen), 15)
+                } else {
+                    if (data.did_read == true) TextViewNormal(stringResource(R.string.seen), 15)
+                    else TextViewNormal(stringResource(R.string.not_seen), 15)
+                }
+            }
+
+            if (isMyChat) TextViewNormal(" • ", 15)
+
+            getShowFullTS(data.timestamp)?.let {
+                TextViewNormal(it, 14)
+            }
+
+            if (!isMyChat) Spacer(Modifier.weight(1f))
+        }
+        Row(Modifier.padding(horizontal = 15.dp), Arrangement.End, Alignment.CenterVertically) {
+            getShowFullTS(data.expire_at)?.let {
+                TextViewNormal(String.format(Locale.getDefault(), stringResource(R.string.expire_at), it), 14)
             }
         }
-
-        if (isMyChat) TextViewNormal(" • ", 15)
-
-        getShowFullTS(data.timestamp)?.let {
-            TextViewNormal(it, 14)
-        }
-
-        if (!isMyChat) Spacer(Modifier.weight(1f))
     }
 }
 

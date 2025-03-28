@@ -96,7 +96,11 @@ fun ConnectProfileMessageView(
                 val file = getFileFromUri(it)
                 file?.let { pickedFile ->
                     if (isFileSizeValid(pickedFile))
-                        viewModel.sendFileMessage(user.user?.email, pickedFile)
+                        viewModel.sendFileMessage(
+                            user.user?.email,
+                            pickedFile,
+                            user.expireInMinutes
+                        )
                     else fileSizeIsMore.toast()
                 }
             }
@@ -135,7 +139,12 @@ fun ConnectProfileMessageView(
             trailingIcon = {
                 if (messageText.isNotEmpty()) {
                     IconButton({
-                        viewModel.sendConnectMessage(user.user?.email, messageText, null)
+                        viewModel.sendConnectMessage(
+                            user.user?.email,
+                            messageText,
+                            null,
+                            user.expireInMinutes
+                        )
                         messageText = ""
                     }) {
                         ImageIcon(R.drawable.ic_sent, 24, Color.Black)
@@ -181,7 +190,12 @@ fun ConnectProfileMessageView(
     }
 
     if (showGifAlert) GifAlert(null, gifViewModel) {
-        if (it != null) viewModel.sendConnectMessage(user.user?.email, messageText, it)
+        if (it != null) viewModel.sendConnectMessage(
+            user.user?.email,
+            messageText,
+            it,
+            user.expireInMinutes
+        )
         showGifAlert = false
     }
 
@@ -197,7 +211,7 @@ fun ConnectProfileMessageView(
         { showJamAlert = false }, DialogProperties(usePlatformDefaultWidth = false)
     ) {
         AddJamDialog {
-            viewModel.sendConnectJamMessage(user.user?.email, it)
+            viewModel.sendConnectJamMessage(user.user?.email, it, user.expireInMinutes)
             showJamAlert = false
         }
     }
@@ -206,7 +220,7 @@ fun ConnectProfileMessageView(
         val file = connectViewModel.connectFileSelected?.media
         val thumbnail = connectViewModel.connectFileSelected?.media_thubnail
         if (File(file.toString()).exists())
-            viewModel.sendImageVideo(user.user?.email, file, thumbnail)
+            viewModel.sendImageVideo(user.user?.email, file, thumbnail, user.expireInMinutes)
     }
 }
 

@@ -148,6 +148,7 @@
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
     <string name="last_seen">Last seen %s</string>
+    <string name="expire_at">Expire at: %s</string>
     <string name="seen">seen</string>
     <string name="not_seen">not seen</string>
     <string name="active_in_conversation">Active in conversation</string>
