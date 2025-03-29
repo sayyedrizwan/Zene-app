@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.utils
+package com.rizwansayyed.zene.service.notification
 
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 

@@ -28,11 +28,11 @@ import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MOVIES_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 
 
 object MediaContentUtils {

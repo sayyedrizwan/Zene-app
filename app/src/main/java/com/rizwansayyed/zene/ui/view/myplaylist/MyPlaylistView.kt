@@ -48,8 +48,8 @@ import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBoldBig
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.refreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia

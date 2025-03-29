@@ -21,8 +21,8 @@ import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.openShareConnectShareSMS
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

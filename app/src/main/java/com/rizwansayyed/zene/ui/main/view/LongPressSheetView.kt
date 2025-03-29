@@ -47,11 +47,10 @@ import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
-import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel

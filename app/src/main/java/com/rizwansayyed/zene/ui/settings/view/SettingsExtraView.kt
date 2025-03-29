@@ -46,16 +46,14 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
 import com.rizwansayyed.zene.utils.MainUtils.openFeedbackMail
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_POLICY_URL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 
 @Composable

@@ -55,9 +55,9 @@ import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_ARTIST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.delay

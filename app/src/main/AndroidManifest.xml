@@ -174,11 +174,6 @@
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
 
-        <service
-            android:name=".service.partycall.PartyCallService"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="false" />
-
         <activity
             android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

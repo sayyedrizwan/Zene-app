@@ -57,7 +57,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.clearConversationNotification
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.clearConversationNotification
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel

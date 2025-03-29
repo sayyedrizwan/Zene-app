@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
 
 @Composable
 fun ButtonArrowBack(modifier: Modifier = Modifier, click: (() -> Unit)? = null) {

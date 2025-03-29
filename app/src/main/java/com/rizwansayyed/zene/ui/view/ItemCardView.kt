@@ -28,7 +28,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
-import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)

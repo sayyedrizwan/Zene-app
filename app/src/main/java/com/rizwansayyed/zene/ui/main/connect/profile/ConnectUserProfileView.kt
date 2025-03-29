@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,21 +16,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.lifecycleScope
-import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.ui.view.FullUsersShimmerLoadingCard
-import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

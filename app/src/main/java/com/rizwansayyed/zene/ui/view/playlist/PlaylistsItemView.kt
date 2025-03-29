@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.view.playlist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
-import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 

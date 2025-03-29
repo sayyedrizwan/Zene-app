@@ -52,8 +52,8 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.isDirectToTV
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable

@@ -62,7 +62,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
-import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel

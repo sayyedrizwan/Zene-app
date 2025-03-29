@@ -13,9 +13,10 @@ import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAName
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
-import com.rizwansayyed.zene.utils.NotificationUtils
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
+import com.rizwansayyed.zene.service.notification.NotificationUtils
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
+import com.rizwansayyed.zene.service.notification.callNotification
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,11 +77,10 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_ACCEPTED_FRIEND_REQUEST) connectAcceptedRequestAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
             if (type == CONNECT_PARTY_CALL) {
-                val serviceIntent = Intent(this, PartyCallService::class.java).apply {
-                    putExtra("callerId", "ssss")
-                }
-
-                startService(serviceIntent)
+                val name = it[FCM_NAME]
+                val image = it[FCM_IMAGE]
+                val email = it[FCM_EMAIL]
+                callNotification(name, image, email, this)
             }
         }
     }

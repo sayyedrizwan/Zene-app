@@ -33,8 +33,8 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)

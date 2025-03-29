@@ -46,9 +46,9 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 

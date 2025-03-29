@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.main.ent.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +33,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.utils.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

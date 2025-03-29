@@ -60,10 +60,10 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MY_PLAYLIST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PLAYLIST_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.RefreshPlaylistListener
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.setRefreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE

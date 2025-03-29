@@ -45,8 +45,8 @@ import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel

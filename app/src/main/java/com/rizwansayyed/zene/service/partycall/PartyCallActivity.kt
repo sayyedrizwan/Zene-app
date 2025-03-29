@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.service.partycall
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.utils.MainUtils.toast
 
 class PartyCallActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,12 +19,25 @@ class PartyCallActivity : FragmentActivity() {
         enableEdgeToEdge()
         setContent {
             ZeneTheme {
-                Box(Modifier
-                    .fillMaxSize()
-                    .background(MainColor)) {
+                checkIntent(intent)
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(MainColor)
+                ) {
 
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        checkIntent(intent)
+    }
+
+    private fun checkIntent(intent: Intent) {
+        val type = intent.getIntExtra(Intent.EXTRA_MIME_TYPES, 0)
+        type.toast()
     }
 }

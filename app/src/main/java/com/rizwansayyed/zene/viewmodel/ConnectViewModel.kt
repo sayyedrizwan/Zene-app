@@ -22,9 +22,9 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeM
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
-import com.rizwansayyed.zene.utils.NotificationUtils
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
+import com.rizwansayyed.zene.service.notification.NotificationUtils
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

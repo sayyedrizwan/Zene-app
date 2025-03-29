@@ -1,4 +1,4 @@
-package com.rizwansayyed.zene.utils
+package com.rizwansayyed.zene.service.notification
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
@@ -41,6 +41,11 @@ class NotificationUtils(
             context.resources.getString(R.string.sleep_timer_notification)
         val SLEEP_TIMER_NOTIFICATION_DESC =
             context.resources.getString(R.string.sleep_timer_notification_desc)
+
+        val CONNECT_CALL_NOTIFICATION =
+            context.resources.getString(R.string.connect_party_notification)
+        val CONNECT_CALL_NOTIFICATION_DESC =
+            context.resources.getString(R.string.connect_party_notification_desc)
 
         private val notificationManager: NotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
-import com.rizwansayyed.zene.utils.NotificationUtils
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.SLEEP_TIMER_NOTIFICATION
-import com.rizwansayyed.zene.utils.NotificationUtils.Companion.SLEEP_TIMER_NOTIFICATION_DESC
+import com.rizwansayyed.zene.service.notification.NotificationUtils
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.SLEEP_TIMER_NOTIFICATION
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.SLEEP_TIMER_NOTIFICATION_DESC
 
 enum class SleepTimerEnum(val time: Int) {
     FIVE(5), TEN(10), FIFTEEN(15), THIRTY(30), FORTY_FIVE(45), SIXTY_MINUTES(60),

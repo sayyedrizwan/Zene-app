@@ -378,6 +378,7 @@
     <string name="downloading_file_please_wait">Downloading file… Please wait…</string>
     <string name="after_seen">After Seen</string>
     <string name="thirty_minutes">30 Minutes</string>
+    <string name="wants_to_start_live_party_session">Wants to start a live party session. Join now and listen together.</string>
 
 
 
@@ -390,4 +391,6 @@
     <string name="zene_music_player_service">Notification for Zene Music Player service</string>
     <string name="sleep_timer_notification">Sleep Timer Alerts</string>
     <string name="sleep_timer_notification_desc">Notifications alert to update you when sleep timer is triggered.</string>
+    <string name="connect_party_notification">Connect Party Alerts</string>
+    <string name="connect_party_notification_desc">Connect party alert to triggered call view.</string>
 </resources>

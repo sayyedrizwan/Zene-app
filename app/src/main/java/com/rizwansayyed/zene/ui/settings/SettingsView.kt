@@ -18,8 +18,8 @@ import com.rizwansayyed.zene.ui.settings.view.SettingsPersonalInfo
 import com.rizwansayyed.zene.ui.settings.view.SettingsPlaybackView
 import com.rizwansayyed.zene.ui.settings.view.SettingsProfilePhotoView
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
-import com.rizwansayyed.zene.utils.NavigationUtils
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_GO_BACK
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
 
 @Composable
 fun SettingsView() {

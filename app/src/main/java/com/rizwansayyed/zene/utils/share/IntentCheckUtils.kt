@@ -14,10 +14,10 @@ import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_T
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_MAIN_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.NAV_SETTINGS_PAGE
-import com.rizwansayyed.zene.utils.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_CONNECT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_ENTERTAINMENT
