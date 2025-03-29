@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.ui.main
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -231,4 +230,5 @@ class MainActivity : FragmentActivity() {
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
     }
+
 }

@@ -76,9 +76,7 @@ class NotificationUtils(
     @SuppressLint("MissingPermission")
     fun generate() = CoroutineScope(Dispatchers.IO).launch {
         val pendingIntent = PendingIntent.getActivity(
-            context,
-            (11..999).random(),
-            intent,
+            context, (11..999).random(), intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 

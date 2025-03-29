@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.service.partycall.PartyCallService
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAName
@@ -42,6 +43,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_SEND_FRIEND_REQUEST = "CONNECT_SEND_FRIEND_REQUEST"
         const val CONNECT_ACCEPTED_FRIEND_REQUEST = "CONNECT_ACCEPTED_FRIEND_REQUEST"
         const val CONNECT_SEND_CHAT_MESSAGE = "CONNECT_SEND_CHAT_MESSAGE"
+        const val CONNECT_PARTY_CALL = "CONNECT_PARTY_CALL"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
         const val FCM_BODY = "body"
@@ -73,6 +75,13 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_SEND_FRIEND_REQUEST) connectFriendRequestAlert(message.data)
             if (type == CONNECT_ACCEPTED_FRIEND_REQUEST) connectAcceptedRequestAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
+            if (type == CONNECT_PARTY_CALL) {
+                val serviceIntent = Intent(this, PartyCallService::class.java).apply {
+                    putExtra("callerId", "ssss")
+                }
+
+                startService(serviceIntent)
+            }
         }
     }
 

@@ -64,6 +64,7 @@ object URLSUtils {
     const val ZENE_CONNECT_CHAT_RECENT_MESSAGE_API = "connect/chat-recent-message"
     const val ZENE_CONNECT_MARK_MESSAGE_AS_READ_API = "connect/mark-message-as-read"
     const val ZENE_CONNECT_SEND_LOCATION_API = "connect/send-location"
+    const val ZENE_CONNECT_SEND_PARTY_CALL_API = "connect/send-party-call"
     const val ZENE_CONNECT_FRIENDS_VIBES_API = "connect/friends-vibes"
     const val ZENE_CONNECT_SHARE_VIBE_API = "connect/share-vibe"
     const val ZENE_CONNECT_ADD_A_COMMENT_API = "connect/add-a-comment"

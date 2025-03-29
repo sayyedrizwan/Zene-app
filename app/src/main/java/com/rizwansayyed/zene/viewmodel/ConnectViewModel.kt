@@ -267,4 +267,12 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
                 }
             }
     }
+
+
+    fun sendPartyCall(email: String?) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.sendPartyCall(email).catch { }.collectLatest {
+
+        }
+    }
 }

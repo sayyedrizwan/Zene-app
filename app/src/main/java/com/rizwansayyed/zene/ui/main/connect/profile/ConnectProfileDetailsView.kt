@@ -137,7 +137,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                         }
 
                         ImageWithBorder(R.drawable.ic_music_note) {
-
+                            viewModel.sendPartyCall(data.user.email)
                         }
 
                         ImageWithBorder(R.drawable.ic_location) {

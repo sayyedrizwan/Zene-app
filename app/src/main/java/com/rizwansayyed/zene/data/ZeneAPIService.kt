@@ -54,6 +54,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_JAM_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_LOCATION_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MEDIA_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_MESSAGE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_PARTY_CALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
@@ -365,6 +366,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_LOCATION_API)
     suspend fun sendConnectLocation(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_SEND_PARTY_CALL_API)
+    suspend fun sendPartyCall(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 

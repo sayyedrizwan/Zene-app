@@ -157,4 +157,5 @@ interface ZeneAPIInterface {
 
     suspend fun sendConnectFileMessage(toEmail: String?, file: File?): Flow<MediaStatusTypeResponse>
     suspend fun deleteConnectMessage(toEmail: String?, id: String?): Flow<MediaStatusTypeResponse>
+    suspend fun sendPartyCall(toEmail: String): Flow<StatusTypeResponse>
 }

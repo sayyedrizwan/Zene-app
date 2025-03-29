@@ -836,6 +836,19 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sendConnectLocation(token, body))
     }
 
+    override suspend fun sendPartyCall(toEmail: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("toEmail", toEmail)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.sendPartyCall(token, body))
+    }
+
     override suspend fun shareConnectVibe(
         d: ConnectFeedDataResponse, file: String?, thumbnail: String?
     ) = flow {
