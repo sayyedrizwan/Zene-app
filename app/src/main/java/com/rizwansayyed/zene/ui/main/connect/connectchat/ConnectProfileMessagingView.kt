@@ -62,7 +62,10 @@ import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @SuppressLint("UnrememberedMutableState")
@@ -90,6 +93,7 @@ fun ConnectProfileMessagingView(
         val state = rememberLazyListState()
         val userInfo by DataStorageManager.userInfo.collectAsState(null)
 
+        var markAsReadJob by remember { mutableStateOf<Job?>(null) }
         var showMoreMessage by remember { mutableStateOf(false) }
         var showTypingMessage by remember { mutableStateOf(false) }
 
@@ -248,6 +252,18 @@ fun ConnectProfileMessagingView(
             }
         }
 
+        LaunchedEffect(viewModel.recentChatItems.size) {
+            markAsReadJob?.cancel()
+            markAsReadJob = coroutine.launch {
+                delay(1.seconds)
+                if (viewModel.recentChatItems.lastOrNull()?.did_read == true) {
+                    viewModel.markConnectMessageToRead(user.user?.email)
+                } else {
+                    viewModel.getChatConnectRecentMessage(user.user?.email, false)
+                }
+            }
+        }
+
         LaunchedEffect(isTying) {
             if (isTying) {
                 if (state.firstVisibleItemIndex < 5) state.animateScrollToItem(0)
@@ -267,7 +283,6 @@ fun ConnectProfileMessagingView(
             clearConversationNotification(user.user?.email ?: "")
             viewModel.getChatConnectRecentMessage(user.user?.email, true)
 
-            viewModel.markConnectMessageToRead(user.user?.email)
             user.user?.email?.let { connectChatSocket.connect(it) }
 
             onPauseOrDispose {

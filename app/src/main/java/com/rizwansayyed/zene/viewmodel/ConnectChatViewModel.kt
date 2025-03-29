@@ -161,6 +161,7 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         zeneAPI.markConnectMessageToRead(email).catch { }.collectLatest { }
     }
 
+
     fun getChatConnectRecentMessage(email: String?, new: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             email ?: return@launch
