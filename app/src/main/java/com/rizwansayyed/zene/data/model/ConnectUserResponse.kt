@@ -119,58 +119,17 @@ fun getShowLastSeenTS(ts: Long?): String? {
 
 fun getShowFullTS(ts: Long?): String? {
     ts ?: return null
-
     val kolkataTimeZone = TimeZone.getTimeZone("Asia/Kolkata")
-    val sdfKolkata = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    sdfKolkata.timeZone = kolkataTimeZone
-    val kolkataDateStr = sdfKolkata.format(Date(ts))
-    val parsedDate = sdfKolkata.parse(kolkataDateStr)!!
-
-    val calendar = Calendar.getInstance()
-    calendar.time = parsedDate
-
-    val localOffset = TimeZone.getDefault().getOffset(calendar.timeInMillis)
-    val utcOffset = kolkataTimeZone.getOffset(calendar.timeInMillis)
-
-    val offsetDifference = localOffset - utcOffset
-    val timestamp = calendar.timeInMillis + offsetDifference
-
-
-    val now = System.currentTimeMillis()
-    val diff = now - timestamp
-
-    val seconds = TimeUnit.MILLISECONDS.toSeconds(diff)
-    val hours = TimeUnit.MILLISECONDS.toHours(diff)
-    val days = TimeUnit.MILLISECONDS.toDays(diff)
-
     val is24Hour = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
 
-    return when {
-        seconds < 60 -> if (seconds < 10) "just now" else "$seconds seconds ago"
-        hours < 24 -> {
-            val sdf = SimpleDateFormat(is24Hour, Locale.getDefault())
-            sdf.format(Date(timestamp))
-        }
+    val now = System.currentTimeMillis()
+    val diff = ts - now
+    val hoursAhead = TimeUnit.MILLISECONDS.toHours(diff)
 
-        days in 1..6 -> {
-            val sdf = SimpleDateFormat("EEE $is24Hour", Locale.getDefault())
-            sdf.format(Date(timestamp))
-        }
+    val pattern = if (hoursAhead > 24) "EEE $is24Hour" else is24Hour
 
-        else -> {
-            val calendars = Calendar.getInstance()
-            calendars.timeInMillis = timestamp
+    val sdfKolkata = SimpleDateFormat(pattern, Locale.getDefault())
+    sdfKolkata.timeZone = kolkataTimeZone
 
-            val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-            val eventYear = calendars.get(Calendar.YEAR)
-
-            return if (currentYear == eventYear) {
-                val sdf = SimpleDateFormat("dd MMM $is24Hour", Locale.getDefault())
-                sdf.format(Date(timestamp))
-            } else {
-                val sdf = SimpleDateFormat("dd MMM yyyy $is24Hour", Locale.getDefault())
-                sdf.format(Date(timestamp))
-            }
-        }
-    }
+    return sdfKolkata.format(Date(ts))
 }

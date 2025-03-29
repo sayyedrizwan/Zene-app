@@ -69,7 +69,6 @@ fun ConnectChatSettingsView(
     response: ConnectUserInfoResponse, connectViewModel: ConnectViewModel, close: () -> Unit
 ) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
-        val viewModel: ConnectChatViewModel = hiltViewModel()
         val context = LocalActivity.current
         val bioAuthMetric = BioAuthMetric(R.string.authenticate_to_view_chat, context)
 

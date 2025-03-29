@@ -207,7 +207,7 @@ fun HomeMyLibraryView() {
         }
     }
 
-    if (historyInfo) TextAlertDialog(R.string.history, R.string.history_desc) {
+    if (historyInfo) TextAlertDialog(R.string.history, null, R.string.history_desc) {
         historyInfo = false
     }
 

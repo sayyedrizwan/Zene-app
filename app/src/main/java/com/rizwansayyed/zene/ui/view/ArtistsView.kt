@@ -341,7 +341,7 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
         })
 
     if (showMoreFollower) TextAlertDialog(
-        R.string.error_following_artists,
+        R.string.error_following_artists, null,
         R.string.a_user_can_only_follow_up_to_40_artists,
         { showMoreFollower = false })
 }

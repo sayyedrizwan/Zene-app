@@ -10,9 +10,11 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.IconButton
@@ -44,6 +46,7 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
+import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -52,6 +55,7 @@ import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.GifViewModel
 import java.io.File
+import java.util.Locale
 
 
 @Composable
@@ -67,6 +71,7 @@ fun ConnectProfileMessageView(
     var showAlert by remember { mutableStateOf(false) }
     var showJamAlert by remember { mutableStateOf(false) }
     var showGifAlert by remember { mutableStateOf(false) }
+    var showTimerAlert by remember { mutableStateOf(false) }
 
     var isTyping by remember { mutableStateOf(false) }
     val handler = remember { Handler(Looper.getMainLooper()) }
@@ -134,11 +139,19 @@ fun ConnectProfileMessageView(
             },
             trailingIcon = {
                 if (messageText.isNotEmpty()) {
-                    IconButton({
-                        viewModel.sendConnectMessage(user.user?.email, messageText, null)
-                        messageText = ""
-                    }) {
-                        ImageIcon(R.drawable.ic_sent, 24, Color.Black)
+                    Row(Modifier, Arrangement.Center, Alignment.CenterVertically) {
+                        IconButton({
+                            viewModel.sendConnectMessage(user.user?.email, messageText, null)
+                            messageText = ""
+                        }) {
+                            ImageIcon(R.drawable.ic_sent, 24, Color.Black)
+                        }
+                        Spacer(Modifier.width(1.dp))
+                        IconButton({
+                            showTimerAlert = true
+                        }) {
+                            ImageIcon(R.drawable.ic_timer, 24, Color.Black)
+                        }
                     }
                 }
             },
@@ -201,6 +214,16 @@ fun ConnectProfileMessageView(
         AddJamDialog {
             viewModel.sendConnectJamMessage(user.user?.email, it)
             showJamAlert = false
+        }
+    }
+
+    if (showTimerAlert) {
+       val days = messageExpiryTime.first { user.expireInMinutes == it.minutes }
+
+        val expireTitle = String
+            .format(Locale.getDefault(), stringResource(R.string.message_expire_after_), "(${days.text})")
+        TextAlertDialog(null, expireTitle, R.string.message_expire_after_desc) {
+            showTimerAlert = false
         }
     }
 

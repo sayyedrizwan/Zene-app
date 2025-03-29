@@ -2,6 +2,7 @@
     <string name="app_name">Zene</string>
     <string name="app_name_luxe">Zene Luxe</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
+    <string name="empty" />
     <string name="zene_share_desc">Check out Zene! Free music, podcasts &amp; radio. I’m hooked. 📻, All free. Give it a try! 🎧✨</string>
     <string name="app_desc">Free Music, Podcasts, Videos &amp; More – All Your Entertainment in One Place!</string>
     <string name="full_player_widget_desc">Control your favourite tunes and podcasts, right from your home screen.</string>
@@ -148,7 +149,10 @@
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
     <string name="last_seen">Last seen %s</string>
+    <string name="message_expire_after_">Messages expire after %s</string>
+    <string name="message_expire_after_desc">"Messages automatically disappear after the selected time in settings, ensuring privacy and keeping your chat clutter-free.</string>
     <string name="expire_at">Expire at: %s</string>
+    <string name="expire_once_viewed">Expire once viewed</string>
     <string name="seen">seen</string>
     <string name="not_seen">not seen</string>
     <string name="active_in_conversation">Active in conversation</string>
