@@ -60,7 +60,7 @@ class VideoPlayerActivity : ComponentActivity() {
         isInPictureInPictureMode: Boolean, newConfig: Configuration
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        viewModel.showControlView(false)
+        viewModel.showControlView(isInPictureInPictureMode)
     }
 
     override fun onNewIntent(intent: Intent) {

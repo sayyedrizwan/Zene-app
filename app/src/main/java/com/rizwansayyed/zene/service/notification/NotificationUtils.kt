@@ -47,7 +47,7 @@ class NotificationUtils(
         val CONNECT_CALL_NOTIFICATION_DESC =
             context.resources.getString(R.string.connect_party_notification_desc)
 
-        private val notificationManager: NotificationManager =
+        val notificationManager: NotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 

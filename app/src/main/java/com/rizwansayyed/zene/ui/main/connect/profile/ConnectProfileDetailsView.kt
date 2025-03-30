@@ -53,7 +53,7 @@ import com.rizwansayyed.zene.data.model.ConnectedUserStatus.REQUESTED
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.service.partycall.PartyCallActivity
+import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
@@ -399,7 +399,8 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
         }
     }
 
-    if (showRequestSentAlert) TextAlertDialog(R.string.cancel_request,
+    if (showRequestSentAlert) TextAlertDialog(
+        R.string.cancel_request,
         R.string.are_you_sure_want_to_cancel_add_request,
         { showRequestSentAlert = false },
         {
@@ -407,7 +408,8 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             data.user?.email?.let { viewModel.doRemove(it, true) }
         })
 
-    if (unFriendAlert) TextAlertDialog(R.string.remove_as_friend,
+    if (unFriendAlert) TextAlertDialog(
+        R.string.remove_as_friend,
         R.string.remove_as_friend_desc,
         { unFriendAlert = false },
         {

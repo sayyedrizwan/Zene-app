@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -71,6 +72,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_P
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.setNavigationCallback
+import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
 import com.rizwansayyed.zene.utils.share.IntentCheckUtils
@@ -78,6 +80,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -229,6 +232,18 @@ class MainActivity : FragmentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
+        
+        lifecycleScope.launch {
+            delay(2.seconds)
+            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
+                putExtra(Intent.EXTRA_USER, "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png")
+                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
+                putExtra(Intent.EXTRA_MIME_TYPES, -1)
+                this@MainActivity.startActivity(this)
+            }
+        }
     }
 
 }

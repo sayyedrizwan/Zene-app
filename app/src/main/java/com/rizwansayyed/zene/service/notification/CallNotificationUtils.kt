@@ -22,11 +22,14 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_CALL_NOTIFICATION
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_CALL_NOTIFICATION_DESC
-import com.rizwansayyed.zene.service.partycall.PartyCallActivity
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.notificationManager
+import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlin.math.absoluteValue
 
 const val FLAG = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+const val NOTIFICATION_TAG = "CALL_NOTIFICATION"
 
 fun callNotification(
     name: String?, image: String?, email: String?, context: Context
@@ -41,9 +44,6 @@ fun callNotification(
         }
     }
 
-    val random = (222..1234).random()
-
-
     val incomingCaller = Person.Builder()
         .setName(name).setIcon(IconCompat.createWithAdaptiveBitmap(b)).setImportant(true).build()
 
@@ -51,8 +51,8 @@ fun callNotification(
 
     val callerStyle = NotificationCompat.CallStyle.forScreeningCall(
         incomingCaller,
-        generatePI(random, email, image, name, 1),
-        generatePI(random, email, image, name, 2)
+        generatePI(email, image, name, 1),
+        generatePI(email, image, name, 2)
     )
 
 
@@ -60,14 +60,14 @@ fun callNotification(
         .setContentTitle(name)
         .setContentText(context.getString(R.string.wants_to_start_live_party_session))
         .setSmallIcon(R.drawable.zene_logo)
-        .setContentIntent(generatePI(random, email, image, name, 0))
+        .setContentIntent(generatePI(email, image, name, 0))
         .setStyle(callerStyle)
         .addPerson(incomingCaller)
         .setSound(getUriSoundFile(), AudioManager.STREAM_NOTIFICATION)
         .setPriority(NotificationCompat.PRIORITY_MAX)
         .setCategory(NotificationCompat.CATEGORY_CALL)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        .setFullScreenIntent(generatePI(random, email, image, name, 0), true)
+        .setFullScreenIntent(generatePI(email, image, name, 0), true)
         .setOngoing(true)
         .setAutoCancel(false)
         .setTimeoutAfter(20000)
@@ -78,14 +78,11 @@ fun callNotification(
     notification.flags = Notification.FLAG_INSISTENT
 
     val notificationManager = context.getSystemService(NotificationManager::class.java)
-    notificationManager.notify(random, notification)
+    notificationManager.notify(NOTIFICATION_TAG, email.hashCode().absoluteValue, notification)
 }
 
-private fun generatePI(
-    random: Int, email: String?, image: String?, name: String?, i: Int
-): PendingIntent {
+private fun generatePI(email: String?, image: String?, name: String?, i: Int): PendingIntent {
     val intent = Intent(context, PartyCallActivity::class.java).apply {
-        putExtra(Intent.EXTRA_UID, random)
         putExtra(Intent.EXTRA_EMAIL, email)
         putExtra(Intent.EXTRA_USER, image)
         putExtra(Intent.EXTRA_PACKAGE_NAME, name)
@@ -119,6 +116,14 @@ private fun createNotificationChannel() {
     }
 }
 
+
+fun clearCallNotification(email: String) {
+    try {
+        notificationManager.cancel(NOTIFICATION_TAG, email.hashCode().absoluteValue)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
 
 private fun getUriSoundFile() =
     (ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.packageName + "/" + R.raw.ring_phone_audio).toUri()

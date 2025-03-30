@@ -104,7 +104,7 @@ fun ButtonWithBorder(txt: Int, border: Color = Color.White, click: () -> Unit) {
 }
 
 @Composable
-fun ImageWithBgRound(image: Int, bg: Color = Color.White, click: () -> Unit) {
+fun ImageWithBgRound(image: Int, bg: Color = Color.White, img: Color = Color.Black, click: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(horizontal = 4.dp)
@@ -113,10 +113,10 @@ fun ImageWithBgRound(image: Int, bg: Color = Color.White, click: () -> Unit) {
             .clickable {
                 click()
             }
-            .padding(7.dp),
+            .padding(12.dp),
         Arrangement.Center, Alignment.CenterVertically
     ) {
-        ImageIcon(image, 21, Color.Black)
+        ImageIcon(image, 21, img)
     }
 }
 
