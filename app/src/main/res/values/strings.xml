@@ -242,6 +242,7 @@
     <string name="need_location_permission_to_read_contact">Need location permission to read contact.</string>
     <string name="need_camera_microphone_permission_to_photo">Need camera and microphone permission to capture photo.</string>
     <string name="need_microphone_permission_to_recognize_song">Need microphone permission to hear and recognize song.</string>
+    <string name="need_microphone_permission_to_speak">Need microphone permission so you can even speak with each other.</string>
     <string name="speak_what_you_want_to_search">Speak, What want you to search?</string>
     <string name="error_recognizing_speech">Error while recognizing your speech !!</string>
     <string name="location_permission_reject">Need location permission so you enjoy it more and feel free to connect.</string>

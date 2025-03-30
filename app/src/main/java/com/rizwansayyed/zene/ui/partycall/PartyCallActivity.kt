@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.service.notification.clearCallNotification
 import com.rizwansayyed.zene.ui.partycall.view.CallingView
 import com.rizwansayyed.zene.ui.partycall.view.playRingtoneFromEarpiece
+import com.rizwansayyed.zene.ui.partycall.view.stopRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
@@ -50,6 +51,7 @@ class PartyCallActivity : FragmentActivity() {
     private var profilePhoto by mutableStateOf("")
     private var name by mutableStateOf("")
     private var email by mutableStateOf("")
+    private var isSpeaker = mutableStateOf(false)
     private var isInPictureInPicture by mutableStateOf(false)
 
     @OptIn(ExperimentalGlideComposeApi::class)
@@ -71,7 +73,7 @@ class PartyCallActivity : FragmentActivity() {
                     )
 
                     if (!isInPictureInPicture)
-                        CallingView(Modifier.align(Alignment.BottomCenter), name)
+                        CallingView(Modifier.align(Alignment.BottomCenter), name, isSpeaker)
 
                     if (!isInPictureInPicture) ButtonArrowBack(Modifier.align(Alignment.TopStart)) {
                         goToPIP()
@@ -81,19 +83,6 @@ class PartyCallActivity : FragmentActivity() {
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
                     if (!email.contains("@")) finish()
-
-                    lifecycleScope.launch {
-                        val isSpeakerOn = true
-                        while (true) {
-                            delay(2.seconds)
-                            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                            if (isSpeakerOn) {
-                                audioManager.isSpeakerphoneOn = true
-                            } else {
-                                audioManager.isSpeakerphoneOn = false
-                            }
-                        }
-                    }
                 }
             }
 
@@ -144,11 +133,17 @@ class PartyCallActivity : FragmentActivity() {
 
         clearCallNotification(email)
         if (type == -1) {
-            playRingtoneFromEarpiece(this)
+            playRingtoneFromEarpiece(this, isSpeaker.value)
+            viewModel.sendPartyCall(email)
         }
 
 //        if ()
 //        viewModel.sendPartyCall(email)
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopRingtoneFromEarpiece()
     }
 }

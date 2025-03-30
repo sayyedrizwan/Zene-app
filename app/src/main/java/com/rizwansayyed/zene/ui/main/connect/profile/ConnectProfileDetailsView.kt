@@ -53,10 +53,10 @@ import com.rizwansayyed.zene.data.model.ConnectedUserStatus.REQUESTED
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
+import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
@@ -70,6 +70,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
+import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -442,6 +443,26 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
 fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         val context = LocalContext.current.applicationContext
+        val needMicrophone = stringResource(R.string.need_microphone_permission_to_speak)
+
+        val m = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                Intent(context, PartyCallActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(Intent.EXTRA_EMAIL, data.user?.email)
+                    putExtra(Intent.EXTRA_USER, data.user?.profile_photo)
+                    putExtra(Intent.EXTRA_PACKAGE_NAME, data.user?.name)
+                    putExtra(Intent.EXTRA_MIME_TYPES, -1)
+                    context.startActivity(this)
+                }
+                close()
+            } else {
+                SnackBarManager.showMessage(needMicrophone)
+                openAppSettings()
+            }
+        }
+
+
         Column(
             Modifier
                 .padding(5.dp)
@@ -490,15 +511,7 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
             }
             Spacer(Modifier.height(15.dp))
             ButtonHeavy(stringResource(R.string.start), Color.Black) {
-                Intent(context, PartyCallActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.EXTRA_EMAIL, data.user?.email)
-                    putExtra(Intent.EXTRA_USER, data.user?.profile_photo)
-                    putExtra(Intent.EXTRA_PACKAGE_NAME, data.user?.name)
-                    putExtra(Intent.EXTRA_MIME_TYPES, -1)
-                    context.startActivity(this)
-                }
-                close()
+                m.launch(Manifest.permission.RECORD_AUDIO)
             }
             Spacer(Modifier.height(15.dp))
             ButtonHeavy(stringResource(R.string.close), Color.Black) {
