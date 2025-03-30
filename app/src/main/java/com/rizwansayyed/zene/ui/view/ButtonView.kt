@@ -145,7 +145,7 @@ fun ImageWithBorder(img: Int, border: Color = Color.White, click: () -> Unit) {
             .padding(vertical = 7.dp, horizontal = 14.dp),
         Arrangement.Center, Alignment.CenterVertically
     ) {
-        ImageIcon(img, 17, border)
+        ImageIcon(img, 19, border)
     }
 }
 

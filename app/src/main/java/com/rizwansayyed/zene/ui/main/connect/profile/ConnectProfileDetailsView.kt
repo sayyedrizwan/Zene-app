@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
 import android.Manifest
+import android.content.Intent
 import android.location.Geocoder
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -33,11 +34,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
@@ -48,10 +52,14 @@ import com.rizwansayyed.zene.data.model.ConnectedUserStatus.NONE
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.REQUESTED
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
+import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
@@ -62,7 +70,6 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
-import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -82,6 +89,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     var showSendMessage by remember { mutableStateOf(false) }
     var sendLocation by remember { mutableStateOf(false) }
     var showPosts by remember { mutableStateOf(true) }
+    var showPartyDialog by remember { mutableStateOf(false) }
 
     val locationPermission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -118,8 +126,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                                         bioAuthMetric.checkAuth { auth ->
                                             if (auth) showSendMessage = true
                                         }
-                                    } else
-                                        showSendMessage = true
+                                    } else showSendMessage = true
                                 }
                             }
 
@@ -136,8 +143,8 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                             }
                         }
 
-                        ImageWithBorder(R.drawable.ic_music_note) {
-                            viewModel.sendPartyCall(data.user.email)
+                        ImageWithBorder(R.drawable.ic_party) {
+                            showPartyDialog = true
                         }
 
                         ImageWithBorder(R.drawable.ic_location) {
@@ -226,14 +233,12 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     LaunchedEffect(Unit) {
         if (doOpenChatOnConnect) {
             coroutine.launch {
-                val lock = DataStorageManager.lockChatSettings(data.user?.email ?: "")
-                    .firstOrNull()
+                val lock = DataStorageManager.lockChatSettings(data.user?.email ?: "").firstOrNull()
                 if (lock == true) {
                     bioAuthMetric.checkAuth { auth ->
                         if (auth) showSendMessage = true
                     }
-                } else
-                    showSendMessage = true
+                } else showSendMessage = true
             }
             doOpenChatOnConnect = false
         }
@@ -251,6 +256,10 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 sendLocation = false
             }
         }
+    }
+
+    if (showPartyDialog) DialogPartyInfo(data) {
+        showPartyDialog = false
     }
 }
 
@@ -289,29 +298,33 @@ fun UsersSettingsOfView(data: ConnectUserInfoResponse) {
     val locationSharing = stringResource(R.string.location_sharing_off_by_user)
     val notificationSilent = stringResource(R.string.notification_from_you_silent_by_user)
 
-    if (data.otherStatus?.lastListeningSong == false || data.otherStatus?.locationSharing == false
-        || data.otherStatus?.silentNotification == true
-    ) {
+    if (data.otherStatus?.lastListeningSong == false || data.otherStatus?.locationSharing == false || data.otherStatus?.silentNotification == true) {
         Spacer(Modifier.height(20.dp))
         Row(
             Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
         ) {
-            if (data.otherStatus.lastListeningSong == false)
-                ImageWithBorder(R.drawable.ic_music_note, Color.Red) {
-                    SnackBarManager.showMessage(musicSharing)
-                }
+            if (data.otherStatus.lastListeningSong == false) ImageWithBorder(
+                R.drawable.ic_music_note,
+                Color.Red
+            ) {
+                SnackBarManager.showMessage(musicSharing)
+            }
 
             Spacer(Modifier.width(20.dp))
-            if (data.otherStatus.locationSharing == false)
-                ImageWithBorder(R.drawable.ic_location, Color.Red) {
-                    SnackBarManager.showMessage(locationSharing)
-                }
+            if (data.otherStatus.locationSharing == false) ImageWithBorder(
+                R.drawable.ic_location,
+                Color.Red
+            ) {
+                SnackBarManager.showMessage(locationSharing)
+            }
 
             Spacer(Modifier.width(20.dp))
-            if (data.otherStatus.silentNotification == true)
-                ImageWithBorder(R.drawable.ic_notification_off, Color.Red) {
-                    SnackBarManager.showMessage(notificationSilent)
-                }
+            if (data.otherStatus.silentNotification == true) ImageWithBorder(
+                R.drawable.ic_notification_off,
+                Color.Red
+            ) {
+                SnackBarManager.showMessage(notificationSilent)
+            }
         }
         Spacer(Modifier.height(30.dp))
     }
@@ -416,6 +429,75 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                 }
             } catch (e: Exception) {
                 data.user?.country ?: ""
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
+    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        val context = LocalContext.current.applicationContext
+        Column(
+            Modifier
+                .padding(5.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(15.dp))
+                .background(MainColor)
+                .padding(16.dp)
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+            ) {
+                GlideImage(
+                    R.drawable.user_sitting_with_headphone,
+                    "",
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                )
+
+                Column(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    BlackTransparent.copy(0.2f),
+                                    BlackTransparent.copy(0.5f),
+                                    BlackTransparent.copy(0.7f),
+                                    Color.Black,
+                                    Color.Black,
+                                    Color.Black
+                                )
+                            )
+                        ), Arrangement.Center, Alignment.CenterHorizontally
+                ) {
+                    TextViewSemiBold(stringResource(R.string.start_a_live_party), 27, center = true)
+                    Spacer(Modifier.height(1.dp))
+                    TextViewNormal(
+                        stringResource(R.string.start_a_live_party_desc), 14, center = true
+                    )
+                }
+
+            }
+
+            ButtonHeavy(stringResource(R.string.start), Color.Black) {
+                Intent(context, PartyCallActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(Intent.EXTRA_EMAIL, data.user?.email)
+                    putExtra(Intent.EXTRA_MIME_TYPES, -1)
+                    context.startActivity(this)
+                }
+                close()
+            }
+
+            ButtonHeavy(stringResource(R.string.close), Color.Black) {
+                close()
             }
         }
     }
