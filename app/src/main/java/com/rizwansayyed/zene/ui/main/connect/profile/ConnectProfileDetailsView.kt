@@ -143,6 +143,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                             }
                         }
 
+
                         ImageWithBorder(R.drawable.ic_party) {
                             showPartyDialog = true
                         }
@@ -485,7 +486,7 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
                 }
 
             }
-
+            Spacer(Modifier.height(15.dp))
             ButtonHeavy(stringResource(R.string.start), Color.Black) {
                 Intent(context, PartyCallActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -495,7 +496,7 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
                 }
                 close()
             }
-
+            Spacer(Modifier.height(15.dp))
             ButtonHeavy(stringResource(R.string.close), Color.Black) {
                 close()
             }
