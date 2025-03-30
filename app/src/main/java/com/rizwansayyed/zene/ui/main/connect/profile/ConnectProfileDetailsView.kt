@@ -491,6 +491,8 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
                 Intent(context, PartyCallActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     putExtra(Intent.EXTRA_EMAIL, data.user?.email)
+                    putExtra(Intent.EXTRA_USER, data.user?.profile_photo)
+                    putExtra(Intent.EXTRA_PACKAGE_NAME, data.user?.name)
                     putExtra(Intent.EXTRA_MIME_TYPES, -1)
                     context.startActivity(this)
                 }

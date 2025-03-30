@@ -13,7 +13,7 @@ socketIoClient = "2.1.1"
 versionname = "3.02.819"
 
 
-agp = "8.8.2"
+agp = "8.9.1"
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.0"
 glide = "1.0.0-beta01"
