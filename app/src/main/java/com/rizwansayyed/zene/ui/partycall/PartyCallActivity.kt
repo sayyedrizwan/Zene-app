@@ -1,8 +1,10 @@
 package com.rizwansayyed.zene.ui.partycall
 
 import android.app.PictureInPictureParams
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Rational
@@ -21,11 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.service.notification.clearCallNotification
 import com.rizwansayyed.zene.ui.partycall.view.CallingView
+import com.rizwansayyed.zene.ui.partycall.view.playRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
@@ -35,6 +39,7 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -76,6 +81,19 @@ class PartyCallActivity : FragmentActivity() {
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
                     if (!email.contains("@")) finish()
+
+                    lifecycleScope.launch {
+                        val isSpeakerOn = true
+                        while (true) {
+                            delay(2.seconds)
+                            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                            if (isSpeakerOn) {
+                                audioManager.isSpeakerphoneOn = true
+                            } else {
+                                audioManager.isSpeakerphoneOn = false
+                            }
+                        }
+                    }
                 }
             }
 
@@ -125,9 +143,12 @@ class PartyCallActivity : FragmentActivity() {
         this.profilePhoto = profilePhoto
 
         clearCallNotification(email)
+        if (type == -1) {
+            playRingtoneFromEarpiece(this)
+        }
+
 //        if ()
 //        viewModel.sendPartyCall(email)
 
-        type.toast()
     }
 }
