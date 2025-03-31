@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_CALL_NOTIFICATION
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_CALL_NOTIFICATION_DESC
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.notificationManager
+import com.rizwansayyed.zene.service.party.PartyServiceReceiver
 import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -50,9 +51,7 @@ fun callNotification(
     val channelId = CONNECT_CALL_NOTIFICATION.lowercase().replace(" ", "_")
 
     val callerStyle = NotificationCompat.CallStyle.forScreeningCall(
-        incomingCaller,
-        generatePI(email, image, name, 1),
-        generatePI(email, image, name, 2)
+        incomingCaller, generatePIDecline(email, image, name), generatePI(email, image, name, 1)
     )
 
 
@@ -91,6 +90,18 @@ private fun generatePI(email: String?, image: String?, name: String?, i: Int): P
     }
 
     return PendingIntent.getActivity(context, (222..1234).random(), intent, FLAG)
+}
+
+private fun generatePIDecline(email: String?, image: String?, name: String?): PendingIntent {
+    val intent = Intent(context, PartyServiceReceiver::class.java).apply {
+        putExtra(Intent.EXTRA_EMAIL, email)
+        putExtra(Intent.EXTRA_USER, image)
+        putExtra(Intent.EXTRA_PACKAGE_NAME, name)
+        putExtra(Intent.EXTRA_MIME_TYPES, true)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+
+    return PendingIntent.getBroadcast(context, (222..1234).random(), intent, FLAG)
 }
 
 private fun createNotificationChannel() {

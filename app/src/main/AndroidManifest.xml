@@ -75,8 +75,8 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.Zene">
+            android:theme="@style/Theme.Zene"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -168,6 +168,12 @@
             android:value="@string/TRUE_CALLER_KEY" />
 
         <service
+            android:name=".service.party.PartyService"
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false" />
+
+        <service
             android:name=".service.player.PlayerForegroundService"
             android:enabled="true"
             android:exported="false"
@@ -215,6 +221,10 @@
         </provider>
 
         <receiver android:name=".service.player.PlayerMediaButtonReceiver" />
+
+        <receiver
+            android:name=".service.party.PartyServiceReceiver"
+            android:exported="false" />
 
         <receiver
             android:name=".widgets.playingsongbig.PlayingSongWidgetReceiver"

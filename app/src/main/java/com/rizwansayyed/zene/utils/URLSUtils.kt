@@ -145,4 +145,7 @@ object SaveParams {
     const val USER_LEAVED_SOCKET = "USER_LEAVED"
     const val NEW_MESSAGE_ON_SOCKET = "NEW_MESSAGE_ON"
 
+
+    const val CALL_DECLINE_ = "NEW_MESSAGE_ON"
+
 }

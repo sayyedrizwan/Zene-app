@@ -3,11 +3,11 @@ package com.rizwansayyed.zene.utils.share
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
 import android.os.Build
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.net.toUri
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
@@ -24,15 +24,15 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.TEXT
 import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
-import com.rizwansayyed.zene.service.player.PlayerForegroundService
-import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
-import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.service.player.PlayerForegroundService
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
+import com.rizwansayyed.zene.utils.MainUtils.moshi
 
 
 object MediaContentUtils {
@@ -50,7 +50,8 @@ object MediaContentUtils {
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.setPackage("com.android.chrome")
         }
-        intent.launchUrl(context, Uri.parse(url))
+
+        url?.let { intent.launchUrl(context, it.toUri()) }
     }
 
     fun startMedia(

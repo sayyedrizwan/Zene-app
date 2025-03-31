@@ -36,6 +36,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsShareSheetView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsStorageSheetView
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -46,8 +48,6 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
 import com.rizwansayyed.zene.utils.MainUtils.openFeedbackMail
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_POLICY_URL
@@ -75,7 +75,7 @@ fun SettingsExtraView() {
         val sessionId = audioManager.generateAudioSessionId()
         try {
             val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-            effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, "your app package name")
+            effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
             effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
             effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
             context.startActivityForResult(effects, 0)
@@ -155,12 +155,13 @@ fun SettingsExtraView() {
 
 @Composable
 fun SettingsExtraView(top: Int, img: Int, click: (() -> Unit)?) {
-    Row(Modifier
-        .fillMaxWidth()
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) { if (click != null) click() }
-        .padding(horizontal = 5.dp, vertical = 20.dp),
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) { if (click != null) click() }
+            .padding(horizontal = 5.dp, vertical = 20.dp),
         Arrangement.Center,
         Alignment.CenterVertically) {
         Spacer(Modifier.width(5.dp))
@@ -208,7 +209,6 @@ fun FeedbackAlertSheetView(close: () -> Unit) {
         }
     }
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)

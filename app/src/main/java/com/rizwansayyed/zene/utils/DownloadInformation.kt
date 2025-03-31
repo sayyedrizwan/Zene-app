@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 val downloadViewMap = HashMap<String, DownloadInformation>()
 
@@ -35,7 +36,7 @@ class DownloadInformation(private val url: String, private val name: String) {
 
     private fun startDownload() {
         if (downloadID != null && !isDownloadComplete) return
-        val request = DownloadManager.Request(Uri.parse(url))
+        val request = DownloadManager.Request(url.toUri())
             .setTitle("${name} ${context.getString(R.string.app_name)}")
             .setDescription(context.resources.getString(R.string.downloading_file_please_wait))
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)

@@ -22,6 +22,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.service.notification.clearCallNotification
+import com.rizwansayyed.zene.service.party.PartyService
 import com.rizwansayyed.zene.ui.partycall.view.CallingView
 import com.rizwansayyed.zene.ui.partycall.view.playRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.partycall.view.stopRingtoneFromEarpiece
@@ -128,6 +129,11 @@ class PartyCallActivity : FragmentActivity() {
             viewModel.sendPartyCall(email)
         }
 
+
+        Intent(this, PartyService::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startService(this)
+        }
     }
 
     override fun onDestroy() {

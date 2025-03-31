@@ -17,6 +17,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
@@ -323,7 +324,7 @@ object MainUtils {
 
     fun openAppSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.parse("package:" + context.packageName)
+        intent.data = ("package:" + context.packageName).toUri()
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
@@ -356,7 +357,7 @@ object MainUtils {
     }
 
     fun openShareConnectShareSMS(url: String, number: String?) {
-        val uri = Uri.parse(java.lang.String.format("smsto:%s", number))
+        val uri = java.lang.String.format("smsto:%s", number).toUri()
         val smsIntent = Intent(Intent.ACTION_SENDTO, uri)
         smsIntent.putExtra("sms_body", url)
         smsIntent.setPackage("com.google.android.apps.messaging")
@@ -371,8 +372,8 @@ object MainUtils {
     }
 
     fun openGoogleMapLocation(showDirection: Boolean, lat: Double, lon: Double, name: String) {
-        val d = if (showDirection) Uri.parse("http://maps.google.com/maps?daddr=$lat,$lon")
-        else Uri.parse("geo:0,0?q=$lat,$lon(${name} Location)")
+        val d = if (showDirection) "http://maps.google.com/maps?daddr=$lat,$lon".toUri()
+        else "geo:0,0?q=$lat,$lon(${name} Location)".toUri()
         val intent = Intent(Intent.ACTION_VIEW, d)
         intent.setPackage("com.google.android.apps.maps")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -380,7 +381,7 @@ object MainUtils {
     }
 
     fun openGoogleMapNameLocation(name: String) {
-        val d = Uri.parse("http://maps.google.com/?q=${name}")
+        val d = "http://maps.google.com/?q=${name}".toUri()
         val intent = Intent(Intent.ACTION_VIEW, d)
         intent.setPackage("com.google.android.apps.maps")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -511,7 +512,7 @@ object MainUtils {
             val uriText = "mailto:$ZENE_MAIL" +
                     "?subject=" + Uri.encode("Feedback on the Android App") +
                     "&body=" + Uri.encode("<<<<<Feedback>>>>>")
-            data = Uri.parse(uriText)
+            data = uriText.toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(intent)
@@ -520,14 +521,14 @@ object MainUtils {
     fun openAppOnPlayStore() {
         try {
             Intent(
-                Intent.ACTION_VIEW, Uri.parse("market://details?id=${context.packageName}")
+                Intent.ACTION_VIEW, "market://details?id=${context.packageName}".toUri()
             ).apply {
                 context.startActivity(this)
             }
         } catch (e: Exception) {
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+                "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
             ).apply { context.startActivity(this) }
         }
     }
