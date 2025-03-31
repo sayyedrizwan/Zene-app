@@ -1,10 +1,8 @@
 package com.rizwansayyed.zene.ui.partycall
 
 import android.app.PictureInPictureParams
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Rational
@@ -16,14 +14,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
@@ -40,19 +34,14 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class PartyCallActivity : FragmentActivity() {
 
     private val viewModel: ConnectViewModel by viewModels()
+    private val partyViewModel: PartyViewModel by viewModels()
 
-    private var profilePhoto by mutableStateOf("")
-    private var name by mutableStateOf("")
-    private var email by mutableStateOf("")
-    private var isSpeaker = mutableStateOf(false)
-    private var isInPictureInPicture by mutableStateOf(false)
 
     @OptIn(ExperimentalGlideComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,21 +57,22 @@ class PartyCallActivity : FragmentActivity() {
                 ) {
 
                     GlideImage(
-                        profilePhoto, name, Modifier.fillMaxSize(),
+                        partyViewModel.profilePhoto, partyViewModel.name, Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
 
-                    if (!isInPictureInPicture)
-                        CallingView(Modifier.align(Alignment.BottomCenter), name, isSpeaker)
+                    if (!partyViewModel.isInPictureInPicture)
+                        CallingView(Modifier.align(Alignment.BottomCenter), partyViewModel)
 
-                    if (!isInPictureInPicture) ButtonArrowBack(Modifier.align(Alignment.TopStart)) {
-                        goToPIP()
-                    }
+                    if (!partyViewModel.isInPictureInPicture)
+                        ButtonArrowBack(Modifier.align(Alignment.TopStart)) {
+                            goToPIP()
+                        }
                 }
 
                 LaunchedEffect(Unit) {
                     delay(1.seconds)
-                    if (!email.contains("@")) finish()
+                    if (!partyViewModel.email.contains("@")) finish()
                 }
             }
 
@@ -116,7 +106,7 @@ class PartyCallActivity : FragmentActivity() {
         isInPictureInPictureMode: Boolean, newConfig: Configuration
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        isInPictureInPicture = isInPictureInPictureMode
+        partyViewModel.setPIP(isInPictureInPictureMode)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -126,19 +116,17 @@ class PartyCallActivity : FragmentActivity() {
 
     private fun checkIntent(intent: Intent) {
         val type = intent.getIntExtra(Intent.EXTRA_MIME_TYPES, 0)
-        this.email = intent.getStringExtra(Intent.EXTRA_EMAIL) ?: ""
-        this.profilePhoto = intent.getStringExtra(Intent.EXTRA_USER) ?: ""
-        this.name = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
-        this.profilePhoto = profilePhoto
+        val email = intent.getStringExtra(Intent.EXTRA_EMAIL) ?: ""
+        val profilePhoto = intent.getStringExtra(Intent.EXTRA_USER) ?: ""
+        val name = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
+
+        partyViewModel.setInfo(profilePhoto, email, name, type)
 
         clearCallNotification(email)
         if (type == -1) {
-            playRingtoneFromEarpiece(this, isSpeaker.value)
+            playRingtoneFromEarpiece(this, false)
             viewModel.sendPartyCall(email)
         }
-
-//        if ()
-//        viewModel.sendPartyCall(email)
 
     }
 

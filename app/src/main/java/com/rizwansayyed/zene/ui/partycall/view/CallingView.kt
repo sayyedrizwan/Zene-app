@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,15 +24,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.partycall.PartyViewModel
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 
 
 @Composable
-fun CallingView(modifier: Modifier = Modifier, name: String, isSpeaker: MutableState<Boolean>) {
+fun CallingView(modifier: Modifier = Modifier, partyViewModel: PartyViewModel) {
     val context = LocalContext.current.applicationContext
     val activity = LocalActivity.current
+
     Column(
         modifier
             .padding(bottom = 100.dp)
@@ -44,18 +45,18 @@ fun CallingView(modifier: Modifier = Modifier, name: String, isSpeaker: MutableS
             .padding(horizontal = 10.dp, vertical = 30.dp),
         Arrangement.Center, Alignment.CenterHorizontally
     ) {
-        TextViewBold(name, 25)
+        TextViewBold(partyViewModel.name, 25)
         Spacer(Modifier.height(5.dp))
         TextViewNormal(stringResource(R.string.calling_), 15)
         Spacer(Modifier.height(20.dp))
 
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceAround, Alignment.CenterVertically) {
             ImageWithBgRound(
-                if (isSpeaker.value) R.drawable.ic_speaker_full else R.drawable.ic_volume_off,
+                if (partyViewModel.isSpeaker) R.drawable.ic_speaker_full else R.drawable.ic_volume_off,
                 Color.White, Color.Black
             ) {
-                isSpeaker.value = !isSpeaker.value
-                playRingtoneFromEarpiece(context, isSpeaker.value)
+                partyViewModel.setSpeaker()
+                playRingtoneFromEarpiece(context, partyViewModel.isSpeaker)
             }
 
             ImageWithBgRound(R.drawable.ic_call_end, Color.Red, Color.White) {
