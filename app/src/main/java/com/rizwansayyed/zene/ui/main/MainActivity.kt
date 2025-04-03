@@ -34,6 +34,17 @@ import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
+import com.rizwansayyed.zene.service.notification.HomeNavigationListener
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.setNavigationCallback
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
@@ -60,19 +71,7 @@ import com.rizwansayyed.zene.ui.view.movies.MoviesView
 import com.rizwansayyed.zene.ui.view.myplaylist.MyPlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
-import com.rizwansayyed.zene.service.notification.HomeNavigationListener
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.setNavigationCallback
-import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
 import com.rizwansayyed.zene.utils.share.IntentCheckUtils
@@ -82,6 +81,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
+
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -125,8 +125,9 @@ class MainActivity : FragmentActivity() {
                                         HOME -> HomeView(navigationViewModel, userInfo)
                                         CONNECT -> HomeConnectView()
                                         ENT -> EntertainmentNewsView()
-                                        NOTIFICATION ->
-                                            NotificationViewScreenView(navigationViewModel)
+                                        NOTIFICATION -> NotificationViewScreenView(
+                                            navigationViewModel
+                                        )
 
                                         SEARCH -> SearchView(homeViewModel)
                                         NONE -> {}
@@ -209,13 +210,12 @@ class MainActivity : FragmentActivity() {
 
                         IntentCheckUtils(intent, navigationViewModel)
                         showLogin = true
-                        delay(1.seconds)
 
 
                         delay(4.seconds)
-                        if (!isNotificationEnabled() && userInfo?.isLoggedIn() == true) navigationViewModel.setHomeNavSections(
-                            NOTIFICATION
-                        )
+                        if (!isNotificationEnabled() && userInfo?.isLoggedIn() == true) {
+                            navigationViewModel.setHomeNavSections(NOTIFICATION)
+                        }
                     }
                 }
             }
@@ -232,17 +232,20 @@ class MainActivity : FragmentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
-        
+
         lifecycleScope.launch {
             delay(2.seconds)
-            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
-                putExtra(Intent.EXTRA_USER, "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png")
-                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
-                putExtra(Intent.EXTRA_MIME_TYPES, -1)
-                this@MainActivity.startActivity(this)
-            }
+//            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
+//                putExtra(
+//                    Intent.EXTRA_USER,
+//                    "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png"
+//                )
+//                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
+//                putExtra(Intent.EXTRA_MIME_TYPES, -1)
+//                this@MainActivity.startActivity(this)
+//            }
         }
     }
 

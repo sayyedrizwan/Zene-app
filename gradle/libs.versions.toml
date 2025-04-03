@@ -35,7 +35,7 @@ activityCompose = "1.10.1"
 composeBom = "2025.02.00"
 googleid = "1.1.1"
 mapsCompose = "6.4.1"
-media3Exoplayer = "1.5.1"
+media3Exoplayer = "1.6.0"
 moshiKotlin = "1.15.2"
 okhttpBom = "4.12.0"
 processPhoenix = "3.0.0"
@@ -44,7 +44,7 @@ playServicesLocation = "21.3.0"
 emoji = "1.5.0"
 truecaller = "3.1.0"
 camera = "1.5.0-alpha06"
-material3 = "1.4.0-alpha10"
+material3 = "1.4.0-alpha11"
 webkit = "1.13.0"
 navigation = "2.8.9"
 paletteKtx = "1.0.0"
@@ -53,6 +53,7 @@ ksp = "2.0.21-1.0.27"
 storage = "1.5.0"
 colorpickerCompose = "1.1.2"
 hashids = "1.0.3"
+googleWebrtc = "1.0.21217"
 
 
 [libraries]
@@ -110,6 +111,8 @@ emoji-picker = { module = "androidx.emoji2:emoji2-emojipicker", version.ref = "e
 emoji2-bundled = { group = "androidx.emoji2", name = "emoji2-bundled", version.ref = "emoji" }
 
 socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
+google-webrtc = { module = "org.webrtc:google-webrtc", version.ref = "googleWebrtc" }
+
 truecaller = { module = "com.truecaller.android.sdk:truecaller-sdk", version.ref = "truecaller" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

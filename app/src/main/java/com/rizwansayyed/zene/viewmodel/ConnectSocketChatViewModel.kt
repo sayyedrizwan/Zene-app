@@ -30,6 +30,7 @@ class ConnectSocketChatViewModel : ViewModel() {
     private var mSocket by mutableStateOf<Socket?>(null)
     private var roomId: String? = null
     private var myEmail: String? = null
+    private var authToken: String? = null
     private var offJob: Job? = null
     var inLobby by mutableStateOf(false)
     var justLeft by mutableStateOf(false)
@@ -45,6 +46,7 @@ class ConnectSocketChatViewModel : ViewModel() {
 
     fun connect(senderEmail: String) = viewModelScope.launch(Dispatchers.IO) {
         myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@launch
+        authToken = DataStorageManager.userInfo.firstOrNull()?.authToken ?: return@launch
         roomId = generateRoomId(senderEmail, myEmail!!)
 
         inLobby = false
@@ -66,6 +68,7 @@ class ConnectSocketChatViewModel : ViewModel() {
             val data = JSONObject()
             data.put("roomId", roomId)
             data.put("email", myEmail)
+            data.put("token", authToken)
             mSocket?.emit("joinRoom", data)
         }
 
@@ -165,6 +168,7 @@ class ConnectSocketChatViewModel : ViewModel() {
         data.put("room", roomId)
         data.put("email", myEmail)
         data.put("message", json)
+        data.put("token", authToken)
 
         mSocket?.emit("connectMessage", data)
     }
@@ -174,6 +178,7 @@ class ConnectSocketChatViewModel : ViewModel() {
         data.put("room", roomId)
         data.put("email", myEmail)
         data.put("id", item._id)
+        data.put("token", authToken)
 
         mSocket?.emit("connectDeleteMessage", data)
     }
@@ -183,6 +188,7 @@ class ConnectSocketChatViewModel : ViewModel() {
         data.put("room", roomId)
         data.put("email", myEmail)
         data.put("typing", typing)
+        data.put("token", authToken)
 
         mSocket?.emit("typingMessage", data)
     }
@@ -191,6 +197,8 @@ class ConnectSocketChatViewModel : ViewModel() {
         val data = JSONObject()
         data.put("room", roomId)
         data.put("email", myEmail)
+        data.put("token", authToken)
+
         mSocket?.emit("oldJoin", data)
     }
 

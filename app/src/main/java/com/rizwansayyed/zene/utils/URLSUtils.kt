@@ -132,7 +132,6 @@ object URLSUtils {
     const val ZENE_USER_PLAYLIST_REMOVE_MEDIA_PLAYLISTS_API =
         "users-playlists/remove-media-playlists"
 
-    const val ZENE_CONTACT_CACHE = "zene_contact_cache"
 
     const val IP_BASE_URL = "http://ip-api.com/"
     const val IP_JSON_API = "json"

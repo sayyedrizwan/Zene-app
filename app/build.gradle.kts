@@ -176,6 +176,7 @@ dependencies {
     implementation(libs.glance.appwidget)
 
     implementation(libs.socket.io.client)
+    implementation(libs.google.webrtc)
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
