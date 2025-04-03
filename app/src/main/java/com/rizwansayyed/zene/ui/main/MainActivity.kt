@@ -183,6 +183,9 @@ class MainActivity : FragmentActivity() {
                         } else if (showLogin) LoginView()
                     }
 
+
+                    WebViewTestOff()
+
                     LaunchedEffect(userInfo?.email) {
                         delay(500)
                         setNavigationCallback(object : HomeNavigationListener {

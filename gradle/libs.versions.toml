@@ -53,7 +53,6 @@ ksp = "2.0.21-1.0.27"
 storage = "1.5.0"
 colorpickerCompose = "1.1.2"
 hashids = "1.0.3"
-googleWebrtc = "1.0.21217"
 
 
 [libraries]
@@ -111,7 +110,6 @@ emoji-picker = { module = "androidx.emoji2:emoji2-emojipicker", version.ref = "e
 emoji2-bundled = { group = "androidx.emoji2", name = "emoji2-bundled", version.ref = "emoji" }
 
 socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
-google-webrtc = { module = "org.webrtc:google-webrtc", version.ref = "googleWebrtc" }
 
 truecaller = { module = "com.truecaller.android.sdk:truecaller-sdk", version.ref = "truecaller" }
 
