@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -25,7 +24,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.clearCallNotification
-import com.rizwansayyed.zene.ui.main.WebViewTestOff
+import com.rizwansayyed.zene.ui.partycall.view.WebViewTestOff
 import com.rizwansayyed.zene.ui.partycall.view.CallingView
 import com.rizwansayyed.zene.ui.partycall.view.playRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.partycall.view.stopRingtoneFromEarpiece
@@ -56,19 +55,24 @@ class PartyCallActivity : FragmentActivity() {
         setContent {
             ZeneTheme {
                 checkIntent(intent)
-                val email by DataStorageManager.userInfo.collectAsState(null)
-
-                if (email?.email != null && partyViewModel.email.isNotEmpty() && partyViewModel.randomCode.length > 3) {
-                    WebViewTestOff(partyViewModel.email, email?.email!!, partyViewModel)
-                }
+                val email = DataStorageManager.userInfo.collectAsState(null)
 
                 Box(
                     Modifier
                         .fillMaxSize()
                         .background(MainColor)
                 ) {
+                    if (email.value?.email != null && partyViewModel.email.isNotEmpty() && partyViewModel.isCallPicked) {
+                        WebViewTestOff(partyViewModel.email, email.value?.email!!, partyViewModel)
+                    }
+                }
 
-                    GlideImage(
+                if (!partyViewModel.hideCallingView) Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(MainColor)
+                ) {
+                    if (partyViewModel.profilePhoto.isNotEmpty()) GlideImage(
                         partyViewModel.profilePhoto, partyViewModel.name, Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -86,16 +90,16 @@ class PartyCallActivity : FragmentActivity() {
                     delay(1.seconds)
                     if (!partyViewModel.email.contains("@")) finish()
                 }
-            }
 
-            LaunchedEffect(partyViewModel.type) {
-                if (partyViewModel.type == -1) {
-                    playRingtoneFromEarpiece(this@PartyCallActivity, false)
+                LaunchedEffect(partyViewModel.type) {
+                    if (partyViewModel.type == -1) {
+                        playRingtoneFromEarpiece(this@PartyCallActivity, false)
 
-                    delay(1.seconds)
-                    viewModel.sendPartyCall(partyViewModel.email, partyViewModel.randomCode)
-                } else {
-                    stopRingtoneFromEarpiece()
+                        delay(1.seconds)
+                        viewModel.sendPartyCall(partyViewModel.email, partyViewModel.randomCode)
+                    } else {
+                        stopRingtoneFromEarpiece()
+                    }
                 }
             }
 
@@ -143,11 +147,17 @@ class PartyCallActivity : FragmentActivity() {
         val profilePhoto = intent.getStringExtra(Intent.EXTRA_USER) ?: ""
         val name = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
 
+        delay(500)
         partyViewModel.setInfo(profilePhoto, email, name, type)
         clearCallNotification(email)
 
         if (type == -1) {
             partyViewModel.generateAlphabetCodeSet()
+            delay(500)
+            partyViewModel.setCallPicked()
+        } else if (type == 1) {
+            partyViewModel.setCallPicked()
+            partyViewModel.hideCallingView()
         } else {
             if (code != null)
                 partyViewModel.setCode(code)

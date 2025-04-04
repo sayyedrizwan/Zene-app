@@ -14,6 +14,8 @@ class PartyViewModel : ViewModel() {
     var email by mutableStateOf("")
     var name by mutableStateOf("")
     var type by mutableIntStateOf(0)
+    var isCallPicked by mutableStateOf(false)
+    var hideCallingView by mutableStateOf(false)
     var randomCode by mutableStateOf("")
 
     fun setInfo(profilePhoto: String, email: String, name: String, type: Int) {
@@ -40,5 +42,13 @@ class PartyViewModel : ViewModel() {
 
     fun setCode(v: String) {
         randomCode = v
+    }
+
+    fun setCallPicked() {
+        isCallPicked = true
+    }
+
+    fun hideCallingView() {
+        hideCallingView = true
     }
 }

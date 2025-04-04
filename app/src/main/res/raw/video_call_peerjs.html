@@ -31,7 +31,7 @@
                 autoplay="true"></video>
         <video
                 id="localVideo"
-                autoplay="true"></video>
+                autoplay="true" muted="true"></video>
 
         <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
         <script>
@@ -49,9 +49,9 @@
                 const constraints = {  audio: true,
                     video: {
                       facingMode: useBackCamera ? "environment" : "user",
-                      quality: 7,
-                      width: { ideal: 240 },
-                      height: { ideal: 320 }
+                      quality: 10,
+                      width: { ideal: 320 },
+                      height: { ideal: 240 }
                     }
                   };
 
@@ -78,6 +78,7 @@
               const call = peer.call(otherID, localStream);
 
               call.on("stream", (remoteStream) => {
+                Zene.callPicked()
                 remoteVideo.srcObject = remoteStream;
                 try {
                   remoteVideo.play();
@@ -95,13 +96,13 @@
             });
 
             peer.on("call", async (call) => {
-              console.log("Incoming call...");
               const localStream = await getLocalStream();
               if (!localStream) return;
 
               call.answer(localStream);
 
               call.on("stream", (remoteStream) => {
+                Zene.callPicked()
                 remoteVideo.srcObject = remoteStream;
                 try {
                   remoteVideo.play();

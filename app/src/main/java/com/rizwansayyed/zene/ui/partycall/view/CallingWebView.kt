@@ -1,7 +1,8 @@
-package com.rizwansayyed.zene.ui.main
+package com.rizwansayyed.zene.ui.partycall.view
 
 import android.util.Log
 import android.webkit.ConsoleMessage
+import android.webkit.JavascriptInterface
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -31,9 +32,19 @@ import java.security.MessageDigest
 fun WebViewTestOff(email: String, myEmail: String, viewModel: PartyViewModel) {
     var mainWebView by remember { mutableStateOf<WebView?>(value = null) }
 
-    val htmlContent = getRawFolderString(R.raw.video_call_peerjs)
-        .replace("<<<OtherEmail>>>", generatePeerId(email, viewModel.randomCode))
-        .replace("<<<MyEmail>>>", generatePeerId(myEmail, viewModel.randomCode))
+    val htmlContent = remember {
+        getRawFolderString(R.raw.video_call_peerjs)
+            .replace("<<<OtherEmail>>>", generatePeerId(email, viewModel.randomCode))
+            .replace("<<<MyEmail>>>", generatePeerId(myEmail, viewModel.randomCode))
+    }
+
+    class WebAppInterface {
+        @JavascriptInterface
+        fun callPicked() {
+            viewModel.hideCallingView()
+            stopRingtoneFromEarpiece()
+        }
+    }
 
     AndroidView(
         factory = { ctx ->
@@ -51,6 +62,7 @@ fun WebViewTestOff(email: String, myEmail: String, viewModel: PartyViewModel) {
                         return false
                     }
                 }
+                addJavascriptInterface(WebAppInterface(), "Zene")
                 loadDataWithBaseURL(ZENE_URL, htmlContent, "text/html", "UTF-8", null)
             }
         }, Modifier
@@ -77,9 +89,10 @@ fun WebViewTestOff(email: String, myEmail: String, viewModel: PartyViewModel) {
     }
 }
 
-fun generatePeerId(email: String, appSalt: String): String {
+fun generatePeerId(email: String, appSalt__: String): String {
+    val appSalt = "12239jn"
     val input = "$email@$appSalt"
     val digest = MessageDigest.getInstance("SHA-256")
     val hashBytes = digest.digest(input.toByteArray())
-    return hashBytes.joinToString("") { "%02x".format(it) }.take(16) // Limit to 16 chars
+    return hashBytes.joinToString("") { "%02x".format(it) }.take(16)
 }
