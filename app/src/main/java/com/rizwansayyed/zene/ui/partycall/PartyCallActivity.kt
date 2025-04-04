@@ -15,22 +15,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.clearCallNotification
-import com.rizwansayyed.zene.ui.partycall.view.CallingView
+import com.rizwansayyed.zene.ui.partycall.view.CalledPickedView
 import com.rizwansayyed.zene.ui.partycall.view.CallingWebView
-import com.rizwansayyed.zene.ui.partycall.view.playRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.partycall.view.stopRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
-import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.utils.MainUtils.hasPIPPermission
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -66,24 +61,28 @@ class PartyCallActivity : FragmentActivity() {
                     }
                 }
 
-                if (!partyViewModel.hideCallingView) Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(MainColor)
-                ) {
-                    if (partyViewModel.profilePhoto.isNotEmpty()) GlideImage(
-                        partyViewModel.profilePhoto, partyViewModel.name, Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+//                if (!partyViewModel.hideCallingView) Box(
+//                    Modifier
+//                        .fillMaxSize()
+//                        .background(MainColor)
+//                ) {
+//                    if (partyViewModel.profilePhoto.isNotEmpty()) GlideImage(
+//                        partyViewModel.profilePhoto, partyViewModel.name, Modifier.fillMaxSize(),
+//                        contentScale = ContentScale.Crop
+//                    )
+//
+//                    if (!partyViewModel.isInPictureInPicture)
+//                        CallingView(Modifier.align(Alignment.BottomCenter), partyViewModel)
+//
+//                    if (!partyViewModel.isInPictureInPicture)
+//                        ButtonArrowBack(Modifier.align(Alignment.TopStart)) {
+//                            goToPIP()
+//                        }
+//                }
+//
+//                if (partyViewModel.hideCallingView) CalledPickedView(viewModel)
 
-                    if (!partyViewModel.isInPictureInPicture)
-                        CallingView(Modifier.align(Alignment.BottomCenter), partyViewModel)
-
-                    if (!partyViewModel.isInPictureInPicture)
-                        ButtonArrowBack(Modifier.align(Alignment.TopStart)) {
-                            goToPIP()
-                        }
-                }
+                CalledPickedView(partyViewModel)
 
                 LaunchedEffect(Unit) {
                     checkIntent(intent)
@@ -93,7 +92,7 @@ class PartyCallActivity : FragmentActivity() {
 
                 LaunchedEffect(partyViewModel.type) {
                     if (partyViewModel.type == -1) {
-                        playRingtoneFromEarpiece(this@PartyCallActivity, false)
+//                        playRingtoneFromEarpiece(this@PartyCallActivity, false)
 
                         delay(1.seconds)
                         viewModel.sendPartyCall(partyViewModel.email, partyViewModel.randomCode)

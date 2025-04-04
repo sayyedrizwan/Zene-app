@@ -12,7 +12,7 @@
             #remoteVideo {
               position: fixed;
               width: 100%;
-              height: 100%
+              height: 100%;
             }
 
             #localVideo {
@@ -26,12 +26,8 @@
             }
         </style>
 
-        <video
-                id="remoteVideo"
-                autoplay="true"></video>
-        <video
-                id="localVideo"
-                autoplay="true" muted="true"></video>
+        <video id="remoteVideo" autoplay="true"></video>
+        <video id="localVideo" autoplay="true" muted="true"></video>
 
         <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
         <script>
@@ -41,29 +37,35 @@
             const localVideo = document.getElementById("localVideo");
             const remoteVideo = document.getElementById("remoteVideo");
 
-            let peer = new Peer(myID);
+            var peer = new Peer(myID);
+            var localStreamMine;
+            var doShowVideoCall = false;
+            var useBackCamera = false;
+
+            let lastFrameTime = performance.now();
+            let isCameraOff = false;
 
             async function getLocalStream() {
               try {
-               const useBackCamera = false;
-                const constraints = {  audio: true,
-                    video: {
-                      facingMode: useBackCamera ? "environment" : "user",
-                      quality: 10,
-                      width: { ideal: 320 },
-                      height: { ideal: 240 }
-                    }
-                  };
+                const constraints = { audio: true, video: false };
+                const constraintsFullVideo = {
+                  audio: true,
+                  video: {
+                    facingMode: useBackCamera ? "environment" : "user",
+                    quality: 10,
+                    width: { ideal: 320 },
+                    height: { ideal: 240 },
+                  },
+                };
+                localStreamMine = await navigator.mediaDevices.getUserMedia(doShowVideoCall ? constraintsFullVideo : constraints);
+                localVideo.srcObject = localStreamMine;
 
-                const localStream = await navigator.mediaDevices.getUserMedia(constraints);
-
-                localVideo.srcObject = localStream;
                 try {
                   localVideo.play();
                 } catch (err) {
                   console.log(err);
                 }
-                return localStream;
+                return localStreamMine;
               } catch (error) {
                 console.error("Error accessing media devices:", error);
                 alert("Error accessing camera/microphone. Please check permissions.");
@@ -74,11 +76,10 @@
               const localStream = await getLocalStream();
               if (!localStream) return;
 
-              console.log("Calling:", otherID);
               const call = peer.call(otherID, localStream);
 
               call.on("stream", (remoteStream) => {
-                Zene.callPicked()
+                Zene.callPicked();
                 remoteVideo.srcObject = remoteStream;
                 try {
                   remoteVideo.play();
@@ -102,7 +103,7 @@
               call.answer(localStream);
 
               call.on("stream", (remoteStream) => {
-                Zene.callPicked()
+                Zene.callPicked();
                 remoteVideo.srcObject = remoteStream;
                 try {
                   remoteVideo.play();
@@ -115,7 +116,6 @@
               call.on("close", () => console.log("Call ended"));
             });
 
-
             peer.on("connection", async (call) => {
               call.on("close", () => console.log("Call ended"));
             });
@@ -123,11 +123,23 @@
             startCall();
 
             function hideLocalVideo() {
-                localVideo.style.display = "none"
+              localVideo.style.display = "none";
             }
 
             function showLocalVideo() {
-                localVideo.style.display = "block"
+              localVideo.style.display = "block";
+            }
+
+            async function toggleVideo() {
+              const videoTrack = localStreamMine.getVideoTracks()[0];
+              if (videoTrack && videoTrack.enabled) {
+                videoTrack.enabled = false;
+                Zene.isVideoEnabled(false);
+              } else {
+                doShowVideoCall = true;
+                startCall();
+                Zene.isVideoEnabled(true);
+              }
             }
         </script>
     </body>

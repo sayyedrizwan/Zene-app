@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.partycall
 
+import android.webkit.WebView
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +17,9 @@ class PartyViewModel : ViewModel() {
     var type by mutableIntStateOf(0)
     var isCallPicked by mutableStateOf(false)
     var hideCallingView by mutableStateOf(false)
+    var isVideoOn by mutableStateOf(false)
     var randomCode by mutableStateOf("")
+    var callWebViewMain by mutableStateOf<WebView?>(null)
 
     fun setInfo(profilePhoto: String, email: String, name: String, type: Int) {
         this.profilePhoto = profilePhoto
@@ -44,11 +47,19 @@ class PartyViewModel : ViewModel() {
         randomCode = v
     }
 
+    fun setCallWebView(v: WebView?) {
+        callWebViewMain = v
+    }
+
     fun setCallPicked() {
         isCallPicked = true
     }
 
     fun hideCallingView() {
         hideCallingView = true
+    }
+
+    fun setVideoOnOrOff(v: Boolean) {
+        isVideoOn = v
     }
 }

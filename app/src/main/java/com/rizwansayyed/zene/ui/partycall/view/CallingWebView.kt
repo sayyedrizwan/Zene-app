@@ -11,10 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
@@ -30,8 +27,6 @@ import java.security.MessageDigest
 
 @Composable
 fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
-    var mainWebView by remember { mutableStateOf<WebView?>(value = null) }
-
     val htmlContent = remember {
         getRawFolderString(R.raw.video_call_peerjs)
             .replace("<<<OtherEmail>>>", generatePeerId(email, viewModel.randomCode))
@@ -44,13 +39,18 @@ fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
             viewModel.hideCallingView()
             stopRingtoneFromEarpiece()
         }
+
+        @JavascriptInterface
+        fun isVideoEnabled(isEnabled: Boolean) {
+            viewModel.setVideoOnOrOff(isEnabled)
+        }
     }
 
     AndroidView(
         factory = { ctx ->
             WebView(ctx).apply {
                 enable()
-                mainWebView = this
+                viewModel.setCallWebView(this)
                 webChromeClient = object : WebChromeClient() {
                     override fun onPermissionRequest(request: PermissionRequest) {
                         request.grant(request.resources)
@@ -72,19 +72,20 @@ fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
 
     DisposableEffect(Unit) {
         onDispose {
-            mainWebView?.let {
+            viewModel.callWebViewMain?.let {
                 clearWebViewData(it)
                 killWebViewData(it)
             }
-            mainWebView = null
+
+            viewModel.setCallWebView(null)
         }
     }
 
     LaunchedEffect(viewModel.isInPictureInPicture) {
         if (viewModel.isInPictureInPicture)
-            mainWebView?.evaluateJavascript("hideLocalVideo();") {}
+            viewModel.callWebViewMain?.evaluateJavascript("hideLocalVideo();") {}
         else
-            mainWebView?.evaluateJavascript("showLocalVideo();") {}
+            viewModel.callWebViewMain?.evaluateJavascript("showLocalVideo();") {}
 
     }
 }
