@@ -24,8 +24,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.clearCallNotification
-import com.rizwansayyed.zene.ui.partycall.view.WebViewTestOff
 import com.rizwansayyed.zene.ui.partycall.view.CallingView
+import com.rizwansayyed.zene.ui.partycall.view.CallingWebView
 import com.rizwansayyed.zene.ui.partycall.view.playRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.partycall.view.stopRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -54,7 +54,6 @@ class PartyCallActivity : FragmentActivity() {
         enableEdgeToEdge()
         setContent {
             ZeneTheme {
-                checkIntent(intent)
                 val email = DataStorageManager.userInfo.collectAsState(null)
 
                 Box(
@@ -63,7 +62,7 @@ class PartyCallActivity : FragmentActivity() {
                         .background(MainColor)
                 ) {
                     if (email.value?.email != null && partyViewModel.email.isNotEmpty() && partyViewModel.isCallPicked) {
-                        WebViewTestOff(partyViewModel.email, email.value?.email!!, partyViewModel)
+                        CallingWebView(partyViewModel.email, email.value?.email!!, partyViewModel)
                     }
                 }
 
@@ -87,6 +86,7 @@ class PartyCallActivity : FragmentActivity() {
                 }
 
                 LaunchedEffect(Unit) {
+                    checkIntent(intent)
                     delay(1.seconds)
                     if (!partyViewModel.email.contains("@")) finish()
                 }
@@ -147,13 +147,13 @@ class PartyCallActivity : FragmentActivity() {
         val profilePhoto = intent.getStringExtra(Intent.EXTRA_USER) ?: ""
         val name = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
 
-        delay(500)
+//        delay(500)
         partyViewModel.setInfo(profilePhoto, email, name, type)
         clearCallNotification(email)
 
         if (type == -1) {
             partyViewModel.generateAlphabetCodeSet()
-            delay(500)
+//            delay(500)
             partyViewModel.setCallPicked()
         } else if (type == 1) {
             partyViewModel.setCallPicked()
@@ -164,13 +164,6 @@ class PartyCallActivity : FragmentActivity() {
             else
                 finish()
         }
-
-
-//        Intent(this, PartyService::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            putExtra(Intent.EXTRA_EMAIL, email)
-//            startService(this)
-//        }
     }
 
     override fun onDestroy() {

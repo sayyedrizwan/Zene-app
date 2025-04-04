@@ -29,7 +29,7 @@ import java.security.MessageDigest
 
 
 @Composable
-fun WebViewTestOff(email: String, myEmail: String, viewModel: PartyViewModel) {
+fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
     var mainWebView by remember { mutableStateOf<WebView?>(value = null) }
 
     val htmlContent = remember {
