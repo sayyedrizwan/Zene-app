@@ -49,6 +49,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val FCM_BODY = "body"
         const val FCM_IMAGE = "image"
         const val FCM_EMAIL = "email"
+        const val FCM_CODE = "code"
         const val FCM_TYPE = "type"
         const val FCM_LAT = "lat"
         const val FCM_LON = "lon"
@@ -79,7 +80,8 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
                 val name = it[FCM_NAME]
                 val image = it[FCM_IMAGE]
                 val email = it[FCM_EMAIL]
-                callNotification(name, image, email, this)
+                val code = it[FCM_CODE]
+                callNotification(name, image, email, code, this)
             }
         }
     }

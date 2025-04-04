@@ -14,6 +14,7 @@ class PartyViewModel : ViewModel() {
     var email by mutableStateOf("")
     var name by mutableStateOf("")
     var type by mutableIntStateOf(0)
+    var randomCode by mutableStateOf("")
 
     fun setInfo(profilePhoto: String, email: String, name: String, type: Int) {
         this.profilePhoto = profilePhoto
@@ -28,5 +29,16 @@ class PartyViewModel : ViewModel() {
 
     fun setPIP(v: Boolean) {
         this.isSpeaker = v
+    }
+
+    fun generateAlphabetCodeSet(length: Int = 12) {
+        val chars = ('A'..'Z')
+        randomCode = (1..length)
+            .map { chars.random() }
+            .joinToString("")
+    }
+
+    fun setCode(v: String) {
+        randomCode = v
     }
 }

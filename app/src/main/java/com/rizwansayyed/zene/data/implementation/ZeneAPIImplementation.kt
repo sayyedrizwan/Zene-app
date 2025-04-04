@@ -836,13 +836,14 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sendConnectLocation(token, body))
     }
 
-    override suspend fun sendPartyCall(toEmail: String) = flow {
+    override suspend fun sendPartyCall(toEmail: String, code: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
         val json = JSONObject().apply {
             put("email", email)
             put("toEmail", toEmail)
+            put("code", code)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

@@ -33,7 +33,7 @@ const val FLAG = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRE
 const val NOTIFICATION_TAG = "CALL_NOTIFICATION"
 
 fun callNotification(
-    name: String?, image: String?, email: String?, context: Context
+    name: String?, image: String?, email: String?, code: String?, context: Context
 ) {
     createNotificationChannel()
 
@@ -51,7 +51,9 @@ fun callNotification(
     val channelId = CONNECT_CALL_NOTIFICATION.lowercase().replace(" ", "_")
 
     val callerStyle = NotificationCompat.CallStyle.forScreeningCall(
-        incomingCaller, generatePIDecline(email, image, name), generatePI(email, image, name, 1)
+        incomingCaller,
+        generatePIDecline(email, image, name),
+        generatePI(email, image, name, 1, code)
     )
 
 
@@ -59,14 +61,14 @@ fun callNotification(
         .setContentTitle(name)
         .setContentText(context.getString(R.string.wants_to_start_live_party_session))
         .setSmallIcon(R.drawable.zene_logo)
-        .setContentIntent(generatePI(email, image, name, 0))
+        .setContentIntent(generatePI(email, image, name, 0, code))
         .setStyle(callerStyle)
         .addPerson(incomingCaller)
         .setSound(getUriSoundFile(), AudioManager.STREAM_NOTIFICATION)
         .setPriority(NotificationCompat.PRIORITY_MAX)
         .setCategory(NotificationCompat.CATEGORY_CALL)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        .setFullScreenIntent(generatePI(email, image, name, 0), true)
+        .setFullScreenIntent(generatePI(email, image, name, 0, code), true)
         .setOngoing(true)
         .setAutoCancel(false)
         .setTimeoutAfter(20000)
@@ -80,12 +82,15 @@ fun callNotification(
     notificationManager.notify(NOTIFICATION_TAG, email.hashCode().absoluteValue, notification)
 }
 
-private fun generatePI(email: String?, image: String?, name: String?, i: Int): PendingIntent {
+private fun generatePI(
+    email: String?, image: String?, name: String?, i: Int, code: String?
+): PendingIntent {
     val intent = Intent(context, PartyCallActivity::class.java).apply {
         putExtra(Intent.EXTRA_EMAIL, email)
         putExtra(Intent.EXTRA_USER, image)
         putExtra(Intent.EXTRA_PACKAGE_NAME, name)
         putExtra(Intent.EXTRA_MIME_TYPES, i)
+        putExtra(Intent.EXTRA_TEXT, code)
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
 

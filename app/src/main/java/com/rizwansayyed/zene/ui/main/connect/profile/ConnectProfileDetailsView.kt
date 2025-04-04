@@ -445,22 +445,23 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
         val context = LocalContext.current.applicationContext
         val needMicrophone = stringResource(R.string.need_microphone_permission_to_speak)
 
-        val m = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                Intent(context, PartyCallActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.EXTRA_EMAIL, data.user?.email)
-                    putExtra(Intent.EXTRA_USER, data.user?.profile_photo)
-                    putExtra(Intent.EXTRA_PACKAGE_NAME, data.user?.name)
-                    putExtra(Intent.EXTRA_MIME_TYPES, -1)
-                    context.startActivity(this)
+        val m =
+            rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                if (it.isEmpty()) {
+                    Intent(context, PartyCallActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra(Intent.EXTRA_EMAIL, data.user?.email)
+                        putExtra(Intent.EXTRA_USER, data.user?.profile_photo)
+                        putExtra(Intent.EXTRA_PACKAGE_NAME, data.user?.name)
+                        putExtra(Intent.EXTRA_MIME_TYPES, -1)
+                        context.startActivity(this)
+                    }
+                    close()
+                } else {
+                    SnackBarManager.showMessage(needMicrophone)
+                    openAppSettings()
                 }
-                close()
-            } else {
-                SnackBarManager.showMessage(needMicrophone)
-                openAppSettings()
             }
-        }
 
 
         Column(
@@ -511,7 +512,7 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
             }
             Spacer(Modifier.height(15.dp))
             ButtonHeavy(stringResource(R.string.start), Color.Black) {
-                m.launch(Manifest.permission.RECORD_AUDIO)
+                m.launch(arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA))
             }
             Spacer(Modifier.height(15.dp))
             ButtonHeavy(stringResource(R.string.close), Color.Black) {

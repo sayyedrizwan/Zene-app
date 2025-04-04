@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <style>
+            * {
+              margin: 0;
+              padding: 0;
+              height: 100%;
+              background-color: black;
+            }
+
+            #remoteVideo {
+              position: fixed;
+              width: 100%;
+              height: 100%
+            }
+
+            #localVideo {
+              border-radius: 10px;
+              position: fixed;
+              top: 10px;
+              right: 10px;
+              height: 160px;
+              width: 120px;
+              object-fit: cover;
+            }
+        </style>
+
+        <video
+                id="remoteVideo"
+                autoplay="true"></video>
+        <video
+                id="localVideo"
+                autoplay="true"></video>
+
+        <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+        <script>
+            const otherID = "<<<OtherEmail>>>";
+            const myID = "<<<MyEmail>>>";
+
+            const localVideo = document.getElementById("localVideo");
+            const remoteVideo = document.getElementById("remoteVideo");
+
+            let peer = new Peer(myID);
+
+            async function getLocalStream() {
+              try {
+               const useBackCamera = false;
+                const constraints = {  audio: true,
+                    video: {
+                      facingMode: useBackCamera ? "environment" : "user",
+                      quality: 7,
+                      width: { ideal: 240 },
+                      height: { ideal: 320 }
+                    }
+                  };
+
+                const localStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+                localVideo.srcObject = localStream;
+                try {
+                  localVideo.play();
+                } catch (err) {
+                  console.log(err);
+                }
+                return localStream;
+              } catch (error) {
+                console.error("Error accessing media devices:", error);
+                alert("Error accessing camera/microphone. Please check permissions.");
+              }
+            }
+
+            async function startCall() {
+              const localStream = await getLocalStream();
+              if (!localStream) return;
+
+              console.log("Calling:", otherID);
+              const call = peer.call(otherID, localStream);
+
+              call.on("stream", (remoteStream) => {
+                remoteVideo.srcObject = remoteStream;
+                try {
+                  remoteVideo.play();
+                } catch (err) {
+                  console.log(err);
+                }
+              });
+
+              call.on("error", (err) => console.error("Call error:", err));
+              call.on("close", () => console.log("Call ended"));
+            }
+
+            peer.on("open", (id) => {
+              console.log("My PeerJS ID:", id);
+            });
+
+            peer.on("call", async (call) => {
+              console.log("Incoming call...");
+              const localStream = await getLocalStream();
+              if (!localStream) return;
+
+              call.answer(localStream);
+
+              call.on("stream", (remoteStream) => {
+                remoteVideo.srcObject = remoteStream;
+                try {
+                  remoteVideo.play();
+                } catch (err) {
+                  console.log(err);
+                }
+              });
+
+              call.on("error", (err) => console.error("Call error:", err));
+              call.on("close", () => console.log("Call ended"));
+            });
+
+
+            peer.on("connection", async (call) => {
+              call.on("close", () => console.log("Call ended"));
+            });
+
+            startCall();
+
+            function hideLocalVideo() {
+                localVideo.style.display = "none"
+            }
+
+            function showLocalVideo() {
+                localVideo.style.display = "block"
+            }
+        </script>
+    </body>
+</html>

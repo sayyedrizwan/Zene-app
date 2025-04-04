@@ -16,15 +16,15 @@ import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.service.notification.NotificationUtils
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusCallbackManager
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreview
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
-import com.rizwansayyed.zene.service.notification.NotificationUtils
-import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
-import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -269,10 +269,11 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
 
-    fun sendPartyCall(email: String?) = viewModelScope.launch(Dispatchers.IO) {
+    fun sendPartyCall(email: String?, randomCode: String) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
-        zeneAPI.sendPartyCall(email).catch { }.collectLatest {
+        zeneAPI.sendPartyCall(email, randomCode).catch { }.collectLatest {
 
         }
     }
+
 }

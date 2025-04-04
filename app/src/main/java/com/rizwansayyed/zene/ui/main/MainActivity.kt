@@ -62,6 +62,7 @@ import com.rizwansayyed.zene.ui.main.view.LongPressSheetView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
 import com.rizwansayyed.zene.ui.musicplayer.MusicPlayerView
+import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.settings.SettingsView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
@@ -184,8 +185,6 @@ class MainActivity : FragmentActivity() {
                     }
 
 
-                    WebViewTestOff()
-
                     LaunchedEffect(userInfo?.email) {
                         delay(500)
                         setNavigationCallback(object : HomeNavigationListener {
@@ -238,17 +237,17 @@ class MainActivity : FragmentActivity() {
 
         lifecycleScope.launch {
             delay(2.seconds)
-//            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
-//                putExtra(
-//                    Intent.EXTRA_USER,
-//                    "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png"
-//                )
-//                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
-//                putExtra(Intent.EXTRA_MIME_TYPES, -1)
-//                this@MainActivity.startActivity(this)
-//            }
+            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
+                putExtra(
+                    Intent.EXTRA_USER,
+                    "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png"
+                )
+                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
+                putExtra(Intent.EXTRA_MIME_TYPES, -1)
+                this@MainActivity.startActivity(this)
+            }
         }
     }
 

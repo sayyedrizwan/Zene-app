@@ -51,7 +51,11 @@ fun CallingView(modifier: Modifier = Modifier, partyViewModel: PartyViewModel) {
         Spacer(Modifier.height(20.dp))
 
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceAround, Alignment.CenterVertically) {
-            ImageWithBgRound(
+            if (partyViewModel.type == 0) ImageWithBgRound(
+                R.drawable.ic_call_end, Color.Green, Color.Black
+            ) {
+
+            } else ImageWithBgRound(
                 if (partyViewModel.isSpeaker) R.drawable.ic_speaker_full else R.drawable.ic_volume_off,
                 Color.White, Color.Black
             ) {
