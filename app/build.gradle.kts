@@ -164,6 +164,8 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.browser)
 
+    implementation(libs.custom.qr.generator)
+
 
     implementation(libs.hashids)
 

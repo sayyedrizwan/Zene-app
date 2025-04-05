@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.view.share
 
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
@@ -41,9 +43,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.github.alexzhirkevich.customqrgenerator.QrData
+import com.github.alexzhirkevich.customqrgenerator.vector.QrCodeDrawable
+import com.github.alexzhirkevich.customqrgenerator.vector.QrVectorOptions
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorBallShape
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorColor
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorColors
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorFrameShape
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorLogo
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorLogoPadding
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorLogoShape
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorPixelShape
+import com.github.alexzhirkevich.customqrgenerator.vector.style.QrVectorShapes
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.rizwansayyed.zene.R
@@ -63,6 +78,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.share.ShareContentUtils
+import com.rizwansayyed.zene.utils.share.ShareContentUtils.generateShareUrl
 import com.rizwansayyed.zene.utils.share.SharingContentType
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -116,7 +132,8 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
                                             .background(backgroundColor)
                                     )
                                     else GlideImage(
-                                        v.data[page - 1], data?.name,
+                                        v.data[page - 1],
+                                        data?.name,
                                         modifier = Modifier
                                             .padding(horizontal = 10.dp)
                                             .fillMaxSize()
@@ -223,6 +240,7 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
 
         val context = LocalContext.current
         val view = remember { ComposeView(context) }
+        var showQR by remember { mutableStateOf(false) }
 
 
         Column(
@@ -266,6 +284,10 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
                     close()
                 }
 
+                ShareRoundIcon(R.drawable.ic_qr_code, R.string.show_qr) {
+                    showQR = true
+                }
+
                 ShareRoundIcon(R.drawable.ic_whatsapp, R.string.whatsapp, WhatsAppColor) {
                     ShareContentUtils.shareTheData(data, SharingContentType.WHATS_APP, view)
                     close()
@@ -295,6 +317,74 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
                     ShareContentUtils.shareTheData(data, SharingContentType.PINTEREST, view)
                     close()
                 }
+            }
+        }
+
+
+        if (showQR) ShowShareQR(data) {
+            showQR = false
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun ShowShareQR(data: ZeneMusicData?, close: () -> Unit) {
+    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        val context = LocalContext.current
+        var showQRDrawable by remember { mutableStateOf<Drawable?>(null) }
+
+        Column(
+            Modifier
+                .padding(horizontal = 10.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(MainColor)
+                .fillMaxWidth()
+                .padding(horizontal = 5.dp, vertical = 40.dp),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            if (showQRDrawable != null) GlideImage(
+                showQRDrawable, data?.name, Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(14.dp))
+                    .padding(horizontal = 10.dp)
+            )
+
+
+            LaunchedEffect(Unit) {
+                val link = generateShareUrl(data)
+                val qrData = QrData.Url(link)
+
+                val options = QrVectorOptions.Builder().setPadding(.3f).setLogo(
+                    QrVectorLogo(
+                        drawable = ContextCompat.getDrawable(context, R.mipmap.logo_circle),
+                        size = .25f,
+                        padding = QrVectorLogoPadding.Natural(.2f),
+                        shape = QrVectorLogoShape.RoundCorners(0.3f)
+                    )
+                ).setColors(
+                    QrVectorColors(
+                        dark = QrVectorColor.Solid(Color.White.toArgb()),
+                        ball = QrVectorColor.Solid(Color.White.toArgb()),
+                        frame = QrVectorColor.LinearGradient(
+                            colors = listOf(
+                                0f to Color.White.copy(0.4f).toArgb(),
+                                1f to Color.White.toArgb(),
+                            ),
+                            orientation = QrVectorColor.LinearGradient.Orientation.LeftDiagonal
+                        )
+                    )
+                ).setShapes(
+                    QrVectorShapes(
+                        darkPixel = QrVectorPixelShape.RoundCorners(.0f),
+                        ball = QrVectorBallShape.RoundCorners(.2f),
+                        frame = QrVectorFrameShape.RoundCorners(.2f),
+                    )
+                ).build()
+
+                showQRDrawable = QrCodeDrawable(qrData, options)
             }
         }
     }
@@ -329,13 +419,15 @@ fun ShareRoundIcon(icon: Int, text: Int, bg: Color = Color.Gray.copy(0.4f), clic
 fun BackgroundColorPicker(close: () -> Unit, changeColor: (Color) -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         val controller = rememberColorPickerController()
-        Box(Modifier
-            .clickable { close() }
-            .fillMaxSize(), Alignment.Center) {
-            HsvColorPicker(modifier = Modifier
-                .fillMaxWidth()
-                .height(450.dp)
-                .padding(10.dp),
+        Box(
+            Modifier
+                .clickable { close() }
+                .fillMaxSize(), Alignment.Center) {
+            HsvColorPicker(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(450.dp)
+                    .padding(10.dp),
                 controller = controller,
                 onColorChanged = { colorEnvelope ->
                     changeColor(colorEnvelope.color)

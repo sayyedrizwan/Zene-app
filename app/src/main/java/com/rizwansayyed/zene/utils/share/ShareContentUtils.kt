@@ -44,6 +44,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.BigInteger
 import java.util.UUID
+import androidx.core.graphics.createBitmap
+import androidx.core.content.edit
 
 
 enum class SharingContentType {
@@ -74,7 +76,7 @@ object ShareContentUtils {
         fileSharingImg.deleteRecursively()
 
         try {
-            val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            val bitmap = createBitmap(view.width, view.height)
             val canvas = Canvas(bitmap)
 
             view.measure(
@@ -314,7 +316,7 @@ object ShareContentUtils {
         if (uniqueID == null) {
             val deviceModel = Build.MODEL
             uniqueID = "$deviceModel-${UUID.randomUUID()}"
-            sharedPreferences.edit().putString("unique_device_id", uniqueID).apply()
+            sharedPreferences.edit { putString("unique_device_id", uniqueID) }
         }
 
         return uniqueID
