@@ -43,7 +43,6 @@ class PartyCallActivity : FragmentActivity() {
     private val viewModel: ConnectViewModel by viewModels()
     private val partyViewModel: PartyViewModel by viewModels()
 
-    @OptIn(ExperimentalGlideComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

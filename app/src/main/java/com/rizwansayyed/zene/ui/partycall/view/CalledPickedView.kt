@@ -80,7 +80,13 @@ fun CalledPickedView(viewModel: PartyViewModel) {
                         ImageIcon(R.drawable.ic_video_camer_off, 25, Color.Black)
                 }
 
-                ImageIcon(R.drawable.ic_camera_video, 25, Color.Black)
+                Button({ viewModel.callWebViewMain?.evaluateJavascript("toggleMute();") {} }) {
+                    if (viewModel.isMicOn)
+                        ImageIcon(R.drawable.ic_mic, 25, Color.Black)
+                    else
+                        ImageIcon(R.drawable.ic_mic_off, 25, Color.Black)
+                }
+
                 ImageIcon(R.drawable.ic_camera_video, 25, Color.Black)
                 ImageIcon(R.drawable.ic_camera_video, 25, Color.Black)
                 ImageIcon(R.drawable.ic_camera_video, 25, Color.Black)

@@ -18,6 +18,7 @@ class PartyViewModel : ViewModel() {
     var isCallPicked by mutableStateOf(false)
     var hideCallingView by mutableStateOf(false)
     var isVideoOn by mutableStateOf(false)
+    var isMicOn by mutableStateOf(true)
     var randomCode by mutableStateOf("")
     var callWebViewMain by mutableStateOf<WebView?>(null)
 
@@ -61,5 +62,9 @@ class PartyViewModel : ViewModel() {
 
     fun setVideoOnOrOff(v: Boolean) {
         isVideoOn = v
+    }
+
+    fun setMicOnOrOff(v: Boolean) {
+        isMicOn = v
     }
 }

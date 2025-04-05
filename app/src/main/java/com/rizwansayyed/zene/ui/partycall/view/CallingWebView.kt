@@ -31,6 +31,7 @@ fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
         getRawFolderString(R.raw.video_call_peerjs)
             .replace("<<<OtherEmail>>>", generatePeerId(email, viewModel.randomCode))
             .replace("<<<MyEmail>>>", generatePeerId(myEmail, viewModel.randomCode))
+            .replace("isMyCall = true", if (viewModel.type == -1) "isMyCall = true" else "isMyCall = false")
     }
 
     class WebAppInterface {
@@ -43,6 +44,11 @@ fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
         @JavascriptInterface
         fun isVideoEnabled(isEnabled: Boolean) {
             viewModel.setVideoOnOrOff(isEnabled)
+        }
+
+        @JavascriptInterface
+        fun isMicEnabled(isEnabled: Boolean) {
+            viewModel.setMicOnOrOff(isEnabled)
         }
     }
 
