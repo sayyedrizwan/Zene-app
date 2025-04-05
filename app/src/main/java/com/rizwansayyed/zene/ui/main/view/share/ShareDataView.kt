@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.ui.main.view.share
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.view.WindowManager
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -25,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -45,6 +49,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.github.alexzhirkevich.customqrgenerator.QrData
@@ -327,12 +332,36 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
     }
 }
 
+@SuppressLint("AutoboxingStateCreation")
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ShowShareQR(data: ZeneMusicData?, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
-        val context = LocalContext.current
+        val context = LocalContext.current.applicationContext
+
+        val activity = LocalActivity.current
+        var originalBrightness by remember {
+            mutableFloatStateOf(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE)
+        }
+
         var showQRDrawable by remember { mutableStateOf<Drawable?>(null) }
+
+        LifecycleResumeEffect(Unit) {
+            val window = activity?.window
+            if (window != null) {
+                originalBrightness = window.attributes.screenBrightness
+                val layoutParams = window.attributes
+                layoutParams.screenBrightness = 1.0f
+                window.attributes = layoutParams
+            }
+            onPauseOrDispose {
+                val layoutParams = activity?.window?.attributes
+                if (layoutParams != null) {
+                    layoutParams.screenBrightness = originalBrightness
+                    activity.window.attributes = layoutParams
+                }
+            }
+        }
 
         Column(
             Modifier
