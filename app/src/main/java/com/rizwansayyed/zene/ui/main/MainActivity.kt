@@ -237,17 +237,17 @@ class MainActivity : FragmentActivity() {
 
         lifecycleScope.launch {
             delay(2.seconds)
-//            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
-//                putExtra(
-//                    Intent.EXTRA_USER,
-//                    "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png"
-//                )
-//                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
-//                putExtra(Intent.EXTRA_MIME_TYPES, -1)
-//                this@MainActivity.startActivity(this)
-//            }
+            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
+                putExtra(
+                    Intent.EXTRA_USER,
+                    "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png"
+                )
+                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
+                putExtra(Intent.EXTRA_MIME_TYPES, -1)
+                this@MainActivity.startActivity(this)
+            }
         }
     }
 

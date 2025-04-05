@@ -35,6 +35,7 @@
             const myID = "<<<MyEmail>>>";
 
             const localVideo = document.getElementById("localVideo");
+            localVideo.style.display = 'none';
             const remoteVideo = document.getElementById("remoteVideo");
 
             var peer = new Peer(myID);
@@ -77,16 +78,6 @@
               if (!localStream) return;
 
               const call = peer.call(otherID, localStream);
-
-              // call.on("stream", (remoteStream) => {
-              //   Zene.callPicked();
-              //   remoteVideo.srcObject = remoteStream;
-              //   try {
-              //     remoteVideo.play();
-              //   } catch (err) {
-              //     console.log(err);
-              //   }
-              // });
 
               call.on("error", (err) => console.error("Call error:", err));
               call.on("close", () => console.log("Call ended"));
@@ -135,10 +126,12 @@
               if (videoTrack && videoTrack.enabled) {
                 videoTrack.enabled = false;
                 Zene.isVideoEnabled(false);
+                localVideo.style.display = 'none';
               } else {
                 doShowVideoCall = true;
                 startCall();
                 Zene.isVideoEnabled(true);
+                localVideo.style.display = 'block';
               }
             }
         </script>
