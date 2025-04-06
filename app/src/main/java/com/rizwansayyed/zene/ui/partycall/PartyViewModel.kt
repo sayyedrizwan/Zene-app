@@ -52,7 +52,7 @@ class PartyViewModel : ViewModel() {
     }
 
     fun setCallEnded() {
-        isCallPicked = true
+        isCallPicked = false
     }
 
     fun hideCallingView() {
