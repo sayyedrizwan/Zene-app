@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.main
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.webkit.WebView
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -235,21 +236,21 @@ class MainActivity : FragmentActivity() {
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
 
-//        lifecycleScope.launch {
-//            delay(2.seconds)
-//            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
-//                putExtra(
-//                    Intent.EXTRA_USER,
-//                    "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png"
-//                )
-//                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
-//                putExtra(Intent.EXTRA_MIME_TYPES, -1)
-//                this@MainActivity.startActivity(this)
-//            }
-//        }
-
+        WebView.setWebContentsDebuggingEnabled(true)
+        lifecycleScope.launch {
+            delay(2.seconds)
+            Intent(this@MainActivity, PartyCallActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(Intent.EXTRA_EMAIL, "sayyedzafreen4@gmail.com")
+                putExtra(
+                    Intent.EXTRA_USER,
+                    "https://zenemusic.b-cdn.net/ZENE_USER/sayyedzafreen4@gmail.com6442.png"
+                )
+                putExtra(Intent.EXTRA_PACKAGE_NAME, "Zafreen Sayyed")
+                putExtra(Intent.EXTRA_MIME_TYPES, -1)
+                this@MainActivity.startActivity(this)
+            }
+        }
 
     }
 

@@ -5,7 +5,10 @@ import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -22,16 +25,16 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
-import java.security.MessageDigest
+import com.rizwansayyed.zene.viewmodel.generateRoomId
 
 
 @Composable
-fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
+fun CallingWebView(email: String, myEmail: String, myName: String, viewModel: PartyViewModel) {
+    Log.d("TAG", "CallingWebView: ${generateRoomId(email, myEmail)}")
     val htmlContent = remember {
-        getRawFolderString(R.raw.video_call_peerjs)
-            .replace("<<<OtherEmail>>>", generatePeerId(email, viewModel.randomCode))
-            .replace("<<<MyEmail>>>", generatePeerId(myEmail, viewModel.randomCode))
-            .replace("isMyCall = true", if (viewModel.type == -1) "isMyCall = true" else "isMyCall = false")
+        getRawFolderString(R.raw.video_call_mirotalk)
+            .replace("<<<RoomID>>>", generateRoomId(email, myEmail))
+            .replace("<<<Name>>>", clearNameUnique(myName, viewModel.name))
     }
 
     class WebAppInterface {
@@ -57,6 +60,7 @@ fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
             WebView(ctx).apply {
                 enable()
                 viewModel.setCallWebView(this)
+
                 webChromeClient = object : WebChromeClient() {
                     override fun onPermissionRequest(request: PermissionRequest) {
                         request.grant(request.resources)
@@ -69,7 +73,14 @@ fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
                     }
                 }
                 addJavascriptInterface(WebAppInterface(), "Zene")
-                loadDataWithBaseURL(ZENE_URL, htmlContent, "text/html", "UTF-8", null)
+                settings.cacheMode = WebSettings.LOAD_DEFAULT
+
+                settings.mediaPlaybackRequiresUserGesture = false
+                settings.domStorageEnabled = true
+                settings.allowFileAccess = true
+                settings.javaScriptCanOpenWindowsAutomatically = true
+
+                loadDataWithBaseURL("https://mirotalk-zene.onrender.com", htmlContent, "text/html", "UTF-8", null)
             }
         }, Modifier
             .fillMaxSize()
@@ -87,19 +98,17 @@ fun CallingWebView(email: String, myEmail: String, viewModel: PartyViewModel) {
         }
     }
 
-    LaunchedEffect(viewModel.isInPictureInPicture) {
-        if (viewModel.isInPictureInPicture)
-            viewModel.callWebViewMain?.evaluateJavascript("hideLocalVideo();") {}
-        else
-            viewModel.callWebViewMain?.evaluateJavascript("showLocalVideo();") {}
-
-    }
+//    LaunchedEffect(viewModel.isInPictureInPicture) {
+//        if (viewModel.isInPictureInPicture)
+//            viewModel.callWebViewMain?.evaluateJavascript("hideLocalVideo();") {}
+//        else
+//            viewModel.callWebViewMain?.evaluateJavascript("showLocalVideo();") {}
+//
+//    }
 }
 
-fun generatePeerId(email: String, appSalt__: String): String {
-    val appSalt = "12239jn"
-    val input = "$email@$appSalt"
-    val digest = MessageDigest.getInstance("SHA-256")
-    val hashBytes = digest.digest(input.toByteArray())
-    return hashBytes.joinToString("") { "%02x".format(it) }.take(16)
+fun clearNameUnique(myName: String, name: String): String {
+    if (myName != name) return myName
+
+    return "$myName${(111..999999).random()}"
 }

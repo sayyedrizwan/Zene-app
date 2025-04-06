@@ -17,7 +17,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.clearCallNotification
@@ -56,7 +55,7 @@ class PartyCallActivity : FragmentActivity() {
                         .background(MainColor)
                 ) {
                     if (email.value?.email != null && partyViewModel.email.isNotEmpty() && partyViewModel.isCallPicked) {
-                        CallingWebView(partyViewModel.email, email.value?.email!!, partyViewModel)
+                        CallingWebView(partyViewModel.email, email.value?.email!!, email.value?.name!!, partyViewModel)
                     }
                 }
 
@@ -81,7 +80,7 @@ class PartyCallActivity : FragmentActivity() {
 //
 //                if (partyViewModel.hideCallingView) CalledPickedView(viewModel)
 
-                CalledPickedView(partyViewModel)
+//                CalledPickedView(partyViewModel)
 
                 LaunchedEffect(Unit) {
                     checkIntent(intent)
@@ -145,13 +144,11 @@ class PartyCallActivity : FragmentActivity() {
         val profilePhoto = intent.getStringExtra(Intent.EXTRA_USER) ?: ""
         val name = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
 
-//        delay(500)
         partyViewModel.setInfo(profilePhoto, email, name, type)
         clearCallNotification(email)
 
         if (type == -1) {
             partyViewModel.generateAlphabetCodeSet()
-//            delay(500)
             partyViewModel.setCallPicked()
         } else if (type == 1) {
             partyViewModel.setCallPicked()
