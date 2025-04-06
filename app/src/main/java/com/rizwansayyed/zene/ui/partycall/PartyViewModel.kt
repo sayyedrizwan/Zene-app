@@ -6,10 +6,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import java.security.MessageDigest
+import java.util.UUID
 
 class PartyViewModel : ViewModel() {
     var isSpeaker by mutableStateOf(false)
-    var isInPictureInPicture by mutableStateOf(false)
+    var isPIPMode by mutableStateOf(false)
 
     var profilePhoto by mutableStateOf("")
     var email by mutableStateOf("")
@@ -19,7 +21,7 @@ class PartyViewModel : ViewModel() {
     var hideCallingView by mutableStateOf(false)
     var isVideoOn by mutableStateOf(false)
     var isMicOn by mutableStateOf(true)
-    var randomCode by mutableStateOf("")
+    var randomCallCode by mutableStateOf("")
     var callWebViewMain by mutableStateOf<WebView?>(null)
 
     fun setInfo(profilePhoto: String, email: String, name: String, type: Int) {
@@ -34,18 +36,11 @@ class PartyViewModel : ViewModel() {
     }
 
     fun setPIP(v: Boolean) {
-        this.isSpeaker = v
+        this.isPIPMode = v
     }
 
-    fun generateAlphabetCodeSet(length: Int = 12) {
-        val chars = ('A'..'Z')
-        randomCode = (1..length)
-            .map { chars.random() }
-            .joinToString("")
-    }
-
-    fun setCode(v: String) {
-        randomCode = v
+    fun setCode(v: String?) {
+        randomCallCode = v ?: generateUniqueIdForCall()
     }
 
     fun setCallWebView(v: WebView?) {
@@ -53,6 +48,10 @@ class PartyViewModel : ViewModel() {
     }
 
     fun setCallPicked() {
+        isCallPicked = true
+    }
+
+    fun setCallEnded() {
         isCallPicked = true
     }
 
@@ -66,5 +65,15 @@ class PartyViewModel : ViewModel() {
 
     fun setMicOnOrOff(v: Boolean) {
         isMicOn = v
+    }
+
+    private fun generateUniqueIdForCall(): String {
+        val timestamp = System.currentTimeMillis().toString()
+        val random = UUID.randomUUID().toString().replace("-", "").substring(0, 8)
+        val raw = "$timestamp-$email-$random"
+
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hashBytes = digest.digest(raw.toByteArray())
+        return hashBytes.joinToString("") { "%02x".format(it) }.substring(0, 40)
     }
 }

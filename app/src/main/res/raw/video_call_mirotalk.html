@@ -26,56 +26,41 @@
         </style>
     </head>
     <body>
-        <div style="position: relative">
-            <!-- <iframe id="iframe" allow="camera; microphone; display-capture; fullscreen; clipboard-read; clipboard-write; web-share; autoplay" src="http://localhost:3000/join?room=12dddd&name=08xbs&audio=false&video=false&screen=false&hide=false&notify=false&popup=false&hideInvite=false" style="width: 100vw; height: 100vh; border: 0px"></iframe> -->
-
+        <div style="position: fixed">
             <script>
+                const iframe = document.querySelector('meet');
+
                 window.addEventListener("message", (event) => {
                   if (event.data.type === "user-joined") {
                     Zene.callPicked();
                   }
                   if (event.data.type === "no-users") {
-                    // callEnded();
+                    Zene.callEnded();
                   }
                   if (event.data.type === "audio-status") {
-                    // alert('audio staus ' + event.data.status);
+                    Zene.isMicEnabled(event.data.status);
                   }
 
                   if (event.data.type === "video-status") {
-                    // alert('video staus ' + event.data.status);
+                    Zene.isVideoEnabled(event.data.status);
                   }
                 });
-
-                function callPicked() {
-                  alert('picked');
-                }
-
-                function callEnded(name) {
-                  alert('ended');
-                }
-
-                function enableDisableVideo() {
-                  const mirotalkIframe = document.getElementById("iframe");
-                  iframe.contentWindow.parent.postMessage({ type: "enable-disable-video" }, "*");
-                }
             </script>
 
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
                   const domain = "mirotalk-zene.onrender.com";
-                 const width = window.innerWidth + "px";
+                  const width = window.innerWidth + "px";
                   const height = window.innerHeight + "px";
 
-
                   const options = {
-                    room: "91db04451b737b0521f58dcd2",
-                    name: "Rizwan Sayyedx88 1",
-                    avatar : "https://upload.wikimedia.org/wikipedia/commons/6/6e/Shah_Rukh_Khan_graces_the_launch_of_the_new_Santro.jpg",
+                    room: "<<<RoomID>>>",
+                    name: "<<<Name>>>",
+                    avatar: "<<<Avatar>>>",
                     audio: false,
                     video: false,
                     screen: false,
                     hide: false,
-                    popup: false,
                     hideInvite: false,
                     notify: false,
                     token: null,

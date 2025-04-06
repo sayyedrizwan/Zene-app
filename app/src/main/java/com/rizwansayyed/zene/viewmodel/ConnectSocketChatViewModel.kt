@@ -207,12 +207,15 @@ class ConnectSocketChatViewModel : ViewModel() {
         inLobby = false
         mSocket?.disconnect()
     }
+
+
+    private fun generateRoomId(email1: String, email2: String): String {
+        val sortedEmails = listOf(email1.trim().lowercase(), email2.trim().lowercase()).sorted()
+        val combined = "${sortedEmails[0]}_${sortedEmails[1]}"
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hash = digest.digest(combined.toByteArray())
+        return hash.joinToString("") { "%02x".format(it) }.take(25)
+    }
+
 }
 
-fun generateRoomId(email1: String, email2: String): String {
-    val sortedEmails = listOf(email1.trim().lowercase(), email2.trim().lowercase()).sorted()
-    val combined = "${sortedEmails[0]}_${sortedEmails[1]}"
-    val digest = MessageDigest.getInstance("SHA-256")
-    val hash = digest.digest(combined.toByteArray())
-    return hash.joinToString("") { "%02x".format(it) }.take(25)
-}
