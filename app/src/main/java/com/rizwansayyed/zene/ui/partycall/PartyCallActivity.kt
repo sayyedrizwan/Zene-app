@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
@@ -56,6 +58,7 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
 
     private val viewModel: ConnectViewModel by viewModels()
     private val partyViewModel: PartyViewModel by viewModels()
+    private val partySongSocketModel by lazy { PartySongSocketModel() }
 
     @OptIn(ExperimentalGlideComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,6 +152,13 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean, newConfig: Configuration
     ) {
+        if (lifecycle.currentState == Lifecycle.State.CREATED) {
+            partyViewModel.setCallEnded()
+            lifecycleScope.launch {
+                delay(500)
+                finishAffinity()
+            }
+        }
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         partyViewModel.setPIP(isInPictureInPictureMode)
 
@@ -185,11 +195,6 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
             partyViewModel.setCallPicked()
             partyViewModel.hideCallingView()
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-//        if (partyViewModel.isPIPMode) finishAffinity()
     }
 
     override fun onDestroy() {
