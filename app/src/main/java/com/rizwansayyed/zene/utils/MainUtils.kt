@@ -6,6 +6,7 @@ import android.app.AppOpsManager.OPSTR_PICTURE_IN_PICTURE
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -13,6 +14,9 @@ import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
@@ -530,6 +534,23 @@ object MainUtils {
                 Intent.ACTION_VIEW,
                 "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
             ).apply { context.startActivity(this) }
+        }
+    }
+
+    fun vibratePhone() {
+        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            context.getSystemService(VIBRATOR_SERVICE) as Vibrator
+        }
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(200)
         }
     }
 }

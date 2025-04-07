@@ -1,7 +1,9 @@
 package com.rizwansayyed.zene.ui.partycall
 
+import android.Manifest
 import android.app.PictureInPictureParams
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -19,12 +21,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.clearCallNotification
+import com.rizwansayyed.zene.ui.partycall.view.CallingNoUserView
 import com.rizwansayyed.zene.ui.partycall.view.CallingView
 import com.rizwansayyed.zene.ui.partycall.view.CallingWebView
 import com.rizwansayyed.zene.ui.partycall.view.playRingtoneFromEarpiece
@@ -44,7 +48,11 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
-class PartyCallActivity : FragmentActivity() {
+class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
+
+    companion object {
+        lateinit var declinePartyCallInterface: DeclinePartyCallInterface
+    }
 
     private val viewModel: ConnectViewModel by viewModels()
     private val partyViewModel: PartyViewModel by viewModels()
@@ -53,6 +61,8 @@ class PartyCallActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        declinePartyCallInterface = this
+
         setContent {
             ZeneTheme {
                 val email by DataStorageManager.userInfo.collectAsState(null)
@@ -85,6 +95,13 @@ class PartyCallActivity : FragmentActivity() {
                             goToPIP()
                         }
                 }
+
+
+                if (partyViewModel.noUsers) CallingNoUserView(partyViewModel, R.string.call_ended)
+                if (partyViewModel.callDeclined)
+                    CallingNoUserView(partyViewModel, R.string.call_declined)
+                if (partyViewModel.noCallAnswered)
+                    CallingNoUserView(partyViewModel, R.string.call_not_answered)
 
                 LaunchedEffect(Unit) {
                     checkIntent(intent)
@@ -134,6 +151,10 @@ class PartyCallActivity : FragmentActivity() {
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         partyViewModel.setPIP(isInPictureInPictureMode)
+
+        if (isInPictureInPictureMode && partyViewModel.noUsers) {
+            finishAffinity()
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -155,11 +176,12 @@ class PartyCallActivity : FragmentActivity() {
             partyViewModel.setCode(null)
             delay(500)
             partyViewModel.setCallPicked()
+            partyViewModel.startJob()
         }
 
         if (code != null) partyViewModel.setCode(code)
 
-        if (type == 1) {
+        if (type == 1 && isCameraAndMicrophonePermissionEnabled()) {
             partyViewModel.setCallPicked()
             partyViewModel.hideCallingView()
         }
@@ -174,4 +196,19 @@ class PartyCallActivity : FragmentActivity() {
         super.onDestroy()
         stopRingtoneFromEarpiece()
     }
+
+    private fun isCameraAndMicrophonePermissionEnabled(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun declineCall(email: String?) {
+        if (partyViewModel.email == email) partyViewModel.setCallDeclined()
+    }
+
 }

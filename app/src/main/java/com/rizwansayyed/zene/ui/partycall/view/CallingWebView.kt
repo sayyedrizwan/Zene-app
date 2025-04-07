@@ -7,6 +7,7 @@ import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -21,10 +22,15 @@ import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun CallingWebView(myName: String, photo: String, viewModel: PartyViewModel) {
+    val activity = LocalActivity.current
     val htmlContent = remember {
         getRawFolderString(R.raw.video_call_mirotalk)
             .replace("<<<RoomID>>>", viewModel.randomCallCode)
@@ -52,6 +58,15 @@ fun CallingWebView(myName: String, photo: String, viewModel: PartyViewModel) {
         @JavascriptInterface
         fun callEnded() {
             viewModel.setCallEnded()
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(500)
+                activity?.finishAffinity()
+            }
+        }
+
+        @JavascriptInterface
+        fun noUser() {
+            viewModel.setNoUserOnCall()
         }
     }
 
@@ -82,8 +97,7 @@ fun CallingWebView(myName: String, photo: String, viewModel: PartyViewModel) {
                 settings.javaScriptCanOpenWindowsAutomatically = true
 
                 loadDataWithBaseURL(
-                    "https://mirotalk-zene.onrender.com",
-                    htmlContent, "text/html", "UTF-8", null
+                    "https://mirotalk-zene.onrender.com", htmlContent, "text/html", "UTF-8", null
                 )
             }
         }, Modifier

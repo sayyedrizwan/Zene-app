@@ -71,6 +71,7 @@ import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -447,7 +448,7 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
 
         val m =
             rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                if (it.isEmpty()) {
+                if (it.all { v -> v.value }) {
                     Intent(context, PartyCallActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         putExtra(Intent.EXTRA_EMAIL, data.user?.email)
@@ -458,7 +459,7 @@ fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
                     }
                     close()
                 } else {
-                    SnackBarManager.showMessage(needMicrophone)
+                    needMicrophone.toast()
                     openAppSettings()
                 }
             }

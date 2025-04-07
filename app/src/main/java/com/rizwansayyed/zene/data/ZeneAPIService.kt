@@ -41,6 +41,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_SIMILAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CHAT_RECENT_MESSAGE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_DECLINE_PARTY_CALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_DELETE_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
@@ -372,6 +373,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_SEND_PARTY_CALL_API)
     suspend fun sendPartyCall(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_DECLINE_PARTY_CALL_API)
+    suspend fun declinePartyCall(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 

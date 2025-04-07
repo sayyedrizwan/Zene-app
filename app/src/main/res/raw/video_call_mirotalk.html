@@ -35,6 +35,9 @@
                     Zene.callPicked();
                   }
                   if (event.data.type === "no-users") {
+                    Zene.noUser();
+                  }
+                  if (event.data.type === "end-call") {
                     Zene.callEnded();
                   }
                   if (event.data.type === "audio-status") {

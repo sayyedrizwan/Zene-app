@@ -234,6 +234,9 @@
     <string name="post">Post</string>
     <string name="post_a_gif_desc">You cannot delete the GIF. Once it\'s posted. It will de auto deleted after 24 hours with the vibe. Are you sure want to post?</string>
     <string name="gif_spress">GIF-Spress</string>
+    <string name="call_ended">Call Ended!!</string>
+    <string name="call_declined">Call Declined!!</string>
+    <string name="call_not_answered">Call Not Answered!!</string>
     <string name="comment_express_yourself_with_gif">Comment/Express yourself with GIF :)</string>
     <string name="invite">Invite</string>
     <string name="you_have_no_friends">You have no friends</string>

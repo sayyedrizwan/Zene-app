@@ -103,7 +103,6 @@ private fun generatePIDecline(email: String?, image: String?, name: String?): Pe
         putExtra(Intent.EXTRA_EMAIL, email)
         putExtra(Intent.EXTRA_USER, image)
         putExtra(Intent.EXTRA_PACKAGE_NAME, name)
-        putExtra(Intent.EXTRA_MIME_TYPES, true)
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
 

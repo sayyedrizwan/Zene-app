@@ -107,8 +107,7 @@ fun ConnectVibeCommentsView(data: ConnectFeedDataResponse?, close: () -> Unit) {
                     Spacer(Modifier.height(2.dp))
                     TextViewNormal(
                         stringResource(R.string.comment_express_yourself_with_gif),
-                        14,
-                        center = true
+                        14, center = true
                     )
                     Spacer(Modifier.height(10.dp))
 

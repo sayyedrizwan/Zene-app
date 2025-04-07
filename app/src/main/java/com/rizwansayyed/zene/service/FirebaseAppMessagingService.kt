@@ -13,9 +13,11 @@ import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CO
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import com.rizwansayyed.zene.service.notification.callNotification
 import com.rizwansayyed.zene.ui.main.MainActivity
+import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAName
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +45,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_SEND_FRIEND_REQUEST = "CONNECT_SEND_FRIEND_REQUEST"
         const val CONNECT_ACCEPTED_FRIEND_REQUEST = "CONNECT_ACCEPTED_FRIEND_REQUEST"
         const val CONNECT_SEND_CHAT_MESSAGE = "CONNECT_SEND_CHAT_MESSAGE"
+        const val CONNECT_PARTY_CALL_DECLINE = "CONNECT_PARTY_CALL_DECLINE"
         const val CONNECT_PARTY_CALL = "CONNECT_PARTY_CALL"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
@@ -76,6 +79,14 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_SEND_FRIEND_REQUEST) connectFriendRequestAlert(message.data)
             if (type == CONNECT_ACCEPTED_FRIEND_REQUEST) connectAcceptedRequestAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
+            if (type == CONNECT_PARTY_CALL_DECLINE) {
+                try {
+                    val email = it[FCM_EMAIL]
+                    PartyCallActivity.declinePartyCallInterface.declineCall(email)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
             if (type == CONNECT_PARTY_CALL) {
                 val name = it[FCM_NAME]
                 val image = it[FCM_IMAGE]
