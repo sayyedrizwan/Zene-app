@@ -1,13 +1,18 @@
 package com.rizwansayyed.zene.ui.partycall
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.service.notification.NotificationUtils
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_BASE_URL_SOCKET
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
@@ -30,6 +35,7 @@ class PartySongSocketModel : ViewModel() {
     private var myName: String? = null
     private var myProfilePhoto: String? = null
     private var checkJob: Job? = null
+    private var lastSongID: String = ""
 
     fun connect(id: String) = viewModelScope.launch(Dispatchers.IO) {
         roomID = "${id}_party_sync"
@@ -63,19 +69,28 @@ class PartySongSocketModel : ViewModel() {
             val message = data.getString("message")
 
             if (myEmail != email) {
-//                checkJob?.cancel()
-//                checkJob = viewModelScope.launch {
-//                    delay(1.seconds)
-                    Log.d("TAG", "connect: 112222 $myEmail $email")
+                checkJob?.cancel()
+                checkJob = viewModelScope.launch job@{
+                    delay(1.seconds)
                     try {
                         val json = moshi.adapter(ZeneMusicData::class.java).fromJson(message)
+                        if (lastSongID == json?.id) return@job
+
                         startMedia(json, listOf(json))
+                        lastSongID = json?.id ?: ""
+
+                        val body = context.resources.getString(R.string.changed_the_song)
+                        NotificationUtils(name, body).apply {
+                            channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
+                            setSmallImage(photo)
+                            generate()
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }
             }
-//        }
+        }
 
         mSocket?.connect()
     }

@@ -149,6 +149,7 @@
     <string name="add_location">Add Location</string>
     <string name="add_vibing_snap">Add vibing Snap</string>
     <string name="connect">connect</string>
+    <string name="changed_the_song">changed the song.</string>
     <string name="last_seen">Last seen %s</string>
     <string name="message_expire_after_">Messages expire after %s</string>
     <string name="message_expire_after_desc">"Messages automatically disappear after the selected time in settings, ensuring privacy and keeping your chat clutter-free.</string>

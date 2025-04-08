@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -39,6 +40,7 @@ import com.rizwansayyed.zene.ui.partycall.view.stopRingtoneFromEarpiece
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
+import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.utils.MainUtils.hasPIPPermission
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -78,6 +80,18 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
                 ) {
                     if (email?.email != null && partyViewModel.email.isNotEmpty() && partyViewModel.isCallPicked) {
                         CallingWebView(email?.name!!, email?.photo!!, partyViewModel)
+
+                        if (partyViewModel.isPIPMode) Box(
+                            Modifier.fillMaxSize(), Alignment.Center
+                        ) {
+                            GlideImage(
+                                partyViewModel.profilePhoto,
+                                partyViewModel.name,
+                                Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                            ImageWithBgRound(R.drawable.ic_calling, img = Color.Green.copy(0.5f)) {}
+                        }
                     }
                 }
 
@@ -224,7 +238,7 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
     }
 
     override fun changeUpdate(v: ZeneMusicData) {
-        partySongSocketModel.sendPartyJson(v)
+        if (partyViewModel.hideCallingView) partySongSocketModel.sendPartyJson(v)
     }
 
 }
