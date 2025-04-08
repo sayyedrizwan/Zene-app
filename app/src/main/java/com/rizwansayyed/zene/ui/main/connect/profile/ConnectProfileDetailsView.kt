@@ -46,6 +46,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
+import com.rizwansayyed.zene.data.model.ConnectUserWall
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.FRIENDS
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.ME
 import com.rizwansayyed.zene.data.model.ConnectedUserStatus.NONE
@@ -90,7 +91,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 
     var showSendMessage by remember { mutableStateOf(false) }
     var sendLocation by remember { mutableStateOf(false) }
-    var showPosts by remember { mutableStateOf(true) }
+    var showPosts by remember { mutableStateOf(ConnectUserWall.STATUS) }
     var showPartyDialog by remember { mutableStateOf(false) }
 
     val locationPermission =
@@ -162,12 +163,22 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         if (data.isConnected() == FRIENDS || data.isConnected() == ME) {
             item {
                 Row(Modifier.fillMaxWidth()) {
-                    TextSimpleCards(showPosts, stringResource(R.string.vibes_status)) {
-                        showPosts = true
+                    TextSimpleCards(
+                        showPosts == ConnectUserWall.STATUS, stringResource(R.string.vibes_status)
+                    ) {
+                        showPosts = ConnectUserWall.STATUS
                     }
 
-                    TextSimpleCards(!showPosts, stringResource(R.string.info)) {
-                        showPosts = false
+                    TextSimpleCards(
+                        showPosts == ConnectUserWall.PLAYLISTS, stringResource(R.string.playlists)
+                    ) {
+                        showPosts = ConnectUserWall.PLAYLISTS
+                    }
+
+                    TextSimpleCards(
+                        showPosts == ConnectUserWall.INFO, stringResource(R.string.info)
+                    ) {
+                        showPosts = ConnectUserWall.INFO
                     }
                 }
             }
@@ -176,7 +187,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         item { Spacer(Modifier.height(20.dp)) }
 
         if (data.isConnected() == FRIENDS || data.isConnected() == ME) {
-            if (showPosts) {
+            if (showPosts == ConnectUserWall.STATUS) {
                 if (data.vibes?.isEmpty() == true) item {
                     TextViewBold(stringResource(R.string.no_posts), 19, center = true)
                 }
@@ -184,6 +195,8 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 items(data.vibes ?: emptyList()) {
                     ConnectVibeItemView(it)
                 }
+            } else if (showPosts == ConnectUserWall.PLAYLISTS) {
+
             } else {
                 if (data.isConnected() != ME) item { UsersSettingsOfView(data) }
 
@@ -307,24 +320,21 @@ fun UsersSettingsOfView(data: ConnectUserInfoResponse) {
             Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
         ) {
             if (data.otherStatus.lastListeningSong == false) ImageWithBorder(
-                R.drawable.ic_music_note,
-                Color.Red
+                R.drawable.ic_music_note, Color.Red
             ) {
                 SnackBarManager.showMessage(musicSharing)
             }
 
             Spacer(Modifier.width(20.dp))
             if (data.otherStatus.locationSharing == false) ImageWithBorder(
-                R.drawable.ic_location,
-                Color.Red
+                R.drawable.ic_location, Color.Red
             ) {
                 SnackBarManager.showMessage(locationSharing)
             }
 
             Spacer(Modifier.width(20.dp))
             if (data.otherStatus.silentNotification == true) ImageWithBorder(
-                R.drawable.ic_notification_off,
-                Color.Red
+                R.drawable.ic_notification_off, Color.Red
             ) {
                 SnackBarManager.showMessage(notificationSilent)
             }

@@ -44,6 +44,10 @@ enum class ConnectedUserStatus {
     FRIENDS, REQUESTED, NONE, ME
 }
 
+enum class ConnectUserWall {
+    STATUS, PLAYLISTS, INFO
+}
+
 data class ConnectUserResponse(
     val country: String?,
     val email: String?,
