@@ -82,7 +82,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_PARTY_CALL_DECLINE) {
                 try {
                     val email = it[FCM_EMAIL]
-                    PartyCallActivity.declinePartyCallInterface.declineCall(email)
+                    PartyCallActivity.declinePartyCallInterface?.declineCall(email)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

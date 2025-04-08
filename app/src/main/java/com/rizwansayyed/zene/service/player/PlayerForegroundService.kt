@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
@@ -24,6 +23,7 @@ import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.SmartShuffle
 import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
+import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
@@ -104,6 +104,10 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     fun playSongs(new: Boolean) {
         isNew = new
 
+        if (!new)
+            currentPlayingSong?.let { PartyCallActivity.declinePartyCallInterface?.changeUpdate(it) }
+
+
         if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
             getSimilarSongInfo()
             loadAVideo(currentPlayingSong?.id)
@@ -177,10 +181,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         durationJob = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
                 delay(500)
-                if (currentPlayingSong?.type() == MusicDataTypes.SONGS) playerWebView?.evaluateJavascript(
-                    "playingStatus();",
-                    null
-                )
+                if (currentPlayingSong?.type() == MusicDataTypes.SONGS)
+                    playerWebView?.evaluateJavascript("playingStatus();", null)
                 else exoPlayerSession.playingStatus()
             }
         }

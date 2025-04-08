@@ -170,12 +170,6 @@
             android:value="@string/TRUE_CALLER_KEY" />
 
         <service
-            android:name=".service.party.PartyService"
-            android:enabled="true"
-            android:exported="false"
-            android:stopWithTask="false" />
-
-        <service
             android:name=".service.player.PlayerForegroundService"
             android:enabled="true"
             android:exported="false"

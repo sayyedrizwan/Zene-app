@@ -92,7 +92,7 @@ class PartyViewModel : ViewModel() {
     fun startJob() {
         jobCallCancel?.cancel()
         jobCallCancel = viewModelScope.launch {
-            delay(25.seconds)
+            delay(35.seconds)
             noCallAnswered = true
             setCallEnded()
         }

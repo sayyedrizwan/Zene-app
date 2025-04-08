@@ -28,6 +28,7 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.clearCallNotification
 import com.rizwansayyed.zene.ui.partycall.view.CallingNoUserView
@@ -53,12 +54,12 @@ import kotlin.time.Duration.Companion.seconds
 class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
 
     companion object {
-        lateinit var declinePartyCallInterface: DeclinePartyCallInterface
+        var declinePartyCallInterface: DeclinePartyCallInterface? = null
     }
 
     private val viewModel: ConnectViewModel by viewModels()
     private val partyViewModel: PartyViewModel by viewModels()
-    private val partySongSocketModel by lazy { PartySongSocketModel() }
+    private val partySongSocketModel: PartySongSocketModel by viewModels()
 
     @OptIn(ExperimentalGlideComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,10 +113,15 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
                     if (!partyViewModel.email.contains("@")) finish()
                 }
 
+                LaunchedEffect(partyViewModel.randomCallCode) {
+                    delay(1.seconds)
+                    if (partyViewModel.randomCallCode.trim().length > 2)
+                        partySongSocketModel.connect(partyViewModel.randomCallCode.trim())
+                }
+
                 LaunchedEffect(partyViewModel.type) {
                     if (partyViewModel.type == -1) {
                         playRingtoneFromEarpiece(this@PartyCallActivity, false)
-
                         delay(1.seconds)
                         viewModel.sendPartyCall(partyViewModel.email, partyViewModel.randomCallCode)
                     } else {
@@ -199,6 +205,7 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
 
     override fun onDestroy() {
         super.onDestroy()
+        declinePartyCallInterface = null
         stopRingtoneFromEarpiece()
     }
 
@@ -214,6 +221,10 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
 
     override fun declineCall(email: String?) {
         if (partyViewModel.email == email) partyViewModel.setCallDeclined()
+    }
+
+    override fun changeUpdate(v: ZeneMusicData) {
+        partySongSocketModel.sendPartyJson(v)
     }
 
 }

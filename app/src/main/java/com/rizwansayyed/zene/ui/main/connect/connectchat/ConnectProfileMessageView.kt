@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -131,10 +133,17 @@ fun ConnectProfileMessageView(
                 .weight(1f)
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Send
+            ),
+            keyboardActions = KeyboardActions {
+                viewModel.sendConnectMessage(user.user?.email, messageText, null)
+                messageText = ""
+            },
             placeholder = {
                 TextViewNormal(
-                    stringResource(R.string.enter_your_message), 14, color = Color.Black
+                    stringResource(R.string.enter_your_message), 14, color = Color.Black, line = 1
                 )
             },
             trailingIcon = {
@@ -166,8 +175,8 @@ fun ConnectProfileMessageView(
                 disabledTextColor = Color.Black,
                 unfocusedTextColor = Color.Black
             ),
-            singleLine = false,
-            maxLines = 4
+            singleLine = true,
+            maxLines = 1
         )
 
         if (viewModel.sendConnectMessageLoading) CircularLoadingViewSmall()
@@ -218,10 +227,14 @@ fun ConnectProfileMessageView(
     }
 
     if (showTimerAlert) {
-       val days = messageExpiryTime.first { user.expireInMinutes == it.minutes }
+        val days = messageExpiryTime.first { user.expireInMinutes == it.minutes }
 
         val expireTitle = String
-            .format(Locale.getDefault(), stringResource(R.string.message_expire_after_), "(${days.text})")
+            .format(
+                Locale.getDefault(),
+                stringResource(R.string.message_expire_after_),
+                "(${days.text})"
+            )
         TextAlertDialog(null, expireTitle, R.string.message_expire_after_desc) {
             showTimerAlert = false
         }

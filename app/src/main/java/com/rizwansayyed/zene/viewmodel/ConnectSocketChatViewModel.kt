@@ -38,11 +38,9 @@ class ConnectSocketChatViewModel : ViewModel() {
     var deleteChatID by mutableStateOf("")
     var newIncomingMessage by mutableStateOf<ConnectChatMessageResponse?>(null)
 
-
     fun clearChatSendItem() {
         newIncomingMessage = null
     }
-
 
     fun connect(senderEmail: String) = viewModelScope.launch(Dispatchers.IO) {
         myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@launch
