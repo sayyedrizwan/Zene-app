@@ -63,6 +63,7 @@ import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCardsImg
+import com.rizwansayyed.zene.ui.main.view.CreateAPlaylistsView
 import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -299,6 +300,13 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     }
 
 
+    if (createPlaylistsDialog) CreateAPlaylistsView(playerViewModel, null) {
+        createPlaylistsDialog = false
+        if (it) coroutine.launch {
+            viewModel.myPlaylistsList(true)
+            state.animateScrollToItem(0)
+        }
+    }
 
 }
 
