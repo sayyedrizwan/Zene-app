@@ -171,7 +171,6 @@ fun HomeMyLibraryView() {
                     }
                 }
 
-
                 if (it == MyLibraryTypes.MY_PLAYLISTS) AnimatedVisibility(viewModel.selectedType == MyLibraryTypes.MY_PLAYLISTS) {
                     ImageWithBorder(R.drawable.ic_plus_sign) {
                         addNewPlaylists = true

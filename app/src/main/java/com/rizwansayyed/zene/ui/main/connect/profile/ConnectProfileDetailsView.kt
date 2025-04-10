@@ -6,6 +6,7 @@ import android.location.Geocoder
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,8 +23,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,6 +42,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -57,6 +62,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
+import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCardsImg
 import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -93,6 +99,8 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     var sendLocation by remember { mutableStateOf(false) }
     var showPosts by remember { mutableStateOf(ConnectUserWall.STATUS) }
     var showPartyDialog by remember { mutableStateOf(false) }
+    var createPlaylistsDialog by remember { mutableStateOf(false) }
+    var playlistDialog by remember { mutableStateOf(false) }
 
     val locationPermission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -162,7 +170,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 
         if (data.isConnected() == FRIENDS || data.isConnected() == ME) {
             item {
-                Row(Modifier.fillMaxWidth()) {
+                Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
                     TextSimpleCards(
                         showPosts == ConnectUserWall.STATUS, stringResource(R.string.vibes_status)
                     ) {
@@ -173,6 +181,12 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                         showPosts == ConnectUserWall.PLAYLISTS, stringResource(R.string.playlists)
                     ) {
                         showPosts = ConnectUserWall.PLAYLISTS
+                    }
+
+                    AnimatedVisibility(showPosts == ConnectUserWall.PLAYLISTS) {
+                        TextSimpleCardsImg(R.drawable.ic_plus_sign) {
+                            playlistDialog = true
+                        }
                     }
 
                     TextSimpleCards(
@@ -196,6 +210,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                     ConnectVibeItemView(it)
                 }
             } else if (showPosts == ConnectUserWall.PLAYLISTS) {
+
 
             } else {
                 if (data.isConnected() != ME) item { UsersSettingsOfView(data) }
@@ -277,6 +292,14 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     if (showPartyDialog) DialogPartyInfo(data) {
         showPartyDialog = false
     }
+
+    if (playlistDialog) DialogPlaylistSyncInfo {
+        showPartyDialog = false
+        if (it) createPlaylistsDialog = true
+    }
+
+
+
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -447,6 +470,32 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
             }
         }
     }
+}
+
+@Composable
+fun DialogPlaylistSyncInfo(click: (Boolean) -> Unit) {
+    AlertDialog(
+        icon = {
+            Icon(painterResource(R.drawable.ic_playlist), "", Modifier.size(50.dp))
+        },
+        title = {
+            TextViewBold(stringResource(R.string.zene_duo_shared_playlists))
+        },
+        text = {
+            TextViewBold(stringResource(R.string.zene_duo_shared_playlists_desc))
+        },
+        onDismissRequest = { click(false) },
+        confirmButton = {
+            TextButton({ click(true) }) {
+                TextViewNormal(stringResource(R.string.create))
+            }
+        },
+        dismissButton = {
+            TextButton({ click(false) }) {
+                TextViewNormal(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)

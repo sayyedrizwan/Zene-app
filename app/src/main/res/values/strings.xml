@@ -185,6 +185,8 @@
     <string name="friend_requests">Friend Requests</string>
     <string name="vibes_status">Vibe Status</string>
     <string name="authenticate_to_view_chat">Authenticate to view chat</string>
+    <string name="zene_duo_shared_playlists">Zene Duo: Shared Playlists with Friends</string>
+    <string name="zene_duo_shared_playlists_desc">Create a playlist that\’s just between you two. With Zene Duo, your music and your friend’s favorites come together in one evolving playlist. You can updates and modify as you go.</string>
     <string name="info">Info</string>
     <string name="upload_a_vibes">Upload a Vibes</string>
     <string name="vibes_will_be_shared_and_expire_after_24">Vibes will be shared with your friends and expire after 24 hours</string>

@@ -26,6 +26,8 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.theme.GoldColor
 import com.rizwansayyed.zene.ui.theme.LuxColor
@@ -33,8 +35,6 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils
-import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -115,24 +115,39 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
 
 @Composable
 fun TextSimpleCards(isActive: Boolean, txt: String, click: () -> Unit) {
-    Row(Modifier
-        .padding(horizontal = 8.dp)
-        .clip(RoundedCornerShape(13.dp))
-        .clickable { click() }
-        .background(if (isActive) MainColor else Color.Black)
-        .padding(horizontal = 14.dp, vertical = 3.dp)) {
+    Row(
+        Modifier
+            .padding(horizontal = 4.dp)
+            .clip(RoundedCornerShape(13.dp))
+            .clickable { click() }
+            .background(if (isActive) MainColor else Color.Black)
+            .padding(horizontal = 14.dp, vertical = 3.dp)) {
         TextViewSemiBold(txt, 13)
     }
 }
 
 @Composable
+fun TextSimpleCardsImg(img: Int, click: () -> Unit) {
+    Row(
+        Modifier
+            .padding(horizontal = 8.dp)
+            .clip(RoundedCornerShape(13.dp))
+            .clickable { click() }
+            .background(MainColor)
+            .padding(horizontal = 14.dp, vertical = 5.dp)) {
+        ImageIcon(img, 15)
+    }
+}
+
+@Composable
 fun LuxCards(click: () -> Unit) {
-    Row(Modifier
-        .padding(horizontal = 8.dp)
-        .clip(RoundedCornerShape(13.dp))
-        .background(LuxColor)
-        .clickable { click() }
-        .padding(horizontal = 14.dp, vertical = 3.dp),
+    Row(
+        Modifier
+            .padding(horizontal = 8.dp)
+            .clip(RoundedCornerShape(13.dp))
+            .background(LuxColor)
+            .clickable { click() }
+            .padding(horizontal = 14.dp, vertical = 3.dp),
         Arrangement.Center, Alignment.CenterVertically) {
         ImageIcon(R.drawable.ic_crown, 16, GoldColor)
         Spacer(Modifier.width(5.dp))
