@@ -28,6 +28,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -91,6 +92,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     var showPartyDialog by remember { mutableStateOf(false) }
     var createPlaylistsDialog by remember { mutableStateOf(false) }
     var playlistDialog by remember { mutableStateOf(false) }
+    var playlistPage by remember { mutableIntStateOf(0) }
 
     val locationPermission =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -277,7 +279,8 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             doOpenChatOnConnect = false
         }
 
-        if (data.isConnected() == FRIENDS) viewModel.connectPlaylists(data.user?.email, 0)
+        if (data.isConnected() == FRIENDS)
+            viewModel.connectPlaylists(data.user?.email, playlistPage)
 
     }
 
@@ -306,6 +309,8 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 
 
     if (createPlaylistsDialog) DialogConnectUserAddPlaylist(data.user?.email) {
+        playlistPage = 0
+        viewModel.connectPlaylists(data.user?.email, 0)
         createPlaylistsDialog = false
     }
 
