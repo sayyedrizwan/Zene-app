@@ -78,6 +78,7 @@ fun DialogConnectUserAddPlaylist(close: () -> Unit) {
             TextViewSemiBold(
                 stringResource(R.string.give_your_playlist_a_name), 24, line = 1, center = true
             )
+
             Spacer(Modifier.height(10.dp))
 
             TextField(
