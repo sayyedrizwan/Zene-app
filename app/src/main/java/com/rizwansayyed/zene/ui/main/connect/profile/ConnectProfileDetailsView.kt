@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
 import android.Manifest
-import android.content.Intent
 import android.location.Geocoder
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -23,11 +22,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,15 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
@@ -63,11 +55,7 @@ import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCardsImg
-import com.rizwansayyed.zene.ui.main.view.CreateAPlaylistsView
-import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
-import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
@@ -78,8 +66,6 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
-import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -295,17 +281,13 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     }
 
     if (playlistDialog) DialogPlaylistSyncInfo {
-        showPartyDialog = false
+        playlistDialog = false
         if (it) createPlaylistsDialog = true
     }
 
 
-    if (createPlaylistsDialog) CreateAPlaylistsView(playerViewModel, null) {
+    if (createPlaylistsDialog) DialogConnectUserAddPlaylist {
         createPlaylistsDialog = false
-        if (it) coroutine.launch {
-            viewModel.myPlaylistsList(true)
-            state.animateScrollToItem(0)
-        }
     }
 
 }
@@ -475,116 +457,6 @@ fun TopSheetView(data: ConnectUserInfoResponse, viewModel: ConnectViewModel) {
                 }
             } catch (e: Exception) {
                 data.user?.country ?: ""
-            }
-        }
-    }
-}
-
-@Composable
-fun DialogPlaylistSyncInfo(click: (Boolean) -> Unit) {
-    AlertDialog(
-        icon = {
-            Icon(painterResource(R.drawable.ic_playlist), "", Modifier.size(50.dp))
-        },
-        title = {
-            TextViewBold(stringResource(R.string.zene_duo_shared_playlists))
-        },
-        text = {
-            TextViewBold(stringResource(R.string.zene_duo_shared_playlists_desc))
-        },
-        onDismissRequest = { click(false) },
-        confirmButton = {
-            TextButton({ click(true) }) {
-                TextViewNormal(stringResource(R.string.create))
-            }
-        },
-        dismissButton = {
-            TextButton({ click(false) }) {
-                TextViewNormal(stringResource(R.string.cancel))
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun DialogPartyInfo(data: ConnectUserInfoResponse, close: () -> Unit) {
-    Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
-        val context = LocalContext.current.applicationContext
-        val needMicrophone = stringResource(R.string.need_microphone_permission_to_speak)
-
-        val m =
-            rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                if (it.all { v -> v.value }) {
-                    Intent(context, PartyCallActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        putExtra(Intent.EXTRA_EMAIL, data.user?.email)
-                        putExtra(Intent.EXTRA_USER, data.user?.profile_photo)
-                        putExtra(Intent.EXTRA_PACKAGE_NAME, data.user?.name)
-                        putExtra(Intent.EXTRA_MIME_TYPES, -1)
-                        context.startActivity(this)
-                    }
-                    close()
-                } else {
-                    needMicrophone.toast()
-                    openAppSettings()
-                }
-            }
-
-
-        Column(
-            Modifier
-                .padding(5.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(15.dp))
-                .background(MainColor)
-                .padding(16.dp)
-        ) {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-            ) {
-                GlideImage(
-                    R.drawable.user_sitting_with_headphone,
-                    "",
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                )
-
-                Column(
-                    Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    BlackTransparent.copy(0.2f),
-                                    BlackTransparent.copy(0.5f),
-                                    BlackTransparent.copy(0.7f),
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Black
-                                )
-                            )
-                        ), Arrangement.Center, Alignment.CenterHorizontally
-                ) {
-                    TextViewSemiBold(stringResource(R.string.start_a_live_party), 27, center = true)
-                    Spacer(Modifier.height(1.dp))
-                    TextViewNormal(
-                        stringResource(R.string.start_a_live_party_desc), 14, center = true
-                    )
-                }
-
-            }
-            Spacer(Modifier.height(15.dp))
-            ButtonHeavy(stringResource(R.string.start), Color.Black) {
-                m.launch(arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA))
-            }
-            Spacer(Modifier.height(15.dp))
-            ButtonHeavy(stringResource(R.string.close), Color.Black) {
-                close()
             }
         }
     }
