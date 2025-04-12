@@ -39,6 +39,10 @@ import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
@@ -47,10 +51,6 @@ import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -66,6 +66,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
         val playerViewModel: PlayerViewModel = hiltViewModel()
         val homeViewModel: HomeViewModel = hiltViewModel()
         var showShare by remember { mutableStateOf(false) }
+        var addToPlaylistView by remember { mutableStateOf(false) }
         var showAddToHomeScreen by remember { mutableStateOf(false) }
         val mediaInfo by remember { derivedStateOf { viewModel.showMediaInfoSheet } }
         val artists by remember { derivedStateOf { viewModel.showMediaInfoSheet?.artistsList } }
@@ -194,6 +195,12 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                     }
                 }
 
+                if (data.type() == MusicDataTypes.SONGS || data.type() == MusicDataTypes.VIDEOS || data.type() == MusicDataTypes.RADIO || data.type() == MusicDataTypes.PODCAST_AUDIO) item {
+                    LongPressSheetItem(R.drawable.ic_playlist, R.string.add_to_playlist) {
+                        addToPlaylistView = true
+                    }
+                }
+
                 if (data.type() != MusicDataTypes.NEWS) item {
                     LongPressSheetItem(
                         R.drawable.ic_screen_add_to_home, R.string.add_shortcut_to_home_screen
@@ -228,6 +235,11 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                     generateHomeScreenShortcut(data)
                     showAddToHomeScreen = false
                 })
+            }
+
+
+            if (addToPlaylistView) AddToPlaylistsView(data) {
+                addToPlaylistView = false
             }
 
             LaunchedEffect(Unit) {

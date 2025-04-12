@@ -603,6 +603,20 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.connectSearch(token, body))
     }
 
+    override suspend fun connectCreatePlaylists(otherEmail: String, name: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("otherEmail", otherEmail)
+            put("name", name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.connectCreatePlaylists(token, body))
+    }
+
     override suspend fun connectUserInfo(toEmail: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -985,10 +999,22 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.getCommentOfVibes(token, body))
     }
 
+    override suspend fun getConnectPlaylists(otherEmail: String?, page: Int) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("otherEmail", otherEmail)
+            put("page", page)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.getConnectPlaylists(token, body))
+    }
+
     override suspend fun similarArtistsAlbumOfSong(
-        id: String,
-        name: String?,
-        artists: String?
+        id: String, name: String?, artists: String?
     ) =
         flow {
             val email = userInfo.firstOrNull()?.email ?: ""

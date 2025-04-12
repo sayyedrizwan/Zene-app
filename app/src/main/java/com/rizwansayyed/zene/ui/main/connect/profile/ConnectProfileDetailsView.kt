@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,10 +54,12 @@ import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.connect_status.view.ConnectVibeItemView
 import com.rizwansayyed.zene.ui.main.connect.connectchat.ConnectProfileMessagingView
+import com.rizwansayyed.zene.ui.main.home.view.SavedPlaylistsPodcastView
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCardsImg
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
@@ -164,18 +167,20 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                         showPosts = ConnectUserWall.STATUS
                     }
 
-                    TextSimpleCards(
-                        showPosts == ConnectUserWall.PLAYLISTS, stringResource(R.string.playlists)
-                    ) {
-                        showPosts = ConnectUserWall.PLAYLISTS
-                    }
+                    if (data.isConnected() == FRIENDS) {
+                        TextSimpleCards(
+                            showPosts == ConnectUserWall.PLAYLISTS,
+                            stringResource(R.string.playlists)
+                        ) {
+                            showPosts = ConnectUserWall.PLAYLISTS
+                        }
 
-                    AnimatedVisibility(showPosts == ConnectUserWall.PLAYLISTS) {
-                        TextSimpleCardsImg(R.drawable.ic_plus_sign) {
-                            playlistDialog = true
+                        AnimatedVisibility(showPosts == ConnectUserWall.PLAYLISTS) {
+                            TextSimpleCardsImg(R.drawable.ic_plus_sign) {
+                                playlistDialog = true
+                            }
                         }
                     }
-
                     TextSimpleCards(
                         showPosts == ConnectUserWall.INFO, stringResource(R.string.info)
                     ) {
@@ -196,9 +201,20 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 items(data.vibes ?: emptyList()) {
                     ConnectVibeItemView(it)
                 }
-            } else if (showPosts == ConnectUserWall.PLAYLISTS) {
+            } else if (showPosts == ConnectUserWall.PLAYLISTS && data.isConnected() == FRIENDS) {
+                item {
+                    if (viewModel.isLoadingConnectPlaylist) CircularLoadingViewSmall()
+
+                    if (viewModel.connectPlaylistsLists.isEmpty() && !viewModel.isLoadingConnectPlaylist)
+                        TextViewBold(stringResource(R.string.no_playlists), 19, center = true)
 
 
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        items(viewModel.connectPlaylistsLists) {
+                            SavedPlaylistsPodcastView(it, Modifier.width(175.dp))
+                        }
+                    }
+                }
             } else {
                 if (data.isConnected() != ME) item { UsersSettingsOfView(data) }
 
@@ -260,6 +276,9 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
             }
             doOpenChatOnConnect = false
         }
+
+        if (data.isConnected() == FRIENDS) viewModel.connectPlaylists(data.user?.email, 0)
+
     }
 
     if (sendLocation) ModalBottomSheet(
@@ -286,7 +305,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     }
 
 
-    if (createPlaylistsDialog) DialogConnectUserAddPlaylist {
+    if (createPlaylistsDialog) DialogConnectUserAddPlaylist(data.user?.email) {
         createPlaylistsDialog = false
     }
 

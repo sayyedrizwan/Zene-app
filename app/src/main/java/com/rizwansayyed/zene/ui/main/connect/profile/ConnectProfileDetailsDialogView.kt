@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,25 +46,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
+import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 
 @Composable
-fun DialogConnectUserAddPlaylist(close: () -> Unit) {
+fun DialogConnectUserAddPlaylist(email: String?, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        val viewModel: ConnectViewModel = hiltViewModel()
         val focusManager = LocalFocusManager.current
-        var search by remember { mutableStateOf("") }
+        var playlistName by remember { mutableStateOf("") }
 
         Column(
             Modifier
@@ -82,8 +90,8 @@ fun DialogConnectUserAddPlaylist(close: () -> Unit) {
             Spacer(Modifier.height(10.dp))
 
             TextField(
-                search,
-                { search = if (it.length <= 100) it else it.take(100) },
+                playlistName,
+                { playlistName = if (it.length <= 100) it else it.take(100) },
                 Modifier
                     .padding(10.dp)
                     .fillMaxWidth()
@@ -108,6 +116,26 @@ fun DialogConnectUserAddPlaylist(close: () -> Unit) {
             )
 
             Spacer(Modifier.height(20.dp))
+            Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                ButtonWithBorder(R.string.cancel) { close() }
+                if (playlistName.length > 3) {
+                    Spacer(Modifier.width(10.dp))
+                    when (viewModel.createPlaylist) {
+                        ResponseResult.Empty -> ButtonWithBorder(R.string.create) {
+                            if (playlistName.length <= 3) return@ButtonWithBorder
+                            viewModel.createPlaylistName(email, playlistName)
+                        }
+
+                        is ResponseResult.Error -> {}
+                        ResponseResult.Loading -> CircularLoadingViewSmall()
+                        is ResponseResult.Success -> {
+                            LaunchedEffect(Unit) {
+                                close()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

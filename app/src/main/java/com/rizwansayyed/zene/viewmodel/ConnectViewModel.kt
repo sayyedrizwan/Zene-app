@@ -12,6 +12,8 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
+import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
+import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -25,6 +27,7 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeM
 import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +50,9 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var connectUserInfo by mutableStateOf<ResponseResult<ConnectUserInfoResponse>>(ResponseResult.Empty)
         private set
 
+    var createPlaylist by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
+        private set
+
     var connectUserList by mutableStateOf<ResponseResult<List<ConnectUserInfoResponse>>>(
         ResponseResult.Empty
     )
@@ -56,6 +62,9 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     )
         private set
 
+
+    var isLoadingConnectPlaylist by mutableStateOf(false)
+    var connectPlaylistsLists = mutableStateListOf<SavedPlaylistsPodcastsResponseItem>()
 
     var isLoadingVibeFeed by mutableStateOf(false)
     var connectUserVibesFeeds = mutableStateListOf<ConnectFeedDataResponse>()
@@ -273,6 +282,34 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         email ?: return@launch
         zeneAPI.sendPartyCall(email, randomCode).catch { }.collectLatest {
 
+        }
+    }
+
+
+    fun createPlaylistName(email: String?, name: String) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.connectCreatePlaylists(email, name).onStart {
+            createPlaylist = ResponseResult.Loading
+        }.catch {
+            createPlaylist = ResponseResult.Error(it)
+        }.collectLatest {
+            createPlaylist = ResponseResult.Success(it.status ?: false)
+        }
+    }
+
+
+    fun connectPlaylists(email: String?, page: Int) = viewModelScope.launch(Dispatchers.IO) {
+        email ?: return@launch
+        zeneAPI.getConnectPlaylists(email, page).onStart {
+            if (page == 0) {
+                connectPlaylistsLists.clear()
+                isLoadingConnectPlaylist = true
+            }
+        }.catch {
+            isLoadingConnectPlaylist = false
+        }.collectLatest {
+            connectPlaylistsLists.addAll(it.toTypedArray())
+            isLoadingConnectPlaylist = false
         }
     }
 

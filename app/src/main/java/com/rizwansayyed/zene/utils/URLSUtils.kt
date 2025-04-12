@@ -49,6 +49,8 @@ object URLSUtils {
 
     const val ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API =
         "connect/users-search-via-phonenumber"
+    const val ZENE_CONNECT_CREATE_CONNECT_PLAYLIST_API = "connect/create-connect-playlist"
+    const val ZENE_CONNECT_CONNECT_PLAYLIST_API = "connect/connect-playlists"
     const val ZENE_CONNECT_SEARCH_API = "connect/search"
     const val ZENE_CONNECT_USER_INFO_API = "connect/user-info"
     const val ZENE_CONNECT_FRIENDS_API = "connect/friends"

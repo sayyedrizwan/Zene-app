@@ -159,4 +159,8 @@ interface ZeneAPIInterface {
     suspend fun deleteConnectMessage(toEmail: String?, id: String?): Flow<MediaStatusTypeResponse>
     suspend fun sendPartyCall(toEmail: String, code: String): Flow<StatusTypeResponse>
     suspend fun declinePartyCall(toEmail: String): Flow<StatusTypeResponse>
+    suspend fun connectCreatePlaylists(otherEmail: String, name: String): Flow<StatusTypeResponse>
+    suspend fun getConnectPlaylists(
+        otherEmail: String?, page: Int
+    ): Flow<SavedPlaylistsPodcastsResponse>
 }

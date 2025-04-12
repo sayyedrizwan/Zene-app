@@ -41,6 +41,8 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_SIMILAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CHAT_RECENT_MESSAGE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CONNECT_PLAYLIST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CREATE_CONNECT_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_DECLINE_PARTY_CALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_DELETE_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
@@ -277,6 +279,12 @@ interface ZeneAPIService {
     ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_CREATE_CONNECT_PLAYLIST_API)
+    suspend fun connectCreatePlaylists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
     @POST(ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API)
     suspend fun connectUsersSearchViaPhoneNumber(
         @Header("token") token: String, @Body data: RequestBody
@@ -422,6 +430,12 @@ interface ZeneAPIService {
     suspend fun getCommentOfVibes(
         @Header("token") token: String, @Body data: RequestBody
     ): List<VibesCommentsResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_CONNECT_CONNECT_PLAYLIST_API)
+    suspend fun getConnectPlaylists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): SavedPlaylistsPodcastsResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_SIMILAR_ARTISTS_ALBUM_SONG_API)

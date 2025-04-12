@@ -50,6 +50,10 @@ import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.MyLibraryTypes
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.ui.main.view.CreateAPlaylistsView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
@@ -60,10 +64,6 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.RefreshPlaylistListener
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.setRefreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
@@ -116,7 +116,12 @@ fun HomeMyLibraryView() {
                 }
 
                 MyLibraryTypes.SAVED -> {
-                    items(viewModel.savedList) { SavedPlaylistsPodcastView(it) }
+                    items(viewModel.savedList) {
+                        SavedPlaylistsPodcastView(
+                            it,
+                            Modifier.fillMaxWidth()
+                        )
+                    }
 
                     if (!viewModel.savedIsLoading && viewModel.savedList.isEmpty()) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -134,7 +139,12 @@ fun HomeMyLibraryView() {
 
                 MyLibraryTypes.MY_PLAYLISTS -> {
                     item { LikedPlaylistsView(viewModel) }
-                    items(viewModel.myList) { SavedPlaylistsPodcastView(it) }
+                    items(viewModel.myList) {
+                        SavedPlaylistsPodcastView(
+                            it,
+                            Modifier.fillMaxWidth()
+                        )
+                    }
 
                     if (!viewModel.myIsLoading && viewModel.myList.isEmpty()) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -241,7 +251,8 @@ fun HistoryCardItems(data: MusicHistoryResponse) {
             .fillMaxWidth()
             .padding(5.dp)
             .padding(bottom = 15.dp)
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data.asMusicData()) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data.asMusicData()) },
                 onClick = { startMedia(data.asMusicData()) }), Alignment.Center
     ) {
 
@@ -285,19 +296,19 @@ fun HistoryCardItems(data: MusicHistoryResponse) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
-    Column(Modifier
-        .fillMaxWidth()
-        .padding(5.dp)
-        .padding(bottom = 15.dp)
-        .clickable {
-            if (data.isUserPlaylist()) {
-                NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${data.id}")
-            } else {
-                if (data.isPodcast()) NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
-                else NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
-            }
-        }) {
+fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem, modifier: Modifier) {
+    Column(
+        modifier
+            .padding(5.dp)
+            .padding(bottom = 15.dp)
+            .clickable {
+                if (data.isUserPlaylist()) {
+                    NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${data.id}")
+                } else {
+                    if (data.isPodcast()) NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${data.id}")
+                    else NavigationUtils.triggerHomeNav("$NAV_PLAYLIST_PAGE${data.id}")
+                }
+            }) {
         GlideImage(
             data.img,
             data.name,
@@ -311,7 +322,10 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
         TextViewBold(data.name ?: "", 14, line = 2)
         Box(Modifier.offset(y = (-3).dp)) {
             if (data.isUserPlaylist()) {
-                TextViewNormal(stringResource(R.string.my_playlist), 14, line = 1)
+                if ((data.email?.split("+")?.size ?: 0) >= 4)
+                    TextViewNormal(stringResource(R.string.shared_playlist), 14, line = 1)
+                else
+                    TextViewNormal(stringResource(R.string.my_playlist), 14, line = 1)
             } else {
                 if (data.isPodcast()) TextViewNormal(
                     stringResource(R.string.podcasts), 14, line = 1
@@ -329,17 +343,18 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem) {
 @Composable
 fun LikedPlaylistsView(data: MyLibraryViewModel) {
     val coroutine = rememberCoroutineScope()
-    Column(Modifier
-        .fillMaxWidth()
-        .padding(5.dp)
-        .padding(bottom = 15.dp)
-        .clickable {
-            coroutine.launch {
-                val email = DataStorageManager.userInfo.firstOrNull()?.email
-                val id = "${email}${LIKED_SONGS_ON_ZENE}"
-                NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${id}")
-            }
-        }) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .padding(bottom = 15.dp)
+            .clickable {
+                coroutine.launch {
+                    val email = DataStorageManager.userInfo.firstOrNull()?.email
+                    val id = "${email}${LIKED_SONGS_ON_ZENE}"
+                    NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${id}")
+                }
+            }) {
         GlideImage(
             "https://i.ibb.co/xq4CWHCz/liked-thumb-img.png",
             stringResource(R.string.liked_items),

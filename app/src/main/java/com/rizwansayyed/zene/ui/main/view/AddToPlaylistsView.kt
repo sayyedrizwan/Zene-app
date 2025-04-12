@@ -75,7 +75,7 @@ import kotlinx.coroutines.launch
 fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         var addNewPlaylists by remember { mutableStateOf(false) }
-        val playerViewModel: PlayerViewModel = hiltViewModel()
+        val playerViewModel: PlayerViewModel = hiltViewModel(key = info?.id)
 
         val state = rememberLazyListState()
         var isBottomTriggered by remember { mutableStateOf(false) }
