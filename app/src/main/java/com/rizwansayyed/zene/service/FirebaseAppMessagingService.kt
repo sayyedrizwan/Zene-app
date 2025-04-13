@@ -2,11 +2,15 @@ package com.rizwansayyed.zene.service
 
 import android.content.Context
 import android.content.Intent
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.firebase.messaging.ktx.messaging
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.notification.NotificationUtils
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
@@ -17,16 +21,18 @@ import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAName
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -40,6 +46,9 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
     private val c: Context by lazy { this }
 
     companion object {
+        private const val FCM_TOPIC_ALL = "zene_fcm_all"
+        private const val FCM_TOPIC_COUNTRY = "zene_fcm_country_"
+
         const val CONNECT_LOCATION_SHARING_TYPE = "CONNECT_LOCATION_SHARE"
         const val CONNECT_OPEN_PROFILE_TYPE = "CONNECT_OPEN_PROFILE"
         const val CONNECT_OPEN_PROFILE_PLAYLIST_TYPE = "CONNECT_OPEN_PROFILE_PLAYLIST"
@@ -48,6 +57,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_SEND_CHAT_MESSAGE = "CONNECT_SEND_CHAT_MESSAGE"
         const val CONNECT_PARTY_CALL_DECLINE = "CONNECT_PARTY_CALL_DECLINE"
         const val CONNECT_PARTY_CALL = "CONNECT_PARTY_CALL"
+        const val CONNECT_UNFRIEND_REQUEST = "CONNECT_UNFRIEND_REQUEST"
         const val CONNECT_PLAYLISTS_INFO = "CONNECT_PLAYLISTS_INFO"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
@@ -59,13 +69,25 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val FCM_TYPE = "type"
         const val FCM_LAT = "lat"
         const val FCM_LON = "lon"
+
+        fun subscribeToTopicAll() = CoroutineScope(Dispatchers.IO).launch {
+            Firebase.messaging.subscribeToTopic(FCM_TOPIC_ALL).await()
+
+            val countryCode = ipDB.firstOrNull()?.countryCode
+            if (countryCode != null) Firebase.messaging
+                .subscribeToTopic(FCM_TOPIC_COUNTRY + countryCode.lowercase()).await()
+
+
+
+            if (isActive) cancel()
+        }
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         CoroutineScope(Dispatchers.IO).launch {
             delay(3.seconds)
-            val data = DataStorageManager.userInfo.firstOrNull()
+            val data = userInfo.firstOrNull()
             if (data?.isLoggedIn() == false) return@launch
 
             zeneAPI.updateUser().catch { }.collectLatest { }
@@ -81,6 +103,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_LOCATION_SHARING_TYPE) connectLocationAlert(message.data)
             if (type == CONNECT_SEND_FRIEND_REQUEST) connectFriendRequestAlert(message.data)
             if (type == CONNECT_ACCEPTED_FRIEND_REQUEST) connectAcceptedRequestAlert(message.data)
+            if (type == CONNECT_UNFRIEND_REQUEST) connectUnFriendAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
             if (type == CONNECT_PLAYLISTS_INFO) connectPlaylistMessage(message.data)
             if (type == CONNECT_PARTY_CALL_DECLINE) {
@@ -174,6 +197,23 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             }
             channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
             setIntent(intent)
+            setSmallImage(image)
+            generate()
+        }
+    }
+
+    private fun connectUnFriendAlert(data: MutableMap<String, String>) {
+        val name = data[FCM_NAME]
+        val image = data[FCM_IMAGE]
+
+        val title = String.format(
+            Locale.getDefault(), context.getString(R.string.unfriended_you), name
+        )
+
+        val body = context.getString(R.string.unfriended_you_desc)
+
+        NotificationUtils(title, body).apply {
+            channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
             setSmallImage(image)
             generate()
         }

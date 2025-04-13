@@ -305,7 +305,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(data.isConnected()) {
         if (doOpenChatOnConnect) {
             coroutine.launch {
                 val lock = DataStorageManager.lockChatSettings(data.user?.email ?: "").firstOrNull()

@@ -34,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.subscribeToTopicAll
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.service.notification.HomeNavigationListener
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
@@ -235,6 +236,7 @@ class MainActivity : FragmentActivity() {
         homeViewModel.userInfo()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
+        subscribeToTopicAll()
     }
 
 }

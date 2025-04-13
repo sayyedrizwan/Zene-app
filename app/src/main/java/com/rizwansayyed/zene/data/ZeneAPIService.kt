@@ -41,8 +41,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_SIMILAR_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ACCEPT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_ADD_A_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CHAT_RECENT_MESSAGE_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CONNECT_PLAYLIST_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CREATE_CONNECT_PLAYLIST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_CREATE_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_DECLINE_PARTY_CALL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_DELETE_MESSAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_API
@@ -50,6 +49,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_REQUEST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_FRIENDS_VIBES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_GET_COMMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_MARK_MESSAGE_AS_READ_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEARCH_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SEND_FILE_MESSAGE_API
@@ -279,7 +279,7 @@ interface ZeneAPIService {
     ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
-    @POST(ZENE_CONNECT_CREATE_CONNECT_PLAYLIST_API)
+    @POST(ZENE_CONNECT_CREATE_PLAYLIST_API)
     suspend fun connectCreatePlaylists(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
@@ -432,7 +432,7 @@ interface ZeneAPIService {
     ): List<VibesCommentsResponse>
 
     @Headers("Content-Type: application/json")
-    @POST(ZENE_CONNECT_CONNECT_PLAYLIST_API)
+    @POST(ZENE_CONNECT_PLAYLIST_API)
     suspend fun getConnectPlaylists(
         @Header("token") token: String, @Body data: RequestBody
     ): SavedPlaylistsPodcastsResponse

@@ -45,9 +45,9 @@
     <string name="location_sharing_off_by_user">Location sharing is off by user</string>
     <string name="notification_from_you_silent_by_user">Notification from you is silent by user</string>
     <string name="top_played_songs_this_month">Top Played Songs This Month</string>
-    <string name="are_you_sure_want_to_cancel_add_request">Are you sure want to cancel the add request. Sometime it takes a while to get your request accepted!</string>
+    <string name="are_you_sure_want_to_cancel_add_request">Are you sure you want to remove them as a friend? This will also delete all chats and shared playlists.</string>
     <string name="remove_as_friend">Remove as Friend</string>
-    <string name="remove_as_friend_desc">Are you sure want to remove them as a friend?</string>
+    <string name="remove_as_friend_desc">Are you sure want to remove them as a friend? All the chats and shared playlists will be deleted?</string>
     <string name="cancel_request">Cancel request?</string>
     <string name="top_podcasts_you_listened_to_this_month">Top Podcasts Listened This Month</string>
     <string name="trending_ai_musics">Trending AI Songs</string>
@@ -383,10 +383,12 @@
     <string name="tap_to_view_their_friend_request">Tap to view their friend request.</string>
     <string name="_updated_playlist">%s updated playlist!</string>
     <string name="is_now_your_friend">%s is now your friend! 🎉</string>
+    <string name="unfriended_you">%s unfriended you!</string>
     <string name="send_you_a_message">%s send you a message!</string>
     <string name="new_message">New Message</string>
     <string name="th_file_is_large_max_size_is_20_mb">The file is too large to send. The maximum allowed size is 20 MB.</string>
     <string name="is_now_your_friend_desc">Time to share your favorite tracks, podcasts, and more. Let\'s get the conversation started!</string>
+    <string name="unfriended_you_desc">Your connection been removed. You’ll no longer share chats or playlists.</string>
     <string name="downloading_file_please_wait">Downloading file… Please wait…</string>
     <string name="after_seen">After Seen</string>
     <string name="thirty_minutes">30 Minutes</string>
