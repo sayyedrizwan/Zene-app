@@ -163,4 +163,7 @@ interface ZeneAPIInterface {
     suspend fun getConnectPlaylists(
         otherEmail: String?, page: Int
     ): Flow<SavedPlaylistsPodcastsResponse>
+
+    suspend fun songInfo(id: String): Flow<ZeneMusicData>
+    suspend fun aiMusicInfo(id: String?): Flow<ZeneMusicData>
 }

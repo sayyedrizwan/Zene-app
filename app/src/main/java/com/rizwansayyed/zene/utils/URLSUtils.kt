@@ -16,6 +16,18 @@ object URLSUtils {
     const val ZENE_URL_PODCASTS = "/podcasts"
     const val ZENE_URL_MY_LIBRARY = "/my-library"
 
+
+    const val ZENE_SONG = "/song/"
+    const val ZENE_RADIO = "/radio/"
+    const val ZENE_VIDEO = "/video/"
+    const val ZENE_MIX = "/mix/"
+    const val ZENE_ARTIST = "/artist/"
+    const val ZENE_PODCAST_SERIES = "/podcast-series/"
+    const val ZENE_PODCAST = "/podcast/"
+    const val ZENE_NEWS = "/news/"
+    const val ZENE_M = "/m/"
+    const val ZENE_AI_MUSIC = "/ai_music/"
+
     fun connectShareURL(username: String) = "$ZENE_URL${ZENE_URL_CONNECT}/$username"
 
     const val SHAZAM_BASE_URL = "https://www.shazam.com/"
@@ -78,6 +90,7 @@ object URLSUtils {
     const val ZENE_PLAYER_RADIO_INFO_API = "player/radio-info"
     const val ZENE_PLAYER_SIMILAR_VIDEOS_API = "player/similar-videos"
     const val ZENE_PLAYER_SIMILAR_ARTISTS_ALBUM_SONG_API = "player/similar-artists-album-of-song"
+    const val ZENE_PLAYER_SONG_INFO_API = "player/song-info"
     const val ZENE_PLAYER_IS_PLAYLIST_ADDED_API = "player/is-playlist-added"
     const val ZENE_PLAYER_SIMILAR_SONGS_API = "player/similar-songs"
     const val ZENE_PLAYER_SIMILAR_PLAYLISTS_SONGS_API = "player/similar-playlists-songs"
@@ -102,6 +115,7 @@ object URLSUtils {
     const val ZENE_AI_MUSIC_MEDIA_URL_API = "ai/ai-music-media-url"
     const val ZENE_AI_SIMILAR_MUSIC_API = "ai/similar-ai-music"
     const val ZENE_AI_MUSIC_LYRICS_API = "ai/ai-music-lyrics"
+    const val ZENE_AI_MUSIC_INFO_API = "ai/ai-music-info"
 
     const val ZENE_USER_LOGIN_API = "users/user-login"
     const val ZENE_USER_UPDATE_API = "users/user-update"

@@ -80,6 +80,7 @@ import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
 import com.rizwansayyed.zene.utils.share.IntentCheckUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -91,6 +92,7 @@ class MainActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val navigationViewModel: NavigationViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -212,7 +214,7 @@ class MainActivity : FragmentActivity() {
                             }
                         })
 
-                        IntentCheckUtils(intent, navigationViewModel)
+                        IntentCheckUtils(intent, navigationViewModel, playerViewModel)
                         showLogin = true
 
 
@@ -228,7 +230,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        IntentCheckUtils(intent, navigationViewModel)
+        IntentCheckUtils(intent, navigationViewModel, playerViewModel)
     }
 
     override fun onStart() {

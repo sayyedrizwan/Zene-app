@@ -19,4 +19,10 @@ data class PlayerRadioResponse(
     val tags: String?,
     val url: String?,
     val votes: Int?
-)
+) {
+    fun toMusicData(): ZeneMusicData {
+        val artists = if (tags == "") language else tags
+        val thumbnail = if (favicon === "") "https://www.zenemusic.co/zene_fm_thumbnail.png" else favicon
+        return ZeneMusicData(artists, stationuuid, name, url, thumbnail, "RADIO")
+    }
+}

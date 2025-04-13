@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.text.Html
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.widgets.likedsongs.LikedMediaWidgets
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -177,12 +179,11 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     fun similarArtistsAlbumOfSong(
         id: String, name: String?, artists: String?, response: (ZeneMusicData) -> Unit
-    ) =
-        viewModelScope.launch(Dispatchers.IO) {
-            zeneAPI.similarArtistsAlbumOfSong(id, name, artists).onStart {}.catch {}.collectLatest {
-                response(it)
-            }
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.similarArtistsAlbumOfSong(id, name, artists).onStart {}.catch {}.collectLatest {
+            response(it)
         }
+    }
 
 
     fun playerPodcastInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -253,6 +254,34 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             similarAIMusic = ResponseResult.Error(it)
         }.collectLatest {
             similarAIMusic = ResponseResult.Success(it)
+        }
+    }
+
+    fun songInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.songInfo(id).onStart {}.catch {}.collectLatest {
+            startMedia(it)
+        }
+    }
+
+    fun radioInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playerRadioInfo(id).onStart {}.catch {}.collectLatest {
+            startMedia(it.toMusicData())
+        }
+    }
+
+    fun podcastInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.playerPodcastInfo(id).onStart {}.catch {}.collectLatest {
+            val artists = Html.fromHtml(it.description, Html.FROM_HTML_MODE_LEGACY).toString()
+            val t = it.image?.url ?: it.series?.imageURL
+            val data =
+                ZeneMusicData(artists, id, it.title, it.lookup, t, "PODCAST_AUDIO")
+            startMedia(data)
+        }
+    }
+
+    fun aiMusicInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.aiMusicInfo(id).onStart {}.catch {}.collectLatest {
+            startMedia(it)
         }
     }
 }

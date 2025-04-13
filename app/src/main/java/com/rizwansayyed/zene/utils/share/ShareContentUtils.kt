@@ -7,6 +7,8 @@ import android.os.Build
 import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
+import androidx.core.content.edit
+import androidx.core.graphics.createBitmap
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.rizwansayyed.zene.R
@@ -25,7 +27,6 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes.SONGS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.TEXT
 import com.rizwansayyed.zene.data.model.MusicDataTypes.VIDEOS
 import com.rizwansayyed.zene.data.model.ZeneMusicData
-import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.connect_status.ConnectStatusActivity
@@ -34,7 +35,17 @@ import com.rizwansayyed.zene.utils.MainUtils.isAppInstalled
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NEWS
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_SERIES
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SONG
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_VIDEO
 import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,8 +55,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.BigInteger
 import java.util.UUID
-import androidx.core.graphics.createBitmap
-import androidx.core.content.edit
 
 
 enum class SharingContentType {
@@ -202,17 +211,17 @@ object ShareContentUtils {
 
         return when (data?.type()) {
             NONE -> ZENE_URL
-            SONGS -> "$ZENE_URL/song/${id}"
-            RADIO -> "$ZENE_URL/radio/${id}"
-            VIDEOS -> "$ZENE_URL/video/${id}"
-            PLAYLISTS, ALBUMS -> "$ZENE_URL/mix/${id}"
-            ARTISTS -> "$ZENE_URL/artist/${id}"
-            PODCAST -> "$ZENE_URL/podcast-series/${id}"
-            PODCAST_AUDIO -> "$ZENE_URL/podcast/${data.id}"
+            SONGS -> "$ZENE_URL$ZENE_SONG${id}"
+            RADIO -> "$ZENE_URL$ZENE_RADIO${id}"
+            VIDEOS -> "$ZENE_URL$ZENE_VIDEO${id}"
+            PLAYLISTS, ALBUMS -> "$ZENE_URL$ZENE_MIX${id}"
+            ARTISTS -> "$ZENE_URL$ZENE_ARTIST${id}"
+            PODCAST -> "$ZENE_URL$ZENE_PODCAST_SERIES${id}"
+            PODCAST_AUDIO -> "$ZENE_URL$ZENE_PODCAST${data.id?.replace("/", "_")}"
             PODCAST_CATEGORIES -> ZENE_URL
-            NEWS -> "$ZENE_URL/news/${data.id}"
-            MOVIES_SHOW -> "$ZENE_URL/m/${data.id}"
-            AI_MUSIC -> "$ZENE_URL/ai_music/${data.id}"
+            NEWS -> "$ZENE_URL$ZENE_NEWS${data.id}"
+            MOVIES_SHOW -> "$ZENE_URL$ZENE_M${data.id}"
+            AI_MUSIC -> "$ZENE_URL$ZENE_AI_MUSIC${data.id}"
             TEXT -> ZENE_URL
             null -> ZENE_URL
         }

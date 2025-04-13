@@ -1015,23 +1015,37 @@ class ZeneAPIImplementation @Inject constructor(
 
     override suspend fun similarArtistsAlbumOfSong(
         id: String, name: String?, artists: String?
-    ) =
-        flow {
-            val email = userInfo.firstOrNull()?.email ?: ""
-            val token = userInfo.firstOrNull()?.authToken ?: ""
-            val country = ipDB.firstOrNull()?.countryCode
+    ) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
 
-            val json = JSONObject().apply {
-                put("email", email)
-                put("id", id)
-                put("name", id)
-                put("artist", artists)
-                put("country", country)
-            }
-
-            val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-            emit(zeneAPI.similarArtistsAlbumOfSong(token, body))
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+            put("name", id)
+            put("artist", artists)
+            put("country", country)
         }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.similarArtistsAlbumOfSong(token, body))
+    }
+
+    override suspend fun songInfo(id: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.songInfo(token, body))
+    }
 
     override suspend fun isPlaylistAdded(id: String, type: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
@@ -1380,6 +1394,19 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.lyricsAIMusic(token, body))
+    }
+
+    override suspend fun aiMusicInfo(id: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.aiMusicInfo(token, body))
     }
 
     override suspend fun similarPodcasts(id: String?) = flow {

@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LYRICS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_MEDIA_URL_API
@@ -76,6 +77,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SIMILAR_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SONGS_LYRICS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SONG_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_VIDEO_FOR_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_MEDIA_URL_API
@@ -444,6 +446,12 @@ interface ZeneAPIService {
     ): ZeneMusicData
 
     @Headers("Content-Type: application/json")
+    @POST(ZENE_PLAYER_SONG_INFO_API)
+    suspend fun songInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicData
+
+    @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_IS_PLAYLIST_ADDED_API)
     suspend fun isPlaylistAdded(
         @Header("token") token: String, @Body data: RequestBody
@@ -633,6 +641,12 @@ interface ZeneAPIService {
     suspend fun lyricsAIMusic(
         @Header("token") token: String, @Body data: RequestBody
     ): PlayerLyricsInfoResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_AI_MUSIC_INFO_API)
+    suspend fun aiMusicInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicData
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_SIMILAR_PODCASTS_API)

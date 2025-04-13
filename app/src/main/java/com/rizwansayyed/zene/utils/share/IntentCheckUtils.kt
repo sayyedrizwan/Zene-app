@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.utils.share
 
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_LOCATION_SHARING_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_PLAYLIST_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_TYPE
@@ -13,15 +15,29 @@ import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_L
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LON
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TITLE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TYPE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
+import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenPlaylistOnConnect
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NEWS
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_SERIES
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SONG
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_CONNECT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_ENTERTAINMENT
@@ -29,7 +45,9 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_MY_LIBRARY
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PODCASTS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SEARCH
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SETTINGS
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_VIDEO
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
+import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -43,7 +61,9 @@ data class IntentFCMNotification(
     val title: String, val body: String, val type: String, val lat: String?, val long: String?
 )
 
-class IntentCheckUtils(intent: Intent, navViewModel: NavigationViewModel) {
+class IntentCheckUtils(
+    intent: Intent, navViewModel: NavigationViewModel, viewModel: PlayerViewModel
+) {
 
     init {
         if (intent.getStringExtra(FCM_TYPE) == CONNECT_LOCATION_SHARING_TYPE) {
@@ -114,6 +134,42 @@ class IntentCheckUtils(intent: Intent, navViewModel: NavigationViewModel) {
                 triggerHomeNav(NAV_MAIN_PAGE)
                 delay(500)
                 navViewModel.setHomeSections(HomeSectionSelector.MY_LIBRARY)
+            }
+
+
+            if (data.toString().contains("$ZENE_URL$ZENE_SONG")) {
+                val id = data.toString().substringAfterLast(ZENE_SONG)
+                viewModel.songInfoPlay(id)
+            } else if (data.toString().contains("$ZENE_URL$ZENE_RADIO")) {
+                val id = data.toString().substringAfterLast(ZENE_RADIO)
+                viewModel.radioInfoPlay(id)
+            } else if (data.toString().contains("$ZENE_URL$ZENE_VIDEO")) {
+                val id = data.toString().substringAfterLast(ZENE_VIDEO)
+                Intent(context, VideoPlayerActivity::class.java).apply {
+                    flags = FLAG_ACTIVITY_NEW_TASK
+                    putExtra(Intent.ACTION_VIEW, id)
+                    context.startActivity(this)
+                }
+            } else if (data.toString().contains("$ZENE_URL$ZENE_MIX")) {
+                val id = data.toString().substringAfterLast(ZENE_MIX)
+                triggerHomeNav("$NAV_PLAYLIST_PAGE${id}")
+            } else if (data.toString().contains("$ZENE_URL$ZENE_ARTIST")) {
+                val id = data.toString().substringAfterLast(ZENE_ARTIST)
+                triggerHomeNav("$NAV_ARTIST_PAGE${id}")
+            } else if (data.toString().contains("$ZENE_URL$ZENE_PODCAST_SERIES")) {
+                val id = data.toString().substringAfterLast(ZENE_PODCAST_SERIES)
+                triggerHomeNav("$NAV_PODCAST_PAGE${id}")
+            } else if (data.toString().contains("$ZENE_URL$ZENE_PODCAST")) {
+                val id = data.toString().substringAfterLast(ZENE_PODCAST).replace("_", "/")
+                viewModel.podcastInfoPlay(id)
+            } else if (data.toString().contains("$ZENE_URL$ZENE_NEWS")) {
+
+            } else if (data.toString().contains("$ZENE_URL$ZENE_M")) {
+                val id = data.toString().substringAfterLast(ZENE_M)
+                triggerHomeNav("$NAV_MOVIES_PAGE${id}")
+            } else if (data.toString().contains("$ZENE_URL$ZENE_AI_MUSIC")) {
+                val id = data.toString().substringAfterLast(ZENE_AI_MUSIC)
+                viewModel.aiMusicInfoPlay(id)
             }
         }
     }
