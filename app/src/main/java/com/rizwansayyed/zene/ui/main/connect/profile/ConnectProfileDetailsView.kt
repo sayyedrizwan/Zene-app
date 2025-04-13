@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main.connect.profile
 
 import android.Manifest
 import android.location.Geocoder
+import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -33,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,7 +63,6 @@ import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCardsImg
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
@@ -87,6 +89,10 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
     val coroutine = rememberCoroutineScope()
     val context = LocalActivity.current
     val bioAuthMetric = BioAuthMetric(R.string.authenticate_to_view_chat, context)
+
+    val listPlaylistState = rememberLazyListState()
+    var endPlaylistTriggered by remember { mutableStateOf(false) }
+
 
     var showSendMessage by remember { mutableStateOf(false) }
     var sendLocation by remember { mutableStateOf(false) }
@@ -207,20 +213,47 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 }
             } else if (showPosts == ConnectUserWall.PLAYLISTS && data.isConnected() == FRIENDS) {
                 item {
-                    if (viewModel.isLoadingConnectPlaylist) CircularLoadingView()
-
                     if (viewModel.connectPlaylistsLists.isEmpty() && !viewModel.isLoadingConnectPlaylist)
                         TextViewBold(stringResource(R.string.no_playlists), 19, center = true)
 
 
-                    LazyRow(Modifier.fillMaxWidth()) {
+                    LazyRow(
+                        Modifier.fillMaxWidth(), listPlaylistState,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         items(viewModel.connectPlaylistsLists) {
                             SavedPlaylistsPodcastView(it, Modifier.width(175.dp))
                         }
 
-                        item {
-                            if (viewModel.isLoadingConnectPlaylist) CircularLoadingViewSmall()
+                        if (viewModel.isLoadingConnectPlaylist) item {
+                            Row(Modifier.height(185.dp)) {
+                                CircularLoadingViewSmall()
+                            }
                         }
+
+                        item {
+                            Spacer(Modifier.width(60.dp))
+                        }
+                    }
+
+                    LaunchedEffect(listPlaylistState, viewModel.connectPlaylistsLists) {
+                        snapshotFlow { listPlaylistState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+                            .collect { lastVisibleIndex ->
+                                if (lastVisibleIndex != null &&
+                                    lastVisibleIndex >= viewModel.connectPlaylistsLists.lastIndex &&
+                                    !endPlaylistTriggered &&
+                                    !viewModel.isLoadingConnectPlaylist
+                                ) {
+                                    endPlaylistTriggered = true
+                                    playlistPage += 1
+                                    if (data.isConnected() == FRIENDS) viewModel
+                                        .connectPlaylists(data.user?.email, playlistPage)
+                                }
+
+                                if (lastVisibleIndex != null && lastVisibleIndex < viewModel.connectPlaylistsLists.lastIndex) {
+                                    endPlaylistTriggered = false
+                                }
+                            }
                     }
                 }
             } else {
