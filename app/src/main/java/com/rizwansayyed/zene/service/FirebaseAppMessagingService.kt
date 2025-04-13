@@ -42,6 +42,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
     companion object {
         const val CONNECT_LOCATION_SHARING_TYPE = "CONNECT_LOCATION_SHARE"
         const val CONNECT_OPEN_PROFILE_TYPE = "CONNECT_OPEN_PROFILE"
+        const val CONNECT_OPEN_PROFILE_PLAYLIST_TYPE = "CONNECT_OPEN_PROFILE_PLAYLIST"
         const val CONNECT_SEND_FRIEND_REQUEST = "CONNECT_SEND_FRIEND_REQUEST"
         const val CONNECT_ACCEPTED_FRIEND_REQUEST = "CONNECT_ACCEPTED_FRIEND_REQUEST"
         const val CONNECT_SEND_CHAT_MESSAGE = "CONNECT_SEND_CHAT_MESSAGE"
@@ -50,6 +51,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_PLAYLISTS_INFO = "CONNECT_PLAYLISTS_INFO"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
+        const val FCM_ID = "id"
         const val FCM_BODY = "body"
         const val FCM_IMAGE = "image"
         const val FCM_EMAIL = "email"
@@ -211,6 +213,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         val image = data[FCM_IMAGE]
         val email = data[FCM_EMAIL]
         val body = data[FCM_BODY]
+        val id = data[FCM_ID]
 
         val title = String.format(
             Locale.getDefault(), context.getString(R.string._updated_playlist), name
@@ -218,8 +221,9 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
 
         NotificationUtils(title, body ?: "").apply {
             val intent = Intent(c, MainActivity::class.java).apply {
-                putExtra(Intent.ACTION_SENDTO, CONNECT_OPEN_PROFILE_TYPE)
+                putExtra(Intent.ACTION_SENDTO, CONNECT_OPEN_PROFILE_PLAYLIST_TYPE)
                 putExtra(FCM_EMAIL, email)
+                putExtra(FCM_ID, id)
             }
             channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
             setIntent(intent)

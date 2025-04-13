@@ -6,6 +6,7 @@ object ChatTempDataUtils {
 
     var currentOpenedChatProfile: String? = null
     var doOpenChatOnConnect = false
+    var doOpenPlaylistOnConnect = false
     private var messageGroup: HashMap<String, Array<ChatTemData>> = HashMap()
     private var nameGroup: HashMap<String, String> = HashMap()
 

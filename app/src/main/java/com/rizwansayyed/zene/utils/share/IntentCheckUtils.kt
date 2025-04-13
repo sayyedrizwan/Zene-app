@@ -3,21 +3,25 @@ package com.rizwansayyed.zene.utils.share
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_LOCATION_SHARING_TYPE
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_PLAYLIST_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_SEND_CHAT_MESSAGE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_BODY
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_EMAIL
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_ID
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LAT
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LON
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TITLE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TYPE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenPlaylistOnConnect
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_CONNECT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_ENTERTAINMENT
@@ -28,8 +32,12 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SETTINGS
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.seconds
 
 data class IntentFCMNotification(
     val title: String, val body: String, val type: String, val lat: String?, val long: String?
@@ -55,6 +63,23 @@ class IntentCheckUtils(intent: Intent, navViewModel: NavigationViewModel) {
             navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
             intent.getStringExtra(FCM_EMAIL)?.let {
                 triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
+            }
+        }
+
+        if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_OPEN_PROFILE_PLAYLIST_TYPE) {
+            doOpenPlaylistOnConnect = true
+            navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
+            intent.getStringExtra(FCM_EMAIL)?.let {
+                triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
+            }
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(1.seconds)
+                intent.getStringExtra(FCM_ID)?.let {
+                    withContext(Dispatchers.Main) {
+                        triggerHomeNav("$NAV_MY_PLAYLIST_PAGE$it")
+                    }
+                }
+                if (isActive) cancel()
             }
         }
 

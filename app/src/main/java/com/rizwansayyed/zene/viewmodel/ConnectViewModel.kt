@@ -302,10 +302,8 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     fun connectPlaylists(email: String?, page: Int) = viewModelScope.launch(Dispatchers.IO) {
         email ?: return@launch
         zeneAPI.getConnectPlaylists(email, page).onStart {
-            if (page == 0) {
-                connectPlaylistsLists.clear()
-                isLoadingConnectPlaylist = true
-            }
+            if (page == 0) connectPlaylistsLists.clear()
+            isLoadingConnectPlaylist = true
         }.catch {
             isLoadingConnectPlaylist = false
         }.collectLatest {

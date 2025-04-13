@@ -71,6 +71,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
+import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenPlaylistOnConnect
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
@@ -216,6 +217,10 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                         items(viewModel.connectPlaylistsLists) {
                             SavedPlaylistsPodcastView(it, Modifier.width(175.dp))
                         }
+
+                        item {
+                            if (viewModel.isLoadingConnectPlaylist) CircularLoadingViewSmall()
+                        }
                     }
                 }
             } else {
@@ -278,6 +283,11 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 } else showSendMessage = true
             }
             doOpenChatOnConnect = false
+        }
+
+        if (doOpenPlaylistOnConnect) {
+            showPosts = ConnectUserWall.PLAYLISTS
+            doOpenPlaylistOnConnect = false
         }
 
         if (data.isConnected() == FRIENDS)
