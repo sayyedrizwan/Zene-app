@@ -322,7 +322,7 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem, modifier
         TextViewBold(data.name ?: "", 14, line = 2)
         Box(Modifier.offset(y = (-3).dp)) {
             if (data.isUserPlaylist()) {
-                if ((data.email?.split("+")?.size ?: 0) >= 4)
+                if (data.isConnectUser())
                     TextViewNormal(stringResource(R.string.shared_playlist), 14, line = 1)
                 else
                     TextViewNormal(stringResource(R.string.my_playlist), 14, line = 1)

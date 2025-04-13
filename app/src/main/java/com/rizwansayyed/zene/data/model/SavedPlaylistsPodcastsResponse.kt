@@ -11,6 +11,11 @@ data class SavedPlaylistsPodcastsResponseItem(
     val timestamp: Long?,
     val type: String?,
 ) {
+    fun isConnectUser(): Boolean {
+        val regex = Regex("""^\+([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\+\+([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}))*\+$""")
+        return regex.matches(email ?: "")
+    }
+
     fun isPodcast() = type == "PODCAST"
     fun isUserPlaylist() = type == "USER_PLAYLISTS"
 }

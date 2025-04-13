@@ -47,6 +47,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_SEND_CHAT_MESSAGE = "CONNECT_SEND_CHAT_MESSAGE"
         const val CONNECT_PARTY_CALL_DECLINE = "CONNECT_PARTY_CALL_DECLINE"
         const val CONNECT_PARTY_CALL = "CONNECT_PARTY_CALL"
+        const val CONNECT_PLAYLISTS_INFO = "CONNECT_PLAYLISTS_INFO"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
         const val FCM_BODY = "body"
@@ -79,6 +80,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_SEND_FRIEND_REQUEST) connectFriendRequestAlert(message.data)
             if (type == CONNECT_ACCEPTED_FRIEND_REQUEST) connectAcceptedRequestAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
+            if (type == CONNECT_PLAYLISTS_INFO) connectPlaylistMessage(message.data)
             if (type == CONNECT_PARTY_CALL_DECLINE) {
                 try {
                     val email = it[FCM_EMAIL]
@@ -175,6 +177,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         }
     }
 
+
     private fun connectChatMessageAlert(data: MutableMap<String, String>) {
         val name = data[FCM_NAME]
         val body = data[FCM_BODY]
@@ -199,6 +202,28 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             setIntent(intent)
             setSmallImage(image)
             generateMessageConv(email)
+            generate()
+        }
+    }
+
+    private fun connectPlaylistMessage(data: MutableMap<String, String>) {
+        val name = data[FCM_NAME]
+        val image = data[FCM_IMAGE]
+        val email = data[FCM_EMAIL]
+        val body = data[FCM_BODY]
+
+        val title = String.format(
+            Locale.getDefault(), context.getString(R.string._updated_playlist), name
+        )
+
+        NotificationUtils(title, body ?: "").apply {
+            val intent = Intent(c, MainActivity::class.java).apply {
+                putExtra(Intent.ACTION_SENDTO, CONNECT_OPEN_PROFILE_TYPE)
+                putExtra(FCM_EMAIL, email)
+            }
+            channel(CONNECT_UPDATES_NAME, CONNECT_UPDATES_NAME_DESC)
+            setIntent(intent)
+            setSmallImage(image)
             generate()
         }
     }

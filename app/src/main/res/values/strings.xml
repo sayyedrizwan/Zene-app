@@ -381,6 +381,7 @@
     <string name="shared_their_current_location_tap_to_view">%s shared their current location. Tap for one time view</string>
     <string name="sent_you_a_friend_request">%s sent you a friend request.</string>
     <string name="tap_to_view_their_friend_request">Tap to view their friend request.</string>
+    <string name="_updated_playlist">%s updated playlist!</string>
     <string name="is_now_your_friend">%s is now your friend! 🎉</string>
     <string name="send_you_a_message">%s send you a message!</string>
     <string name="new_message">New Message</string>

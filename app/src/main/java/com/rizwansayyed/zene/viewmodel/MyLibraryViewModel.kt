@@ -154,7 +154,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             playlistInfo = ResponseResult.Loading
         }.collectLatest {
             val email = userInfo.firstOrNull()?.email
-            isPlaylistOfSameUser = email == it.extra
+            isPlaylistOfSameUser = it.extra?.contains(email ?: "") ?: false
             playlistInfo = ResponseResult.Success(it)
         }
     }

@@ -287,6 +287,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
 
 
     fun createPlaylistName(email: String?, name: String) = viewModelScope.launch(Dispatchers.IO) {
+        createPlaylist = ResponseResult.Empty
         email ?: return@launch
         zeneAPI.connectCreatePlaylists(email, name).onStart {
             createPlaylist = ResponseResult.Loading

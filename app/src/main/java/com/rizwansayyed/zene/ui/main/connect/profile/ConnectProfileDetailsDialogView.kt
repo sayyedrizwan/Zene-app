@@ -136,6 +136,11 @@ fun DialogConnectUserAddPlaylist(email: String?, close: () -> Unit) {
                     }
                 }
             }
+
+
+            LaunchedEffect(Unit) {
+                viewModel.createPlaylistName(null, "")
+            }
         }
     }
 }

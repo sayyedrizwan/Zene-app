@@ -60,6 +60,7 @@ import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCards
 import com.rizwansayyed.zene.ui.main.home.view.TextSimpleCardsImg
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
@@ -205,7 +206,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                 }
             } else if (showPosts == ConnectUserWall.PLAYLISTS && data.isConnected() == FRIENDS) {
                 item {
-                    if (viewModel.isLoadingConnectPlaylist) CircularLoadingViewSmall()
+                    if (viewModel.isLoadingConnectPlaylist) CircularLoadingView()
 
                     if (viewModel.connectPlaylistsLists.isEmpty() && !viewModel.isLoadingConnectPlaylist)
                         TextViewBold(stringResource(R.string.no_playlists), 19, center = true)
