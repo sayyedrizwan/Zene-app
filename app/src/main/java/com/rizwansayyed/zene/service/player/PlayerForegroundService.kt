@@ -449,4 +449,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             songsLists = l.toTypedArray()
         }
     }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        pause()
+    }
 }
