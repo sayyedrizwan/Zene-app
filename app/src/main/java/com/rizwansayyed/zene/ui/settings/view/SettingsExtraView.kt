@@ -70,6 +70,10 @@ fun SettingsExtraView() {
 
     }
 
+    SettingsExtraView(R.string.import_playlists, R.drawable.ic_playlist) {
+
+    }
+
     SettingsExtraView(R.string.equalizer, R.drawable.ic_setting_equlizer) {
         val audioManager = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val sessionId = audioManager.generateAudioSessionId()

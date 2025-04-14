@@ -373,6 +373,7 @@
     <string name="storage">Storage</string>
     <string name="earphone_tracker_finder">Earphone tracker &amp; finder</string>
     <string name="equalizer">Equalizer</string>
+    <string name="import_playlists">Import Playlists</string>
     <string name="are_you_sure_want_to_log_out">Are you sure want to Log Out?</string>
     <string name="have_suggestions_or_issues">Have suggestions or facing any issues?</string>
     <string name="have_suggestions_or_issues_desc">We’d love to hear from you! Your feedback helps us improve and shape the app better for you. Feel free to share any ideas, feature requests, or problems you’re experiencing.\n\n We’re always open and listening! 😊</string>
