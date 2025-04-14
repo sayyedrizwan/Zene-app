@@ -29,6 +29,12 @@ android {
         val properties = Properties()
         properties.load(keystoreFile.inputStream())
 
+        val socketBaseURL = properties.getProperty("SOCKET_ZENE_BASE_URL") ?: ""
+        buildConfigField("String", "SOCKET_ZENE_BASE_URL", socketBaseURL)
+
+        val apiZeneBaseURL = properties.getProperty("API_ZENE_MUSIC_BASE_URL") ?: ""
+        buildConfigField("String", "API_ZENE_MUSIC_BASE_URL", apiZeneBaseURL)
+
         val appEncodeKey = properties.getProperty("APP_ENCODE_KEY") ?: ""
         buildConfigField("String", "APP_ENCODE_KEY", appEncodeKey)
 

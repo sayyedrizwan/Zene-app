@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.MainUtils.moshi
@@ -16,6 +17,7 @@ import com.rizwansayyed.zene.utils.SaveParams.USER_LEAVED_SOCKET
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_BASE_URL_SOCKET
 import io.socket.client.IO
 import io.socket.client.Socket
+import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -42,6 +44,7 @@ class ConnectSocketChatViewModel : ViewModel() {
         newIncomingMessage = null
     }
 
+
     fun connect(senderEmail: String) = viewModelScope.launch(Dispatchers.IO) {
         myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@launch
         authToken = DataStorageManager.userInfo.firstOrNull()?.authToken ?: return@launch
@@ -53,6 +56,8 @@ class ConnectSocketChatViewModel : ViewModel() {
         try {
             val options = IO.Options.builder()
                 .setReconnection(true)
+                .setPath(BuildConfig.SOCKET_ZENE_BASE_URL)
+                .setTransports(listOf(WebSocket.NAME).toTypedArray())
                 .setReconnectionDelay(15.seconds.inWholeMilliseconds)
                 .build()
 
@@ -60,7 +65,6 @@ class ConnectSocketChatViewModel : ViewModel() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
 
         mSocket?.on(Socket.EVENT_CONNECT) {
             val data = JSONObject()

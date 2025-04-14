@@ -1,11 +1,13 @@
 package com.rizwansayyed.zene.ui.partycall
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
@@ -14,10 +16,12 @@ import com.rizwansayyed.zene.service.notification.NotificationUtils
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_BASE_URL_SOCKET
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import io.socket.client.IO
 import io.socket.client.Socket
+import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -45,8 +49,12 @@ class PartySongSocketModel : ViewModel() {
         myProfilePhoto = DataStorageManager.userInfo.firstOrNull()?.photo ?: return@launch
 
         try {
-            val options = IO.Options.builder().setReconnection(true)
-                .setReconnectionDelay(15.seconds.inWholeMilliseconds).build()
+            val options = IO.Options.builder()
+                .setReconnection(true)
+                .setPath(BuildConfig.SOCKET_ZENE_BASE_URL)
+                .setTransports(listOf(WebSocket.NAME).toTypedArray())
+                .setReconnectionDelay(15.seconds.inWholeMilliseconds)
+                .build()
 
             mSocket = IO.socket(ZENE_BASE_URL_SOCKET, options)
         } catch (e: Exception) {
