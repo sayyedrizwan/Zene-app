@@ -54,11 +54,56 @@ fun CircularLoadingViewSmall() {
 fun HorizontalShimmerLoadingCard() {
     LazyRow(Modifier.fillMaxSize()) {
         items(9) {
-            ShimmerEffect(
-                modifier = Modifier
+            Column(
+                Modifier
                     .padding(horizontal = 9.dp)
-                    .size(170.dp), durationMillis = 1000
-            )
+                    .width(175.dp)
+            ) {
+                Box(Modifier.fillMaxWidth()) {
+                    ShimmerEffect(Modifier.size(170.dp), durationMillis = 1000)
+                }
+                Spacer(Modifier.height(12.dp))
+                ShimmerEffect(
+                    Modifier
+                        .padding(horizontal = 3.dp)
+                        .size(120.dp, 5.dp), durationMillis = 1000
+                )
+                Spacer(Modifier.height(6.dp))
+                ShimmerEffect(
+                    Modifier
+                        .padding(horizontal = 3.dp)
+                        .size(80.dp, 5.dp), durationMillis = 1000
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun HorizontalShimmerVideoLoadingCard() {
+    LazyRow(Modifier.fillMaxSize()) {
+        items(9) {
+            Column(
+                Modifier
+                    .padding(horizontal = 9.dp)
+                    .width(245.dp)
+            ) {
+                Box(Modifier.fillMaxWidth()) {
+                    ShimmerEffect(Modifier.size(240.dp, 150.dp), durationMillis = 1000)
+                }
+                Spacer(Modifier.height(12.dp))
+                ShimmerEffect(
+                    Modifier
+                        .padding(horizontal = 3.dp)
+                        .size(200.dp, 5.dp), durationMillis = 1000
+                )
+                Spacer(Modifier.height(6.dp))
+                ShimmerEffect(
+                    Modifier
+                        .padding(horizontal = 3.dp)
+                        .size(100.dp, 5.dp), durationMillis = 1000
+                )
+            }
         }
     }
 }

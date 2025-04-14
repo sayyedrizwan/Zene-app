@@ -21,6 +21,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.FullVideoCardView
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerVideoLoadingCard
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.VideoCardView
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -31,9 +33,51 @@ fun HomeVideoView(homeViewModel: HomeViewModel) {
         when (val v = homeViewModel.homeVideos) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item {
-                Spacer(Modifier.height(50.dp))
-                CircularLoadingView()
+            ResponseResult.Loading -> {
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.recommended_videos), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerVideoLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.trending_music_videos), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerVideoLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.trending_films_videos), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerVideoLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.trending_gaming_videos), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerVideoLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.videos_for_you), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerVideoLoadingCard()
+                }
             }
 
             is ResponseResult.Success -> {

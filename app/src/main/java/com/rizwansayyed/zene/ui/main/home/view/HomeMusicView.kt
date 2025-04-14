@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -27,9 +27,49 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
         when (val v = homeViewModel.homeRecent) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item {
-                Spacer(Modifier.height(50.dp))
-                CircularLoadingView()
+            ResponseResult.Loading -> {
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    HorizontalShimmerLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.your_mixes), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.recommended_playlists), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.albums_for_your_vibe), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+                }
+
+                item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.songs_for_you), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+                }
             }
 
             is ResponseResult.Success -> {

@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.ItemSmallCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -37,15 +37,32 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
         when (val v = homeViewModel.homeRadio) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item {
-                Spacer(Modifier.height(50.dp))
-                CircularLoadingView()
+            ResponseResult.Loading -> {
+                item { Spacer(Modifier.height(20.dp)) }
+
+                item {
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.top_recent), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+
+                    Spacer(Modifier.height(30.dp))
+                }
+
+                item {
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.recommended_radios_for_you), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+
+                    Spacer(Modifier.height(30.dp))
+                }
             }
 
             is ResponseResult.Success -> {
-                item {
-                    Spacer(Modifier.height(20.dp))
-                }
+                item { Spacer(Modifier.height(20.dp)) }
 
                 if (v.data.recent?.isNotEmpty() == true) item {
                     Box(Modifier.padding(horizontal = 6.dp)) {

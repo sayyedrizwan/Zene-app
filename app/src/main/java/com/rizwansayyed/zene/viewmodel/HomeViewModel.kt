@@ -183,6 +183,7 @@ class HomeViewModel @Inject constructor(
 
     fun homePodcastData() = viewModelScope.launch(Dispatchers.IO) {
         val data: PodcastDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_PODCAST_API)
+
         if ((data?.latest?.size ?: 0) > 0) {
             homePodcast = ResponseResult.Success(data!!)
             return@launch

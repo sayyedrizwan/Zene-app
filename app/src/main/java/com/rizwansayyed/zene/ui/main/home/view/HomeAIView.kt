@@ -19,6 +19,7 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -36,9 +37,30 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
         when (val v = homeViewModel.aiMusicList) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item {
-                Spacer(Modifier.height(50.dp))
-                CircularLoadingView()
+            ResponseResult.Loading -> {
+                item { Spacer(Modifier.height(30.dp)) }
+
+                item {
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.trending_ai_musics), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+
+                    Spacer(Modifier.height(30.dp))
+                }
+
+                item {
+                    Spacer(Modifier.height(50.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.new_ai_musics), 23)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalShimmerLoadingCard()
+
+                    Spacer(Modifier.height(30.dp))
+                }
+
             }
 
             is ResponseResult.Success -> {

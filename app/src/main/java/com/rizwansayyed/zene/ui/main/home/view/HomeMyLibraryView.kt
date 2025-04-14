@@ -188,58 +188,57 @@ fun HomeMyLibraryView() {
                 }
             }
         }
-    }
 
-    LaunchedEffect(state) {
-        when (viewModel.selectedType) {
-            MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
-            MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
-            MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
-        }
-    }
-
-    LaunchedEffect(state) {
-        snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
-            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            val totalItemsCount = layoutInfo.totalItemsCount
-
-            if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
-                isBottomTriggered = true
-                when (viewModel.selectedType) {
-                    MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
-                    MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
-                    MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
-                }
-            } else if (lastVisibleItemIndex < totalItemsCount - 1) {
-                isBottomTriggered = false
+        LaunchedEffect(state) {
+            when (viewModel.selectedType) {
+                MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
+                MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
+                MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
             }
         }
-    }
 
-    if (historyInfo) TextAlertDialog(R.string.history, null, R.string.history_desc) {
-        historyInfo = false
-    }
+        LaunchedEffect(state) {
+            snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
+                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItemsCount = layoutInfo.totalItemsCount
 
-    if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, null) {
-        addNewPlaylists = false
-        if (it) coroutine.launch {
-            viewModel.myPlaylistsList(true)
-            state.animateScrollToItem(0)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.likedItemCount()
-
-        setRefreshPlaylistState(object : RefreshPlaylistListener {
-            override fun refresh() {
-                coroutine.launch {
-                    viewModel.myPlaylistsList(true)
-                    state.animateScrollToItem(0)
+                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                    isBottomTriggered = true
+                    when (viewModel.selectedType) {
+                        MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
+                        MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
+                        MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
+                    }
+                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                    isBottomTriggered = false
                 }
             }
-        })
+        }
 
+        if (historyInfo) TextAlertDialog(R.string.history, null, R.string.history_desc) {
+            historyInfo = false
+        }
+
+        if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, null) {
+            addNewPlaylists = false
+            if (it) coroutine.launch {
+                viewModel.myPlaylistsList(true)
+                state.animateScrollToItem(0)
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            viewModel.likedItemCount()
+
+            setRefreshPlaylistState(object : RefreshPlaylistListener {
+                override fun refresh() {
+                    coroutine.launch {
+                        viewModel.myPlaylistsList(true)
+                        state.animateScrollToItem(0)
+                    }
+                }
+            })
+        }
     }
 }
 

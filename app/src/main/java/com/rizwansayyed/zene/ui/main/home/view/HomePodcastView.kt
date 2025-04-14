@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.ui.view.PodcastViewItems
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
 import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
@@ -44,9 +45,28 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
         when (val v = homeViewModel.homePodcast) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(Modifier.height(50.dp))
-                CircularLoadingView()
+            ResponseResult.Loading -> {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Column(Modifier.fillMaxWidth()) {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.latest_podcasts), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalShimmerLoadingCard()
+                    }
+                }
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Column(Modifier.fillMaxWidth()) {
+                        Spacer(Modifier.height(50.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.podcast_for_you), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalShimmerLoadingCard()
+                    }
+                }
             }
 
             is ResponseResult.Success -> {
@@ -125,7 +145,8 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                         it?.thumbnail,
                         it?.name,
                         Modifier
-                            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(it) },
+                            .combinedClickable(
+                                onLongClick = { NavigationUtils.triggerInfoSheet(it) },
                                 onClick = { startMedia(it) })
                             .fillMaxWidth()
                     )
