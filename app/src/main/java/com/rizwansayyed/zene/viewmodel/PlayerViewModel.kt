@@ -274,7 +274,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             val artists = Html.fromHtml(it.description, Html.FROM_HTML_MODE_LEGACY).toString()
             val t = it.image?.url ?: it.series?.imageURL
             val data =
-                ZeneMusicData(artists, id, it.title, it.lookup, t, "PODCAST_AUDIO")
+                ZeneMusicData(artists, id, it.title, it.lookup, t, MusicDataTypes.PODCAST_AUDIO.name)
             startMedia(data)
         }
     }

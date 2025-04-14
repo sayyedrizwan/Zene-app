@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.utils.share
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.util.Base64
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_LOCATION_SHARING_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_PLAYLIST_TYPE
@@ -163,7 +164,9 @@ class IntentCheckUtils(
                 val id = data.toString().substringAfterLast(ZENE_PODCAST).replace("_", "/")
                 viewModel.podcastInfoPlay(id)
             } else if (data.toString().contains("$ZENE_URL$ZENE_NEWS")) {
-
+                val id = data.toString().substringAfterLast(ZENE_NEWS)
+                val url = String(Base64.decode(id, Base64.NO_WRAP), Charsets.UTF_8)
+                MediaContentUtils.openCustomBrowser(url)
             } else if (data.toString().contains("$ZENE_URL$ZENE_M")) {
                 val id = data.toString().substringAfterLast(ZENE_M)
                 triggerHomeNav("$NAV_MOVIES_PAGE${id}")

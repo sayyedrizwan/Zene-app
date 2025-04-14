@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Build
+import android.util.Base64
 import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.FileProvider
@@ -219,7 +220,10 @@ object ShareContentUtils {
             PODCAST -> "$ZENE_URL$ZENE_PODCAST_SERIES${id}"
             PODCAST_AUDIO -> "$ZENE_URL$ZENE_PODCAST${data.id?.replace("/", "_")}"
             PODCAST_CATEGORIES -> ZENE_URL
-            NEWS -> "$ZENE_URL$ZENE_NEWS${data.id}"
+            NEWS -> "$ZENE_URL$ZENE_NEWS" +
+                    Base64.encodeToString(data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
+                        .replace("=", "")
+
             MOVIES_SHOW -> "$ZENE_URL$ZENE_M${data.id}"
             AI_MUSIC -> "$ZENE_URL$ZENE_AI_MUSIC${data.id}"
             TEXT -> ZENE_URL
