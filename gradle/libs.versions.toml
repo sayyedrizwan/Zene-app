@@ -5,10 +5,8 @@ compilesdk = "35"
 minsdk = "24"
 
 
-appversion = "164"
-securityCrypto = "1.1.0-alpha06"
-socketIoClient = "2.1.1"
-versionname = "3.02.819"
+appversion = "166"
+versionname = "3.02.824"
 
 
 agp = "8.9.1"
@@ -54,6 +52,9 @@ hashids = "1.0.3"
 browser = "1.8.0"
 customQrGenerator = "2.0.0-alpha01"
 glanceAppwidget = "1.1.1"
+
+securityCrypto = "1.1.0-alpha06"
+socketIoClient = "2.1.1"
 
 
 [libraries]
