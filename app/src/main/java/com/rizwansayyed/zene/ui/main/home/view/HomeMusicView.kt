@@ -10,20 +10,35 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.ui.main.home.HomeTopHeaderView
+import com.rizwansayyed.zene.ui.main.home.topHeaderAlert
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeMusicView(homeViewModel: HomeViewModel) {
+    var headerText by remember { mutableStateOf("") }
+    val coroutine = rememberCoroutineScope()
+
     LazyColumn(Modifier.fillMaxSize()) {
+        item { HomeTopHeaderView(headerText) }
+
         when (val v = homeViewModel.homeRecent) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
@@ -169,5 +184,12 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
         item { Spacer(Modifier.height(60.dp)) }
         item { HomeLoveTextView() }
         item { Spacer(Modifier.height(300.dp)) }
+    }
+
+
+    LaunchedEffect(Unit) {
+        coroutine.launch(Dispatchers.IO) {
+            headerText = topHeaderAlert()
+        }
     }
 }
