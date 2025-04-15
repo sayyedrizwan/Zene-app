@@ -210,6 +210,7 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="show_all">Show All</string>
     <string name="error_while_authentication">Error while authentication. Try again later.</string>
     <string name="downloaded">Downloaded</string>
     <string name="break_the_ice_start_conversation">Be the first to break the ice! ❄️ Start the conversation… 😊</string>
@@ -399,7 +400,7 @@
     <string name="calling_">Calling…</string>
     <string name="open_tune_my_music">Open TuneMyMusic</string>
     <string name="select_csv">Select Downloaded CSV</string>
-    <string name="how_to_import_music_via_tune_my_music">🎵 How to Import Your Music via TuneMyMusic</string>
+    <string name="how_to_import_music_via_tune_my_music">🎵 How to Import Your Music from Spotify, Apple Music, Youtube Music, Amazon Music, etc.</string>
     <string name="tune_my_music_transfer_1">Go to TuneMyMusic.com/transfer, open it in your browser.</string>
     <string name="tune_my_music_transfer_2">Select the music service you want to transfer songs from.</string>
     <string name="tune_my_music_transfer_3">Pick the playlists you’d like to import, then click \'Choose Destination\' to continue.</string>
