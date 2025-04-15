@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,8 +22,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
+import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.viewmodel.ImportPlaylistViewModel
@@ -29,6 +33,10 @@ fun ImportPlaylistDialogView(viewModel: ImportPlaylistViewModel) {
     Dialog({
         viewModel.setDialogTitleAndSong(null, emptyList())
     }, DialogProperties(usePlatformDefaultWidth = false)) {
+
+        var showLikedDialog by remember { mutableStateOf(false) }
+        var showNewPlaylistDialog by remember { mutableStateOf(false) }
+
         Column(
             Modifier
                 .padding(horizontal = 5.dp)
@@ -45,18 +53,34 @@ fun ImportPlaylistDialogView(viewModel: ImportPlaylistViewModel) {
             Spacer(Modifier.height(20.dp))
 
             MiniWithImageAndBorder(R.drawable.ic_thumbs_up, R.string.import_to_liked_songs) {
-
+                showLikedDialog = true
             }
             Spacer(Modifier.height(20.dp))
             MiniWithImageAndBorder(R.drawable.ic_playlist, R.string.import_to_current_playlist) {
 
             }
             Spacer(Modifier.height(20.dp))
-            MiniWithImageAndBorder(R.drawable.ic_thumbs_up, R.string.import_to_liked_songs) {
-
+            MiniWithImageAndBorder(R.drawable.ic_layer_add, R.string.import_as_new_playlist) {
+                showNewPlaylistDialog = true
             }
 
             Spacer(Modifier.height(20.dp))
+
+            if (showLikedDialog) TextAlertDialog(
+                R.string.are_you_sure, R.string.are_you_sure_import_to_liked_songs,
+                {
+                    showLikedDialog = false
+                }, {
+                    showLikedDialog = false
+                })
+
+            if (showNewPlaylistDialog) TextAlertDialog(
+                R.string.are_you_sure, R.string.are_you_sure_import_to_new_playlist,
+                {
+                    showNewPlaylistDialog = false
+                }, {
+                    showNewPlaylistDialog = false
+                })
         }
     }
 }

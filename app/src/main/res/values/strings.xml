@@ -412,6 +412,10 @@
     <string name="no_song_found_in_playlist">Not songs found in playlist.</string>
     <string name="import_to_liked_songs">Import to Liked Songs</string>
     <string name="import_to_current_playlist">Import to Current Playlist</string>
+    <string name="import_as_new_playlist">Import as New Playlist</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="are_you_sure_import_to_liked_songs">Are you sure you want to add all songs of this playlist to your liked songs?</string>
+    <string name="are_you_sure_import_to_new_playlist">Are you sure you want to create a new playlist with same name and import all songs?</string>
 
 
     <!--    notification channels-->

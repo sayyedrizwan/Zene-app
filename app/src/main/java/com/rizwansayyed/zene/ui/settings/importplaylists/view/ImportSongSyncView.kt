@@ -109,7 +109,7 @@ fun ImportSongSyncView(viewModel: ImportPlaylistViewModel) {
 
 @Composable
 fun ImportSongItem(tracks: List<TrackItemCSV>, click: () -> Unit) {
-    if (tracks.size > 5) {
+    if (tracks.size > 6) {
         val track = tracks[6]
         Box(Modifier.fillMaxWidth(), Alignment.Center) {
             Column(

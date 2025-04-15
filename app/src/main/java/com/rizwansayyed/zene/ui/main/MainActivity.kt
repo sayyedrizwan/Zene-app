@@ -66,6 +66,7 @@ import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
 import com.rizwansayyed.zene.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.ui.settings.SettingsView
+import com.rizwansayyed.zene.ui.settings.importplaylists.ImportPlaylistsActivity
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ArtistsView
@@ -239,6 +240,11 @@ class MainActivity : FragmentActivity() {
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
         subscribeToTopicAll()
+
+        Intent(this, ImportPlaylistsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(this)
+        }
     }
 
 }
