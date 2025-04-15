@@ -64,7 +64,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MyPlaylistView(id: String) {
-    val myLibraryViewModel: MyLibraryViewModel = hiltViewModel()
+    val myLibraryViewModel: MyLibraryViewModel = hiltViewModel(key = id)
     val playerInfo by musicPlayerDB.collectAsState(null)
 
     val state = rememberLazyListState()
