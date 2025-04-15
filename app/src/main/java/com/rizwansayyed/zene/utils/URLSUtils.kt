@@ -39,6 +39,9 @@ object URLSUtils {
     }
 
 
+    const val TUNE_MY_MUSIC_TRANSFER = "https://www.tunemymusic.com/transfer"
+
+
     const val YT_VIDEO_BASE_URL = "https://www.youtube.com/"
     const val LIKED_SONGS_ON_ZENE = "_liked_songs_on_zene"
 

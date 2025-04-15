@@ -196,6 +196,8 @@ dependencies {
     implementation(libs.glance.appwidget)
 
     implementation(libs.socket.io.client)
+    
+    implementation("com.opencsv:opencsv:5.10")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }

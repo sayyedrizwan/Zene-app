@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsShareSheetView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsStorageSheetView
+import com.rizwansayyed.zene.ui.settings.importplaylists.ImportPlaylistsActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -71,7 +72,10 @@ fun SettingsExtraView() {
     }
 
     SettingsExtraView(R.string.import_playlists, R.drawable.ic_playlist) {
-
+        Intent(context, ImportPlaylistsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context?.startActivity(this)
+        }
     }
 
     SettingsExtraView(R.string.equalizer, R.drawable.ic_setting_equlizer) {

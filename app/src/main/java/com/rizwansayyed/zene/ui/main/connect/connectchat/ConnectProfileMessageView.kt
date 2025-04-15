@@ -256,11 +256,12 @@ private fun isFileSizeValid(file: File): Boolean {
     return sizeInMb <= 20
 }
 
-private fun getFileFromUri(uri: Uri): File? {
+fun getFileFromUri(uri: Uri): File? {
     return try {
         val fileName = getFileName(uri) ?: "temp_file"
         val inputStream = context.contentResolver.openInputStream(uri) ?: return null
         val file = File(context.cacheDir, fileName)
+        file.deleteRecursively()
         file.outputStream().use { outputStream ->
             inputStream.copyTo(outputStream)
         }

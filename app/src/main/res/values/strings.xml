@@ -397,7 +397,17 @@
     <string name="start_a_live_party">Start a live party</string>
     <string name="start_a_live_party_desc">Sync up with your friends in real-time, take turns playing songs, and vibe together—no matter where you are. Start a music party and let the beats connect you!</string>
     <string name="calling_">Calling…</string>
-
+    <string name="open_tune_my_music">Open TuneMyMusic</string>
+    <string name="select_csv">Select Downloaded CSV</string>
+    <string name="how_to_import_music_via_tune_my_music">🎵 How to Import Your Music via TuneMyMusic</string>
+    <string name="tune_my_music_transfer_1">Go to TuneMyMusic.com/transfer, open it in your browser.</string>
+    <string name="tune_my_music_transfer_2">Select the music service you want to transfer songs from.</string>
+    <string name="tune_my_music_transfer_3">Pick the playlists you’d like to import, then click \'Choose Destination\' to continue.</string>
+    <string name="tune_my_music_transfer_4">Once you\'re on the \'Select Destination\' page, scroll down and tap \'Export to File\' at the bottom and download.</string>
+    <string name="tune_my_music_transfer_5">After clicking \'Export to File\', choose CSV as the export format, then click \'Export\'. The CSV file will be downloaded automatically.</string>
+    <string name="tune_my_music_transfer_6">Once the CSV is downloaded, tap the \'Select Downloaded CSV\' button in the app and choose the select the downloaded file.</string>
+    <string name="not_a_valid_csv_file">Not a valid CSV file. Please try again.</string>
+    <string name="no_song_found_in_playlist">Not songs found in playlist.</string>
 
 
     <!--    notification channels-->

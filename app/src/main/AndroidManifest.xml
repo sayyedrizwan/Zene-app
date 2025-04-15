@@ -124,12 +124,11 @@
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:supportsPictureInPicture="true">
-            <intent-filter>
-                <action android:name="FRIEND_REQUEST_ACTIVITY" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:supportsPictureInPicture="true" />
+
+        <activity
+            android:name=".ui.settings.importplaylists.ImportPlaylistsActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
 
         <activity
             android:name=".ui.partycall.PartyCallActivity"
