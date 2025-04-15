@@ -15,11 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.settings.importplaylists.model.TrackItemCSV
-import com.rizwansayyed.zene.ui.settings.importplaylists.model.parseCsvFileAndGroup
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -35,18 +29,19 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import java.io.File
+import com.rizwansayyed.zene.viewmodel.ImportPlaylistViewModel
 
 @Composable
-fun ImportSongSyncView(selectFiled: File, error: () -> Unit) {
-    var list by remember { mutableStateOf<Map<String, List<TrackItemCSV>>>(emptyMap()) }
-    val isShowingFull = remember { mutableStateMapOf<String, Boolean>() }
+fun ImportSongSyncView(viewModel: ImportPlaylistViewModel) {
     val noValidFile = stringResource(R.string.not_a_valid_csv_file)
 
     LazyColumn(Modifier.fillMaxSize()) {
         item { Spacer(Modifier.height(80.dp)) }
 
-        list.entries.forEach { (title, tracks) ->
+        if (viewModel.songList.isEmpty()) item {
+            TextViewBold(stringResource(R.string.no_song_found_in_playlist), 16)
+        }
+        else viewModel.songList.entries.forEach { (title, tracks) ->
             item {
                 Row(
                     Modifier
@@ -67,14 +62,20 @@ fun ImportSongSyncView(selectFiled: File, error: () -> Unit) {
 
                     Column(
                         Modifier
-                            .clickable { }
+                            .clickable { viewModel.setDialogTitleAndSong(title, tracks) }
                             .padding(horizontal = 5.dp)) {
                         ImageIcon(R.drawable.ic_layer_add, 24)
                     }
                 }
             }
 
-            items(if (isShowingFull.getOrDefault(title, false)) tracks else tracks.take(5)) {
+            items(
+                if (viewModel.isShowingFullSongs.getOrDefault(
+                        title,
+                        false
+                    )
+                ) tracks else tracks.take(5)
+            ) {
                 Column(
                     Modifier
                         .padding(horizontal = 6.dp)
@@ -91,9 +92,9 @@ fun ImportSongSyncView(selectFiled: File, error: () -> Unit) {
                 }
             }
 
-            if (!isShowingFull.getOrDefault(title, false)) item {
+            if (!viewModel.isShowingFullSongs.getOrDefault(title, false)) item {
                 ImportSongItem(tracks) {
-                    isShowingFull[title] = true
+                    viewModel.isShowingFullSong(title)
                 }
             }
 
@@ -103,13 +104,8 @@ fun ImportSongSyncView(selectFiled: File, error: () -> Unit) {
         item { Spacer(Modifier.height(80.dp)) }
     }
 
-    LaunchedEffect(Unit) {
-        val v = parseCsvFileAndGroup(selectFiled)
-        if (v != null) list = v
-        else {
-            noValidFile.toast()
-            error()
-        }
+    LaunchedEffect(viewModel.selectedFile) {
+        if (viewModel.selectedFile == null) noValidFile.toast()
     }
 }
 

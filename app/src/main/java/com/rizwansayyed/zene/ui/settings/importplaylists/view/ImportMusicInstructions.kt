@@ -28,17 +28,18 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.URLSUtils.TUNE_MY_MUSIC_TRANSFER
+import com.rizwansayyed.zene.viewmodel.ImportPlaylistViewModel
 import java.io.File
 
 
 @Composable
-fun ImportMusicInstructions(selectedFile: (File) -> Unit) {
+fun ImportMusicInstructions(viewModel: ImportPlaylistViewModel) {
     val context = LocalContext.current.applicationContext
     val pickCsvLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
             it?.let {
                 val file = getFileFromUri(it)
-                file?.let { it1 -> selectedFile(it1) }
+                file?.let { f -> viewModel.setFile(f) }
             }
         }
 
