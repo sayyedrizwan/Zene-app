@@ -19,7 +19,7 @@ class ImportPlaylistViewModel : ViewModel() {
     var selectedFile by mutableStateOf<File?>(null)
     var songList by mutableStateOf<Map<String, List<TrackItemCSV>>>(emptyMap())
     var isShowingFullSongs = mutableStateMapOf<String, Boolean>()
-    var selectDialogTitle by mutableStateOf("")
+    var selectDialogTitle by mutableStateOf<String?>(null)
     var selectDialogSong = mutableStateListOf<TrackItemCSV>()
 
     fun setFile(v: File?) {
@@ -31,10 +31,10 @@ class ImportPlaylistViewModel : ViewModel() {
         isShowingFullSongs[title] = true
     }
 
-    fun setDialogTitleAndSong(title: String, list: List<TrackItemCSV>) {
+    fun setDialogTitleAndSong(title: String?, list: List<TrackItemCSV>) {
         selectDialogTitle = title
-        selectDialogTitle = title
-        isShowingFullSongs[title] = true
+        selectDialogSong.clear()
+        selectDialogSong.addAll(list)
     }
 
 

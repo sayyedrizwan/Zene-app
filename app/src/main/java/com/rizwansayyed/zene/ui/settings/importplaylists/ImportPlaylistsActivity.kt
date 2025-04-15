@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.FragmentActivity
 import com.rizwansayyed.zene.ui.settings.importplaylists.view.ImportMusicInstructions
+import com.rizwansayyed.zene.ui.settings.importplaylists.view.ImportPlaylistDialogView
 import com.rizwansayyed.zene.ui.settings.importplaylists.view.ImportSongSyncView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.viewmodel.ImportPlaylistViewModel
@@ -35,6 +36,9 @@ class ImportPlaylistsActivity : FragmentActivity() {
                     if (viewModel.selectedFile == null) ImportMusicInstructions(viewModel)
                     else ImportSongSyncView(viewModel)
                 }
+
+
+                if (viewModel.selectDialogTitle != null) ImportPlaylistDialogView(viewModel)
             }
         }
     }

@@ -60,10 +60,9 @@ fun ImportSongSyncView(viewModel: ImportPlaylistViewModel) {
                         Spacer(Modifier.height(15.dp))
                     }
 
-                    Column(
-                        Modifier
-                            .clickable { viewModel.setDialogTitleAndSong(title, tracks) }
-                            .padding(horizontal = 5.dp)) {
+                    Column(Modifier
+                        .clickable { viewModel.setDialogTitleAndSong(title, tracks) }
+                        .padding(horizontal = 5.dp)) {
                         ImageIcon(R.drawable.ic_layer_add, 24)
                     }
                 }
@@ -71,8 +70,7 @@ fun ImportSongSyncView(viewModel: ImportPlaylistViewModel) {
 
             items(
                 if (viewModel.isShowingFullSongs.getOrDefault(
-                        title,
-                        false
+                        title, false
                     )
                 ) tracks else tracks.take(5)
             ) {

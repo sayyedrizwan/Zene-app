@@ -375,6 +375,7 @@
     <string name="earphone_tracker_finder">Earphone tracker &amp; finder</string>
     <string name="equalizer">Equalizer</string>
     <string name="import_playlists">Import Playlists</string>
+    <string name="import_playlists_desc">You can import songs to your current playlist, copy this same playlist, or simply add them as liked songs — it\'s totally up to you.</string>
     <string name="are_you_sure_want_to_log_out">Are you sure want to Log Out?</string>
     <string name="have_suggestions_or_issues">Have suggestions or facing any issues?</string>
     <string name="have_suggestions_or_issues_desc">We’d love to hear from you! Your feedback helps us improve and shape the app better for you. Feel free to share any ideas, feature requests, or problems you’re experiencing.\n\n We’re always open and listening! 😊</string>
@@ -409,6 +410,8 @@
     <string name="tune_my_music_transfer_6">Once the CSV is downloaded, tap the \'Select Downloaded CSV\' button in the app and choose the select the downloaded file.</string>
     <string name="not_a_valid_csv_file">Not a valid CSV file. Please try again.</string>
     <string name="no_song_found_in_playlist">Not songs found in playlist.</string>
+    <string name="import_to_liked_songs">Import to Liked Songs</string>
+    <string name="import_to_current_playlist">Import to Current Playlist</string>
 
 
     <!--    notification channels-->
