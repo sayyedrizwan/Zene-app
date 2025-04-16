@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.view.playlist
 
 import android.os.Build
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,14 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,46 +26,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
-import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
-import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
-import com.rizwansayyed.zene.ui.view.TextViewBoldBig
-import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PLAYLIST_ALBUMS
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
-import com.rizwansayyed.zene.utils.share.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -83,6 +63,7 @@ enum class PlaylistsType(val type: String) {
     PODCAST("PODCAST"), PLAYLIST_ALBUMS("YT_PLAYLISTS")
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PlaylistView(id: String, type: PlaylistsType) {
     val homeViewModel: HomeViewModel = hiltViewModel()
@@ -101,7 +82,33 @@ fun PlaylistView(id: String, type: PlaylistsType) {
             when (val v = homeViewModel.playlistsData) {
                 ResponseResult.Empty -> {}
                 is ResponseResult.Error -> {}
-                ResponseResult.Loading -> item { CircularLoadingView() }
+                ResponseResult.Loading -> {
+                    item {
+                        val width = (LocalConfiguration.current.screenWidthDp / 1.5).dp
+
+                        ShimmerEffect(
+                            Modifier
+                                .size(width)
+                                .clip(RoundedCornerShape(14.dp))
+                        )
+                    }
+
+                    item {
+                        Spacer(Modifier.height(12.dp))
+                        ShimmerEffect(
+                            Modifier
+                                .padding(horizontal = 3.dp)
+                                .size(120.dp, 5.dp), durationMillis = 1000
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        ShimmerEffect(
+                            Modifier
+                                .padding(horizontal = 3.dp)
+                                .size(80.dp, 5.dp), durationMillis = 1000
+                        )
+                    }
+                }
+
                 is ResponseResult.Success -> {
                     item { v.data.info?.let { PlaylistTopView(it, type) } }
 
@@ -201,26 +208,29 @@ fun PlaylistsButtonView(
     Row(
         Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically
     ) {
-        if (viewModel.isPlaylistAdded) Box(Modifier
-            .padding(horizontal = 7.dp)
-            .clickable {
-                SnackBarManager.showMessage(removedLibrary)
-                viewModel.addToPlaylists(false, data, type)
-            }) {
+        if (viewModel.isPlaylistAdded) Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .clickable {
+                    SnackBarManager.showMessage(removedLibrary)
+                    viewModel.addToPlaylists(false, data, type)
+                }) {
             ImageIcon(R.drawable.ic_tick, 24)
         }
-        else Box(Modifier
-            .padding(horizontal = 7.dp)
-            .clickable {
-                SnackBarManager.showMessage(addedToLibrary)
-                viewModel.addToPlaylists(true, data, type)
-            }) {
+        else Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .clickable {
+                    SnackBarManager.showMessage(addedToLibrary)
+                    viewModel.addToPlaylists(true, data, type)
+                }) {
             ImageIcon(R.drawable.ic_layer_add, 24)
         }
 
-        Box(Modifier
-            .padding(horizontal = 7.dp)
-            .clickable { showAddToQueue = true }) {
+        Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .clickable { showAddToQueue = true }) {
             ImageIcon(R.drawable.ic_add_to_queue, 24)
         }
 
@@ -231,9 +241,10 @@ fun PlaylistsButtonView(
             ImageIcon(R.drawable.ic_screen_add_to_home, 24)
         }
 
-        Box(Modifier
-            .padding(horizontal = 7.dp)
-            .clickable { showShareView = true }) {
+        Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .clickable { showShareView = true }) {
             ImageIcon(R.drawable.ic_share, 24)
         }
 
@@ -254,7 +265,8 @@ fun PlaylistsButtonView(
         showAddToQueue = false
     }
 
-    if (showAddToHomeScreen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) TextAlertDialog(R.string.add_to_home_screen,
+    if (showAddToHomeScreen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) TextAlertDialog(
+        R.string.add_to_home_screen,
         R.string.add_to_home_screen_desc,
         {
             showAddToHomeScreen = false
