@@ -4,6 +4,10 @@ import android.app.Application
 import androidx.core.content.ContextCompat
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import dagger.hilt.android.HiltAndroidApp
@@ -15,6 +19,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
+
 
 @HiltAndroidApp
 class ZeneBaseApplication : Application() {
@@ -39,6 +44,14 @@ class ZeneBaseApplication : Application() {
                 e.printStackTrace()
             }
             if (isActive) cancel()
+        }
+        MobileAds.initialize(this) { }
+        ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifecycleObserver())
+    }
+
+    class AppLifecycleObserver : DefaultLifecycleObserver {
+        override fun onStart(owner: LifecycleOwner) {
+            super.onStart(owner)
         }
     }
 }

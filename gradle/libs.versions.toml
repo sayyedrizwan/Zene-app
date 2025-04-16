@@ -57,6 +57,10 @@ securityCrypto = "1.1.0-alpha07"
 socketIoClient = "2.1.1"
 
 
+opencsv = "5.10"
+playServicesAds = "24.2.0"
+lifecycleProcess = "2.8.7"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -151,6 +155,11 @@ storage = { group = "androidx.test.services", name = "storage", version.ref = "s
 hashids = { module = "org.hashids:hashids", version.ref = "hashids" }
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpickerCompose" }
+
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
+
+opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

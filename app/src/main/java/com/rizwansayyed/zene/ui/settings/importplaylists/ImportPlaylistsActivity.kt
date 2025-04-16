@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.ui.settings.importplaylists.view.ImportMusicInstruc
 import com.rizwansayyed.zene.ui.settings.importplaylists.view.ImportPlaylistDialogView
 import com.rizwansayyed.zene.ui.settings.importplaylists.view.ImportSongSyncView
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
+import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
 import com.rizwansayyed.zene.viewmodel.ImportPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,6 +42,11 @@ class ImportPlaylistsActivity : FragmentActivity() {
                 if (viewModel.selectDialogTitle != null) ImportPlaylistDialogView(viewModel)
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        OpenAppAdsUtils(this)
     }
 
 }

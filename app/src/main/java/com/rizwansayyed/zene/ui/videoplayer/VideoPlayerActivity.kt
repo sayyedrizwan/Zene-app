@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoPlayerVideoView
 import com.rizwansayyed.zene.ui.view.LockScreenOrientation
+import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -73,5 +74,10 @@ class VideoPlayerActivity : ComponentActivity() {
             viewModel.setVideoThumb(videoID)
             viewModel.loadWebView(true)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        OpenAppAdsUtils(this)
     }
 }

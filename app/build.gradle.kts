@@ -97,7 +97,6 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -105,7 +104,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -115,6 +113,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.core.ktx)
+
+
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.process)
+
+    implementation(libs.play.services.location)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -196,8 +200,10 @@ dependencies {
     implementation(libs.glance.appwidget)
 
     implementation(libs.socket.io.client)
-    
-    implementation("com.opencsv:opencsv:5.10")
+
+    implementation(libs.play.services.ads)
+
+    implementation(libs.opencsv)
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }

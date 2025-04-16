@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.ui.main.home.HomeTopHeaderView
 import com.rizwansayyed.zene.ui.main.home.topHeaderAlert
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
@@ -35,6 +37,7 @@ import kotlinx.coroutines.launch
 fun HomeMusicView(homeViewModel: HomeViewModel) {
     var headerText by remember { mutableStateOf("") }
     val coroutine = rememberCoroutineScope()
+    val isPremium by isPremiumDB.collectAsState(true)
 
     LazyColumn(Modifier.fillMaxSize()) {
         item { HomeTopHeaderView(headerText) }

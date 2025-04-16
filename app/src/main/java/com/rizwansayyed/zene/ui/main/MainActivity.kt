@@ -74,6 +74,7 @@ import com.rizwansayyed.zene.ui.view.playlist.PlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
 import com.rizwansayyed.zene.utils.share.IntentCheckUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -235,6 +236,7 @@ class MainActivity : FragmentActivity() {
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
         subscribeToTopicAll()
+        OpenAppAdsUtils(this)
     }
 
 }

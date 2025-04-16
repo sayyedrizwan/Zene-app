@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_A
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_LOOP_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_PREMIUM_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_SHUFFLE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
@@ -53,6 +54,7 @@ object DataStorageManager {
         val VIDEO_SPEED_DB = stringPreferencesKey("video_speed_db")
         val SONG_SPEED_DB = stringPreferencesKey("song_speed_db")
         val IS_SHUFFLE_DB = booleanPreferencesKey("is_shuffle_db")
+        val IS_PREMIUM_DB = booleanPreferencesKey("is_premium_db")
         val IS_LOOP_DB = booleanPreferencesKey("is_loop_db")
         val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
         val MUSIC_PLAYER_DB = stringPreferencesKey("music_player_db")
@@ -175,6 +177,17 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[IS_LOOP_DB] = value.first()
+            }
+            if (isActive) cancel()
+        }
+
+    var isPremiumDB: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[IS_PREMIUM_DB] ?: false
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[IS_PREMIUM_DB] = value.first()
             }
             if (isActive) cancel()
         }
