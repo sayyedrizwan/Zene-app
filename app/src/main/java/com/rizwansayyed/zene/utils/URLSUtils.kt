@@ -154,6 +154,7 @@ object URLSUtils {
     const val ZENE_USER_UPDATE_PLAYLIST_IMAGE_API = "users-playlists/update-playlist-image"
     const val ZENE_USER_MY_PLAYLISTS_SONGS_API = "users-playlists/my-playlists-songs"
     const val ZENE_USER_PLAYLIST_LIKE_COUNT_API = "users-playlists/like-count"
+    const val ZENE_USER_PLAYLIST_IMPORT_LIKE_API = "users-playlists/import-songs-to-like"
     const val ZENE_USER_PLAYLIST_REMOVE_MEDIA_PLAYLISTS_API =
         "users-playlists/remove-media-playlists"
 

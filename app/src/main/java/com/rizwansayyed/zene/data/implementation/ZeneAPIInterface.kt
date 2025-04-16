@@ -167,4 +167,5 @@ interface ZeneAPIInterface {
     suspend fun songInfo(id: String): Flow<ZeneMusicData>
     suspend fun aiMusicInfo(id: String?): Flow<ZeneMusicData>
     suspend fun myAllPlaylists(): Flow<SavedPlaylistsPodcastsResponse>
+    suspend fun importSongsToLike(name: List<String>, isLike: Boolean, playlistId: String): Flow<StatusTypeResponse>
 }

@@ -329,6 +329,28 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.likeSongsCount(token, body))
     }
 
+    override suspend fun importSongsToLike(
+        name: List<String>,
+        isLike: Boolean,
+        playlistId: String
+    ) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val list = moshi.adapter(Array<String>::class.java).toJson(name.toTypedArray())
+        val json = JSONObject().apply {
+            put("email", email)
+            put("list", list)
+            put("isLiked", isLike)
+            put("playlisID", playlistId)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.importSongsToLike(token, body))
+    }
+
     override suspend fun recentHome() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

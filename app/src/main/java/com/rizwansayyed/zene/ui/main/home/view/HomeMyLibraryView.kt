@@ -117,10 +117,7 @@ fun HomeMyLibraryView() {
 
                 MyLibraryTypes.SAVED -> {
                     items(viewModel.savedList) {
-                        SavedPlaylistsPodcastView(
-                            it,
-                            Modifier.fillMaxWidth()
-                        )
+                        SavedPlaylistsPodcastView(it, Modifier.fillMaxWidth())
                     }
 
                     if (!viewModel.savedIsLoading && viewModel.savedList.isEmpty()) {
@@ -368,7 +365,7 @@ fun LikedPlaylistsView(data: MyLibraryViewModel) {
                 is ResponseResult.Error -> {}
                 ResponseResult.Loading -> CircularLoadingViewSmall()
                 is ResponseResult.Success -> TextViewNormal(
-                    "${v.data.count ?: 0} ${stringResource(R.string.songs)}", 14, line = 1
+                    "${v.data.count ?: 0} ${stringResource(R.string.items)}", 14, line = 1
                 )
             }
         }

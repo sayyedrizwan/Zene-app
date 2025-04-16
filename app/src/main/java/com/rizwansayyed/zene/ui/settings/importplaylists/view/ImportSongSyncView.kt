@@ -60,11 +60,15 @@ fun ImportSongSyncView(viewModel: ImportPlaylistViewModel) {
                         Spacer(Modifier.height(15.dp))
                     }
 
-                    Column(Modifier
-                        .clickable { viewModel.setDialogTitleAndSong(title, tracks) }
-                        .padding(horizontal = 5.dp)) {
-                        ImageIcon(R.drawable.ic_layer_add, 24)
-                    }
+                    if (viewModel.importedSuccessPlaylist.getOrDefault(title, false))
+                        ImageIcon(R.drawable.ic_tick, 24)
+                    else
+                        Column(
+                            Modifier
+                                .clickable { viewModel.setDialogTitleAndSong(title, tracks) }
+                                .padding(horizontal = 5.dp)) {
+                            ImageIcon(R.drawable.ic_layer_add, 24)
+                        }
                 }
             }
 
