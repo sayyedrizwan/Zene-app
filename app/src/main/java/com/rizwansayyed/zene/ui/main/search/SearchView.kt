@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.search
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.VideoCardView
 import com.rizwansayyed.zene.utils.MainUtils.addRemoveSearchHistory
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -54,6 +56,7 @@ import java.util.Locale
 @Composable
 fun SearchView(homeViewModel: HomeViewModel) {
     val inInfo by DataStorageManager.ipDB.collectAsState(null)
+    val activity = LocalActivity.current
     val searchHistory by DataStorageManager.searchHistoryDB.collectAsState(emptyArray())
     var showSearch by remember { mutableStateOf("") }
     val search = remember { mutableStateOf("") }
@@ -169,10 +172,6 @@ fun SearchView(homeViewModel: HomeViewModel) {
                 is ResponseResult.Error -> {}
                 ResponseResult.Loading -> item { CircularLoadingView() }
                 is ResponseResult.Success -> {
-                    item {
-                        LaunchedEffect(Unit) { addRemoveSearchHistory(showSearch) }
-                    }
-
                     if (v.data.songs?.isNotEmpty() == true) item {
                         Spacer(Modifier.height(30.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
@@ -380,6 +379,10 @@ fun SearchView(homeViewModel: HomeViewModel) {
         focusManager.clearFocus()
         homeViewModel.clearSearchKeywordsSuggestions()
         homeViewModel.searchZene(showSearch)
+        if (showSearch.trim().length > 3) {
+            activity?.let { InterstitialAdsUtils(it) }
+            addRemoveSearchHistory(showSearch)
+        }
     }
     LaunchedEffect(Unit) {
         homeViewModel.searchTrendingData()

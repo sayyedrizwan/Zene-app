@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -94,6 +95,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                 if (v.data.topSongs?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
+                        item { NativeViewAdsCard() }
+
                         items(v.data.topSongs) {
                             ItemCardView(it, v.data.topSongs)
                         }

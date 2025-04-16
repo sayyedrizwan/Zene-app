@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.ent
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,12 +46,14 @@ import com.rizwansayyed.zene.ui.view.NewsItemCard
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
 fun EntertainmentNewsView() {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val ip by ipDB.collectAsState(initial = null)
+    val activity = LocalActivity.current
     val top10MovieString = stringResource(R.string.top_10_movies_show_in)
 
     var showHollywoodNewsAll by remember { mutableStateOf(false) }
@@ -260,6 +263,7 @@ fun EntertainmentNewsView() {
     LaunchedEffect(Unit) {
         homeViewModel.entertainmentNewsData()
         homeViewModel.entertainmentMovies()
+        activity?.let { InterstitialAdsUtils(it) }
     }
 }
 

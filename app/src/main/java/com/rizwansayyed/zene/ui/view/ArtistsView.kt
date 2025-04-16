@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.view
 
 import android.os.Build
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -48,6 +49,7 @@ import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -61,7 +63,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun ArtistsView(artistsID: String) {
     val viewModel: HomeViewModel = hiltViewModel()
-    val context = LocalContext.current
+    val context = LocalActivity.current
 
     Box(
         Modifier
@@ -229,6 +231,8 @@ fun ArtistsView(artistsID: String) {
             NavigationUtils.triggerHomeNav(NAV_MAIN_PAGE)
             return@LaunchedEffect
         }
+
+        context?.let { InterstitialAdsUtils(it) }
 
         if (viewModel.artistsInfo !is ResponseResult.Success) viewModel.artistsInfo(artistsID) {
             CoroutineScope(Dispatchers.IO).launch {

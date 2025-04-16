@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.view.myplaylist
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +55,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.refreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -69,6 +71,7 @@ fun MyPlaylistView(id: String) {
     val myLibraryViewModel: MyLibraryViewModel = hiltViewModel(key = id)
     val playerInfo by musicPlayerDB.collectAsState(null)
 
+    val context = LocalActivity.current
     val state = rememberLazyListState()
     var isBottomTriggered by remember { mutableStateOf(false) }
 
@@ -112,6 +115,8 @@ fun MyPlaylistView(id: String) {
     LaunchedEffect(Unit) {
         myLibraryViewModel.myPlaylistSongsData(id)
         myLibraryViewModel.myPlaylistInfo(id)
+
+        context?.let { InterstitialAdsUtils(it) }
     }
 
 

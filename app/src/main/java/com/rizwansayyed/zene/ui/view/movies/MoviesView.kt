@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view.movies
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -23,11 +24,13 @@ import com.rizwansayyed.zene.ui.view.movies.view.MoviesInfoView
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesSeasonsView
 import com.rizwansayyed.zene.ui.view.movies.view.MoviesTopView
 import com.rizwansayyed.zene.ui.view.movies.view.SimilarMoviesClipsView
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
 fun MoviesView(id: String) {
     val viewModel: HomeViewModel = hiltViewModel()
+    val context = LocalActivity.current
 
     Box(Modifier.fillMaxSize(), Alignment.Center) {
         when (val v = viewModel.movieShowInfo) {
@@ -65,6 +68,8 @@ fun MoviesView(id: String) {
             val idName = id.replace("^", "/")
             viewModel.moviesTvShowsInfo(idName)
         }
+
+        context?.let { InterstitialAdsUtils(it) }
     }
 }
 

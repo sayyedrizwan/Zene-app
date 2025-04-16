@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.view.playlist
 
 import android.os.Build
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +51,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PLAYLIST_ALBUMS
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -63,12 +65,13 @@ enum class PlaylistsType(val type: String) {
     PODCAST("PODCAST"), PLAYLIST_ALBUMS("YT_PLAYLISTS")
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PlaylistView(id: String, type: PlaylistsType) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current.applicationContext
     val playerInfo by musicPlayerDB.collectAsState(null)
+
+    val activity = LocalActivity.current
 
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
@@ -162,6 +165,8 @@ fun PlaylistView(id: String, type: PlaylistsType) {
         ButtonArrowBack()
     }
     LaunchedEffect(Unit) {
+        activity?.let { InterstitialAdsUtils(it) }
+
         if (type == PODCAST) {
             if (homeViewModel.playlistsData !is ResponseResult.Success) homeViewModel.podcastData(id) {
                 CoroutineScope(Dispatchers.IO).launch {
