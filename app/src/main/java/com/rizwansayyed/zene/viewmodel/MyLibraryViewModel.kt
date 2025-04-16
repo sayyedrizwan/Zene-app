@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.MusicHistoryResponse
 import com.rizwansayyed.zene.data.model.MyLibraryTypes
+import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -105,6 +106,21 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
                 myIsLoading = false
                 myList.addAll(it)
             }
+        }
+    }
+
+
+    var userAllPlaylist by mutableStateOf<ResponseResult<SavedPlaylistsPodcastsResponse>>(
+        ResponseResult.Empty
+    )
+
+    fun myAllPlaylistsList() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.myAllPlaylists().onStart {
+            userAllPlaylist = ResponseResult.Loading
+        }.catch {
+            userAllPlaylist = ResponseResult.Error(it)
+        }.collectLatest {
+            userAllPlaylist = ResponseResult.Success(it)
         }
     }
 

@@ -140,10 +140,7 @@ fun HomeMyLibraryView() {
                 MyLibraryTypes.MY_PLAYLISTS -> {
                     item { LikedPlaylistsView(viewModel) }
                     items(viewModel.myList) {
-                        SavedPlaylistsPodcastView(
-                            it,
-                            Modifier.fillMaxWidth()
-                        )
+                        SavedPlaylistsPodcastView(it, Modifier.fillMaxWidth())
                     }
 
                     if (!viewModel.myIsLoading && viewModel.myList.isEmpty()) {

@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.text.Html
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -95,8 +94,11 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     private var playlistSongCheckJob: Job? = null
     private var playlistPage: Int = 0
-    fun clearPlaylistCheckList() {
+
+    fun clearPlaylistInfo(){
+        playlistSongCheckJob?.cancel()
         playlistPage = 0
+        itemAddedToPlaylists.clear()
         checksPlaylistsSongLists.clear()
     }
 
@@ -145,7 +147,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     fun addMediaToPlaylist(id: String, state: Boolean, info: ZeneMusicData?) =
         viewModelScope.launch(Dispatchers.IO) {
             itemAddedToPlaylists[id] = state
-            zeneAPI.addItemToPlaylists(info, id, state).catch { }.collectLatest { }
+            zeneAPI.addItemToPlaylists(info, id, state).catch { }.collectLatest {}
         }
 
 
@@ -274,7 +276,14 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             val artists = Html.fromHtml(it.description, Html.FROM_HTML_MODE_LEGACY).toString()
             val t = it.image?.url ?: it.series?.imageURL
             val data =
-                ZeneMusicData(artists, id, it.title, it.lookup, t, MusicDataTypes.PODCAST_AUDIO.name)
+                ZeneMusicData(
+                    artists,
+                    id,
+                    it.title,
+                    it.lookup,
+                    t,
+                    MusicDataTypes.PODCAST_AUDIO.name
+                )
             startMedia(data)
         }
     }

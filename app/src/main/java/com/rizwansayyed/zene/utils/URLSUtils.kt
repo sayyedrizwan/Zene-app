@@ -147,6 +147,7 @@ object URLSUtils {
     const val ZENE_USER_SAVE_PLAYLISTS_API = "users-playlists/save-playlists"
     const val ZENE_USER_SAVED_PLAYLISTS_API = "users-playlists/saved-playlists"
     const val ZENE_USER_MY_PLAYLISTS_API = "users-playlists/my-playlists"
+    const val ZENE_USER_MY_ALL_PLAYLISTS_API = "users-playlists/my-all-playlists"
     const val ZENE_USER_DELETE_MY_PLAYLIST_API = "users-playlists/delete-my-playlist"
     const val ZENE_USER_MY_PLAYLIST_INFO_API = "users-playlists/my-playlist-info"
     const val ZENE_USER_UPDATE_PLAYLIST_NAME_API = "users-playlists/update-playlist-name"

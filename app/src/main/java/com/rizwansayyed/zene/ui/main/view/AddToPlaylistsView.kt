@@ -25,6 +25,7 @@ import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,6 +66,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -135,11 +137,17 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
                 CircularLoadingView()
                 Spacer(Modifier.height(40.dp))
             }
+
+            item { Spacer(Modifier.height(120.dp)) }
         }
 
-        LaunchedEffect(Unit) {
+        DisposableEffect(Unit) {
             info?.id?.let { playerViewModel.playlistSongCheckList(it) }
+            onDispose {
+                playerViewModel.clearPlaylistInfo()
+            }
         }
+
         LaunchedEffect(state) {
             snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
                 val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
@@ -156,10 +164,8 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
 
         if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, info) {
             addNewPlaylists = false
-            if (it) {
-                playerViewModel.clearPlaylistCheckList()
-                info?.id?.let { playerViewModel.playlistSongCheckList(it) }
-            }
+            if (it) close()
+
         }
     }
 }

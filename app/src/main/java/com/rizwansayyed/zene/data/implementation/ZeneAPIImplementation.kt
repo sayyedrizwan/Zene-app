@@ -210,6 +210,18 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.myPlaylists(token, body))
     }
 
+    override suspend fun myAllPlaylists() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.myAllPlaylists(token, body))
+    }
+
     override suspend fun deleteMyPlaylists(id: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -1125,11 +1137,11 @@ class ZeneAPIImplementation @Inject constructor(
             put("name", name)
 
             if (info != null) {
-                put("song_name", info.name ?: "")
-                put("song_artists", info.artists ?: "")
-                put("song_type", info.type ?: "")
-                put("song_id", info.id ?: "")
-                put("song_thumbnail", info.thumbnail ?: "")
+                put("media_name", info.name ?: "")
+                put("media_artists", info.artists ?: "")
+                put("type", info.type ?: "")
+                put("media_id", info.id ?: "")
+                put("media_thumbnail", info.thumbnail ?: "")
             }
         }
 
