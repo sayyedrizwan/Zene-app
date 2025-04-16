@@ -235,11 +235,6 @@ class MainActivity : FragmentActivity() {
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
         subscribeToTopicAll()
-
-//        Intent(this, ImportPlaylistsActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            startActivity(this)
-//        }
     }
 
 }

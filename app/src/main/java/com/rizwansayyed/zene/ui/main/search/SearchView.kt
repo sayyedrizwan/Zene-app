@@ -43,6 +43,7 @@ import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.VideoCardView
 import com.rizwansayyed.zene.utils.MainUtils.addRemoveSearchHistory
+import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -59,6 +60,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
     var job by remember { mutableStateOf<Job?>(null) }
     val coroutine = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
+    val searchHistoryRemoved = stringResource(R.string.removed_search_history)
 
     val state = rememberLazyListState()
 
@@ -125,7 +127,10 @@ fun SearchView(homeViewModel: HomeViewModel) {
                     items(searchHistory!!) { txt ->
                         TrendingItemView(txt, R.drawable.ic_go_backward) {
                             if (it) showSearch = txt
-                            else addRemoveSearchHistory(txt, false)
+                            else {
+                                addRemoveSearchHistory(txt, false)
+                                SnackBarManager.showMessage(searchHistoryRemoved)
+                            }
                         }
                     }
                 }

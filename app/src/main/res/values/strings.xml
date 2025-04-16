@@ -133,6 +133,7 @@
     <string name="search_gif">Search GIF</string>
     <string name="search_">search</string>
     <string name="search">Search</string>
+    <string name="removed_search_history">Removed Search History.</string>
     <string name="ai_music">AI Songs</string>
     <string name="ai_song">AI Song</string>
     <string name="search_places">Search places</string>

@@ -562,9 +562,9 @@ object MainUtils {
             if (text.trim().length < 3) return@launch
             val list = ArrayList<String>(30)
             val db = searchHistoryDB.firstOrNull()
-            db?.forEach { list.add(it) }
+            db?.forEach { if (it != text) list.add(it) }
             if (add) list.add(0, text)
 
-            searchHistoryDB = flowOf(list.distinct().take(30).toTypedArray())
+            searchHistoryDB = flowOf(list.distinct().filter { it.isNotBlank() }.take(30).toTypedArray())
         }
 }
