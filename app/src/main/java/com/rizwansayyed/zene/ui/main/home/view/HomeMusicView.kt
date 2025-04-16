@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,6 +30,7 @@ import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.utils.ads.BannerViewAds
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Dispatchers
@@ -95,13 +97,18 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                 if (v.data.topSongs?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        item { NativeViewAdsCard() }
+                        itemsIndexed(v.data.topSongs) { i, z ->
+                            ItemCardView(z, v.data.topSongs)
 
-                        items(v.data.topSongs) {
-                            ItemCardView(it, v.data.topSongs)
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard()
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                            }
                         }
                     }
                 }
+
+                item { BannerViewAds() }
 
                 if (v.data.topPlaylists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
@@ -110,8 +117,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.topPlaylists) {
-                            ItemCardView(it)
+                        itemsIndexed(v.data.topPlaylists) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard()
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                            }
                         }
                     }
                 }
@@ -123,8 +135,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.playlists) {
-                            ItemCardView(it)
+                        itemsIndexed(v.data.playlists) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard()
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                            }
                         }
                     }
                 }
@@ -136,8 +153,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.albums) {
-                            ItemCardView(it)
+                        itemsIndexed(v.data.albums) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard()
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                            }
                         }
                     }
                 }
@@ -149,8 +171,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.songsYouMayLike) {
-                            ItemCardView(it)
+                        itemsIndexed(v.data.songsYouMayLike) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard()
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                            }
                         }
                     }
                 }
@@ -162,8 +189,9 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.favouriteArtists) {
-                            ItemArtistsCardView(it)
+                        itemsIndexed(v.data.favouriteArtists) { i, z ->
+                            if (!isPremium && i == 0) NativeViewAdsCard()
+                            ItemArtistsCardView(z)
                         }
                     }
                 }
@@ -178,8 +206,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
 
                 items(v.data.songsToExplore?.chunked(10) ?: emptyList()) {
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(it) {
-                            ItemCardView(it)
+                        itemsIndexed(it) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard()
+                                if ((i + 1) % 5 == 0) NativeViewAdsCard()
+                            }
                         }
                     }
                     Spacer(Modifier.height(40.dp))

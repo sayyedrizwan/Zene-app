@@ -5,11 +5,12 @@ compilesdk = "35"
 minsdk = "24"
 
 
-appversion = "168"
-versionname = "3.02.827"
+appversion = "169"
+versionname = "3.02.829"
 
 
 agp = "8.9.1"
+
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.0"
 glide = "1.0.0-beta01"
@@ -59,7 +60,6 @@ socketIoClient = "2.1.1"
 
 opencsv = "5.10"
 playServicesAds = "24.2.0"
-lifecycleProcess = "2.8.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -159,7 +159,6 @@ colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", vers
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 
 opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
-androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

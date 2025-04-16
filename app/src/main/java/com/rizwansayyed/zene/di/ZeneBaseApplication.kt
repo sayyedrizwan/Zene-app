@@ -4,9 +4,6 @@ import android.app.Application
 import androidx.core.content.ContextCompat
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
@@ -46,12 +43,5 @@ class ZeneBaseApplication : Application() {
             if (isActive) cancel()
         }
         MobileAds.initialize(this) { }
-        ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifecycleObserver())
-    }
-
-    class AppLifecycleObserver : DefaultLifecycleObserver {
-        override fun onStart(owner: LifecycleOwner) {
-            super.onStart(owner)
-        }
     }
 }

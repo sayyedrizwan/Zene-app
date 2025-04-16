@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+<!--    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />-->
 
     <uses-feature
         android:name="android.hardware.camera.any"
@@ -198,6 +198,10 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2941808068005217~5659881245"/>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED"
+            android:value="false"/>
 
         <provider
             android:name="androidx.startup.InitializationProvider"

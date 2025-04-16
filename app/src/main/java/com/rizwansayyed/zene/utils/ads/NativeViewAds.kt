@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.utils.ads
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -27,56 +26,11 @@ import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 
-
-@Composable
-fun NativeViewAds() {
-    val context = LocalContext.current
-    var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
-
-    LaunchedEffect(Unit) {
-        val builder = AdLoader.Builder(context, "ca-app-pub-3940256099942544/2247696110")
-            .forNativeAd { ad ->
-                nativeAd = ad
-            }
-            .withAdListener(object : AdListener() {
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    // Handle the error
-                }
-            })
-            .build()
-
-        builder.loadAd(AdRequest.Builder().build())
-    }
-
-    nativeAd?.let { ad ->
-        AndroidView(
-            factory = { ctx ->
-                val inflater = LayoutInflater.from(ctx)
-                val adView = inflater.inflate(R.layout.native_ad_view, null) as NativeAdView
-
-                val mediaContainer = adView.findViewById<FrameLayout>(R.id.media_container)
-                val mediaView = MediaView(ctx)
-                mediaContainer.addView(mediaView)
-                adView.mediaView = mediaView
-
-                adView.headlineView = adView.findViewById(R.id.ad_headline)
-                adView.bodyView = adView.findViewById(R.id.ad_body)
-                adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
-
-                (adView.headlineView as TextView).text = ad.headline
-                ad.mediaContent?.let { mediaView.setMediaContent(it) }
-                (adView.bodyView as TextView).text = ad.body
-                (adView.callToActionView as Button).text = ad.callToAction
-
-                adView.setNativeAd(ad)
-                adView
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-}
+val adUnit =
+    if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/2247696110" else "ca-app-pub-2941808068005217/1646716011"
 
 @Composable
 fun NativeViewAdsCard() {
@@ -84,23 +38,19 @@ fun NativeViewAdsCard() {
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
 
     LaunchedEffect(Unit) {
-        val builder = AdLoader.Builder(context, "ca-app-pub-2941808068005217/1646716011")
+        val builder = AdLoader.Builder(context, adUnit)
             .forNativeAd { ad: NativeAd ->
                 nativeAd?.destroy()
                 nativeAd = ad
-            }
-            .withAdListener(object : AdListener() {
+            }.withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     Log.e("AdMob", "Native video ad failed: ${error.message}")
                 }
-            })
-            .withNativeAdOptions(
+            }).withNativeAdOptions(
                 NativeAdOptions.Builder()
                     .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
-                    .setVideoOptions(VideoOptions.Builder().setStartMuted(true).build())
-                    .build()
-            )
-            .build()
+                    .setVideoOptions(VideoOptions.Builder().setStartMuted(true).build()).build()
+            ).build()
 
         builder.loadAd(AdRequest.Builder().build())
     }
@@ -119,30 +69,32 @@ fun NativeViewAdsCard() {
                 adView.headlineView = adView.findViewById(R.id.ad_headline)
                 adView.bodyView = adView.findViewById(R.id.ad_body)
                 adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
+                adView.iconView = adView.findViewById(R.id.ad_icon)
 
                 (adView.headlineView as TextView).text = ad.headline
                 (adView.bodyView as TextView).text = ad.body
                 (adView.callToActionView as Button).text = ad.callToAction
+                (adView.iconView as ImageView).setImageDrawable(ad.icon?.drawable)
 
                 ad.mediaContent?.let { mediaContent ->
-                    mediaView.setMediaContent(mediaContent)
+                    mediaView.mediaContent = mediaContent
 
                     val videoController = mediaContent.videoController
-                    videoController.videoLifecycleCallbacks = object : VideoController.VideoLifecycleCallbacks() {
-                        override fun onVideoStart() {
-                            Log.d("AdMob", "Video started.")
-                        }
+                    videoController.videoLifecycleCallbacks =
+                        object : VideoController.VideoLifecycleCallbacks() {
+                            override fun onVideoStart() {
+                                Log.d("AdMob", "Video started.")
+                            }
 
-                        override fun onVideoEnd() {
-                            Log.d("AdMob", "Video ended.")
+                            override fun onVideoEnd() {
+                                Log.d("AdMob", "Video ended.")
+                            }
                         }
-                    }
                 }
 
                 adView.setNativeAd(ad)
                 adView
-            },
-            modifier = Modifier.fillMaxSize()
+            }, modifier = Modifier.fillMaxSize()
         )
     }
 }

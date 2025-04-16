@@ -4,23 +4,53 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingHorizontal="10dp">
 
     <LinearLayout
-        android:layout_width="175dp"
+        android:layout_width="195dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingHorizontal="5dp">
 
         <FrameLayout
-            android:background="@color/main"
-            android:id="@+id/media_container"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
-            android:layout_gravity="center" />
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_gravity="center"
+            android:background="@color/main">
+
+            <FrameLayout
+                android:id="@+id/media_container"
+                android:layout_width="170dp"
+                android:layout_height="175dp"
+                android:layout_gravity="center"
+                android:background="@color/main" />
+
+            <Button
+                android:id="@+id/ad_call_to_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:text=""
+                android:layout_margin="3dp"
+                android:backgroundTint="@color/black"
+                android:fontFamily="@font/proximanovarlight"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+
+            <ImageView
+                android:id="@+id/ad_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="top|start"
+                android:layout_margin="8dp" />
+
+        </FrameLayout>
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="9dp"/>
+            android:layout_height="9dp" />
 
         <TextView
             android:id="@+id/ad_headline"
@@ -30,7 +60,7 @@
             android:fontFamily="@font/proximanovaregular"
             android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="19sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/ad_body"
@@ -39,19 +69,10 @@
             android:ellipsize="start"
             android:fontFamily="@font/proximanovarlight"
             android:maxLines="1"
+            android:text=""
             android:textColor="@color/white"
-            android:textSize="17sp" />
-
-
-        <Button
-            android:visibility="gone"
-            android:id="@+id/ad_call_to_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="Install" />
+            android:textSize="16sp" />
 
     </LinearLayout>
+
 </com.google.android.gms.ads.nativead.NativeAdView>
