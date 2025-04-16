@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -135,10 +136,10 @@ class HomeViewModel @Inject constructor(
 
     fun searchTrendingData() = viewModelScope.launch(Dispatchers.IO) {
         val data: SearchTrendingResponse? = cacheHelper.get(ZENE_SEARCH_TRENDING_API)
-        if ((data?.songs?.size ?: 0) > 0) {
-            searchTrending = ResponseResult.Success(data!!)
-            return@launch
-        }
+//        if ((data?.songs?.size ?: 0) > 0) {
+//            searchTrending = ResponseResult.Success(data!!)
+//            return@launch
+//        }
 
         zeneAPI.trendingData().onStart {
             searchTrending = ResponseResult.Loading

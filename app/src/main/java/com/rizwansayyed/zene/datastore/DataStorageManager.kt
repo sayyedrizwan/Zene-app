@@ -11,11 +11,13 @@ import com.rizwansayyed.zene.data.model.IPResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.AUTO_PAUSE_PLAYER_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_STORE_KEY
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_ARRAY
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_JSON
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_LOOP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_SHUFFLE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SONG_SPEED_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
@@ -42,9 +44,11 @@ object DataStorageManager {
     object DataStorageKey {
         const val DATA_STORE_KEY = "zene_data_store"
         const val EMPTY_JSON = "{}"
+        const val EMPTY_ARRAY = "[]"
 
         val USER_INFO_DB = stringPreferencesKey("user_info_db")
         val IP_DB = stringPreferencesKey("ip_db")
+        val SEARCH_HISTORY_DB = stringPreferencesKey("search_history_db")
         val VIDEO_QUALITY_DB = stringPreferencesKey("video_quality_db")
         val VIDEO_SPEED_DB = stringPreferencesKey("video_speed_db")
         val SONG_SPEED_DB = stringPreferencesKey("song_speed_db")
@@ -77,6 +81,18 @@ object DataStorageManager {
             context.dataStore.edit {
                 val json = moshi.adapter(MusicPlayerData::class.java).toJson(value.first())
                 it[MUSIC_PLAYER_DB] = json
+            }
+            if (isActive) cancel()
+        }
+
+    var searchHistoryDB: Flow<Array<String>?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(Array<String>::class.java).fromJson(it[SEARCH_HISTORY_DB] ?: EMPTY_ARRAY)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
+                it[SEARCH_HISTORY_DB] = json
             }
             if (isActive) cancel()
         }

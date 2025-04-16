@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -71,8 +72,27 @@ fun ArtistsView(artistsID: String) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> {
-                Box(Modifier.fillMaxSize(), Alignment.Center) {
-                    CircularLoadingView()
+                val height = LocalConfiguration.current.screenHeightDp
+                Column(Modifier.fillMaxWidth()) {
+                    ShimmerEffect(
+                        Modifier
+                            .fillMaxWidth()
+                            .height((height.absoluteValue / 1.5).dp)
+                            .shadow(85.dp)
+                    )
+
+                    Spacer(Modifier.height(20.dp))
+                    ShimmerEffect(
+                        Modifier
+                            .padding(horizontal = 3.dp)
+                            .size(200.dp, 10.dp), durationMillis = 1000
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    ShimmerEffect(
+                        Modifier
+                            .padding(horizontal = 3.dp)
+                            .size(100.dp, 8.dp), durationMillis = 1000
+                    )
                 }
             }
 

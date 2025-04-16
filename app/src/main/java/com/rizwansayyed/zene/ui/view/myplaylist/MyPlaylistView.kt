@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,17 +40,18 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.MiniWithImageAndBorder
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBoldBig
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.refreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
@@ -164,7 +166,29 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
         when (val v = myLibraryViewModel.playlistInfo) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> CircularLoadingView()
+            ResponseResult.Loading -> {
+                val width = (LocalConfiguration.current.screenWidthDp / 1.5).dp
+
+                ShimmerEffect(
+                    Modifier
+                        .size(width)
+                        .clip(RoundedCornerShape(14.dp))
+                )
+
+                Spacer(Modifier.height(12.dp))
+                ShimmerEffect(
+                    Modifier
+                        .padding(horizontal = 3.dp)
+                        .size(120.dp, 5.dp), durationMillis = 1000
+                )
+                Spacer(Modifier.height(6.dp))
+                ShimmerEffect(
+                    Modifier
+                        .padding(horizontal = 3.dp)
+                        .size(80.dp, 5.dp), durationMillis = 1000
+                )
+            }
+
             is ResponseResult.Success -> {
                 GlideImage(
                     v.data.thumbnail,
@@ -180,27 +204,31 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
 
                 Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
                     if (myLibraryViewModel.isPlaylistOfSameUser) {
-                        Box(Modifier
-                            .padding(horizontal = 7.dp)
-                            .clickable { changeNameView = true }) {
+                        Box(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .clickable { changeNameView = true }) {
                             ImageIcon(R.drawable.ic_edit, 24)
                         }
 
-                        Box(Modifier
-                            .padding(horizontal = 7.dp)
-                            .clickable { changeImageView = true }) {
+                        Box(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .clickable { changeImageView = true }) {
                             ImageIcon(R.drawable.ic_image_edit, 24)
                         }
 
-                        Box(Modifier
-                            .padding(horizontal = 7.dp)
-                            .clickable { deleteView = true }) {
+                        Box(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .clickable { deleteView = true }) {
                             ImageIcon(R.drawable.ic_delete, 24)
                         }
 
-                        Box(Modifier
-                            .padding(horizontal = 7.dp)
-                            .clickable { shareView = true }) {
+                        Box(
+                            Modifier
+                                .padding(horizontal = 7.dp)
+                                .clickable { shareView = true }) {
                             ImageIcon(R.drawable.ic_share, 24)
                         }
                     } else {
@@ -220,7 +248,8 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                     }
                 }
 
-                if (deleteView) TextAlertDialog(R.string.delete_playlist,
+                if (deleteView) TextAlertDialog(
+                    R.string.delete_playlist,
                     R.string.delete_playlist_desc,
                     {
                         deleteView = false

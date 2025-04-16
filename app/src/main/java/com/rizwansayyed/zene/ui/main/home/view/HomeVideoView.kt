@@ -19,9 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.FullVideoCardView
-import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerVideoLoadingCard
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.VideoCardView

@@ -1,15 +1,18 @@
 package com.rizwansayyed.zene.ui.main.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,11 +35,14 @@ import com.rizwansayyed.zene.ui.main.search.view.SearchKeywordsItemView
 import com.rizwansayyed.zene.ui.main.search.view.SearchTopView
 import com.rizwansayyed.zene.ui.main.search.view.TrendingItemView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.MoviesImageCard
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.VideoCardView
+import com.rizwansayyed.zene.utils.MainUtils.addRemoveSearchHistory
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -45,6 +53,7 @@ import java.util.Locale
 @Composable
 fun SearchView(homeViewModel: HomeViewModel) {
     val inInfo by DataStorageManager.ipDB.collectAsState(null)
+    val searchHistory by DataStorageManager.searchHistoryDB.collectAsState(emptyArray())
     var showSearch by remember { mutableStateOf("") }
     val search = remember { mutableStateOf("") }
     var job by remember { mutableStateOf<Job?>(null) }
@@ -79,14 +88,26 @@ fun SearchView(homeViewModel: HomeViewModel) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> item {
-                CircularLoadingView()
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(9) {
+                        ShimmerEffect(
+                            Modifier
+                                .padding(horizontal = 3.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color.Black)
+                                .size(100.dp, 50.dp)
+                                .padding(horizontal = 8.dp, vertical = 6.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                        )
+                    }
+                }
             }
 
             is ResponseResult.Success -> {
                 item {
                     LazyRow(Modifier.fillMaxWidth()) {
                         items(v.data.keywords ?: emptyList()) { txt ->
-                            TrendingItemView(txt) {
+                            TrendingItemView(txt?.name, R.drawable.ic_chart_line) {
                                 search.value = txt?.name ?: ""
                                 showSearch = txt?.name ?: ""
                             }
@@ -97,6 +118,21 @@ fun SearchView(homeViewModel: HomeViewModel) {
         }
 
         item { Spacer(Modifier.height(20.dp)) }
+
+        if (searchHistory?.isNotEmpty() == true && search.value.trim().length < 3) {
+            item {
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(searchHistory!!) { txt ->
+                        TrendingItemView(txt, R.drawable.ic_go_backward) {
+                            if (it) showSearch = txt
+                            else addRemoveSearchHistory(txt, false)
+                        }
+                    }
+                }
+            }
+
+            item { Spacer(Modifier.height(20.dp)) }
+        }
 
         when (val v = homeViewModel.searchKeywords) {
             ResponseResult.Empty -> {}
@@ -128,6 +164,10 @@ fun SearchView(homeViewModel: HomeViewModel) {
                 is ResponseResult.Error -> {}
                 ResponseResult.Loading -> item { CircularLoadingView() }
                 is ResponseResult.Success -> {
+                    item {
+                        LaunchedEffect(Unit) { addRemoveSearchHistory(showSearch) }
+                    }
+
                     if (v.data.songs?.isNotEmpty() == true) item {
                         Spacer(Modifier.height(30.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
@@ -254,7 +294,17 @@ fun SearchView(homeViewModel: HomeViewModel) {
         } else when (val v = homeViewModel.searchTrending) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> {}
+            ResponseResult.Loading -> {
+                item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.global_trending_songs), 19)
+                    }
+
+                    HorizontalShimmerLoadingCard()
+                }
+            }
+
             is ResponseResult.Success -> {
                 if (v.data.globalSongs?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))

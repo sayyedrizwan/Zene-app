@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager.searchHistoryDB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MAIL
 import com.squareup.moshi.Moshi
@@ -31,6 +32,8 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -553,4 +556,15 @@ object MainUtils {
             vibrator.vibrate(200)
         }
     }
+
+    fun addRemoveSearchHistory(text: String, add: Boolean = true) =
+        CoroutineScope(Dispatchers.IO).launch {
+            if (text.trim().length < 3) return@launch
+            val list = ArrayList<String>(30)
+            val db = searchHistoryDB.firstOrNull()
+            db?.forEach { list.add(it) }
+            if (add) list.add(0, text)
+
+            searchHistoryDB = flowOf(list.distinct().take(30).toTypedArray())
+        }
 }

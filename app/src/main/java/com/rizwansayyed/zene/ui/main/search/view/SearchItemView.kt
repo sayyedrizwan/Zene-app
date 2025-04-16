@@ -8,8 +8,10 @@ import android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL
 import android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,28 +39,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import java.util.Locale
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TrendingItemView(data: ZeneMusicData?, click: () -> Unit) {
-    data?.name?.let {
+fun TrendingItemView(name: String?, img: Int, click: (Boolean) -> Unit) {
+    name?.let {
         Row(Modifier
             .padding(horizontal = 6.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color.Black)
-            .clickable { click() }
+            .combinedClickable(onClick = {
+                click(true)
+            }, onLongClick = {
+                click(false)
+            })
             .padding(horizontal = 14.dp, vertical = 6.dp),
             Arrangement.Center,
             Alignment.CenterVertically) {
-            ImageIcon(R.drawable.ic_chart_line, 15)
+            ImageIcon(img, 15)
             Spacer(Modifier.width(5.dp))
             TextViewNormal(it, 14)
         }

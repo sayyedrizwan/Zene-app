@@ -50,6 +50,7 @@ fun CircularLoadingViewSmall() {
     }
 }
 
+
 @Composable
 fun HorizontalShimmerLoadingCard() {
     LazyRow(Modifier.fillMaxSize()) {
