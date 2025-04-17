@@ -143,8 +143,6 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (!isPremium) item(span = { GridItemSpan(maxLineSpan) }) { BannerNativeViewAds(3) }
-
                 if (v.data.explore?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {
                         Spacer(Modifier.height(50.dp))

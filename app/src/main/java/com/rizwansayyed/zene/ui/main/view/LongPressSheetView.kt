@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.view
 
 import android.os.Build
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,6 +52,7 @@ import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -65,6 +67,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
     ) {
         val playerViewModel: PlayerViewModel = hiltViewModel()
         val homeViewModel: HomeViewModel = hiltViewModel()
+        val activity = LocalActivity.current
         var showShare by remember { mutableStateOf(false) }
         var addToPlaylistView by remember { mutableStateOf(false) }
         var showAddToHomeScreen by remember { mutableStateOf(false) }
@@ -243,6 +246,8 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
             }
 
             LaunchedEffect(Unit) {
+                activity?.let { InterstitialAdsUtils(it) }
+
                 if (data.type() == MusicDataTypes.SONGS || data.type() == MusicDataTypes.PODCAST_AUDIO || data.type() == MusicDataTypes.RADIO || data.type() == MusicDataTypes.VIDEOS || data.type() == MusicDataTypes.AI_MUSIC) {
                     playerViewModel.likedMediaItem(data.id, data.type())
                 }
@@ -265,6 +270,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                 }
             }
         }
+
     }
 }
 

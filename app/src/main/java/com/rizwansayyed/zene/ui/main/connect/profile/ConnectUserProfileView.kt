@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.profile
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.ui.view.FullUsersShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -37,6 +39,7 @@ import kotlin.time.Duration.Companion.seconds
 fun ConnectUserProfileView(email: String) {
     val connectViewModel: ConnectViewModel = hiltViewModel()
     var job by remember { mutableStateOf<Job?>(null) }
+    val activity = LocalActivity.current
 
     Box(
         Modifier
@@ -64,8 +67,10 @@ fun ConnectUserProfileView(email: String) {
 
         ButtonArrowBack()
     }
+
     LifecycleResumeEffect(Unit) {
         job?.cancel()
+        activity?.let { InterstitialAdsUtils(it) }
         job = lifecycleScope.launch {
             while (true) {
                 connectViewModel.connectUserInfo(email)

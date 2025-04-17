@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -143,7 +144,7 @@ fun NativeViewAdsCard(id: String?) {
                     adView.setNativeAd(ad)
                     adView
                 }!!
-            }, modifier = Modifier.fillMaxSize()
+            }, modifier = Modifier.fillMaxWidth()
         )
     }
 }

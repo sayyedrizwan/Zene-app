@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -64,9 +65,11 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.RefreshPlaylistListener
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.setRefreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
@@ -77,6 +80,7 @@ import kotlinx.coroutines.launch
 fun HomeMyLibraryView() {
     val viewModel: MyLibraryViewModel = hiltViewModel()
     val playerViewModel: PlayerViewModel = hiltViewModel()
+    val activity = LocalActivity.current
 
     var historyInfo by remember { mutableStateOf(false) }
     var addNewPlaylists by remember { mutableStateOf(false) }
@@ -189,6 +193,10 @@ fun HomeMyLibraryView() {
                 MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
                 MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
             }
+        }
+
+        LaunchedEffect(viewModel.selectedType) {
+            activity?.let { InterstitialAdsUtils(it, forceShow = true) }
         }
 
         LaunchedEffect(state) {

@@ -4,6 +4,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -31,12 +34,14 @@ import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.ui.main.search.view.SearchBarView
 import com.rizwansayyed.zene.ui.main.search.view.SearchKeywordsItemView
 import com.rizwansayyed.zene.ui.main.search.view.SearchTopView
 import com.rizwansayyed.zene.ui.main.search.view.TrendingItemView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerVideoLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.MoviesImageCard
@@ -46,6 +51,9 @@ import com.rizwansayyed.zene.ui.view.VideoCardView
 import com.rizwansayyed.zene.utils.MainUtils.addRemoveSearchHistory
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
+import com.rizwansayyed.zene.utils.ads.nativeAdsAndroidViewMap
+import com.rizwansayyed.zene.utils.ads.nativeAdsMap
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -64,6 +72,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
     val coroutine = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val searchHistoryRemoved = stringResource(R.string.removed_search_history)
+    val isPremium by isPremiumDB.collectAsState(true)
 
     val state = rememberLazyListState()
 
@@ -124,7 +133,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
 
         item { Spacer(Modifier.height(20.dp)) }
 
-        if (searchHistory?.isNotEmpty() == true && search.value.trim().length < 3) {
+        if (searchHistory?.isNotEmpty() == true && showSearch.trim().length < 3) {
             item {
                 LazyRow(Modifier.fillMaxWidth()) {
                     items(searchHistory!!) { txt ->
@@ -170,7 +179,44 @@ fun SearchView(homeViewModel: HomeViewModel) {
             when (val v = homeViewModel.searchData) {
                 ResponseResult.Empty -> {}
                 is ResponseResult.Error -> {}
-                ResponseResult.Loading -> item { CircularLoadingView() }
+                ResponseResult.Loading -> {
+                    item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.songs), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalShimmerLoadingCard()
+                    }
+
+                    item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.artists), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalShimmerLoadingCard()
+                    }
+
+                    item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.videos), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalShimmerVideoLoadingCard()
+                    }
+
+                    item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.albums), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalShimmerLoadingCard()
+                    }
+                }
+
                 is ResponseResult.Success -> {
                     if (v.data.songs?.isNotEmpty() == true) item {
                         Spacer(Modifier.height(30.dp))
@@ -179,8 +225,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.songs) {
-                                ItemCardView(it)
+                            itemsIndexed(v.data.songs) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -192,8 +243,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.artists) {
-                                ItemArtistsCardView(it)
+                            itemsIndexed(v.data.artists) { i, z ->
+                                ItemArtistsCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -206,8 +262,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.videos) {
-                                VideoCardView(it)
+                            itemsIndexed(v.data.videos) { i, z ->
+                                VideoCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -220,8 +281,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.albums) {
-                                ItemCardView(it)
+                            itemsIndexed(v.data.albums) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -234,8 +300,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.playlists) {
-                                ItemCardView(it)
+                            itemsIndexed(v.data.playlists) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -248,8 +319,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.aiSongs) {
-                                ItemCardView(it)
+                            itemsIndexed(v.data.aiSongs) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -261,8 +337,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.news) {
-                                VideoCardView(it)
+                            itemsIndexed(v.data.news) { i, z ->
+                                VideoCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -274,8 +355,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.podcast) {
-                                ItemCardView(it)
+                            itemsIndexed(v.data.podcast) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -287,8 +373,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.movies) {
-                                MoviesImageCard(it)
+                            itemsIndexed(v.data.movies) { i, z ->
+                                MoviesImageCard(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
                             }
                         }
                     }
@@ -320,8 +411,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                 items(v.data.globalSongs?.chunked(25) ?: emptyList()) {
                     Spacer(Modifier.height(15.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(it) {
-                            ItemCardView(it)
+                        itemsIndexed(it) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
                         }
                     }
                 }
@@ -346,8 +442,13 @@ fun SearchView(homeViewModel: HomeViewModel) {
                 items(v.data.songs?.chunked(25) ?: emptyList()) {
                     Spacer(Modifier.height(15.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(it) {
-                            ItemCardView(it)
+                        itemsIndexed(it) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
                         }
                     }
                 }
@@ -364,8 +465,9 @@ fun SearchView(homeViewModel: HomeViewModel) {
                 items(v.data.artists?.chunked(25) ?: emptyList()) {
                     Spacer(Modifier.height(15.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(it) {
-                            ItemArtistsCardView(it)
+                        itemsIndexed(it) { i, z ->
+                            if (i == 0 && !isPremium) NativeViewAdsCard(z?.id)
+                            ItemArtistsCardView(z)
                         }
                     }
                 }
@@ -382,6 +484,8 @@ fun SearchView(homeViewModel: HomeViewModel) {
         if (showSearch.trim().length > 3) {
             activity?.let { InterstitialAdsUtils(it) }
             addRemoveSearchHistory(showSearch)
+            nativeAdsMap.clear()
+            nativeAdsAndroidViewMap.clear()
         }
     }
     LaunchedEffect(Unit) {

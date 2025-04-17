@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -56,6 +57,7 @@ import com.rizwansayyed.zene.ui.view.LockScreenOrientation
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -178,6 +180,7 @@ class ConnectStatusActivity : ComponentActivity() {
 
     @Composable
     fun ShareButtonUI(modifier: Modifier = Modifier) {
+        val activity = LocalActivity.current
         var confirmationSheet by remember { mutableStateOf(false) }
         val pleaseEnterACaption = stringResource(R.string.please_enter_valid_caption)
 
@@ -207,7 +210,10 @@ class ConnectStatusActivity : ComponentActivity() {
 
         if (confirmationSheet) ConfirmationSheetView {
             confirmationSheet = false
-            if (it) connectViewModel.uploadAVibe()
+            if (it) {
+                connectViewModel.uploadAVibe()
+                activity?.let { InterstitialAdsUtils(it) }
+            }
         }
     }
 

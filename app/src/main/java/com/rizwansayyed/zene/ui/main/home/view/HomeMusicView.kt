@@ -108,8 +108,6 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (!isPremium) item { BannerNativeViewAds(1) }
-
                 if (v.data.topPlaylists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
@@ -163,8 +161,6 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                         }
                     }
                 }
-
-                if (!isPremium) item { BannerNativeViewAds(2) }
 
                 if (v.data.songsYouMayLike?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))

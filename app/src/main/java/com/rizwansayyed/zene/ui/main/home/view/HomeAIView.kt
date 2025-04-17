@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -18,10 +21,11 @@ import androidx.compose.ui.unit.dp
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +36,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun HomeAIView(homeViewModel: HomeViewModel) {
     val context = LocalContext.current.applicationContext
+    val isPremium by isPremiumDB.collectAsState(true)
 
     LazyColumn(Modifier.fillMaxSize()) {
         when (val v = homeViewModel.aiMusicList) {
@@ -71,8 +76,13 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.trending) {
-                            ItemCardView(it)
+                        itemsIndexed(v.data.trending) { i, z ->
+                            ItemCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
                         }
                     }
                 }
@@ -88,8 +98,12 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
 
                 items(v.data.new?.chunked(10) ?: emptyList()) {
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(it) {
-                            ItemCardView(it)
+                        itemsIndexed(it) { i, z ->
+                            ItemCardView(z)
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
                         }
                     }
                     Spacer(Modifier.height(40.dp))
@@ -105,8 +119,9 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
 
                 items(v.data.list?.chunked(10) ?: emptyList()) {
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(it) {
-                            ItemCardView(it)
+                        itemsIndexed(it) { i, z ->
+                            ItemCardView(z)
+                            if (i == 1) NativeViewAdsCard(z?.id)
                         }
                     }
                     Spacer(Modifier.height(40.dp))

@@ -9,6 +9,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
+import com.rizwansayyed.zene.utils.ads.nativeAdsAndroidViewMap
+import com.rizwansayyed.zene.utils.ads.nativeAdsMap
 import com.rizwansayyed.zene.utils.share.IntentFCMNotification
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,6 +23,8 @@ class NavigationViewModel : ViewModel() {
     var showMediaInfoSheet by mutableStateOf<ZeneMusicData?>(null)
 
     fun setHomeSections(v: HomeSectionSelector) {
+        nativeAdsMap.clear()
+        nativeAdsAndroidViewMap.clear()
         homeSection = v
     }
 
@@ -29,6 +33,8 @@ class NavigationViewModel : ViewModel() {
     }
 
     fun setHomeNavSections(v: HomeNavSelector) {
+        nativeAdsMap.clear()
+        nativeAdsAndroidViewMap.clear()
         homeNavSection = v
     }
 

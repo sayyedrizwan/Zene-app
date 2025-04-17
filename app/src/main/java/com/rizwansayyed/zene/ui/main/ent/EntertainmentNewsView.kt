@@ -6,17 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,18 +23,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.ui.main.ent.view.TopSliderVideoNewsView
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerVideoLoadingCard
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ItemYoutubeCardView
@@ -47,6 +42,7 @@ import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
@@ -55,6 +51,8 @@ fun EntertainmentNewsView() {
     val ip by ipDB.collectAsState(initial = null)
     val activity = LocalActivity.current
     val top10MovieString = stringResource(R.string.top_10_movies_show_in)
+
+    val isPremium by isPremiumDB.collectAsState(true)
 
     var showHollywoodNewsAll by remember { mutableStateOf(false) }
     var showBollywoodNewsAll by remember { mutableStateOf(false) }
@@ -115,8 +113,12 @@ fun EntertainmentNewsView() {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.latestNews ?: emptyList()) {
-                            ItemYoutubeCardView(it)
+                        itemsIndexed(v.data.latestNews ?: emptyList()) { i, z ->
+                            ItemYoutubeCardView(z)
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
                         }
                     }
                 }
@@ -128,36 +130,51 @@ fun EntertainmentNewsView() {
                     }
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
-                        items(v.data.trailers ?: emptyList()) {
-                            ItemYoutubeCardView(it)
+                        itemsIndexed(v.data.trailers ?: emptyList()) { i, z ->
+                            ItemYoutubeCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
                         }
                     }
                 }
 
                 when (val m = homeViewModel.entertainmentMoviesData) {
                     is ResponseResult.Success -> {
-                        item {
+                        if (m.data.trendingMovies?.isNotEmpty() == true) item {
                             Spacer(Modifier.height(70.dp))
                             Box(Modifier.padding(horizontal = 6.dp)) {
                                 TextViewBold(stringResource(R.string.movies_trending_today), 23)
                             }
                             Spacer(Modifier.height(12.dp))
                             LazyRow(Modifier.fillMaxWidth()) {
-                                items(m.data.trendingMovies ?: emptyList()) {
-                                    MoviesImageCard(it)
+                                itemsIndexed(m.data.trendingMovies) { i, z ->
+                                    MoviesImageCard(z)
+
+                                    if (!isPremium) {
+                                        if (i == 1) NativeViewAdsCard(z?.id)
+                                        if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                    }
                                 }
                             }
                         }
 
-                        item {
+                        if (m.data.topMovies?.isNotEmpty() == true) item {
                             Spacer(Modifier.height(70.dp))
                             Box(Modifier.padding(horizontal = 6.dp)) {
                                 TextViewBold("$top10MovieString ${ip?.country}", 23)
                             }
                             Spacer(Modifier.height(12.dp))
                             LazyRow(Modifier.fillMaxWidth()) {
-                                itemsIndexed(m.data.topMovies ?: emptyList()) { i, m ->
+                                itemsIndexed(m.data.topMovies) { i, m ->
                                     MoviesImageCard(m, i)
+
+                                    if (!isPremium) {
+                                        if (i == 1) NativeViewAdsCard(m?.id)
+                                        if ((i + 1) % 6 == 0) NativeViewAdsCard(m?.id)
+                                    }
                                 }
                             }
                         }
@@ -182,8 +199,17 @@ fun EntertainmentNewsView() {
                     Spacer(Modifier.height(4.dp))
                 }
 
-                items(clearArrayIt(v.data.newsArticles?.hollywood, showHollywoodNewsAll)) {
-                    NewsItemCard(it)
+                itemsIndexed(
+                    clearArrayIt(v.data.newsArticles?.hollywood, showHollywoodNewsAll)
+                ) { i, z ->
+                    NewsItemCard(z)
+
+                    if (!isPremium) Box(Modifier.fillMaxWidth(), Alignment.Center) {
+                        Row(Modifier.width(250.dp)) {
+                            if (i == 1) NativeViewAdsCard(z?.id)
+                            if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                        }
+                    }
                 }
 
                 item {
@@ -208,8 +234,17 @@ fun EntertainmentNewsView() {
                     Spacer(Modifier.height(4.dp))
                 }
 
-                items(clearArrayIt(v.data.newsArticles?.bollywood, showBollywoodNewsAll)) {
-                    NewsItemCard(it)
+                itemsIndexed(
+                    clearArrayIt(v.data.newsArticles?.bollywood, showBollywoodNewsAll)
+                ) { i, z ->
+                    NewsItemCard(z)
+
+                    if (!isPremium) Box(Modifier.fillMaxWidth(), Alignment.Center) {
+                        Row(Modifier.width(250.dp)) {
+                            if (i == 1) NativeViewAdsCard(z?.id)
+                            if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                        }
+                    }
                 }
 
                 item {
@@ -234,8 +269,18 @@ fun EntertainmentNewsView() {
                     Spacer(Modifier.height(4.dp))
                 }
 
-                items(clearArrayIt(v.data.newsArticles?.music, showMusicNewsAll)) {
-                    NewsItemCard(it)
+                itemsIndexed(
+                    clearArrayIt(v.data.newsArticles?.music, showMusicNewsAll)
+                ) {  i, z ->
+                    NewsItemCard(z)
+
+
+                    if (!isPremium) Box(Modifier.fillMaxWidth(), Alignment.Center) {
+                        Row(Modifier.width(250.dp)) {
+                            if (i == 1) NativeViewAdsCard(z?.id)
+                            if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                        }
+                    }
                 }
 
                 item {
