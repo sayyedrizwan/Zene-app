@@ -48,7 +48,7 @@ object URLSUtils {
     val ZENE_BASE_URL_SOCKET =
         if (BuildConfig.DEBUG) "http://192.168.0.108:4102" else BuildConfig.API_ZENE_MUSIC_BASE_URL
     val ZENE_BASE_URL_API =
-        if (BuildConfig.DEBUG) "http://192.168.0.108:4100" else BuildConfig.API_ZENE_MUSIC_BASE_URL
+        if (BuildConfig.DEBUG) "http://172.20.10.13:4100" else BuildConfig.API_ZENE_MUSIC_BASE_URL
     const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
     const val ZENE_RECENT_HOME_RADIO_API = "recent/home-radio"

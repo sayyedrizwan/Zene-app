@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/native_ad_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    android:paddingHorizontal="10dp"
+    android:paddingTop="50dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="5dp">
+
+        <FrameLayout
+            android:layout_margin="10dp"
+            android:id="@+id/media_container"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:background="@color/main" />
+
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/ad_headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/empty"
+                    android:fontFamily="@font/proximanovaregular"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/ad_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="start"
+                    android:fontFamily="@font/proximanovarlight"
+                    android:maxLines="1"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <!-- Description / Call to Action -->
+                <Button
+                    android:id="@+id/ad_call_to_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Read More"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/ad_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="8dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</com.google.android.gms.ads.nativead.NativeAdView>

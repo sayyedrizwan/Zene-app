@@ -31,12 +31,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:text=""
                 android:layout_margin="3dp"
                 android:backgroundTint="@color/black"
                 android:fontFamily="@font/proximanovarlight"
+                android:text="@string/empty"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="invisible" />
+
+
+            <ImageView
+                android:id="@+id/ad_actions_icon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="9dp"
+                android:background="@drawable/circle_image"
+                android:contentDescription="@string/empty"
+                android:padding="8dp"
+                android:src="@drawable/ic_download"
+                android:text="@string/empty"
+                android:tint="@color/white" />
 
 
             <ImageView
@@ -44,7 +59,14 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="top|start"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                android:contentDescription="@string/empty" />
+
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="30dp">
+
+            </LinearLayout>
 
         </FrameLayout>
 

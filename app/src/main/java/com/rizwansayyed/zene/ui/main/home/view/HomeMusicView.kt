@@ -30,7 +30,7 @@ import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
-import com.rizwansayyed.zene.utils.ads.BannerViewAds
+import com.rizwansayyed.zene.utils.ads.BannerNativeViewAds
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Dispatchers
@@ -108,7 +108,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                item { BannerViewAds() }
+                item { BannerNativeViewAds() }
 
                 if (v.data.topPlaylists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))

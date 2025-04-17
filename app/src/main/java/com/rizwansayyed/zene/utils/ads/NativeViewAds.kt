@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.utils.ads
 
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -29,8 +31,8 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 
-val adUnit =
-    if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/2247696110" else "ca-app-pub-2941808068005217/1646716011"
+val nativeAdUnit =
+    if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/1044960115" else "ca-app-pub-2941808068005217/1646716011"
 
 @Composable
 fun NativeViewAdsCard() {
@@ -38,7 +40,7 @@ fun NativeViewAdsCard() {
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
 
     LaunchedEffect(Unit) {
-        val builder = AdLoader.Builder(context, adUnit)
+        val builder = AdLoader.Builder(context, nativeAdUnit)
             .forNativeAd { ad: NativeAd ->
                 nativeAd?.destroy()
                 nativeAd = ad
@@ -61,6 +63,10 @@ fun NativeViewAdsCard() {
                 val inflater = LayoutInflater.from(ctx)
                 val adView = inflater.inflate(R.layout.native_ad_view, null) as NativeAdView
 
+                fun getD(v: Int): Drawable? {
+                    return ContextCompat.getDrawable(context, v)
+                }
+
                 val mediaContainer = adView.findViewById<FrameLayout>(R.id.media_container)
                 val mediaView = MediaView(ctx)
                 mediaContainer.addView(mediaView)
@@ -70,11 +76,28 @@ fun NativeViewAdsCard() {
                 adView.bodyView = adView.findViewById(R.id.ad_body)
                 adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
                 adView.iconView = adView.findViewById(R.id.ad_icon)
+                val icon: ImageView = adView.findViewById(R.id.ad_actions_icon)
 
                 (adView.headlineView as TextView).text = ad.headline
                 (adView.bodyView as TextView).text = ad.body
                 (adView.callToActionView as Button).text = ad.callToAction
                 (adView.iconView as ImageView).setImageDrawable(ad.icon?.drawable)
+
+                if (ad.callToAction?.lowercase() == "install" || ad.callToAction?.lowercase() == "download") {
+                    icon.setImageDrawable(getD(R.drawable.ic_download))
+                } else if (ad.callToAction?.lowercase()?.contains("more") == true) {
+                    icon.setImageDrawable(getD(R.drawable.ic_arrow_right))
+                } else if (ad.callToAction?.lowercase()?.contains("shop") == true ||
+                    ad.callToAction?.lowercase()?.contains("buy") == true ||
+                    ad.callToAction?.lowercase()?.contains("order") == true
+                ) {
+                    icon.setImageDrawable(getD(R.drawable.ic_cart))
+                } else if (ad.callToAction?.lowercase()?.contains("book") == true ||
+                    ad.callToAction?.lowercase()?.contains("open") == true
+                ) {
+                    icon.setImageDrawable(getD(R.drawable.ic_arrow_up_right))
+                } else
+                    icon.setImageDrawable(getD(R.drawable.ic_link))
 
                 ad.mediaContent?.let { mediaContent ->
                     mediaView.mediaContent = mediaContent
