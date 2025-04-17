@@ -101,14 +101,14 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemCardView(z, v.data.topSongs)
 
                             if (!isPremium) {
-                                if (i == 1) NativeViewAdsCard()
-                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                             }
                         }
                     }
                 }
 
-                if (!isPremium) item { BannerNativeViewAds() }
+                if (!isPremium) item { BannerNativeViewAds(1) }
 
                 if (v.data.topPlaylists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
@@ -121,8 +121,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemCardView(z)
 
                             if (!isPremium) {
-                                if (i == 1) NativeViewAdsCard()
-                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                             }
                         }
                     }
@@ -139,8 +139,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemCardView(z)
 
                             if (!isPremium) {
-                                if (i == 1) NativeViewAdsCard()
-                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                             }
                         }
                     }
@@ -157,14 +157,14 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemCardView(z)
 
                             if (!isPremium) {
-                                if (i == 1) NativeViewAdsCard()
-                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                             }
                         }
                     }
                 }
 
-                if (!isPremium) item { BannerNativeViewAds() }
+                if (!isPremium) item { BannerNativeViewAds(2) }
 
                 if (v.data.songsYouMayLike?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
@@ -177,8 +177,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemCardView(z)
 
                             if (!isPremium) {
-                                if (i == 1) NativeViewAdsCard()
-                                if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                             }
                         }
                     }
@@ -192,7 +192,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     Spacer(Modifier.height(12.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         itemsIndexed(v.data.favouriteArtists) { i, z ->
-                            if (!isPremium && i == 0) NativeViewAdsCard()
+                            if (!isPremium && i == 0) NativeViewAdsCard(z?.id)
                             ItemArtistsCardView(z)
                         }
                     }
@@ -212,8 +212,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemCardView(z)
 
                             if (!isPremium) {
-                                if (i == 1) NativeViewAdsCard()
-                                if ((i + 1) % 5 == 0) NativeViewAdsCard()
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 5 == 0) NativeViewAdsCard(z?.id)
                             }
                         }
                     }

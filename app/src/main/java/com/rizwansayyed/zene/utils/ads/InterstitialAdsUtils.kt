@@ -35,7 +35,7 @@ class InterstitialAdsUtils(val activity: Activity, private val showSimple: Boole
             if (lastAppOpenLoadTime == null) {
                 ad.show(activity)
                 lastAppOpenLoadTime = System.currentTimeMillis()
-            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 3) {
+            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 4) {
                 ad.show(activity)
                 lastAppOpenLoadTime = System.currentTimeMillis()
             }

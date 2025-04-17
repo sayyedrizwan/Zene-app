@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -105,8 +104,8 @@ fun HomeVideoView(homeViewModel: HomeViewModel) {
                                 VideoCardView(z)
 
                                 if (!isPremium) {
-                                    if (i == 1) NativeViewAdsCard()
-                                    if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                                 }
                             }
                         }
@@ -130,8 +129,8 @@ fun HomeVideoView(homeViewModel: HomeViewModel) {
                             Row {
                                 VideoCardView(z)
                                 if (!isPremium) {
-                                    if (i == 1) NativeViewAdsCard()
-                                    if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                                 }
                             }
                         }

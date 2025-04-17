@@ -96,8 +96,8 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                                 ItemCardView(z)
 
                                 if (!isPremium) {
-                                    if (i == 1) NativeViewAdsCard()
-                                    if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                                 }
                             }
                         }
@@ -134,8 +134,8 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                                     ItemCardView(z)
 
                                     if (!isPremium) {
-                                        if (i == 1) NativeViewAdsCard()
-                                        if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                        if (i == 1) NativeViewAdsCard(z?.id)
+                                        if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
                                     }
                                 }
                             }
@@ -143,7 +143,7 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (!isPremium) item(span = { GridItemSpan(maxLineSpan) }) { BannerNativeViewAds() }
+                if (!isPremium) item(span = { GridItemSpan(maxLineSpan) }) { BannerNativeViewAds(3) }
 
                 if (v.data.explore?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {

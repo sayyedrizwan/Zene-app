@@ -32,7 +32,7 @@ class OpenAppAdsUtils(val activity: Activity) {
             if (lastAppOpenLoadTime == null) {
                 ad.show(activity)
                 lastAppOpenLoadTime = System.currentTimeMillis()
-            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 4) {
+            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 3) {
                 ad.show(activity)
                 lastAppOpenLoadTime = System.currentTimeMillis()
             }

@@ -34,6 +34,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.VideoController
 import com.google.android.gms.ads.VideoOptions
@@ -41,112 +43,145 @@ import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Composable
-fun BannerNativeViewAds() {
-    Column(
-        Modifier
-            .padding(top = 25.dp)
-            .fillMaxWidth(), Arrangement.Center, Alignment.End
-    ) {
-        Box(
-            Modifier
-                .padding(5.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Black)
-                .padding(horizontal = 9.dp, vertical = 5.dp)
-        ) {
-            TextViewBold(stringResource(R.string.ads), 14)
-        }
 
-        LazyVerticalGrid(
-            GridCells.Fixed(2),
-            Modifier
-                .fillMaxWidth()
-                .heightIn(max = 320.dp)
-        ) {
-            items(2) { BannerNativeViewAdsItem() }
-        }
-    }
+val bannerAdUnit =
+    if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9214589741" else "ca-app-pub-2941808068005217/1624020934"
+
+
+val nativeAdsBannerMap = HashMap<String, NativeAd?>()
+val nativeAdsAndroidBannerViewMap = HashMap<String, NativeAdView?>()
+
+@Composable
+fun BannerNativeViewAds(id: Int) {
+
+//    AndroidView(
+//        modifier = Modifier.fillMaxWidth().padding(top = 40.dp),
+//        factory = { context ->
+//            AdView(context).apply {
+//                setAdSize(AdSize.BANNER)
+//                adUnitId = bannerAdUnit
+//                loadAd(AdRequest.Builder().build())
+//            }
+//        }
+//    )
+//    Column(
+//        Modifier
+//            .padding(top = 25.dp)
+//            .fillMaxWidth(), Arrangement.Center, Alignment.End
+//    ) {
+//        Box(
+//            Modifier
+//                .padding(5.dp)
+//                .clip(RoundedCornerShape(10.dp))
+//                .background(Color.Black)
+//                .padding(horizontal = 9.dp, vertical = 5.dp)
+//        ) {
+//            TextViewBold(stringResource(R.string.ads), 14)
+//        }
+//
+//        LazyVerticalGrid(
+//            GridCells.Fixed(2),
+//            Modifier
+//                .fillMaxWidth()
+//                .heightIn(max = 320.dp)
+//        ) {
+//            items(1) {
+//                BannerNativeViewAdsItem("${id}_$it")
+//            }
+//        }
+//    }
 }
 
 @Composable
-fun BannerNativeViewAdsItem() {
+fun BannerNativeViewAdsItem(id: String) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
 
     LaunchedEffect(Unit) {
         coroutine.launch(Dispatchers.IO) {
-            val videoOption =
-                VideoOptions.Builder().setClickToExpandRequested(false).setStartMuted(true).build()
-            val builder = AdLoader.Builder(context, nativeAdUnit).forNativeAd { ad: NativeAd ->
-                nativeAd?.destroy()
-                nativeAd = ad
-            }.withAdListener(object : AdListener() {
-                override fun onAdLoaded() {
-                    super.onAdLoaded()
-                    coroutine.launch {
-                        val videoController = nativeAd?.mediaContent?.videoController
-                        videoController?.play()
+            if (nativeAdsBannerMap.getOrDefault(id, null) == null) {
+                val videoOption =
+                    VideoOptions.Builder().setClickToExpandRequested(false).setStartMuted(true)
+                        .build()
+                val builder = AdLoader.Builder(context, nativeAdUnit).forNativeAd { ad: NativeAd ->
+                    nativeAd?.destroy()
+                    nativeAd = ad
+                    nativeAdsBannerMap[id] = ad
+                }.withAdListener(object : AdListener() {
+                    override fun onAdLoaded() {
+                        super.onAdLoaded()
+                        coroutine.launch {
+                            val videoController = nativeAd?.mediaContent?.videoController
+                            videoController?.play()
+                        }
                     }
-                }
 
-                override fun onAdFailedToLoad(error: LoadAdError) {
-                    Log.e("AdMob", "Native video ad failed: ${error.message}")
-                }
-            }).withNativeAdOptions(
-                NativeAdOptions.Builder()
-                    .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
-                    .setVideoOptions(videoOption).build()
-            ).build()
-            builder.loadAd(AdRequest.Builder().build())
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        Log.e("AdMob", "Native video ad failed: ${error.message}")
+                    }
+                }).withNativeAdOptions(
+                    NativeAdOptions.Builder()
+                        .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
+                        .setVideoOptions(videoOption).build()
+                ).build()
+                builder.loadAd(AdRequest.Builder().build())
+            } else {
+                nativeAd = nativeAdsBannerMap[id]
+            }
         }
     }
 
     nativeAd?.let { ad ->
         AndroidView(
             factory = { ctx ->
-                val inflater = LayoutInflater.from(ctx)
-                val adView = inflater.inflate(R.layout.banner_native_ad_view, null) as NativeAdView
+                if (nativeAdsAndroidBannerViewMap.getOrDefault(id, null) != null) {
+                    nativeAdsAndroidBannerViewMap[id]
+                } else {
+                    val inflater = LayoutInflater.from(ctx)
+                    val adView =
+                        inflater.inflate(R.layout.banner_native_ad_view, null) as NativeAdView
 
-                val mediaContainer = adView.findViewById<FrameLayout>(R.id.media_container)
-                val mediaView = MediaView(ctx)
-                mediaContainer.addView(mediaView)
-                adView.mediaView = mediaView
+                    val mediaContainer = adView.findViewById<FrameLayout>(R.id.media_container)
+                    val mediaView = MediaView(ctx)
+                    mediaContainer.addView(mediaView)
+                    adView.mediaView = mediaView
 
-                adView.headlineView = adView.findViewById(R.id.ad_headline)
-                adView.bodyView = adView.findViewById(R.id.ad_body)
-                adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
-                adView.iconView = adView.findViewById(R.id.ad_icon)
+                    adView.headlineView = adView.findViewById(R.id.ad_headline)
+                    adView.bodyView = adView.findViewById(R.id.ad_body)
+                    adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
+                    adView.iconView = adView.findViewById(R.id.ad_icon)
 
-                (adView.headlineView as TextView).text = ad.headline
-                (adView.bodyView as TextView).text = ad.body
-                (adView.callToActionView as TextView).text = ad.callToAction
-                (adView.iconView as ImageView).setImageDrawable(ad.icon?.drawable)
+                    (adView.headlineView as TextView).text = ad.headline
+                    (adView.bodyView as TextView).text = ad.body
+                    (adView.callToActionView as TextView).text = ad.callToAction
+                    (adView.iconView as ImageView).setImageDrawable(ad.icon?.drawable)
 
-                ad.mediaContent?.let { mediaContent ->
-                    mediaView.mediaContent = mediaContent
+                    ad.mediaContent?.let { mediaContent ->
+                        mediaView.mediaContent = mediaContent
 
-                    val videoController = mediaContent.videoController
-                    videoController.videoLifecycleCallbacks =
-                        object : VideoController.VideoLifecycleCallbacks() {
-                            override fun onVideoStart() {
-                                Log.d("AdMob", "Video started.")
+                        val videoController = mediaContent.videoController
+                        videoController.videoLifecycleCallbacks =
+                            object : VideoController.VideoLifecycleCallbacks() {
+                                override fun onVideoStart() {
+                                    Log.d("AdMob", "Video started.")
+                                }
+
+                                override fun onVideoEnd() {
+                                    Log.d("AdMob", "Video ended.")
+                                }
                             }
-
-                            override fun onVideoEnd() {
-                                Log.d("AdMob", "Video ended.")
-                            }
-                        }
-                }
-
-                adView.setNativeAd(ad)
-                adView
+                    }
+                    nativeAdsAndroidBannerViewMap[id] = adView
+                    adView.setNativeAd(ad)
+                    adView
+                }!!
             }, modifier = Modifier.fillMaxSize()
         )
     }
