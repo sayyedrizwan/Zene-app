@@ -108,7 +108,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                item { BannerNativeViewAds() }
+                if (!isPremium) item { BannerNativeViewAds() }
 
                 if (v.data.topPlaylists?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))
@@ -163,6 +163,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                         }
                     }
                 }
+
+                if (!isPremium) item { BannerNativeViewAds() }
 
                 if (v.data.songsYouMayLike?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))

@@ -40,6 +40,9 @@ fun NativeViewAdsCard() {
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
 
     LaunchedEffect(Unit) {
+        val videoOption = VideoOptions.Builder().setClickToExpandRequested(false).setStartMuted(true)
+            .build()
+
         val builder = AdLoader.Builder(context, nativeAdUnit)
             .forNativeAd { ad: NativeAd ->
                 nativeAd?.destroy()
@@ -51,7 +54,7 @@ fun NativeViewAdsCard() {
             }).withNativeAdOptions(
                 NativeAdOptions.Builder()
                     .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
-                    .setVideoOptions(VideoOptions.Builder().setStartMuted(true).build()).build()
+                    .setVideoOptions(videoOption).build()
             ).build()
 
         builder.loadAd(AdRequest.Builder().build())
@@ -68,9 +71,11 @@ fun NativeViewAdsCard() {
                 }
 
                 val mediaContainer = adView.findViewById<FrameLayout>(R.id.media_container)
+                mediaContainer.removeAllViews()
                 val mediaView = MediaView(ctx)
                 mediaContainer.addView(mediaView)
                 adView.mediaView = mediaView
+
 
                 adView.headlineView = adView.findViewById(R.id.ad_headline)
                 adView.bodyView = adView.findViewById(R.id.ad_body)
