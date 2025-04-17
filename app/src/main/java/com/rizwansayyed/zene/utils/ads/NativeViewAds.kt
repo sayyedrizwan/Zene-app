@@ -37,6 +37,8 @@ import kotlinx.coroutines.launch
 val nativeAdUnit =
     if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/1044960115" else "ca-app-pub-2941808068005217/1646716011"
 
+
+
 @Composable
 fun NativeViewAdsCard() {
     val context = LocalContext.current
