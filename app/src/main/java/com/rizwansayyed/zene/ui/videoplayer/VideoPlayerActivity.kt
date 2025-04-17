@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.videoplayer.view.VideoPlayerVideoView
 import com.rizwansayyed.zene.ui.view.LockScreenOrientation
-import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -48,6 +49,10 @@ class VideoPlayerActivity : ComponentActivity() {
                 ) {
                     VideoPlayerVideoView(Modifier.align(Alignment.Center), videoID, viewModel)
                 }
+
+                LaunchedEffect(Unit) {
+                    InterstitialAdsUtils(this@VideoPlayerActivity, true)
+                }
             }
         }
     }
@@ -74,10 +79,6 @@ class VideoPlayerActivity : ComponentActivity() {
             viewModel.setVideoThumb(videoID)
             viewModel.loadWebView(true)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        OpenAppAdsUtils(this)
+        InterstitialAdsUtils(this@VideoPlayerActivity, true)
     }
 }

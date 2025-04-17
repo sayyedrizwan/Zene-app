@@ -23,9 +23,7 @@ class OpenAppAdsUtils(val activity: Activity) {
         var lastAppOpenLoadTime: Long? = null
     }
 
-    init {
-        startAds()
-    }
+    init { startAds() }
 
     private val listener = object : AppOpenAdLoadCallback() {
         override fun onAdLoaded(ad: AppOpenAd) {

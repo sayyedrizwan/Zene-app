@@ -43,6 +43,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -52,10 +53,13 @@ fun BannerNativeViewAds() {
             .padding(top = 25.dp)
             .fillMaxWidth(), Arrangement.Center, Alignment.End
     ) {
-        Box(Modifier
-            .padding(5.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color.Black).padding(horizontal = 9.dp, vertical = 5.dp)) {
+        Box(
+            Modifier
+                .padding(5.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Black)
+                .padding(horizontal = 9.dp, vertical = 5.dp)
+        ) {
             TextViewBold(stringResource(R.string.ads), 14)
         }
 
@@ -77,29 +81,31 @@ fun BannerNativeViewAdsItem() {
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
 
     LaunchedEffect(Unit) {
-        val videoOption =
-            VideoOptions.Builder().setClickToExpandRequested(false).setStartMuted(true).build()
-        val builder = AdLoader.Builder(context, nativeAdUnit).forNativeAd { ad: NativeAd ->
-            nativeAd?.destroy()
-            nativeAd = ad
-        }.withAdListener(object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                coroutine.launch {
-                    val videoController = nativeAd?.mediaContent?.videoController
-                    videoController?.play()
+        coroutine.launch(Dispatchers.IO) {
+            val videoOption =
+                VideoOptions.Builder().setClickToExpandRequested(false).setStartMuted(true).build()
+            val builder = AdLoader.Builder(context, nativeAdUnit).forNativeAd { ad: NativeAd ->
+                nativeAd?.destroy()
+                nativeAd = ad
+            }.withAdListener(object : AdListener() {
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    coroutine.launch {
+                        val videoController = nativeAd?.mediaContent?.videoController
+                        videoController?.play()
+                    }
                 }
-            }
 
-            override fun onAdFailedToLoad(error: LoadAdError) {
-                Log.e("AdMob", "Native video ad failed: ${error.message}")
-            }
-        }).withNativeAdOptions(
-            NativeAdOptions.Builder()
-                .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
-                .setVideoOptions(videoOption).build()
-        ).build()
-        builder.loadAd(AdRequest.Builder().build())
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    Log.e("AdMob", "Native video ad failed: ${error.message}")
+                }
+            }).withNativeAdOptions(
+                NativeAdOptions.Builder()
+                    .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
+                    .setVideoOptions(videoOption).build()
+            ).build()
+            builder.loadAd(AdRequest.Builder().build())
+        }
     }
 
     nativeAd?.let { ad ->

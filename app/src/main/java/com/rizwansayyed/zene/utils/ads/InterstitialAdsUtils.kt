@@ -15,13 +15,18 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class InterstitialAdsUtils(val activity: Activity) {
+class InterstitialAdsUtils(val activity: Activity, private val showSimple: Boolean = false) {
 
     private val adID =
         if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/1033173712" else "ca-app-pub-2941808068005217/1745328219"
 
+    private val simpleAdID =
+        if (!BuildConfig.DEBUG) "ca-app-pub-3940256099942544/1033173712" else "ca-app-pub-2941808068005217/3297767085"
 
-    init { startAds() }
+
+    init {
+        startAds()
+    }
 
     private val listener = object : InterstitialAdLoadCallback() {
         override fun onAdLoaded(ad: InterstitialAd) {
@@ -43,6 +48,6 @@ class InterstitialAdsUtils(val activity: Activity) {
         if (isPremium == true) return@launch
 
         val request = AdRequest.Builder().build()
-        InterstitialAd.load(context, adID, request, listener)
+        InterstitialAd.load(context, if (showSimple) simpleAdID else adID, request, listener)
     }
 }

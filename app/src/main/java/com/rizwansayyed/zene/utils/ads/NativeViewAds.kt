@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +31,8 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 val nativeAdUnit =
     if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/1044960115" else "ca-app-pub-2941808068005217/1646716011"
@@ -37,27 +40,31 @@ val nativeAdUnit =
 @Composable
 fun NativeViewAdsCard() {
     val context = LocalContext.current
+    val coroutine = rememberCoroutineScope()
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
 
     LaunchedEffect(Unit) {
-        val videoOption = VideoOptions.Builder().setClickToExpandRequested(false).setStartMuted(true)
-            .build()
+        coroutine.launch(Dispatchers.IO) {
+            val videoOption =
+                VideoOptions.Builder().setClickToExpandRequested(false).setStartMuted(true)
+                    .build()
 
-        val builder = AdLoader.Builder(context, nativeAdUnit)
-            .forNativeAd { ad: NativeAd ->
-                nativeAd?.destroy()
-                nativeAd = ad
-            }.withAdListener(object : AdListener() {
-                override fun onAdFailedToLoad(error: LoadAdError) {
-                    Log.e("AdMob", "Native video ad failed: ${error.message}")
-                }
-            }).withNativeAdOptions(
-                NativeAdOptions.Builder()
-                    .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
-                    .setVideoOptions(videoOption).build()
-            ).build()
+            val builder = AdLoader.Builder(context, nativeAdUnit)
+                .forNativeAd { ad: NativeAd ->
+                    nativeAd?.destroy()
+                    nativeAd = ad
+                }.withAdListener(object : AdListener() {
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        Log.e("AdMob", "Native video ad failed: ${error.message}")
+                    }
+                }).withNativeAdOptions(
+                    NativeAdOptions.Builder()
+                        .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_LANDSCAPE)
+                        .setVideoOptions(videoOption).build()
+                ).build()
 
-        builder.loadAd(AdRequest.Builder().build())
+            builder.loadAd(AdRequest.Builder().build())
+        }
     }
 
     nativeAd?.let { ad ->

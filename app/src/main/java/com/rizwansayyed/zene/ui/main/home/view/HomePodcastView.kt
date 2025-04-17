@@ -16,8 +16,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -25,13 +27,15 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.PodcastViewItems
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
-import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
+import com.rizwansayyed.zene.utils.ads.BannerNativeViewAds
+import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
@@ -41,6 +45,8 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 )
 @Composable
 fun HomePodcastView(homeViewModel: HomeViewModel) {
+    val isPremium by isPremiumDB.collectAsState(true)
+
     LazyVerticalGrid(GridCells.Fixed(3), Modifier.fillMaxSize()) {
         when (val v = homeViewModel.homePodcast) {
             ResponseResult.Empty -> {}
@@ -86,8 +92,13 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                         }
                         Spacer(Modifier.height(12.dp))
                         LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.latest) {
-                                ItemCardView(it)
+                            itemsIndexed(v.data.latest) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard()
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                }
                             }
                         }
                     }
@@ -110,24 +121,29 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (v.data.podcastYouMayLike?.isNotEmpty() == true) item(span = {
-                    GridItemSpan(
-                        maxLineSpan
-                    )
-                }) {
-                    Column(Modifier.fillMaxWidth()) {
-                        Spacer(Modifier.height(50.dp))
-                        Box(Modifier.padding(horizontal = 6.dp)) {
-                            TextViewBold(stringResource(R.string.podcast_for_you), 23)
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            items(v.data.podcastYouMayLike) {
-                                ItemCardView(it)
+                if (v.data.podcastYouMayLike?.isNotEmpty() == true) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Column(Modifier.fillMaxWidth()) {
+                            Spacer(Modifier.height(50.dp))
+                            Box(Modifier.padding(horizontal = 6.dp)) {
+                                TextViewBold(stringResource(R.string.podcast_for_you), 23)
+                            }
+                            Spacer(Modifier.height(12.dp))
+                            LazyRow(Modifier.fillMaxWidth()) {
+                                itemsIndexed(v.data.podcastYouMayLike) { i, z ->
+                                    ItemCardView(z)
+
+                                    if (!isPremium) {
+                                        if (i == 1) NativeViewAdsCard()
+                                        if ((i + 1) % 6 == 0) NativeViewAdsCard()
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
+                if (!isPremium) item(span = { GridItemSpan(maxLineSpan) }) { BannerNativeViewAds() }
 
                 if (v.data.explore?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {
