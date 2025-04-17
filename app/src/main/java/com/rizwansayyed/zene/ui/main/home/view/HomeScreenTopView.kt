@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +28,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
@@ -40,6 +43,8 @@ import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
+    val isPremium by isPremiumDB.collectAsState(true)
+
     Row(
         Modifier
             .padding(top = if (MainUtils.isDirectToTV()) 15.dp else 60.dp)
@@ -67,7 +72,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             }
         }
         Spacer(Modifier.width(3.dp))
-        LuxCards {
+       if (!isPremium) LuxCards {
             viewModel.setHomeSections(HomeSectionSelector.LUX)
         }
 

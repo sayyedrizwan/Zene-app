@@ -63,7 +63,6 @@ import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
 import com.rizwansayyed.zene.ui.main.view.NotificationViewScreenView
 import com.rizwansayyed.zene.ui.musicplayer.MusicPlayerView
 import com.rizwansayyed.zene.ui.settings.SettingsView
-import com.rizwansayyed.zene.ui.settings.importplaylists.ImportPlaylistsActivity
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.ZeneTheme
 import com.rizwansayyed.zene.ui.view.ArtistsView
@@ -178,9 +177,13 @@ class MainActivity : FragmentActivity() {
                             MusicPlayerView(navigationViewModel)
                             LongPressSheetView(navigationViewModel)
                             BackHandler {
-                                if (!navController.popBackStack()) {
+                                if (!navController.popBackStack() && navigationViewModel.homeNavSection == HOME) {
                                     finish()
+                                    return@BackHandler
                                 }
+
+                                if (navigationViewModel.homeNavSection != HOME)
+                                    navigationViewModel.setHomeNavSections(HOME)
                             }
                         } else if (showLogin) LoginView()
                     }

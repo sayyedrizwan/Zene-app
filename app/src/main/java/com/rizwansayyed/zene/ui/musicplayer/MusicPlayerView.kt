@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.musicplayer
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
@@ -46,6 +47,7 @@ import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.main.home.view.LuxCards
@@ -58,6 +60,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.delay
@@ -70,6 +73,7 @@ val delimiters = arrayOf(",", "&", " and ", " | ")
 fun MusicPlayerView(navViewModel: NavigationViewModel) {
     val player by DataStorageManager.musicPlayerDB.collectAsState(null)
     val viewModel: PlayerViewModel = hiltViewModel()
+    val isPremium by isPremiumDB.collectAsState(true)
 
     AnimatedVisibility(
         navViewModel.showMusicPlayer,
@@ -82,6 +86,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
         val coroutines = rememberCoroutineScope()
         val pagerState = rememberPagerState(pageCount = { player?.lists?.size ?: 0 })
         val columnState = rememberScrollState()
+        val activity = LocalActivity.current
 
         Column(
             Modifier
@@ -105,7 +110,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
                 Spacer(Modifier.weight(1f))
 
-                LuxCards {
+                if (!isPremium) LuxCards {
                     coroutines.launch {
                         triggerHomeNav(NAV_MAIN_PAGE)
                         delay(500)
@@ -201,6 +206,9 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
             }
         }
 
+        LaunchedEffect(Unit) {
+            activity?.let { InterstitialAdsUtils(it) }
+        }
 
         LaunchedEffect(player?.data?.id) {
             val i = player?.lists?.indexOfFirst { it?.id == player?.data?.id }
