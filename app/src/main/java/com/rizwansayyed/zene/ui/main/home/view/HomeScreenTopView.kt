@@ -156,6 +156,6 @@ fun LuxCards(click: () -> Unit) {
         Arrangement.Center, Alignment.CenterVertically) {
         ImageIcon(R.drawable.ic_crown, 16, GoldColor)
         Spacer(Modifier.width(5.dp))
-        TextViewSemiBold(stringResource(R.string.app_name_luxe), 13)
+        TextViewSemiBold(stringResource(R.string.app_name_lux), 13)
     }
 }

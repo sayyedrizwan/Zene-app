@@ -203,6 +203,7 @@ dependencies {
     implementation(libs.play.services.ads)
 
     implementation(libs.opencsv)
+    implementation(libs.billing)
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }

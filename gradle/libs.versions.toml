@@ -5,8 +5,8 @@ compilesdk = "35"
 minsdk = "24"
 
 
-appversion = "169"
-versionname = "3.02.829"
+appversion = "170"
+versionname = "3.02.830"
 
 
 agp = "8.9.1"
@@ -60,6 +60,8 @@ socketIoClient = "2.1.1"
 
 opencsv = "5.10"
 playServicesAds = "24.2.0"
+
+billing = "7.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -159,6 +161,8 @@ colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", vers
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 
 opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
+
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
