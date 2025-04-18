@@ -1,18 +1,20 @@
-package com.rizwansayyed.zene.ui.main.lux
+package com.rizwansayyed.zene.ui.main.lux.billing
 
-import android.content.Context
+import android.app.Activity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
+import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.utils.MainUtils.toast
 
-class BillingManager(private val context: Context) {
+class BillingManager(private val context: Activity) {
 
     private var monthlyCost by mutableStateOf("$0.79")
     private var yearlyCost by mutableStateOf("$8.99")
@@ -20,8 +22,7 @@ class BillingManager(private val context: Context) {
     private val purchase = PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
 
     private val billingClient: BillingClient = BillingClient.newBuilder(context)
-        .setListener { billingResult, purchases ->
-        }
+        .setListener { _, _ -> }
         .enablePendingPurchases(purchase)
         .build()
 
@@ -31,7 +32,7 @@ class BillingManager(private val context: Context) {
                 if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
                     return
                 }
-                getSubscriptionPrices(listOf("monthly", "yearly")) { prices ->
+                getSubscriptionPrices(listOf("monthly", "yearly"), false) { prices ->
                     monthlyCost = prices["monthly"] ?: "$0.79"
                     yearlyCost = prices["yearly"] ?: "$8.99"
                 }
@@ -43,7 +44,19 @@ class BillingManager(private val context: Context) {
         })
     }
 
-    fun getSubscriptionPrices(productIds: List<String>, callback: (Map<String, String>) -> Unit) {
+    fun buyMonthly() {
+        getSubscriptionPrices(listOf("monthly"), true) {}
+    }
+
+    fun buyYearly() {
+        getSubscriptionPrices(listOf("yearly"), true) {}
+    }
+
+    fun getSubscriptionPrices(
+        productIds: List<String>,
+        buy: Boolean,
+        callback: (Map<String, String>) -> Unit
+    ) {
         val productList = productIds.map {
             QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(it)
@@ -64,6 +77,7 @@ class BillingManager(private val context: Context) {
                     val pricingPhase = offer?.pricingPhases?.pricingPhaseList?.firstOrNull()
                     val formattedPrice = pricingPhase?.formattedPrice ?: "Unavailable"
                     result[productDetails.productId] = formattedPrice
+                    if (buy) startBuying(productDetails)
                 }
             }
 
@@ -71,4 +85,16 @@ class BillingManager(private val context: Context) {
         }
     }
 
+    private fun startBuying(productDetails: ProductDetails) {
+        val token = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: ""
+        val param = BillingFlowParams.ProductDetailsParams.newBuilder()
+            .setProductDetails(productDetails)
+            .setOfferToken(token)
+            .build()
+
+        val billingFlowParams = BillingFlowParams.newBuilder()
+            .setProductDetailsParamsList(listOf(param)).build()
+
+        billingClient.launchBillingFlow(context, billingFlowParams)
+    }
 }
