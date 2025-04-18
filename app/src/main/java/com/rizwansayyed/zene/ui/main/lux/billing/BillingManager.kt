@@ -16,8 +16,8 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 
 class BillingManager(private val context: Activity) {
 
-    private var monthlyCost by mutableStateOf("$0.79")
-    private var yearlyCost by mutableStateOf("$8.99")
+    var monthlyCost by mutableStateOf("$0.79")
+    var yearlyCost by mutableStateOf("$8.99")
 
     private val purchase = PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
 

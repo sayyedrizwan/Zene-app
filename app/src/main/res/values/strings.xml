@@ -3,6 +3,8 @@
     <string name="app_name_lux">Zene Lux</string>
     <string name="lux">Lux</string>
     <string name="lux_tag_line">Go Beyond Listening, For the Real Music Enthusiasts.</string>
+    <string name="lux_only_for_music_enthusiasts">Lux is only for music enthusiasts. As all features are free in app-Upgrade only if you want to support and join Zene\'s exclusive community.</string>
+    <string name="upgrading_lux_give_ad_free">Upgrade to Lux to enjoy complete ad-free experience across the entire Zene ecosystem. no ads, no distractions.</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
     <string name="empty" />
     <string name="zene_share_desc">Check out Zene! Free music, podcasts &amp; radio. I’m hooked. 📻, All free. Give it a try! 🎧✨</string>
@@ -214,6 +216,7 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="upgrade">Upgrade</string>
     <string name="show_all">Show All</string>
     <string name="error_while_authentication">Error while authentication. Try again later.</string>
     <string name="downloaded">Downloaded</string>
@@ -354,6 +357,8 @@
     <string name="pinterest">Pinterest</string>
     <string name="list">List</string>
     <string name="ads">Ads</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
     <string name="similar_songs">Similar Songs</string>
     <string name="similar_playlists">Similar Playlists</string>
     <string name="similar_albums">Similar Albums</string>
