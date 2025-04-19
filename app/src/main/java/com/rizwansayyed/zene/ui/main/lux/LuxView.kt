@@ -9,11 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +29,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.main.lux.billing.BillingManager
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBoldBig
+import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
@@ -76,11 +74,14 @@ fun LuxView() {
         TextViewNormal(stringResource(R.string.upgrading_lux_give_ad_free), 15, center = true)
 
         Spacer(Modifier.height(80.dp))
-        LazyVerticalGrid(GridCells.Fixed(2), Modifier.fillMaxWidth().heightIn(max = 200.dp)) {
-            item { LuxItemView(billingManager, true) }
-            item { LuxItemView(billingManager, false) }
+        BillingPeriod.entries.forEach {
+            LuxItemView(billingManager, it)
+            Spacer(Modifier.height(20.dp))
         }
 
+        TextViewLight(
+            stringResource(R.string.you_can_cancel_subscription_anytime), 15, center = true
+        )
 
         Spacer(Modifier.height(400.dp))
     }

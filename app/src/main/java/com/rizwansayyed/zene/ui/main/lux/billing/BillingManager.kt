@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.lux.billing
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +11,7 @@ import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -18,11 +20,24 @@ class BillingManager(private val context: Activity) {
 
     var monthlyCost by mutableStateOf("$0.79")
     var yearlyCost by mutableStateOf("$8.99")
+    var semiAnnualCost by mutableStateOf("$8.99")
 
     private val purchase = PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
 
+
+    private val purchasesListener = PurchasesUpdatedListener { billingResult, purchases ->
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            for (purchase in purchases) {
+                val purchaseToken = purchase.purchaseToken
+                Log.d("TAG", "purcahse tokens: $purchaseToken")
+            }
+        }
+
+    }
+
+
     private val billingClient: BillingClient = BillingClient.newBuilder(context)
-        .setListener { _, _ -> }
+        .setListener(purchasesListener)
         .enablePendingPurchases(purchase)
         .build()
 
@@ -32,9 +47,10 @@ class BillingManager(private val context: Activity) {
                 if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
                     return
                 }
-                getSubscriptionPrices(listOf("monthly", "yearly"), false) { prices ->
+                getSubscriptionPrices(listOf("monthly", "semiannual", "yearly"), false) { prices ->
                     monthlyCost = prices["monthly"] ?: "$0.79"
                     yearlyCost = prices["yearly"] ?: "$8.99"
+                    semiAnnualCost = prices["semiannual"] ?: "$4.99"
                 }
             }
 
@@ -46,6 +62,10 @@ class BillingManager(private val context: Activity) {
 
     fun buyMonthly() {
         getSubscriptionPrices(listOf("monthly"), true) {}
+    }
+
+    fun buySemiAnnual() {
+        getSubscriptionPrices(listOf("semiannual"), true) {}
     }
 
     fun buyYearly() {
