@@ -34,7 +34,6 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
@@ -459,10 +458,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateSubscriptionToken(token: String?, done: () -> Unit) =
+    fun updateSubscriptionToken(token: String?, subscriptionId: String?, done: () -> Unit) =
         viewModelScope.launch(Dispatchers.IO) {
             token ?: return@launch
-            zeneAPI.updateSubscription(token).onStart {}.catch {}.collectLatest {
+            zeneAPI.updateSubscription(token, subscriptionId).onStart {}.catch {}.collectLatest {
                 delay(3.seconds)
                 done()
             }

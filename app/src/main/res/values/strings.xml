@@ -3,11 +3,12 @@
     <string name="app_name_lux">Zene Luxe</string>
     <string name="lux">Luxe</string>
     <string name="lux_tag_line">Go Beyond Listening, For the Real Music Enthusiasts.</string>
-    <string name="lux_only_for_music_enthusiasts">Lux is only for music enthusiasts. As all features are free in app-Upgrade only if you want to support and join Zene\'s exclusive community.</string>
-    <string name="upgrading_lux_give_ad_free">Upgrade to Lux to enjoy complete ad-free experience across the entire Zene ecosystem. no ads, no distractions.</string>
+    <string name="lux_only_for_music_enthusiasts">Luxe is only for music enthusiasts. As all features are free in app-Upgrade only if you want to support and join Zene\'s exclusive community.</string>
+    <string name="upgrading_lux_give_ad_free">Upgrade to Luxe to enjoy complete ad-free experience across the entire Zene ecosystem. no ads, no distractions.</string>
     <string name="zene_update_alerts">Zene Update Alerts</string>
     <string name="you_can_cancel_subscription_anytime">You can cancel subscription anytime.</string>
     <string name="you_re_a_premium_your_now">You\'re a Premium user now.</string>
+    <string name="please_wait_updating_subscription_details">Please wait..... Updating subscription details.</string>
     <string name="empty" />
     <string name="zene_share_desc">Check out Zene! Free music, podcasts &amp; radio. I’m hooked. 📻, All free. Give it a try! 🎧✨</string>
     <string name="app_desc">Free Music, Podcasts, Videos &amp; More – All Your Entertainment in One Place!</string>
@@ -134,6 +135,7 @@
     <string name="enter_a_username">Enter a username</string>
     <string name="add_a_caption">Add a caption…</string>
     <string name="search_s_p_a_etc">Search song, playlist, album, etc..</string>
+    <string name="enter_a_coupon_code">Enter a coupon code</string>
     <string name="search_images">Search images</string>
     <string name="emoji_status">Emoji Status</string>
     <string name="search_gif">Search GIF</string>

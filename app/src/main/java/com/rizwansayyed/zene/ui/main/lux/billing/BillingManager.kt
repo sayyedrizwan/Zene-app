@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
-class BillingManager(private val context: Activity, private val token : (String) -> Unit) {
+class BillingManager(private val context: Activity, private val token : (String, String) -> Unit) {
 
     var monthlyCost by mutableStateOf("$0.79")
     var yearlyCost by mutableStateOf("$8.99")
@@ -33,7 +33,8 @@ class BillingManager(private val context: Activity, private val token : (String)
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 val purchaseToken = purchase.purchaseToken
-                token(purchaseToken)
+                val subscriptionId = purchase.products.firstOrNull() ?: ""
+                token(purchaseToken, subscriptionId)
             }
         }
 

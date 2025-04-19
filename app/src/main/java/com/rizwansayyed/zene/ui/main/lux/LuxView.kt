@@ -44,7 +44,6 @@ import com.rizwansayyed.zene.ui.view.TextViewBoldBig
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
 import nl.dionsegijn.konfetti.compose.KonfettiView
@@ -63,14 +62,16 @@ fun LuxView() {
 
     val homeViewModel: HomeViewModel = hiltViewModel()
 
-    fun updatePurchase(token: String) {
-        showPremium = true
-        homeViewModel.updateSubscriptionToken(token) {
+    fun updatePurchase(token: String, subscriptionId: String) {
+        homeViewModel.updateSubscriptionToken(token, subscriptionId) {
             ProcessPhoenix.triggerRebirth(context)
         }
+        showPremium = true
     }
 
-    val manager by remember { mutableStateOf(BillingManager(context!!, { updatePurchase(it) })) }
+    val manager by remember {
+        mutableStateOf(BillingManager(context!!, { v, v1 -> updatePurchase(v, v1) }))
+    }
 
     val party = remember {
         Party(
@@ -133,6 +134,9 @@ fun LuxView() {
                 stringResource(R.string.you_can_cancel_subscription_anytime), 15, center = true
             )
 
+            Spacer(Modifier.height(80.dp))
+            LuxCouponView()
+
             Spacer(Modifier.height(400.dp))
         }
 
@@ -162,6 +166,12 @@ fun LuxView() {
 
                     TextViewNormal(
                         stringResource(R.string.you_re_a_premium_your_now), 15, center = true
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    TextViewNormal(
+                        stringResource(R.string.please_wait_updating_subscription_details),
+                        15,
+                        center = true
                     )
 
                 }
