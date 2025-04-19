@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
@@ -136,10 +137,10 @@ class HomeViewModel @Inject constructor(
 
     fun searchTrendingData() = viewModelScope.launch(Dispatchers.IO) {
         val data: SearchTrendingResponse? = cacheHelper.get(ZENE_SEARCH_TRENDING_API)
-//        if ((data?.songs?.size ?: 0) > 0) {
-//            searchTrending = ResponseResult.Success(data!!)
-//            return@launch
-//        }
+        if ((data?.songs?.size ?: 0) > 0) {
+            searchTrending = ResponseResult.Success(data!!)
+            return@launch
+        }
 
         zeneAPI.trendingData().onStart {
             searchTrending = ResponseResult.Loading
@@ -318,7 +319,10 @@ class HomeViewModel @Inject constructor(
                 SnackBarManager.showMessage(context.resources.getString(R.string.login_expired))
                 return@collectLatest
             }
-            DataStorageManager.userInfo = flowOf(it)
+            viewModelScope.launch(Dispatchers.IO) {
+                DataStorageManager.userInfo = flowOf(it)
+            }
+            isUserPremium()
         }
     }
 
@@ -438,6 +442,12 @@ class HomeViewModel @Inject constructor(
         zeneAPI.updateName(name).onStart {}.catch {}.collectLatest {}
     }
 
+    private fun isUserPremium() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.isUserPremium().catch {}.collectLatest {
+            DataStorageManager.isPremiumDB = flowOf(it.status ?: false)
+        }
+    }
+
     fun updateProfilePhoto(photo: Uri?) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.updatePhoto(photo).onStart {
             updateProfilePhotoInfo = true
@@ -453,7 +463,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             token ?: return@launch
             zeneAPI.updateSubscription(token).onStart {}.catch {}.collectLatest {
-                delay(5.seconds)
+                delay(3.seconds)
                 done()
             }
         }

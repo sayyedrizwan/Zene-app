@@ -105,6 +105,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_USERNAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_MY_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_GET_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_USER_PREMIUM_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_LOGIN_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_ALL_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_PLAYLISTS_API
@@ -155,6 +156,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_UPDATE_SUBSCRIPTION_PLAY_STORE_API)
     suspend fun updateSubscription(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_IS_USER_PREMIUM_API)
+    suspend fun isUserPremium(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 

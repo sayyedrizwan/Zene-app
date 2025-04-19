@@ -114,6 +114,17 @@ class ZeneAPIImplementation @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.updateSubscription(token, body))
     }
+    override suspend fun isUserPremium() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.isUserPremium(token, body))
+    }
 
     override suspend fun addHistory(data: ZeneMusicData) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""

@@ -134,6 +134,7 @@ object URLSUtils {
     const val ZENE_USER_VERIFY_NUMBER_OTP_API = "users/verify-number-otp"
     const val ZENE_USER_ADD_HISTORY_API = "users/add-history"
     const val ZENE_USER_UPDATE_SUBSCRIPTION_PLAY_STORE_API = "users/update-subscription-play-store"
+    const val ZENE_USER_IS_USER_PREMIUM_API = "users/is-user-premium"
     const val ZENE_USER_CHECK_USERNAME_API = "users/check-username"
     const val ZENE_USER_UPDATE_USERNAME_API = "users/update-username"
     const val ZENE_USER_UPDATE_NAME_API = "users/update-name"

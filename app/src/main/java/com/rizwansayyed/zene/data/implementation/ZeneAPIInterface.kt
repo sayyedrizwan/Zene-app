@@ -169,4 +169,5 @@ interface ZeneAPIInterface {
     suspend fun myAllPlaylists(): Flow<SavedPlaylistsPodcastsResponse>
     suspend fun importSongsToLike(name: List<String>, isLike: Boolean, playlistId: String): Flow<StatusTypeResponse>
     suspend fun updateSubscription(purcahseToken: String): Flow<StatusTypeResponse>
+    suspend fun isUserPremium(): Flow<StatusTypeResponse>
 }
