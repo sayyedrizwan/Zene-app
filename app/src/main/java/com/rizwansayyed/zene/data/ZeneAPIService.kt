@@ -124,6 +124,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_NAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_IMAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_NAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PROFILE_PHOTO_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_SUBSCRIPTION_PLAY_STORE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_TRUE_CALLER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_USERNAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_VERIFY_NUMBER_OTP_API
@@ -148,6 +149,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_ADD_HISTORY_API)
     suspend fun addHistory(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_UPDATE_SUBSCRIPTION_PLAY_STORE_API)
+    suspend fun updateSubscription(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 

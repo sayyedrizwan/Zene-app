@@ -449,6 +449,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun updateSubscriptionToken(token: String?, done: () -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            token ?: return@launch
+            zeneAPI.updateSubscription(token).onStart {}.catch {}.collectLatest {
+                delay(5.seconds)
+                done()
+            }
+        }
+
     fun moviesTvShowsInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.moviesTvShowsInfo(id).onStart {
             movieShowInfo = ResponseResult.Loading

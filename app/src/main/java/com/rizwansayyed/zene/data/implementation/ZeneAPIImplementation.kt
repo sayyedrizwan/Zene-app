@@ -88,6 +88,33 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.updateUser(token, body))
     }
 
+    override suspend fun updateSubscription(purcahseToken: String) = flow {
+        val ip = ipAPI.get()
+        CoroutineScope(Dispatchers.IO).launch {
+            ipDB = flowOf(ip)
+        }
+        val info = userInfo.firstOrNull()
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
+        val location = BackgroundLocationTracking.getLatestLocation()
+
+        val json = JSONObject().apply {
+            put("email", info?.email ?: "")
+            put("name", info?.name ?: "")
+            put("device_id", getUniqueDeviceId())
+            put("fcm_token", fcm)
+            put("token", purcahseToken)
+            put("ip", ip.query)
+            put("device", "Android ${getDeviceInfo()}")
+            put("country", "${ip.city}, ${ip.regionName}, ${ip.country}")
+            put("location", "${location?.latitude}, ${location?.longitude}")
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.updateSubscription(token, body))
+    }
+
     override suspend fun addHistory(data: ZeneMusicData) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

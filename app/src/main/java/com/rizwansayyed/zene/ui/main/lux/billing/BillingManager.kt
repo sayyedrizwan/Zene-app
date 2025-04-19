@@ -14,9 +14,14 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
-class BillingManager(private val context: Activity) {
+class BillingManager(private val context: Activity, private val token : (String) -> Unit) {
 
     var monthlyCost by mutableStateOf("$0.79")
     var yearlyCost by mutableStateOf("$8.99")
@@ -24,12 +29,11 @@ class BillingManager(private val context: Activity) {
 
     private val purchase = PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
 
-
     private val purchasesListener = PurchasesUpdatedListener { billingResult, purchases ->
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 val purchaseToken = purchase.purchaseToken
-                Log.d("TAG", "purcahse tokens: $purchaseToken")
+                token(purchaseToken)
             }
         }
 

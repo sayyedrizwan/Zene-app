@@ -42,6 +42,5 @@ class ZeneBaseApplication : Application() {
             }
             if (isActive) cancel()
         }
-        MobileAds.initialize(this) { }
     }
 }

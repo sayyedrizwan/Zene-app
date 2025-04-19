@@ -14,6 +14,7 @@ android {
     compileSdk = libs.versions.compilesdk.get().toInt()
 
     defaultConfig {
+        multiDexEnabled = true
         applicationId = libs.versions.packagename.get()
         minSdk = libs.versions.minsdk.get().toInt()
         targetSdk = libs.versions.compilesdk.get().toInt()
@@ -203,7 +204,10 @@ dependencies {
     implementation(libs.play.services.ads)
 
     implementation(libs.opencsv)
+
     implementation(libs.billing)
+
+    implementation(libs.konfetti.compose)
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
