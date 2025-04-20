@@ -135,7 +135,9 @@ fun LuxView() {
             )
 
             Spacer(Modifier.height(80.dp))
-            LuxCouponView()
+            LuxCouponView(homeViewModel) {
+                showPremium = true
+            }
 
             Spacer(Modifier.height(400.dp))
         }
@@ -167,11 +169,11 @@ fun LuxView() {
                     TextViewNormal(
                         stringResource(R.string.you_re_a_premium_your_now), 15, center = true
                     )
+
                     Spacer(Modifier.height(10.dp))
                     TextViewNormal(
                         stringResource(R.string.please_wait_updating_subscription_details),
-                        15,
-                        center = true
+                        15, center = true
                     )
 
                 }

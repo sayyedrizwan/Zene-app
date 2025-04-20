@@ -88,7 +88,7 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.updateUser(token, body))
     }
 
-    override suspend fun updateSubscription(purcahseToken: String, subscriptionId: String?) = flow {
+    override suspend fun updateSubscription(purchaseToken: String, subscriptionId: String?) = flow {
         val ip = ipAPI.get()
         CoroutineScope(Dispatchers.IO).launch {
             ipDB = flowOf(ip)
@@ -104,7 +104,7 @@ class ZeneAPIImplementation @Inject constructor(
             put("name", info?.name ?: "")
             put("device_id", getUniqueDeviceId())
             put("fcm_token", fcm)
-            put("token", purcahseToken)
+            put("token", purchaseToken)
             put("sub_token", subscriptionId)
             put("ip", ip.query)
             put("device", "Android ${getDeviceInfo()}")
@@ -1539,5 +1539,18 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.seasonMoviesTvShowsInfo(token, body))
+    }
+
+    override suspend fun updateCoupon(code: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("code", code)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.updateCoupon(token, body))
     }
 }

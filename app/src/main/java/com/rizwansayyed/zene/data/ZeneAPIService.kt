@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
+import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
@@ -121,6 +122,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SAVE_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_COUPON_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_NAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_IMAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_NAME_API
@@ -699,5 +701,11 @@ interface ZeneAPIService {
     suspend fun seasonMoviesTvShowsInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_UPDATE_COUPON_API)
+    suspend fun updateCoupon(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusCouponResponse
 
 }

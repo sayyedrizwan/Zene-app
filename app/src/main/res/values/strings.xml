@@ -433,6 +433,8 @@
     <string name="are_you_sure_import_to_liked_songs">Are you sure you want to add all songs of this playlist to your liked songs?</string>
     <string name="are_you_sure_import_to_new_playlist">Are you sure you want to create a new playlist with same name and import all songs?</string>
     <string name="are_you_sure_import_all_song_to_playlist">Are you sure you want to import all songs to this playlist?</string>
+    <string name="error_reading_coupon_code_try_again">Error reading coupon code, Please try again later :(</string>
+    <string name="no_coupon_found_try_again">No coupon found, Please verify and try again :(</string>
 
 
     <!--    notification channels-->

@@ -73,6 +73,7 @@ class HomeViewModel @Inject constructor(
     var homeVideos by mutableStateOf<ResponseResult<VideoDataResponse>>(ResponseResult.Empty)
     var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
     var searchKeywords by mutableStateOf<ResponseResult<List<String>>>(ResponseResult.Empty)
+    var couponApplied by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
     var entertainmentData by mutableStateOf<ResponseResult<EntertainmentDataResponse>>(
         ResponseResult.Empty
     )
@@ -443,7 +444,7 @@ class HomeViewModel @Inject constructor(
 
     private fun isUserPremium() = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.isUserPremium().catch {}.collectLatest {
-            DataStorageManager.isPremiumDB = flowOf(it.status ?: false)
+            DataStorageManager.isPremiumDB = flowOf(it.status == true)
         }
     }
 
@@ -462,8 +463,34 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             token ?: return@launch
             zeneAPI.updateSubscription(token, subscriptionId).onStart {}.catch {}.collectLatest {
+                viewModelScope.launch(Dispatchers.IO) {
+                    DataStorageManager.isPremiumDB = flowOf(it.status == true)
+                }
                 delay(3.seconds)
                 done()
+            }
+        }
+
+    fun applyCouponCode(couponCode: String?, done: () -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            zeneAPI.updateCoupon(couponCode).onStart {
+                couponApplied = ResponseResult.Loading
+            }.catch {
+                couponApplied = ResponseResult.Error(it)
+            }.collectLatest {
+                couponApplied = ResponseResult.Empty
+                if (it.error == true) {
+                    SnackBarManager.showMessage(context.resources.getString(R.string.error_reading_coupon_code_try_again))
+                } else if (it.isAvailable == true) {
+                    couponApplied = ResponseResult.Success(true)
+                    viewModelScope.launch(Dispatchers.IO) {
+                        DataStorageManager.isPremiumDB = flowOf(true)
+                    }
+                    delay(3.seconds)
+                    done()
+                } else {
+                    SnackBarManager.showMessage(context.resources.getString(R.string.no_coupon_found_try_again))
+                }
             }
         }
 

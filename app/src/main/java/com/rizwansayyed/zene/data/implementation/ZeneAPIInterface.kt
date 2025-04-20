@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
+import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
@@ -168,6 +169,7 @@ interface ZeneAPIInterface {
     suspend fun aiMusicInfo(id: String?): Flow<ZeneMusicData>
     suspend fun myAllPlaylists(): Flow<SavedPlaylistsPodcastsResponse>
     suspend fun importSongsToLike(name: List<String>, isLike: Boolean, playlistId: String): Flow<StatusTypeResponse>
-    suspend fun updateSubscription(purcahseToken: String, subscriptionId: String?): Flow<StatusTypeResponse>
+    suspend fun updateSubscription(purchaseToken: String, subscriptionId: String?): Flow<StatusTypeResponse>
     suspend fun isUserPremium(): Flow<StatusTypeResponse>
+    suspend fun updateCoupon(code: String?): Flow<StatusCouponResponse>
 }
