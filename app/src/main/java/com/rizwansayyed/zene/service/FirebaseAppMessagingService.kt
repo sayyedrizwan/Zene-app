@@ -8,7 +8,6 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.ktx.messaging
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
-import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
@@ -59,6 +58,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_PARTY_CALL = "CONNECT_PARTY_CALL"
         const val CONNECT_UNFRIEND_REQUEST = "CONNECT_UNFRIEND_REQUEST"
         const val CONNECT_PLAYLISTS_INFO = "CONNECT_PLAYLISTS_INFO"
+        const val CONTENT_NOTIFICATION_SUGGESTION = "CONTENT_NOTIFICATION_SUGGESTION"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
         const val FCM_ID = "id"
@@ -106,6 +106,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_UNFRIEND_REQUEST) connectUnFriendAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
             if (type == CONNECT_PLAYLISTS_INFO) connectPlaylistMessage(message.data)
+            if (type == CONTENT_NOTIFICATION_SUGGESTION) ContentNotificationRecommender(zeneAPI)
             if (type == CONNECT_PARTY_CALL_DECLINE) {
                 try {
                     val email = it[FCM_EMAIL]
@@ -126,7 +127,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
 
     private fun accessNewToken() = CoroutineScope(Dispatchers.IO).launch {
         zeneAPI.updateUser().catch {}.collectLatest {
-            DataStorageManager.userInfo = flowOf(it)
+            userInfo = flowOf(it)
         }
     }
 
