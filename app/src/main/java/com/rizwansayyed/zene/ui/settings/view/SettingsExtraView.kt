@@ -67,9 +67,9 @@ fun SettingsExtraView() {
 
     Spacer(Modifier.height(13.dp))
 
-    SettingsExtraView(R.string.earphone_tracker_finder, R.drawable.ic_headphones) {
-
-    }
+//    SettingsExtraView(R.string.earphone_tracker_finder, R.drawable.ic_headphones) {
+//
+//    }
 
     SettingsExtraView(R.string.import_playlists, R.drawable.ic_playlist) {
         Intent(context, ImportPlaylistsActivity::class.java).apply {

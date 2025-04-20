@@ -476,6 +476,7 @@ class HomeViewModel @Inject constructor(
             zeneAPI.updateCoupon(couponCode).onStart {
                 couponApplied = ResponseResult.Loading
             }.catch {
+                SnackBarManager.showMessage(context.resources.getString(R.string.error_reading_coupon_code_try_again))
                 couponApplied = ResponseResult.Error(it)
             }.collectLatest {
                 couponApplied = ResponseResult.Empty
