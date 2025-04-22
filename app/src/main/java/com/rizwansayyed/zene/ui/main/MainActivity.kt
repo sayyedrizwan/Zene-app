@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -82,6 +83,7 @@ import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -217,7 +219,8 @@ class MainActivity : FragmentActivity() {
 
                         IntentCheckUtils(intent, navigationViewModel, playerViewModel)
                         showLogin = true
-
+                        delay(1.seconds)
+                        intent.data = null
 
                         delay(4.seconds)
                         if (!isNotificationEnabled() && userInfo?.isLoggedIn() == true) {
@@ -232,6 +235,11 @@ class MainActivity : FragmentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         IntentCheckUtils(intent, navigationViewModel, playerViewModel)
+
+        lifecycleScope.launch {
+            delay(1.seconds)
+            intent.data = null
+        }
     }
 
     override fun onStart() {

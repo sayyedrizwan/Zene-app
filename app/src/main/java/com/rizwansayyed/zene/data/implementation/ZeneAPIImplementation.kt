@@ -1568,10 +1568,11 @@ class ZeneAPIImplementation @Inject constructor(
 
         val json = JSONObject().apply {
             put("email", info?.email ?: "")
-            put("name", info?.name  ?: "")
+            put("name", info?.name ?: "")
             put("last_ts", lastTS)
             put("type", lastType)
             put("country", ip.countryCode)
+            put("timezone", ip.timezone)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

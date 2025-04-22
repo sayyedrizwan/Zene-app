@@ -9,7 +9,6 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.data.model.IPResponse
-import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.AUTO_PAUSE_PLAYER_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_STORE_KEY
@@ -245,15 +244,13 @@ object DataStorageManager {
             if (isActive) cancel()
         }
 
-    var lastNotificationSuggestedType: Flow<MusicDataTypes>
+    var lastNotificationSuggestedType: Flow<String>
         get() = context.dataStore.data.map {
-            MusicDataTypes.valueOf(
-                it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] ?: MusicDataTypes.SONGS.name
-            )
+            it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] ?: ""
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
-                it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] = value.first().name
+                it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] = value.first()
             }
             if (isActive) cancel()
         }
