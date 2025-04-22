@@ -10,6 +10,8 @@ import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationGeneratedTSDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationSuggestedType
 import com.rizwansayyed.zene.datastore.DataStorageManager.pauseHistorySettings
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
@@ -1552,5 +1554,21 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.updateCoupon(token, body))
+    }
+
+
+    override suspend fun notificationRecommendation() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val lastTS = lastNotificationGeneratedTSDB.firstOrNull()
+        val lastType = lastNotificationSuggestedType.firstOrNull()
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("last_ts", lastTS)
+            put("type", lastType)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.notificationRecommendation(body))
     }
 }

@@ -1,12 +1,18 @@
 package com.rizwansayyed.zene.service
 
-import android.util.Log
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-class ContentNotificationRecommender(zeneAPI: ZeneAPIImplementation) {
-    init { start() }
+class ContentNotificationRecommender(private val zeneAPI: ZeneAPIImplementation) {
+    init {
+        start()
+    }
 
-    fun start() {
-        Log.d("TAG", "start: runnedd on 111")
+    fun start() = CoroutineScope(Dispatchers.IO).launch {
+        zeneAPI.notificationRecommendation().catch { }.collectLatest { }
     }
 }

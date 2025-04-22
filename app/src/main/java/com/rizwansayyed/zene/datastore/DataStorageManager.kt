@@ -5,9 +5,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rizwansayyed.zene.data.model.IPResponse
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.AUTO_PAUSE_PLAYER_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.DATA_STORE_KEY
@@ -17,6 +19,8 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_LOOP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_PREMIUM_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_SHUFFLE_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_GENERATED_TS_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_SUGGESTED_TYPE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
@@ -61,6 +65,10 @@ object DataStorageManager {
         val AUTO_PAUSE_PLAYER_SETTINGS_DB = booleanPreferencesKey("auto_pause_player_settings_db")
         val SMOOTH_SONG_TRANSITION_SETTINGS_DB =
             booleanPreferencesKey("smooth_song_transition_settings_db")
+        val LAST_NOTIFICATION_GENERATED_TS_DB =
+            longPreferencesKey("last_notification_generated_ts_db")
+        val LAST_NOTIFICATION_SUGGESTED_TYPE_DB =
+            stringPreferencesKey("last_notification_suggested_type_db")
     }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -150,7 +158,7 @@ object DataStorageManager {
 
     var videoCCDB: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[VIDEO_PLAYER_CC_DB] ?: true
+            it[VIDEO_PLAYER_CC_DB] != false
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
@@ -161,7 +169,7 @@ object DataStorageManager {
 
     var isShuffleDB: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[IS_SHUFFLE_DB] ?: false
+            it[IS_SHUFFLE_DB] == true
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
@@ -172,7 +180,7 @@ object DataStorageManager {
 
     var isLoopDB: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[IS_LOOP_DB] ?: false
+            it[IS_LOOP_DB] == true
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
@@ -183,7 +191,7 @@ object DataStorageManager {
 
     var isPremiumDB: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[IS_PREMIUM_DB] ?: false
+            it[IS_PREMIUM_DB] == true
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
@@ -194,7 +202,7 @@ object DataStorageManager {
 
     var autoPausePlayerSettings: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[AUTO_PAUSE_PLAYER_SETTINGS_DB] ?: false
+            it[AUTO_PAUSE_PLAYER_SETTINGS_DB] == true
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
@@ -206,7 +214,7 @@ object DataStorageManager {
 
     var smoothSongTransitionSettings: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] ?: false
+            it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] == true
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
@@ -217,7 +225,7 @@ object DataStorageManager {
 
     var pauseHistorySettings: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] ?: false
+            it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] == true
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
@@ -226,13 +234,37 @@ object DataStorageManager {
             if (isActive) cancel()
         }
 
+    var lastNotificationGeneratedTSDB: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[LAST_NOTIFICATION_GENERATED_TS_DB] ?: 1745225339000
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[LAST_NOTIFICATION_GENERATED_TS_DB] = value.first()
+            }
+            if (isActive) cancel()
+        }
+
+    var lastNotificationSuggestedType: Flow<MusicDataTypes>
+        get() = context.dataStore.data.map {
+            MusicDataTypes.valueOf(
+                it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] ?: MusicDataTypes.SONGS.name
+            )
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] = value.first().name
+            }
+            if (isActive) cancel()
+        }
+
     suspend fun lockChatSettings(id: String, v: Boolean? = null): Flow<Boolean?> {
         val key = booleanPreferencesKey("${id}_lock_chat_settings_db")
         if (v == null) return context.dataStore.data.map {
-            it[key] ?: false
+            it[key] == true
         } else {
-        context.dataStore.edit { it[key] = v }
-        return flowOf(false)
-    }
+            context.dataStore.edit { it[key] = v }
+            return flowOf(false)
+        }
     }
 }

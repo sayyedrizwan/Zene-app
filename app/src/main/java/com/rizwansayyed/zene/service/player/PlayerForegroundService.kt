@@ -59,7 +59,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             try {
                 if (Companion::playerService.isInitialized) return playerService
                 return null
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 return null
             }
         }
