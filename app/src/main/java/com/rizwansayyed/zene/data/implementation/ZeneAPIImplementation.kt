@@ -1558,14 +1558,20 @@ class ZeneAPIImplementation @Inject constructor(
 
 
     override suspend fun notificationRecommendation() = flow {
-        val email = userInfo.firstOrNull()?.email ?: ""
+        val info = userInfo.firstOrNull()
         val lastTS = lastNotificationGeneratedTSDB.firstOrNull()
         val lastType = lastNotificationSuggestedType.firstOrNull()
+        val ip = ipAPI.get()
+        CoroutineScope(Dispatchers.IO).launch {
+            ipDB = flowOf(ip)
+        }
 
         val json = JSONObject().apply {
-            put("email", email)
+            put("email", info?.email ?: "")
+            put("name", info?.name  ?: "")
             put("last_ts", lastTS)
             put("type", lastType)
+            put("country", ip.countryCode)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

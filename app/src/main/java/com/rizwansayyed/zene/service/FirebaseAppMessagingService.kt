@@ -106,7 +106,8 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_UNFRIEND_REQUEST) connectUnFriendAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
             if (type == CONNECT_PLAYLISTS_INFO) connectPlaylistMessage(message.data)
-            if (type == CONTENT_NOTIFICATION_SUGGESTION) ContentNotificationRecommender(zeneAPI)
+            if (type == CONTENT_NOTIFICATION_SUGGESTION)
+                ContentNotificationRecommender(this, zeneAPI)
             if (type == CONNECT_PARTY_CALL_DECLINE) {
                 try {
                     val email = it[FCM_EMAIL]

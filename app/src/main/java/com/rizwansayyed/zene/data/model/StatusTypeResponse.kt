@@ -6,7 +6,9 @@ data class RecommendationNotificationResponse(
     val type: String?,
     val title: String?,
     val body: String?,
-    val ts: Long?
+    val ts: Long?,
+    val img: String?,
+    val url: String?
 )
 
 data class MediaStatusTypeResponse(
