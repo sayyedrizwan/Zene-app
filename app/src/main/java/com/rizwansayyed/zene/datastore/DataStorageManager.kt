@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.rizwansayyed.zene.data.model.AndroidSponsorAds
 import com.rizwansayyed.zene.data.model.IPResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.AUTO_PAUSE_PLAYER_SETTINGS_DB
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_P
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SONG_SPEED_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SPONSOR_ADS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_PLAYER_CC_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_QUALITY_DB
@@ -51,6 +53,7 @@ object DataStorageManager {
         const val EMPTY_ARRAY = "[]"
 
         val USER_INFO_DB = stringPreferencesKey("user_info_db")
+        val SPONSOR_ADS_DB = stringPreferencesKey("sponsor_ads_db")
         val IP_DB = stringPreferencesKey("ip_db")
         val SEARCH_HISTORY_DB = stringPreferencesKey("search_history_db")
         val VIDEO_QUALITY_DB = stringPreferencesKey("video_quality_db")
@@ -69,6 +72,18 @@ object DataStorageManager {
         val LAST_NOTIFICATION_SUGGESTED_TYPE_DB =
             stringPreferencesKey("last_notification_suggested_type_db")
     }
+
+    var sponsorAdsDB: Flow<AndroidSponsorAds?>
+        get() = context.dataStore.data.map {
+            moshi.adapter(AndroidSponsorAds::class.java).fromJson(it[SPONSOR_ADS_DB] ?: EMPTY_JSON)
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                val json = moshi.adapter(AndroidSponsorAds::class.java).toJson(value.first())
+                it[SPONSOR_ADS_DB] = json
+            }
+            if (isActive) cancel()
+        }
 
     var userInfo: Flow<UserInfoResponse?>
         get() = context.dataStore.data.map {

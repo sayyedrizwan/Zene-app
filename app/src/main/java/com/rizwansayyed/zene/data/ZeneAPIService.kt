@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
+import com.rizwansayyed.zene.data.model.SponsorAdsResponse
 import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
@@ -100,6 +101,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_PLACES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SIMILAR_PODCASTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SPONSOR_ADS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
@@ -716,4 +718,7 @@ interface ZeneAPIService {
         @Body data: RequestBody
     ): RecommendationNotificationResponse
 
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_SPONSOR_ADS_API)
+    suspend fun sponsorAds(): SponsorAdsResponse
 }

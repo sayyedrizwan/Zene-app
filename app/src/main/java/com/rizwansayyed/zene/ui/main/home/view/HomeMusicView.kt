@@ -21,26 +21,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.sponsorAdsDB
+import com.rizwansayyed.zene.ui.main.home.HomeSponsorAdsView
 import com.rizwansayyed.zene.ui.main.home.HomeTopHeaderView
 import com.rizwansayyed.zene.ui.main.home.topHeaderAlert
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
-import com.rizwansayyed.zene.utils.ads.BannerNativeViewAds
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeMusicView(homeViewModel: HomeViewModel) {
+    val navViewModel : NavigationViewModel = hiltViewModel()
     var headerText by remember { mutableStateOf("") }
     val coroutine = rememberCoroutineScope()
     val isPremium by isPremiumDB.collectAsState(true)
+    val sponsorAds by sponsorAdsDB.collectAsState(null)
 
     LazyColumn(Modifier.fillMaxSize()) {
         item { HomeTopHeaderView(headerText) }
@@ -106,6 +111,15 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             }
                         }
                     }
+                }
+
+
+                if ((sponsorAds?.top?.title?.trim()?.length ?: 0) > 2 ||
+                    sponsorAds?.top?.media?.isNotEmpty() == true
+                ) item {
+                    Spacer(Modifier.height(50.dp))
+                    HomeSponsorAdsView(sponsorAds?.top, navViewModel)
+                    Spacer(Modifier.height(12.dp))
                 }
 
                 if (v.data.topPlaylists?.isNotEmpty() == true) item {
@@ -192,6 +206,14 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemArtistsCardView(z)
                         }
                     }
+                }
+
+                if ((sponsorAds?.bottom?.title?.trim()?.length ?: 0) > 2 ||
+                    sponsorAds?.bottom?.media?.isNotEmpty() == true
+                ) item {
+                    Spacer(Modifier.height(50.dp))
+                    HomeSponsorAdsView(sponsorAds?.bottom, navViewModel)
+                    Spacer(Modifier.height(12.dp))
                 }
 
                 if (v.data.songsToExplore?.isNotEmpty() == true) item {

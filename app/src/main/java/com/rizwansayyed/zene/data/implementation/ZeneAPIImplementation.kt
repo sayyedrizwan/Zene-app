@@ -1578,4 +1578,8 @@ class ZeneAPIImplementation @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.notificationRecommendation(body))
     }
+
+    override suspend fun sponsorAds() = flow {
+        emit(zeneAPI.sponsorAds())
+    }
 }

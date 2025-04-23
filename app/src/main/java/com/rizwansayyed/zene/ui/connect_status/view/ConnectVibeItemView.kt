@@ -404,7 +404,6 @@ fun ConnectVibeMediaItemAlert(item: String?, close: () -> Unit) {
                             val mediaSource = ProgressiveMediaSource.Factory(exo.second)
                                 .createMediaSource(MediaItem.fromUri(item ?: ""))
                             setMediaSource(mediaSource)
-                            setMediaSource(mediaSource)
                             prepare()
                             playWhenReady = true
                         }

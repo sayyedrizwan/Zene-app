@@ -246,6 +246,7 @@ class MainActivity : FragmentActivity() {
         super.onStart()
         MobileAds.initialize(this) { }
         homeViewModel.userInfo()
+        homeViewModel.sponsorAds()
         BackgroundLocationTracking.backgroundTracking?.onDataReceived()
         generateMainShortcuts(this)
         subscribeToTopicAll()

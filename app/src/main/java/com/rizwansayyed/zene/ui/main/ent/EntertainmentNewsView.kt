@@ -32,7 +32,9 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.sponsorAdsDB
 import com.rizwansayyed.zene.ui.main.ent.view.TopSliderVideoNewsView
+import com.rizwansayyed.zene.ui.main.home.HomeSponsorAdsView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerVideoLoadingCard
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ItemYoutubeCardView
@@ -44,14 +46,17 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
 fun EntertainmentNewsView() {
+    val navViewModel : NavigationViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
     val ip by ipDB.collectAsState(initial = null)
     val activity = LocalActivity.current
     val top10MovieString = stringResource(R.string.top_10_movies_show_in)
 
+    val sponsorAds by sponsorAdsDB.collectAsState(null)
     val isPremium by isPremiumDB.collectAsState(true)
 
     var showHollywoodNewsAll by remember { mutableStateOf(false) }
@@ -121,6 +126,14 @@ fun EntertainmentNewsView() {
                             }
                         }
                     }
+                }
+
+                if ((sponsorAds?.bottom?.title?.trim()?.length ?: 0) > 2 ||
+                    sponsorAds?.bottom?.media?.isNotEmpty() == true
+                ) item {
+                    Spacer(Modifier.height(70.dp))
+                    HomeSponsorAdsView(sponsorAds?.entertainment, navViewModel)
+                    Spacer(Modifier.height(12.dp))
                 }
 
                 item {

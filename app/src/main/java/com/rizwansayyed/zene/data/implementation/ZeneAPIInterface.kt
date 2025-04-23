@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
 import com.rizwansayyed.zene.data.model.SearchTrendingResponse
+import com.rizwansayyed.zene.data.model.SponsorAdsResponse
 import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.UserInfoResponse
@@ -174,4 +175,5 @@ interface ZeneAPIInterface {
     suspend fun isUserPremium(): Flow<StatusTypeResponse>
     suspend fun updateCoupon(code: String?): Flow<StatusCouponResponse>
     suspend fun notificationRecommendation(): Flow<RecommendationNotificationResponse>
+    suspend fun sponsorAds(): Flow<SponsorAdsResponse>
 }

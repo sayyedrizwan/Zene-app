@@ -145,6 +145,8 @@ object URLSUtils {
 
     const val ZENE_NOTIFICATION_RECOMMENDATION_API = "notification/notification-recommendation"
 
+    const val ZENE_SPONSOR_ADS_API = "sponsor/ads"
+
     const val ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API = "users-playlists/create-new-playlists"
     const val ZENE_USER_PLAYLISTS_SONG_CHECK_API = "users-playlists/playlists-song-check"
     const val ZENE_USER_ADD_TO_PLAYLISTS_API = "users-playlists/add-to-playlists"

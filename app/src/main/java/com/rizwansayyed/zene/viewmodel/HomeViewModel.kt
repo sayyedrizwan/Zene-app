@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.sponsorAdsDB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
@@ -512,6 +513,12 @@ class HomeViewModel @Inject constructor(
             seasonsMovieShowInfo = ResponseResult.Error(it)
         }.collectLatest {
             seasonsMovieShowInfo = ResponseResult.Success(it)
+        }
+    }
+
+    fun sponsorAds() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.sponsorAds().catch {}.collectLatest {
+            sponsorAdsDB = flowOf(it.android)
         }
     }
 }
