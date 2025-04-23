@@ -5,11 +5,11 @@ compilesdk = "35"
 minsdk = "24"
 
 
-appversion = "172"
-versionname = "3.02.834"
+appversion = "173"
+versionname = "3.02.835"
 
 
-agp = "8.9.1"
+agp = "8.9.2"
 
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.0"
