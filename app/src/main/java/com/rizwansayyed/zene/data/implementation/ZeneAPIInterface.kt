@@ -105,6 +105,7 @@ interface ZeneAPIInterface {
     suspend fun playerLyrics(p: MusicPlayerData?): Flow<PlayerLyricsInfoResponse>
     suspend fun podcastInfo(id: String?): Flow<PodcastPlaylistResponse>
     suspend fun podcastMediaURL(id: String?): Flow<MediaPathResponse>
+    suspend fun podcastCategories(name: String?): Flow<ZeneMusicDataList>
     suspend fun radioMediaURL(id: String?): Flow<MediaPathResponse>
     suspend fun aiMusicMediaURL(id: String?): Flow<MediaPathResponse>
     suspend fun similarAISongs(tags: String?): Flow<ZeneMusicDataList>
@@ -114,6 +115,7 @@ interface ZeneAPIInterface {
     suspend fun searchImages(q: ZeneMusicData): Flow<List<String>>
     suspend fun playerPodcastInfo(id: String): Flow<PodcastEposideResponse>
     suspend fun playerRadioInfo(id: String): Flow<PlayerRadioResponse>
+    suspend fun radioByCountry(name: String): Flow<ZeneMusicDataList>
     suspend fun similarSongs(id: String): Flow<SearchDataResponse>
     suspend fun playerVideoForSongs(p: ZeneMusicData?): Flow<PlayerVideoForSongsResponse>
     suspend fun similarRadio(tags: String?): Flow<ZeneMusicDataList>

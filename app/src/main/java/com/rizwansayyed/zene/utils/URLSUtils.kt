@@ -116,6 +116,8 @@ object URLSUtils {
     const val ZENE_PODCAST_PODCAST_MEDIA_URL_API = "podcast-radio/podcast-media-url"
     const val ZENE_RADIO_MEDIA_URL_API = "podcast-radio/radio-media-url"
     const val ZENE_SIMILAR_PODCASTS_API = "podcast-radio/similar-podcasts"
+    const val ZENE_RADIO_COUNTRY_API = "podcast-radio/radio-country"
+    const val ZENE_RADIO_PODCASTS_CATEGORY_API = "podcast-radio/podcasts-category"
 
 
     const val ZENE_AI_MUSIC_LIST_API = "ai/list"

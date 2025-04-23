@@ -58,14 +58,14 @@ fun SettingsPersonalInfo(userInfo: UserInfoResponse?) {
         stringResource(R.string.username), userInfo?.username, R.drawable.ic_at_the_rate
     ) { usernameNameUpdateView = true }
 
-    PersonalInfoWith(
-        stringResource(R.string.phone_number), userInfo?.phoneNumber, R.drawable.ic_telephone
-    ) {
-        Intent(context, PhoneVerificationActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(this)
-        }
-    }
+//    PersonalInfoWith(
+//        stringResource(R.string.phone_number), userInfo?.phoneNumber, R.drawable.ic_telephone
+//    ) {
+//        Intent(context, PhoneVerificationActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            context.startActivity(this)
+//        }
+//    }
 
     if (nameUpdateView) EditProfileNameDialog(viewModel) {
         nameUpdateView = false

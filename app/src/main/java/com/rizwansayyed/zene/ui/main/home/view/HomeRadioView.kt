@@ -13,26 +13,41 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
+import com.rizwansayyed.zene.ui.view.ItemCardViewDynamic
 import com.rizwansayyed.zene.ui.view.ItemSmallCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeRadioView(homeViewModel: HomeViewModel) {
+    var categoryTypeSheet by remember { mutableStateOf<String?>(null) }
+
     LazyColumn(Modifier.fillMaxSize()) {
         when (val v = homeViewModel.homeRadio) {
             ResponseResult.Empty -> {}
@@ -96,13 +111,13 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                     Column(Modifier.fillMaxWidth()) {
                         Spacer(Modifier.height(50.dp))
                         Box(Modifier.padding(horizontal = 6.dp)) {
-                            TextViewBold(stringResource(R.string.categories), 23)
+                            TextViewBold(stringResource(R.string.languages), 23)
                         }
                         Spacer(Modifier.height(12.dp))
                         FlowRow(Modifier.fillMaxWidth()) {
                             v.data.countries.forEach {
                                 TextViewBorder(it?.name ?: "") {
-
+                                    categoryTypeSheet = it?.name
                                 }
                             }
                         }
@@ -117,8 +132,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                     Spacer(Modifier.height(12.dp))
 
                     LazyHorizontalGrid(
-                        GridCells.Fixed(2),
-                        Modifier
+                        GridCells.Fixed(2), Modifier
                             .fillMaxWidth()
                             .heightIn(max = 500.dp)
                     ) {
@@ -136,8 +150,7 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
                     Spacer(Modifier.height(12.dp))
 
                     LazyHorizontalGrid(
-                        GridCells.Fixed(2),
-                        Modifier
+                        GridCells.Fixed(2), Modifier
                             .fillMaxWidth()
                             .heightIn(max = 500.dp)
                     ) {
@@ -152,5 +165,48 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
         item { Spacer(Modifier.height(300.dp)) }
     }
 
+    if (categoryTypeSheet != null) RadioCategorySheetView(categoryTypeSheet!!) {
+        categoryTypeSheet = null
+    }
+
     LaunchedEffect(Unit) { homeViewModel.homeRadioData() }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RadioCategorySheetView(name: String, close: () -> Unit) {
+    ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
+        val viewModel: HomeViewModel = hiltViewModel(key = name)
+
+        LazyVerticalGrid(GridCells.Fixed(3), Modifier.fillMaxWidth()) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Box(
+                    Modifier
+                        .padding(top = 20.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp)
+                ) {
+                    TextViewSemiBold(name, 19)
+                }
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(10.dp)) }
+
+            when (val v = viewModel.radioByCountry) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> item(span = { GridItemSpan(maxLineSpan) }) {
+                    CircularLoadingView()
+                }
+
+                is ResponseResult.Success -> items(v.data) {
+                    ItemCardViewDynamic(it, v.data)
+                }
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(70.dp)) }
+        }
+
+        LaunchedEffect(Unit) { viewModel.radioByCountry(name) }
+    }
 }

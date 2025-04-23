@@ -97,6 +97,8 @@ class HomeViewModel @Inject constructor(
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var radioByCountry by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var podcastCategories by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var artistsInfo by mutableStateOf<ResponseResult<ArtistsResponse>>(ResponseResult.Empty)
     var isPlaylistAdded by mutableStateOf(false)
     var isFollowing by mutableStateOf(false)
@@ -278,6 +280,26 @@ class HomeViewModel @Inject constructor(
             searchASongData = ResponseResult.Error(it)
         }.collectLatest {
             searchASongData = ResponseResult.Success(it)
+        }
+    }
+
+    fun radioByCountry(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.radioByCountry(name).onStart {
+            radioByCountry = ResponseResult.Loading
+        }.catch {
+            radioByCountry = ResponseResult.Error(it)
+        }.collectLatest {
+            radioByCountry = ResponseResult.Success(it)
+        }
+    }
+
+    fun podcastCategories(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.podcastCategories(name).onStart {
+            podcastCategories = ResponseResult.Loading
+        }.catch {
+            podcastCategories = ResponseResult.Error(it)
+        }.collectLatest {
+            podcastCategories = ResponseResult.Success(it)
         }
     }
 

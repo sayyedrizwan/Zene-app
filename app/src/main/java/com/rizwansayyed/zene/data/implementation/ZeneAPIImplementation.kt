@@ -1191,6 +1191,19 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.playerRadioInfo(token, body))
     }
 
+    override suspend fun radioByCountry(name: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.radioByCountry(token, body))
+    }
+
     override suspend fun createNewPlaylists(name: String, info: ZeneMusicData?) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -1417,6 +1430,19 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.podcastMediaURL(token, body))
+    }
+
+    override suspend fun podcastCategories(name: String?) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", name)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.podcastCategories(token, body))
     }
 
     override suspend fun radioMediaURL(id: String?) = flow {

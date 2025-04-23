@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -36,7 +37,8 @@ import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 fun ItemSmallCardView(data: ZeneMusicData?) {
     Column(
         Modifier
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
                 onClick = { startMedia(data) })
             .padding(horizontal = 9.dp)
             .width(105.dp)
@@ -63,7 +65,8 @@ fun ItemSmallCardView(data: ZeneMusicData?) {
 fun ItemYoutubeCardView(data: ZeneMusicData?) {
     Column(
         Modifier
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
                 onClick = { startMedia(data) })
             .padding(horizontal = 4.dp)
             .width(255.dp)
@@ -85,7 +88,8 @@ fun ItemYoutubeCardView(data: ZeneMusicData?) {
 @Composable
 fun MoviesImageCard(data: ZeneMusicData?, p: Int? = null) {
     Box(
-        Modifier.combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+        Modifier.combinedClickable(
+            onLongClick = { NavigationUtils.triggerInfoSheet(data) },
             onClick = { startMedia(data) })
     ) {
         GlideImage(
@@ -142,7 +146,8 @@ fun MoviesImageCardConnect(data: ZeneMusicData?, click: () -> Unit) {
 fun NewsItemCard(data: ZeneMusicData?) {
     Row(
         Modifier
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
                 onClick = { startMedia(data) })
             .padding(vertical = 20.dp)
             .fillMaxWidth(),
@@ -172,7 +177,8 @@ fun NewsItemCard(data: ZeneMusicData?) {
 fun ItemCardView(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList()) {
     Column(
         Modifier
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
                 onClick = { startMedia(data, list) })
             .padding(horizontal = 9.dp)
             .width(175.dp)
@@ -200,13 +206,51 @@ fun ItemCardView(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList())
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
+@Composable
+fun ItemCardViewDynamic(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList()) {
+    Column(
+        Modifier
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data, list) })
+            .padding(horizontal = 9.dp, vertical = 15.dp)
+            .fillMaxWidth()
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.DarkGray)
+            )
+
+            GlideImage(
+                data?.thumbnail,
+                data?.name,
+                Modifier.fillMaxWidth().aspectRatio(1f),
+                contentScale = ContentScale.Crop
+            )
+        }
+        Spacer(Modifier.height(9.dp))
+        TextViewNormal(data?.name ?: "", 16, line = 1)
+        if (data?.type() != MusicDataTypes.PLAYLISTS) {
+            if (data?.type() == MusicDataTypes.PODCAST) {
+                TextViewLight(data.artists ?: "", 13, line = 3)
+            } else Box(Modifier.offset(y = (-2).dp)) {
+                TextViewLight(data?.artists ?: "", 14, line = 1)
+            }
+        }
+    }
+}
+
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemArtistsCardView(data: ZeneMusicData?) {
     Column(
         Modifier
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
                 onClick = { startMedia(data) })
             .padding(horizontal = 5.dp)
             .width(155.dp)
@@ -238,7 +282,8 @@ fun ItemArtistsCardView(data: ZeneMusicData?) {
 fun PodcastViewItems(data: ZeneMusicData?) {
     Box(
         Modifier
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
                 onClick = { startMedia(data) })
             .fillMaxWidth()
             .padding(3.dp)
@@ -264,7 +309,8 @@ fun PodcastViewItems(data: ZeneMusicData?) {
 fun VideoCardView(data: ZeneMusicData?) {
     Column(
         Modifier
-            .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
                 onClick = { startMedia(data) })
             .padding(horizontal = 9.dp)
             .padding(bottom = 19.dp)
@@ -309,10 +355,13 @@ fun VideoCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FullVideoCardView(data: ZeneMusicData?) {
-    Row(Modifier
-        .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(data) },
-            onClick = { startMedia(data) })
-        .padding(horizontal = 5.dp, vertical = 10.dp)) {
+    Row(
+        Modifier
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                onClick = { startMedia(data) })
+            .padding(horizontal = 5.dp, vertical = 10.dp)
+    ) {
         Box(
             Modifier
                 .weight(3f)
@@ -354,10 +403,11 @@ fun FullVideoCardView(data: ZeneMusicData?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ItemCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
-    Column(Modifier
-        .clickable { click() }
-        .padding(horizontal = 9.dp)
-        .width(175.dp)) {
+    Column(
+        Modifier
+            .clickable { click() }
+            .padding(horizontal = 9.dp)
+            .width(175.dp)) {
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
@@ -401,11 +451,12 @@ fun ItemCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun VideoCardViewConnect(data: ZeneMusicData?, click: () -> Unit) {
-    Column(Modifier
-        .clickable { click() }
-        .padding(horizontal = 9.dp)
-        .padding(bottom = 19.dp)
-        .width(245.dp)) {
+    Column(
+        Modifier
+            .clickable { click() }
+            .padding(horizontal = 9.dp)
+            .padding(bottom = 19.dp)
+            .width(245.dp)) {
         Box(
             Modifier
                 .fillMaxWidth()

@@ -110,7 +110,6 @@ fun EntertainmentNewsView() {
                     TopSliderVideoNewsView(v.data.topNews)
                 }
 
-
                 item {
                     Spacer(Modifier.height(70.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {

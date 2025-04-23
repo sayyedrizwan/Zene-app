@@ -85,7 +85,9 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_SONG_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_VIDEO_FOR_SONGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_MEDIA_URL_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO_COUNTRY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO_MEDIA_URL_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO_PODCASTS_CATEGORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
@@ -504,6 +506,12 @@ interface ZeneAPIService {
     ): PlayerRadioResponse
 
     @Headers("Content-Type: application/json")
+    @POST(ZENE_RADIO_COUNTRY_API)
+    suspend fun radioByCountry(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
     @POST(ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API)
     suspend fun createNewPlaylists(
         @Header("token") token: String, @Body data: RequestBody
@@ -556,6 +564,12 @@ interface ZeneAPIService {
     suspend fun podcastInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): PodcastPlaylistResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_RADIO_PODCASTS_CATEGORY_API)
+    suspend fun podcastCategories(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_INFO_PLAYLISTS_API)

@@ -17,24 +17,35 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
+import com.rizwansayyed.zene.ui.view.ItemCardViewDynamic
 import com.rizwansayyed.zene.ui.view.PodcastViewItems
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
-import com.rizwansayyed.zene.utils.ads.BannerNativeViewAds
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -46,6 +57,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 @Composable
 fun HomePodcastView(homeViewModel: HomeViewModel) {
     val isPremium by isPremiumDB.collectAsState(true)
+    var categoryTypeSheet by remember { mutableStateOf<ZeneMusicData?>(null) }
 
     LazyVerticalGrid(GridCells.Fixed(3), Modifier.fillMaxSize()) {
         when (val v = homeViewModel.homePodcast) {
@@ -114,7 +126,7 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                         FlowRow(Modifier.fillMaxWidth()) {
                             v.data.categories.forEach {
                                 TextViewBorder(it?.name ?: "") {
-
+                                    categoryTypeSheet = it
                                 }
                             }
                         }
@@ -171,5 +183,49 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             Spacer(Modifier.height(300.dp))
         }
+    }
+
+    if (categoryTypeSheet != null) CategoryPodcastSheetView(categoryTypeSheet!!) {
+        categoryTypeSheet = null
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryPodcastSheetView(data: ZeneMusicData, close: () -> Unit) {
+    ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
+        val viewModel: HomeViewModel = hiltViewModel(key = data.id)
+
+        LazyVerticalGrid(GridCells.Fixed(3), Modifier.fillMaxWidth()) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Box(
+                    Modifier
+                        .padding(top = 20.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp)
+                ) {
+                    TextViewSemiBold(data.name ?: "", 19)
+                }
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(10.dp)) }
+
+            when (val v = viewModel.podcastCategories) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> item(span = { GridItemSpan(maxLineSpan) }) {
+                    CircularLoadingView()
+                }
+
+                is ResponseResult.Success -> items(v.data) {
+                    ItemCardViewDynamic(it, v.data)
+                }
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(70.dp)) }
+        }
+
+        LaunchedEffect(Unit) { viewModel.podcastCategories(data.name ?: "") }
     }
 }
