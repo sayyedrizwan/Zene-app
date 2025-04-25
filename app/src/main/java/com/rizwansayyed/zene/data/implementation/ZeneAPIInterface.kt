@@ -178,4 +178,5 @@ interface ZeneAPIInterface {
     suspend fun updateCoupon(code: String?): Flow<StatusCouponResponse>
     suspend fun notificationRecommendation(): Flow<RecommendationNotificationResponse>
     suspend fun sponsorAds(): Flow<SponsorAdsResponse>
+    suspend fun feedFollowedArtists(): Flow<ZeneMusicDataList>
 }

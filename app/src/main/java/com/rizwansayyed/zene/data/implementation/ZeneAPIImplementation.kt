@@ -117,6 +117,7 @@ class ZeneAPIImplementation @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.updateSubscription(token, body))
     }
+
     override suspend fun isUserPremium() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -1607,5 +1608,19 @@ class ZeneAPIImplementation @Inject constructor(
 
     override suspend fun sponsorAds() = flow {
         emit(zeneAPI.sponsorAds())
+    }
+
+    override suspend fun feedFollowedArtists() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.feedFollowedArtists(token, body))
     }
 }

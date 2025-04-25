@@ -136,8 +136,7 @@ fun MessageItemView(
                     Column {
                         Box(Modifier.clickable { showMediaDialog = true }, Alignment.Center) {
                             if (data.candid_thumbnail != null) GlideImage(
-                                data.candid_thumbnail,
-                                "",
+                                data.candid_thumbnail, "",
                                 Modifier.height(250.dp)
                             )
                             else GlideImage(data.candid_media, "", Modifier.height(250.dp))

@@ -66,6 +66,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_FOLLOWED_ARTISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_FOLLOW_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_MOVIE_SHOW_INFO_API
@@ -735,4 +736,10 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_SPONSOR_ADS_API)
     suspend fun sponsorAds(): SponsorAdsResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_FEED_FOLLOWED_ARTISTS_API)
+    suspend fun feedFollowedArtists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
 }

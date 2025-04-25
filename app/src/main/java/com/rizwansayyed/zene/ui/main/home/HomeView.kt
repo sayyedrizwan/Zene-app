@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.data.model.UserInfoResponse
+import com.rizwansayyed.zene.ui.main.feed.FeedView
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MUSIC
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MY_LIBRARY
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.PODCAST
@@ -54,6 +54,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
         ) {
             when (viewModel.homeSection) {
                 MUSIC -> HomeMusicView(homeViewModel)
+                HomeSectionSelector.FEED -> FeedView(homeViewModel)
                 RADIO -> HomeRadioView(homeViewModel)
                 PODCAST -> HomePodcastView(homeViewModel)
                 HomeSectionSelector.LUX -> LuxView()

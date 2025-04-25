@@ -27,6 +27,9 @@
     <string name="login_expired">Login expired. Please try again later.</string>
     <string name="no_song_played">No song played.</string>
     <string name="music">Music</string>
+    <string name="feed">Feed</string>
+    <string name="follow_artists_updates">Follow artists to get their updates.</string>
+    <string name="updates">Updates</string>
     <string name="podcasts_series">Podcasts Series</string>
     <string name="view_podcast_series">View podcast series</string>
     <string name="go_to_album">Go to album</string>

@@ -72,7 +72,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             }
         }
         Spacer(Modifier.width(3.dp))
-       if (!isPremium) LuxCards {
+        if (!isPremium) LuxCards {
             viewModel.setHomeSections(HomeSectionSelector.LUX)
         }
 
@@ -81,6 +81,11 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             viewModel.homeSection == HomeSectionSelector.MUSIC, stringResource(R.string.music)
         ) {
             viewModel.setHomeSections(HomeSectionSelector.MUSIC)
+        }
+        TextSimpleCards(
+            viewModel.homeSection == HomeSectionSelector.FEED, stringResource(R.string.feed)
+        ) {
+            viewModel.setHomeSections(HomeSectionSelector.FEED)
         }
 
         TextSimpleCards(

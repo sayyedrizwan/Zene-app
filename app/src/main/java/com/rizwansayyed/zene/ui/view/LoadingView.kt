@@ -50,6 +50,30 @@ fun CircularLoadingViewSmall() {
     }
 }
 
+@Composable
+fun ArtistsRoundList() {
+    Column(
+        Modifier
+            .padding(horizontal = 9.dp)
+            .width(175.dp),
+        Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            ShimmerEffect(
+                Modifier
+                    .size(170.dp)
+                    .clip(RoundedCornerShape(100)), durationMillis = 1000
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+        ShimmerEffect(
+            Modifier
+                .padding(horizontal = 3.dp)
+                .size(100.dp, 8.dp), durationMillis = 1000
+        )
+    }
+}
 
 @Composable
 fun HorizontalShimmerLoadingCard() {
