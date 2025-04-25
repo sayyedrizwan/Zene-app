@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -25,6 +23,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.SnackBarManager
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -86,10 +86,11 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
                 try {
                     val info = GoogleIdTokenCredential.createFrom(credential.data)
                     serverLogin(info.idToken, LoginType.GOOGLE)
-                } catch (e: Exception) {
+                    registerEvents(FirebaseEventsParams.GOOGLE_LOGIN)
+                } catch (_: Exception) {
                     isLoading = false
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 isLoading = false
             }
         }
@@ -107,6 +108,7 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         override fun onSuccess(result: LoginResult) {
             CoroutineScope(Dispatchers.IO).launch {
                 serverLogin(result.accessToken.token, LoginType.FACEBOOK)
+                registerEvents(FirebaseEventsParams.FACEBOOK_LOGIN)
                 if (isActive) cancel()
             }
         }
@@ -134,7 +136,8 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
             val idToken = appleCredential?.idToken ?: ""
 
             serverLogin(idToken, LoginType.APPLE)
-        } catch (e: Exception) {
+            registerEvents(FirebaseEventsParams.APPLE_LOGIN)
+        } catch (_: Exception) {
             isLoading = false
         }
     }

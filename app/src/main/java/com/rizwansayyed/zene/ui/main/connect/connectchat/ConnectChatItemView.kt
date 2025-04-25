@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.connect.connectchat
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -98,6 +99,7 @@ fun ConnectChatItemView(
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MessageItemView(

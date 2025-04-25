@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,6 +24,8 @@ import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
@@ -36,8 +39,7 @@ fun LoginView() {
             .padding(bottom = 100.dp)
             .fillMaxSize()
             .background(DarkCharcoal),
-        Arrangement.Center,
-        Alignment.CenterHorizontally
+        Arrangement.Center, Alignment.CenterHorizontally
     ) {
         Column(
             Modifier
@@ -71,5 +73,9 @@ fun LoginView() {
                 Spacer(Modifier.height(24.dp))
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        registerEvents(FirebaseEventsParams.STARTED_LOGIN_VIEW)
     }
 }

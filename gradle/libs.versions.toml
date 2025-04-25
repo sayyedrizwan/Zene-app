@@ -5,8 +5,8 @@ compilesdk = "36"
 minsdk = "24"
 
 
-appversion = "174"
-versionname = "3.02.836"
+appversion = "175"
+versionname = "3.02.837"
 
 agp = "8.9.2"
 
@@ -14,7 +14,7 @@ androidImageCropper = "4.6.0"
 exifinterface = "1.4.1"
 glide = "1.0.0-beta01"
 credentials = "1.5.0"
-datastorePreferences = "1.1.5"
+datastorePreferences = "1.1.4"
 facebookLogin = "18.0.2"
 firebaseBom = "33.12.0"
 gson = "2.11.0"

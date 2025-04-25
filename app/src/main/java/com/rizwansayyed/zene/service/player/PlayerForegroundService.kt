@@ -24,6 +24,8 @@ import com.rizwansayyed.zene.service.player.utils.SmartShuffle
 import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
 import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
@@ -112,16 +114,20 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             getSimilarSongInfo()
             loadAVideo(currentPlayingSong?.id)
             exoPlayerSession.stop()
+            registerEvents(FirebaseEventsParams.PLAYED_SONG)
         } else if (currentPlayingSong?.type() == MusicDataTypes.PODCAST_AUDIO) {
             getMediaPlayerPath()
             loadAVideo("")
+            registerEvents(FirebaseEventsParams.PLAYED_PODCAST)
         } else if (currentPlayingSong?.type() == MusicDataTypes.RADIO) {
             getRadioPlayerPath()
             loadAVideo("")
+            registerEvents(FirebaseEventsParams.PLAYED_RADIO)
         } else if (currentPlayingSong?.type() == MusicDataTypes.AI_MUSIC) {
             getAIMusicPlayerPath()
             getSimilarAISongInfo()
             loadAVideo("")
+            registerEvents(FirebaseEventsParams.PLAYED_AI_MUSIC)
         }
     }
 

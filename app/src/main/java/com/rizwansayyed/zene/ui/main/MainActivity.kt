@@ -73,6 +73,8 @@ import com.rizwansayyed.zene.ui.view.movies.MoviesView
 import com.rizwansayyed.zene.ui.view.myplaylist.MyPlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
@@ -251,6 +253,7 @@ class MainActivity : FragmentActivity() {
         generateMainShortcuts(this)
         subscribeToTopicAll()
         OpenAppAdsUtils(this)
+        registerEvents(FirebaseEventsParams.OPENED_APP)
     }
 
 }

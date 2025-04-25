@@ -11,6 +11,8 @@ import com.rizwansayyed.zene.service.notification.NotificationUtils
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.OTHER_NOTIFICATION
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.OTHER_NOTIFICATION_DESC
 import com.rizwansayyed.zene.ui.main.MainActivity
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -30,6 +32,7 @@ class ContentNotificationRecommender(
     fun start() = CoroutineScope(Dispatchers.IO).launch {
         zeneAPI.notificationRecommendation().catch { }.collectLatest {
             try {
+                registerEvents(FirebaseEventsParams.GENERATED_CUSTOM_NOTIFICATION)
                 NotificationUtils(it.title!!, it.body!!).apply {
                     val intent = Intent(context, MainActivity::class.java).apply {
                         data = it.url?.toUri()

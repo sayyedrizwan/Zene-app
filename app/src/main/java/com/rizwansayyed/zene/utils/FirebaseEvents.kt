@@ -12,7 +12,11 @@ import kotlinx.coroutines.launch
 object FirebaseEvents {
 
     enum class FirebaseEventsParams {
-        CONNECT_CALL_DECLINE,
+        CONNECT_CALL_DECLINE, PLAYED_SONG, PLAYED_PODCAST, PLAYED_RADIO, PLAYED_AI_MUSIC,
+        GENERATED_CUSTOM_NOTIFICATION,
+        STARTED_LOGIN_VIEW, GOOGLE_LOGIN, FACEBOOK_LOGIN, APPLE_LOGIN,
+        OPENED_APP,
+
     }
 
 
