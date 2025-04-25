@@ -160,12 +160,13 @@ fun NewsItemCard(data: ZeneMusicData?) {
             Modifier
                 .padding(horizontal = 10.dp)
                 .size(100.dp)
-                .clip(RoundedCornerShape(13.dp)),
+                .clip(RoundedCornerShape(13.dp))
+                .background(Color.White),
             contentScale = ContentScale.Crop
         )
 
         Column(Modifier.fillMaxWidth()) {
-            TextViewNormal(data?.name ?: "", 15)
+            TextViewNormal(data?.name ?: "", 15, line = 3)
             TextViewNormal(data?.extra ?: "", 12)
         }
     }

@@ -37,6 +37,8 @@ import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_ARTISTS_UPDATES_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_FOLLOWED_ARTISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
@@ -96,6 +98,7 @@ class HomeViewModel @Inject constructor(
     var seasonsMovieShowInfo by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     var feedArtists by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var feedUpdates by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
@@ -436,6 +439,8 @@ class HomeViewModel @Inject constructor(
     fun followArtists(name: String?, doAdd: Boolean, addedMore: () -> Unit) =
         viewModelScope.launch(Dispatchers.IO) {
             isFollowing = doAdd
+            cacheHelper.clear(ZENE_FEED_FOLLOWED_ARTISTS_API)
+            cacheHelper.clear(ZENE_FEED_ARTISTS_UPDATES_API)
             zeneAPI.followArtists(name, doAdd).catch {}.collectLatest {
                 if (!it) {
                     addedMore()
@@ -548,12 +553,35 @@ class HomeViewModel @Inject constructor(
 
 
     fun artistsFollowedList() = viewModelScope.launch(Dispatchers.IO) {
+        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_FEED_FOLLOWED_ARTISTS_API)
+        if ((data?.size ?: 0) > 0) {
+            feedArtists = ResponseResult.Success(data!!)
+            return@launch
+        }
         zeneAPI.feedFollowedArtists().onStart {
             feedArtists = ResponseResult.Loading
         }.catch {
             feedArtists = ResponseResult.Error(it)
         }.collectLatest {
+            cacheHelper.save(ZENE_FEED_FOLLOWED_ARTISTS_API, it)
             feedArtists = ResponseResult.Success(it)
+        }
+    }
+
+    fun feedUpdatesArtists() = viewModelScope.launch(Dispatchers.IO) {
+        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_FEED_ARTISTS_UPDATES_API)
+        if ((data?.size ?: 0) > 0) {
+            feedUpdates = ResponseResult.Success(data!!)
+            return@launch
+        }
+
+        zeneAPI.feedUpdatesArtists().onStart {
+            feedUpdates = ResponseResult.Loading
+        }.catch {
+            feedUpdates = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_FEED_ARTISTS_UPDATES_API, it)
+            feedUpdates = ResponseResult.Success(it)
         }
     }
 }

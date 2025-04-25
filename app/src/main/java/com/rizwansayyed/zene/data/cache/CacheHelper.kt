@@ -19,6 +19,10 @@ class CacheHelper {
         mkdirs()
     }
 
+    fun clear(fileName: String) {
+        File(cacheFilesDir, fileName.replace("/", "-")).deleteRecursively()
+    }
+
     inline fun <reified T> save(fileName: String, data: T) {
         try {
             val wrapper = CacheWrapper(data, System.currentTimeMillis())
@@ -44,7 +48,7 @@ class CacheHelper {
                 file.delete()
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }
