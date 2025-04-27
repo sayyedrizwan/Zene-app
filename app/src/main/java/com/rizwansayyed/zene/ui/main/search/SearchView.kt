@@ -76,6 +76,11 @@ fun SearchView(homeViewModel: HomeViewModel) {
 
     val state = rememberLazyListState()
 
+
+    LaunchedEffect(homeViewModel.searchKeywords) {
+        state.animateScrollToItem(0)
+    }
+
     LazyColumn(Modifier.fillMaxWidth(), state) {
         item {
             SearchTopView {
@@ -166,11 +171,8 @@ fun SearchView(homeViewModel: HomeViewModel) {
                             showSearch = txt
                         } else search.value = txt
                     }
-
-                    LaunchedEffect(Unit) {
-                        state.animateScrollToItem(0)
-                    }
                 }
+
                 if (v.data.isNotEmpty()) item { Spacer(Modifier.height(50.dp)) }
             }
         }

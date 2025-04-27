@@ -19,9 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -42,12 +40,11 @@ fun SearchBarView(
         Alignment.CenterVertically
     ) {
         TextField(
-            TextFieldValue(
-                text = search.value, selection = TextRange(search.value.length)
-            ),
+            search.value,
             {
-                search.value = if (it.text.length <= 100) it.text else it.text.take(100)
-                if (it.text.trim().isEmpty()) onSearch("")
+                search.value =
+                    if (it.length <= 100) it.replace("\n", "") else it.take(100).replace("\n", "")
+                if (it.trim().isEmpty()) onSearch("")
             },
             Modifier
                 .weight(1f)
@@ -80,12 +77,13 @@ fun SearchBarView(
         )
 
         AnimatedVisibility(showSearch.length > 3) {
-            Box(Modifier
-                .padding(start = 5.dp)
-                .clickable {
-                    search.value = ""
-                    onSearch("")
-                }) {
+            Box(
+                Modifier
+                    .padding(start = 5.dp)
+                    .clickable {
+                        search.value = ""
+                        onSearch("")
+                    }) {
                 ImageIcon(R.drawable.ic_link_backward, 24)
             }
         }
