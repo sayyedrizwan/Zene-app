@@ -6,8 +6,10 @@ import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -32,7 +34,7 @@ class OpenAppAdsUtils(val activity: Activity) {
             if (lastAppOpenLoadTime == null) {
                 ad.show(activity)
                 lastAppOpenLoadTime = System.currentTimeMillis()
-            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 3) {
+            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 4) {
                 ad.show(activity)
                 lastAppOpenLoadTime = System.currentTimeMillis()
             }
@@ -40,7 +42,9 @@ class OpenAppAdsUtils(val activity: Activity) {
     }
 
     private fun startAds() = CoroutineScope(Dispatchers.Main).launch {
+        val isLoggedIn = withContext(Dispatchers.IO) { userInfo.firstOrNull()?.isLoggedIn() }
         if (BuildConfig.DEBUG) return@launch
+        if (isLoggedIn == false) return@launch
         val isPremium = withContext(Dispatchers.IO) { isPremiumDB.firstOrNull() }
         if (isPremium == true) return@launch
 
