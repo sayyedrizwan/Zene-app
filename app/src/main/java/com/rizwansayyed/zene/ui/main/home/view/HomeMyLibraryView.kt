@@ -195,10 +195,6 @@ fun HomeMyLibraryView() {
             }
         }
 
-        LaunchedEffect(viewModel.selectedType) {
-            activity?.let { InterstitialAdsUtils(it, forceShow = true) }
-        }
-
         LaunchedEffect(state) {
             snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
                 val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
@@ -231,6 +227,7 @@ fun HomeMyLibraryView() {
 
         LaunchedEffect(Unit) {
             viewModel.likedItemCount()
+            activity?.let { InterstitialAdsUtils(it, forceShow = true) }
 
             setRefreshPlaylistState(object : RefreshPlaylistListener {
                 override fun refresh() {

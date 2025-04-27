@@ -175,9 +175,9 @@ fun PlaylistView(id: String, type: PlaylistsType) {
                 }
             }
 
-            if (homeViewModel.playlistSimilarList !is ResponseResult.Success) homeViewModel.similarPlaylistsData(
-                id
-            )
+            if (homeViewModel.playlistSimilarList !is ResponseResult.Success) {
+                homeViewModel.similarPlaylistsData(id)
+            }
 
             return@LaunchedEffect
         }
