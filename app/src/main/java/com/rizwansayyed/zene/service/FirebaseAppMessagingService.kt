@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -14,6 +15,8 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.notification.NotificationUtils
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CONNECT_UPDATES_NAME_DESC
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.OTHER_NOTIFICATION
+import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.OTHER_NOTIFICATION_DESC
 import com.rizwansayyed.zene.service.notification.callNotification
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
@@ -96,6 +99,16 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+        
+        message.notification?.let {
+            it.title ?: return@let
+            it.body ?: return@let
+            NotificationUtils(it.title!!, it.body!!).apply {
+                channel(OTHER_NOTIFICATION, OTHER_NOTIFICATION_DESC)
+                setSmallImage(it.imageUrl?.toString())
+                generate()
+            }
+        }
         message.data.let {
             val type = message.data[FCM_TYPE]
             accessNewToken()

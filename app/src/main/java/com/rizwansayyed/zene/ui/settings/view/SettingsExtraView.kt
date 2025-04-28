@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
@@ -240,6 +242,10 @@ fun LogoutSheetView(close: () -> Unit) {
                 context.cacheDir.deleteRecursively()
                 clearImagesCache()
                 close()
+                coroutine.launch {
+                    FirebaseMessaging.getInstance().deleteToken()
+                }
+
                 coroutine.launch {
                     triggerHomeNav(NAV_MAIN_PAGE)
                     DataStorageManager.userInfo = flowOf(null)

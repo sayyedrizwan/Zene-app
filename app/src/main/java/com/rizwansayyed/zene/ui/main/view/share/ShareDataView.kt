@@ -280,14 +280,15 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
                     close()
                 }
 
-                ShareRoundIcon(R.drawable.ic_hotspot, R.string.connect_) {
-                    if ((userInfo?.phoneNumber?.trim()?.length ?: 0) < 6) {
-                        enableConnect.toast()
-                        return@ShareRoundIcon
-                    }
-                    ShareContentUtils.shareTheData(data, SharingContentType.CONNECT, view)
-                    close()
-                }
+
+//                ShareRoundIcon(R.drawable.ic_hotspot, R.string.connect_) {
+//                    if ((userInfo?.phoneNumber?.trim()?.length ?: 0) < 6) {
+//                        enableConnect.toast()
+//                        return@ShareRoundIcon
+//                    }
+//                    ShareContentUtils.shareTheData(data, SharingContentType.CONNECT, view)
+//                    close()
+//                }
 
                 ShareRoundIcon(R.drawable.ic_qr_code, R.string.show_qr) {
                     showQR = true
