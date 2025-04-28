@@ -4,7 +4,10 @@ import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,12 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.theme.FacebookColor
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PRIVACY_POLICY
+import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @Composable
@@ -36,17 +45,16 @@ fun LoginView() {
 
     Column(
         Modifier
-            .padding(bottom = 100.dp)
+            .padding(bottom = 80.dp)
             .fillMaxSize()
             .background(DarkCharcoal),
-        Arrangement.Center, Alignment.CenterHorizontally
+        Arrangement.Center,
+        Alignment.CenterHorizontally
     ) {
         Column(
             Modifier
                 .weight(1f)
-                .fillMaxWidth(),
-            Arrangement.Center,
-            Alignment.CenterHorizontally
+                .fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally
         ) {
             TextViewSemiBold(stringResource(R.string.app_name), 50, center = true)
             Spacer(Modifier.height(1.dp))
@@ -70,7 +78,23 @@ fun LoginView() {
                 ButtonWithImageAndBorder(R.drawable.ic_facebook, R.string.continue_with_facebook) {
                     loginUtils.startFacebookLogin(activity)
                 }
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(34.dp))
+
+                Box(Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }) {
+                        MediaContentUtils.openCustomBrowser("$ZENE_URL$ZENE_URL_PRIVACY_POLICY")
+                    }) {
+                    TextViewLight(
+                        stringResource(R.string.by_login_your_are_accepting_privacy_policy),
+                        13,
+                        center = true,
+                        color = FacebookColor
+                    )
+                }
+
             }
         }
     }

@@ -54,7 +54,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.math.BigInteger
 import java.util.UUID
 
 
@@ -220,9 +219,9 @@ object ShareContentUtils {
             PODCAST -> "$ZENE_URL$ZENE_PODCAST_SERIES${id}"
             PODCAST_AUDIO -> "$ZENE_URL$ZENE_PODCAST${data.id?.replace("/", "_")}"
             PODCAST_CATEGORIES -> ZENE_URL
-            NEWS -> "$ZENE_URL$ZENE_NEWS" +
-                    Base64.encodeToString(data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
-                        .replace("=", "")
+            NEWS -> "$ZENE_URL$ZENE_NEWS" + Base64.encodeToString(
+                data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
+            ).replace("=", "")
 
             MOVIES_SHOW -> "$ZENE_URL$ZENE_M${data.id}"
             AI_MUSIC -> "$ZENE_URL$ZENE_AI_MUSIC${data.id}"
@@ -248,78 +247,19 @@ object ShareContentUtils {
 
         try {
             context.startActivity(intent)
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             context.resources.getString(R.string.error_sharing_).toast()
         }
     }
 
-
-    private const val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
-
-    private fun toBigInteger(input: String, alphabet: String = ALPHABET): BigInteger {
-        val base = BigInteger.valueOf(alphabet.length.toLong())
-        var result = BigInteger.ZERO
-        for (char in input) {
-            val index = alphabet.indexOf(char)
-            if (index == -1) return BigInteger.ZERO
-            result = result.multiply(base).add(BigInteger.valueOf(index.toLong()))
-        }
-        return result
-    }
-
-    private fun fromBigInteger(
-        number: BigInteger, length: Int, alphabet: String = ALPHABET
-    ): String {
-        val base = BigInteger.valueOf(alphabet.length.toLong())
-        var num = number
-        val sb = StringBuilder()
-        while (num > BigInteger.ZERO) {
-            val rem = num.mod(base)
-            sb.append(alphabet[rem.toInt()])
-            num = num.divide(base)
-        }
-
-        var result = sb.reverse().toString()
-        while (result.length < length) result = alphabet[0] + result
-
-        return result
-    }
-
-    private fun encryptSharingId(input: String?): String {
-        val a = BigInteger.valueOf(3)
-        val b = BigInteger.valueOf(7)
-
-        val length = input?.length ?: 0
-        val base = BigInteger.valueOf(ALPHABET.length.toLong())
-        val modulus = base.pow(length)
-        val value = toBigInteger(input ?: "")
-        val encrypted = (a.multiply(value).add(b)).mod(modulus)
-        return fromBigInteger(encrypted, length).replace("/", "_.")
-    }
-
-    fun decryptSharingId(input: String): String {
-        val a = BigInteger.valueOf(3)
-        val b = BigInteger.valueOf(7)
-
-
-        val length = input.length
-        val base = BigInteger.valueOf(ALPHABET.length.toLong())
-        val modulus = base.pow(length)
-        val value = toBigInteger(input)
-
-        val aInv = a.modInverse(modulus)
-
-        val decrypted = (aInv.multiply(value.subtract(b))).mod(modulus)
-        return fromBigInteger(decrypted, length)
-    }
-
     fun getUniqueDeviceId(): String {
-        val masterKeyAlias = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+        val masterKeyAlias =
+            MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
 
         val sharedPreferences = EncryptedSharedPreferences.create(
-            context, "secret_device_prefs", masterKeyAlias,
+            context,
+            "secret_device_prefs",
+            masterKeyAlias,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )

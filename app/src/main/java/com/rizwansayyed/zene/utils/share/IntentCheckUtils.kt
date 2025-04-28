@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_CONNECT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_ENTERTAINMENT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_MY_LIBRARY
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PODCASTS
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SEARCH
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SETTINGS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_VIDEO
@@ -135,6 +136,9 @@ class IntentCheckUtils(
                 triggerHomeNav(NAV_MAIN_PAGE)
                 delay(500)
                 navViewModel.setHomeSections(HomeSectionSelector.MY_LIBRARY)
+            } else if (data.toString() == "$ZENE_URL$ZENE_URL_PRIVACY_POLICY") {
+                delay(500)
+                MediaContentUtils.openCustomBrowser(data.toString())
             }
 
 
