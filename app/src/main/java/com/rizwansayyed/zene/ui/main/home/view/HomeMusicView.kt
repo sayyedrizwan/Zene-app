@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,13 +42,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeMusicView(homeViewModel: HomeViewModel) {
-    val navViewModel : NavigationViewModel = hiltViewModel()
+    val navViewModel: NavigationViewModel = hiltViewModel()
     var headerText by remember { mutableStateOf("") }
     val coroutine = rememberCoroutineScope()
     val isPremium by isPremiumDB.collectAsState(true)
     val sponsorAds by sponsorAdsDB.collectAsState(null)
 
-    LazyColumn(Modifier.fillMaxSize()) {
+    val state = rememberLazyListState()
+
+    LazyColumn(Modifier.fillMaxSize(), state) {
         item { HomeTopHeaderView(headerText) }
 
         when (val v = homeViewModel.homeRecent) {
@@ -114,8 +117,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                 }
 
 
-                if ((sponsorAds?.top?.title?.trim()?.length ?: 0) > 2 ||
-                    sponsorAds?.top?.media?.isNotEmpty() == true
+                if ((sponsorAds?.top?.title?.trim()?.length
+                        ?: 0) > 2 || sponsorAds?.top?.media?.isNotEmpty() == true
                 ) item {
                     Spacer(Modifier.height(50.dp))
                     HomeSponsorAdsView(sponsorAds?.top, navViewModel)
@@ -208,8 +211,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if ((sponsorAds?.bottom?.title?.trim()?.length ?: 0) > 2 ||
-                    sponsorAds?.bottom?.media?.isNotEmpty() == true
+                if ((sponsorAds?.bottom?.title?.trim()?.length
+                        ?: 0) > 2 || sponsorAds?.bottom?.media?.isNotEmpty() == true
                 ) item {
                     Spacer(Modifier.height(50.dp))
                     HomeSponsorAdsView(sponsorAds?.bottom, navViewModel)
@@ -249,6 +252,9 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
     LaunchedEffect(Unit) {
         coroutine.launch(Dispatchers.IO) {
             headerText = topHeaderAlert()
+            if (headerText.length > 3) coroutine.launch(Dispatchers.Main) {
+                state.animateScrollToItem(0)
+            }
         }
     }
 }
