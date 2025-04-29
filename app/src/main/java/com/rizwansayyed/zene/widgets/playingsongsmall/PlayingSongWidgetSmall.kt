@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.widgets.playingsongsmall
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
@@ -72,11 +73,12 @@ class PlayingSongWidgetSmall : GlanceAppWidget() {
     }
 
 
+    @SuppressLint("RestrictedApi")
     @Composable
     fun ShowPlayPauseImage(music: MusicPlayerData) {
         Box(GlanceModifier.padding(5.dp).fillMaxSize(), Alignment.Center) {
             Column(GlanceModifier.padding(5.dp).cornerRadius(100.dp).clickable {
-                if (music.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                if (music.isPlaying()) getPlayerS()?.pause()
                 else getPlayerS()?.play()
             }.background(Color.White).padding(6.dp)) {
                 when (music.state) {

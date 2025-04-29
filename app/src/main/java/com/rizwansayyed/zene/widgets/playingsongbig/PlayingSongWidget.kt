@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.widgets.playingsongbig
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
@@ -74,6 +75,7 @@ class PlayingSongWidget : GlanceAppWidget() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Composable
     fun PlayingMusicUI(music: MusicPlayerData?, context: Context) {
         val coroutine = rememberCoroutineScope()
@@ -134,7 +136,7 @@ class PlayingSongWidget : GlanceAppWidget() {
                 }
 
                 Column(GlanceModifier.padding(5.dp).cornerRadius(100.dp).clickable {
-                    if (music.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                    if (music.isPlaying()) getPlayerS()?.pause()
                     else getPlayerS()?.play()
                 }.background(Color.White).padding(6.dp)) {
                     when (music.state) {

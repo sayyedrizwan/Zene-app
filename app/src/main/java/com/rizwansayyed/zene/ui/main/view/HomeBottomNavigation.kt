@@ -139,7 +139,7 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-                    if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                    if (player?.isPlaying() == true) getPlayerS()?.pause()
                     else getPlayerS()?.play()
                 }, Alignment.Center
         ) {

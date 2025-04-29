@@ -148,7 +148,7 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
             .padding(5.dp)
             .clip(RoundedCornerShape(100))
             .clickable {
-                if (player!!.state == YoutubePlayerState.PLAYING) getPlayerS()?.pause()
+                if (player?.isPlaying() == true) getPlayerS()?.pause()
                 else getPlayerS()?.play()
             }
             .background(Color.White)

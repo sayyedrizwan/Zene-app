@@ -80,6 +80,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     private val smartShuffle by lazy { SmartShuffle(this) }
     private val mediaSession by lazy { MediaSessionPlayerNotification(this) }
     private val exoPlayerSession by lazy { ExoPlaybackService(this) }
+
     var errorReRun = 0
 
     override fun onBind(p0: Intent?): IBinder? = null
@@ -170,7 +171,6 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             }
         }
     }
-
 
     override fun onCreate() {
         super.onCreate()

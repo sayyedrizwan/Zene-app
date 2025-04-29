@@ -227,7 +227,7 @@ fun HomeMyLibraryView() {
 
         LaunchedEffect(Unit) {
             viewModel.likedItemCount()
-            activity?.let { InterstitialAdsUtils(it, forceShow = true) }
+            activity?.let { InterstitialAdsUtils(it) }
 
             setRefreshPlaylistState(object : RefreshPlaylistListener {
                 override fun refresh() {

@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.bumptech.glide.Glide
@@ -19,6 +20,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_ID
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANNEL_MUSIC_PLAYER_NAME
@@ -29,10 +31,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class MediaSessionPlayerNotification(private val context: PlayerForegroundService) {
     private var mediaSession: MediaSessionCompat? = null
@@ -56,13 +60,15 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
     private fun createMediaSession() {
         if (mediaSession != null) return
-        mediaSession = MediaSessionCompat(context, CHANNEL_MUSIC_PLAYER_NAME).apply {
-            isActive = true
-        }
         CoroutineScope(Dispatchers.Main).launch {
+            mediaSession = MediaSessionCompat(context, CHANNEL_MUSIC_PLAYER_NAME).apply {
+                isActive = true
+            }
             mediaSession?.setCallback(callback)
+
             if (isActive) cancel()
         }
+
     }
 
     private suspend fun loadBitmapFromUrl(imageUrl: String): Bitmap? {
@@ -130,34 +136,79 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         playback.setActions(stateActions)
 
         if (context.currentPlayingSong?.type() != MusicDataTypes.RADIO)
-            playback.addCustomAction(PlaybackStateCompat.CustomAction.Builder(
+            playback.addCustomAction(
+                PlaybackStateCompat.CustomAction.Builder(
+                    CATEGORY_APP_MUSIC,
+                    context.resources.getString(R.string.loop),
+                    if (doLoop) R.drawable.ic_repeat_one else R.drawable.ic_repeat
+                ).run {
+                    val bundle = Bundle().apply {
+                        putInt(Intent.ACTION_VIEW, PlaybackStateCompat.REPEAT_MODE_ONE)
+                    }
+                    setExtras(bundle)
+                    build()
+                })
+
+        playback.addCustomAction(
+            PlaybackStateCompat.CustomAction.Builder(
                 CATEGORY_APP_MUSIC,
                 context.resources.getString(R.string.loop),
-                if (doLoop) R.drawable.ic_repeat_one else R.drawable.ic_repeat
+                if (doShuffle) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle
             ).run {
                 val bundle = Bundle().apply {
-                    putInt(Intent.ACTION_VIEW, PlaybackStateCompat.REPEAT_MODE_ONE)
+                    putInt(Intent.ACTION_VIEW, PlaybackStateCompat.SHUFFLE_MODE_NONE)
                 }
                 setExtras(bundle)
                 build()
             })
 
-        playback.addCustomAction(PlaybackStateCompat.CustomAction.Builder(
-            CATEGORY_APP_MUSIC,
-            context.resources.getString(R.string.loop),
-            if (doShuffle) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle
-        ).run {
-            val bundle = Bundle().apply {
-                putInt(Intent.ACTION_VIEW, PlaybackStateCompat.SHUFFLE_MODE_NONE)
-            }
-            setExtras(bundle)
-            build()
-        })
-
         mediaSession?.setPlaybackState(playback.build())
     }
 
     private val callback = object : MediaSessionCompat.Callback() {
+        override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+            val intentAction = mediaButtonEvent?.action
+            if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
+                val event = mediaButtonEvent?.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+                if (event != null) {
+                    when (event.keyCode) {
+                        KeyEvent.KEYCODE_MEDIA_PLAY -> {
+                            PlayerForegroundService.getPlayerS()?.play()
+                            return true
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_PAUSE -> {
+                            PlayerForegroundService.getPlayerS()?.pause()
+                            return true
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                            PlayerForegroundService.getPlayerS()?.toNextSong()
+                            return true
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                            PlayerForegroundService.getPlayerS()?.toBackSong()
+                            return true
+                        }
+
+                        KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                if (musicPlayerDB.firstOrNull()?.isPlaying() == true)
+                                    PlayerForegroundService.getPlayerS()?.play()
+                                else
+                                    PlayerForegroundService.getPlayerS()?.pause()
+
+                                if (isActive) cancel()
+                            }
+                            return true
+                        }
+                    }
+                }
+            }
+            return super.onMediaButtonEvent(mediaButtonEvent)
+        }
+
         override fun onPlay() {
             super.onPlay()
             PlayerForegroundService.getPlayerS()?.play()
@@ -263,7 +314,11 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             0
         }
 
-        ServiceCompat.startForeground(context, 1, notification, serviceType)
+        try {
+            ServiceCompat.startForeground(context, 1, notification, serviceType)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun createNotificationChannel() {

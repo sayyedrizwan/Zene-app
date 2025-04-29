@@ -13,6 +13,10 @@ data class MusicPlayerData(
     var speed: String?,
     var totalDuration: String?,
 ) {
+    fun isPlaying(): Boolean {
+        return state == YoutubePlayerState.PLAYING
+    }
+
     fun currentDuration(): String {
         if (data?.type() == MusicDataTypes.SONGS)
             return formatDurationsForVideo(currentDuration?.toFloatOrNull() ?: 0f)

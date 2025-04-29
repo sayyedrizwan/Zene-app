@@ -20,7 +20,6 @@ import kotlinx.coroutines.withContext
 class InterstitialAdsUtils(
     val activity: Activity,
     private val showSimple: Boolean = false,
-    private val forceShow: Boolean = false,
 ) {
 
     private val adID =
@@ -35,10 +34,6 @@ class InterstitialAdsUtils(
     private val listener = object : InterstitialAdLoadCallback() {
         override fun onAdLoaded(ad: InterstitialAd) {
             super.onAdLoaded(ad)
-            if (forceShow) {
-                ad.show(activity)
-                return
-            }
 
             if (lastAppOpenLoadTime == null) {
                 ad.show(activity)
