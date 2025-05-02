@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.ui.main.home
 
 import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
 import android.view.Gravity
 import android.widget.TextView
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,25 +17,21 @@ import okhttp3.Request
 
 @Composable
 fun HomeTopHeaderView(headerText: String) {
-    if (headerText.trim().length > 2) AndroidView(
-        factory = { context ->
-            TextView(context).apply {
-                movementMethod = LinkMovementMethod.getInstance()
-                setTextColor(Color.White.toArgb())
-                autoLinkMask = Linkify.WEB_URLS
-                linksClickable = true
-                gravity = Gravity.CENTER
-                textSize = 15f
-                setTextIsSelectable(false)
-                setSingleLine(false)
-            }
-        },
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        {
-            it.maxLines = 100
-            it.text = HtmlCompat.fromHtml(headerText, HtmlCompat.FROM_HTML_MODE_COMPACT) })
+    if (headerText.trim().length > 2) AndroidView(factory = { context ->
+        TextView(context).apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            setTextColor(Color.White.toArgb())
+            linksClickable = true
+            gravity = Gravity.CENTER
+            textSize = 15f
+            setTextIsSelectable(false)
+            setSingleLine(false)
+        }
+    }, Modifier
+        .fillMaxWidth()
+        .wrapContentHeight(), {
+        it.text = HtmlCompat.fromHtml(headerText, HtmlCompat.FROM_HTML_MODE_COMPACT)
+    })
 }
 
 fun topHeaderAlert(): String {
@@ -48,13 +43,16 @@ fun topHeaderAlert(): String {
 
         val body = response.body?.string()
 
-        if (body?.contains("\"og:description\"") == false) return ""
-        val value = body?.substringAfter("og:description")?.substringAfter("content=\"")
-            ?.substringBefore("\">")?.trim() ?: ""
+        if (body?.contains("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1") == false) return ""
+        val value = body?.substringAfter("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1")
+            ?.substringAfter(":\"")?.substringBefore("\"},{")?.trim() ?: ""
 
         val decodedString = HtmlCompat.fromHtml(value, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
-        return decodedString
-    } catch (e: Exception) {
+        val unescaped =
+            decodedString.replace("\\u003c", "<").replace("\\u003e", ">").replace("\\u003d", "=")
+                .replace("\\\"", "\"")
+        return unescaped
+    } catch (_: Exception) {
         return ""
     }
 }
