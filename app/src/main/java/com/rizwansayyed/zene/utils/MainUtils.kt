@@ -518,7 +518,7 @@ object MainUtils {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             val uriText = "mailto:$ZENE_MAIL" +
                     "?subject=" + Uri.encode("Feedback on the Android App") +
-                    "&body=" + Uri.encode("<<<<<Feedback>>>>>")
+                    "&body=" + Uri.encode("<<<<<Feedback Android>>>>>")
             data = uriText.toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }

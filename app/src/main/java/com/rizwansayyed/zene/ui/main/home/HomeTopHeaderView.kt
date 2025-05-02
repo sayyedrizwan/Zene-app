@@ -1,9 +1,11 @@
 package com.rizwansayyed.zene.ui.main.home
 
 import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.Gravity
 import android.widget.TextView
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,11 +23,20 @@ fun HomeTopHeaderView(headerText: String) {
             TextView(context).apply {
                 movementMethod = LinkMovementMethod.getInstance()
                 setTextColor(Color.White.toArgb())
+                autoLinkMask = Linkify.WEB_URLS
+                linksClickable = true
                 gravity = Gravity.CENTER
+                textSize = 15f
+                setTextIsSelectable(false)
+                setSingleLine(false)
             }
         },
-        Modifier.fillMaxWidth(),
-        { it.text = HtmlCompat.fromHtml(headerText, HtmlCompat.FROM_HTML_MODE_COMPACT) })
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        {
+            it.maxLines = 100
+            it.text = HtmlCompat.fromHtml(headerText, HtmlCompat.FROM_HTML_MODE_COMPACT) })
 }
 
 fun topHeaderAlert(): String {
