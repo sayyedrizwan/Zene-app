@@ -51,7 +51,7 @@ fun topHeaderAlert(): String {
         val decodedString = HtmlCompat.fromHtml(value, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
         val unescaped =
             decodedString.replace("\\u003c", "<").replace("\\u003e", ">").replace("\\u003d", "=")
-                .replace("\\\"", "\"")
+                .replace("\\\"", "\"").replace("\\n", "")
         return unescaped
     } catch (_: Exception) {
         return ""
