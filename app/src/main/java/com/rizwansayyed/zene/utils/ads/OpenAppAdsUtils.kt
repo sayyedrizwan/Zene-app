@@ -6,15 +6,21 @@ import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.lastAppOpenLoadTimeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.seconds
 
 class OpenAppAdsUtils(val activity: Activity) {
 
@@ -22,21 +28,33 @@ class OpenAppAdsUtils(val activity: Activity) {
         if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9257395921" else "ca-app-pub-2941808068005217/7650500204"
 
     companion object {
-        var lastAppOpenLoadTime: Long? = null
+        var openAdsJob: Job? = null
     }
 
-    init { startAds() }
+    init {
+        openAdsJob?.cancel()
+        openAdsJob = CoroutineScope(Dispatchers.IO).launch {
+            delay(1.seconds)
+            startAds()
+
+            if (isActive) cancel()
+        }
+    }
 
     private val listener = object : AppOpenAdLoadCallback() {
         override fun onAdLoaded(ad: AppOpenAd) {
             super.onAdLoaded(ad)
+            CoroutineScope(Dispatchers.Main).launch {
+                val time = withContext(Dispatchers.IO) { lastAppOpenLoadTimeDB.firstOrNull() }
+                if (time == null) {
+                    ad.show(activity)
+                    lastAppOpenLoadTimeDB = flowOf(System.currentTimeMillis())
+                } else if (timeDifferenceInMinutes(time) >= 4) {
+                    ad.show(activity)
+                    lastAppOpenLoadTimeDB = flowOf(System.currentTimeMillis())
+                }
 
-            if (lastAppOpenLoadTime == null) {
-                ad.show(activity)
-                lastAppOpenLoadTime = System.currentTimeMillis()
-            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 4) {
-                ad.show(activity)
-                lastAppOpenLoadTime = System.currentTimeMillis()
+                if (isActive) cancel()
             }
         }
     }

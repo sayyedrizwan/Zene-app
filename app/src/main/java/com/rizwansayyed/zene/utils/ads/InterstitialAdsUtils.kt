@@ -6,16 +6,21 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.lastInterstitialLoadTimeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
-import com.rizwansayyed.zene.utils.MainUtils.toast
-import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils.Companion.lastAppOpenLoadTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.seconds
 
 class InterstitialAdsUtils(
     val activity: Activity,
@@ -28,19 +33,35 @@ class InterstitialAdsUtils(
     private val simpleAdID =
         if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/1033173712" else "ca-app-pub-2941808068005217/3297767085"
 
+    companion object {
+        var interstitialAdsJob: Job? = null
+    }
 
-    init { startAds() }
+    init {
+        interstitialAdsJob?.cancel()
+        interstitialAdsJob = CoroutineScope(Dispatchers.IO).launch {
+            delay(1.seconds)
+            startAds()
+
+            if (isActive) cancel()
+        }
+    }
 
     private val listener = object : InterstitialAdLoadCallback() {
         override fun onAdLoaded(ad: InterstitialAd) {
             super.onAdLoaded(ad)
 
-            if (lastAppOpenLoadTime == null) {
-                ad.show(activity)
-                lastAppOpenLoadTime = System.currentTimeMillis()
-            } else if (timeDifferenceInMinutes(lastAppOpenLoadTime!!) >= 5) {
-                ad.show(activity)
-                lastAppOpenLoadTime = System.currentTimeMillis()
+            CoroutineScope(Dispatchers.Main).launch {
+                val time = withContext(Dispatchers.IO) { lastInterstitialLoadTimeDB.firstOrNull() }
+                if (time == null) {
+                    ad.show(activity)
+                    lastInterstitialLoadTimeDB = flowOf(System.currentTimeMillis())
+                } else if (timeDifferenceInMinutes(time) >= 5) {
+                    ad.show(activity)
+                    lastInterstitialLoadTimeDB = flowOf(System.currentTimeMillis())
+                }
+
+                if (isActive) cancel()
             }
         }
     }

@@ -5,8 +5,8 @@ compilesdk = "36"
 minsdk = "24"
 
 
-appversion = "186"
-versionname = "3.02.849"
+appversion = "187"
+versionname = "3.02.851"
 
 agp = "8.9.2"
 
@@ -15,7 +15,7 @@ exifinterface = "1.4.1"
 glide = "1.0.0-beta01"
 credentials = "1.5.0"
 datastorePreferences = "1.1.4"
-facebookLogin = "18.0.2"
+facebookLogin = "18.0.3"
 firebaseBom = "33.13.0"
 gson = "2.11.0"
 hiltAndroid = "2.52"

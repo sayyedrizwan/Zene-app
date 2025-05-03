@@ -19,6 +19,8 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_LOOP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_PREMIUM_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_SHUFFLE_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_APP_OPEN_LOAD_TIME_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_INTERSTITIAL_LOAD_TIME_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_GENERATED_TS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_SUGGESTED_TYPE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
@@ -71,6 +73,8 @@ object DataStorageManager {
             longPreferencesKey("last_notification_generated_ts_db")
         val LAST_NOTIFICATION_SUGGESTED_TYPE_DB =
             stringPreferencesKey("last_notification_suggested_type_db")
+        val LAST_APP_OPEN_LOAD_TIME_DB = longPreferencesKey("last_app_open_load_time_db")
+        val LAST_INTERSTITIAL_LOAD_TIME_DB = longPreferencesKey("last_interstitial_load_time_db")
     }
 
     var sponsorAdsDB: Flow<AndroidSponsorAds?>
@@ -266,6 +270,28 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] = value.first()
+            }
+            if (isActive) cancel()
+        }
+
+    var lastAppOpenLoadTimeDB: Flow<Long?>
+        get() = context.dataStore.data.map {
+            it[LAST_APP_OPEN_LOAD_TIME_DB]
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                value.first()?.let { t -> it[LAST_APP_OPEN_LOAD_TIME_DB] = t }
+            }
+            if (isActive) cancel()
+        }
+
+    var lastInterstitialLoadTimeDB: Flow<Long?>
+        get() = context.dataStore.data.map {
+            it[LAST_INTERSTITIAL_LOAD_TIME_DB]
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                value.first()?.let { t -> it[LAST_INTERSTITIAL_LOAD_TIME_DB] = t }
             }
             if (isActive) cancel()
         }
