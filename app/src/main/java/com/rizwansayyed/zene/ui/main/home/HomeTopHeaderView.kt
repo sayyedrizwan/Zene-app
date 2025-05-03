@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import com.rizwansayyed.zene.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -35,7 +36,7 @@ fun HomeTopHeaderView(headerText: String) {
 }
 
 fun topHeaderAlert(): String {
-    val url = "https://docs.google.com/document/d/1DvYmmvIkIebo5TXTf826McrpJM8frAXqwPi2l0RCBsA/edit"
+    val url = BuildConfig.ZENE_TOP_ALERT_DOCS
     val client = OkHttpClient().newBuilder().build()
     try {
         val request = Request.Builder().url(url).get().build()

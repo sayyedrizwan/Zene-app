@@ -33,6 +33,9 @@ android {
         val socketBaseURL = properties.getProperty("SOCKET_ZENE_BASE_URL") ?: ""
         buildConfigField("String", "SOCKET_ZENE_BASE_URL", socketBaseURL)
 
+        val zeneTopAlertDocs = properties.getProperty("ZENE_TOP_ALERT_DOCS") ?: ""
+        buildConfigField("String", "ZENE_TOP_ALERT_DOCS", zeneTopAlertDocs)
+
         val apiZeneBaseURL = properties.getProperty("API_ZENE_MUSIC_BASE_URL") ?: ""
         buildConfigField("String", "API_ZENE_MUSIC_BASE_URL", apiZeneBaseURL)
 
