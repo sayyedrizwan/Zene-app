@@ -196,7 +196,7 @@ fun ItemCardView(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList())
             )
         }
         Spacer(Modifier.height(9.dp))
-        TextViewNormal(data?.name ?: "", 16, line = 1)
+        TextViewBold(data?.name ?: "", 15, line = 1)
         if (data?.type() != MusicDataTypes.PLAYLISTS) {
             if (data?.type() == MusicDataTypes.PODCAST) {
                 TextViewLight(data.artists ?: "", 13, line = 3)
@@ -233,7 +233,7 @@ fun ItemCardViewDynamic(data: ZeneMusicData?, list: List<ZeneMusicData?> = empty
             )
         }
         Spacer(Modifier.height(9.dp))
-        TextViewNormal(data?.name ?: "", 16, line = 1)
+        TextViewBold(data?.name ?: "", 15, line = 1)
         if (data?.type() != MusicDataTypes.PLAYLISTS) {
             if (data?.type() == MusicDataTypes.PODCAST) {
                 TextViewLight(data.artists ?: "", 13, line = 3)
