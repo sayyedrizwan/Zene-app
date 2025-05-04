@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_IN
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_GENERATED_TS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_SUGGESTED_TYPE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.PAUSE_SONG_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SONG_SPEED_DB
@@ -69,6 +70,8 @@ object DataStorageManager {
         val AUTO_PAUSE_PLAYER_SETTINGS_DB = booleanPreferencesKey("auto_pause_player_settings_db")
         val SMOOTH_SONG_TRANSITION_SETTINGS_DB =
             booleanPreferencesKey("smooth_song_transition_settings_db")
+        val PAUSE_SONG_HISTORY_DB =
+            booleanPreferencesKey("pause_song_history_db")
         val LAST_NOTIFICATION_GENERATED_TS_DB =
             longPreferencesKey("last_notification_generated_ts_db")
         val LAST_NOTIFICATION_SUGGESTED_TYPE_DB =
@@ -243,11 +246,11 @@ object DataStorageManager {
 
     var pauseHistorySettings: Flow<Boolean>
         get() = context.dataStore.data.map {
-            it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] == true
+            it[PAUSE_SONG_HISTORY_DB] == true
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
-                it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] = value.first()
+                it[PAUSE_SONG_HISTORY_DB] = value.first()
             }
             if (isActive) cancel()
         }
