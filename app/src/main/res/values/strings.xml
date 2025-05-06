@@ -24,6 +24,7 @@
     <string name="continue_with_apple">Continue with Apple</string>
     <string name="continue_with_facebook">Continue with Facebook</string>
     <string name="continue_with_email">Continue with Email</string>
+    <string name="enter_your_email_address">Enter your email address</string>
     <string name="error_login">Error login. Please try again later.</string>
     <string name="login_expired">Login expired. Please try again later.</string>
     <string name="no_song_played">No song played.</string>
@@ -230,6 +231,8 @@
     <string name="error_while_authentication">Error while authentication. Try again later.</string>
     <string name="downloaded">Downloaded</string>
     <string name="break_the_ice_start_conversation">Be the first to break the ice! ❄️ Start the conversation… 😊</string>
+    <string name="error_while_sending_email_try_again">Error while sending email. Please try again later.</string>
+    <string name="email_sent_successfully_login_auth">Email sent successfully! Please keep this page open and click the link in the mail from [auth@zenemusic.co] to complete your login.</string>
     <string name="chat_settings">Chat Settings</string>
     <string name="free_space">Free Space:</string>
     <string name="used_space">Used Space:</string>

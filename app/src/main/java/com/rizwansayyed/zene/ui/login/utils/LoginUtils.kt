@@ -18,13 +18,19 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.actionCodeSettings
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.di.modules.APIRequests
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -49,6 +55,15 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
     }
 
     var isLoading by mutableStateOf(false)
+    var loginViaEmail by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
+
+    val actionCodeSettings = actionCodeSettings {
+        url = "https://www.zenemusic.co/email-login"
+        handleCodeInApp = true
+        iosBundleId = "com.rizwansayyed.zenemusic"
+        setAndroidPackageName(context.packageName, true, "8")
+    }
+
 
     private val serverClientId = BuildConfig.GOOGLE_SERVER_KEY
     private val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(true)
@@ -121,6 +136,14 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         )
 
         loginManager.registerCallback(callbackManager, facebookCallback)
+    }
+
+    fun startEmailLogin(email: String) = CoroutineScope(Dispatchers.IO).launch {
+        Firebase.auth.sendSignInLinkToEmail(email, actionCodeSettings).addOnCompleteListener {
+            if (it.isSuccessful) {
+                "Email sent.".toast()
+            }
+        }
     }
 
     fun startAppleLogin(activity: Activity) = CoroutineScope(Dispatchers.IO).launch {

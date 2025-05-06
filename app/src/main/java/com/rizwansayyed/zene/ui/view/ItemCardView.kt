@@ -291,7 +291,7 @@ fun PodcastViewItems(data: ZeneMusicData?) {
     ) {
         GlideImage(data?.thumbnail, data?.name, Modifier.fillMaxWidth())
 
-        if ((data?.extra ?: "").length > 3) Row(
+        if ((data?.extra ?: "").length > 2) Row(
             Modifier
                 .padding(bottom = 4.dp, end = 4.dp)
                 .align(Alignment.BottomEnd)
