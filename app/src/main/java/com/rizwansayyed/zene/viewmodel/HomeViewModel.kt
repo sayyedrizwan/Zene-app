@@ -62,7 +62,6 @@ import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val loginUtils: LoginUtils,
     val trueCallerUtils: TrueCallerUtils,
     private val zeneAPI: ZeneAPIInterface
 ) : ViewModel() {

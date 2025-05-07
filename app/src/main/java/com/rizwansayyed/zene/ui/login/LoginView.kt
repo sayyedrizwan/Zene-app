@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.login.dialog.LoginEmailSheet
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
@@ -39,11 +38,10 @@ import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
-import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
-fun LoginView() {
-    val viewModel: HomeViewModel = hiltViewModel()
+fun LoginView(viewModel: NavigationViewModel) {
     val loginUtils = viewModel.loginUtils
     val activity = LocalActivity.current as Activity
     var startEmailLogin by remember { mutableStateOf(false) }
@@ -89,18 +87,17 @@ fun LoginView() {
                 }
                 Spacer(Modifier.height(34.dp))
 
-                Box(Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }) {
-                        MediaContentUtils.openCustomBrowser("$ZENE_URL$ZENE_URL_PRIVACY_POLICY")
-                    }) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            MediaContentUtils.openCustomBrowser("$ZENE_URL$ZENE_URL_PRIVACY_POLICY")
+                        }) {
                     TextViewLight(
                         stringResource(R.string.by_login_your_are_accepting_privacy_policy),
-                        13,
-                        center = true,
-                        color = FacebookColor
+                        13, center = true, color = FacebookColor
                     )
                 }
 

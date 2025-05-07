@@ -232,7 +232,7 @@
     <string name="downloaded">Downloaded</string>
     <string name="break_the_ice_start_conversation">Be the first to break the ice! ❄️ Start the conversation… 😊</string>
     <string name="error_while_sending_email_try_again">Error while sending email. Please try again later.</string>
-    <string name="email_sent_successfully_login_auth">Email sent successfully! Please keep this page open and click the link in the mail from [auth@zenemusic.co] to complete your login.</string>
+    <string name="email_sent_successfully_login_auth">Your login email has been sent! Please open your email app on this device, and tap the **“Sign in to Zene”** link from zenemusic.co to complete your login.</string>
     <string name="chat_settings">Chat Settings</string>
     <string name="free_space">Free Space:</string>
     <string name="used_space">Used Space:</string>

@@ -11,15 +11,19 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.login.utils.LoginUtils
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.utils.ads.nativeAdsAndroidViewMap
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
 import com.rizwansayyed.zene.utils.share.IntentFCMNotification
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NavigationViewModel : ViewModel() {
+@HiltViewModel
+class NavigationViewModel @Inject constructor(val loginUtils: LoginUtils) : ViewModel() {
     var homeSection by mutableStateOf(HomeSectionSelector.MUSIC)
     var homeNavSection by mutableStateOf(HomeNavSelector.HOME)
     var homeNotificationSection by mutableStateOf<IntentFCMNotification?>(null)

@@ -13,7 +13,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
+import com.rizwansayyed.zene.ui.login.utils.LoginUtils.Companion.lastLoginViaEmail
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
@@ -71,6 +74,7 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                     keyboardActions = KeyboardActions {
                         if (userEmail.trim().length > 3 && userEmail.trim().contains("@")) {
                             focusManager.clearFocus()
+                            lastLoginViaEmail = userEmail
                             login.startEmailLogin(userEmail)
                         }
                     },
@@ -92,6 +96,7 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                         if (userEmail.trim().length > 3 && userEmail.trim().contains("@")) {
                             IconButton({
                                 focusManager.clearFocus()
+                                lastLoginViaEmail = userEmail
                                 login.startEmailLogin(userEmail)
                             }) {
                                 ImageIcon(R.drawable.ic_arrow_right, 24, Color.White)
@@ -113,7 +118,9 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                     Spacer(Modifier.height(15.dp))
 
                     TextViewNormal(
-                        stringResource(R.string.error_while_sending_email_try_again), 16
+                        stringResource(R.string.error_while_sending_email_try_again),
+                        16,
+                        center = true
                     )
 
                     Spacer(Modifier.height(10.dp))
@@ -125,7 +132,9 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                         Spacer(Modifier.height(15.dp))
 
                         TextViewNormal(
-                            stringResource(R.string.email_sent_successfully_login_auth), 16
+                            stringResource(R.string.email_sent_successfully_login_auth),
+                            16,
+                            center = true
                         )
 
                         Spacer(Modifier.height(10.dp))
@@ -133,7 +142,9 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                         Spacer(Modifier.height(15.dp))
 
                         TextViewNormal(
-                            stringResource(R.string.error_while_sending_email_try_again), 16
+                            stringResource(R.string.error_while_sending_email_try_again),
+                            16,
+                            center = true
                         )
 
                         Spacer(Modifier.height(10.dp))
@@ -141,7 +152,12 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                 }
             }
 
-            Spacer(Modifier.height(30.dp))
+            Spacer(Modifier.height(70.dp))
+
+            LaunchedEffect(Unit) {
+                lastLoginViaEmail = ""
+                login.resetEmailLogin()
+            }
         }
     }
 }

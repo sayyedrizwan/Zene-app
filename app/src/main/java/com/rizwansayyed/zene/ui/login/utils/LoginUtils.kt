@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
+import android.net.Uri
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +28,6 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
-import com.rizwansayyed.zene.di.modules.APIRequests
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.toast
@@ -49,6 +49,10 @@ import javax.inject.Inject
 @Module
 @InstallIn(SingletonComponent::class)
 class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
+
+    companion object {
+        var lastLoginViaEmail by mutableStateOf("")
+    }
 
     enum class LoginType(val type: String) {
         GOOGLE("GOOGLE"), FACEBOOK("FACEBOOK"), APPLE("APPLE_ANDROID")
@@ -81,6 +85,10 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         addCustomParameter("locale", "en")
     }
 
+    fun resetEmailLogin() {
+        loginViaEmail = ResponseResult.Empty
+    }
+
     fun startGoogleLogin(activity: Activity) {
         val credentialManager = CredentialManager.create(activity)
         isLoading = true
@@ -102,7 +110,8 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
                     val info = GoogleIdTokenCredential.createFrom(credential.data)
                     serverLogin(info.idToken, LoginType.GOOGLE)
                     registerEvents(FirebaseEventsParams.GOOGLE_LOGIN)
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    e.message?.toast()
                     isLoading = false
                 }
             } catch (_: Exception) {
@@ -139,10 +148,35 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
     }
 
     fun startEmailLogin(email: String) = CoroutineScope(Dispatchers.IO).launch {
-        Firebase.auth.sendSignInLinkToEmail(email, actionCodeSettings).addOnCompleteListener {
-            if (it.isSuccessful) {
-                "Email sent.".toast()
+        loginViaEmail = ResponseResult.Loading
+        Firebase.auth.sendSignInLinkToEmail(email, actionCodeSettings)
+            .addOnCompleteListener {
+                loginViaEmail = ResponseResult.Success(it.isSuccessful)
             }
+            .addOnFailureListener {
+                it.message?.toast()
+                loginViaEmail = ResponseResult.Success(false)
+            }
+    }
+
+    fun startAuthEmailLogin(link: Uri) {
+        isLoading = true
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response =
+                    Firebase.auth.signInWithEmailLink(lastLoginViaEmail, link.toString()).await()
+                val tokenResult = response.user?.getIdToken(true)?.await()
+
+                serverLogin(tokenResult?.token ?: "", LoginType.GOOGLE)
+                registerEvents(FirebaseEventsParams.EMAIL_LOGIN)
+            } catch (e: Exception) {
+                e.message?.toast()
+            }
+
+            isLoading = false
+
+            if (isActive) cancel()
         }
     }
 
@@ -160,7 +194,8 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
 
             serverLogin(idToken, LoginType.APPLE)
             registerEvents(FirebaseEventsParams.APPLE_LOGIN)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            e.message?.toast()
             isLoading = false
         }
     }

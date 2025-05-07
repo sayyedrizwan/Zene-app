@@ -4,6 +4,8 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Base64
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_LOCATION_SHARING_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_PLAYLIST_TYPE
@@ -119,6 +121,12 @@ class IntentCheckUtils(
 
         CoroutineScope(Dispatchers.Main).launch {
             val data = intent.data ?: return@launch
+
+            if (data.toString().contains("/email-login")
+                && Firebase.auth.isSignInWithEmailLink(data.toString())
+            ) {
+                navViewModel.loginUtils.startAuthEmailLogin(data)
+            }
 
             if (data.toString() == "$ZENE_URL$ZENE_URL_CONNECT") {
                 navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
