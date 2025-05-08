@@ -66,6 +66,7 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         handleCodeInApp = true
         iosBundleId = "com.rizwansayyed.zenemusic"
         setAndroidPackageName(context.packageName, true, "8")
+        linkDomain = "https://www.zenemusic.co/"
     }
 
 
