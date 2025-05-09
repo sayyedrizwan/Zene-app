@@ -104,7 +104,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         return START_STICKY
     }
 
-    fun playSongs(new: Boolean) {
+    fun playSongs(new: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         isNew = new
 
         if (!new)
@@ -114,7 +114,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
             getSimilarSongInfo()
             loadAVideo(currentPlayingSong?.id)
-            exoPlayerSession.stop()
+            CoroutineScope(Dispatchers.Main).launch {
+                exoPlayerSession.stop()
+            }
             registerEvents(FirebaseEventsParams.PLAYED_SONG)
         } else if (currentPlayingSong?.type() == MusicDataTypes.PODCAST_AUDIO) {
             getMediaPlayerPath()
@@ -250,7 +252,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         try {
             val lists = zeneAPI.similarAISongs(currentPlayingSong!!.artists).firstOrNull()
             saveEmpty(lists?.toList() ?: emptyList())
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             saveEmpty(songsLists.asList())
         }
         if (isActive) cancel()

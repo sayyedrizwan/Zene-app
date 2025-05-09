@@ -37,7 +37,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class MediaSessionPlayerNotification(private val context: PlayerForegroundService) {
     private var mediaSession: MediaSessionCompat? = null
     private val storedBitmap = HashMap<String, Bitmap>()
@@ -284,6 +283,8 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_MUSIC_PLAYER_ID).apply {
+            setOngoing(false)
+            setAutoCancel(true)
             setContentTitle(mediaSession?.controller?.metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
             setContentText(mediaSession?.controller?.metadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
             setLargeIcon(mediaSession?.controller?.metadata?.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
@@ -342,5 +343,10 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             (8888..9888).random(),
             intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+    }
+
+    fun forceStop() {
+        mediaSession?.isActive = false
+        mediaSession?.release()
     }
 }
