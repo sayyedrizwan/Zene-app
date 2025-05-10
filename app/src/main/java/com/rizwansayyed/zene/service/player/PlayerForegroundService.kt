@@ -405,6 +405,39 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         }
     }
 
+    override fun playNext(v: ZeneMusicData) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val player = musicPlayerDB.firstOrNull()
+            var array = ArrayList<ZeneMusicData?>(player?.lists ?: emptyList())
+            val index = player?.lists?.indexOfFirst { it?.id == currentPlayingSong?.id }
+            if (index != -1) {
+                array.add(index?.plus(1) ?: 0, v)
+            }
+
+            player?.lists = array.distinctBy { it?.id }
+            withContext(Dispatchers.IO) {
+                musicPlayerDB = flowOf(player)
+            }
+
+            songsLists = array.toTypedArray()
+        }
+    }
+
+    override fun addToQueue(v: ZeneMusicData) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val player = musicPlayerDB.firstOrNull()
+            var array = ArrayList<ZeneMusicData?>(player?.lists ?: emptyList())
+            array.add(v)
+
+            player?.lists = array.distinctBy { it?.id }.toList()
+            withContext(Dispatchers.IO) {
+                musicPlayerDB = flowOf(player)
+            }
+
+            songsLists = array.toTypedArray()
+        }
+    }
+
     override fun seekTo(v: Long) {
         CoroutineScope(Dispatchers.Main).launch {
             exoPlayerSession.seekTo(v)

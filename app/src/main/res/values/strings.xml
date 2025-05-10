@@ -33,8 +33,8 @@
     <string name="follow_artists_updates">Follow artists to get their updates.</string>
     <string name="updates">Updates</string>
     <string name="podcasts_series">Podcasts Series</string>
-    <string name="view_podcast_series">View podcast series</string>
-    <string name="go_to_album">Go to album</string>
+    <string name="view_podcast_series">View Podcast Series</string>
+    <string name="go_to_album">Go to Album</string>
     <string name="podcasts">Podcasts</string>
     <string name="podcast">Podcast</string>
     <string name="radios">Radios</string>
@@ -197,7 +197,7 @@
     <string name="singles">Singles</string>
     <string name="album">Album</string>
     <string name="confirm">Confirm</string>
-    <string name="play_next">Play next</string>
+    <string name="play_next">Play Next</string>
     <string name="friends">Friends</string>
     <string name="friend_requests">Friend Requests</string>
     <string name="vibes_status">Vibe Status</string>
@@ -380,8 +380,8 @@
     <string name="similar_ai_music">Similar AI Music</string>
     <string name="similar_radios">Similar Radios</string>
     <string name="no_lyrics_found">No Lyrics Found</string>
-    <string name="added_to_your_library">Added to your library</string>
-    <string name="add_to_your_library">Add to your library</string>
+    <string name="added_to_your_library">Added to your Library</string>
+    <string name="add_to_your_library">Add to your Library</string>
     <string name="removed_to_your_library">Removed from your library</string>
     <string name="save">Save</string>
     <string name="update">Update</string>
@@ -444,6 +444,7 @@
     <string name="are_you_sure_import_all_song_to_playlist">Are you sure you want to import all songs to this playlist?</string>
     <string name="error_reading_coupon_code_try_again">Error reading coupon code, Please try again later :(</string>
     <string name="no_coupon_found_try_again">No coupon found, Please verify and try again :(</string>
+    <string name="what_our_luxe_users_say">What our luxe users say</string>
 
 
     <!--    notification channels-->

@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAG
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
@@ -83,6 +84,16 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                     if (data.type() == MusicDataTypes.SONGS || data.type() == MusicDataTypes.PODCAST_AUDIO || data.type() == MusicDataTypes.RADIO || data.type() == MusicDataTypes.VIDEOS || data.type() == MusicDataTypes.AI_MUSIC) {
                         LongPressSheetItem(R.drawable.ic_play, R.string.play) {
                             startMedia(data)
+                            viewModel.setShowMediaInfo(null)
+                        }
+
+                        LongPressSheetItem(R.drawable.ic_play_list, R.string.play_next) {
+                            getPlayerS()?.playNext(viewModel.showMediaInfoSheet!!)
+                            viewModel.setShowMediaInfo(null)
+                        }
+
+                        LongPressSheetItem(R.drawable.ic_add_in_queue, R.string.add_to_queue) {
+                            getPlayerS()?.addToQueue(viewModel.showMediaInfoSheet!!)
                             viewModel.setShowMediaInfo(null)
                         }
                     } else {

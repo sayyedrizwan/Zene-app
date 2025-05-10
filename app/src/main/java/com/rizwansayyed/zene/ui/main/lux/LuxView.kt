@@ -125,6 +125,10 @@ fun LuxView() {
             TextViewNormal(stringResource(R.string.upgrading_lux_give_ad_free), 15, center = true)
 
             Spacer(Modifier.height(80.dp))
+
+            LuxUsersReview()
+
+            Spacer(Modifier.height(80.dp))
             BillingPeriod.entries.forEach {
                 LuxItemView(manager, it)
                 Spacer(Modifier.height(20.dp))
@@ -138,6 +142,7 @@ fun LuxView() {
             LuxCouponView(homeViewModel) {
                 showPremium = true
             }
+
 
             Spacer(Modifier.height(400.dp))
         }
