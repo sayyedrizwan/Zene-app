@@ -3,7 +3,9 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebStorage
 import android.webkit.WebView
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
@@ -107,9 +109,18 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     fun playSongs(new: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         isNew = new
 
-        if (!new)
-            currentPlayingSong?.let { PartyCallActivity.declinePartyCallInterface?.changeUpdate(it) }
+        WebStorage.getInstance().deleteAllData()
+        CookieManager.getInstance().removeAllCookies(null)
+        CookieManager.getInstance().flush()
 
+        playerWebView?.clearCache(true)
+        playerWebView?.clearFormData()
+        playerWebView?.clearHistory()
+        playerWebView?.clearSslPreferences()
+
+        if (!new) {
+            currentPlayingSong?.let { PartyCallActivity.declinePartyCallInterface?.changeUpdate(it) }
+        }
 
         if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
             getSimilarSongInfo()
@@ -203,6 +214,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     private fun loadAVideo(videoID: String?) = CoroutineScope(Dispatchers.Main).launch {
+
         val htmlContent = getRawFolderString(R.raw.yt_music_player)
         val speed = songSpeedDB.first().name.replace("_", ".")
 

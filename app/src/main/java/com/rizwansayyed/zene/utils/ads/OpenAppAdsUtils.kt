@@ -6,7 +6,7 @@ import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.lastAppOpenLoadTimeDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.lastLoadTimeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
@@ -45,13 +45,13 @@ class OpenAppAdsUtils(val activity: Activity) {
         override fun onAdLoaded(ad: AppOpenAd) {
             super.onAdLoaded(ad)
             CoroutineScope(Dispatchers.Main).launch {
-                val time = withContext(Dispatchers.IO) { lastAppOpenLoadTimeDB.firstOrNull() }
+                val time = withContext(Dispatchers.IO) { lastLoadTimeDB.firstOrNull() }
                 if (time == null) {
                     ad.show(activity)
-                    lastAppOpenLoadTimeDB = flowOf(System.currentTimeMillis())
-                } else if (timeDifferenceInMinutes(time) >= 4) {
+                    lastLoadTimeDB = flowOf(System.currentTimeMillis())
+                } else if (timeDifferenceInMinutes(time) >= 3) {
                     ad.show(activity)
-                    lastAppOpenLoadTimeDB = flowOf(System.currentTimeMillis())
+                    lastLoadTimeDB = flowOf(System.currentTimeMillis())
                 }
 
                 if (isActive) cancel()

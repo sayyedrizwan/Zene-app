@@ -6,7 +6,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.lastInterstitialLoadTimeDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.lastLoadTimeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
@@ -52,13 +52,13 @@ class InterstitialAdsUtils(
             super.onAdLoaded(ad)
 
             CoroutineScope(Dispatchers.Main).launch {
-                val time = withContext(Dispatchers.IO) { lastInterstitialLoadTimeDB.firstOrNull() }
+                val time = withContext(Dispatchers.IO) { lastLoadTimeDB.firstOrNull() }
                 if (time == null) {
                     ad.show(activity)
-                    lastInterstitialLoadTimeDB = flowOf(System.currentTimeMillis())
-                } else if (timeDifferenceInMinutes(time) >= 5) {
+                    lastLoadTimeDB = flowOf(System.currentTimeMillis())
+                } else if (timeDifferenceInMinutes(time) >= 3) {
                     ad.show(activity)
-                    lastInterstitialLoadTimeDB = flowOf(System.currentTimeMillis())
+                    lastLoadTimeDB = flowOf(System.currentTimeMillis())
                 }
 
                 if (isActive) cancel()
