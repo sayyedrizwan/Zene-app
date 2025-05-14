@@ -109,15 +109,18 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     fun playSongs(new: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         isNew = new
 
-        WebStorage.getInstance().deleteAllData()
-        CookieManager.getInstance().removeAllCookies(null)
-        CookieManager.getInstance().flush()
+        withContext(Dispatchers.Main) {
+            WebStorage.getInstance().deleteAllData()
+            CookieManager.getInstance().removeAllCookies(null)
+            CookieManager.getInstance().flush()
 
-        playerWebView?.clearCache(true)
-        playerWebView?.clearFormData()
-        playerWebView?.clearHistory()
-        playerWebView?.clearSslPreferences()
+            playerWebView?.clearCache(true)
+            playerWebView?.clearFormData()
+            playerWebView?.clearHistory()
+            playerWebView?.clearSslPreferences()
 
+            if (isActive) cancel()
+        }
         if (!new) {
             currentPlayingSong?.let { PartyCallActivity.declinePartyCallInterface?.changeUpdate(it) }
         }
