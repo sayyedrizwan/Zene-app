@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.view.share
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.graphics.drawable.Drawable
 import android.view.WindowManager
 import androidx.activity.compose.LocalActivity
@@ -25,10 +26,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -81,7 +84,6 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.share.ShareContentUtils
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.generateShareUrl
 import com.rizwansayyed.zene.utils.share.SharingContentType
@@ -237,15 +239,22 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
     })
 }
 
+@SuppressLint("SourceLockedOrientationActivity")
 @Composable
 fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         val userInfo by userInfo.collectAsState(null)
         val enableConnect = stringResource(R.string.zene_connect_is_not_enabled_yet)
 
+        val activity = LocalActivity.current
         val context = LocalContext.current
         val view = remember { ComposeView(context) }
         var showQR by remember { mutableStateOf(false) }
+        var lastOrientation by remember {
+            mutableIntStateOf(
+                activity?.requestedOrientation ?: ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            )
+        }
 
 
         Column(
@@ -329,6 +338,11 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
 
         if (showQR) ShowShareQR(data) {
             showQR = false
+        }
+
+        DisposableEffect(Unit) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            onDispose { activity?.requestedOrientation = lastOrientation }
         }
     }
 }
