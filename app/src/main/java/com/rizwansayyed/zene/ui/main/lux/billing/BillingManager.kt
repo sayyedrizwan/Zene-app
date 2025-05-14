@@ -1,10 +1,10 @@
 package com.rizwansayyed.zene.ui.main.lux.billing
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -14,14 +14,9 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.utils.MainUtils.toast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
-class BillingManager(private val context: Activity, private val token : (String, String) -> Unit) {
+class BillingManager(private val context: Activity, private val token: (String, String) -> Unit) {
 
     var monthlyCost by mutableStateOf("$0.79")
     var yearlyCost by mutableStateOf("$8.99")
@@ -34,17 +29,22 @@ class BillingManager(private val context: Activity, private val token : (String,
             for (purchase in purchases) {
                 val purchaseToken = purchase.purchaseToken
                 val subscriptionId = purchase.products.firstOrNull() ?: ""
-                token(purchaseToken, subscriptionId)
+
+                val acknowledgePurchaseParams =
+                    AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
+                        .build()
+
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams) {
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK)
+                        token(purchaseToken, subscriptionId)
+                }
             }
         }
-
     }
 
-
-    private val billingClient: BillingClient = BillingClient.newBuilder(context)
-        .setListener(purchasesListener)
-        .enablePendingPurchases(purchase)
-        .build()
+    private val billingClient: BillingClient =
+        BillingClient.newBuilder(context).setListener(purchasesListener)
+            .enablePendingPurchases(purchase).build()
 
     fun startConnection() {
         billingClient.startConnection(object : BillingClientStateListener {
@@ -78,20 +78,14 @@ class BillingManager(private val context: Activity, private val token : (String,
     }
 
     fun getSubscriptionPrices(
-        productIds: List<String>,
-        buy: Boolean,
-        callback: (Map<String, String>) -> Unit
+        productIds: List<String>, buy: Boolean, callback: (Map<String, String>) -> Unit
     ) {
         val productList = productIds.map {
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(it)
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build()
+            QueryProductDetailsParams.Product.newBuilder().setProductId(it)
+                .setProductType(BillingClient.ProductType.SUBS).build()
         }
 
-        val queryParams = QueryProductDetailsParams.newBuilder()
-            .setProductList(productList)
-            .build()
+        val queryParams = QueryProductDetailsParams.newBuilder().setProductList(productList).build()
 
         billingClient.queryProductDetailsAsync(queryParams) { billingResult, productDetailsList ->
             val result = mutableMapOf<String, String>()
@@ -112,13 +106,12 @@ class BillingManager(private val context: Activity, private val token : (String,
 
     private fun startBuying(productDetails: ProductDetails) {
         val token = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: ""
-        val param = BillingFlowParams.ProductDetailsParams.newBuilder()
-            .setProductDetails(productDetails)
-            .setOfferToken(token)
-            .build()
+        val param =
+            BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(productDetails)
+                .setOfferToken(token).build()
 
-        val billingFlowParams = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(listOf(param)).build()
+        val billingFlowParams =
+            BillingFlowParams.newBuilder().setProductDetailsParamsList(listOf(param)).build()
 
         billingClient.launchBillingFlow(context, billingFlowParams)
     }
