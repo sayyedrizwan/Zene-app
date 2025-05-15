@@ -89,7 +89,9 @@
               event.target.playVideo();
               event.target.seekTo(setDuration);
               event.target.setPlaybackRate(setSpeed);
-              Zene.videoInfo(player.getVideoData().title, player.getVideoData().author, player.getVideoData().video_id);
+
+              const data = player.getVideoData()
+              Zene.videoInfo(data.title, data.author, data.video_id);
             }
 
             function playingStatus() {
