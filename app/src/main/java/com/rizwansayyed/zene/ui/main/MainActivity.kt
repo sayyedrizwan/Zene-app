@@ -201,18 +201,21 @@ class MainActivity : FragmentActivity() {
                         delay(500)
                         setNavigationCallback(object : HomeNavigationListener {
                             override fun navigate(path: String) {
-                                if (path == NAV_GO_BACK) {
-                                    navController.popBackStack()
-                                    return
-                                }
-                                navigationViewModel.setMusicPlayer(false)
-                                navController.navigate(path) {
-                                    if (path == NAV_MAIN_PAGE) {
-                                        popUpTo(NAV_MAIN_PAGE) {
-                                            inclusive = true
+                                lifecycleScope.launch {
+                                    delay(1)
+                                    if (path == NAV_GO_BACK) {
+                                        navController.popBackStack()
+                                        return@launch
+                                    }
+                                    navigationViewModel.setMusicPlayer(false)
+                                    navController.navigate(path) {
+                                        if (path == NAV_MAIN_PAGE) {
+                                            popUpTo(NAV_MAIN_PAGE) {
+                                                inclusive = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = false
                                         }
-                                        launchSingleTop = true
-                                        restoreState = false
                                     }
                                 }
                             }

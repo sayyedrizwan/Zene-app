@@ -26,14 +26,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -51,7 +52,8 @@ fun TopSliderVideoNewsView(news: List<ZeneMusicData?>?) {
     HorizontalPager(pagerState, Modifier.fillMaxWidth()) { page ->
         Box(
             Modifier
-                .combinedClickable(onLongClick = { NavigationUtils.triggerInfoSheet(news?.get(page)) },
+                .combinedClickable(
+                    onLongClick = { NavigationUtils.triggerInfoSheet(news?.get(page)) },
                     onClick = { startMedia(news?.get(page)) })
                 .fillMaxWidth()
                 .padding(horizontal = 3.dp)
@@ -62,7 +64,8 @@ fun TopSliderVideoNewsView(news: List<ZeneMusicData?>?) {
                 Modifier
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
+                    .clip(RoundedCornerShape(14.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Box(

@@ -38,6 +38,8 @@ import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @Composable
@@ -254,6 +256,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
             headerText = topHeaderAlert()
             if (headerText.length > 3) coroutine.launch(Dispatchers.Main) {
                 state.animateScrollToItem(0)
+                if (isActive) cancel()
             }
         }
     }

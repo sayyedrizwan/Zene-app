@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.player.utils
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.pm.ServiceInfo
@@ -335,9 +336,11 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     }
 
     private fun getMediaButtonPendingIntent(action: Long): PendingIntent? {
-        val intent = Intent(context, PlayerMediaButtonReceiver::class.java).apply {
+        val intent = Intent().apply {
+            component = ComponentName(context, PlayerMediaButtonReceiver::class.java)
             putExtra(Intent.ACTION_VIEW, action)
         }
+
         return PendingIntent.getBroadcast(
             context,
             (8888..9888).random(),

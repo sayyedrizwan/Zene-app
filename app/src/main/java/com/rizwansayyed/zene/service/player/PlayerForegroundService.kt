@@ -109,20 +109,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     fun playSongs(new: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         isNew = new
 
-        try {
-            withContext(Dispatchers.Main) {
-                WebStorage.getInstance().deleteAllData()
-                CookieManager.getInstance().removeAllCookies { }
-                CookieManager.getInstance().flush()
-
-                playerWebView?.clearCache(true)
-                playerWebView?.clearFormData()
-                playerWebView?.clearHistory()
-                playerWebView?.clearSslPreferences()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        clearCache()
 
         if (!new) {
             currentPlayingSong?.let { PartyCallActivity.declinePartyCallInterface?.changeUpdate(it) }
@@ -512,5 +499,26 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         pause()
+    }
+
+    fun clearCache() = CoroutineScope(Dispatchers.Main).launch {
+        try {
+            withContext(Dispatchers.IO) {
+                WebStorage.getInstance().deleteAllData()
+                CookieManager.getInstance().removeAllCookies { }
+                CookieManager.getInstance().flush()
+            }
+
+            withContext(Dispatchers.Main) {
+                playerWebView?.clearCache(true)
+                playerWebView?.clearFormData()
+                playerWebView?.clearHistory()
+                playerWebView?.clearSslPreferences()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        if (isActive) cancel()
     }
 }

@@ -49,6 +49,9 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.main.home.view.LuxCards
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
@@ -57,9 +60,6 @@ import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
-import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
@@ -249,7 +249,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 fun SongTextAndArtists(
     data: List<ZeneMusicData?>?, pagerState: PagerState, modifier: Modifier, close: () -> Unit
 ) {
-    if (data?.isNotEmpty() == true) Column(modifier) {
+    if (data?.isNotEmpty() == true && pagerState.currentPage in data.indices) Column(modifier) {
         Text(
             data[pagerState.currentPage]?.name ?: "",
             Modifier
@@ -318,18 +318,19 @@ fun SongTextAndArtists(
 fun LikeSongView(player: MusicPlayerData?, viewModel: PlayerViewModel, pagerState: PagerState) {
     var addToPlaylistView by remember { mutableStateOf(false) }
 
-    Box(Modifier
-        .padding(start = 10.dp)
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            val isLiked =
-                when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
-                    LikeItemType.LIKE -> true
-                    LikeItemType.LOADING, LikeItemType.NONE, null -> false
-                }
-            viewModel.likeAItem(player?.lists?.get(pagerState.currentPage), !isLiked)
-        }, Alignment.Center
+    Box(
+        Modifier
+            .padding(start = 10.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                val isLiked =
+                    when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
+                        LikeItemType.LIKE -> true
+                        LikeItemType.LOADING, LikeItemType.NONE, null -> false
+                    }
+                viewModel.likeAItem(player?.lists?.get(pagerState.currentPage), !isLiked)
+            }, Alignment.Center
     ) {
         when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
             LikeItemType.LOADING -> CircularLoadingViewSmall()
@@ -338,13 +339,14 @@ fun LikeSongView(player: MusicPlayerData?, viewModel: PlayerViewModel, pagerStat
         }
     }
 
-    Box(Modifier
-        .padding(start = 5.dp)
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            addToPlaylistView = true
-        }, Alignment.Center
+    Box(
+        Modifier
+            .padding(start = 5.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                addToPlaylistView = true
+            }, Alignment.Center
     ) {
         ImageIcon(R.drawable.ic_playlist, 24)
     }
