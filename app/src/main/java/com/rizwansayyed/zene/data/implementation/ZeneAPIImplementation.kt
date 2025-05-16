@@ -1140,9 +1140,11 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun similarVideos(id: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
 
         val json = JSONObject().apply {
             put("email", email)
+            put("country", country)
             put("id", id)
         }
 

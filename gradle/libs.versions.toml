@@ -5,10 +5,10 @@ compilesdk = "36"
 minsdk = "24"
 
 
-appversion = "197"
-versionname = "3.02.864"
+appversion = "199"
+versionname = "3.02.867"
 
-agp = "8.9.2"
+agp = "8.9.3"
 
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.1"
@@ -31,7 +31,7 @@ activityCompose = "1.10.1"
 composeBom = "2025.05.00"
 googleid = "1.1.1"
 mapsCompose = "6.4.1"
-media3Exoplayer = "1.6.1"
+media3Exoplayer = "1.7.1"
 moshiKotlin = "1.15.2"
 okhttpBom = "4.12.0"
 processPhoenix = "3.0.0"
