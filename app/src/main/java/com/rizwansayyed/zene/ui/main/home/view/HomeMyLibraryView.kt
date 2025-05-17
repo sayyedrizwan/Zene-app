@@ -187,7 +187,7 @@ fun HomeMyLibraryView() {
             }
         }
 
-        LaunchedEffect(state) {
+        LaunchedEffect(viewModel.selectedType) {
             when (viewModel.selectedType) {
                 MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
                 MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
