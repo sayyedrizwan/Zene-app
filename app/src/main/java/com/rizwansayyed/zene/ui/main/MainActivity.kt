@@ -88,7 +88,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
 
@@ -242,6 +241,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+
         IntentCheckUtils(intent, navigationViewModel, playerViewModel)
 
         lifecycleScope.launch {

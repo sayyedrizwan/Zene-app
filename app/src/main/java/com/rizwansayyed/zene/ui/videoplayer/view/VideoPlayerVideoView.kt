@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.MotionEvent
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -60,11 +61,10 @@ fun VideoPlayerVideoView(
         fun videoInfo(title: String, author: String, videoId: String) {
             viewModel.setVideoInfo(title, author, videoId)
             coroutine.launch {
-                if (videoCCDB.first()) viewModel.webView?.evaluateJavascript(
-                    "enableCaption()",
-                    null
-                )
-                else viewModel.webView?.evaluateJavascript("disableCaption()", null)
+                if (videoCCDB.first())
+                    viewModel.webView?.evaluateJavascript("enableCaption()", null)
+                else
+                    viewModel.webView?.evaluateJavascript("disableCaption()", null)
             }
         }
     }

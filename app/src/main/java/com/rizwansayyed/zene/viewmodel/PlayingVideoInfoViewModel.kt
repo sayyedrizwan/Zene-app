@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
+import android.webkit.ConsoleMessage
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -11,6 +14,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoQualityDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
@@ -28,6 +32,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
+
 
 @HiltViewModel
 class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
@@ -78,6 +83,13 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
     fun loadWebView(startNew: Boolean = true) = viewModelScope.launch(Dispatchers.Main) {
         val lastDuration = if (startNew) 0 else videoCurrentTimestamp
 
+        webView?.setWebChromeClient(object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
+                Log.d("WebView runnned onn", consoleMessage.message())
+                return true
+            }
+        })
+
         val htmlContent = getRawFolderString(R.raw.yt_video_player)
         delay(500)
         val speed = videoSpeedDB.first().name.replace("_", ".")
@@ -98,6 +110,11 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         videoCurrentTimestamp = currentTS.toFloatOrNull() ?: 0f
         videoDuration = duration.toFloatOrNull() ?: 0f
         videoMute = isMute
+
+        if (playerState == YoutubePlayerState.PLAYING) viewModelScope.launch(Dispatchers.Main) {
+            if (videoCCDB.first()) webView?.evaluateJavascript("enableCaption()", null)
+            else webView?.evaluateJavascript("disableCaption()", null)
+        }
     }
 
     fun setVideoInfo(name: String, author: String, videoId: String) {

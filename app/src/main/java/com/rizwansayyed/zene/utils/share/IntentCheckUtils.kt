@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenPlaylistOnConnect
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M

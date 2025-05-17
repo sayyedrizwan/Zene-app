@@ -2,30 +2,31 @@
 <html lang="en">
     <head>
         <style>
-            html, body {
-                margin: 0;
-                padding: 0;
-                pointer-events:none;
+            html,
+            body {
+              margin: 0;
+              padding: 0;
+              pointer-events: none;
             }
 
             .container {
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                z-index: 100;
+              position: fixed;
+              width: 100%;
+              height: 100%;
+              z-index: 100;
             }
 
             .youtube-container {
-                overflow: hidden;
-                width: 100%;
-                aspect-ratio: 16/9;
-                pointer-events: none;
+              overflow: hidden;
+              width: 100%;
+              aspect-ratio: 16/9;
+              pointer-events: none;
 
-                iframe {
-                    width: 300%;
-                    height: 100%;
-                    margin-left: -100%;
-                }
+              iframe {
+                width: 300%;
+                height: 100%;
+                margin-left: -100%;
+              }
             }
         </style>
         <title>Zene Video Player</title>
@@ -61,7 +62,6 @@
               setLocalStorageItem();
             });
 
-
             var tag = document.createElement("script");
 
             tag.src = "https://www.youtube.com/iframe_api";
@@ -74,7 +74,7 @@
                 height: "100%",
                 width: "100%",
                 videoId: "<<VideoID>>",
-                playerVars: { 'autoplay': 1, 'controls': 0, 'iv_load_policy': 3, 'disablekb': 1, 'fs': 0, 'loop': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'mute': 1, 'autohide': 1 },
+                playerVars: { autoplay: 1, controls: 0, cc_load_policy: 1, disablekb: 1, fs: 0, loop: 1, modestbranding: 1, rel: 0, showinfo: 0, mute: 1, autohide: 1 },
                 events: {
                   onReady: onPlayerReady,
                   onStateChange: onPlayerStateChange,
@@ -89,14 +89,15 @@
               event.target.playVideo();
               event.target.seekTo(setDuration);
               event.target.setPlaybackRate(setSpeed);
+              isEnableCaption(event.target);
 
-              const data = player.getVideoData()
+              const data = event.target.playerInfo.videoData;
               Zene.videoInfo(data.title, data.author, data.video_id);
             }
 
             function playingStatus() {
               try {
-               Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration(), player.isMuted());
+                Zene.videoState(player.getPlayerState(), player.getCurrentTime(), player.getDuration(), player.isMuted());
               } catch (exception) {}
             }
 
@@ -106,17 +107,17 @@
             }
 
             function unMute() {
-               player.unMute();
-               playingStatus();
+              player.unMute();
+              playingStatus();
             }
 
             function mute() {
-               player.mute();
-               playingStatus();
+              player.mute();
+              playingStatus();
             }
 
             function playbackRate(v) {
-               player.setPlaybackRate(v);
+              player.setPlaybackRate(v);
             }
 
             function seekTo(v) {
@@ -144,13 +145,17 @@
               player.stopVideo();
             }
 
-            function isEnableCaption() {
-                var tracks = player.getOption("captions", "tracklist");
+            function isEnableCaption(target) {
+              try {
+                var tracks = target.v.captions.tracklist;
                 if (tracks && tracks.length > 0) {
                   Zene.captionAvailable(true);
                 } else {
                   Zene.captionAvailable(false);
                 }
+              } catch (exception) {
+                Zene.captionAvailable(false);
+              }
             }
 
             function enableCaption() {
@@ -166,7 +171,6 @@
                 player.unloadModule("cc");
               } catch (exception) {}
             }
-
         </script>
     </body>
 </html>

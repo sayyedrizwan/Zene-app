@@ -45,9 +45,7 @@ import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.ui.theme.MainColor
-import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
-import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ImageWithBgAndBorder
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
@@ -68,15 +66,21 @@ fun VideoPlayerControlView(
     playerViewModel: PlayerViewModel,
     videoID: String?
 ) {
-    Box(Modifier
-        .clickable { viewModel.showControlView(false) }
-        .fillMaxSize()
-        .background(Color.Black.copy(0.7f))) {
+    Box(
+        Modifier
+            .clickable { viewModel.showControlView(false) }
+            .fillMaxSize()
+            .background(Color.Black.copy(0.7f))) {
         VideoPlayerInfoView(viewModel, Modifier.align(Alignment.TopStart))
 
         VideoPlayerBottomControl(viewModel, Modifier.align(Alignment.BottomCenter))
 
-        QualityAndControlVideoView(viewModel, Modifier.align(Alignment.TopEnd), playerViewModel, videoID)
+        QualityAndControlVideoView(
+            viewModel,
+            Modifier.align(Alignment.TopEnd),
+            playerViewModel,
+            videoID
+        )
     }
 }
 
@@ -109,6 +113,7 @@ fun QualityAndControlVideoView(
                 LikeItemType.LIKE -> ImageWithBorder(R.drawable.ic_thumbs_up, Color.Red) {
                     playerViewModel.likeAItem(viewModel.videoInfo, false)
                 }
+
                 LikeItemType.NONE, null -> ImageWithBorder(R.drawable.ic_thumbs_up) {
                     playerViewModel.likeAItem(viewModel.videoInfo, true)
                 }
@@ -168,7 +173,8 @@ fun VideoPlayerBottomControl(viewModel: PlayingVideoInfoViewModel, modifier: Mod
                 formatDurationsForVideo(viewModel.videoCurrentTimestamp), size = 13
             )
 
-            Slider(value = sliderPosition,
+            Slider(
+                value = sliderPosition,
                 onValueChange = {
                     sliderPosition = it
                     viewModel.showControlView(true)

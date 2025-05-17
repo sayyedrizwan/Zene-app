@@ -499,6 +499,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         pause()
+        stopSelf()
     }
 
     fun clearCache() = CoroutineScope(Dispatchers.Main).launch {

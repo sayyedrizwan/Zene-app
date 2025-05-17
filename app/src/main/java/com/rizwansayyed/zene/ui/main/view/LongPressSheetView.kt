@@ -87,6 +87,16 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                             viewModel.setShowMediaInfo(null)
                         }
 
+                    } else {
+                        LongPressSheetItem(R.drawable.ic_arrow_up_right, R.string.view) {
+                            startMedia(data)
+                            viewModel.setShowMediaInfo(null)
+                        }
+                    }
+                }
+
+                item {
+                    if (data.type() == MusicDataTypes.SONGS || data.type() == MusicDataTypes.PODCAST_AUDIO || data.type() == MusicDataTypes.RADIO || data.type() == MusicDataTypes.AI_MUSIC) {
                         LongPressSheetItem(R.drawable.ic_play_list, R.string.play_next) {
                             getPlayerS()?.playNext(viewModel.showMediaInfoSheet!!)
                             viewModel.setShowMediaInfo(null)
@@ -94,11 +104,6 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
 
                         LongPressSheetItem(R.drawable.ic_add_in_queue, R.string.add_to_queue) {
                             getPlayerS()?.addToQueue(viewModel.showMediaInfoSheet!!)
-                            viewModel.setShowMediaInfo(null)
-                        }
-                    } else {
-                        LongPressSheetItem(R.drawable.ic_arrow_up_right, R.string.view) {
-                            startMedia(data)
                             viewModel.setShowMediaInfo(null)
                         }
                     }

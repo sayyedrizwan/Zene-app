@@ -133,7 +133,7 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun addHistory(data: ZeneMusicData) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-        val pauseHistory = pauseHistorySettings.firstOrNull() ?: false
+        val pauseHistory = pauseHistorySettings.firstOrNull() == true
 
         if (pauseHistory) {
             emit(StatusTypeResponse(false, ""))
