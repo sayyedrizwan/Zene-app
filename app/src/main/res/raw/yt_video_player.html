@@ -89,10 +89,8 @@
               event.target.playVideo();
               event.target.seekTo(setDuration);
               event.target.setPlaybackRate(setSpeed);
-              isEnableCaption(event.target);
 
-              const data = event.target.playerInfo.videoData;
-              Zene.videoInfo(data.title, data.author, data.video_id);
+              getYouTubeMetadata();
             }
 
             function playingStatus() {
@@ -170,6 +168,20 @@
                 player.unloadModule("captions");
                 player.unloadModule("cc");
               } catch (exception) {}
+            }
+
+            async function getYouTubeMetadata() {
+              const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=<<VideoID>>&format=json`;
+
+              try {
+                const response = await fetch(url);
+                if (response.ok) {
+                  const data = await response.json();
+                  Zene.videoInfo(data.title, data.author_name, "<<VideoID>>");
+                }
+              } catch (error) {
+                console.error("Fetch error:", error);
+              }
             }
         </script>
     </body>
