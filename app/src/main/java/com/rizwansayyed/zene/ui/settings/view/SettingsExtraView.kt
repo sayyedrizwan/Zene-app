@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
@@ -89,7 +88,7 @@ fun SettingsExtraView() {
             effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
             effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
             context.startActivityForResult(effects, 0)
-        } catch (notFound: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             "There is no default equalizer".toast()
         }
     }

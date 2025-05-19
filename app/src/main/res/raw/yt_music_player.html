@@ -45,7 +45,7 @@
                 height: "100%",
                 width: "100%",
                 videoId: "<<VideoID>>",
-                playerVars: { 'autoplay': 1, 'controls': 0 },
+                playerVars: { 'controls': 0 },
                 events: {
                   onReady: onPlayerReady,
                   onStateChange: onPlayerStateChange,
@@ -62,10 +62,10 @@
               event.target.unMute();
               event.target.setVolume(100);
               event.target.setLoop(false);
-              event.target.playVideo();
               event.target.setPlaybackRate(setSpeed);
-              if(isNew) {
-                 event.target.pauseVideo();
+
+              if(!isNew) {
+                 event.target.playVideo();
               }
 
               Zene.videoInfo(player.getVideoData().title, player.getVideoData().author, player.getVideoData().video_id);
