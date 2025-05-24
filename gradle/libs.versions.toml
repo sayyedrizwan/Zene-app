@@ -5,8 +5,8 @@ compilesdk = "36"
 minsdk = "24"
 
 
-appversion = "203"
-versionname = "3.02.874"
+appversion = "204"
+versionname = "3.02.876"
 
 agp = "8.9.3"
 
@@ -14,9 +14,9 @@ androidImageCropper = "4.6.0"
 exifinterface = "1.4.1"
 glide = "1.0.0-beta01"
 credentials = "1.5.0"
-datastorePreferences = "1.1.6"
+datastorePreferences = "1.1.7"
 facebookLogin = "18.0.3"
-firebaseBom = "33.13.0"
+firebaseBom = "33.14.0"
 gson = "2.11.0"
 hiltAndroid = "2.52"
 googleServices = "4.4.2"
@@ -28,7 +28,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
-composeBom = "2025.05.00"
+composeBom = "2025.05.01"
 googleid = "1.1.1"
 mapsCompose = "6.4.1"
 media3Exoplayer = "1.7.1"
@@ -40,7 +40,7 @@ playServicesLocation = "21.3.0"
 emoji = "1.5.0"
 truecaller = "3.1.0"
 camera = "1.5.0-beta01"
-material3 = "1.4.0-alpha14"
+material3 = "1.4.0-alpha15"
 webkit = "1.13.0"
 navigation = "2.9.0"
 paletteKtx = "1.0.0"
@@ -58,9 +58,12 @@ socketIoClient = "2.1.1"
 konfettiCompose = "2.0.5"
 
 opencsv = "5.10"
-playServicesAds = "24.2.0"
+playServicesAds = "24.3.0"
+firebasePreformance = "1.4.2"
+firebaseCrash = "3.0.3"
 
 billing = "7.1.1"
+clarity = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -88,6 +91,8 @@ androidx-credentials-googleid = { group = "com.google.android.libraries.identity
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-perf = { module = "com.google.firebase:firebase-perf" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 
 
@@ -159,12 +164,12 @@ colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", vers
 
 konfetti-compose = { module = "nl.dionsegijn:konfetti-compose", version.ref = "konfettiCompose" }
 
-
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 
 opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
 
 billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
+clarity = { module = "com.microsoft.clarity:clarity-compose", version.ref = "clarity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -173,3 +178,5 @@ android-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndro
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+firebase-preformance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePreformance" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrash" }

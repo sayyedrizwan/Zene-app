@@ -23,9 +23,14 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
+import com.microsoft.clarity.Clarity
+import com.microsoft.clarity.ClarityConfig
+import com.microsoft.clarity.models.LogLevel
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.searchHistoryDB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MAIL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -329,6 +334,14 @@ object MainUtils {
         return location == PackageManager.PERMISSION_GRANTED
     }
 
+    fun configClarity(activity: MainActivity) {
+        val config = ClarityConfig(
+            projectId = BuildConfig.CLARITY_PROJECT_ID,
+            logLevel = if (BuildConfig.DEBUG) LogLevel.Verbose else LogLevel.None
+        )
+        Clarity.initialize(activity, config)
+    }
+
     fun openAppSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.data = ("package:" + context.packageName).toUri()
@@ -565,6 +578,7 @@ object MainUtils {
             db?.forEach { if (it != text) list.add(it) }
             if (add) list.add(0, text)
 
-            searchHistoryDB = flowOf(list.distinct().filter { it.isNotBlank() }.take(30).toTypedArray())
+            searchHistoryDB =
+                flowOf(list.distinct().filter { it.isNotBlank() }.take(30).toTypedArray())
         }
 }

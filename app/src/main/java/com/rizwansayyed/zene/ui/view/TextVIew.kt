@@ -25,12 +25,16 @@ fun TextViewNormal(
     txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
 ) {
     Text(
-        txt,
+        text = txt,
         if (center) Modifier
             .fillMaxWidth()
             .animateContentSize() else Modifier.animateContentSize(),
-        color, size.sp, null, FontWeight.Normal, proximanOverFamily,
-        textAlign = if (center) TextAlign.Center else null, maxLines = line,
+        color = color,
+        fontSize = size.sp,
+        fontWeight = FontWeight.Normal,
+        fontFamily = proximanOverFamily,
+        textAlign = if (center) TextAlign.Center else null,
+        maxLines = line,
         overflow = TextOverflow.Ellipsis
     )
 }
@@ -40,12 +44,17 @@ fun TextViewBoldBig(
     txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
 ) {
     Text(
-        txt,
-        if (center) Modifier
+        text = txt,
+        modifier = if (center) Modifier
             .fillMaxWidth()
             .animateContentSize() else Modifier.animateContentSize(),
-        color, size.sp, null, FontWeight.Bold, proximanOverFamily,
-        textAlign = if (center) TextAlign.Center else null, maxLines = line, lineHeight = 43.sp
+        color = color,
+        fontSize = size.sp,
+        fontWeight = FontWeight.Bold,
+        fontFamily = proximanOverFamily,
+        textAlign = if (center) TextAlign.Center else null,
+        maxLines = line,
+        lineHeight = 43.sp
     )
 }
 
@@ -54,10 +63,16 @@ fun TextViewBold(
     txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
 ) {
     Text(
-        txt,
-        if (center) Modifier.fillMaxWidth().animateContentSize() else Modifier.animateContentSize(),
-        color, size.sp, null, FontWeight.Bold, proximanOverFamily,
-        textAlign = if (center) TextAlign.Center else null, maxLines = line
+        text = txt,
+        modifier = if (center) Modifier
+            .fillMaxWidth()
+            .animateContentSize() else Modifier.animateContentSize(),
+        color = color,
+        fontSize = size.sp,
+        fontWeight = FontWeight.Bold,
+        fontFamily = proximanOverFamily,
+        textAlign = if (center) TextAlign.Center else null,
+        maxLines = line
     )
 }
 
@@ -66,10 +81,14 @@ fun TextViewSemiBold(
     txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
 ) {
     Text(
-        txt,
-        if (center) Modifier.fillMaxWidth() else Modifier,
-        color, size.sp, null, FontWeight.SemiBold, proximanOverFamily,
-        textAlign = if (center) TextAlign.Center else null, maxLines = line
+        text = txt,
+        modifier = if (center) Modifier.fillMaxWidth() else Modifier,
+        color = color,
+        fontSize = size.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = proximanOverFamily,
+        textAlign = if (center) TextAlign.Center else null,
+        maxLines = line
     )
 }
 
@@ -78,11 +97,15 @@ fun TextViewLight(
     txt: String, size: Int = 17, color: Color = Color.White, center: Boolean = false, line: Int = 20
 ) {
     Text(
-        txt,
-        if (center) Modifier.fillMaxWidth() else Modifier,
-        color, size.sp, null, FontWeight.Light, proximanOverFamily,
+        text = txt,
+        modifier = if (center) Modifier.fillMaxWidth() else Modifier,
+        color = color,
+        fontSize = size.sp,
+        fontWeight = FontWeight.Light,
+        fontFamily = proximanOverFamily,
         textAlign = if (center) TextAlign.Center else null,
-        maxLines = line, overflow = TextOverflow.Ellipsis,
+        maxLines = line,
+        overflow = TextOverflow.Ellipsis,
         lineHeight = 1.4.em
     )
 }

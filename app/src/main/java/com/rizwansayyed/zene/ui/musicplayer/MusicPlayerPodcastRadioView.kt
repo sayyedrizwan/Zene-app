@@ -34,6 +34,8 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.ui.theme.Pink80
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.ButtonWithImageAndBorder
@@ -41,8 +43,6 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 
@@ -104,7 +104,7 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel) {
             item {
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    AnnotatedString.fromHtml(
+                    text = AnnotatedString.fromHtml(
                         v.data.description ?: "", linkStyles = TextLinkStyles(
                             style = SpanStyle(
                                 textDecoration = TextDecoration.Underline,
@@ -113,14 +113,13 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel) {
                             )
                         )
                     ),
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .animateContentSize(),
-                    Color.White,
-                    14.sp,
-                    null,
-                    FontWeight.Normal,
-                    proximanOverFamily,
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = proximanOverFamily,
                     textAlign = TextAlign.Center
                 )
             }

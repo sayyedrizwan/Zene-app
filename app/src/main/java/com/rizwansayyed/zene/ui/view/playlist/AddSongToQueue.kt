@@ -128,12 +128,16 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
     if ((v.artists?.trim()?.length ?: 0) > 5) {
         Spacer(Modifier.height(15.dp))
         Text(
-            v.artists ?: "",
-            Modifier
+            text = v.artists ?: "",
+            modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize(),
-            Color.White, 14.sp, null, FontWeight.Normal, proximanOverFamily,
-            textAlign = TextAlign.Center, maxLines = if (fullDesc) 1000 else 3,
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            fontFamily = proximanOverFamily,
+            textAlign = TextAlign.Center,
+            maxLines = if (fullDesc) 1000 else 3,
             overflow = TextOverflow.Ellipsis,
             onTextLayout = { textLayoutResult ->
                 shouldShowArrow = textLayoutResult.lineCount > 2
@@ -142,9 +146,10 @@ fun PlaylistTopView(v: ZeneMusicData, type: PlaylistsType) {
 
         Spacer(Modifier.height(5.dp))
 
-        if (shouldShowArrow) Box(Modifier
-            .rotate(if (fullDesc) 180f else 0f)
-            .clickable { fullDesc = !fullDesc }) {
+        if (shouldShowArrow) Box(
+            Modifier
+                .rotate(if (fullDesc) 180f else 0f)
+                .clickable { fullDesc = !fullDesc }) {
             ImageIcon(R.drawable.ic_arrow_down, 28)
         }
     }

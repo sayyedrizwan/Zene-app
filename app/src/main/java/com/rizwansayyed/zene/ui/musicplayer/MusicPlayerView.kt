@@ -251,15 +251,14 @@ fun SongTextAndArtists(
 ) {
     if (data?.isNotEmpty() == true && pagerState.currentPage in data.indices) Column(modifier) {
         Text(
-            data[pagerState.currentPage]?.name ?: "",
-            Modifier
+            text = data[pagerState.currentPage]?.name ?: "",
+            modifier = Modifier
                 .animateContentSize()
                 .basicMarquee(),
-            Color.White,
-            23.sp,
-            null,
-            FontWeight.Bold,
-            proximanOverFamily
+            color = Color.White,
+            fontSize = 23.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = proximanOverFamily
         )
 
         Spacer(Modifier.height(1.dp))

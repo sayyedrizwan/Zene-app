@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.firebase.preformance)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -41,6 +43,9 @@ android {
 
         val appEncodeKey = properties.getProperty("APP_ENCODE_KEY") ?: ""
         buildConfigField("String", "APP_ENCODE_KEY", appEncodeKey)
+
+        val clarityProjectId = properties.getProperty("CLARITY_PROJECT_ID") ?: ""
+        buildConfigField("String", "CLARITY_PROJECT_ID", clarityProjectId)
 
         val deviceEncKey = properties.getProperty("DEVICE_ENC_KEY") ?: ""
         buildConfigField("String", "DEVICE_ENC_KEY", deviceEncKey)
@@ -129,6 +134,8 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.perf)
+    implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
 
@@ -193,8 +200,6 @@ dependencies {
 
 
     implementation(libs.hashids)
-
-
     implementation(libs.palette.ktx)
 
     implementation(libs.colorpicker.compose)
@@ -211,6 +216,7 @@ dependencies {
     implementation(libs.billing)
 
     implementation(libs.konfetti.compose)
+    implementation(libs.clarity)
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
