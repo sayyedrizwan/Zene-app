@@ -57,6 +57,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.isShuffleDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.sleepTimerSelected
@@ -68,7 +69,6 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.flowOf
@@ -81,20 +81,20 @@ fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
     HorizontalPager(
         pagerState, Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp)
     ) { page ->
-        Box(
+        if (data?.lists?.isNotEmpty() == true && data.lists?.indices?.contains(pagerState.currentPage) == true) Box(
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
         ) {
             GlideImage(
-                data?.lists?.get(page)?.thumbnail, data?.lists?.get(page)?.name,
+                data.lists?.get(page)?.thumbnail, data.lists?.get(page)?.name,
                 Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .padding(horizontal = 5.dp),
                 contentScale = ContentScale.Crop
             )
-            if (data?.lists?.get(page)?.id != data?.data?.id) {
+            if (data.lists?.get(page)?.id != data.data?.id) {
                 Box(
                     Modifier
                         .padding(15.dp)
@@ -102,9 +102,9 @@ fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
                         .clip(RoundedCornerShape(100))
                         .background(MainColor)
                         .combinedClickable(onLongClick = {
-                            NavigationUtils.triggerInfoSheet(data?.lists?.get(page))
+                            NavigationUtils.triggerInfoSheet(data.lists?.get(page))
                         }, onClick = {
-                            startMedia(data?.lists?.get(page), data?.lists ?: emptyList())
+                            startMedia(data.lists?.get(page), data.lists ?: emptyList())
                         })
                         .padding(10.dp)
                 ) {
@@ -126,33 +126,36 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
     val isShuffleEnabled by isShuffleDB.collectAsState(false)
 
     Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-        Box(Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            isLoopDB = flowOf(!isLoopEnabled)
-        }) {
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                isLoopDB = flowOf(!isLoopEnabled)
+            }) {
             ImageIcon(
                 if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22
             )
         }
 
-        Box(Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            getPlayerS()?.toBackSong()
-        }) {
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                getPlayerS()?.toBackSong()
+            }) {
             ImageIcon(R.drawable.ic_backward, 27)
         }
 
-        Box(Modifier
-            .padding(5.dp)
-            .clip(RoundedCornerShape(100))
-            .clickable {
-                if (player?.isPlaying() == true) getPlayerS()?.pause()
-                else getPlayerS()?.play()
-            }
-            .background(Color.White)
-            .padding(10.dp)) {
+        Box(
+            Modifier
+                .padding(5.dp)
+                .clip(RoundedCornerShape(100))
+                .clickable {
+                    if (player?.isPlaying() == true) getPlayerS()?.pause()
+                    else getPlayerS()?.play()
+                }
+                .background(Color.White)
+                .padding(10.dp)) {
             when (player?.state) {
                 YoutubePlayerState.PLAYING -> ImageIcon(
                     R.drawable.ic_pause, 27, Color.Black
@@ -166,19 +169,21 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
             }
         }
 
-        Box(Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            getPlayerS()?.toNextSong()
-        }) {
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                getPlayerS()?.toNextSong()
+            }) {
             ImageIcon(R.drawable.ic_forward, 27)
         }
 
-        Box(Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            isShuffleDB = flowOf(!isShuffleEnabled)
-        }) {
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                isShuffleDB = flowOf(!isShuffleEnabled)
+            }) {
             ImageIcon(
                 if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle, 22
             )
@@ -209,22 +214,24 @@ fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
                 ResponseResult.Loading -> CircularLoadingViewSmall()
                 is ResponseResult.Success -> {
                     if (v.data.videoID?.id != null) {
-                        Box(Modifier.clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }) {
-                            startMedia(v.data.videoID)
-                        }) {
+                        Box(
+                            Modifier.clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) {
+                                startMedia(v.data.videoID)
+                            }) {
                             ImageIcon(R.drawable.ic_video_replay, 22)
                         }
                     }
 
                     if (v.data.lyricsID?.id != null) {
                         Spacer(Modifier.width(25.dp))
-                        Box(Modifier.clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }) {
-                            startMedia(v.data.lyricsID)
-                        }) {
+                        Box(
+                            Modifier.clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) {
+                                startMedia(v.data.lyricsID)
+                            }) {
                             ImageIcon(R.drawable.ic_teaching, 22)
                         }
                     }
@@ -236,20 +243,22 @@ fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
 
         Spacer(Modifier.weight(1f))
 
-        Box(Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            songSpeedView = true
-        }) {
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                songSpeedView = true
+            }) {
             ImageIcon(R.drawable.ic_dashboard_speed, 22)
         }
 
         Spacer(Modifier.width(25.dp))
-        Box(Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            showTimerSheet = true
-        }) {
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                showTimerSheet = true
+            }) {
             ImageIcon(
                 R.drawable.ic_timer,
                 22,
@@ -258,11 +267,12 @@ fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
         }
 
         Spacer(Modifier.width(25.dp))
-        Box(Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            showShareView = true
-        }) {
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                showShareView = true
+            }) {
             ImageIcon(R.drawable.ic_share, 22)
         }
     }

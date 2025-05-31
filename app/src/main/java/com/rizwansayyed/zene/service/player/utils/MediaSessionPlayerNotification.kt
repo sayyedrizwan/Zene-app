@@ -285,7 +285,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             putExtra(Intent.ACTION_SENDTO, CATEGORY_APP_MUSIC)
         }
         val pendingIntent = PendingIntent.getActivity(
-            context, (11..888).random(), openPlayer,
+            context, 10, openPlayer,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
 
@@ -295,7 +295,8 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             setContentTitle(mediaSession?.controller?.metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
             setContentText(mediaSession?.controller?.metadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
             setLargeIcon(mediaSession?.controller?.metadata?.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
-            setSmallIcon(R.drawable.zene_logo).setPriority(NotificationCompat.PRIORITY_HIGH)
+            setSmallIcon(R.drawable.zene_logo)
+            priority = NotificationCompat.PRIORITY_HIGH
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setContentIntent(pendingIntent)
 

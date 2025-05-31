@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -79,71 +78,65 @@ fun NativeViewAdsCard(id: String?) {
     nativeAd?.let { ad ->
         AndroidView(
             factory = { ctx ->
-                if (nativeAdsAndroidViewMap.getOrDefault(id, null) != null) {
-                    nativeAdsAndroidViewMap[id]
-                } else {
-                    val inflater = LayoutInflater.from(ctx)
-                    val adView: NativeAdView =
-                        inflater.inflate(R.layout.native_ad_view, null) as NativeAdView
+                val inflater = LayoutInflater.from(ctx)
+                val adView = inflater.inflate(R.layout.native_ad_view, null) as NativeAdView
 
-                    fun getD(v: Int): Drawable? {
-                        return ContextCompat.getDrawable(context, v)
-                    }
+                fun getD(v: Int): Drawable? {
+                    return ContextCompat.getDrawable(context, v)
+                }
 
-                    val mediaContainer = adView.findViewById<FrameLayout>(R.id.media_container)
-                    mediaContainer.removeAllViews()
-                    val mediaView = MediaView(ctx)
-                    mediaContainer.addView(mediaView)
-                    adView.mediaView = mediaView
+                val mediaContainer = adView.findViewById<FrameLayout>(R.id.media_container)
+                mediaContainer.removeAllViews()
+                val mediaView = MediaView(ctx)
+                mediaContainer.addView(mediaView)
+                adView.mediaView = mediaView
 
+                adView.headlineView = adView.findViewById(R.id.ad_headline)
+                adView.bodyView = adView.findViewById(R.id.ad_body)
+                adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
+                adView.iconView = adView.findViewById(R.id.ad_icon)
+                val icon: ImageView = adView.findViewById(R.id.ad_actions_icon)
 
-                    adView.headlineView = adView.findViewById(R.id.ad_headline)
-                    adView.bodyView = adView.findViewById(R.id.ad_body)
-                    adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
-                    adView.iconView = adView.findViewById(R.id.ad_icon)
-                    val icon: ImageView = adView.findViewById(R.id.ad_actions_icon)
+                (adView.headlineView as TextView).text = ad.headline
+                (adView.bodyView as TextView).text = ad.body
+                (adView.callToActionView as Button).text = ad.callToAction
+                (adView.iconView as ImageView).setImageDrawable(ad.icon?.drawable)
 
-                    (adView.headlineView as TextView).text = ad.headline
-                    (adView.bodyView as TextView).text = ad.body
-                    (adView.callToActionView as Button).text = ad.callToAction
-                    (adView.iconView as ImageView).setImageDrawable(ad.icon?.drawable)
-
-                    if (ad.callToAction?.lowercase() == "install" || ad.callToAction?.lowercase() == "download") {
+                when {
+                    ad.callToAction?.lowercase() == "install" || ad.callToAction?.lowercase() == "download" ->
                         icon.setImageDrawable(getD(R.drawable.ic_download))
-                    } else if (ad.callToAction?.lowercase()?.contains("more") == true) {
+
+                    ad.callToAction?.lowercase()?.contains("more") == true ->
                         icon.setImageDrawable(getD(R.drawable.ic_arrow_right))
-                    } else if (ad.callToAction?.lowercase()?.contains("shop") == true ||
-                        ad.callToAction?.lowercase()?.contains("buy") == true ||
-                        ad.callToAction?.lowercase()?.contains("order") == true
-                    ) {
+
+                    ad.callToAction?.lowercase()?.contains("shop") == true ||
+                            ad.callToAction?.lowercase()?.contains("buy") == true ||
+                            ad.callToAction?.lowercase()?.contains("order") == true ->
                         icon.setImageDrawable(getD(R.drawable.ic_cart))
-                    } else if (ad.callToAction?.lowercase()?.contains("book") == true ||
-                        ad.callToAction?.lowercase()?.contains("open") == true
-                    ) {
+
+                    ad.callToAction?.lowercase()?.contains("book") == true ||
+                            ad.callToAction?.lowercase()?.contains("open") == true ->
                         icon.setImageDrawable(getD(R.drawable.ic_arrow_up_right))
-                    } else
-                        icon.setImageDrawable(getD(R.drawable.ic_link))
 
-                    ad.mediaContent?.let { mediaContent ->
-                        mediaView.mediaContent = mediaContent
+                    else -> icon.setImageDrawable(getD(R.drawable.ic_link))
+                }
 
-                        val videoController = mediaContent.videoController
-                        videoController.videoLifecycleCallbacks =
-                            object : VideoController.VideoLifecycleCallbacks() {
-                                override fun onVideoStart() {
-                                    Log.d("AdMob", "Video started.")
-                                }
-
-                                override fun onVideoEnd() {
-                                    Log.d("AdMob", "Video ended.")
-                                }
+                ad.mediaContent?.let { mediaContent ->
+                    mediaView.mediaContent = mediaContent
+                    mediaContent.videoController.videoLifecycleCallbacks =
+                        object : VideoController.VideoLifecycleCallbacks() {
+                            override fun onVideoStart() {
+                                Log.d("AdMob", "Video started.")
                             }
-                    }
 
-                    if (id != null) nativeAdsAndroidViewMap[id] = adView
-                    adView.setNativeAd(ad)
-                    adView
-                }!!
+                            override fun onVideoEnd() {
+                                Log.d("AdMob", "Video ended.")
+                            }
+                        }
+                }
+
+                adView.setNativeAd(ad)
+                adView
             }, modifier = Modifier.fillMaxWidth()
         )
     }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Base64
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -60,7 +61,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -74,10 +74,12 @@ class IntentCheckUtils(
     private val viewModel: PlayerViewModel
 ) {
 
-    fun call() {
-        val userInfo = runBlocking(Dispatchers.IO) { userInfo.firstOrNull() }
+    fun call() = CoroutineScope(Dispatchers.IO).launch {
+        delay(1.seconds)
+        Log.d("TAG", "call: ddd ${intent.getStringExtra(Intent.ACTION_SENDTO)}")
 
-        if (userInfo?.isLoggedIn() == false) return
+        val userInfo = userInfo.firstOrNull()
+        if (userInfo?.isLoggedIn() == false) return@launch
 
         if (intent.getStringExtra(FCM_TYPE) == CONNECT_LOCATION_SHARING_TYPE) {
             if (intent.getStringExtra(FCM_TITLE) != null && intent.getStringExtra(FCM_BODY) != null) {
@@ -196,5 +198,7 @@ class IntentCheckUtils(
                 viewModel.aiMusicInfoPlay(id)
             }
         }
+
+        intent.data = null
     }
 }

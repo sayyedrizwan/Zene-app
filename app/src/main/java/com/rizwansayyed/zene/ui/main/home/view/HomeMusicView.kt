@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -49,6 +48,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
     val coroutine = rememberCoroutineScope()
     val isPremium by isPremiumDB.collectAsState(true)
     val sponsorAds by sponsorAdsDB.collectAsState(null)
+
+    val showBottom by remember { mutableStateOf(false) }
 
     val state = rememberLazyListState()
 
@@ -104,7 +105,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
             }
 
             is ResponseResult.Success -> {
-                if (v.data.topSongs?.isNotEmpty() == true) item {
+                if (v.data.topSongs?.isNotEmpty() == true) item(key = 1) {
                     Spacer(Modifier.height(30.dp))
                     LazyRow(Modifier.fillMaxWidth()) {
                         itemsIndexed(v.data.topSongs) { i, z ->
@@ -121,13 +122,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
 
                 if ((sponsorAds?.top?.title?.trim()?.length
                         ?: 0) > 2 || sponsorAds?.top?.media?.isNotEmpty() == true
-                ) item {
+                ) item(key = 2) {
                     Spacer(Modifier.height(50.dp))
                     HomeSponsorAdsView(sponsorAds?.top, navViewModel)
                     Spacer(Modifier.height(12.dp))
                 }
 
-                if (v.data.topPlaylists?.isNotEmpty() == true) item {
+                if (v.data.topPlaylists?.isNotEmpty() == true) item(key = 3) {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.your_mixes), 23)
@@ -145,7 +146,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (v.data.playlists?.isNotEmpty() == true) item {
+                if (v.data.playlists?.isNotEmpty() == true) item(key = 4) {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.recommended_playlists), 23)
@@ -163,7 +164,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (v.data.albums?.isNotEmpty() == true) item {
+                if (v.data.albums?.isNotEmpty() == true) item(key = 5) {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.albums_for_your_vibe), 23)
@@ -181,7 +182,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (v.data.songsYouMayLike?.isNotEmpty() == true) item {
+
+                if (v.data.songsYouMayLike?.isNotEmpty() == true) item(key = 6) {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.songs_for_you), 23)
@@ -199,7 +201,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
-                if (v.data.favouriteArtists?.isNotEmpty() == true) item {
+                if (v.data.favouriteArtists?.isNotEmpty() == true) item(key = 7) {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.your_favourite_artists), 23)
@@ -215,13 +217,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
 
                 if ((sponsorAds?.bottom?.title?.trim()?.length
                         ?: 0) > 2 || sponsorAds?.bottom?.media?.isNotEmpty() == true
-                ) item {
+                ) item(key = 10) {
                     Spacer(Modifier.height(50.dp))
                     HomeSponsorAdsView(sponsorAds?.bottom, navViewModel)
                     Spacer(Modifier.height(12.dp))
                 }
 
-                if (v.data.songsToExplore?.isNotEmpty() == true) item {
+                if (v.data.songsToExplore?.isNotEmpty() == true) item(key = 9) {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
                         TextViewBold(stringResource(R.string.explore_tunes), 23)
@@ -229,7 +231,9 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     Spacer(Modifier.height(12.dp))
                 }
 
-                items(v.data.songsToExplore?.chunked(10) ?: emptyList()) {
+                itemsIndexed(
+                    v.data.songsToExplore?.chunked(10) ?: emptyList(),
+                    key = { i, v -> "grid_${i}" }) { _, it ->
                     LazyRow(Modifier.fillMaxWidth()) {
                         itemsIndexed(it) { i, z ->
                             ItemCardView(z)
@@ -245,9 +249,9 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
             }
         }
 
-        item { Spacer(Modifier.height(60.dp)) }
-        item { HomeLoveTextView() }
-        item { Spacer(Modifier.height(300.dp)) }
+        item(key = 11) { Spacer(Modifier.height(60.dp)) }
+        item(key = 12) { HomeLoveTextView() }
+        item(key = 13) { Spacer(Modifier.height(300.dp)) }
     }
 
 

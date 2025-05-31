@@ -1,10 +1,15 @@
 package com.rizwansayyed.zene.di
 
 import android.app.Application
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
-import com.google.android.gms.ads.MobileAds
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import dagger.hilt.android.HiltAndroidApp
@@ -26,10 +31,19 @@ class ZeneBaseApplication : Application() {
         lateinit var context: ZeneBaseApplication
     }
 
+    val observer = object : DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         context = this
-        EmojiCompat.init(BundledEmojiCompatConfig(context, ContextCompat.getMainExecutor(this)))
+        ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
+
+        val config = BundledEmojiCompatConfig(this, ContextCompat.getMainExecutor(this))
+        EmojiCompat.init(config)
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(2.seconds)
@@ -43,4 +57,5 @@ class ZeneBaseApplication : Application() {
             if (isActive) cancel()
         }
     }
+
 }

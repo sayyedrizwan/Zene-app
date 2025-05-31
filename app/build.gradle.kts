@@ -125,6 +125,7 @@ dependencies {
 
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.process)
 
     implementation(libs.play.services.location)
 

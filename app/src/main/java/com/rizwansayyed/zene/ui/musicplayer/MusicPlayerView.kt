@@ -317,7 +317,7 @@ fun SongTextAndArtists(
 fun LikeSongView(player: MusicPlayerData?, viewModel: PlayerViewModel, pagerState: PagerState) {
     var addToPlaylistView by remember { mutableStateOf(false) }
 
-    if (!viewModel.isItemLiked.isEmpty() && viewModel.isItemLiked.size > pagerState.currentPage) {
+    if (viewModel.isItemLiked.isNotEmpty() && pagerState.currentPage <= viewModel.isItemLiked.toList().size) {
         Box(
             Modifier
                 .padding(start = 10.dp)

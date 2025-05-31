@@ -183,11 +183,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         playerService = this
         EmptyServiceNotification.generate(this)
 
-        WebView(this).apply {
-            enable()
-            addJavascriptInterface(WebAppInterface(), "Zene")
-            playerWebView = this
-            loadAVideo(currentPlayingSong?.id)
+        CoroutineScope(Dispatchers.Main).launch {
+            WebView(this@PlayerForegroundService).apply {
+                enable()
+                addJavascriptInterface(WebAppInterface(), "Zene")
+                playerWebView = this
+                loadAVideo(currentPlayingSong?.id)
+            }
         }
 
         durationJob = CoroutineScope(Dispatchers.Main).launch {
@@ -497,8 +499,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-//        pause()
-//        stopSelf()
+        pause()
+        stopSelf()
     }
 
     fun clearCache() = CoroutineScope(Dispatchers.Main).launch {

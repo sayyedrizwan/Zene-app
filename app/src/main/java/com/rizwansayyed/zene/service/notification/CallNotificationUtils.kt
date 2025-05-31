@@ -95,7 +95,7 @@ private fun generatePI(
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
 
-    return PendingIntent.getActivity(context, (222..1234).random(), intent, FLAG)
+    return PendingIntent.getActivity(context, name.hashCode(), intent, FLAG)
 }
 
 private fun generatePIDecline(email: String?, image: String?, name: String?): PendingIntent {

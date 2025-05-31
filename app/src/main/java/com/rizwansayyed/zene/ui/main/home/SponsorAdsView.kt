@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -115,12 +116,23 @@ fun PlayAdsVideo(url: String, viewModel: NavigationViewModel) {
                 useController = false
                 resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 setShutterBackgroundColor(Color.TRANSPARENT)
-
                 player = exoPlayer
-                exoPlayer.seekTo(exoPlayer.currentPosition)
             }
-        }, modifier = Modifier
+        },
+        update = {
+            it.player = exoPlayer
+            exoPlayer.seekTo(exoPlayer.currentPosition)
+        },
+        modifier = Modifier
             .padding(horizontal = 5.dp)
             .height(250.dp)
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.playWhenReady = false
+            exoPlayer.stop()
+            exoPlayer.clearMediaItems()
+        }
+    }
 }
