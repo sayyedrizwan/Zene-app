@@ -202,11 +202,11 @@ class MainActivity : FragmentActivity() {
                         setNavigationCallback(object : HomeNavigationListener {
                             override fun navigate(path: String) {
                                 lifecycleScope.launch {
-                                    delay(1)
                                     if (path == NAV_GO_BACK) {
                                         navController.popBackStack()
                                         return@launch
                                     }
+
                                     navigationViewModel.setMusicPlayer(false)
                                     navController.navigate(path) {
                                         if (path == NAV_MAIN_PAGE) {
@@ -225,7 +225,7 @@ class MainActivity : FragmentActivity() {
                             }
                         })
 
-                        IntentCheckUtils(intent, navigationViewModel, playerViewModel)
+                        IntentCheckUtils(intent, navigationViewModel, playerViewModel).call()
                         showLogin = true
                         delay(1.seconds)
                         intent.data = null
@@ -243,7 +243,7 @@ class MainActivity : FragmentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        IntentCheckUtils(intent, navigationViewModel, playerViewModel)
+        IntentCheckUtils(intent, navigationViewModel, playerViewModel).call()
 
         lifecycleScope.launch {
             delay(1.seconds)

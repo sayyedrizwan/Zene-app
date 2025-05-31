@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.service.player
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebStorage
@@ -89,7 +88,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        isNew = intent?.getBooleanExtra(Intent.ACTION_USER_PRESENT, false) ?: false
+        isNew = intent?.getBooleanExtra(Intent.ACTION_USER_PRESENT, false) == true
 
         val musicData = intent?.getStringExtra(Intent.ACTION_VIEW) ?: "{}"
         currentPlayingSong = moshi.adapter(ZeneMusicData::class.java).fromJson(musicData)
@@ -143,7 +142,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         @JavascriptInterface
         fun videoState(playerState: Int, currentTS: String, duration: String, playSpeed: String) {
             CoroutineScope(Dispatchers.IO).launch {
-                val isSmooth = smoothSongTransitionSettings.firstOrNull() ?: false
+                val isSmooth = smoothSongTransitionSettings.firstOrNull() == true
 
                 val state = YoutubePlayerState.entries.first { it.v == playerState }
                 visiblePlayerNotification(state, currentTS, duration, playSpeed)
@@ -208,7 +207,6 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     private fun loadAVideo(videoID: String?) = CoroutineScope(Dispatchers.Main).launch {
-
         val htmlContent = getRawFolderString(R.raw.yt_music_player)
         val speed = songSpeedDB.first().name.replace("_", ".")
 
@@ -243,7 +241,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         try {
             val lists = zeneAPI.similarPlaylistsSongs(currentPlayingSong!!.id).firstOrNull()
             saveEmpty(lists?.toList() ?: emptyList())
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             saveEmpty(songsLists.asList())
         }
         if (isActive) cancel()
@@ -322,13 +320,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             return@launch
         }
 
-        val autoPauseSettings = autoPausePlayerSettings.firstOrNull() ?: false
+        val autoPauseSettings = autoPausePlayerSettings.firstOrNull() == true
         if (autoPauseSettings) {
             pause()
             return@launch
         }
 
-        val isLoop = isLoopDB.firstOrNull() ?: false
+        val isLoop = isLoopDB.firstOrNull() == true
         if (isLoop) {
             playSongs(false)
             return@launch
@@ -354,7 +352,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun toNextSong() {
         CoroutineScope(Dispatchers.IO).launch {
-            val isShuffle = isShuffleDB.firstOrNull() ?: false
+            val isShuffle = isShuffleDB.firstOrNull() == true
             if (isShuffle) {
                 currentPlayingSong = smartShuffle.getNextSong()
                 playSongs(false)
@@ -499,8 +497,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        pause()
-        stopSelf()
+//        pause()
+//        stopSelf()
     }
 
     fun clearCache() = CoroutineScope(Dispatchers.Main).launch {

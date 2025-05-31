@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.pm.ServiceInfo
@@ -15,6 +16,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
@@ -43,6 +45,10 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     private val storedBitmap = HashMap<String, Bitmap>()
     private var doLoop = false
     private var doShuffle = false
+
+    private val notificationManager by lazy {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -317,6 +323,10 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         }
 
         try {
+//            with(NotificationManagerCompat.from(context)) {
+//                notificationManager.notify(1, notification)
+//            }
+
             ServiceCompat.startForeground(context, 1, notification, serviceType)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -342,8 +352,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         }
 
         return PendingIntent.getBroadcast(
-            context,
-            (8888..9888).random(),
+            context, action.hashCode(),
             intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.net.toUri
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
+import com.rizwansayyed.zene.datastore.DataStorageManager.lastCustomNotification
 import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationGeneratedTSDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationSuggestedType
 import com.rizwansayyed.zene.service.notification.NotificationUtils
@@ -18,9 +19,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.hours
 
 class ContentNotificationRecommender(
     private val context: Context, private val zeneAPI: ZeneAPIImplementation
@@ -30,6 +33,12 @@ class ContentNotificationRecommender(
     }
 
     fun start() = CoroutineScope(Dispatchers.IO).launch {
+        val currentTime = System.currentTimeMillis()
+        val fiveHoursInMillis = 5.hours.inWholeMilliseconds
+        val lastRunTime = lastCustomNotification.firstOrNull() ?: 0L
+
+        if (currentTime - lastRunTime <= fiveHoursInMillis) return@launch
+
         zeneAPI.notificationRecommendation().catch { }.collectLatest {
             try {
                 registerEvents(FirebaseEventsParams.GENERATED_CUSTOM_NOTIFICATION)

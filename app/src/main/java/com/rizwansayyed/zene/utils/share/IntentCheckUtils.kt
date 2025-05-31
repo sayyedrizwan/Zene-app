@@ -6,6 +6,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Base64
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_LOCATION_SHARING_TYPE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNECT_OPEN_PROFILE_PLAYLIST_TYPE
@@ -32,7 +33,6 @@ import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenPlaylistOnConnect
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
@@ -57,8 +57,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -67,10 +69,16 @@ data class IntentFCMNotification(
 )
 
 class IntentCheckUtils(
-    intent: Intent, navViewModel: NavigationViewModel, viewModel: PlayerViewModel
+    private val intent: Intent,
+    private val navViewModel: NavigationViewModel,
+    private val viewModel: PlayerViewModel
 ) {
 
-    init {
+    fun call() {
+        val userInfo = runBlocking(Dispatchers.IO) { userInfo.firstOrNull() }
+
+        if (userInfo?.isLoggedIn() == false) return
+
         if (intent.getStringExtra(FCM_TYPE) == CONNECT_LOCATION_SHARING_TYPE) {
             if (intent.getStringExtra(FCM_TITLE) != null && intent.getStringExtra(FCM_BODY) != null) {
                 val n = IntentFCMNotification(

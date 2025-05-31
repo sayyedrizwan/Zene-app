@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_LOOP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_PREMIUM_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_SHUFFLE_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_CUSTOM_NOTIFICATION_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_LOAD_TIME_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_GENERATED_TS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_SUGGESTED_TYPE_DB
@@ -65,6 +66,7 @@ object DataStorageManager {
         val IS_PREMIUM_DB = booleanPreferencesKey("is_premium_db")
         val IS_LOOP_DB = booleanPreferencesKey("is_loop_db")
         val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
+        val LAST_CUSTOM_NOTIFICATION_DB = longPreferencesKey("last_custom_notification_db")
         val MUSIC_PLAYER_DB = stringPreferencesKey("music_player_db")
         val AUTO_PAUSE_PLAYER_SETTINGS_DB = booleanPreferencesKey("auto_pause_player_settings_db")
         val SMOOTH_SONG_TRANSITION_SETTINGS_DB =
@@ -138,6 +140,17 @@ object DataStorageManager {
             if (isActive) cancel()
         }
 
+
+    var lastCustomNotification: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[LAST_CUSTOM_NOTIFICATION_DB] ?: 0L
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[LAST_CUSTOM_NOTIFICATION_DB] = value.first()
+            }
+            if (isActive) cancel()
+        }
 
     var videoQualityDB: Flow<VideoQualityEnum>
         get() = context.dataStore.data.map {

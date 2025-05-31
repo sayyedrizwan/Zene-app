@@ -317,24 +317,26 @@ fun SongTextAndArtists(
 fun LikeSongView(player: MusicPlayerData?, viewModel: PlayerViewModel, pagerState: PagerState) {
     var addToPlaylistView by remember { mutableStateOf(false) }
 
-    Box(
-        Modifier
-            .padding(start = 10.dp)
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }) {
-                val isLiked =
-                    when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
-                        LikeItemType.LIKE -> true
-                        LikeItemType.LOADING, LikeItemType.NONE, null -> false
-                    }
-                viewModel.likeAItem(player?.lists?.get(pagerState.currentPage), !isLiked)
-            }, Alignment.Center
-    ) {
-        when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
-            LikeItemType.LOADING -> CircularLoadingViewSmall()
-            LikeItemType.LIKE -> ImageIcon(R.drawable.ic_thumbs_up, 25, Color.Red)
-            LikeItemType.NONE, null -> ImageIcon(R.drawable.ic_thumbs_up, 25)
+    if (!viewModel.isItemLiked.isEmpty() && viewModel.isItemLiked.size > pagerState.currentPage) {
+        Box(
+            Modifier
+                .padding(start = 10.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }) {
+                    val isLiked =
+                        when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
+                            LikeItemType.LIKE -> true
+                            LikeItemType.LOADING, LikeItemType.NONE, null -> false
+                        }
+                    viewModel.likeAItem(player?.lists?.get(pagerState.currentPage), !isLiked)
+                }, Alignment.Center
+        ) {
+            when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
+                LikeItemType.LOADING -> CircularLoadingViewSmall()
+                LikeItemType.LIKE -> ImageIcon(R.drawable.ic_thumbs_up, 25, Color.Red)
+                LikeItemType.NONE, null -> ImageIcon(R.drawable.ic_thumbs_up, 25)
+            }
         }
     }
 
