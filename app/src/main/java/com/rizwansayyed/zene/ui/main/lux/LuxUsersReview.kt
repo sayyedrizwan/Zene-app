@@ -72,7 +72,7 @@ val reviews = listOf(
     ),
     ReviewData(
         "Noor El-Sayed",
-        "https://instagram.fbom28-1.fna.fbcdn.net/v/t51.29350-15/379695119_631592579123605_7606114879995809309_n.heic?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjE0NDB4MTgwMC5zZHIuZjI5MzUwLmRlZmF1bHRfaW1hZ2UifQ&_nc_ht=instagram.fbom28-1.fna.fbcdn.net&_nc_cat=101&_nc_oc=Q6cZ2QGjyfX-C1kXpDPCagndpvHeFOG_EkxInzcddVVjE1f0UAAtystuvYe81gn_j5zB9GE&_nc_ohc=8sc_rBwQU_4Q7kNvwEWo24S&_nc_gid=cnrVa442voeCZaNIxmu4gA&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE5MzE5Mzk0MzY0MDgwMTQyMw%3D%3D.3-ccb7-5&oh=00_AfICcJ0sJScmsEkC4NFpCAaqVozs95cvfL_Mr8SKr5jwBw&oe=68258AC8&_nc_sid=10d13b",
+        "https://img.zeit.de/2025/12/wie-sie-ihr-herz-verteilt-bild-2/square__960x960",
         "I didn’t expect much for the price, but Zene Premium blew me away. Free music, good podcasts, smooth radio, and peace of mind \uD83D\uDE0A\uD83D\uDCF1."
     ),
     ReviewData(
