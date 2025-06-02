@@ -1,14 +1,17 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.content.Context
+import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
@@ -32,20 +35,33 @@ class NavigationViewModel @Inject constructor(val loginUtils: LoginUtils) : View
 
     private val videoAdsPlayers = mutableStateMapOf<String, ExoPlayer>()
 
+    @OptIn(UnstableApi::class)
     fun getPlayer(context: Context, url: String): ExoPlayer {
-        if (videoAdsPlayers.contains(url)) return videoAdsPlayers[url]!!
+        val existing = videoAdsPlayers[url]
+        if (existing != null) {
+            if (existing.mediaItemCount == 0) {
+                val mediaItem = MediaItem.fromUri(url)
+                existing.setMediaItem(mediaItem)
+                existing.prepare()
+                existing.play()
+            }
+            return existing
+        }
 
         val exo = ExoPlayer.Builder(context).build().apply {
             val mediaItem = MediaItem.fromUri(url)
             setMediaItem(mediaItem)
             volume = 0f
+            videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
             repeatMode = Player.REPEAT_MODE_ONE
             playWhenReady = true
             prepare()
             play()
         }
 
-        viewModelScope.launch(Dispatchers.Main) { videoAdsPlayers[url] = exo }
+        viewModelScope.launch(Dispatchers.Main) {
+            videoAdsPlayers[url] = exo
+        }
 
         return exo
     }
