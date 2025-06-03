@@ -93,7 +93,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="zene.music.app"
+                    android:host="open.zene.music"
                     android:scheme="app" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
