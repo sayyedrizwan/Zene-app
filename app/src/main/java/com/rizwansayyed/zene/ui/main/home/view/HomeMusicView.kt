@@ -49,8 +49,6 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
     val isPremium by isPremiumDB.collectAsState(true)
     val sponsorAds by sponsorAdsDB.collectAsState(null)
 
-    val showBottom by remember { mutableStateOf(false) }
-
     val state = rememberLazyListState()
 
     LazyColumn(Modifier.fillMaxSize(), state) {

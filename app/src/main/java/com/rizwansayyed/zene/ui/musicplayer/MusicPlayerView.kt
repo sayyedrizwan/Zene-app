@@ -31,10 +31,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,21 +41,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
-import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.main.home.view.LuxCards
-import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
-import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
@@ -134,7 +129,16 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                         navViewModel.setMusicPlayer(false)
                     }
 
-                    LikeSongView(player, viewModel, pagerState)
+                    Row(Modifier  .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        player?.lists?.getOrNull(pagerState.currentPage)?.let {
+                            NavigationUtils.triggerInfoSheet(it)
+                        }
+                    }) {
+                        ImageIcon(R.drawable.ic_vertical_menu, 24)
+                    }
                 }
             }
 
@@ -196,16 +200,6 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
         BackHandler { navViewModel.setMusicPlayer(false) }
 
-        LaunchedEffect(pagerState.currentPage) {
-            try {
-                val id = player?.lists?.get(pagerState.currentPage)?.id
-                val type = player?.lists?.get(pagerState.currentPage)?.type()!!
-                viewModel.likedMediaItem(id, type)
-            } catch (e: Exception) {
-                e.message
-            }
-        }
-
         LaunchedEffect(Unit) {
             activity?.let { InterstitialAdsUtils(it) }
         }
@@ -222,7 +216,6 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
     LaunchedEffect(player?.data?.id) {
         if (player?.data?.id != null && player?.data?.type() != null) {
-            viewModel.likedMediaItem(player?.data?.id, player?.data?.type()!!)
             viewModel.playerSimilarSongs(player?.data?.id)
 
             if (player?.data?.type() == MusicDataTypes.SONGS) viewModel.playerVideoForSongs(player?.data)
@@ -310,49 +303,5 @@ fun SongTextAndArtists(
             }
         }
 
-    }
-}
-
-@Composable
-fun LikeSongView(player: MusicPlayerData?, viewModel: PlayerViewModel, pagerState: PagerState) {
-    var addToPlaylistView by remember { mutableStateOf(false) }
-
-    if (viewModel.isItemLiked.isNotEmpty() && pagerState.currentPage <= viewModel.isItemLiked.toList().size) {
-        Box(
-            Modifier
-                .padding(start = 10.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {
-                    val isLiked =
-                        when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
-                            LikeItemType.LIKE -> true
-                            LikeItemType.LOADING, LikeItemType.NONE, null -> false
-                        }
-                    viewModel.likeAItem(player?.lists?.get(pagerState.currentPage), !isLiked)
-                }, Alignment.Center
-        ) {
-            when (viewModel.isItemLiked[player?.lists?.get(pagerState.currentPage)?.id]) {
-                LikeItemType.LOADING -> CircularLoadingViewSmall()
-                LikeItemType.LIKE -> ImageIcon(R.drawable.ic_thumbs_up, 25, Color.Red)
-                LikeItemType.NONE, null -> ImageIcon(R.drawable.ic_thumbs_up, 25)
-            }
-        }
-    }
-
-    Box(
-        Modifier
-            .padding(start = 5.dp)
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }) {
-                addToPlaylistView = true
-            }, Alignment.Center
-    ) {
-        ImageIcon(R.drawable.ic_playlist, 24)
-    }
-
-    if (addToPlaylistView) AddToPlaylistsView(player?.lists?.get(pagerState.currentPage)) {
-        addToPlaylistView = false
     }
 }

@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.set
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
@@ -57,8 +58,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var videoForSongs by mutableStateOf<ResponseResult<PlayerVideoForSongsResponse>>(ResponseResult.Empty)
     var checksPlaylistsSongLists = mutableListOf<UserPlaylistResponse>()
     var checksPlaylistsSongListsLoading by mutableStateOf(false)
-    var isItemLiked = mutableStateMapOf<String?, LikeItemType>()
     private var lyricsJob by mutableStateOf<Job?>(null)
+    var isItemLiked = mutableStateMapOf<String?, LikeItemType>()
 
     fun similarVideos(id: String) = viewModelScope.launch(Dispatchers.IO) {
         when (val v = videoSimilarVideos) {
@@ -92,10 +93,32 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             }
         }
 
+    fun likedMediaItem(id: String?, type: MusicDataTypes) = viewModelScope.launch(Dispatchers.IO) {
+        if (isItemLiked.contains(id)) return@launch
+
+        zeneAPI.likedStatus(id, type).onStart {
+            isItemLiked[id] = LikeItemType.LOADING
+        }.catch {
+            isItemLiked[id] = LikeItemType.NONE
+        }.collectLatest {
+            isItemLiked[id] = if (it.isLiked == true) LikeItemType.LIKE else LikeItemType.NONE
+        }
+    }
+
+    fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        isItemLiked[data?.id] = if (doLike) LikeItemType.LIKE else LikeItemType.NONE
+
+        zeneAPI.addRemoveLikeItem(data, doLike).catch {
+            LikedMediaWidgets().updateAll(context)
+        }.collectLatest {
+            LikedMediaWidgets().updateAll(context)
+        }
+    }
+
     private var playlistSongCheckJob: Job? = null
     private var playlistPage: Int = 0
 
-    fun clearPlaylistInfo(){
+    fun clearPlaylistInfo() {
         playlistSongCheckJob?.cancel()
         playlistPage = 0
         itemAddedToPlaylists.clear()
@@ -122,34 +145,11 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun likedMediaItem(id: String?, type: MusicDataTypes) = viewModelScope.launch(Dispatchers.IO) {
-        if (isItemLiked.contains(id)) return@launch
-
-        zeneAPI.likedStatus(id, type).onStart {
-            isItemLiked[id] = LikeItemType.LOADING
-        }.catch {
-            isItemLiked[id] = LikeItemType.NONE
-        }.collectLatest {
-            isItemLiked[id] = if (it.isLiked == true) LikeItemType.LIKE else LikeItemType.NONE
-        }
-    }
-
-    fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        isItemLiked[data?.id] = if (doLike) LikeItemType.LIKE else LikeItemType.NONE
-
-        zeneAPI.addRemoveLikeItem(data, doLike).catch {
-            LikedMediaWidgets().updateAll(context)
-        }.collectLatest {
-            LikedMediaWidgets().updateAll(context)
-        }
-    }
-
     fun addMediaToPlaylist(id: String, state: Boolean, info: ZeneMusicData?) =
         viewModelScope.launch(Dispatchers.IO) {
             itemAddedToPlaylists[id] = state
             zeneAPI.addItemToPlaylists(info, id, state).catch { }.collectLatest {}
         }
-
 
     fun getSongLyrics() {
         var p: MusicPlayerData? = null

@@ -76,7 +76,6 @@ class IntentCheckUtils(
 
     fun call() = CoroutineScope(Dispatchers.IO).launch {
         delay(1.seconds)
-        Log.d("TAG", "call: ddd ${intent.getStringExtra(Intent.ACTION_SENDTO)}")
 
         val userInfo = userInfo.firstOrNull()
         if (userInfo?.isLoggedIn() == false) return@launch
