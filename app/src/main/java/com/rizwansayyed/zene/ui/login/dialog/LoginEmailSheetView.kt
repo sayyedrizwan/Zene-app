@@ -13,13 +13,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,14 +33,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.datastore.DataStorageManager.signInWithEmailAddress
 import com.rizwansayyed.zene.ui.login.utils.LoginUtils
-import com.rizwansayyed.zene.ui.login.utils.LoginUtils.Companion.lastLoginViaEmail
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +50,8 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
     ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
         var userEmail by remember { mutableStateOf("") }
         val focusManager = LocalFocusManager.current
+
+        val coroutine = rememberCoroutineScope()
 
         val loginViaEmail by remember { derivedStateOf { login.loginViaEmail } }
 
@@ -74,15 +78,15 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                     keyboardActions = KeyboardActions {
                         if (userEmail.trim().length > 3 && userEmail.trim().contains("@")) {
                             focusManager.clearFocus()
-                            lastLoginViaEmail = userEmail
+                            coroutine.launch {
+                                signInWithEmailAddress = flowOf(userEmail)
+                            }
                             login.startEmailLogin(userEmail)
                         }
                     },
                     placeholder = {
                         TextViewNormal(
-                            stringResource(R.string.enter_your_email_address),
-                            16,
-                            Color.DarkGray
+                            stringResource(R.string.enter_your_email_address), 16, Color.DarkGray
                         )
                     },
                     textStyle = TextStyle(
@@ -96,7 +100,9 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                         if (userEmail.trim().length > 3 && userEmail.trim().contains("@")) {
                             IconButton({
                                 focusManager.clearFocus()
-                                lastLoginViaEmail = userEmail
+                                coroutine.launch {
+                                    signInWithEmailAddress = flowOf(userEmail)
+                                }
                                 login.startEmailLogin(userEmail)
                             }) {
                                 ImageIcon(R.drawable.ic_arrow_right, 24, Color.White)
@@ -155,7 +161,6 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
             Spacer(Modifier.height(70.dp))
 
             LaunchedEffect(Unit) {
-                lastLoginViaEmail = ""
                 login.resetEmailLogin()
             }
         }

@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
 import android.net.Uri
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
+import com.rizwansayyed.zene.datastore.DataStorageManager.signInWithEmailAddress
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
@@ -40,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -49,10 +52,6 @@ import javax.inject.Inject
 @Module
 @InstallIn(SingletonComponent::class)
 class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
-
-    companion object {
-        var lastLoginViaEmail by mutableStateOf("")
-    }
 
     enum class LoginType(val type: String) {
         GOOGLE("GOOGLE"), FACEBOOK("FACEBOOK"), APPLE("APPLE_ANDROID")
@@ -71,8 +70,8 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
 
 
     private val serverClientId = BuildConfig.GOOGLE_SERVER_KEY
-    private val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(true)
-        .setServerClientId(serverClientId).setAutoSelectEnabled(true).build()
+    private val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
+        .setServerClientId(serverClientId).setAutoSelectEnabled(false).build()
 
     private val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
     private val callbackManager = CallbackManager.Factory.create()
@@ -164,9 +163,10 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         isLoading = true
 
         CoroutineScope(Dispatchers.IO).launch {
+            val email = signInWithEmailAddress.firstOrNull() ?: ""
             try {
                 val response =
-                    Firebase.auth.signInWithEmailLink(lastLoginViaEmail, link.toString()).await()
+                    Firebase.auth.signInWithEmailLink(email, link.toString()).await()
                 val tokenResult = response.user?.getIdToken(true)?.await()
 
                 serverLogin(tokenResult?.token ?: "", LoginType.GOOGLE)

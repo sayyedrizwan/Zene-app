@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Base64
-import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -77,6 +76,13 @@ class IntentCheckUtils(
     fun call() = CoroutineScope(Dispatchers.IO).launch {
         delay(1.seconds)
 
+        if (intent.data.toString().contains("/email-login")
+            && Firebase.auth.isSignInWithEmailLink(intent.data.toString())
+        ) {
+            intent.data?.let { navViewModel.loginUtils.startAuthEmailLogin(it) }
+        }
+
+
         val userInfo = userInfo.firstOrNull()
         if (userInfo?.isLoggedIn() == false) return@launch
 
@@ -131,12 +137,6 @@ class IntentCheckUtils(
 
         CoroutineScope(Dispatchers.Main).launch {
             val data = intent.data ?: return@launch
-
-            if (data.toString().contains("/email-login")
-                && Firebase.auth.isSignInWithEmailLink(data.toString())
-            ) {
-                navViewModel.loginUtils.startAuthEmailLogin(data)
-            }
 
             if (data.toString() == "$ZENE_URL$ZENE_URL_CONNECT") {
                 navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)

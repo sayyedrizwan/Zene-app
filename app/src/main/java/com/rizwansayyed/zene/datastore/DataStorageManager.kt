@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NO
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.PAUSE_SONG_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SIGN_IN_WITH_EMAIL_ADDRESS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SONG_SPEED_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SPONSOR_ADS_DB
@@ -78,6 +79,7 @@ object DataStorageManager {
         val LAST_NOTIFICATION_SUGGESTED_TYPE_DB =
             stringPreferencesKey("last_notification_suggested_type_db")
         val LAST_LOAD_TIME_DB = longPreferencesKey("last_load_time_db")
+        val SIGN_IN_WITH_EMAIL_ADDRESS_DB = stringPreferencesKey("sign_in_with_email_address")
     }
 
     var sponsorAdsDB: Flow<AndroidSponsorAds?>
@@ -295,6 +297,17 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 value.first()?.let { t -> it[LAST_LOAD_TIME_DB] = t }
+            }
+            if (isActive) cancel()
+        }
+
+    var signInWithEmailAddress: Flow<String?>
+        get() = context.dataStore.data.map {
+            it[SIGN_IN_WITH_EMAIL_ADDRESS_DB]
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                value.first()?.let { t -> it[SIGN_IN_WITH_EMAIL_ADDRESS_DB] = t }
             }
             if (isActive) cancel()
         }

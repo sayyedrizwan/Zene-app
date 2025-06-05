@@ -2,9 +2,11 @@ package com.rizwansayyed.zene.utils.ads
 
 import android.app.Activity
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.lastLoadTimeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -54,6 +56,9 @@ class OpenAppAdsUtils(val activity: Activity) {
                     lastLoadTimeDB = flowOf(System.currentTimeMillis())
                 }
 
+                delay(1.seconds)
+                MobileAds.setAppMuted(false)
+
                 if (isActive) cancel()
             }
         }
@@ -65,6 +70,11 @@ class OpenAppAdsUtils(val activity: Activity) {
         if (isLoggedIn == false) return@launch
         val isPremium = withContext(Dispatchers.IO) { isPremiumDB.firstOrNull() }
         if (isPremium == true) return@launch
+
+        val isMusicPlaying = withContext(Dispatchers.IO) {
+            DataStorageManager.musicPlayerDB.firstOrNull()?.isPlaying() == true
+        }
+        MobileAds.setAppMuted(isMusicPlaying)
 
         val request = AdRequest.Builder().build()
         AppOpenAd.load(context, adID, request, listener)
