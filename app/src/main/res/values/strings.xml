@@ -392,7 +392,7 @@
     <string name="smooth_song_transition">Smooth Transition</string>
     <string name="smooth_song_transition_desc">Automatically start the next song when only 5–7 seconds remain and podcast 10–15 seconds remain, skipping the ending silence.</string>
     <string name="auto_pause_song">Auto Pause</string>
-    <string name="auto_pause_song_desc">Playing media will be auto paused every time the it ends.</string>
+    <string name="auto_pause_song_desc">Playing media will be auto paused every time it ends.</string>
     <string name="help_faq">Help/FAQ</string>
     <string name="feedback">Feedback</string>
     <string name="storage">Storage</string>
