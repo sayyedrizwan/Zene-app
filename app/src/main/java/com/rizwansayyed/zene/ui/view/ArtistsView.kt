@@ -218,7 +218,7 @@ fun ArtistsView(artistsID: String) {
                 }
 
                 LaunchedEffect(Unit) {
-                    viewModel.isFollowing = v.data.isFollowing ?: false
+                    viewModel.isFollowing = v.data.isFollowing == true
                 }
             }
         }
