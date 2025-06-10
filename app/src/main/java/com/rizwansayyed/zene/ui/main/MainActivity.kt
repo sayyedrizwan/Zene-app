@@ -87,6 +87,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+
+// songs are adding more from playlists in queuq
+// and many time clicking on deep links not opening path.
+
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
 

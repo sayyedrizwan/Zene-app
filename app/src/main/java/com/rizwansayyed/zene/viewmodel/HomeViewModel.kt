@@ -389,7 +389,7 @@ class HomeViewModel @Inject constructor(
                 expireToken()
                 return@collectLatest
             }
-            isPlaylistAdded = it.isAdded ?: false
+            isPlaylistAdded = it.isAdded == true
             playlistsData = ResponseResult.Success(it)
         }
     }
