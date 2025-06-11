@@ -86,57 +86,59 @@ class IntentCheckUtils(
         val userInfo = userInfo.firstOrNull()
         if (userInfo?.isLoggedIn() == false) return@launch
 
-        if (intent.getStringExtra(FCM_TYPE) == CONNECT_LOCATION_SHARING_TYPE) {
-            if (intent.getStringExtra(FCM_TITLE) != null && intent.getStringExtra(FCM_BODY) != null) {
-                val n = IntentFCMNotification(
-                    intent.getStringExtra(FCM_TITLE)!!,
-                    intent.getStringExtra(FCM_BODY)!!,
-                    CONNECT_LOCATION_SHARING_TYPE,
-                    intent.getStringExtra(FCM_LAT) ?: "",
-                    intent.getStringExtra(FCM_LON) ?: "",
-                )
-                navViewModel.setHomeInfoNavigation(n)
-            }
-        }
-
-        if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_OPEN_PROFILE_TYPE) {
-            navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
-            intent.getStringExtra(FCM_EMAIL)?.let {
-                triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
-            }
-        }
-
-        if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_OPEN_PROFILE_PLAYLIST_TYPE) {
-            doOpenPlaylistOnConnect = true
-            navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
-            intent.getStringExtra(FCM_EMAIL)?.let {
-                triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
-            }
-            CoroutineScope(Dispatchers.IO).launch {
-                delay(1.seconds)
-                intent.getStringExtra(FCM_ID)?.let {
-                    withContext(Dispatchers.Main) {
-                        triggerHomeNav("$NAV_MY_PLAYLIST_PAGE$it")
-                    }
+        withContext(Dispatchers.Main) {
+            if (intent.getStringExtra(FCM_TYPE) == CONNECT_LOCATION_SHARING_TYPE) {
+                if (intent.getStringExtra(FCM_TITLE) != null && intent.getStringExtra(FCM_BODY) != null) {
+                    val n = IntentFCMNotification(
+                        intent.getStringExtra(FCM_TITLE)!!,
+                        intent.getStringExtra(FCM_BODY)!!,
+                        CONNECT_LOCATION_SHARING_TYPE,
+                        intent.getStringExtra(FCM_LAT) ?: "",
+                        intent.getStringExtra(FCM_LON) ?: "",
+                    )
+                    navViewModel.setHomeInfoNavigation(n)
                 }
-                if (isActive) cancel()
+            }
+
+            if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_OPEN_PROFILE_TYPE) {
+                navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
+                intent.getStringExtra(FCM_EMAIL)?.let {
+                    triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
+                }
+            }
+
+            if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_OPEN_PROFILE_PLAYLIST_TYPE) {
+                doOpenPlaylistOnConnect = true
+                navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
+                intent.getStringExtra(FCM_EMAIL)?.let {
+                    triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
+                }
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(1.seconds)
+                    intent.getStringExtra(FCM_ID)?.let {
+                        withContext(Dispatchers.Main) {
+                            triggerHomeNav("$NAV_MY_PLAYLIST_PAGE$it")
+                        }
+                    }
+                    if (isActive) cancel()
+                }
+            }
+
+            if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_SEND_CHAT_MESSAGE) {
+                doOpenChatOnConnect = true
+                navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
+                intent.getStringExtra(FCM_EMAIL)?.let {
+                    triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
+                }
+            }
+
+            if (intent.getStringExtra(Intent.ACTION_SENDTO) == CATEGORY_APP_MUSIC) {
+                navViewModel.setMusicPlayer(true)
             }
         }
 
-        if (intent.getStringExtra(Intent.ACTION_SENDTO) == CONNECT_SEND_CHAT_MESSAGE) {
-            doOpenChatOnConnect = true
-            navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)
-            intent.getStringExtra(FCM_EMAIL)?.let {
-                triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
-            }
-        }
-
-        if (intent.getStringExtra(Intent.ACTION_SENDTO) == CATEGORY_APP_MUSIC) {
-            navViewModel.setMusicPlayer(true)
-        }
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val data = intent.data ?: return@launch
+        withContext(Dispatchers.Main) {
+            val data = intent.data ?: return@withContext
 
             if (data.toString() == "$ZENE_URL$ZENE_URL_CONNECT") {
                 navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)

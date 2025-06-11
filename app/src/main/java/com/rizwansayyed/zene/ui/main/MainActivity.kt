@@ -88,9 +88,6 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
-// songs are adding more from playlists in queuq
-// and many time clicking on deep links not opening path.
-
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
 
@@ -197,6 +194,9 @@ class MainActivity : FragmentActivity() {
                         } else if (showLogin) LoginView(navigationViewModel)
                     }
 
+                    LaunchedEffect(Unit) {
+                        IntentCheckUtils(intent, navigationViewModel, playerViewModel).call()
+                    }
 
                     LaunchedEffect(userInfo?.email) {
                         delay(500)
@@ -226,7 +226,6 @@ class MainActivity : FragmentActivity() {
                             }
                         })
 
-                        IntentCheckUtils(intent, navigationViewModel, playerViewModel).call()
                         showLogin = true
 
                         delay(4.seconds)
