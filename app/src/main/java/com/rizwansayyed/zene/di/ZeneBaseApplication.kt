@@ -1,14 +1,11 @@
 package com.rizwansayyed.zene.di
 
 import android.app.Application
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
@@ -29,7 +26,27 @@ class ZeneBaseApplication : Application() {
     companion object {
         @Volatile
         lateinit var context: ZeneBaseApplication
+
+        @Volatile
+        var isPlayerLoaded = false
+
+        fun startDefaultMedia() {
+            if (!isPlayerLoaded) CoroutineScope(Dispatchers.IO).launch {
+                delay(6.seconds)
+                try {
+                    val data = DataStorageManager.musicPlayerDB.firstOrNull()
+                    if (data?.data != null)
+                        MediaContentUtils.startMedia(data.data, data.lists ?: emptyList(), true)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                if (isActive) cancel()
+            }
+
+            isPlayerLoaded = true
+        }
     }
+
 
     val observer = object : DefaultLifecycleObserver {
         override fun onDestroy(owner: LifecycleOwner) {
@@ -46,7 +63,7 @@ class ZeneBaseApplication : Application() {
         EmojiCompat.init(config)
 
         CoroutineScope(Dispatchers.IO).launch {
-            delay(2.seconds)
+            delay(6.seconds)
             try {
                 val data = DataStorageManager.musicPlayerDB.firstOrNull()
                 if (data?.data != null)

@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.pm.ServiceInfo
@@ -16,7 +15,6 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.R
@@ -45,10 +43,6 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     private val storedBitmap = HashMap<String, Bitmap>()
     private var doLoop = false
     private var doShuffle = false
-
-    private val notificationManager by lazy {
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -174,17 +168,22 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     private val callback = object : MediaSessionCompat.Callback() {
         override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
             val intentAction = mediaButtonEvent?.action
-            if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
-                val event = mediaButtonEvent?.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+            if (Intent.ACTION_MEDIA_BUTTON == intentAction) {
+                val event = mediaButtonEvent.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
                 if (event != null) {
                     when (event.keyCode) {
                         KeyEvent.KEYCODE_MEDIA_PLAY -> {
+                            ServiceStopTimerManager.cancelTimer()
                             PlayerForegroundService.getPlayerS()?.play()
                             return true
                         }
 
                         KeyEvent.KEYCODE_MEDIA_PAUSE -> {
                             PlayerForegroundService.getPlayerS()?.pause()
+                            ServiceStopTimerManager.cancelTimer()
+                            ServiceStopTimerManager.startTimer {
+                                context.stopSelf()
+                            }
                             return true
                         }
 

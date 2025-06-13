@@ -21,6 +21,7 @@ import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification
 import com.rizwansayyed.zene.service.player.utils.MediaSessionPlayerNotification
+import com.rizwansayyed.zene.service.player.utils.ServiceStopTimerManager
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
 import com.rizwansayyed.zene.service.player.utils.SmartShuffle
 import com.rizwansayyed.zene.service.player.utils.sleepTimerNotification
@@ -152,6 +153,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 playerInfo?.speed = playSpeed
                 playerInfo?.currentDuration = currentTS
                 playerInfo?.totalDuration = duration
+
+                ServiceStopTimerManager.cancelTimer()
+                if (state == YoutubePlayerState.PAUSE) {
+                    ServiceStopTimerManager.startTimer {
+                        stopSelf()
+                    }
+                }
 
                 try {
                     if (isSmooth && (duration.toFloat() - currentTS.toFloat()) <= 5) songEnded()

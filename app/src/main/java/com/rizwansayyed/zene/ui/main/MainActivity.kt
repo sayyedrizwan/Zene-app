@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.startDefaultMedia
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.subscribeToTopicAll
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.service.notification.HomeNavigationListener
@@ -227,6 +228,7 @@ class MainActivity : FragmentActivity() {
                         })
 
                         showLogin = true
+                        startDefaultMedia()
 
                         delay(4.seconds)
                         if (!isNotificationEnabled() && userInfo?.isLoggedIn() == true) {
