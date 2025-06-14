@@ -180,7 +180,6 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
                         KeyEvent.KEYCODE_MEDIA_PAUSE -> {
                             PlayerForegroundService.getPlayerS()?.pause()
-                            ServiceStopTimerManager.cancelTimer()
                             ServiceStopTimerManager.startTimer {
                                 context.stopSelf()
                             }
@@ -323,10 +322,6 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
         }
 
         try {
-//            with(NotificationManagerCompat.from(context)) {
-//                notificationManager.notify(1, notification)
-//            }
-
             ServiceCompat.startForeground(context, 1, notification, serviceType)
         } catch (e: Exception) {
             e.printStackTrace()

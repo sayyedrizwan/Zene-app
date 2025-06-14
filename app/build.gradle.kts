@@ -159,6 +159,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.glide)
+    implementation(libs.jsoup)
 
     implementation(libs.gson)
     implementation(libs.process.phoenix)

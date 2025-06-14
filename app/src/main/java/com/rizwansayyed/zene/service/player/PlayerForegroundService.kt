@@ -433,7 +433,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 musicPlayerDB = flowOf(player)
             }
 
-            songsLists = array.toTypedArray()
+            songsLists = array.distinctBy { it?.id }.toTypedArray()
         }
     }
 
@@ -448,7 +448,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 musicPlayerDB = flowOf(player)
             }
 
-            songsLists = array.toTypedArray()
+            songsLists = array.distinctBy { it?.id }.toTypedArray()
         }
     }
 
@@ -475,10 +475,10 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             val arrayList = ArrayList<ZeneMusicData?>()
             arrayList.addAll(songsLists)
             arrayList.addAll(index + 1, list)
-            val l = arrayList.toList()
+            val l = arrayList.distinctBy { it?.id }.toList()
 
-            val player = musicPlayerDB.firstOrNull()
-            player?.lists = arrayList.toList()
+            val player = musicPlayerDB.firstOrNull() 
+            player?.lists = l.toList()
             withContext(Dispatchers.IO) {
                 musicPlayerDB = flowOf(player)
             }
@@ -493,10 +493,10 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
             arrayList.addAll(songsLists)
             arrayList.addAll(list)
-            val l = arrayList.toList()
+            val l = arrayList.distinctBy { it?.id }.toList()
 
             val player = musicPlayerDB.firstOrNull()
-            player?.lists = arrayList.toList()
+            player?.lists = l.toList()
             withContext(Dispatchers.IO) {
                 musicPlayerDB = flowOf(player)
             }

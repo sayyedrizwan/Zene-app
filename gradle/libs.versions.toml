@@ -5,8 +5,8 @@ compilesdk = "36"
 minsdk = "24"
 
 
-appversion = "212"
-versionname = "3.02.890"
+appversion = "213"
+versionname = "3.02.892"
 
 agp = "8.10.1"
 
@@ -53,14 +53,16 @@ browser = "1.8.0"
 customQrGenerator = "2.0.0-alpha01"
 glanceAppwidget = "1.1.1"
 
+jsoup = "1.20.1"
+
 securityCrypto = "1.1.0-beta01"
 socketIoClient = "2.1.1"
 konfettiCompose = "2.0.5"
 
 opencsv = "5.10"
-playServicesAds = "24.3.0"
+playServicesAds = "24.4.0"
 firebasePreformance = "1.4.2"
-firebaseCrash = "3.0.3"
+firebaseCrash = "3.0.4"
 
 billing = "7.1.1"
 clarity = "3.3.0"
@@ -118,6 +120,9 @@ converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.r
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 glide = { module = "com.github.bumptech.glide:compose", version.ref = "glide" }
+
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
 emoji = { module = "androidx.emoji2:emoji2", version.ref = "emoji" }
 emoji-picker = { module = "androidx.emoji2:emoji2-emojipicker", version.ref = "emoji" }
 emoji2-bundled = { group = "androidx.emoji2", name = "emoji2-bundled", version.ref = "emoji" }

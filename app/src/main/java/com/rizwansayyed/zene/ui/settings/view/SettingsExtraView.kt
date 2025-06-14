@@ -109,6 +109,10 @@ fun SettingsExtraView() {
 
     Spacer(Modifier.height(25.dp))
 
+    SettingsUpdateVersionView()
+
+    Spacer(Modifier.height(25.dp))
+
     SettingsExtraView(R.string.help_faq, R.drawable.ic_help_circle) {
         MediaContentUtils.openCustomBrowser(ZENE_FAQ_URL)
     }
