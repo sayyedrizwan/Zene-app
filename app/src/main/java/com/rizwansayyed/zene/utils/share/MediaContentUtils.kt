@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.utils.share
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -33,6 +34,7 @@ import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 
 
 object MediaContentUtils {
@@ -88,12 +90,17 @@ object MediaContentUtils {
 
 
     private fun startAppService(context: Context, data: ZeneMusicData, isNew: Boolean = false) {
-        Intent(context, PlayerForegroundService::class.java).apply {
-            flags = FLAG_ACTIVITY_NEW_TASK
-            putExtra(Intent.ACTION_VIEW, moshi.adapter(ZeneMusicData::class.java).toJson(data))
-            putExtra(Intent.ACTION_USER_PRESENT, isNew)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(this)
-            else context.startService(this)
+        try {
+            Intent(context, PlayerForegroundService::class.java).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+                putExtra(Intent.ACTION_VIEW, moshi.adapter(ZeneMusicData::class.java).toJson(data))
+                putExtra(Intent.ACTION_USER_PRESENT, isNew)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(this)
+                else context.startService(this)
+            }
+        }catch (e: Exception){
+            e.message?.toast()
         }
+
     }
 }

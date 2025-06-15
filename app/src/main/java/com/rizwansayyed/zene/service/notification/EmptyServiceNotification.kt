@@ -38,9 +38,7 @@ object EmptyServiceNotification {
 
             val mainIntent = Intent(context, MainActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(
-                context,
-                2,
-                mainIntent,
+                context, 2, mainIntent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
