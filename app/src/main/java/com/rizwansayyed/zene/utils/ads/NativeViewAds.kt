@@ -25,41 +25,22 @@ val nativeAdsAndroidViewMap = HashMap<String, AdView?>()
 @Composable
 fun NativeViewAdsCard(id: String?) {
     Column {
-        (4 downTo 1).forEach {
+        (4 downTo 1).forEach { index ->
             AndroidView(
                 modifier = Modifier
                     .width(220.dp)
                     .height(50.dp)
                     .padding(bottom = 5.dp),
                 factory = { context ->
-                    val adView = nativeAdsMap["${id}_${it}"] ?: AdView(context).apply {
+                    AdView(context).apply {
                         setAdSize(AdSize(220, 50))
                         adUnitId = bannerAdUnit
                         loadAd(AdRequest.Builder().build())
-
-                        nativeAdsMap["${id}_${it}"] = this
                     }
-
-                    adView
                 }
             )
         }
     }
-//    AndroidView(
-//        modifier = Modifier.width(165.dp).height(50.dp),
-//        factory = { context ->
-//            val adSize = AdSize(
-//                (165 * context.resources.displayMetrics.density).toInt(),
-//                (50 * context.resources.displayMetrics.density).toInt()
-//            )
-//
-//            AdView(context).apply {
-//                setAdSize(adSize)
-//                adUnitId = bannerAdUnit
-//                loadAd(AdRequest.Builder().build())
-//            }
-//        }
-//    )
 }
 
 //fun NativeViewAdsCard(id: String?) {
