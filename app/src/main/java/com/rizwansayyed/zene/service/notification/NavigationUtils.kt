@@ -26,10 +26,22 @@ object NavigationUtils {
     }
 
     fun triggerHomeNav(path: String) {
-        callback?.navigate(path)
+        callback?.navigate(replaceSecondSlash(path.replace("//", "/")))
     }
 
     fun triggerInfoSheet(v: ZeneMusicData?) {
         callback?.longPress(v)
+    }
+
+   private fun replaceSecondSlash(input: String): String {
+        var slashCount = 0
+        return input.map { char ->
+            if (char == '/') {
+                slashCount++
+                if (slashCount == 2) '_' else char
+            } else {
+                char
+            }
+        }.joinToString("")
     }
 }

@@ -7,8 +7,9 @@ import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import dagger.hilt.android.HiltAndroidApp
@@ -64,6 +65,9 @@ class ZeneBaseApplication : Application() {
 
         val config = BundledEmojiCompatConfig(this, ContextCompat.getMainExecutor(this))
         EmojiCompat.init(config)
+
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
+
     }
 
 }

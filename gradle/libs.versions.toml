@@ -5,8 +5,8 @@
     minsdk = "24"
 
 
-    appversion = "214"
-    versionname = "3.02.893"
+    appversion = "215"
+    versionname = "3.02.894"
 
     agp = "8.10.1"
 
@@ -28,7 +28,7 @@
     espressoCore = "3.6.1"
     lifecycleRuntimeKtx = "2.9.1"
     activityCompose = "1.10.1"
-    composeBom = "2025.06.00"
+    composeBom = "2025.06.01"
     googleid = "1.1.1"
     mapsCompose = "6.4.1"
     media3Exoplayer = "1.7.1"
@@ -40,11 +40,11 @@
     emoji = "1.5.0"
     truecaller = "3.1.0"
     camera = "1.5.0-beta01"
-    material3 = "1.4.0-alpha15"
+    material3 = "1.4.0-alpha16"
     webkit = "1.14.0"
     navigation = "2.9.0"
     paletteKtx = "1.0.0"
-    room = "2.7.1"
+    room = "2.7.2"
     ksp = "2.0.21-1.0.27"
     storage = "1.5.0"
     colorpickerCompose = "1.1.2"

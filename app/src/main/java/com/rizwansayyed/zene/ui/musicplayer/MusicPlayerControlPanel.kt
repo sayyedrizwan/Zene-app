@@ -79,44 +79,51 @@ import kotlinx.coroutines.launch
 @Composable
 fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
     HorizontalPager(
-        pagerState, Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp)
+        pagerState,
+        Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 20.dp)
     ) { page ->
-        if (data?.lists?.isNotEmpty() == true && data.lists?.indices?.contains(pagerState.currentPage) == true) Box(
-            Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-        ) {
-            GlideImage(
-                data.lists?.get(page)?.thumbnail, data.lists?.get(page)?.name,
-                Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .padding(horizontal = 5.dp),
-                contentScale = ContentScale.Crop
-            )
-            if (data.lists?.get(page)?.id != data.data?.id) {
+        val lists = data?.lists.orEmpty()
+        if (lists.isNotEmpty() && page in lists.indices) {
+            lists[page]?.let { item ->
                 Box(
                     Modifier
-                        .padding(15.dp)
-                        .align(Alignment.BottomEnd)
-                        .clip(RoundedCornerShape(100))
-                        .background(MainColor)
-                        .combinedClickable(onLongClick = {
-                            NavigationUtils.triggerInfoSheet(data.lists?.get(page))
-                        }, onClick = {
-                            startMedia(data.lists?.get(page), data.lists ?: emptyList())
-                        })
-                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
                 ) {
-                    ImageIcon(R.drawable.ic_play, 24, Color.White)
+                    GlideImage(
+                        item.thumbnail, item.name,
+                        Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .padding(horizontal = 5.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                    if (item.id != data?.data?.id) {
+                        Box(
+                            Modifier
+                                .padding(15.dp)
+                                .align(Alignment.BottomEnd)
+                                .clip(RoundedCornerShape(100))
+                                .background(MainColor)
+                                .combinedClickable(
+                                    onLongClick = { NavigationUtils.triggerInfoSheet(item) },
+                                    onClick = { startMedia(item, lists) }
+                                )
+                                .padding(10.dp)
+                        ) {
+                            ImageIcon(R.drawable.ic_play, 24, Color.White)
+                        }
+                    }
                 }
             }
         }
     }
 
-    LaunchedEffect(Unit) {
-        val index = data?.lists?.indexOfFirst { it?.id == data.data?.id } ?: 0
-        pagerState.scrollToPage(index)
+    LaunchedEffect(data?.data?.id, data?.lists) {
+        val lists = data?.lists.orEmpty()
+        val index = lists.indexOfFirst { it?.id == data?.data?.id }.takeIf { it >= 0 } ?: 0
+        pagerState.scrollToPage(index.coerceIn(lists.indices))
     }
 }
 

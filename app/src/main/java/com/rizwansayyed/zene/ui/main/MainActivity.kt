@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.startDefaultMedia
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.subscribeToTopicAll
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.service.notification.HomeNavigationListener
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
@@ -52,9 +53,12 @@ import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
-import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.*
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.HOME
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NONE
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SEARCH
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.search.SearchView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
@@ -75,7 +79,6 @@ import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.configClarity
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
@@ -134,6 +137,7 @@ class MainActivity : FragmentActivity() {
                                         ENT -> EntertainmentNewsView()
                                         NOTIFICATION ->
                                             NotificationViewScreenView(navigationViewModel)
+
                                         SEARCH -> SearchView(homeViewModel)
                                         NONE -> {}
                                     }
