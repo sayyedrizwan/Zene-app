@@ -91,6 +91,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+// Add Singles/Albums after all like 2021 • Singles/Albums
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {

@@ -395,7 +395,7 @@ class HomeViewModel @Inject constructor(
         }.catch {
             playlistsData = ResponseResult.Error(it)
         }.collectLatest {
-            isPlaylistAdded = it.status ?: false
+            isPlaylistAdded = it.status == true
             playlistsData = ResponseResult.Success(PodcastPlaylistResponse(null, null, null, null))
         }
     }
