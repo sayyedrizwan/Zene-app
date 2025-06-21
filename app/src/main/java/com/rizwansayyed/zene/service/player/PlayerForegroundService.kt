@@ -311,6 +311,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun onDestroy() {
         super.onDestroy()
         clearWebView()
+        mediaSession.forceStop()
         exoPlayerSession.destroy()
         durationJob?.cancel()
     }
@@ -507,6 +508,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
+        mediaSession.forceStop()
         pause()
         stopSelf()
     }
