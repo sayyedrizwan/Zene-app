@@ -89,15 +89,15 @@ class PlayingSongWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.padding(7.dp).fillMaxSize(),
                 Alignment.CenterHorizontally, Alignment.CenterVertically,
             ) {
-                GlanceImage(music.data.thumbnail, 80, context)
+                GlanceImage(music.data?.thumbnail, 80, context)
 
                 Column(
                     GlanceModifier.defaultWeight().padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically
                 ) {
-                    GlanceTextItemBold(music.data.name ?: "")
+                    GlanceTextItemBold(music.data?.name ?: "")
                     Spacer(GlanceModifier.height(1.dp))
-                    GlanceTextItemNormal(music.data.artists ?: "")
+                    GlanceTextItemNormal(music.data?.artists ?: "")
 
                     Row(
                         GlanceModifier.padding(top = 10.dp).fillMaxWidth(),

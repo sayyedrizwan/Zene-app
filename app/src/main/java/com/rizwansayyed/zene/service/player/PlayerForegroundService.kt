@@ -31,11 +31,13 @@ import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -425,9 +427,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             val player = musicPlayerDB.firstOrNull()
             var array = ArrayList<ZeneMusicData?>(player?.lists ?: emptyList())
             val index = player?.lists?.indexOfFirst { it?.id == currentPlayingSong?.id }
-            if (index != -1) {
-                array.add(index?.plus(1) ?: 0, v)
-            }
+
+            if (index != -1) array.add(index?.plus(1) ?: 0, v)
 
             player?.lists = array.distinctBy { it?.id }
             withContext(Dispatchers.IO) {
@@ -442,6 +443,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         CoroutineScope(Dispatchers.IO).launch {
             val player = musicPlayerDB.firstOrNull()
             var array = ArrayList<ZeneMusicData?>(player?.lists ?: emptyList())
+
             array.add(v)
 
             player?.lists = array.distinctBy { it?.id }.toList()
@@ -478,7 +480,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             arrayList.addAll(index + 1, list)
             val l = arrayList.distinctBy { it?.id }.toList()
 
-            val player = musicPlayerDB.firstOrNull() 
+            val player = musicPlayerDB.firstOrNull()
             player?.lists = l.toList()
             withContext(Dispatchers.IO) {
                 musicPlayerDB = flowOf(player)

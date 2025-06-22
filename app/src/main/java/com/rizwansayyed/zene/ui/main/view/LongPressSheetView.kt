@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,7 @@ import com.rizwansayyed.zene.data.model.LikeItemType
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
@@ -75,6 +77,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
         val mediaInfo by remember { derivedStateOf { viewModel.showMediaInfoSheet } }
         val artists by remember { derivedStateOf { viewModel.showMediaInfoSheet?.artistsList } }
         val albumInfo by remember { derivedStateOf { viewModel.showMediaInfoSheet?.albumInfo } }
+        val musicPlayer by musicPlayerDB.collectAsState(null)
 
         mediaInfo?.let { data ->
             LazyColumn(Modifier.fillMaxWidth()) {
@@ -98,12 +101,19 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                 item {
                     if (data.type() == MusicDataTypes.SONGS || data.type() == MusicDataTypes.PODCAST_AUDIO || data.type() == MusicDataTypes.RADIO || data.type() == MusicDataTypes.AI_MUSIC) {
                         LongPressSheetItem(R.drawable.ic_play_list, R.string.play_next) {
-                            getPlayerS()?.playNext(viewModel.showMediaInfoSheet!!)
+                            if (musicPlayer?.data?.id == null)
+                                startMedia(viewModel.showMediaInfoSheet)
+                            else
+                                getPlayerS()?.playNext(viewModel.showMediaInfoSheet!!)
                             viewModel.setShowMediaInfo(null)
                         }
 
                         LongPressSheetItem(R.drawable.ic_add_in_queue, R.string.add_to_queue) {
-                            getPlayerS()?.addToQueue(viewModel.showMediaInfoSheet!!)
+                            if (musicPlayer?.data?.id == null)
+                                startMedia(viewModel.showMediaInfoSheet)
+                            else
+                                getPlayerS()?.addToQueue(viewModel.showMediaInfoSheet!!)
+
                             viewModel.setShowMediaInfo(null)
                         }
                     }

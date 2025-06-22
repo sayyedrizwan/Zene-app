@@ -7,7 +7,7 @@ import com.rizwansayyed.zene.utils.MainUtils.formatMSDurationsForVideo
 
 data class MusicPlayerData(
     var lists: List<ZeneMusicData?>?,
-    val data: ZeneMusicData?,
+    var data: ZeneMusicData?,
     var state: YoutubePlayerState?,
     var currentDuration: String?,
     var speed: String?,
