@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,10 +44,10 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
-import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
-import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
+import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
@@ -101,7 +100,7 @@ fun ArtistsView(artistsID: String) {
             is ResponseResult.Success -> {
                 val height = LocalConfiguration.current.screenHeightDp
 
-                Box(Modifier.fillMaxSize()) {
+                if (v.data.data?.id != null) Box(Modifier.fillMaxSize()) {
                     GlideFullImage(v.data.data, height, Modifier.align(Alignment.TopCenter))
 
                     LazyColumn(Modifier.fillMaxSize()) {
@@ -216,6 +215,9 @@ fun ArtistsView(artistsID: String) {
                         }
                     }
                 }
+                else Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+                    TextViewBold(stringResource(R.string.no_artist_found), 25)
+                }
 
                 LaunchedEffect(Unit) {
                     viewModel.isFollowing = v.data.isFollowing == true
@@ -287,15 +289,16 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
         TextViewBoldBig(data.data?.name ?: "", 50)
     }
 
-    Box(Modifier
-        .fillMaxWidth()
-        .background(Color.Black)
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }) {
-            showFullDesc = !showFullDesc
-        }
-        .padding(horizontal = 9.dp)) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                showFullDesc = !showFullDesc
+            }
+            .padding(horizontal = 9.dp)) {
         TextViewNormal(data.data?.artists ?: "", 15, line = if (showFullDesc) 1000 else 5)
     }
 
@@ -326,24 +329,27 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
 
         Spacer(Modifier.width(20.dp))
 
-        Box(Modifier
-            .padding(horizontal = 7.dp)
-            .clickable {
-                if (data.songs?.isNotEmpty() == true) startMedia(data.songs.first(), data.songs)
-            }) {
+        Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .clickable {
+                    if (data.songs?.isNotEmpty() == true) startMedia(data.songs.first(), data.songs)
+                }) {
             ImageIcon(R.drawable.ic_play, 26)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Box(Modifier
-            .padding(horizontal = 7.dp)
-            .padding(end = 7.dp)
-            .clickable { showAddToHomeScreen = true }) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .padding(end = 7.dp)
+                .clickable { showAddToHomeScreen = true }) {
             ImageIcon(R.drawable.ic_screen_add_to_home, 24)
         }
 
-        Box(Modifier
-            .padding(horizontal = 7.dp)
-            .clickable { showShareView = true }) {
+        Box(
+            Modifier
+                .padding(horizontal = 7.dp)
+                .clickable { showShareView = true }) {
             ImageIcon(R.drawable.ic_share, 24)
         }
     }

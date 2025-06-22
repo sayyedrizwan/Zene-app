@@ -445,6 +445,7 @@
     <string name="error_reading_coupon_code_try_again">Error reading coupon code, Please try again later :(</string>
     <string name="no_coupon_found_try_again">No coupon found, Please verify and try again :(</string>
     <string name="what_our_luxe_users_say">What our luxe users say</string>
+    <string name="no_artist_found">No artist found</string>
 
 
     <!--    notification channels-->
