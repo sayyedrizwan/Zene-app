@@ -121,9 +121,12 @@ fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
     }
 
     LaunchedEffect(data?.data?.id, data?.lists) {
-        val lists = data?.lists.orEmpty()
-        val index = lists.indexOfFirst { it?.id == data?.data?.id }.takeIf { it >= 0 } ?: 0
-        pagerState.scrollToPage(index.coerceIn(lists.indices))
+        try {
+            val lists = data?.lists.orEmpty()
+            val index = lists.indexOfFirst { it?.id == data?.data?.id }.takeIf { it >= 0 } ?: 0
+            pagerState.scrollToPage(index.coerceIn(lists.indices))
+        } catch (_: Exception) {
+        }
     }
 }
 

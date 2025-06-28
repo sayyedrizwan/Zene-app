@@ -5,8 +5,8 @@
     minsdk = "24"
 
 
-    appversion = "217"
-    versionname = "3.02.895"
+    appversion = "218"
+    versionname = "3.02.897"
 
     agp = "8.10.1"
 
