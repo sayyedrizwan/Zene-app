@@ -8,7 +8,7 @@
     appversion = "218"
     versionname = "3.02.897"
 
-    agp = "8.10.1"
+    agp = "8.11.0"
 
     androidImageCropper = "4.6.0"
     exifinterface = "1.4.1"
@@ -17,11 +17,11 @@
     datastorePreferences = "1.1.7"
     facebookLogin = "18.0.3"
     firebaseBom = "33.16.0"
-    gson = "2.11.0"
-    hiltAndroid = "2.52"
+    gson = "2.13.1"
+    hiltAndroid = "2.56.2"
     googleServices = "4.4.3"
     hiltNavigationCompose = "1.2.0"
-    kotlin = "2.0.21"
+    kotlin = "2.2.0"
     coreKtx = "1.16.0"
     junit = "4.13.2"
     junitVersion = "1.2.1"
@@ -30,12 +30,12 @@
     activityCompose = "1.10.1"
     composeBom = "2025.06.01"
     googleid = "1.1.1"
-    mapsCompose = "6.4.1"
+    mapsCompose = "6.6.0"
     media3Exoplayer = "1.7.1"
     moshiKotlin = "1.15.2"
     okhttpBom = "4.12.0"
     processPhoenix = "3.0.0"
-    retrofit = "2.11.0"
+    retrofit = "3.0.0"
     playServicesLocation = "21.3.0"
     emoji = "1.5.0"
     truecaller = "3.1.0"
@@ -45,7 +45,7 @@
     navigation = "2.9.0"
     paletteKtx = "1.0.0"
     room = "2.7.2"
-    ksp = "2.0.21-1.0.27"
+    ksp = "2.2.0-2.0.2"
     storage = "1.5.0"
     colorpickerCompose = "1.1.2"
     hashids = "1.0.3"
@@ -53,19 +53,19 @@
     customQrGenerator = "2.0.0-alpha01"
     glanceAppwidget = "1.1.1"
 
-    jsoup = "1.20.1"
+    jsoup = "1.21.1"
 
     securityCrypto = "1.1.0-beta01"
-    socketIoClient = "2.1.1"
+    socketIoClient = "2.1.2"
     konfettiCompose = "2.0.5"
 
-    opencsv = "5.10"
+    opencsv = "5.11.2"
     playServicesAds = "24.4.0"
     firebasePreformance = "1.4.2"
     firebaseCrash = "3.0.4"
 
     billing = "7.1.1"
-    clarity = "3.3.0"
+    clarity = "3.4.1"
 
     [libraries]
     androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

@@ -47,7 +47,8 @@ object URLSUtils {
     const val LIKED_SONGS_ON_ZENE = "_liked_songs_on_zene"
 
     val ZENE_BASE_URL_SOCKET = BuildConfig.API_ZENE_MUSIC_BASE_URL
-//        if (BuildConfig.DEBUG) "http://192.168.0.105:4102" else BuildConfig.API_ZENE_MUSIC_BASE_URL
+
+    //        if (BuildConfig.DEBUG) "http://192.168.0.105:4102" else BuildConfig.API_ZENE_MUSIC_BASE_URL
     val ZENE_BASE_URL_API = BuildConfig.API_ZENE_MUSIC_BASE_URL
 //        if (BuildConfig.DEBUG) "http://192.168.0.105:4100" else BuildConfig.API_ZENE_MUSIC_BASE_URL
 
@@ -151,7 +152,6 @@ object URLSUtils {
 
     const val ZENE_SPONSOR_ADS_API = "sponsor/ads"
 
-
     const val ZENE_FEED_FOLLOWED_ARTISTS_API = "feed/followed-artists"
     const val ZENE_FEED_ARTISTS_UPDATES_API = "feed/artists-updates"
 
@@ -185,8 +185,4 @@ object SaveParams {
     const val DELETE_MESSAGE_ON_SOCKET = "DELETE_MESSAGE_ON"
     const val USER_LEAVED_SOCKET = "USER_LEAVED"
     const val NEW_MESSAGE_ON_SOCKET = "NEW_MESSAGE_ON"
-
-
-    const val CALL_DECLINE_ = "NEW_MESSAGE_ON"
-
 }
