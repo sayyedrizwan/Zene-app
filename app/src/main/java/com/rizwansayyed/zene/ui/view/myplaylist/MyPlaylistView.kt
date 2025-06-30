@@ -75,14 +75,12 @@ fun MyPlaylistView(id: String) {
     val state = rememberLazyListState()
     var isBottomTriggered by remember { mutableStateOf(false) }
 
-
     LazyColumn(
         Modifier
             .fillMaxSize()
             .background(Color.Black)
             .padding(horizontal = 5.dp),
-        state,
-        horizontalAlignment = Alignment.CenterHorizontally
+        state, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item { Spacer(Modifier.height(100.dp)) }
 

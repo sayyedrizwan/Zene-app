@@ -326,7 +326,7 @@ fun SavedPlaylistsPodcastView(data: SavedPlaylistsPodcastsResponseItem, modifier
                     TextViewNormal(stringResource(R.string.my_playlist), 14, line = 1)
             } else {
                 if (data.isPodcast()) TextViewNormal(
-                    stringResource(R.string.podcasts), 14, line = 1
+                    stringResource(R.string.podcast), 14, line = 1
                 )
                 else if (data.id?.startsWith("VL") == true) TextViewNormal(
                     stringResource(R.string.playlist), 14, line = 1

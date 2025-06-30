@@ -197,7 +197,7 @@ fun ItemCardView(data: ZeneMusicData?, list: List<ZeneMusicData?> = emptyList())
         }
         Spacer(Modifier.height(9.dp))
         TextViewBold(data?.name ?: "", 15, line = 1)
-        if (data?.type() != MusicDataTypes.PLAYLISTS) {
+        if (data?.name != data?.artists) {
             if (data?.type() == MusicDataTypes.PODCAST) {
                 TextViewLight(data.artists ?: "", 13, line = 3)
             } else Box(Modifier.offset(y = (-2).dp)) {
@@ -228,13 +228,15 @@ fun ItemCardViewDynamic(data: ZeneMusicData?, list: List<ZeneMusicData?> = empty
             GlideImage(
                 data?.thumbnail,
                 data?.name,
-                Modifier.fillMaxWidth().aspectRatio(1f),
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
                 contentScale = ContentScale.Crop
             )
         }
         Spacer(Modifier.height(9.dp))
         TextViewBold(data?.name ?: "", 15, line = 1)
-        if (data?.type() != MusicDataTypes.PLAYLISTS) {
+        if (data?.name != data?.artists) {
             if (data?.type() == MusicDataTypes.PODCAST) {
                 TextViewLight(data.artists ?: "", 13, line = 3)
             } else Box(Modifier.offset(y = (-2).dp)) {
