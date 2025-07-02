@@ -129,14 +129,15 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                         navViewModel.setMusicPlayer(false)
                     }
 
-                    Row(Modifier  .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        player?.lists?.getOrNull(pagerState.currentPage)?.let {
-                            NavigationUtils.triggerInfoSheet(it)
-                        }
-                    }) {
+                    Row(
+                        Modifier.clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            player?.lists?.getOrNull(pagerState.currentPage)?.let {
+                                NavigationUtils.triggerInfoSheet(it)
+                            }
+                        }) {
                         ImageIcon(R.drawable.ic_vertical_menu, 24)
                     }
                 }
@@ -207,7 +208,10 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
         LaunchedEffect(player?.data?.id) {
             val i = player?.lists?.indexOfFirst { it?.id == player?.data?.id }
             coroutines.launch {
-                pagerState.animateScrollToPage(i ?: 0)
+                try {
+                    pagerState.animateScrollToPage(i ?: 0)
+                } catch (_: Exception) {
+                }
             }
             columnState.animateScrollTo(0)
         }

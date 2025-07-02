@@ -91,7 +91,7 @@ class BillingManager(private val context: Activity, private val token: (String, 
             val result = mutableMapOf<String, String>()
 
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                for (productDetails in productDetailsList) {
+                for (productDetails in productDetailsList.productDetailsList) {
                     val offer = productDetails.subscriptionOfferDetails?.firstOrNull()
                     val pricingPhase = offer?.pricingPhases?.pricingPhaseList?.firstOrNull()
                     val formattedPrice = pricingPhase?.formattedPrice ?: "Unavailable"

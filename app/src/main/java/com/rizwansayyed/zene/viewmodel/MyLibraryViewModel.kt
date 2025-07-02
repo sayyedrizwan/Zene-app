@@ -1,7 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -19,7 +18,6 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -142,8 +140,13 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
     private var myPlaylistSongsCheckJob: Job? = null
 
-    fun myPlaylistSongsData(playlistID: String) {
+    fun myPlaylistSongsData(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
         myPlaylistSongsCheckJob?.cancel()
+        val email = userInfo.firstOrNull()?.email ?: ""
+
+        if (playlistID.contains(LIKED_SONGS_ON_ZENE) && !playlistID.contains(email))
+            return@launch
+
         myPlaylistSongsCheckJob = viewModelScope.launch(Dispatchers.IO) {
             zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
                 myPlaylistSongsIsLoading = true
@@ -162,6 +165,10 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var isPlaylistOfSameUser by mutableStateOf(false)
 
     fun myPlaylistInfo(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        if (playlistID.contains(LIKED_SONGS_ON_ZENE) && !playlistID.contains(email))
+            return@launch
+
         if (playlistID.contains(LIKED_SONGS_ON_ZENE)) {
             isPlaylistOfSameUser = true
             return@launch

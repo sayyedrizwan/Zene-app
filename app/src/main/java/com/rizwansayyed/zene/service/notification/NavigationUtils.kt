@@ -19,6 +19,9 @@ object NavigationUtils {
     const val NAV_MOVIES_PAGE = "movies-show/"
     const val NAV_CONNECT_PROFILE_PAGE = "connect_profile/"
 
+    const val MY_PLAYLIST_ID = "zene_p_"
+    const val LIKED_SONGS_ZENE_ID = "_liked_songs_on_zene"
+
     private var callback: HomeNavigationListener? = null
 
     fun setNavigationCallback(listener: HomeNavigationListener) {

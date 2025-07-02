@@ -19,6 +19,8 @@ import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_L
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LON
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TITLE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TYPE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.LIKED_SONGS_ZENE_ID
+import com.rizwansayyed.zene.service.notification.NavigationUtils.MY_PLAYLIST_ID
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
@@ -177,7 +179,10 @@ class IntentCheckUtils(
                 }
             } else if (data.toString().contains("$ZENE_URL$ZENE_MIX")) {
                 val id = data.toString().substringAfterLast(ZENE_MIX)
-                triggerHomeNav("$NAV_PLAYLIST_PAGE${id}")
+                if (id.contains(MY_PLAYLIST_ID) || id.contains(LIKED_SONGS_ZENE_ID))
+                    triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${id}")
+                else
+                    triggerHomeNav("$NAV_PLAYLIST_PAGE${id}")
             } else if (data.toString().contains("$ZENE_URL$ZENE_ARTIST")) {
                 val id = data.toString().substringAfterLast(ZENE_ARTIST)
                 triggerHomeNav("$NAV_ARTIST_PAGE${id}")
