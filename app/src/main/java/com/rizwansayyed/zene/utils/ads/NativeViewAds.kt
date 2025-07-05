@@ -1,16 +1,25 @@
 package com.rizwansayyed.zene.utils.ads
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import com.rizwansayyed.zene.BuildConfig
 
 val nativeAdUnit =
@@ -26,21 +35,60 @@ val nativeAdsAndroidViewMap = HashMap<String, AdView?>()
 fun NativeViewAdsCard(id: String?) {
     Column {
         (4 downTo 1).forEach { index ->
-            AndroidView(
-                modifier = Modifier
-                    .width(220.dp)
-                    .height(50.dp)
-                    .padding(bottom = 5.dp),
-                factory = { context ->
-                    AdView(context).apply {
-                        setAdSize(AdSize(220, 50))
-                        adUnitId = bannerAdUnit
-                        loadAd(AdRequest.Builder().build())
-                    }
-                }
-            )
+            key(index) {
+                BannerAd(bannerAdUnit = bannerAdUnit)
+            }
+//            AndroidView(
+//                modifier = Modifier
+//                    .width(220.dp)
+//                    .height(50.dp)
+//                    .padding(bottom = 5.dp),
+//                factory = { context ->
+//                    AdView(context).apply {
+//                        setAdSize(AdSize(220, 50))
+//                        adUnitId = bannerAdUnit
+//                        loadAd(AdRequest.Builder().build())
+//                    }
+//                }
+//            )
         }
     }
+}
+
+@Composable
+fun BannerAd(
+    bannerAdUnit: String,
+    widthDp: Dp = 220.dp,
+    heightDp: Dp = 50.dp,
+    bottomPadding: Dp = 5.dp
+) {
+    var isAdLoaded by remember { mutableStateOf(false) }
+    val adHeight = if (isAdLoaded) heightDp else 2.dp
+    val adWidth = if (isAdLoaded) widthDp else 2.dp
+    val adPadding = if (isAdLoaded) bottomPadding else 0.dp
+
+    AndroidView(
+        modifier = Modifier
+            .width(adWidth)
+            .height(adHeight)
+            .padding(bottom = adPadding),
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(AdSize(widthDp.value.toInt(), heightDp.value.toInt()))
+                adUnitId = bannerAdUnit
+                adListener = object : AdListener() {
+                    override fun onAdLoaded() {
+                        isAdLoaded = true
+                    }
+
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        isAdLoaded = false
+                    }
+                }
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }
 
 //fun NativeViewAdsCard(id: String?) {
