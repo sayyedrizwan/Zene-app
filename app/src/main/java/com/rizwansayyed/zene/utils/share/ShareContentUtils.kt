@@ -107,14 +107,19 @@ object ShareContentUtils {
         val sharingText = when (data?.type()) {
             NONE -> ""
             SONGS -> String.format(
-                context.resources.getString(R.string.enjoy_the_song_on_zene), data.name
+                context.resources.getString(R.string.enjoy_the_song_on_zene),
+                data.name, data.artists
             )
 
             RADIO -> String.format(
                 context.resources.getString(R.string.enjoy_free_radio_on_zene), data.name
             )
 
-            VIDEOS -> context.resources.getString(R.string.enjoy_free_video_on_zene)
+            VIDEOS -> String.format(
+                context.resources.getString(R.string.enjoy_free_video_on_zene),
+                data.name, data.artists
+            )
+
             PLAYLISTS, ALBUMS -> String.format(
                 context.resources.getString(R.string.enjoy_free_mix_playlist_album_on_zene),
                 data.name
