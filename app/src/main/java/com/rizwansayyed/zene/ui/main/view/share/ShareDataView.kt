@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -72,7 +71,6 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.ZeneMusicData
-import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.theme.FacebookColor
 import com.rizwansayyed.zene.ui.theme.InstagramColor
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -243,9 +241,6 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
 @Composable
 fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
-        val userInfo by userInfo.collectAsState(null)
-        val enableConnect = stringResource(R.string.zene_connect_is_not_enabled_yet)
-
         val activity = LocalActivity.current
         val context = LocalContext.current
         val view = remember { ComposeView(context) }
@@ -255,8 +250,6 @@ fun ShareDataView(data: ZeneMusicData?, close: () -> Unit) {
                 activity?.requestedOrientation ?: ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             )
         }
-
-
         Column(
             Modifier
                 .fillMaxSize()
@@ -452,7 +445,7 @@ fun ShareRoundIcon(icon: Int, text: Int, bg: Color = Color.Gray.copy(0.4f), clic
                 .background(bg)
                 .padding(15.dp), Arrangement.Center, Alignment.CenterVertically
         ) {
-            ImageIcon(icon, 23)
+            ImageIcon(icon, 23, if (icon == R.drawable.ic_snapchat) Color.Black else Color.White)
         }
         Spacer(Modifier.height(7.dp))
         TextViewNormal(stringResource(text), 13, center = true)
