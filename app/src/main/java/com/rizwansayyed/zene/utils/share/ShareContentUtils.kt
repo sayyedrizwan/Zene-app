@@ -121,8 +121,7 @@ object ShareContentUtils {
             )
 
             ARTISTS -> String.format(
-                context.resources.getString(R.string.enjoy_free_mix_playlist_album_on_zene),
-                data.name
+                context.resources.getString(R.string.listen_to_on_zene), data.name
             )
 
             PODCAST -> String.format(
@@ -206,7 +205,6 @@ object ShareContentUtils {
     }
 
     fun generateShareUrl(data: ZeneMusicData?): String {
-//        val id = encryptSharingId(data?.id)
         val id = data?.id
 
         return when (data?.type()) {
