@@ -1,6 +1,6 @@
 package com.rizwansayyed.zene.data.model
 
-data class PodcastEposideResponse(
+data class PodcastEpisodeResponse(
     val description: String?,
     val duration: Int?,
     val explicit: Boolean?,
