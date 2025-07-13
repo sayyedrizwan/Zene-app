@@ -133,7 +133,7 @@ fun VideoSpeedChangeAlert(videoSpeed: VideoSpeedEnum?, changed: (VideoSpeedEnum)
     ) {
         Spacer(Modifier.height(25.dp))
         Box(Modifier.padding(horizontal = 6.dp)) {
-            TextViewBold(stringResource(R.string.playback_speed_of_video), 17)
+            TextViewBold(stringResource(R.string.playback_speed), 17)
         }
         Spacer(Modifier.height(14.dp))
         Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {

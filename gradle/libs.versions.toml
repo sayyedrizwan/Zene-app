@@ -8,7 +8,7 @@ minsdk = "24"
 appversion = "221"
 versionname = "3.04.019"
 
-agp = "8.11.0"
+agp = "8.11.1"
 
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.1"
@@ -18,7 +18,7 @@ datastorePreferences = "1.1.7"
 facebookLogin = "18.0.3"
 firebaseBom = "33.16.0"
 gson = "2.13.1"
-hiltAndroid = "2.56.2"
+hiltAndroid = "2.56.1"
 googleServices = "4.4.3"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.2.0"
@@ -33,12 +33,13 @@ googleid = "1.1.1"
 mapsCompose = "6.6.0"
 media3Exoplayer = "1.7.1"
 moshiKotlin = "1.15.2"
-okhttpBom = "4.12.0"
+okhttpBom = "5.1.0"
 processPhoenix = "3.0.0"
 retrofit = "3.0.0"
 playServicesLocation = "21.3.0"
 emoji = "1.5.0"
 truecaller = "3.1.0"
+socketIoClient = "2.1.2"
 camera = "1.5.0-beta01"
 material3 = "1.4.0-alpha17"
 webkit = "1.14.0"
@@ -56,16 +57,15 @@ glanceAppwidget = "1.1.1"
 jsoup = "1.21.1"
 
 securityCrypto = "1.1.0-beta01"
-socketIoClient = "2.1.2"
 konfettiCompose = "2.0.5"
 
 opencsv = "5.11.2"
 playServicesAds = "24.4.0"
-firebasePreformance = "1.4.2"
+firebasePerformance = "1.4.2"
 firebaseCrash = "3.0.4"
 
 billing = "8.0.0"
-clarity = "3.4.1"
+clarity = "3.4.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -185,5 +185,5 @@ android-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndro
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-firebase-preformance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePreformance" }
+firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformance" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrash" }

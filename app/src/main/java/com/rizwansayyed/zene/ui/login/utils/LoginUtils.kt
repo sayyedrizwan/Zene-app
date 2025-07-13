@@ -95,16 +95,20 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = credentialManager.getCredential(activity, request)
+                Log.d("TAG", "startGoogleLogin: ${result}")
                 if (result.credential !is CustomCredential) {
                     isLoading = false
                     return@launch
                 }
 
                 val credential = result.credential
+                Log.d("TAG", "startGoogleLogin: ${credential}")
                 if (credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     isLoading = false
                     return@launch
                 }
+
+                Log.d("TAG", "startGoogleLogin: $")
 
                 try {
                     val info = GoogleIdTokenCredential.createFrom(credential.data)
@@ -114,7 +118,8 @@ class LoginUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
                     e.message?.toast()
                     isLoading = false
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Log.d("TAG", "startGoogleLogin: ${e.message}")
                 isLoading = false
             }
         }

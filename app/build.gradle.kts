@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.firebase.preformance)
+    alias(libs.plugins.firebase.performance)
     alias(libs.plugins.firebase.crashlytics)
 }
 
@@ -25,6 +25,7 @@ android {
         versionName = libs.versions.versionname.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -94,12 +95,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_20
+        targetCompatibility = JavaVersion.VERSION_20
     }
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_20)
             javaParameters.set(true)
         }
     }
