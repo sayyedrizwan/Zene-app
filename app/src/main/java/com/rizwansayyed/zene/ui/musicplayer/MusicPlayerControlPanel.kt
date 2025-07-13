@@ -272,7 +272,7 @@ fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
             ImageIcon(
                 R.drawable.ic_timer,
                 22,
-                if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else Color.Black
+                if (sleepTimerSelected == SleepTimerEnum.TURN_OFF) Color.White else Color.Red
             )
         }
 
