@@ -27,7 +27,7 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.ui.main.connect.MapMarkerUI
@@ -64,7 +64,7 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
             properties = properties,
             uiSettings = mapUISettings
         ) {
-            val mainUserMarker = rememberMarkerState(position = currentLatLng!!)
+            val mainUserMarker = rememberUpdatedMarkerState(position = currentLatLng!!)
             MarkerComposable(
                 keys = arrayOf(1), state = mainUserMarker, title = user?.name
             ) {

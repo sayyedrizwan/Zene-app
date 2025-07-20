@@ -54,6 +54,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_POLICY_URL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.stopAppService
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -245,6 +246,7 @@ fun LogoutSheetView(close: () -> Unit) {
                 context.cacheDir.deleteRecursively()
                 clearImagesCache()
                 close()
+                stopAppService(context)
                 coroutine.launch {
                     FirebaseMessaging.getInstance().deleteToken()
                 }

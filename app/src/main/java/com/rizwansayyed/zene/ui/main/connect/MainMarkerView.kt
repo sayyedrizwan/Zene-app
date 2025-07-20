@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.MarkerComposable
-import com.google.maps.android.compose.rememberMarkerState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun MainMarkerView(currentLatLng: LatLng) {
     val userInfo by userInfo.collectAsState(initial = null)
-    val mainUserMarker = rememberMarkerState(position = currentLatLng)
+    val mainUserMarker = rememberUpdatedMarkerState(position = currentLatLng)
 
     if (userInfo != null) MarkerComposable(
         keys = arrayOf(1), state = mainUserMarker, title = userInfo?.name
@@ -57,7 +57,7 @@ fun MainMarkerView(currentLatLng: LatLng) {
 fun UsersMainMarkerView(user: ConnectUserResponse) {
     var latLon by remember { mutableStateOf<LatLng?>(null) }
     if (latLon != null) {
-        val mainUserMarker = rememberMarkerState(position = latLon!!)
+        val mainUserMarker = rememberUpdatedMarkerState(position = latLon!!)
 
         MarkerComposable(
             keys = arrayOf(user.email ?: ""), state = mainUserMarker, title = user.name

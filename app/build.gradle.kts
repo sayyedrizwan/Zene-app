@@ -153,6 +153,7 @@ dependencies {
 
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.services)
+    implementation(libs.androidx.play.services)
     implementation(libs.androidx.credentials.googleid)
 
     implementation(libs.facebook.login)

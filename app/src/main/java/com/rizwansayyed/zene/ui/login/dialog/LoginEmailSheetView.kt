@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager.signInWithEmailAddress
-import com.rizwansayyed.zene.ui.login.utils.LoginUtils
+import com.rizwansayyed.zene.ui.login.LoginManagerViewModel
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
@@ -46,14 +46,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
+fun LoginEmailSheet(viewModel: LoginManagerViewModel, close: () -> Unit) {
     ModalBottomSheet(close, contentColor = MainColor, containerColor = MainColor) {
         var userEmail by remember { mutableStateOf("") }
         val focusManager = LocalFocusManager.current
 
         val coroutine = rememberCoroutineScope()
 
-        val loginViaEmail by remember { derivedStateOf { login.loginViaEmail } }
+        val loginViaEmail by remember { derivedStateOf { viewModel.loginViaEmail } }
 
         Column(
             Modifier
@@ -66,7 +66,7 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
 
             Spacer(Modifier.height(10.dp))
 
-            when (val v = loginViaEmail) {
+            when (val v = viewModel.loginViaEmail) {
                 ResponseResult.Empty -> TextField(
                     userEmail,
                     { userEmail = if (it.length <= 200) it else it.take(200) },
@@ -81,7 +81,7 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                             coroutine.launch {
                                 signInWithEmailAddress = flowOf(userEmail)
                             }
-                            login.startEmailLogin(userEmail)
+                            viewModel.startEmailLogin(userEmail)
                         }
                     },
                     placeholder = {
@@ -103,7 +103,7 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
                                 coroutine.launch {
                                     signInWithEmailAddress = flowOf(userEmail)
                                 }
-                                login.startEmailLogin(userEmail)
+                                viewModel.startEmailLogin(userEmail)
                             }) {
                                 ImageIcon(R.drawable.ic_arrow_right, 24, Color.White)
                             }
@@ -149,8 +149,7 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
 
                         TextViewNormal(
                             stringResource(R.string.error_while_sending_email_try_again),
-                            16,
-                            center = true
+                            16, center = true
                         )
 
                         Spacer(Modifier.height(10.dp))
@@ -161,7 +160,7 @@ fun LoginEmailSheet(login: LoginUtils, close: () -> Unit) {
             Spacer(Modifier.height(70.dp))
 
             LaunchedEffect(Unit) {
-                login.resetEmailLogin()
+                viewModel.resetEmailLogin()
             }
         }
     }

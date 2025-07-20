@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.ui.login
 
 import android.app.Activity
 import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,16 +37,20 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
-import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
-fun LoginView(viewModel: NavigationViewModel) {
-    val loginUtils = viewModel.loginUtils
+fun LoginView(viewModel: LoginManagerViewModel) {
     val activity = LocalActivity.current as Activity
     var startEmailLogin by remember { mutableStateOf(false) }
+
+    val legacySignInLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.startLegacyGoogleLogin(result)
+        }
 
     Column(
         Modifier
@@ -57,34 +63,49 @@ fun LoginView(viewModel: NavigationViewModel) {
         Column(
             Modifier
                 .weight(1f)
-                .fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally
+                .fillMaxWidth(),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
         ) {
             TextViewSemiBold(stringResource(R.string.app_name), 50, center = true)
             Spacer(Modifier.height(1.dp))
             TextViewNormal(stringResource(R.string.app_desc), 14, center = true)
         }
 
-        AnimatedVisibility(loginUtils.isLoading) {
+        AnimatedVisibility(viewModel.isLoginStateLoading.value) {
             CircularLoadingView()
         }
 
-        AnimatedVisibility(!loginUtils.isLoading) {
+        AnimatedVisibility(!viewModel.isLoginStateLoading.value) {
             Column(Modifier.fillMaxWidth()) {
                 ButtonWithImageAndBorder(R.drawable.ic_google, R.string.continue_with_google) {
-                    loginUtils.startGoogleLogin(activity)
+                    viewModel.startGoogleLogin(activity) {
+                        viewModel.legacyGoogleLogin()?.let { intent ->
+                            legacySignInLauncher.launch(intent)
+                        } ?: run {
+                            "Failed to create sign-in intent".toast()
+                        }
+                    }
                 }
+
                 Spacer(Modifier.height(24.dp))
+
                 ButtonWithImageAndBorder(R.drawable.ic_apple, R.string.continue_with_apple) {
-                    loginUtils.startAppleLogin(activity)
+                    viewModel.startAppleLogin(activity)
                 }
+
                 Spacer(Modifier.height(24.dp))
+
                 ButtonWithImageAndBorder(R.drawable.ic_facebook, R.string.continue_with_facebook) {
-                    loginUtils.startFacebookLogin(activity)
+                    viewModel.startFacebookLogin(activity)
                 }
+
                 Spacer(Modifier.height(24.dp))
+
                 ButtonWithImageAndBorder(R.drawable.ic_email_auth, R.string.continue_with_email) {
                     startEmailLogin = true
                 }
+
                 Spacer(Modifier.height(34.dp))
 
                 Box(
@@ -92,15 +113,16 @@ fun LoginView(viewModel: NavigationViewModel) {
                         .fillMaxWidth()
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() }) {
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
                             MediaContentUtils.openCustomBrowser("$ZENE_URL$ZENE_URL_PRIVACY_POLICY")
-                        }) {
+                        }
+                ) {
                     TextViewLight(
                         stringResource(R.string.by_login_your_are_accepting_privacy_policy),
                         13, center = true, color = FacebookColor
                     )
                 }
-
             }
         }
     }
@@ -109,7 +131,8 @@ fun LoginView(viewModel: NavigationViewModel) {
         registerEvents(FirebaseEventsParams.STARTED_LOGIN_VIEW)
     }
 
-    if (startEmailLogin) LoginEmailSheet(loginUtils) {
+    if (startEmailLogin) LoginEmailSheet(viewModel) {
         startEmailLogin = false
     }
+
 }

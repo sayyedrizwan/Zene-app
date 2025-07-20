@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.utils.share
 
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -99,6 +98,18 @@ object MediaContentUtils {
                 else context.startService(this)
             }
         }catch (e: Exception){
+            e.message?.toast()
+        }
+
+    }
+
+    fun stopAppService(context: Context) {
+        try {
+            Intent(context, PlayerForegroundService::class.java).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+                context.stopService(this)
+            }
+        } catch (e: Exception) {
             e.message?.toast()
         }
 

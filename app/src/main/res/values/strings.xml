@@ -26,6 +26,7 @@
     <string name="continue_with_email">Continue with Email</string>
     <string name="enter_your_email_address">Enter your email address</string>
     <string name="error_login">Error login. Please try again later.</string>
+    <string name="google_services_not_available">Google services are not available on this device.</string>
     <string name="login_expired">Login expired. Please try again later.</string>
     <string name="no_song_played">No song played.</string>
     <string name="music">Music</string>

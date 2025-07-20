@@ -180,7 +180,12 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"
-            android:stopWithTask="false" />
+            android:stopWithTask="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="ACTION_STOP_SERVICE" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name="com.canhub.cropper.CropImageActivity"

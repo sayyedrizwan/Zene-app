@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_P
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.ui.login.LoginManagerViewModel
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
@@ -72,7 +73,8 @@ data class IntentFCMNotification(
 class IntentCheckUtils(
     private val intent: Intent,
     private val navViewModel: NavigationViewModel,
-    private val viewModel: PlayerViewModel
+    private val viewModel: PlayerViewModel,
+    private val loginViewModel: LoginManagerViewModel
 ) {
 
     fun call() = CoroutineScope(Dispatchers.IO).launch {
@@ -80,10 +82,7 @@ class IntentCheckUtils(
 
         if (intent.data.toString().contains("/email-login")
             && Firebase.auth.isSignInWithEmailLink(intent.data.toString())
-        ) {
-            intent.data?.let { navViewModel.loginUtils.startAuthEmailLogin(it) }
-        }
-
+        ) intent.data?.let { loginViewModel.signInWithEmailLink(it) }
 
         val userInfo = userInfo.firstOrNull()
         if (userInfo?.isLoggedIn() == false) return@launch

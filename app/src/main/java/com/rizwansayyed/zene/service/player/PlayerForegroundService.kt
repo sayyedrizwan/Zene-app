@@ -91,6 +91,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            "ACTION_STOP_SERVICE" -> {
+                clearAll()
+                return START_NOT_STICKY
+            }
+        }
+
         isNew = intent?.getBooleanExtra(Intent.ACTION_USER_PRESENT, false) == true
 
         val musicData = intent?.getStringExtra(Intent.ACTION_VIEW) ?: "{}"
@@ -312,13 +319,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun onDestroy() {
         super.onDestroy()
-        clearWebView()
+        clearAll()
+    }
+
+    private fun clearAll() {
+        pause()
         mediaSession.forceStop()
         exoPlayerSession.destroy()
         durationJob?.cancel()
-    }
-
-    private fun clearWebView() {
         playerWebView?.let {
             clearWebViewData(it)
             killWebViewData(it)
@@ -507,14 +515,6 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             songsLists = l.toTypedArray()
         }
     }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
-        mediaSession.forceStop()
-        pause()
-        stopSelf()
-    }
-
     fun clearCache() = CoroutineScope(Dispatchers.Main).launch {
         try {
             withContext(Dispatchers.IO) {

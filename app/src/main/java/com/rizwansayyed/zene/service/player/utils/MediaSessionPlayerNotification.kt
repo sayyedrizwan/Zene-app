@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
@@ -43,6 +44,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     private val storedBitmap = HashMap<String, Bitmap>()
     private var doLoop = false
     private var doShuffle = false
+    private var isAppInForeground = true
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -79,7 +81,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
                 val b = Glide.with(context).asBitmap().load(imageUrl).submit().get()
                 storedBitmap[imageUrl] = b
                 b
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         }
@@ -180,9 +182,6 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
                         KeyEvent.KEYCODE_MEDIA_PAUSE -> {
                             PlayerForegroundService.getPlayerS()?.pause()
-                            ServiceStopTimerManager.startTimer {
-                                context.stopSelf()
-                            }
                             return true
                         }
 
@@ -353,7 +352,22 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     }
 
     fun forceStop() {
-        mediaSession?.isActive = false
-        mediaSession?.release()
+        try {
+            mediaSession?.setPlaybackState(
+                PlaybackStateCompat.Builder()
+                    .setState(PlaybackStateCompat.STATE_STOPPED, 0, 0f)
+                    .build()
+            )
+            mediaSession?.isActive = false
+            mediaSession?.release()
+            mediaSession = null
+
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(500)
+                context.stopSelf()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

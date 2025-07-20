@@ -38,7 +38,6 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.startDefaultMedia
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.subscribeToTopicAll
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.service.notification.HomeNavigationListener
-import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
@@ -49,6 +48,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_P
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.setNavigationCallback
+import com.rizwansayyed.zene.ui.login.LoginManagerViewModel
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
@@ -99,6 +99,7 @@ class MainActivity : FragmentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val navigationViewModel: NavigationViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
+    private val loginViewModel: LoginManagerViewModel by viewModels()
 
     @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -197,11 +198,13 @@ class MainActivity : FragmentActivity() {
                                 if (navigationViewModel.homeNavSection != HOME)
                                     navigationViewModel.setHomeNavSections(HOME)
                             }
-                        } else if (showLogin) LoginView(navigationViewModel)
+                        } else if (showLogin) LoginView(loginViewModel)
                     }
 
                     LaunchedEffect(Unit) {
-                        IntentCheckUtils(intent, navigationViewModel, playerViewModel).call()
+                        IntentCheckUtils(
+                            intent, navigationViewModel, playerViewModel, loginViewModel
+                        ).call()
                     }
 
                     LaunchedEffect(userInfo?.email) {
@@ -247,7 +250,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        IntentCheckUtils(intent, navigationViewModel, playerViewModel).call()
+        IntentCheckUtils(intent, navigationViewModel, playerViewModel, loginViewModel).call()
     }
 
     override fun onStart() {
