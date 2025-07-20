@@ -2,11 +2,11 @@
 packagename = "com.rizwansayyed.zene"
 
 compilesdk = "36"
-minsdk = "24"
+minsdk = "23"
 
 
-appversion = "224"
-versionname = "3.04.024"
+appversion = "225"
+versionname = "3.04.026"
 
 agp = "8.11.1"
 

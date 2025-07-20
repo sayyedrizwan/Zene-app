@@ -3,7 +3,6 @@ package com.rizwansayyed.zene.ui.login
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.login.utils.AppleFacebookLoginHandler
 import com.rizwansayyed.zene.ui.login.utils.GoogleLoginHandler
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -43,10 +41,7 @@ class LoginManagerViewModel @Inject constructor(
 
     fun startGoogleLogin(activity: Activity, onLegacySignInNeeded: (() -> Unit)) {
         setLoading(true)
-        val success = googleLoginHandler.startLogin(activity, onLegacySignInNeeded)
-        if (!success) {
-            setLoading(false)
-        }
+        googleLoginHandler.startLogin(activity, onLegacySignInNeeded)
     }
 
     fun startLegacyGoogleLogin(result: ActivityResult) {
@@ -56,8 +51,6 @@ class LoginManagerViewModel @Inject constructor(
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 googleLoginHandler.handleLegacySignInResult(task)
             }
-        } else {
-            "Sign-in cancelled or failed".toast()
         }
     }
 
