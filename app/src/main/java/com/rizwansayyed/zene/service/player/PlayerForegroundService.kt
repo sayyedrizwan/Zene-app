@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service.player
 
 import android.app.Service
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.songSpeedDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification
+import com.rizwansayyed.zene.service.player.utils.ForegroundAppStateManager
 import com.rizwansayyed.zene.service.player.utils.MediaSessionPlayerNotification
 import com.rizwansayyed.zene.service.player.utils.ServiceStopTimerManager
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
@@ -31,13 +33,11 @@ import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
-import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,6 +83,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     private var durationJob: Job? = null
     private var sleepTimer: Job? = null
     private val smartShuffle by lazy { SmartShuffle(this) }
+
+    private val foregroundAppStateManager by lazy { ForegroundAppStateManager(this) }
     private val mediaSession by lazy { MediaSessionPlayerNotification(this) }
     private val exoPlayerSession by lazy { ExoPlaybackService(this) }
 
@@ -112,6 +114,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             if (isActive) cancel()
         }
 
+        foregroundAppStateManager.startActivityStateMonitoring()
 
         return START_STICKY
     }
@@ -322,7 +325,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         clearAll()
     }
 
-    private fun clearAll() {
+    @Suppress("DEPRECATION")
+    fun clearAll() {
         pause()
         mediaSession.forceStop()
         exoPlayerSession.destroy()
@@ -332,6 +336,12 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             killWebViewData(it)
         }
         playerWebView = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_DETACH)
+        } else {
+            stopForeground(true)
+        }
+        stopSelf()
     }
 
     fun songEnded() = CoroutineScope(Dispatchers.IO).launch {
@@ -450,7 +460,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun addToQueue(v: ZeneMusicData) {
         CoroutineScope(Dispatchers.IO).launch {
             val player = musicPlayerDB.firstOrNull()
-            var array = ArrayList<ZeneMusicData?>(player?.lists ?: emptyList())
+            val array = ArrayList(player?.lists ?: emptyList())
 
             array.add(v)
 
@@ -535,4 +545,11 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
         if (isActive) cancel()
     }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        clearAll()
+    }
+
+
 }

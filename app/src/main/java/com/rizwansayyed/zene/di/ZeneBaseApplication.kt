@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.di
 
+import android.app.Activity
 import android.app.Application
+import android.content.Intent
+import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
@@ -10,6 +13,8 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.service.player.PlayerForegroundService
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import dagger.hilt.android.HiltAndroidApp
@@ -67,7 +72,6 @@ class ZeneBaseApplication : Application() {
         EmojiCompat.init(config)
 
         FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
-
     }
 
 }
