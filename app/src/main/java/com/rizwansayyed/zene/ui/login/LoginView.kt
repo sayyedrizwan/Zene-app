@@ -78,7 +78,7 @@ fun LoginView(viewModel: LoginManagerViewModel) {
 
         AnimatedVisibility(!viewModel.isLoginStateLoading.value) {
             Column(Modifier.fillMaxWidth()) {
-                ButtonWithImageAndBorder(R.drawable.ic_google, R.string.continue_with_google) {
+                ButtonWithImageAndBorder( R.drawable.ic_google, R.string.continue_with_google) {
                     viewModel.startGoogleLogin(activity) {
                         viewModel.legacyGoogleLogin()?.let { intent ->
                             legacySignInLauncher.launch(intent)

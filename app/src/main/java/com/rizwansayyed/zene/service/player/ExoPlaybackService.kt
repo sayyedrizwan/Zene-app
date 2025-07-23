@@ -110,13 +110,12 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
         exoPlayer?.setPlaybackSpeed(v.toFloatOrNull() ?: 1f)
     }
 
-
-    fun destroy() {
+    fun destroy() = CoroutineScope(Dispatchers.Main).launch {
         mediaSession?.run {
             player.release()
             release()
             mediaSession = null
         }
-    }
+        }
 
 }

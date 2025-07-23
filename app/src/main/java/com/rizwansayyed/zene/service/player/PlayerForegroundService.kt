@@ -331,9 +331,11 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         mediaSession.forceStop()
         exoPlayerSession.destroy()
         durationJob?.cancel()
-        playerWebView?.let {
-            clearWebViewData(it)
-            killWebViewData(it)
+        CoroutineScope(Dispatchers.Main).launch {
+            playerWebView?.let {
+                clearWebViewData(it)
+                killWebViewData(it)
+            }
         }
         playerWebView = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

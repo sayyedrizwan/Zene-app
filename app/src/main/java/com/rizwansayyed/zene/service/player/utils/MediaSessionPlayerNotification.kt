@@ -353,14 +353,16 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
     fun forceStop() {
         try {
-            mediaSession?.setPlaybackState(
-                PlaybackStateCompat.Builder()
-                    .setState(PlaybackStateCompat.STATE_STOPPED, 0, 0f)
-                    .build()
-            )
-            mediaSession?.isActive = false
-            mediaSession?.release()
-            mediaSession = null
+            CoroutineScope(Dispatchers.Main).launch {
+                mediaSession?.setPlaybackState(
+                    PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_STOPPED, 0, 0f)
+                        .build()
+                )
+                mediaSession?.isActive = false
+                mediaSession?.release()
+                mediaSession = null
+            }
 
             CoroutineScope(Dispatchers.IO).launch {
                 delay(500)
