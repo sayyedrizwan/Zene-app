@@ -552,6 +552,4 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         super.onTaskRemoved(rootIntent)
         clearAll()
     }
-
-
 }

@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
 import android.net.Uri
-import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -36,8 +35,8 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AppleFacebookLoginHandler @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
-    private val callbackManager = CallbackManager.Factory.create()
-    private val loginManagerInstance = LoginManager.getInstance()
+    private val callbackManager by lazy { CallbackManager.Factory.create() }
+    private val loginManagerInstance by lazy { LoginManager.getInstance() }
     private val permissions = listOf("email", "public_profile")
 
     private val appleProvider = OAuthProvider.newBuilder("apple.com").apply {
@@ -71,9 +70,7 @@ class AppleFacebookLoginHandler @Inject constructor(private val zeneAPI: ZeneAPI
 
     fun startFBLogin(activity: Activity) {
         loginManagerInstance.logIn(
-            activity as ActivityResultRegistryOwner,
-            callbackManager,
-            permissions
+            activity as ActivityResultRegistryOwner, callbackManager, permissions
         )
         loginManagerInstance.registerCallback(callbackManager, facebookCallback)
     }
