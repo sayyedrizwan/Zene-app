@@ -5,8 +5,8 @@ compilesdk = "36"
 minsdk = "23"
 
 
-appversion = "228"
-versionname = "3.04.029"
+appversion = "229"
+versionname = "3.04.032"
 
 agp = "8.11.1"
 
@@ -14,7 +14,7 @@ androidImageCropper = "4.6.0"
 exifinterface = "1.4.1"
 glide = "1.0.0-beta01"
 credentials = "1.5.0"
-playandroidservice = "21.3.0"
+playandroidservice = "21.4.0"
 datastorePreferences = "1.1.7"
 facebookLogin = "18.0.3"
 firebaseBom = "33.16.0"
@@ -60,8 +60,8 @@ jsoup = "1.21.1"
 securityCrypto = "1.1.0-beta01"
 konfettiCompose = "2.0.5"
 
-opencsv = "5.11.2"
-playServicesAds = "24.4.0"
+opencsv = "5.12.0"
+playServicesAds = "24.5.0"
 firebasePerformance = "1.4.2"
 firebaseCrash = "3.0.4"
 
