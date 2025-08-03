@@ -79,7 +79,7 @@
     <string name="similar_movies_shows">Similar Movies/Shows</string>
     <string name="cast_crew">Cast/Crew</string>
     <string name="remove_media_from_playlist">Remove Media from Playlist</string>
-    <string name="remove_media_from_playlist_desc">Remove media from your playlist with ease.</string>
+    <string name="remove_media_from_playlist_desc">Are you sure wan\'t to remove media from your playlist.</string>
     <string name="edit_your_playlist_new_name">Edit your playlist new name</string>
     <string name="sleep_timer">Sleep Timer</string>
     <string name="minutes">minutes</string>
