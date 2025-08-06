@@ -1,9 +1,9 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.MotionEvent
 import android.webkit.JavascriptInterface
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibility
@@ -78,12 +78,16 @@ fun VideoPlayerVideoView(
                 useWideViewPort = true
                 loadWithOverviewMode = true
                 setSupportZoom(true)
+                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             }
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
-                    if (view.progress == 100) removeYoutubeTopView(view) {
-                        viewModel.showLoadingView(true)
+                    if (view.progress == 100) {
+                        removeYoutubeTopView(view) {
+                            viewModel.showLoadingView(true)
+                        }
+
                     }
                 }
             }

@@ -4,18 +4,21 @@ import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object WebViewUtils {
 
     @SuppressLint("SetJavaScriptEnabled")
-    fun WebView.enable() {
+    fun WebView.enable() = CoroutineScope(Dispatchers.Main).launch {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.setSupportZoom(false)
         settings.mediaPlaybackRequiresUserGesture = false
     }
 
-    fun killWebViewData(webView: WebView) {
+    fun killWebViewData(webView: WebView) = CoroutineScope(Dispatchers.Main).launch {
         webView.clearHistory()
         webView.clearCache(true)
         webView.loadUrl("about:blank")
@@ -23,7 +26,7 @@ object WebViewUtils {
         webView.destroy()
     }
 
-    fun clearWebViewData(webView: WebView) {
+    fun clearWebViewData(webView: WebView) = CoroutineScope(Dispatchers.Main).launch {
         val cookieManager = CookieManager.getInstance()
         cookieManager.removeAllCookies(null)
         cookieManager.flush()

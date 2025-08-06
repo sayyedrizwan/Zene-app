@@ -4,6 +4,7 @@ import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -85,7 +86,7 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
 
         webView?.setWebChromeClient(object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
-                Log.d("WebView runnned onn", consoleMessage.message())
+                Log.d("WebView console log:", consoleMessage.message())
                 return true
             }
         })
