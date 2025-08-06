@@ -178,6 +178,10 @@ object URLSUtils {
 
     const val IP_BASE_URL = "http://ip-api.com/"
     const val IP_JSON_API = "json"
+
+    fun getSearchOnGoogle(q: String): String {
+        return "https://www.google.com/search?q=${q.lowercase()}"
+    }
 }
 
 object SaveParams {

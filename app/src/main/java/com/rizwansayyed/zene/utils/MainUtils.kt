@@ -307,7 +307,6 @@ object MainUtils {
         "MZ" to "258"
     )
 
-
     val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()!!
 
     fun Any.toast() = CoroutineScope(Dispatchers.Main).launch {
@@ -581,4 +580,5 @@ object MainUtils {
             searchHistoryDB =
                 flowOf(list.distinct().filter { it.isNotBlank() }.take(30).toTypedArray())
         }
+
 }
