@@ -32,6 +32,9 @@
             }
 
             function onPlayerError(event) {
+                if ([100, 101, 150].includes(event.data)) {
+                    Zene.videoUnAvailable()
+                }
                 Zene.onError()
             }
 
@@ -90,6 +93,14 @@
 
             function stopVideo() {
               player.stopVideo();
+            }
+
+            function loadAVideo(id) {
+              player.loadVideoById(id, 0);
+            }
+
+            function cueVideo(id) {
+              player.cueVideoById(id, 0);
             }
         </script>
     </body>

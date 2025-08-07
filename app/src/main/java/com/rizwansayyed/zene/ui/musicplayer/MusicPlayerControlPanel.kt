@@ -171,7 +171,7 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
                     R.drawable.ic_pause, 27, Color.Black
                 )
 
-                YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
+                YoutubePlayerState.BUFFERING, YoutubePlayerState.UNSTARTED -> CircularProgressIndicator(
                     Modifier.size(26.dp), Color.White, 4.dp, MainColor
                 )
 

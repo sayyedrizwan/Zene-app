@@ -4,9 +4,10 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
+import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.notification.EmptyServiceNotification
 import com.rizwansayyed.zene.service.player.utils.ForegroundAppStateManager
+import com.rizwansayyed.zene.service.player.utils.GetLatestYTMusicIDAPI
 import com.rizwansayyed.zene.service.player.utils.MediaSessionPlayerNotification
 import com.rizwansayyed.zene.service.player.utils.ServiceStopTimerManager
 import com.rizwansayyed.zene.service.player.utils.SleepTimerEnum
@@ -81,6 +83,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     private var playerWebView: WebView? = null
 
     var isNew: Boolean = false
+
+    var searchingSongJob: Job? = null
+
     var currentPlayingSong: ZeneMusicData? = null
     var songsLists: Array<ZeneMusicData?> = emptyArray()
     private var durationJob: Job? = null
@@ -105,6 +110,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
         isNew = intent?.getBooleanExtra(Intent.ACTION_USER_PRESENT, false) == true
 
+
         val musicData = intent?.getStringExtra(Intent.ACTION_VIEW) ?: "{}"
         currentPlayingSong = moshi.adapter(ZeneMusicData::class.java).fromJson(musicData)
         songsLists = TEMP_ZENE_MUSIC_DATA_LIST.toTypedArray()
@@ -122,9 +128,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         return START_STICKY
     }
 
-    fun playSongs(new: Boolean) = CoroutineScope(Dispatchers.IO).launch {
-        isNew = new
-
+    fun playSongs(new: Boolean, isRetry: Boolean = false) = CoroutineScope(Dispatchers.IO).launch {
+        if (!isRetry) isNew = new
+        searchingSongJob?.cancel()
         clearCache()
 
         if (!new) {
@@ -181,8 +187,9 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
-                musicPlayerDB = flowOf(playerInfo)
+                withContext(Dispatchers.IO) {
+                    musicPlayerDB = flowOf(playerInfo)
+                }
                 if (isActive) cancel()
             }
         }
@@ -196,7 +203,17 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         fun onError() {
             if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
                 errorReRun += 1
-                if (errorReRun <= 3) playSongs(false)
+                if (errorReRun <= 3) playSongs(false, isRetry = true)
+            }
+        }
+
+        @JavascriptInterface
+        fun videoUnAvailable() {
+            searchingSongJob?.cancel()
+            searchingSongJob = CoroutineScope(Dispatchers.IO).launch {
+                GetLatestYTMusicIDAPI({
+                    playWithNewID(it)
+                }).readLocalID()
             }
         }
     }
@@ -239,7 +256,12 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             .replace("setSpeed = 1.0", "setSpeed = $speed")
             .replace("isNew = false", "isNew = $isNew")
 
-        Log.d("TAG", "loadAVideo: runnned 111 ${videoID}")
+        playerWebView?.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                super.onConsoleMessage(consoleMessage)
+                return true
+            }
+        }
 
         playerWebView?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
@@ -462,6 +484,16 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         CoroutineScope(Dispatchers.Main).launch {
             exoPlayerSession.play()
             playerWebView?.evaluateJavascript("playVideo();", null)
+            if (isActive) cancel()
+        }
+    }
+
+    override fun playWithNewID(v: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            if (isNew)
+                playerWebView?.evaluateJavascript("cueVideo(\"${v}\");", null)
+            else
+                playerWebView?.evaluateJavascript("loadAVideo(\"${v}\");", null)
             if (isActive) cancel()
         }
     }

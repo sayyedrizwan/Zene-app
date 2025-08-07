@@ -144,7 +144,7 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
                 }, Alignment.Center
         ) {
             when (player!!.state) {
-                YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
+                YoutubePlayerState.BUFFERING, YoutubePlayerState.UNSTARTED -> CircularProgressIndicator(
                     Modifier.size(24.dp), Color.White, 4.dp, MainColor
                 )
 

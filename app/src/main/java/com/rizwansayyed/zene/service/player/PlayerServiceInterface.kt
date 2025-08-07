@@ -9,6 +9,7 @@ interface PlayerServiceInterface {
     fun toBackSong()
     fun pause()
     fun play()
+    fun playWithNewID(v: String)
     fun playNext(v: ZeneMusicData)
     fun addToQueue(v: ZeneMusicData)
     fun seekTo(v: Long)

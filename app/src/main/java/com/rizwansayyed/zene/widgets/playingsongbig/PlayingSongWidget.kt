@@ -142,7 +142,7 @@ class PlayingSongWidget : GlanceAppWidget() {
                     when (music.state) {
                         YoutubePlayerState.PLAYING -> GlanceImageIcon(R.drawable.ic_pause, 20)
 
-                        YoutubePlayerState.BUFFERING -> CircularProgressIndicator(
+                        YoutubePlayerState.BUFFERING, YoutubePlayerState.UNSTARTED -> CircularProgressIndicator(
                             GlanceModifier.size(26.dp), ColorProvider(MainColor)
                         )
 

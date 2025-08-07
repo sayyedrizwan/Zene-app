@@ -33,7 +33,7 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
             super.onPlayerError(error)
             if (context.currentPlayingSong?.type() == MusicDataTypes.SONGS) return
             context.errorReRun += 1
-            if (context.errorReRun <= 3) context.playSongs(false)
+            if (context.errorReRun <= 3) context.playSongs(false, isRetry = true)
         }
     }
 

@@ -265,26 +265,29 @@ fun SongTextAndArtists(
                 Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                Arrangement.Start,
-                Alignment.CenterVertically
+                Arrangement.Start, Alignment.CenterVertically
             ) {
-                data[pagerState.currentPage]?.artistsList?.forEachIndexed { index, artist ->
-                    Box(Modifier.clickable {
-                        triggerHomeNav("$NAV_ARTIST_PAGE${artist?.id}")
-                        close()
-                    }) {
-                        TextViewNormal(artist?.name ?: "", 15)
-                    }
-                    Spacer(Modifier.width(2.dp))
-                    when {
-                        index == (data[pagerState.currentPage]?.artistsList?.size
-                            ?: 0) - 2 -> TextViewNormal(" & ", 15)
+                if (data[pagerState.currentPage]?.artistsList?.isEmpty() == true) {
+                    TextViewNormal(data[pagerState.currentPage]?.artists ?: "", 15)
+                } else {
+                    data[pagerState.currentPage]?.artistsList?.forEachIndexed { index, artist ->
+                        Box(Modifier.clickable {
+                            triggerHomeNav("$NAV_ARTIST_PAGE${artist?.id}")
+                            close()
+                        }) {
+                            TextViewNormal(artist?.name ?: "", 15)
+                        }
+                        Spacer(Modifier.width(2.dp))
+                        when {
+                            index == (data[pagerState.currentPage]?.artistsList?.size
+                                ?: 0) - 2 -> TextViewNormal(" & ", 15)
 
-                        index < (data[pagerState.currentPage]?.artistsList?.size
-                            ?: 0) - 2 -> TextViewNormal(", ", 15)
-                    }
+                            index < (data[pagerState.currentPage]?.artistsList?.size
+                                ?: 0) - 2 -> TextViewNormal(", ", 15)
+                        }
 
-                    Spacer(Modifier.width(2.dp))
+                        Spacer(Modifier.width(2.dp))
+                    }
                 }
             }
         } else if (data[pagerState.currentPage]?.type() == MusicDataTypes.RADIO) {
