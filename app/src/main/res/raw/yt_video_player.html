@@ -40,27 +40,6 @@
             var setSpeed = 1.0;
             var showCaption = true;
 
-            async function setLocalStorageItem() {
-              const currentTimestamp = Date.now();
-              const threeMinutesBefore = currentTimestamp - 3 * 60 * 1000;
-              const oneYearAfter = threeMinutesBefore + 365 * 24 * 60 * 60 * 1000;
-
-              try {
-                const value = JSON.stringify({
-                  data: '{"quality":<<Quality>>,"previousQuality":<<Quality>>}',
-                  expiration: oneYearAfter,
-                  creation: threeMinutesBefore,
-                });
-                await new Promise((resolve) => setTimeout(resolve, 100));
-                localStorage.setItem("yt-player-quality", value);
-              } catch (error) {
-                console.error("Error setting LocalStorage item:", error);
-              }
-            }
-
-            document.addEventListener("DOMContentLoaded", (event) => {
-              setLocalStorageItem();
-            });
 
             var tag = document.createElement("script");
 

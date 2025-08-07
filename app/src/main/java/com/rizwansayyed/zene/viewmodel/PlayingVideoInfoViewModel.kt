@@ -21,9 +21,11 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.videoSpeedDB
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
+import com.rizwansayyed.zene.utils.URLSUtils.YT_WEB_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -82,8 +84,6 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
     }
 
     fun loadWebView(startNew: Boolean = true) = viewModelScope.launch(Dispatchers.Main) {
-        val lastDuration = if (startNew) 0 else videoCurrentTimestamp
-
         webView?.setWebChromeClient(object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
                 Log.d("WebView console log:", consoleMessage.message())
@@ -91,15 +91,38 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
             }
         })
 
+        webView?.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                super.onPageFinished(view, url)
+                if (url == YT_WEB_BASE_URL && view.progress == 100) loadMainVideo(startNew)
+                if (url == YT_VIDEO_BASE_URL && view.progress == 100) showLoadingView(true)
+
+                showLoadingView(true)
+            }
+        }
+        setQualityAndLoad()
+    }
+
+    private fun loadMainVideo(startNew: Boolean) = CoroutineScope(Dispatchers.Main).launch {
+        val lastDuration = if (startNew) 0 else videoCurrentTimestamp
         val htmlContent = getRawFolderString(R.raw.yt_video_player)
-        delay(500)
         val speed = videoSpeedDB.first().name.replace("_", ".")
-        val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
-            .replace("<<VideoID>>", videoID)
+        val c = htmlContent.replace("<<VideoID>>", videoID)
             .replace("setDuration = 0", "setDuration = $lastDuration")
             .replace("setSpeed = 1.0", "setSpeed = $speed")
 
-        webView?.loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
+        webView?.loadDataWithBaseURL(
+            YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null
+        )
+    }
+
+    private fun setQualityAndLoad() = CoroutineScope(Dispatchers.Main).launch {
+        val htmlContent = getRawFolderString(R.raw.yt_player_quality)
+        val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
+
+        webView?.loadDataWithBaseURL(
+            YT_WEB_BASE_URL, c, "text/html", "UTF-8", null
+        )
     }
 
     private fun addToHistory() = viewModelScope.launch(Dispatchers.IO) {

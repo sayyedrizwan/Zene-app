@@ -4,10 +4,12 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebStorage
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.data.model.MusicDataTypes
@@ -34,6 +36,7 @@ import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
+import com.rizwansayyed.zene.utils.URLSUtils.YT_WEB_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
@@ -236,9 +239,30 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             .replace("setSpeed = 1.0", "setSpeed = $speed")
             .replace("isNew = false", "isNew = $isNew")
 
-        playerWebView?.loadDataWithBaseURL(YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null)
+        Log.d("TAG", "loadAVideo: runnned 111 ${videoID}")
 
+        playerWebView?.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                super.onPageFinished(view, url)
+                if (url == YT_WEB_BASE_URL && view.progress == 100) {
+                    playerWebView?.loadDataWithBaseURL(
+                        YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null
+                    )
+                }
+            }
+        }
+
+        loadVideoQuality()
         if (isActive) cancel()
+    }
+
+    private fun loadVideoQuality() = CoroutineScope(Dispatchers.Main).launch {
+        val htmlContent = getRawFolderString(R.raw.yt_player_quality)
+        val c = htmlContent.replace("<<Quality>>", "144")
+
+        playerWebView?.loadDataWithBaseURL(
+            YT_WEB_BASE_URL, c, "text/html", "UTF-8", null
+        )
     }
 
     private fun saveEmpty(list: List<ZeneMusicData?>) = CoroutineScope(Dispatchers.IO).launch {
@@ -445,7 +469,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun playNext(v: ZeneMusicData) {
         CoroutineScope(Dispatchers.IO).launch {
             val player = musicPlayerDB.firstOrNull()
-            var array = ArrayList<ZeneMusicData?>(player?.lists ?: emptyList())
+            val array = ArrayList(player?.lists ?: emptyList())
             val index = player?.lists?.indexOfFirst { it?.id == currentPlayingSong?.id }
 
             if (index != -1) array.add(index?.plus(1) ?: 0, v)
@@ -529,7 +553,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
     fun clearCache() = CoroutineScope(Dispatchers.Main).launch {
         try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
                 WebStorage.getInstance().deleteAllData()
                 CookieManager.getInstance().removeAllCookies { }
                 CookieManager.getInstance().flush()

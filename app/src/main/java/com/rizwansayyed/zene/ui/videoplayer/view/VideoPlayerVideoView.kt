@@ -80,17 +80,6 @@ fun VideoPlayerVideoView(
                 setSupportZoom(true)
                 mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             }
-            webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView, url: String) {
-                    super.onPageFinished(view, url)
-                    if (view.progress == 100) {
-                        removeYoutubeTopView(view) {
-                            viewModel.showLoadingView(true)
-                        }
-
-                    }
-                }
-            }
 
             setOnTouchListener { v, event ->
                 when (event.action) {
