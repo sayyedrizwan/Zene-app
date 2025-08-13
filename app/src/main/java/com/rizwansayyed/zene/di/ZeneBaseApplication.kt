@@ -67,11 +67,6 @@ class ZeneBaseApplication : Application() {
         super.onCreate()
         context = this
         ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
-
-        val config = BundledEmojiCompatConfig(this, ContextCompat.getMainExecutor(this))
-        EmojiCompat.init(config)
-
-        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
     }
 
 }

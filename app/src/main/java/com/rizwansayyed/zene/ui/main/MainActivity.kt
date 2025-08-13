@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.main
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -27,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
+import androidx.emoji2.bundled.BundledEmojiCompatConfig
+import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
@@ -34,6 +35,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.startDefaultMedia
@@ -217,6 +220,7 @@ class MainActivity : FragmentActivity() {
                         IntentCheckUtils(
                             intent, navigationViewModel, playerViewModel, loginViewModel
                         ).call()
+                        initThe()
                     }
 
                     LaunchedEffect(userInfo?.email) {
@@ -258,6 +262,13 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
+    }
+
+    fun initThe() {
+        val config = BundledEmojiCompatConfig(this, ContextCompat.getMainExecutor(this))
+        EmojiCompat.init(config)
+
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
     }
 
     override fun onNewIntent(intent: Intent) {

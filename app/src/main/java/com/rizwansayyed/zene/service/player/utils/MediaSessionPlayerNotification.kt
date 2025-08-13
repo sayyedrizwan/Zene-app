@@ -44,7 +44,6 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     private val storedBitmap = HashMap<String, Bitmap>()
     private var doLoop = false
     private var doShuffle = false
-    private var isAppInForeground = true
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
