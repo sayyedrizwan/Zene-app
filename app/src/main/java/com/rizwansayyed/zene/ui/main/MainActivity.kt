@@ -82,6 +82,7 @@ import com.rizwansayyed.zene.ui.view.playlist.PlaylistView
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
+import com.rizwansayyed.zene.utils.MainUtils.clearCacheIfSizeIsMoreThen200MB
 import com.rizwansayyed.zene.utils.MainUtils.configClarity
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.SnackBarManager
@@ -288,6 +289,8 @@ class MainActivity : FragmentActivity() {
 
         configClarity(this)
         registerEvents(FirebaseEventsParams.OPENED_APP)
+
+        clearCacheIfSizeIsMoreThen200MB()
     }
 
 }

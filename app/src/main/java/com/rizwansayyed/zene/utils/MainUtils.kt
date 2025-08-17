@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
+import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -580,5 +581,30 @@ object MainUtils {
             searchHistoryDB =
                 flowOf(list.distinct().filter { it.isNotBlank() }.take(30).toTypedArray())
         }
+
+
+    fun clearCacheIfSizeIsMoreThen200MB() = CoroutineScope(Dispatchers.IO).launch {
+        fun getDirSize(dir: File?): Long {
+            var size: Long = 0
+            if (dir != null && dir.isDirectory) {
+                dir.listFiles()?.forEach {
+                    size += if (it.isFile) it.length() else getDirSize(it)
+                }
+            }
+            return size
+        }
+
+        val cacheSize = getDirSize(context.cacheDir)
+        val sizeInMB = cacheSize / (1024 * 1024)
+        if (sizeInMB > 200) {
+            try {
+                context.cacheDir.deleteRecursively()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        if (isActive) cancel()
+    }
 
 }
