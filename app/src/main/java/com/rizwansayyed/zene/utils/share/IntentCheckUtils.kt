@@ -45,7 +45,6 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_SERIES
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SONG
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_CONNECT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_ENTERTAINMENT
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_MY_LIBRARY
@@ -164,42 +163,42 @@ class IntentCheckUtils(
             }
 
 
-            if (data.toString().contains("$ZENE_URL$ZENE_SONG")) {
+            if (data.toString().contains(ZENE_SONG)) {
                 val id = data.toString().substringAfterLast(ZENE_SONG)
                 viewModel.songInfoPlay(id.replace("/", ""))
-            } else if (data.toString().contains("$ZENE_URL$ZENE_RADIO")) {
+            } else if (data.toString().contains(ZENE_RADIO)) {
                 val id = data.toString().substringAfterLast(ZENE_RADIO)
                 viewModel.radioInfoPlay(id.replace("/", ""))
-            } else if (data.toString().contains("$ZENE_URL$ZENE_VIDEO")) {
+            } else if (data.toString().contains(ZENE_VIDEO)) {
                 val id = data.toString().substringAfterLast(ZENE_VIDEO.replace("/", ""))
                 Intent(context, VideoPlayerActivity::class.java).apply {
                     flags = FLAG_ACTIVITY_NEW_TASK
                     putExtra(Intent.ACTION_VIEW, id)
                     context.startActivity(this)
                 }
-            } else if (data.toString().contains("$ZENE_URL$ZENE_MIX")) {
+            } else if (data.toString().contains(ZENE_MIX)) {
                 val id = data.toString().substringAfterLast(ZENE_MIX.replace("/", ""))
                 if (id.contains(MY_PLAYLIST_ID) || id.contains(LIKED_SONGS_ZENE_ID))
                     triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${id}")
                 else
                     triggerHomeNav("$NAV_PLAYLIST_PAGE${id}")
-            } else if (data.toString().contains("$ZENE_URL$ZENE_ARTIST")) {
+            } else if (data.toString().contains(ZENE_ARTIST)) {
                 val id = data.toString().substringAfterLast(ZENE_ARTIST.replace("/", ""))
                 triggerHomeNav("$NAV_ARTIST_PAGE${id}")
-            } else if (data.toString().contains("$ZENE_URL$ZENE_PODCAST_SERIES")) {
+            } else if (data.toString().contains(ZENE_PODCAST_SERIES)) {
                 val id = data.toString().substringAfterLast(ZENE_PODCAST_SERIES.replace("/", ""))
                 triggerHomeNav("$NAV_PODCAST_PAGE${id}")
-            } else if (data.toString().contains("$ZENE_URL$ZENE_PODCAST")) {
+            } else if (data.toString().contains(ZENE_PODCAST)) {
                 val id = data.toString().substringAfterLast(ZENE_PODCAST).replace("_", "/")
                 viewModel.podcastInfoPlay(id)
-            } else if (data.toString().contains("$ZENE_URL$ZENE_NEWS")) {
+            } else if (data.toString().contains(ZENE_NEWS)) {
                 val id = data.toString().substringAfterLast(ZENE_NEWS)
                 val url = String(Base64.decode(id, Base64.NO_WRAP), Charsets.UTF_8)
                 MediaContentUtils.openCustomBrowser(url)
-            } else if (data.toString().contains("$ZENE_URL$ZENE_M")) {
+            } else if (data.toString().contains(ZENE_M)) {
                 val id = data.toString().substringAfterLast(ZENE_M.replace("/", ""))
                 triggerHomeNav("$NAV_MOVIES_PAGE${id}")
-            } else if (data.toString().contains("$ZENE_URL$ZENE_AI_MUSIC")) {
+            } else if (data.toString().contains(ZENE_AI_MUSIC)) {
                 val id = data.toString().substringAfterLast(ZENE_AI_MUSIC.replace("/", ""))
                 viewModel.aiMusicInfoPlay(id)
             }
