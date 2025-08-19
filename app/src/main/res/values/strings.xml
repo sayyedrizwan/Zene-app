@@ -318,6 +318,11 @@
     <string name="share_app">Share App</string>
     <string name="rate_us">Rate Us</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="account_deletion_scheduled">Account Deletion Scheduled</string>
+    <string name="account_deletion_scheduled_desc">Your account deletion request has been received. All your data, including playlists, liked media, history, and other information, will be permanently deleted after 15 days. \nIf you change your mind, simply log back in within this period and return here to cancel the deletion.</string>
+    <string name="delete">Delete</string>
+    <string name="delete_account_desc">We\’re sorry to see you go! Deleting your account will permanently remove your data. Before you leave, we’d love to hear from you — if you faced any issues or have suggestions that we can fix and keep you, please share your feedback so we can make things better for you and others.</string>
     <string name="rate_us_desc">If you’re enjoying Zene, please rate us! It helps us grow and continue bringing you great music &amp; podcasts.</string>
     <string name="log_out">Log Out</string>
     <string name="copied_link">Copied Link</string>
@@ -410,6 +415,7 @@
     <string name="have_suggestions_or_issues_desc">We’d love to hear from you! Your feedback helps us improve and shape the app better for you. Feel free to share any ideas, feature requests, or problems you’re experiencing.\n\n We’re always open and listening! 😊</string>
     <string name="no_5_star_share_feedback">No 5 star, Share some feedback! 🥹</string>
     <string name="love_the_app_rate_us_on_play_store">Love the App, Rate Us on Play Store 😊</string>
+    <string name="share_feedback">Share Feedback</string>
     <string name="shared_their_current_location_tap_to_view">%s shared their current location. Tap for one time view</string>
     <string name="sent_you_a_friend_request">%s sent you a friend request.</string>
     <string name="tap_to_view_their_friend_request">Tap to view their friend request.</string>

@@ -111,6 +111,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_NUMBER_VERIFIED_THIS_WEEK_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_USERNAME_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_ACCOUNT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_MY_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_GET_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
@@ -749,4 +750,10 @@ interface ZeneAPIService {
     suspend fun feedUpdatesArtists(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_DELETE_ACCOUNT_API)
+    suspend fun deleteAccount(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
 }

@@ -564,4 +564,8 @@ class HomeViewModel @Inject constructor(
             feedUpdates = ResponseResult.Success(it)
         }
     }
+
+    fun deleteAccount() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.deleteAccount().firstOrNull()
+    }
 }

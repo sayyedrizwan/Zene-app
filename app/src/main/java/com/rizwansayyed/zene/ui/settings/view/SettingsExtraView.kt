@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.ui.settings.dialog.SettingsDeleteAccountSheetView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsShareSheetView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsStorageSheetView
 import com.rizwansayyed.zene.ui.settings.importplaylists.ImportPlaylistsActivity
@@ -55,6 +56,8 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_POLICY_URL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.stopAppService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -66,6 +69,7 @@ fun SettingsExtraView() {
     var feedbackSheet by remember { mutableStateOf(false) }
     var rateUsSheet by remember { mutableStateOf(false) }
     var logoutSheet by remember { mutableStateOf(false) }
+    var deleteAccountSheet by remember { mutableStateOf(false) }
 
     Spacer(Modifier.height(13.dp))
 
@@ -145,6 +149,10 @@ fun SettingsExtraView() {
         MediaContentUtils.openCustomBrowser(ZENE_PRIVACY_POLICY_URL)
     }
 
+    SettingsExtraView(R.string.delete_account, R.drawable.ic_delete) {
+        deleteAccountSheet = true
+    }
+
     SettingsExtraView(R.string.log_out, R.drawable.ic_logout) {
         logoutSheet = true
     }
@@ -159,6 +167,10 @@ fun SettingsExtraView() {
 
     if (rateUsSheet) SettingsShareSheetView {
         rateUsSheet = false
+    }
+
+    if (deleteAccountSheet) SettingsDeleteAccountSheetView {
+        deleteAccountSheet = false
     }
 
     if (logoutSheet) LogoutSheetView {
@@ -232,7 +244,6 @@ fun LogoutSheetView(close: () -> Unit) {
         close, Modifier.fillMaxWidth(), contentColor = MainColor, containerColor = MainColor
     ) {
         val context = LocalContext.current
-        val coroutine = rememberCoroutineScope()
         Column(
             Modifier
                 .fillMaxWidth()
@@ -243,23 +254,28 @@ fun LogoutSheetView(close: () -> Unit) {
             Spacer(Modifier.height(50.dp))
 
             ButtonHeavy(stringResource(R.string.log_out), Color.Black) {
-                context.cacheDir.deleteRecursively()
-                clearImagesCache()
+                logout(context)
                 close()
-                stopAppService(context)
-                coroutine.launch {
-                    FirebaseMessaging.getInstance().deleteToken()
-                }
-
-                coroutine.launch {
-                    triggerHomeNav(NAV_MAIN_PAGE)
-                    DataStorageManager.userInfo = flowOf(null)
-                }
             }
 
 
             Spacer(Modifier.height(100.dp))
         }
+    }
+}
+
+fun logout(context: Context) {
+    context.cacheDir.deleteRecursively()
+    clearImagesCache()
+
+    stopAppService(context)
+    CoroutineScope(Dispatchers.IO).launch {
+        FirebaseMessaging.getInstance().deleteToken()
+    }
+
+    CoroutineScope(Dispatchers.IO).launch {
+        triggerHomeNav(NAV_MAIN_PAGE)
+        DataStorageManager.userInfo = flowOf(null)
     }
 }
 

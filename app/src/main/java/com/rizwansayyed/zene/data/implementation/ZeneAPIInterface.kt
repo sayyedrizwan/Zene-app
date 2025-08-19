@@ -180,4 +180,5 @@ interface ZeneAPIInterface {
     suspend fun sponsorAds(): Flow<SponsorAdsResponse>
     suspend fun feedFollowedArtists(): Flow<ZeneMusicDataList>
     suspend fun feedUpdatesArtists(): Flow<ZeneMusicDataList>
+    suspend fun deleteAccount(): Flow<StatusTypeResponse>
 }
