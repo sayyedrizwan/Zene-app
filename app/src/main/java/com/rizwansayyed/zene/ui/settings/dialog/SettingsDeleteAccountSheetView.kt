@@ -125,9 +125,7 @@ fun SettingsDeleteAccountSheetView(close: () -> Unit) {
 @Composable
 fun TimeLeftToDelete(data: DeleteAccountInfoResponse, undo: () -> Unit) {
     var remainingTime by remember {
-        mutableLongStateOf(
-            (data.ts ?: 0) - System.currentTimeMillis()
-        )
+        mutableLongStateOf((data.ts ?: 0) - System.currentTimeMillis())
     }
 
     LaunchedEffect(Unit) {
