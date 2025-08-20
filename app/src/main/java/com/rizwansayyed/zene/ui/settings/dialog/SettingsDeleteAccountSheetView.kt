@@ -12,26 +12,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.ui.settings.view.logout
 import com.rizwansayyed.zene.ui.theme.BlackGray
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonHeavy
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
+import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.openFeedbackMail
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,37 +58,59 @@ fun SettingsDeleteAccountSheetView(close: () -> Unit) {
             Arrangement.Center, Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(30.dp))
-            Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.Start) {
-                TextViewSemiBold(stringResource(R.string.delete_account))
-                TextViewNormal(stringResource(R.string.delete_account_desc))
-            }
 
-            Spacer(Modifier.height(30.dp))
-
-            ButtonHeavy(stringResource(R.string.share_feedback), BlackGray) {
-                openFeedbackMail()
-                close()
-            }
-
-            Spacer(Modifier.height(30.dp))
-            Row(Modifier.fillMaxWidth(), Arrangement.SpaceAround) {
-                Box(Modifier.clickable {
-                    close()
-                }) {
-                    TextViewNormal(stringResource(R.string.close))
+            when (val v = homeViewModel.deleteAccountInfo) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> {
+                    CircularLoadingView()
                 }
-                Box(Modifier.clickable {
-                    homeViewModel.deleteAccount()
-                    successAlert = true
 
-                }) {
-                    TextViewNormal(stringResource(R.string.delete))
+                is ResponseResult.Success -> {
+                    if (v.data.email == null) {
+                        Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.Start) {
+                            TextViewSemiBold(stringResource(R.string.delete_account))
+                            TextViewNormal(stringResource(R.string.delete_account_desc))
+                        }
+
+                        Spacer(Modifier.height(30.dp))
+
+                        ButtonHeavy(stringResource(R.string.share_feedback), BlackGray) {
+                            openFeedbackMail()
+                            close()
+                        }
+
+                        Spacer(Modifier.height(30.dp))
+                        Row(Modifier.fillMaxWidth(), Arrangement.SpaceAround) {
+                            Box(Modifier.clickable {
+                                close()
+                            }) {
+                                TextViewNormal(stringResource(R.string.close))
+                            }
+                            Box(Modifier.clickable {
+                                homeViewModel.deleteAccount()
+                                successAlert = true
+                            }) {
+                                TextViewNormal(stringResource(R.string.delete))
+                            }
+                        }
+                    } else {
+                        TimeLeftToDelete(v.data) {
+                            homeViewModel.cancelDeleteAccount()
+                            close()
+                        }
+                    }
                 }
             }
 
             Spacer(Modifier.height(70.dp))
-        }
 
+
+            LaunchedEffect(Unit) {
+                homeViewModel.deleteAccountInfo()
+            }
+
+        }
 
         if (successAlert) TextAlertDialog(
             R.string.account_deletion_scheduled,
@@ -90,4 +120,69 @@ fun SettingsDeleteAccountSheetView(close: () -> Unit) {
             close()
         }
     }
+}
+
+@Composable
+fun TimeLeftToDelete(data: DeleteAccountInfoResponse, undo: () -> Unit) {
+    var remainingTime by remember {
+        mutableLongStateOf(
+            (data.ts ?: 0) - System.currentTimeMillis()
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        while (remainingTime > 0) {
+            delay(1000)
+            remainingTime = (data.ts ?: 0) - System.currentTimeMillis()
+        }
+    }
+
+    val days = (remainingTime / (1000 * 60 * 60 * 24))
+    val hours = (remainingTime / (1000 * 60 * 60)) % 24
+    val minutes = (remainingTime / (1000 * 60)) % 60
+    val seconds = (remainingTime / 1000) % 60
+
+    Column(
+        Modifier
+            .fillMaxWidth(), Arrangement.Center, Alignment.Start
+    ) {
+        TextViewSemiBold(stringResource(R.string.account_will_be_deleted_in))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 30.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TimeUnitBox(value = days, label = R.string.days)
+            Separator()
+            TimeUnitBox(value = hours, label = R.string.hours)
+            Separator()
+            TimeUnitBox(value = minutes, label = R.string.minutes)
+            Separator()
+            TimeUnitBox(value = seconds, label = R.string.seconds)
+        }
+
+        Spacer(Modifier.height(30.dp))
+
+        ButtonHeavy(stringResource(R.string.cancel_deletion), Color.Black) {
+            undo()
+        }
+    }
+}
+
+@Composable
+fun TimeUnitBox(value: Long, label: Int) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+    ) {
+        TextViewBold(value.toString().padStart(2, '0'), size = 28)
+        TextViewNormal(stringResource(label), size = 14)
+    }
+}
+
+@Composable
+fun Separator() {
+    TextViewBold(":", size = 19)
 }

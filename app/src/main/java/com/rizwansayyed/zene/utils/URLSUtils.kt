@@ -148,6 +148,8 @@ object URLSUtils {
     const val ZENE_USER_GET_HISTORY_API = "users/get-history"
     const val ZENE_USER_UPDATE_COUPON_API = "users/update-coupon"
     const val ZENE_USER_DELETE_ACCOUNT_API = "users/delete-account"
+    const val ZENE_USER_DELETE_INFO_API = "users/delete-account-info"
+    const val ZENE_USER_CANCEL_DELETE_API = "users/cancel-delete-account"
 
 
     const val ZENE_NOTIFICATION_RECOMMENDATION_API = "notification/notification-recommendation"

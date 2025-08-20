@@ -8,6 +8,7 @@ import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.CountResponse
+import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
@@ -181,4 +182,6 @@ interface ZeneAPIInterface {
     suspend fun feedFollowedArtists(): Flow<ZeneMusicDataList>
     suspend fun feedUpdatesArtists(): Flow<ZeneMusicDataList>
     suspend fun deleteAccount(): Flow<StatusTypeResponse>
+    suspend fun deleteAccountInfo(): Flow<DeleteAccountInfoResponse>
+    suspend fun cancelDeleteAccount(): Flow<StatusTypeResponse>
 }

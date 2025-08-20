@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +17,7 @@ import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ArtistsResponse
+import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
@@ -102,6 +104,9 @@ class HomeViewModel @Inject constructor(
     var artistsInfo by mutableStateOf<ResponseResult<ArtistsResponse>>(ResponseResult.Empty)
     var isPlaylistAdded by mutableStateOf(false)
     var isFollowing by mutableStateOf(false)
+    var deleteAccountInfo by mutableStateOf<ResponseResult<DeleteAccountInfoResponse>>(
+        ResponseResult.Empty
+    )
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -566,6 +571,20 @@ class HomeViewModel @Inject constructor(
     }
 
     fun deleteAccount() = viewModelScope.launch(Dispatchers.IO) {
-        zeneAPI.deleteAccount().firstOrNull()
+        zeneAPI.deleteAccount().catch {  }.firstOrNull()
+    }
+
+    fun cancelDeleteAccount() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.cancelDeleteAccount().catch {  }.firstOrNull()
+    }
+
+    fun deleteAccountInfo() = viewModelScope.launch(Dispatchers.IO) {
+        zeneAPI.deleteAccountInfo().onStart {
+            deleteAccountInfo = ResponseResult.Loading
+        }.catch {
+            deleteAccountInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            deleteAccountInfo = ResponseResult.Success(it)
+        }
     }
 }

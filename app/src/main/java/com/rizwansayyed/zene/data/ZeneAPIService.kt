@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.CountResponse
+import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
@@ -109,9 +110,11 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SPONSOR_ADS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CANCEL_DELETE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_NUMBER_VERIFIED_THIS_WEEK_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_CHECK_USERNAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_ACCOUNT_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_DELETE_MY_PLAYLIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_GET_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_IS_LIKED_API
@@ -754,6 +757,18 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_DELETE_ACCOUNT_API)
     suspend fun deleteAccount(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_DELETE_INFO_API)
+    suspend fun deleteAccountInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): DeleteAccountInfoResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_CANCEL_DELETE_API)
+    suspend fun cancelDeleteAccount(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 }
