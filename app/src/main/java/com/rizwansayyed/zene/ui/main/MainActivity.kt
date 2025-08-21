@@ -204,6 +204,16 @@ class MainActivity : FragmentActivity() {
                                 if (navigationViewModel.homeNavSection != HOME)
                                     navigationViewModel.setHomeNavSections(HOME)
                             }
+
+
+                            LaunchedEffect(Unit) {
+                                IntentCheckUtils(
+                                    intent, navigationViewModel, playerViewModel, loginViewModel
+                                ).call()
+                                initThe()
+
+                                configClarity(this@MainActivity)
+                            }
                         } else if (showLogin) LoginView(loginViewModel)
 
 //                        MusicQRScannerApp(
@@ -215,13 +225,6 @@ class MainActivity : FragmentActivity() {
 //                                        PackageManager.PERMISSION_GRANTED
 //                            }
 //                        )
-                    }
-
-                    LaunchedEffect(Unit) {
-                        IntentCheckUtils(
-                            intent, navigationViewModel, playerViewModel, loginViewModel
-                        ).call()
-                        initThe()
                     }
 
                     LaunchedEffect(userInfo?.email) {
@@ -287,7 +290,6 @@ class MainActivity : FragmentActivity() {
         subscribeToTopicAll()
         OpenAppAdsUtils(this)
 
-        configClarity(this)
         registerEvents(FirebaseEventsParams.OPENED_APP)
 
         clearCacheIfSizeIsMoreThen200MB()

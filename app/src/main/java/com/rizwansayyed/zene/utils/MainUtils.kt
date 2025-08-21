@@ -28,6 +28,7 @@ import com.microsoft.clarity.ClarityConfig
 import com.microsoft.clarity.models.LogLevel
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.datastore.DataStorageManager.searchHistoryDB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.MainActivity
@@ -334,12 +335,24 @@ object MainUtils {
         return location == PackageManager.PERMISSION_GRANTED
     }
 
-    fun configClarity(activity: MainActivity) {
+    fun configClarity(activity: MainActivity) = CoroutineScope(Dispatchers.Main).launch {
+        val info = withContext(Dispatchers.IO) { DataStorageManager.userInfo.firstOrNull() }
+        if (info?.isLoggedIn() == false) {
+            return@launch
+        }
+
         val config = ClarityConfig(
             projectId = BuildConfig.CLARITY_PROJECT_ID,
-            logLevel = if (BuildConfig.DEBUG) LogLevel.Verbose else LogLevel.None
+            logLevel = LogLevel.None,
         )
+
         Clarity.initialize(activity, config)
+        Clarity.setOnSessionStartedCallback {
+            Clarity.setCustomUserId(info?.email)
+            Clarity.setCustomTag("User Email", info?.email)
+        }
+
+        if (isActive) cancel()
     }
 
     fun openAppSettings() {

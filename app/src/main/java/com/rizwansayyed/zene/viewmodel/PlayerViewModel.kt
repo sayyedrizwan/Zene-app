@@ -274,22 +274,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     fun podcastInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
         zeneAPI.playerPodcastInfo(id).onStart {}.catch {}.collectLatest {
-            val artists = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(it.description, Html.FROM_HTML_MODE_LEGACY).toString()
-            } else {
-                Html.fromHtml(it.description).toString()
-            }
-            val t = it.image?.url ?: it.series?.imageURL
-            val data =
-                ZeneMusicData(
-                    artists,
-                    id,
-                    it.title,
-                    it.lookup,
-                    t,
-                    MusicDataTypes.PODCAST_AUDIO.name
-                )
-            startMedia(data)
+            startMedia(it.getAsMusicData())
         }
     }
 

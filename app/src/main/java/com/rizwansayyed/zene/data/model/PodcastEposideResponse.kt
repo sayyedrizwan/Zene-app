@@ -1,5 +1,8 @@
 package com.rizwansayyed.zene.data.model
 
+import android.os.Build
+import android.text.Html
+
 data class PodcastEpisodeResponse(
     val description: String?,
     val duration: Int?,
@@ -114,5 +117,22 @@ data class PodcastEpisodeResponse(
                 )
             }
         }
+    }
+
+    fun getAsMusicData(): ZeneMusicData {
+        val artists = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY).toString()
+        } else {
+            Html.fromHtml(description).toString()
+        }
+        val t = image?.url ?: series?.imageURL
+        return ZeneMusicData(
+            artists,
+            id.toString(),
+            title,
+            lookup,
+            t,
+            MusicDataTypes.PODCAST_AUDIO.name
+        )
     }
 }

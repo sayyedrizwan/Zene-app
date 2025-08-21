@@ -1174,7 +1174,7 @@ class ZeneAPIImplementation @Inject constructor(
 
         val json = JSONObject().apply {
             put("email", email)
-            put("id", id)
+            put("id", id.replace("_", "/"))
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
