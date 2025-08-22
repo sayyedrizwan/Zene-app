@@ -1,5 +1,7 @@
 package com.rizwansayyed.zene.ui.settings.importplaylists.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +33,7 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.ImportPlaylistViewModel
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun ImportSongSyncView(viewModel: ImportPlaylistViewModel) {
     val noValidFile = stringResource(R.string.not_a_valid_csv_file)

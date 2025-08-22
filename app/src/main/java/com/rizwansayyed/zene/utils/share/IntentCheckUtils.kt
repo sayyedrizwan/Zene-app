@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MOVIE_IF_ENC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NEWS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_SERIES
@@ -197,7 +198,13 @@ class IntentCheckUtils(
                 MediaContentUtils.openCustomBrowser(url)
             } else if (data.toString().contains(ZENE_M)) {
                 val id = data.toString().substringAfterLast(ZENE_M.replace("/", ""))
-                triggerHomeNav("$NAV_MOVIES_PAGE${id}")
+                    .replace("___", "/")
+                if (id.contains(ZENE_MOVIE_IF_ENC)) {
+                    val cleared = id.substringAfter(ZENE_MOVIE_IF_ENC)
+                    val path = String(Base64.decode(cleared, Base64.NO_WRAP), Charsets.UTF_8)
+                    triggerHomeNav("$NAV_MOVIES_PAGE${path.replace("/", "^")}")
+                } else
+                    triggerHomeNav("$NAV_MOVIES_PAGE${id}")
             } else if (data.toString().contains(ZENE_AI_MUSIC)) {
                 val id = data.toString().substringAfterLast(ZENE_AI_MUSIC.replace("/", ""))
                 viewModel.aiMusicInfoPlay(id)

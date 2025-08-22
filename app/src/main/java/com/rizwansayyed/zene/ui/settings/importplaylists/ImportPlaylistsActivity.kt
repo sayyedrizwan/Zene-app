@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.settings.importplaylists
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -34,8 +35,10 @@ class ImportPlaylistsActivity : FragmentActivity() {
                         .fillMaxSize()
                         .background(Color.Black), Alignment.Center
                 ) {
-                    if (viewModel.selectedFile == null) ImportMusicInstructions(viewModel)
-                    else ImportSongSyncView(viewModel)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        if (viewModel.selectedFile == null) ImportMusicInstructions(viewModel)
+                        else ImportSongSyncView(viewModel)
+                    }
                 }
 
 

@@ -126,7 +126,7 @@ class ImportPlaylistViewModel @Inject constructor(
             }
 
             songList = groupedSongs
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             selectedFile = null
         }
     }

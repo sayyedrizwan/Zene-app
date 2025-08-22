@@ -40,6 +40,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MOVIE_IF_ENC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NEWS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_SERIES
@@ -226,7 +227,15 @@ object ShareContentUtils {
                 data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
             ).replace("=", "").replace("/","___")
 
-            MOVIES_SHOW -> "$ZENE_URL$ZENE_M${data.id}"
+            MOVIES_SHOW -> {
+                if ((data.id?.split("/")?.size ?: 0) >= 3) {
+                    val id = Base64.encodeToString(
+                        data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
+                    ).replace("=", "").replace("/", "___")
+                    "$ZENE_URL$ZENE_M$ZENE_MOVIE_IF_ENC${id}"
+                } else
+                    "$ZENE_URL$ZENE_M${data.id}"
+            }
             AI_MUSIC -> "$ZENE_URL$ZENE_AI_MUSIC${data.id}"
             TEXT -> ZENE_URL
             null -> ZENE_URL

@@ -29,6 +29,7 @@ object URLSUtils {
     const val ZENE_PODCAST = "/podcast/"
     const val ZENE_NEWS = "/news/"
     const val ZENE_M = "/m/"
+    const val ZENE_MOVIE_IF_ENC = "v__"
     const val ZENE_AI_MUSIC = "/ai_music/"
 
     fun connectShareURL(username: String) = "$ZENE_URL${ZENE_URL_CONNECT}/$username"

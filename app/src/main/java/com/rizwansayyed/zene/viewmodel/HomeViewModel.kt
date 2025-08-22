@@ -262,11 +262,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun entertainmentMovies() = viewModelScope.launch(Dispatchers.IO) {
-        val data: MoviesDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
-        if ((data?.trendingMovies?.size ?: 0) > 0) {
-            entertainmentMoviesData = ResponseResult.Success(data!!)
-            return@launch
-        }
+//        val data: MoviesDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
+//        if ((data?.trendingMovies?.size ?: 0) > 0) {
+//            entertainmentMoviesData = ResponseResult.Success(data!!)
+//            return@launch
+//        }
 
         zeneAPI.entertainmentMovies().onStart {
             entertainmentMoviesData = ResponseResult.Loading
