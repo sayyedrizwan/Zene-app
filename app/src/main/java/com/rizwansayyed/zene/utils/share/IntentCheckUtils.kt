@@ -192,7 +192,7 @@ class IntentCheckUtils(
                 val id = data.toString().substringAfterLast(ZENE_PODCAST).replace("_", "/")
                 viewModel.podcastInfoPlay(id)
             } else if (data.toString().contains(ZENE_NEWS)) {
-                val id = data.toString().substringAfterLast(ZENE_NEWS)
+                val id = data.toString().substringAfterLast(ZENE_NEWS).replace("___","/")
                 val url = String(Base64.decode(id, Base64.NO_WRAP), Charsets.UTF_8)
                 MediaContentUtils.openCustomBrowser(url)
             } else if (data.toString().contains(ZENE_M)) {

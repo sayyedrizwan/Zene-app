@@ -224,7 +224,7 @@ object ShareContentUtils {
             PODCAST_CATEGORIES -> ZENE_URL
             NEWS -> "$ZENE_URL$ZENE_NEWS" + Base64.encodeToString(
                 data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
-            ).replace("=", "")
+            ).replace("=", "").replace("/","___")
 
             MOVIES_SHOW -> "$ZENE_URL$ZENE_M${data.id}"
             AI_MUSIC -> "$ZENE_URL$ZENE_AI_MUSIC${data.id}"
