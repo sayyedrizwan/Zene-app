@@ -5,8 +5,8 @@ compilesdk = "36"
 minsdk = "23"
 
 
-appversion = "236"
-versionname = "3.04.109"
+appversion = "237"
+versionname = "3.04.111"
 
 agp = "8.11.1"
 
@@ -41,7 +41,7 @@ playServicesLocation = "21.3.0"
 emoji = "1.5.0"
 truecaller = "3.1.0"
 socketIoClient = "2.1.2"
-camera = "1.5.0-beta02"
+camera = "1.5.0-rc01"
 material3 = "1.4.0-beta02"
 webkit = "1.14.0"
 navigation = "2.9.3"
