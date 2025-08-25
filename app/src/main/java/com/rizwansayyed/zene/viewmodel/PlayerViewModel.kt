@@ -1,7 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.os.Build
-import android.text.Html
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,8 +34,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
-import kotlin.collections.set
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
@@ -157,15 +156,22 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         playerLyrics = ResponseResult.Loading
         lyricsJob?.cancel()
         lyricsJob = viewModelScope.launch(Dispatchers.IO) {
-            while (p == null) {
-                delay(1.seconds)
-                if (musicPlayerDB.firstOrNull()?.totalDuration != "0") p =
-                    musicPlayerDB.firstOrNull()
-            }
-            zeneAPI.playerLyrics(p).catch {
-                playerLyrics = ResponseResult.Error(it)
-            }.collectLatest {
-                playerLyrics = ResponseResult.Success(it)
+            try {
+                withTimeout(10.seconds) {
+                    while (p == null) {
+                        delay(1.seconds)
+                        if (musicPlayerDB.firstOrNull()?.totalDuration != "0") p =
+                            musicPlayerDB.firstOrNull()
+                    }
+                    zeneAPI.playerLyrics(p).catch {
+                        playerLyrics = ResponseResult.Error(it)
+                    }.collectLatest {
+                        playerLyrics = ResponseResult.Success(it)
+                    }
+                }
+            } catch (_: CancellationException) {
+            } catch (e: Exception) {
+                playerLyrics = ResponseResult.Error(e)
             }
         }
     }
