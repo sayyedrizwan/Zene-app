@@ -125,7 +125,6 @@ fun MoviesCategories(data: MoviesTvShowResponse) {
                 "${stringResource(R.string.releasing_on)} ${data.readReleaseDate()}", Color.Red
             ) {}
             else TextViewBorder(stringResource(R.string.releasing_soon), Color.Red) {}
-
         }
 
         Spacer(Modifier.height(29.dp))
@@ -137,8 +136,10 @@ fun MoviesCategories(data: MoviesTvShowResponse) {
                 .fillMaxWidth()
         ) {
             TextViewNormal(data.release.toString(), 18)
-            TextViewNormal(" • ", 18)
-            TextViewNormal(data.readRuntime(), 18)
+            if (data.type == "MOVIE") {
+                TextViewNormal(" • ", 18)
+                TextViewNormal(data.readRuntime(), 18)
+            }
             if ((data.certification ?: "").trim().isNotEmpty()) {
                 TextViewNormal(" • ", 18)
                 TextViewNormal(data.certification.toString(), 18)
