@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.widgets.likedsongs.LikedMediaWidgets
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,13 +62,13 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     private var lyricsJob by mutableStateOf<Job?>(null)
     var isItemLiked = mutableStateMapOf<String?, LikeItemType>()
 
-    fun similarVideos(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun similarVideos(id: String) = viewModelScope.safeLaunch  {
         when (val v = videoSimilarVideos) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> {}
             is ResponseResult.Success -> {
-                if (v.data.first == id && v.data.second.isNotEmpty()) return@launch
+                if (v.data.first == id && v.data.second.isNotEmpty()) return@safeLaunch
             }
         }
 
@@ -81,7 +82,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     }
 
     fun createNewPlaylists(name: String, info: ZeneMusicData?) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             zeneAPI.createNewPlaylists(name, info).onStart {
                 createPlaylist = ResponseResult.Loading
             }.catch {
@@ -93,8 +94,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             }
         }
 
-    fun likedMediaItem(id: String?, type: MusicDataTypes) = viewModelScope.launch(Dispatchers.IO) {
-        if (isItemLiked.contains(id)) return@launch
+    fun likedMediaItem(id: String?, type: MusicDataTypes) = viewModelScope.safeLaunch  {
+        if (isItemLiked.contains(id)) return@safeLaunch
 
         zeneAPI.likedStatus(id, type).onStart {
             isItemLiked[id] = LikeItemType.LOADING
@@ -105,7 +106,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+    fun likeAItem(data: ZeneMusicData?, doLike: Boolean) = viewModelScope.safeLaunch  {
         isItemLiked[data?.id] = if (doLike) LikeItemType.LIKE else LikeItemType.NONE
 
         zeneAPI.addRemoveLikeItem(data, doLike).catch {
@@ -127,7 +128,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     fun playlistSongCheckList(songId: String) {
         playlistSongCheckJob?.cancel()
-        playlistSongCheckJob = viewModelScope.launch(Dispatchers.IO) {
+        playlistSongCheckJob = viewModelScope.safeLaunch {
             if (playlistPage == 0) {
                 itemAddedToPlaylists.clear()
                 checksPlaylistsSongLists.clear()
@@ -146,7 +147,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     }
 
     fun addMediaToPlaylist(id: String, state: Boolean, info: ZeneMusicData?) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             itemAddedToPlaylists[id] = state
             zeneAPI.addItemToPlaylists(info, id, state).catch { }.collectLatest {}
         }
@@ -155,7 +156,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         var p: MusicPlayerData? = null
         playerLyrics = ResponseResult.Loading
         lyricsJob?.cancel()
-        lyricsJob = viewModelScope.launch(Dispatchers.IO) {
+        lyricsJob = viewModelScope.safeLaunch  {
             try {
                 withTimeout(10.seconds) {
                     while (p == null) {
@@ -176,7 +177,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun getAISongLyrics(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun getAISongLyrics(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.lyricsAIMusic(id).onStart {
             playerLyrics = ResponseResult.Loading
         }.catch {
@@ -188,14 +189,14 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     fun similarArtistsAlbumOfSong(
         id: String, name: String?, artists: String?, response: (ZeneMusicData) -> Unit
-    ) = viewModelScope.launch(Dispatchers.IO) {
+    ) = viewModelScope.safeLaunch  {
         zeneAPI.similarArtistsAlbumOfSong(id, name, artists).onStart {}.catch {}.collectLatest {
             response(it)
         }
     }
 
 
-    fun playerPodcastInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun playerPodcastInfo(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.playerPodcastInfo(id).onStart {
             playerPodcastInfo = ResponseResult.Loading
         }.catch {
@@ -205,7 +206,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun playerRadioInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun playerRadioInfo(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.playerRadioInfo(id).onStart {
             playerRadioInfo = ResponseResult.Loading
         }.catch {
@@ -215,8 +216,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun playerSimilarSongs(id: String?) = viewModelScope.launch(Dispatchers.IO) {
-        id ?: return@launch
+    fun playerSimilarSongs(id: String?) = viewModelScope.safeLaunch  {
+        id ?: return@safeLaunch
         zeneAPI.similarSongs(id).onStart {
             similarSongs = ResponseResult.Loading
         }.catch {
@@ -226,7 +227,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun playerVideoForSongs(data: ZeneMusicData?) = viewModelScope.launch(Dispatchers.IO) {
+    fun playerVideoForSongs(data: ZeneMusicData?) = viewModelScope.safeLaunch  {
         zeneAPI.playerVideoForSongs(data).onStart {
             videoForSongs = ResponseResult.Loading
         }.catch {
@@ -236,7 +237,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun similarPodcasts(data: ZeneMusicData?) = viewModelScope.launch(Dispatchers.IO) {
+    fun similarPodcasts(data: ZeneMusicData?) = viewModelScope.safeLaunch  {
         zeneAPI.similarPodcasts(data?.secId).onStart {
             similarPodcast = ResponseResult.Loading
         }.catch {
@@ -246,7 +247,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun similarRadio(data: ZeneMusicData?) = viewModelScope.launch(Dispatchers.IO) {
+    fun similarRadio(data: ZeneMusicData?) = viewModelScope.safeLaunch  {
         zeneAPI.similarRadio(data?.artists).onStart {
             similarRadio = ResponseResult.Loading
         }.catch {
@@ -256,7 +257,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun similarAIMusic(data: ZeneMusicData?) = viewModelScope.launch(Dispatchers.IO) {
+    fun similarAIMusic(data: ZeneMusicData?) = viewModelScope.safeLaunch  {
         zeneAPI.similarAISongs(data?.artists).onStart {
             similarAIMusic = ResponseResult.Loading
         }.catch {
@@ -266,25 +267,25 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         }
     }
 
-    fun songInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun songInfoPlay(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.songInfo(id).onStart {}.catch {}.collectLatest {
             startMedia(it)
         }
     }
 
-    fun radioInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun radioInfoPlay(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.playerRadioInfo(id).onStart {}.catch {}.collectLatest {
             startMedia(it.toMusicData())
         }
     }
 
-    fun podcastInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun podcastInfoPlay(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.playerPodcastInfo(id).onStart {}.catch {}.collectLatest {
             startMedia(it.getAsMusicData())
         }
     }
 
-    fun aiMusicInfoPlay(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun aiMusicInfoPlay(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.aiMusicInfo(id).onStart {}.catch {}.collectLatest {
             startMedia(it)
         }

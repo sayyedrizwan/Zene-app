@@ -37,13 +37,10 @@ import com.rizwansayyed.zene.ui.main.connect.profile.SettingsViewSimpleItems
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
-import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.ItemCardViewConnect
-import com.rizwansayyed.zene.ui.view.MoviesImageCard
 import com.rizwansayyed.zene.ui.view.MoviesImageCardConnect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.ui.view.VideoCardView
 import com.rizwansayyed.zene.ui.view.VideoCardViewConnect
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel

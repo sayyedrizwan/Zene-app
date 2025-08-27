@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.utils.ads.nativeAdsAndroidViewMap
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.IntentFCMNotification
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
             play()
         }
 
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.safeLaunch(Dispatchers.Main) {
             videoAdsPlayers[url] = exo
         }
 

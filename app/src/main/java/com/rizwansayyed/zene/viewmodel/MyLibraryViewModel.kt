@@ -19,15 +19,14 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -48,7 +47,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     private var historyCheckJob: Job? = null
     fun songHistoryList() {
         historyCheckJob?.cancel()
-        historyCheckJob = viewModelScope.launch(Dispatchers.IO) {
+        historyCheckJob = viewModelScope.safeLaunch {
             zeneAPI.getHistory(historyPage).onStart {
                 historyIsLoading = true
             }.catch {
@@ -70,7 +69,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
     fun savedPlaylistsList() {
         savedPlaylistCheckJob?.cancel()
-        savedPlaylistCheckJob = viewModelScope.launch(Dispatchers.IO) {
+        savedPlaylistCheckJob = viewModelScope.safeLaunch {
             zeneAPI.getSavePlaylists(savedPage).onStart {
                 savedIsLoading = true
             }.catch {
@@ -92,7 +91,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
     fun myPlaylistsList(forceClean: Boolean = false) {
         myPlaylistCheckJob?.cancel()
-        myPlaylistCheckJob = viewModelScope.launch(Dispatchers.IO) {
+        myPlaylistCheckJob = viewModelScope.safeLaunch {
             if (forceClean) {
                 myPage = 0
                 myList.clear()
@@ -114,7 +113,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         ResponseResult.Empty
     )
 
-    fun myAllPlaylistsList() = viewModelScope.launch(Dispatchers.IO) {
+    fun myAllPlaylistsList() = viewModelScope.safeLaunch {
         zeneAPI.myAllPlaylists().onStart {
             userAllPlaylist = ResponseResult.Loading
         }.catch {
@@ -124,7 +123,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         }
     }
 
-    fun likedItemCount() = viewModelScope.launch(Dispatchers.IO) {
+    fun likedItemCount() = viewModelScope.safeLaunch {
         zeneAPI.likeSongsCount().onStart {
             likedItemsCount = ResponseResult.Loading
         }.catch {
@@ -140,14 +139,14 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
     private var myPlaylistSongsCheckJob: Job? = null
 
-    fun myPlaylistSongsData(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun myPlaylistSongsData(playlistID: String) = viewModelScope.safeLaunch {
         myPlaylistSongsCheckJob?.cancel()
         val email = userInfo.firstOrNull()?.email ?: ""
 
         if (playlistID.contains(LIKED_SONGS_ON_ZENE) && !playlistID.contains(email))
-            return@launch
+            return@safeLaunch
 
-        myPlaylistSongsCheckJob = viewModelScope.launch(Dispatchers.IO) {
+        myPlaylistSongsCheckJob = viewModelScope.safeLaunch {
             zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
                 myPlaylistSongsIsLoading = true
             }.catch {
@@ -164,14 +163,14 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var playlistInfo by mutableStateOf<ResponseResult<ZeneMusicData>>(ResponseResult.Empty)
     var isPlaylistOfSameUser by mutableStateOf(false)
 
-    fun myPlaylistInfo(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun myPlaylistInfo(playlistID: String) = viewModelScope.safeLaunch {
         val email = userInfo.firstOrNull()?.email ?: ""
         if (playlistID.contains(LIKED_SONGS_ON_ZENE) && !playlistID.contains(email))
-            return@launch
+            return@safeLaunch
 
         if (playlistID.contains(LIKED_SONGS_ON_ZENE)) {
             isPlaylistOfSameUser = true
-            return@launch
+            return@safeLaunch
         }
         zeneAPI.myPlaylistInfo(playlistID).onStart {
             playlistInfo = ResponseResult.Empty
@@ -185,13 +184,13 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     }
 
     fun removeMyPlaylistItems(playlistID: String, data: ZeneMusicData, index: Int) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch {
             myPlaylistSongsList.removeAt(index)
             zeneAPI.removeMyPlaylistsSongs(playlistID, data.id ?: "", data.type).onStart {}.catch {}
                 .collectLatest {}
         }
 
-    fun deleteMyPlaylist(playlistID: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteMyPlaylist(playlistID: String) = viewModelScope.safeLaunch {
         zeneAPI.deleteMyPlaylists(playlistID).onStart {}.catch {}.collectLatest {}
     }
 
@@ -199,8 +198,8 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     var playlistNameStatus by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
 
     fun updateMyPlaylistName(playlistID: String?, title: String) =
-        viewModelScope.launch(Dispatchers.IO) {
-            playlistID ?: return@launch
+        viewModelScope.safeLaunch {
+            playlistID ?: return@safeLaunch
             zeneAPI.nameUserPlaylist(playlistID, title).onStart {
                 playlistNameStatus = ResponseResult.Loading
             }.catch {
@@ -213,7 +212,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
     var playlistImageStatus by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
     fun updateMyPlaylistImage(id: String?, thumbnail: Uri?) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch {
             zeneAPI.updateImageUserPlaylist(id, thumbnail).onStart {
                 playlistImageStatus = ResponseResult.Loading
             }.catch {
@@ -230,7 +229,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     private var searchImageJob: Job? = null
     fun searchImage(q: String) {
         searchImageJob?.cancel()
-        searchImageJob = viewModelScope.launch(Dispatchers.IO) {
+        searchImageJob = viewModelScope.safeLaunch {
             searchImages = ResponseResult.Loading
             delay(1.seconds)
             zeneAPI.searchImages(q).onStart {

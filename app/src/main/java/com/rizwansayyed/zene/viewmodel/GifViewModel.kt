@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.ui.connect_status.ConnectCommentListenerManager
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -27,7 +28,7 @@ class GifViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : 
     var commentLists = mutableStateListOf<VibesCommentsResponse>()
     var isLoading by mutableStateOf(false)
 
-    fun trendingGif() = viewModelScope.launch(Dispatchers.IO) {
+    fun trendingGif() = viewModelScope.safeLaunch  {
         zeneAPI.trendingGIF().onStart {
             trendingGif = ResponseResult.Loading
         }.catch {
@@ -37,10 +38,10 @@ class GifViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : 
         }
     }
 
-    fun searchGif(search: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchGif(search: String) = viewModelScope.safeLaunch  {
         if (search.trim().isEmpty()) {
             searchGif = ResponseResult.Empty
-            return@launch
+            return@safeLaunch
         }
         zeneAPI.searchGif(search.trim()).onStart {
             searchGif = ResponseResult.Loading
@@ -51,13 +52,13 @@ class GifViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) : 
         }
     }
 
-    fun postAGif(gif: String, id: Int?) = viewModelScope.launch(Dispatchers.IO) {
+    fun postAGif(gif: String, id: Int?) = viewModelScope.safeLaunch  {
         zeneAPI.postCommentOnVibes(gif, id).onStart { }.catch { }.collectLatest {
             ConnectCommentListenerManager.triggerEvent()
         }
     }
 
-    fun commentGifs(id: Int?, page: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun commentGifs(id: Int?, page: Int) = viewModelScope.safeLaunch  {
         if (page == 0) {
             commentLists.clear()
         }

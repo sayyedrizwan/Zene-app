@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -108,11 +109,11 @@ class HomeViewModel @Inject constructor(
         ResponseResult.Empty
     )
 
-    fun homeRecentData(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+    fun homeRecentData(expireToken: () -> Unit) = viewModelScope.safeLaunch  {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
         if ((data?.topSongs?.size ?: 0) > 0) {
             homeRecent = ResponseResult.Success(data!!)
-            return@launch
+            return@safeLaunch
         }
 
         zeneAPI.recentHome().onStart {
@@ -133,7 +134,7 @@ class HomeViewModel @Inject constructor(
         searchKeywords = ResponseResult.Empty
     }
 
-    fun searchKeywordsData(q: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchKeywordsData(q: String) = viewModelScope.safeLaunch  {
         zeneAPI.searchKeywords(q).onStart {
             searchKeywords = ResponseResult.Loading
         }.catch {
@@ -143,11 +144,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchTrendingData() = viewModelScope.launch(Dispatchers.IO) {
+    fun searchTrendingData() = viewModelScope.safeLaunch  {
         val data: SearchTrendingResponse? = cacheHelper.get(ZENE_SEARCH_TRENDING_API)
         if ((data?.songs?.size ?: 0) > 0) {
             searchTrending = ResponseResult.Success(data!!)
-            return@launch
+            return@safeLaunch
         }
 
         zeneAPI.trendingData().onStart {
@@ -160,7 +161,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchImages(q: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchImages(q: ZeneMusicData) = viewModelScope.safeLaunch  {
         zeneAPI.searchImages(q).onStart {
             searchImages = ResponseResult.Loading
         }.catch {
@@ -170,11 +171,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun trendingAIMusic(expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+    fun trendingAIMusic(expireToken: () -> Unit) = viewModelScope.safeLaunch  {
         val data: AIDataResponse? = cacheHelper.get(ZENE_AI_MUSIC_LIST_API)
         if ((data?.trending?.size ?: 0) > 0) {
             aiMusicList = ResponseResult.Success(data!!)
-            return@launch
+            return@safeLaunch
         }
 
         zeneAPI.trendingAIMusic().onStart {
@@ -191,12 +192,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun homePodcastData() = viewModelScope.launch(Dispatchers.IO) {
+    fun homePodcastData() = viewModelScope.safeLaunch  {
         val data: PodcastDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_PODCAST_API)
 
         if ((data?.latest?.size ?: 0) > 0) {
             homePodcast = ResponseResult.Success(data!!)
-            return@launch
+            return@safeLaunch
         }
 
         zeneAPI.recentPodcast().onStart {
@@ -209,11 +210,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun homeVideosData() = viewModelScope.launch(Dispatchers.IO) {
+    fun homeVideosData() = viewModelScope.safeLaunch  {
         val data: VideoDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_VIDEOS_API)
         if ((data?.recommended?.size ?: 0) > 0) {
             homeVideos = ResponseResult.Success(data!!)
-            return@launch
+            return@safeLaunch
         }
 
         zeneAPI.homeVideos().onStart {
@@ -226,11 +227,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun homeRadioData() = viewModelScope.launch(Dispatchers.IO) {
+    fun homeRadioData() = viewModelScope.safeLaunch  {
         val data: RadioDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_RADIO_API)
         if ((data?.recent?.size ?: 0) > 0) {
             homeRadio = ResponseResult.Success(data!!)
-            return@launch
+            return@safeLaunch
         }
 
         zeneAPI.recentRadio().onStart {
@@ -244,11 +245,11 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun entertainmentNewsData() = viewModelScope.launch(Dispatchers.IO) {
+    fun entertainmentNewsData() = viewModelScope.safeLaunch  {
         val data: EntertainmentDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_API)
         if ((data?.topNews?.size ?: 0) > 0) {
             entertainmentData = ResponseResult.Success(data!!)
-            return@launch
+            return@safeLaunch
         }
 
         zeneAPI.entertainmentNews().onStart {
@@ -261,11 +262,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun entertainmentMovies() = viewModelScope.launch(Dispatchers.IO) {
+    fun entertainmentMovies() = viewModelScope.safeLaunch  {
 //        val data: MoviesDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
 //        if ((data?.trendingMovies?.size ?: 0) > 0) {
 //            entertainmentMoviesData = ResponseResult.Success(data!!)
-//            return@launch
+//            return@safeLaunch
 //        }
 
         zeneAPI.entertainmentMovies().onStart {
@@ -278,7 +279,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchASong(q: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchASong(q: String) = viewModelScope.safeLaunch  {
         zeneAPI.searchASong(q).onStart {
             searchASongData = ResponseResult.Loading
         }.catch {
@@ -288,7 +289,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun radioByCountry(name: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun radioByCountry(name: String) = viewModelScope.safeLaunch  {
         zeneAPI.radioByCountry(name).onStart {
             radioByCountry = ResponseResult.Loading
         }.catch {
@@ -298,7 +299,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun podcastCategories(name: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun podcastCategories(name: String) = viewModelScope.safeLaunch  {
         zeneAPI.podcastCategories(name).onStart {
             podcastCategories = ResponseResult.Loading
         }.catch {
@@ -308,7 +309,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchZene(q: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchZene(q: String) = viewModelScope.safeLaunch  {
         searchKeywords = ResponseResult.Empty
         zeneAPI.search(q).onStart {
             searchData = ResponseResult.Loading
@@ -320,7 +321,7 @@ class HomeViewModel @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    fun searchPlaces(q: String?) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchPlaces(q: String?) = viewModelScope.safeLaunch  {
         searchPlaces = ResponseResult.Loading
         val l = if (q == null) {
             val l = LocationServices.getFusedLocationProviderClient(context)
@@ -337,9 +338,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun userInfo() = viewModelScope.launch(Dispatchers.IO) {
+    fun userInfo() = viewModelScope.safeLaunch  {
         val data = DataStorageManager.userInfo.firstOrNull()
-        if (data?.isLoggedIn() == false) return@launch
+        if (data?.isLoggedIn() == false) return@safeLaunch
 
         zeneAPI.updateUser().catch {}.collectLatest {
             if (it.logout == true) {
@@ -347,14 +348,14 @@ class HomeViewModel @Inject constructor(
                 SnackBarManager.showMessage(context.resources.getString(R.string.login_expired))
                 return@collectLatest
             }
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.safeLaunch  {
                 DataStorageManager.userInfo = flowOf(it)
             }
             isUserPremium()
         }
     }
 
-    fun updateConnectInfo(connectStatus: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateConnectInfo(connectStatus: String) = viewModelScope.safeLaunch  {
         zeneAPI.updateConnectStatus(connectStatus).catch {}.collectLatest {
             if (it.status == true) {
                 val info = DataStorageManager.userInfo.firstOrNull()
@@ -364,7 +365,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun podcastData(id: String, expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+    fun podcastData(id: String, expireToken: () -> Unit) = viewModelScope.safeLaunch  {
         zeneAPI.podcastInfo(id).onStart {
             playlistsData = ResponseResult.Loading
         }.catch {
@@ -379,7 +380,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun playlistsData(id: String, expireToken: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+    fun playlistsData(id: String, expireToken: () -> Unit) = viewModelScope.safeLaunch  {
         zeneAPI.playlistsInfo(id).onStart {
             playlistsData = ResponseResult.Loading
         }.catch {
@@ -394,7 +395,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun isPlaylistsAdded(id: String, type: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun isPlaylistsAdded(id: String, type: String) = viewModelScope.safeLaunch  {
         zeneAPI.isPlaylistAdded(id, type).onStart {
             playlistsData = ResponseResult.Loading
         }.catch {
@@ -406,12 +407,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun addToPlaylists(status: Boolean, data: PodcastPlaylistResponse, type: PlaylistsType) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             isPlaylistAdded = status
             zeneAPI.savePlaylists(data, status, type).catch { }.collectLatest { }
         }
 
-    fun similarPlaylistsData(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun similarPlaylistsData(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.similarPodcasts(id).onStart {
             playlistSimilarList = ResponseResult.Loading
         }.catch {
@@ -422,7 +423,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun artistsInfo(artistsID: String, expireToken: () -> Unit) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             zeneAPI.artistsInfo(artistsID).onStart {
                 artistsInfo = ResponseResult.Loading
             }.catch {
@@ -437,7 +438,7 @@ class HomeViewModel @Inject constructor(
         }
 
     fun followArtists(name: String?, doAdd: Boolean, addedMore: () -> Unit) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             isFollowing = doAdd
             zeneAPI.followArtists(name, doAdd).catch {}.collectLatest {
                 if (!it) {
@@ -449,7 +450,7 @@ class HomeViewModel @Inject constructor(
 
     private var checkUsernameJob: Job? = null
     fun checkUsername(username: String) {
-        checkUsernameJob = viewModelScope.launch(Dispatchers.IO) {
+        checkUsernameJob = viewModelScope.safeLaunch  {
             delay(500)
             zeneAPI.checkUsername(username).onStart {
                 checkUsernameInfo = ResponseResult.Loading
@@ -462,21 +463,21 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun updateUsername(username: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateUsername(username: String) = viewModelScope.safeLaunch  {
         zeneAPI.updateUsername(username).onStart { }.catch {}.collectLatest {}
     }
 
-    fun updateName(name: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateName(name: String) = viewModelScope.safeLaunch  {
         zeneAPI.updateName(name).onStart {}.catch {}.collectLatest {}
     }
 
-    private fun isUserPremium() = viewModelScope.launch(Dispatchers.IO) {
+    private fun isUserPremium() = viewModelScope.safeLaunch  {
         zeneAPI.isUserPremium().catch {}.collectLatest {
             DataStorageManager.isPremiumDB = flowOf(it.status == true)
         }
     }
 
-    fun updateProfilePhoto(photo: Uri?) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateProfilePhoto(photo: Uri?) = viewModelScope.safeLaunch  {
         zeneAPI.updatePhoto(photo).onStart {
             updateProfilePhotoInfo = true
         }.catch {
@@ -488,10 +489,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateSubscriptionToken(token: String?, subscriptionId: String?, done: () -> Unit) =
-        viewModelScope.launch(Dispatchers.IO) {
-            token ?: return@launch
+        viewModelScope.safeLaunch  {
+            token ?: return@safeLaunch
             zeneAPI.updateSubscription(token, subscriptionId).onStart {}.catch {}.collectLatest {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.safeLaunch  {
                     DataStorageManager.isPremiumDB = flowOf(it.status == true)
                 }
                 delay(3.seconds)
@@ -500,7 +501,7 @@ class HomeViewModel @Inject constructor(
         }
 
     fun applyCouponCode(couponCode: String?, done: () -> Unit) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             zeneAPI.updateCoupon(couponCode).onStart {
                 couponApplied = ResponseResult.Loading
             }.catch {
@@ -512,7 +513,7 @@ class HomeViewModel @Inject constructor(
                     SnackBarManager.showMessage(context.resources.getString(R.string.error_reading_coupon_code_try_again))
                 } else if (it.isAvailable == true) {
                     couponApplied = ResponseResult.Success(true)
-                    viewModelScope.launch(Dispatchers.IO) {
+                    viewModelScope.safeLaunch  {
                         DataStorageManager.isPremiumDB = flowOf(true)
                     }
                     delay(3.seconds)
@@ -523,7 +524,7 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-    fun moviesTvShowsInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun moviesTvShowsInfo(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.moviesTvShowsInfo(id).onStart {
             movieShowInfo = ResponseResult.Loading
         }.catch {
@@ -533,7 +534,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun moviesTvShowsSeasonsInfo(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun moviesTvShowsSeasonsInfo(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.seasonMoviesTvShowsInfo(id).onStart {
             seasonsMovieShowInfo = ResponseResult.Loading
         }.catch {
@@ -543,14 +544,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sponsorAds() = viewModelScope.launch(Dispatchers.IO) {
+    fun sponsorAds() = viewModelScope.safeLaunch  {
         zeneAPI.sponsorAds().catch {}.collectLatest {
             sponsorAdsDB = flowOf(it.android)
         }
     }
 
 
-    fun artistsFollowedList() = viewModelScope.launch(Dispatchers.IO) {
+    fun artistsFollowedList() = viewModelScope.safeLaunch  {
         zeneAPI.feedFollowedArtists().onStart {
             feedArtists = ResponseResult.Loading
         }.catch {
@@ -560,7 +561,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun feedUpdatesArtists() = viewModelScope.launch(Dispatchers.IO) {
+    fun feedUpdatesArtists() = viewModelScope.safeLaunch  {
         zeneAPI.feedUpdatesArtists().onStart {
             feedUpdates = ResponseResult.Loading
         }.catch {
@@ -570,15 +571,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun deleteAccount() = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteAccount() = viewModelScope.safeLaunch  {
         zeneAPI.deleteAccount().catch {  }.firstOrNull()
     }
 
-    fun cancelDeleteAccount() = viewModelScope.launch(Dispatchers.IO) {
+    fun cancelDeleteAccount() = viewModelScope.safeLaunch  {
         zeneAPI.cancelDeleteAccount().catch {  }.firstOrNull()
     }
 
-    fun deleteAccountInfo() = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteAccountInfo() = viewModelScope.safeLaunch  {
         zeneAPI.deleteAccountInfo().onStart {
             deleteAccountInfo = ResponseResult.Loading
         }.catch {

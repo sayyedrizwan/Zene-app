@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.login.utils.AppleFacebookLoginHandler
 import com.rizwansayyed.zene.ui.login.utils.GoogleLoginHandler
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -73,7 +74,7 @@ class LoginManagerViewModel @Inject constructor(
 
     fun startEmailLogin(email: String) {
         loginViaEmail = ResponseResult.Loading
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             setEmail = email
             loginHandler.sendSignInLink(email).catch {
                 loginViaEmail = ResponseResult.Empty

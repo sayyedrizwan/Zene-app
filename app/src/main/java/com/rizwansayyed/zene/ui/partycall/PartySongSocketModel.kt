@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.CO
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_BASE_URL_SOCKET
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -41,12 +42,12 @@ class PartySongSocketModel : ViewModel() {
     private var checkJob: Job? = null
     private var lastSongID: String = ""
 
-    fun connect(id: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun connect(id: String) = viewModelScope.safeLaunch  {
         roomID = "${id}_party_sync"
-        authToken = DataStorageManager.userInfo.firstOrNull()?.authToken ?: return@launch
-        myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@launch
-        myName = DataStorageManager.userInfo.firstOrNull()?.name ?: return@launch
-        myProfilePhoto = DataStorageManager.userInfo.firstOrNull()?.photo ?: return@launch
+        authToken = DataStorageManager.userInfo.firstOrNull()?.authToken ?: return@safeLaunch
+        myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@safeLaunch
+        myName = DataStorageManager.userInfo.firstOrNull()?.name ?: return@safeLaunch
+        myProfilePhoto = DataStorageManager.userInfo.firstOrNull()?.photo ?: return@safeLaunch
 
         try {
             val options = IO.Options.builder()
@@ -104,7 +105,7 @@ class PartySongSocketModel : ViewModel() {
     }
 
 
-    fun sendPartyJson(v: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
+    fun sendPartyJson(v: ZeneMusicData) = viewModelScope.safeLaunch  {
         val json = moshi.adapter(ZeneMusicData::class.java).toJson(v)
         val data = JSONObject()
         data.put("room", roomID)

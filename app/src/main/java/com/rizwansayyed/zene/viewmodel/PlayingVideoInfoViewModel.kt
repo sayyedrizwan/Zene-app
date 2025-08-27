@@ -24,6 +24,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.YT_VIDEO_BASE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.YT_WEB_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +84,7 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         webView = null
     }
 
-    fun loadWebView(startNew: Boolean = true) = viewModelScope.launch(Dispatchers.Main) {
+    fun loadWebView(startNew: Boolean = true) = viewModelScope.safeLaunch(Dispatchers.Main) {
         webView?.setWebChromeClient(object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
                 Log.d("WebView console log:", consoleMessage.message())
@@ -125,7 +126,7 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         )
     }
 
-    private fun addToHistory() = viewModelScope.launch(Dispatchers.IO) {
+    private fun addToHistory() = viewModelScope.safeLaunch  {
         videoInfo?.let { zeneAPI.addHistory(it).catch { }.collectLatest { } }
     }
 
@@ -135,7 +136,7 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         videoDuration = duration.toFloatOrNull() ?: 0f
         videoMute = isMute
 
-        if (playerState == YoutubePlayerState.PLAYING) viewModelScope.launch(Dispatchers.Main) {
+        if (playerState == YoutubePlayerState.PLAYING) viewModelScope.safeLaunch(Dispatchers.Main) {
             if (videoCCDB.first()) webView?.evaluateJavascript("enableCaption()", null)
             else webView?.evaluateJavascript("disableCaption()", null)
         }

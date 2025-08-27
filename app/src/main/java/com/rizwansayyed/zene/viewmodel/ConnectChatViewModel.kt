@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.ConnectChatMessageResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.compressVideoFile
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -39,18 +40,18 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
     }
 
     fun removeANewItemChat(email: String?, id: String?, isMine: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             val position = recentChatItems.indexOfFirst { it._id == id }
             recentChatItems.removeAt(position)
 
-            if (!isMine) return@launch
+            if (!isMine) return@safeLaunch
 
             zeneAPI.deleteConnectMessage(email, id).catch {}.collectLatest { }
         }
 
     fun sendConnectMessage(email: String?, message: String, gif: String?) =
-        viewModelScope.launch(Dispatchers.IO) {
-            email ?: return@launch
+        viewModelScope.safeLaunch  {
+            email ?: return@safeLaunch
             zeneAPI.sendConnectMessage(email, message, gif).onStart {
                 sendConnectMessageLoading = true
             }.catch {
@@ -72,9 +73,9 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
 
 
     fun sendConnectJamMessage(email: String?, musicData: ZeneMusicData?) =
-        viewModelScope.launch(Dispatchers.IO) {
-            email ?: return@launch
-            musicData ?: return@launch
+        viewModelScope.safeLaunch  {
+            email ?: return@safeLaunch
+            musicData ?: return@safeLaunch
             zeneAPI.sendConnectJamMessage(email, musicData).onStart {
                 sendConnectMessageLoading = true
             }.catch {
@@ -98,9 +99,9 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
         }
 
 
-    fun sendFileMessage(email: String?, file: File?) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
-        file ?: return@launch
+    fun sendFileMessage(email: String?, file: File?) = viewModelScope.safeLaunch  {
+        email ?: return@safeLaunch
+        file ?: return@safeLaunch
         zeneAPI.sendConnectFileMessage(email, file).onStart {
             sendConnectMessageLoading = true
         }.catch {
@@ -123,8 +124,8 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
     }
 
     fun sendImageVideo(email: String?, file: String?, thumbnail: String?) =
-        viewModelScope.launch(Dispatchers.IO) {
-            email ?: return@launch
+        viewModelScope.safeLaunch  {
+            email ?: return@safeLaunch
             sendConnectMessageLoading = true
 
             val finalFile = if (file != null) {
@@ -156,15 +157,15 @@ class ConnectChatViewModel @Inject constructor(private val zeneAPI: ZeneAPIInter
             }
         }
 
-    fun markConnectMessageToRead(email: String?) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
+    fun markConnectMessageToRead(email: String?) = viewModelScope.safeLaunch  {
+        email ?: return@safeLaunch
         zeneAPI.markConnectMessageToRead(email).catch { }.collectLatest { }
     }
 
 
     fun getChatConnectRecentMessage(email: String?, new: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            email ?: return@launch
+        viewModelScope.safeLaunch  {
+            email ?: return@safeLaunch
 
             if (new) recentChatItems.clear()
 

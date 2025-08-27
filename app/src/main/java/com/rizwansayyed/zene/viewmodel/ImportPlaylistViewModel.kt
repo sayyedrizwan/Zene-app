@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.opencsv.CSVReader
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.ui.settings.importplaylists.model.TrackItemCSV
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -49,7 +50,7 @@ class ImportPlaylistViewModel @Inject constructor(
         selectDialogSong.addAll(list)
     }
 
-    fun syncLikedImport() = viewModelScope.launch(Dispatchers.IO) {
+    fun syncLikedImport() = viewModelScope.safeLaunch  {
         isSyncing = true
         selectDialogSong.chunked(50).forEach {
             val list = it.map { s -> "${s.trackName} - ${s.artistName}" }
@@ -62,8 +63,8 @@ class ImportPlaylistViewModel @Inject constructor(
         selectDialogSong.clear()
     }
 
-    fun importToCurrentNamePlaylist() = viewModelScope.launch(Dispatchers.IO) {
-        selectDialogTitle ?: return@launch
+    fun importToCurrentNamePlaylist() = viewModelScope.safeLaunch  {
+        selectDialogTitle ?: return@safeLaunch
         zeneAPI.createNewPlaylists(selectDialogTitle!!, null).onStart {
             isSyncing = true
         }.catch { }.collectLatest {
@@ -71,8 +72,8 @@ class ImportPlaylistViewModel @Inject constructor(
         }
     }
 
-    fun importToPlaylist(playlistID: String?) = viewModelScope.launch(Dispatchers.IO) {
-        playlistID ?: return@launch
+    fun importToPlaylist(playlistID: String?) = viewModelScope.safeLaunch  {
+        playlistID ?: return@safeLaunch
         isSyncing = true
         selectDialogSong.chunked(50).forEach {
             val list = it.map { s -> "${s.trackName} - ${s.artistName}" }
@@ -86,7 +87,7 @@ class ImportPlaylistViewModel @Inject constructor(
     }
 
 
-    private fun parseCsvFileAndGroup(file: File) = viewModelScope.launch(Dispatchers.IO) {
+    private fun parseCsvFileAndGroup(file: File) = viewModelScope.safeLaunch  {
         val groupedSongs = mutableMapOf<String, MutableList<TrackItemCSV>>()
         val expectedHeader = arrayOf("Track name", "Artist name", "Album", "Playlist name", "Type")
 
@@ -96,7 +97,7 @@ class ImportPlaylistViewModel @Inject constructor(
 
                 if (allRows.isEmpty()) {
                     selectedFile = null
-                    return@launch
+                    return@safeLaunch
                 }
 
                 val header = allRows[0]
@@ -104,7 +105,7 @@ class ImportPlaylistViewModel @Inject constructor(
                 for (expectedColumn in expectedHeader) {
                     if (!header.contains(expectedColumn)) {
                         selectedFile = null
-                        return@launch
+                        return@safeLaunch
                     }
                 }
 

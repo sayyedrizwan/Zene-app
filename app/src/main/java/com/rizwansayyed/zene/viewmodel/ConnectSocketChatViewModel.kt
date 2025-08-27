@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.utils.SaveParams.NEW_MESSAGE_ON_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.OLD_JOIN_USER_SOCKET
 import com.rizwansayyed.zene.utils.SaveParams.USER_LEAVED_SOCKET
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_BASE_URL_SOCKET
+import com.rizwansayyed.zene.utils.safeLaunch
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
@@ -45,9 +46,9 @@ class ConnectSocketChatViewModel : ViewModel() {
     }
 
 
-    fun connect(senderEmail: String) = viewModelScope.launch(Dispatchers.IO) {
-        myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@launch
-        authToken = DataStorageManager.userInfo.firstOrNull()?.authToken ?: return@launch
+    fun connect(senderEmail: String) = viewModelScope.safeLaunch  {
+        myEmail = DataStorageManager.userInfo.firstOrNull()?.email ?: return@safeLaunch
+        authToken = DataStorageManager.userInfo.firstOrNull()?.authToken ?: return@safeLaunch
         roomId = generateRoomId(senderEmail, myEmail!!)
 
         inLobby = false
@@ -195,7 +196,7 @@ class ConnectSocketChatViewModel : ViewModel() {
         mSocket?.emit("typingMessage", data)
     }
 
-    private fun sendConnectMessage() = viewModelScope.launch(Dispatchers.IO) {
+    private fun sendConnectMessage() = viewModelScope.safeLaunch  {
         val data = JSONObject()
         data.put("room", roomId)
         data.put("email", myEmail)

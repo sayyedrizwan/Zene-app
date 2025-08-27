@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.ui.connect_status.utils.compressImageHighQuality
 import com.rizwansayyed.zene.ui.connect_status.utils.getMiddleVideoPreviewFrame
 import com.rizwansayyed.zene.utils.MainUtils.clearImagesCache
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,11 +70,11 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var isLoadingVibeFeed by mutableStateOf(false)
     var connectUserVibesFeeds = mutableStateListOf<ConnectFeedDataResponse>()
 
-    fun clear() = viewModelScope.launch(Dispatchers.IO) {
+    fun clear() = viewModelScope.safeLaunch  {
         connectUserVibesFeeds.clear()
     }
 
-    fun searchConnectUsers(q: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun searchConnectUsers(q: String) = viewModelScope.safeLaunch  {
         zeneAPI.searchConnect(q).onStart {
             connectSearch = ResponseResult.Loading
         }.catch {
@@ -83,7 +84,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
-    fun connectFriendsList() = viewModelScope.launch(Dispatchers.IO) {
+    fun connectFriendsList() = viewModelScope.safeLaunch  {
         zeneAPI.connectFriendsList().onStart {
             if (connectUserList !is ResponseResult.Success) connectUserList = ResponseResult.Loading
         }.catch {
@@ -93,7 +94,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
-    fun connectFriendsRequestsList() = viewModelScope.launch(Dispatchers.IO) {
+    fun connectFriendsRequestsList() = viewModelScope.safeLaunch  {
         zeneAPI.connectFriendsRequestList().onStart {
             connectUserFriendsList = ResponseResult.Loading
         }.catch {
@@ -103,7 +104,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
-    fun connectFriendsVibesList(page: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun connectFriendsVibesList(page: Int) = viewModelScope.safeLaunch  {
         if (page == 0) connectUserVibesFeeds.clear()
         zeneAPI.connectFriendsVibesList(page).onStart {
             isLoadingVibeFeed = true
@@ -115,11 +116,11 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
     }
 
-    fun connectUserInfoEmpty() = viewModelScope.launch(Dispatchers.IO) {
+    fun connectUserInfoEmpty() = viewModelScope.safeLaunch  {
         connectUserInfo = ResponseResult.Empty
     }
 
-    fun connectUserInfo(email: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun connectUserInfo(email: String) = viewModelScope.safeLaunch  {
         zeneAPI.connectUserInfo(email).onStart {
             if (connectUserInfo is ResponseResult.Empty) connectUserInfo = ResponseResult.Loading
         }.catch {
@@ -131,18 +132,18 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
     fun updateAddStatus(data: ConnectUserInfoResponse, remove: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             data.myStatus?.isConnected = if (remove) null else false
             data.didRequestToYou = false
             connectUserInfo = ResponseResult.Empty
             delay(100)
             connectUserInfo = ResponseResult.Success(data)
-            data.user?.email ?: return@launch
+            data.user?.email ?: return@safeLaunch
             doRemove(data.user.email, remove, false)
         }
 
     fun updateSettingsStatus(data: ConnectUserInfoResponse) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             connectUserInfo = ResponseResult.Empty
             connectUserInfo = ResponseResult.Success(data)
             zeneAPI.updateConnectSettings(
@@ -155,21 +156,21 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         }
 
     fun doRemove(email: String, remove: Boolean, loadAgain: Boolean = true) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             zeneAPI.connectSendRequest(email, remove).catch { }.collectLatest {
                 if (loadAgain) connectUserInfo(email)
             }
         }
 
-    fun acceptConnectRequest(email: String?) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
+    fun acceptConnectRequest(email: String?) = viewModelScope.safeLaunch  {
+        email ?: return@safeLaunch
         zeneAPI.connectAcceptRequest(email).catch { }.collectLatest {
             connectUserInfo(email)
         }
     }
 
-    fun sendConnectLocation(email: String?) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
+    fun sendConnectLocation(email: String?) = viewModelScope.safeLaunch  {
+        email ?: return@safeLaunch
         zeneAPI.sendConnectLocation(email).catch {}.collectLatest {}
     }
 
@@ -178,13 +179,13 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     var isConnectSharing by mutableStateOf<ResponseResult<StatusTypeResponse>>(ResponseResult.Empty)
         private set
 
-    fun updateCaptionInfo(caption: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateCaptionInfo(caption: String) = viewModelScope.safeLaunch  {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.caption = caption
         connectFileSelected = v
     }
 
-    fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateVibeFileInfo(file: File?, isVibing: Boolean) = viewModelScope.safeLaunch  {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.media = file?.absolutePath
         clearImagesCache()
@@ -205,7 +206,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
         connectFileSelected = v
     }
 
-    fun addVibeEmoji(emoji: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun addVibeEmoji(emoji: String) = viewModelScope.safeLaunch  {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.emoji = emoji
         connectFileSelected = null
@@ -214,7 +215,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
 
-    fun updateVibejamInfo(z: ZeneMusicData) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateVibejamInfo(z: ZeneMusicData) = viewModelScope.safeLaunch  {
         val v = connectFileSelected ?: ConnectFeedDataResponse()
         v.jam_name = z.name
         v.jam_artists = z.artists
@@ -227,7 +228,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
     fun updateVibeLocationInfo(z: SearchPlacesDataResponse) =
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.safeLaunch  {
             val v = connectFileSelected ?: ConnectFeedDataResponse()
             v.location_name = z.name
             v.location_address = z.address
@@ -238,9 +239,9 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
             connectFileSelected = v
         }
 
-    fun uploadAVibe() = viewModelScope.launch(Dispatchers.IO) {
-        if ((connectFileSelected?.caption?.length ?: "".length) <= 3) return@launch
-        connectFileSelected ?: return@launch
+    fun uploadAVibe() = viewModelScope.safeLaunch  {
+        if ((connectFileSelected?.caption?.length ?: "".length) <= 3) return@safeLaunch
+        connectFileSelected ?: return@safeLaunch
         isConnectSharing = ResponseResult.Loading
         loadingTypeForFile = context.resources.getString(R.string.compress_processing_video)
 
@@ -278,17 +279,17 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
 
-    fun sendPartyCall(email: String?, randomCode: String) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
+    fun sendPartyCall(email: String?, randomCode: String) = viewModelScope.safeLaunch  {
+        email ?: return@safeLaunch
         zeneAPI.sendPartyCall(email, randomCode).catch { }.collectLatest {
 
         }
     }
 
 
-    fun createPlaylistName(email: String?, name: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun createPlaylistName(email: String?, name: String) = viewModelScope.safeLaunch  {
         createPlaylist = ResponseResult.Empty
-        email ?: return@launch
+        email ?: return@safeLaunch
         zeneAPI.connectCreatePlaylists(email, name).onStart {
             createPlaylist = ResponseResult.Loading
         }.catch {
@@ -299,8 +300,8 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
     }
 
 
-    fun connectPlaylists(email: String?, page: Int) = viewModelScope.launch(Dispatchers.IO) {
-        email ?: return@launch
+    fun connectPlaylists(email: String?, page: Int) = viewModelScope.safeLaunch  {
+        email ?: return@safeLaunch
         zeneAPI.getConnectPlaylists(email, page).onStart {
             if (page == 0) connectPlaylistsLists.clear()
             isLoadingConnectPlaylist = true
