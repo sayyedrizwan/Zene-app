@@ -70,11 +70,12 @@ import com.rizwansayyed.zene.utils.RefreshPlaylistManager.RefreshPlaylistListene
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.setRefreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeMyLibraryView() {
@@ -219,7 +220,7 @@ fun HomeMyLibraryView() {
 
         if (addNewPlaylists) CreateAPlaylistsView(playerViewModel, null) {
             addNewPlaylists = false
-            if (it) coroutine.launch {
+            if (it) coroutine.safeLaunch(Dispatchers.Main) {
                 viewModel.myPlaylistsList(true)
                 state.animateScrollToItem(0)
             }
@@ -231,7 +232,7 @@ fun HomeMyLibraryView() {
 
             setRefreshPlaylistState(object : RefreshPlaylistListener {
                 override fun refresh() {
-                    coroutine.launch {
+                    coroutine.safeLaunch(Dispatchers.Main) {
                         viewModel.myPlaylistsList(true)
                         state.animateScrollToItem(0)
                     }
@@ -347,7 +348,7 @@ fun LikedPlaylistsView(data: MyLibraryViewModel) {
             .padding(5.dp)
             .padding(bottom = 15.dp)
             .clickable {
-                coroutine.launch {
+                coroutine.safeLaunch {
                     val email = DataStorageManager.userInfo.firstOrNull()?.email
                     val id = "${email}${LIKED_SONGS_ON_ZENE}"
                     NavigationUtils.triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${id}")

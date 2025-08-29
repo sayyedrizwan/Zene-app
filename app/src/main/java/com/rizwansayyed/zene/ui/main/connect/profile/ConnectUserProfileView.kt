@@ -28,10 +28,10 @@ import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.ui.view.FullUsersShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +71,7 @@ fun ConnectUserProfileView(email: String) {
     LifecycleResumeEffect(Unit) {
         job?.cancel()
         activity?.let { InterstitialAdsUtils(it) }
-        job = lifecycleScope.launch {
+        job = lifecycleScope.safeLaunch {
             while (true) {
                 connectViewModel.connectUserInfo(email)
                 delay(9.seconds)

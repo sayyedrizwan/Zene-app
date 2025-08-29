@@ -58,11 +58,11 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
@@ -74,7 +74,7 @@ class ConnectStatusActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        readIncomingjam(intent)
+        readIncomingJam(intent)
         setContent {
             ZeneTheme {
                 val caption = remember { mutableStateOf("") }
@@ -147,7 +147,7 @@ class ConnectStatusActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        lifecycleScope.launch {
+        lifecycleScope.safeLaunch {
             val phoneNumber = DataStorageManager.userInfo.firstOrNull()?.phoneNumber
             if ((phoneNumber?.length ?: 0) <= 6) {
                 finish()
@@ -157,10 +157,10 @@ class ConnectStatusActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        readIncomingjam(intent)
+        readIncomingJam(intent)
     }
 
-    private fun readIncomingjam(intent: Intent) = lifecycleScope.launch {
+    private fun readIncomingJam(intent: Intent) = lifecycleScope.safeLaunch {
         try {
             delay(1.seconds)
             val intentJson = intent.getStringExtra(Intent.ACTION_SEND) ?: "{}"

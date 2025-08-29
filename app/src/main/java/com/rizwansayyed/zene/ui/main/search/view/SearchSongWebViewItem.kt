@@ -46,12 +46,12 @@ import com.rizwansayyed.zene.utils.URLSUtils.SHAZAM_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -107,7 +107,7 @@ fun SearchSongRecognition(close: () -> Unit) {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 delay(2.seconds)
                 withContext(Dispatchers.Main) {
                     scrollWebViewRepeatedly(view, times = 3, delay = 500)
@@ -117,7 +117,7 @@ fun SearchSongRecognition(close: () -> Unit) {
             }
             detectWhenIsSongFound(view)
             job?.cancel()
-            job = coroutine.launch(Dispatchers.Main) {
+            job = coroutine.safeLaunch(Dispatchers.Main) {
                 while (true) {
                     delay(2.seconds)
                     if (view?.url?.contains("https://www.shazam.com/song/") == true) {

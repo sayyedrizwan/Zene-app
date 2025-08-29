@@ -49,13 +49,13 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.BlackTransparent
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
@@ -237,7 +237,7 @@ fun ArtistsView(artistsID: String) {
         context?.let { InterstitialAdsUtils(it) }
 
         if (viewModel.artistsInfo !is ResponseResult.Success) viewModel.artistsInfo(artistsID) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 delay(5.seconds)
                 ProcessPhoenix.triggerRebirth(context)
             }

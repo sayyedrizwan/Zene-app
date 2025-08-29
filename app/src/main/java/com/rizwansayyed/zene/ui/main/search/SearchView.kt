@@ -52,10 +52,10 @@ import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.utils.ads.nativeAdsAndroidViewMap
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -95,7 +95,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
 
             LaunchedEffect(search.value) {
                 job?.cancel()
-                job = coroutine.launch {
+                job = coroutine.safeLaunch {
                     delay(500)
                     if (showSearch != search.value) homeViewModel.searchKeywordsData(search.value)
                 }

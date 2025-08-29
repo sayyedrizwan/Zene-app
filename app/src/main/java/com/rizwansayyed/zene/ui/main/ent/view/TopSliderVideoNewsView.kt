@@ -35,10 +35,11 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
@@ -119,7 +120,7 @@ fun TopSliderVideoNewsView(news: List<ZeneMusicData?>?) {
 
         DisposableEffect(true) {
             job?.cancel()
-            job = coroutines.launch {
+            job = coroutines.safeLaunch(Dispatchers.Main) {
                 while (true) {
                     delay(4.seconds)
                     if (!pagerState.isScrollInProgress) {

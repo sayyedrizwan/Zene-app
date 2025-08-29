@@ -27,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import kotlin.time.Duration.Companion.seconds
 
@@ -79,7 +78,7 @@ class PartySongSocketModel : ViewModel() {
 
             if (myEmail != email) {
                 checkJob?.cancel()
-                checkJob = viewModelScope.launch job@{
+                checkJob = viewModelScope.safeLaunch job@{
                     delay(1.seconds)
                     try {
                         val json = moshi.adapter(ZeneMusicData::class.java).fromJson(message)

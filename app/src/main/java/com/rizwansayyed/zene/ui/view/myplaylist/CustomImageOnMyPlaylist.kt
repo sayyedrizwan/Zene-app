@@ -62,9 +62,10 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.CircularLoadingViewSmall
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -197,7 +198,7 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                         searchText,
                         {
                             if (it.length <= 30) {
-                                if (searchText.length >= 3) coroutine.launch {
+                                if (searchText.length >= 3) coroutine.safeLaunch(Dispatchers.Main) {
                                     viewModel.searchImage(it)
                                     state.animateScrollToItem(5)
                                 }
@@ -255,7 +256,7 @@ fun CustomImageOnMyPlaylist(data: ZeneMusicData, close: (Boolean) -> Unit) {
                                         Modifier
                                             .fillMaxSize()
                                             .clickable {
-                                                coroutine.launch {
+                                                coroutine.safeLaunch(Dispatchers.Main) {
                                                     focusManager.clearFocus()
                                                     playlistThumbnail = it.toUri()
                                                     state.animateScrollToItem(0)

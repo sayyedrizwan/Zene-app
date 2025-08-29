@@ -24,12 +24,12 @@ import com.rizwansayyed.zene.ui.main.home.view.HomeRadioView
 import com.rizwansayyed.zene.ui.main.home.view.HomeScreenTopView
 import com.rizwansayyed.zene.ui.main.home.view.HomeVideoView
 import com.rizwansayyed.zene.ui.main.lux.LuxView
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -67,7 +67,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
 
     LaunchedEffect(Unit) {
         homeViewModel.homeRecentData {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 delay(5.seconds)
                 ProcessPhoenix.triggerRebirth(context)
             }

@@ -41,8 +41,8 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +78,7 @@ fun LoginEmailSheet(viewModel: LoginManagerViewModel, close: () -> Unit) {
                     keyboardActions = KeyboardActions {
                         if (userEmail.trim().length > 3 && userEmail.trim().contains("@")) {
                             focusManager.clearFocus()
-                            coroutine.launch {
+                            coroutine.safeLaunch {
                                 signInWithEmailAddress = flowOf(userEmail)
                             }
                             viewModel.startEmailLogin(userEmail)
@@ -100,7 +100,7 @@ fun LoginEmailSheet(viewModel: LoginManagerViewModel, close: () -> Unit) {
                         if (userEmail.trim().length > 3 && userEmail.trim().contains("@")) {
                             IconButton({
                                 focusManager.clearFocus()
-                                coroutine.launch {
+                                coroutine.safeLaunch {
                                     signInWithEmailAddress = flowOf(userEmail)
                                 }
                                 viewModel.startEmailLogin(userEmail)

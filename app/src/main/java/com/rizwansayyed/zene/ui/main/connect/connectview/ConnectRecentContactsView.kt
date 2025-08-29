@@ -49,8 +49,8 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -168,7 +168,7 @@ fun ConnectRecentContactsView() {
         }
         Spacer(Modifier.width(14.dp))
         Box(Modifier.clickable {
-            coroutine.launch {
+            coroutine.safeLaunch {
                 val email = DataStorageManager.userInfo.firstOrNull()?.email
                 NavigationUtils.triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE${email}")
             }

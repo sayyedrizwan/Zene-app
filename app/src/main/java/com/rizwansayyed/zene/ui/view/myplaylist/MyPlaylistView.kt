@@ -56,6 +56,7 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.refreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -63,7 +64,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -259,10 +259,10 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                     },
                     {
                         deleteView = false
-                        coroutines.launch {
+                        coroutines.safeLaunch {
                             v.data.id?.let { myLibraryViewModel.deleteMyPlaylist(it) }
                             delay(500)
-                            CoroutineScope(Dispatchers.IO).launch {
+                            CoroutineScope(Dispatchers.IO).safeLaunch {
                                 delay(1.seconds)
                                 refreshPlaylistState()
                                 if (isActive) cancel()

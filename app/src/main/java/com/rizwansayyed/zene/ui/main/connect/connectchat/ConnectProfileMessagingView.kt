@@ -58,13 +58,14 @@ import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.clearAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.clearConversationNotification
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectSocketChatViewModel
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
@@ -117,7 +118,7 @@ fun ConnectProfileMessagingView(
                                 .clip(RoundedCornerShape(14.dp))
                                 .background(Color.Red)
                                 .clickable {
-                                    coroutine.launch {
+                                    coroutine.safeLaunch(Dispatchers.Main) {
                                         state.animateScrollToItem(0)
                                     }
                                 }
@@ -140,7 +141,7 @@ fun ConnectProfileMessagingView(
                                 .clip(RoundedCornerShape(14.dp))
                                 .background(Color.Red)
                                 .clickable {
-                                    coroutine.launch {
+                                    coroutine.safeLaunch(Dispatchers.Main) {
                                         state.animateScrollToItem(0)
                                     }
                                 }
@@ -254,7 +255,7 @@ fun ConnectProfileMessagingView(
 
         LaunchedEffect(viewModel.recentChatItems.size) {
             markAsReadJob?.cancel()
-            markAsReadJob = coroutine.launch {
+            markAsReadJob = coroutine.safeLaunch {
                 delay(1.seconds)
                 if (viewModel.recentChatItems.lastOrNull()?.did_read == true) {
                     viewModel.markConnectMessageToRead(user.user?.email)

@@ -27,6 +27,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.bumptech.glide.Glide
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -44,7 +45,7 @@ fun GlanceImage(img: String?, size: Int?, c: Context, h: Int = 5) {
     )
 
     LaunchedEffect(img) {
-        coroutine.launch(Dispatchers.IO) {
+        coroutine.safeLaunch {
             if (img != null) {
                 try {
                     val b = Glide.with(c).asBitmap().load(img).submit(200, 200).get()

@@ -44,12 +44,12 @@ import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.utils.MainUtils.hasPIPPermission
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
@@ -174,7 +174,7 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
     ) {
         if (lifecycle.currentState == Lifecycle.State.CREATED) {
             partyViewModel.setCallEnded()
-            lifecycleScope.launch {
+            lifecycleScope.safeLaunch(Dispatchers.Main) {
                 delay(500)
                 finishAffinity()
             }
@@ -192,7 +192,7 @@ class PartyCallActivity : FragmentActivity(), DeclinePartyCallInterface {
         checkIntent(intent)
     }
 
-    private fun checkIntent(intent: Intent) = CoroutineScope(Dispatchers.IO).launch {
+    private fun checkIntent(intent: Intent) = CoroutineScope(Dispatchers.IO).safeLaunch {
         val type = intent.getIntExtra(Intent.EXTRA_MIME_TYPES, 0)
         val code = intent.getStringExtra(Intent.EXTRA_TEXT)
         val email = intent.getStringExtra(Intent.EXTRA_EMAIL) ?: ""

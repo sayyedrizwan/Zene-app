@@ -56,10 +56,11 @@ import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 val delimiters = arrayOf(",", "&", " and ", " | ")
@@ -106,7 +107,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                 Spacer(Modifier.weight(1f))
 
                 if (!isPremium) LuxCards {
-                    coroutines.launch {
+                    coroutines.safeLaunch {
                         triggerHomeNav(NAV_MAIN_PAGE)
                         delay(500)
                         navViewModel.setHomeSections(HomeSectionSelector.LUX)
@@ -207,7 +208,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
 
         LaunchedEffect(player?.data?.id) {
             val i = player?.lists?.indexOfFirst { it?.id == player?.data?.id }
-            coroutines.launch {
+            coroutines.safeLaunch(Dispatchers.Main) {
                 try {
                     pagerState.animateScrollToPage(i ?: 0)
                 } catch (_: Exception) {

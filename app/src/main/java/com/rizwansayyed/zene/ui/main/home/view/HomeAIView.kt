@@ -26,11 +26,11 @@ import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -134,7 +134,7 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
 
     LaunchedEffect(Unit) {
         homeViewModel.trendingAIMusic {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 delay(5.seconds)
                 ProcessPhoenix.triggerRebirth(context)
             }

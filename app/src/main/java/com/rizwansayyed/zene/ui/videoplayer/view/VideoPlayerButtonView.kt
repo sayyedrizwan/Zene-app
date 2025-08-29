@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextWithBgAndBorder
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -54,21 +55,21 @@ fun VideoPlayerButtonView(viewModel: PlayingVideoInfoViewModel) {
         R.string.fourteen_forty_eighty_p,
         if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
     ) {
-        coroutine.launch { videoQualityDB = flowOf(VideoQualityEnum.`1440`) }
+        coroutine.safeLaunch { videoQualityDB = flowOf(VideoQualityEnum.`1440`) }
         viewModel.loadWebView(false)
     }
     Spacer(Modifier.height(14.dp))
     ButtonWithBorder(
         R.string.seven_twenty_p, if (quality == VideoQualityEnum.`720`) Color.White else Color.Gray
     ) {
-        coroutine.launch { videoQualityDB = flowOf(VideoQualityEnum.`720`) }
+        coroutine.safeLaunch { videoQualityDB = flowOf(VideoQualityEnum.`720`) }
         viewModel.loadWebView(false)
     }
     Spacer(Modifier.height(14.dp))
     ButtonWithBorder(
         R.string.four_eighty_p, if (quality == VideoQualityEnum.`480`) Color.White else Color.Gray
     ) {
-        coroutine.launch { videoQualityDB = flowOf(VideoQualityEnum.`480`) }
+        coroutine.safeLaunch { videoQualityDB = flowOf(VideoQualityEnum.`480`) }
         viewModel.loadWebView(false)
     }
     Spacer(Modifier.height(14.dp))

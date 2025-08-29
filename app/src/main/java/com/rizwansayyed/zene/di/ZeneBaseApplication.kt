@@ -1,21 +1,12 @@
 package com.rizwansayyed.zene.di
 
-import android.app.Activity
 import android.app.Application
-import android.content.Intent
-import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.emoji2.bundled.BundledEmojiCompatConfig
-import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.service.player.PlayerForegroundService
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +15,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -39,7 +29,7 @@ class ZeneBaseApplication : Application() {
         var isPlayerLoaded = false
 
         fun startDefaultMedia() {
-            if (!isPlayerLoaded) CoroutineScope(Dispatchers.IO).launch {
+            if (!isPlayerLoaded) CoroutineScope(Dispatchers.IO).safeLaunch {
                 delay(6.seconds)
                 try {
                     val data = DataStorageManager.musicPlayerDB.firstOrNull()

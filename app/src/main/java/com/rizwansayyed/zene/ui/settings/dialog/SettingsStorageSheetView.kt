@@ -38,8 +38,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
@@ -196,7 +196,7 @@ fun SettingsStorageSheetView(close: () -> Unit) {
                         TextViewNormal(stringResource(R.string.clear_app_cache))
                         Spacer(modifier = Modifier.weight(1f))
                         ButtonWithBorder(R.string.clear) {
-                            coroutine.launch {
+                            coroutine.safeLaunch {
                                 context.cacheDir.deleteRecursively()
                                 delay(1.seconds)
                                 close()

@@ -66,11 +66,10 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -284,7 +283,7 @@ fun CreateAPlaylistsView(
                         is ResponseResult.Success -> {
                             if (v.data.isExpire == true) {
                                 LaunchedEffect(Unit) {
-                                    CoroutineScope(Dispatchers.IO).launch {
+                                    CoroutineScope(Dispatchers.IO).safeLaunch {
                                         ProcessPhoenix.triggerRebirth(context)
                                     }
                                 }

@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.ui.main.connect.profile
 
 import android.Manifest
 import android.location.Geocoder
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -75,11 +74,11 @@ import com.rizwansayyed.zene.utils.BioAuthMetric
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenPlaylistOnConnect
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.shareConnectURL
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
@@ -130,7 +129,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
                     ) {
                         Box {
                             ImageWithBorder(R.drawable.ic_message_multiple) {
-                                coroutine.launch {
+                                coroutine.safeLaunch {
                                     val lock = DataStorageManager.lockChatSettings(data.user.email)
                                         .firstOrNull()
                                     if (lock == true) {
@@ -307,7 +306,7 @@ fun ConnectProfileDetailsView(data: ConnectUserInfoResponse, viewModel: ConnectV
 
     LaunchedEffect(data.isConnected()) {
         if (doOpenChatOnConnect) {
-            coroutine.launch {
+            coroutine.safeLaunch {
                 val lock = DataStorageManager.lockChatSettings(data.user?.email ?: "").firstOrNull()
                 if (lock == true) {
                     bioAuthMetric.checkAuth { auth ->

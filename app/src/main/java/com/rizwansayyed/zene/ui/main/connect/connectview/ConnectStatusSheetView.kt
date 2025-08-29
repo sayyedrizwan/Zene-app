@@ -39,11 +39,10 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.HorizontalCircleShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -182,7 +181,7 @@ fun ConnectStatusView(connectViewModel: ConnectViewModel) {
 
     LifecycleResumeEffect(Unit) {
         job?.cancel()
-        job = coroutines.launch(Dispatchers.IO) {
+        job = coroutines.safeLaunch {
             while (true) {
                 connectViewModel.connectFriendsList()
                 delay(15.seconds)

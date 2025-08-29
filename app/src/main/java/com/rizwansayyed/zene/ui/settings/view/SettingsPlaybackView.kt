@@ -31,8 +31,8 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsPlaybackView() {
@@ -49,17 +49,17 @@ fun SettingsPlaybackView() {
     Spacer(Modifier.height(13.dp))
 
     SettingsSwitchView(autoPausePlayer, R.string.auto_pause_song, R.string.auto_pause_song_desc) {
-        coroutine.launch { autoPausePlayerSettings = flowOf(it) }
+        coroutine.safeLaunch { autoPausePlayerSettings = flowOf(it) }
     }
 
     SettingsSwitchView(
         smoothSongTransition, R.string.smooth_song_transition, R.string.smooth_song_transition_desc
     ) {
-        coroutine.launch { smoothSongTransitionSettings = flowOf(it) }
+        coroutine.safeLaunch { smoothSongTransitionSettings = flowOf(it) }
     }
 
     SettingsSwitchView(pauseHistory, R.string.pause_history, R.string.pause_history_desc) {
-        coroutine.launch { pauseHistorySettings = flowOf(it) }
+        coroutine.safeLaunch { pauseHistorySettings = flowOf(it) }
     }
 }
 

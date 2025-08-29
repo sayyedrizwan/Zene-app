@@ -24,12 +24,12 @@ import com.rizwansayyed.zene.utils.MainUtils.openShareConnectShareSMS
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -87,7 +87,7 @@ fun UserContactInfo(user: ContactData) {
         }
 
         ButtonWithBorder(R.string.invite) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 val username = DataStorageManager.userInfo.firstOrNull()?.username
                 openShareConnectShareSMS(connectShareURL(username!!), user.number)
 

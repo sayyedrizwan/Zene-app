@@ -33,12 +33,13 @@ import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -60,7 +61,7 @@ fun VideoPlayerVideoView(
         @JavascriptInterface
         fun videoInfo(title: String, author: String, videoId: String) {
             viewModel.setVideoInfo(title, author, videoId)
-            coroutine.launch {
+            coroutine.safeLaunch(Dispatchers.Main) {
                 if (videoCCDB.first())
                     viewModel.webView?.evaluateJavascript("enableCaption()", null)
                 else
@@ -121,7 +122,7 @@ fun VideoPlayerVideoView(
         PlayerForegroundService.getPlayerS()?.pause()
         playerViewModel.likedMediaItem(videoID, MusicDataTypes.VIDEOS)
         job?.cancel()
-        job = coroutine.launch {
+        job = coroutine.safeLaunch {
             while (true) {
                 viewModel.webView?.evaluateJavascript("playingStatus();", null)
                 delay(500)

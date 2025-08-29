@@ -8,9 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
@@ -91,7 +91,7 @@ class PartyViewModel : ViewModel() {
 
     fun startJob() {
         jobCallCancel?.cancel()
-        jobCallCancel = viewModelScope.launch {
+        jobCallCancel = viewModelScope.safeLaunch {
             delay(35.seconds)
             noCallAnswered = true
             setCallEnded()

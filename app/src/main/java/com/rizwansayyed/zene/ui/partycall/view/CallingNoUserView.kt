@@ -25,12 +25,12 @@ import com.rizwansayyed.zene.ui.partycall.PartyViewModel
 import com.rizwansayyed.zene.ui.view.ImageWithBgRound
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.utils.MainUtils.vibratePhone
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -66,7 +66,7 @@ fun CallingNoUserView(partyViewModel: PartyViewModel, txt: Int) {
                 R.drawable.ic_calling, Color.Green.copy(0.5f), Color.White
             ) {
                 activity?.finish()
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.IO).safeLaunch {
                     delay(500)
                     Intent(activity, PartyCallActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK

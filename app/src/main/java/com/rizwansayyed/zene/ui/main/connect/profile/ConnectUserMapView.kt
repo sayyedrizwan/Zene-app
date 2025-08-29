@@ -33,7 +33,8 @@ import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.ui.main.connect.MapMarkerUI
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapLocation
-import kotlinx.coroutines.launch
+import com.rizwansayyed.zene.utils.safeLaunch
+import kotlinx.coroutines.Dispatchers
 
 
 private val mapUISettings = MapUiSettings(
@@ -82,7 +83,7 @@ fun ConnectUserMapView(user: ConnectUserResponse?) {
                 currentLatLng =
                     LatLng(currentLatLng?.latitude ?: 0.0, currentLatLng?.longitude ?: 0.0)
                 locationZoom = 18f
-                coroutine.launch {
+                coroutine.safeLaunch(Dispatchers.Main) {
                     val p = CameraUpdateFactory.newCameraPosition(
                         CameraPosition(currentLatLng!!, locationZoom, 0f, 0f)
                     )

@@ -54,12 +54,12 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FAQ_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_HOME
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_POLICY_URL
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.stopAppService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -269,11 +269,11 @@ fun logout(context: Context) {
     clearImagesCache()
 
     stopAppService(context)
-    CoroutineScope(Dispatchers.IO).launch {
+    CoroutineScope(Dispatchers.IO).safeLaunch {
         FirebaseMessaging.getInstance().deleteToken()
     }
 
-    CoroutineScope(Dispatchers.IO).launch {
+    CoroutineScope(Dispatchers.IO).safeLaunch {
         triggerHomeNav(NAV_MAIN_PAGE)
         DataStorageManager.userInfo = flowOf(null)
     }

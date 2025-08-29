@@ -530,11 +530,11 @@ object MainUtils {
     }
 
     fun clearImagesCache() {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch {
             Glide.get(context).clearMemory()
             if (isActive) cancel()
         }
-        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             Glide.get(context).clearDiskCache()
             if (isActive) cancel()
         }

@@ -82,11 +82,12 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.ShareContentUtils
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.generateShareUrl
 import com.rizwansayyed.zene.utils.share.SharingContentType
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -198,7 +199,7 @@ fun ShowSharingImageSlider(modifier: Modifier, view: ComposeView, data: ZeneMusi
                             }
 
                             if (pagerState.canScrollForward) ImageWithBorder(R.drawable.ic_arrow_right) {
-                                coroutine.launch {
+                                coroutine.safeLaunch(Dispatchers.Main) {
                                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                 }
                             }

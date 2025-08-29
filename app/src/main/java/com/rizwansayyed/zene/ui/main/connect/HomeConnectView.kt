@@ -34,15 +34,13 @@ import com.rizwansayyed.zene.ui.main.connect.connectview.ConnectStatusView
 import com.rizwansayyed.zene.ui.main.connect.view.LocationPermissionView
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.MainUtils.isLocationPermissionGranted
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
-import com.rizwansayyed.zene.viewmodel.NavigationViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -104,13 +102,13 @@ fun HomeConnectView() {
 
         LifecycleResumeEffect(Unit, locationPermission) {
             job?.cancel()
-            if (isLocationPermissionGranted()) coroutines.launch(Dispatchers.IO) {
+            if (isLocationPermissionGranted()) coroutines.safeLaunch {
                 backgroundLocation.start()
                 currentLatLngUser = LatLng(updateLocationLat, updateLocationLon)
                 currentLatLng = LatLng(updateLocationLat, updateLocationLon)
                 locationZoom = 14f
 
-                job = coroutines.launch(Dispatchers.IO) {
+                job = coroutines.safeLaunch {
                     while (true) {
                         if (currentLatLng?.latitude == 0.0 && currentLatLng?.longitude == 0.0) {
                             currentLatLng = null
@@ -124,7 +122,7 @@ fun HomeConnectView() {
                 }
 
                 if (isActive) cancel()
-            } else coroutines.launch(Dispatchers.IO) {
+            } else coroutines.safeLaunch {
                 val ip = ipDB.firstOrNull()
                 currentLatLng = LatLng(ip?.lat ?: 0.0, ip?.lon ?: 0.0)
                 locationZoom = 11f

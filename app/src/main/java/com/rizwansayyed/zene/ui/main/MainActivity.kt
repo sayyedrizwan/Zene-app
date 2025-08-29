@@ -87,17 +87,16 @@ import com.rizwansayyed.zene.utils.MainUtils.configClarity
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
 import com.rizwansayyed.zene.utils.share.IntentCheckUtils
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
-
-// Add Singles/Albums after all like 2021 • Singles/Albums
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -231,10 +230,10 @@ class MainActivity : FragmentActivity() {
                         delay(500)
                         setNavigationCallback(object : HomeNavigationListener {
                             override fun navigate(path: String) {
-                                lifecycleScope.launch {
+                                lifecycleScope.safeLaunch(Dispatchers.Main) {
                                     if (path == NAV_GO_BACK) {
                                         navController.popBackStack()
-                                        return@launch
+                                        return@safeLaunch
                                     }
 
                                     navigationViewModel.setMusicPlayer(false)

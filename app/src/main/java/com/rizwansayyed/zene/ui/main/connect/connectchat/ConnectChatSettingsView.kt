@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager
@@ -44,10 +43,9 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.BioAuthMetric
-import com.rizwansayyed.zene.viewmodel.ConnectChatViewModel
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 
 data class ExpiryTime(val text: String, val minutes: Int)
 
@@ -111,14 +109,14 @@ fun ConnectChatSettingsView(
                     bioAuthMetric.checkAuth { auth ->
                         if (!auth) return@checkAuth
                         lockChatSettings = true
-                        coroutines.launch {
-                            DataStorageManager.lockChatSettings(response.user?.email ?: "", true)
+                        coroutines.safeLaunch {
+                            DataStorageManager.lockChatSettings(response.user?.email ?: "", true).firstOrNull()
                         }
                     }
                 }
                 lockChatSettings = false
-                coroutines.launch {
-                    DataStorageManager.lockChatSettings(response.user?.email ?: "", false)
+                coroutines.safeLaunch {
+                    DataStorageManager.lockChatSettings(response.user?.email ?: "", false).firstOrNull()
                 }
             }
 

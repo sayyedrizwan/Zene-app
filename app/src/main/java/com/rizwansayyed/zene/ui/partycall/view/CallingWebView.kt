@@ -22,10 +22,10 @@ import com.rizwansayyed.zene.utils.MainUtils.getRawFolderString
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -58,7 +58,7 @@ fun CallingWebView(myName: String, photo: String, viewModel: PartyViewModel) {
         @JavascriptInterface
         fun callEnded() {
             viewModel.setCallEnded()
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 delay(500)
                 activity?.finishAffinity()
             }

@@ -5,9 +5,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
@@ -24,7 +24,7 @@ fun SettingsUpdateVersionView(modifier: Modifier = Modifier) {
 }
 
 fun getLatestVersionFromPlayStore(packageName: String, onResult: (String?) -> Unit) {
-    CoroutineScope(Dispatchers.IO).launch {
+    CoroutineScope(Dispatchers.IO).safeLaunch {
         try {
             val url = "https://play.google.com/store/apps/details?id=$packageName&hl=en&gl=us"
 

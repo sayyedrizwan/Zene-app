@@ -52,13 +52,13 @@ import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PLAYLIST_ALBUMS
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType.PODCAST
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateHomeScreenShortcut
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 enum class PlaylistsType(val type: String) {
@@ -169,7 +169,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
 
         if (type == PODCAST) {
             if (homeViewModel.playlistsData !is ResponseResult.Success) homeViewModel.podcastData(id) {
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.IO).safeLaunch {
                     delay(5.seconds)
                     ProcessPhoenix.triggerRebirth(context)
                 }
@@ -185,7 +185,7 @@ fun PlaylistView(id: String, type: PlaylistsType) {
         if (type == PLAYLIST_ALBUMS) {
             if (homeViewModel.playlistsData !is ResponseResult.Success) {
                 homeViewModel.playlistsData(id) {
-                    CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(Dispatchers.IO).safeLaunch {
                         delay(5.seconds)
                         ProcessPhoenix.triggerRebirth(context)
                     }

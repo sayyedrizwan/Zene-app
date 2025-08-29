@@ -63,6 +63,7 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.ConnectViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -206,7 +207,7 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
 
     LaunchedEffect(Unit) {
         val count = 25
-        coroutines.launch(Dispatchers.IO) {
+        coroutines.safeLaunch {
             val retriever = MediaMetadataRetriever()
             retriever.setDataSource(vibeVideoFile.absolutePath)
 
@@ -229,7 +230,7 @@ fun VideoEditorDialog(viewModel: ConnectViewModel, close: () -> Unit) {
 
     DisposableEffect(Unit) {
         exoplayerDurationJob?.cancel()
-        exoplayerDurationJob = coroutines.launch(Dispatchers.Main) {
+        exoplayerDurationJob = coroutines.safeLaunch(Dispatchers.Main) {
             while (true) {
                 if (exoPlayer.currentPosition > end || exoPlayer.currentPosition < start) {
                     exoPlayer.seekTo(start.toLong())
