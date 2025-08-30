@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.player.utils
 import android.app.ActivityManager
 import android.content.Context.ACTIVITY_SERVICE
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -52,9 +53,8 @@ class ForegroundAppStateManager(private val context: PlayerForegroundService) {
 
                 val isAppInForeground = runningTasks?.isNotEmpty() == true &&
                         runningTasks[0].topActivity?.packageName == context.packageName
-                if (!isAppInForeground) context.clearAll()
+                if (!isAppInForeground) context.clearAll(5)
             }
         }
     }
-
 }

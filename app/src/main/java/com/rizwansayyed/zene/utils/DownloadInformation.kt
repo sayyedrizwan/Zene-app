@@ -54,7 +54,7 @@ class DownloadInformation(private val url: String, private val name: String) {
 
     private fun monitorDownloadProgress() {
         downloadID?.let { id ->
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 var isDownloading = true
                 while (isDownloading) {
                     val query = DownloadManager.Query().setFilterById(id)

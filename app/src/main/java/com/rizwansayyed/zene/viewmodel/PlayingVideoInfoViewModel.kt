@@ -104,7 +104,8 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         setQualityAndLoad()
     }
 
-    private fun loadMainVideo(startNew: Boolean) = CoroutineScope(Dispatchers.Main).launch {
+    private fun loadMainVideo(startNew: Boolean) =
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         val lastDuration = if (startNew) 0 else videoCurrentTimestamp
         val htmlContent = getRawFolderString(R.raw.yt_video_player)
         val speed = videoSpeedDB.first().name.replace("_", ".")
@@ -117,7 +118,8 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         )
     }
 
-    private fun setQualityAndLoad() = CoroutineScope(Dispatchers.Main).launch {
+    private fun setQualityAndLoad() =
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         val htmlContent = getRawFolderString(R.raw.yt_player_quality)
         val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
 

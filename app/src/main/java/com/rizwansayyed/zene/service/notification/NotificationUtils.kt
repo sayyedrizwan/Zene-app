@@ -19,6 +19,7 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.getAGroupMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.getNameGroupName
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -79,7 +80,7 @@ class NotificationUtils(
     }
 
     @SuppressLint("MissingPermission")
-    fun generate() = CoroutineScope(Dispatchers.IO).launch {
+    fun generate() = CoroutineScope(Dispatchers.IO).safeLaunch {
         val pendingIntent = PendingIntent.getActivity(
             context, (11..999).random(), intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT

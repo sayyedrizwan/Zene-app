@@ -18,13 +18,13 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.view.ButtonWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.URLSUtils
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun SearchSongListeningTextView(
@@ -102,7 +102,8 @@ fun simulateTapOnWebView(webView: WebView, x: Float, y: Float) {
     }
 }
 
-fun clickButtonToStart(view: WebView?) = CoroutineScope(Dispatchers.Main).launch {
+fun clickButtonToStart(view: WebView?) =
+    CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
     view?.evaluateJavascript(
         """
     (function() {
@@ -200,7 +201,7 @@ fun removeYoutubeTopView(view: WebView?, done: () -> Unit) {
     """.trimIndent()
 
     view?.evaluateJavascript(js) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             delay(700)
             done()
             if (isActive) cancel()

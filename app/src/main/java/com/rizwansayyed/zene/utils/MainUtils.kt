@@ -311,7 +311,7 @@ object MainUtils {
 
     val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()!!
 
-    fun Any.toast() = CoroutineScope(Dispatchers.Main).launch {
+    fun Any.toast() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         Toast.makeText(context, this@toast.toString(), Toast.LENGTH_LONG).show()
         if (isActive) cancel()
     }
@@ -335,10 +335,10 @@ object MainUtils {
         return location == PackageManager.PERMISSION_GRANTED
     }
 
-    fun configClarity(activity: MainActivity) = CoroutineScope(Dispatchers.Main).launch {
+    fun configClarity(activity: MainActivity) = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         val info = withContext(Dispatchers.IO) { DataStorageManager.userInfo.firstOrNull() }
         if (info?.isLoggedIn() == false) {
-            return@launch
+            return@safeLaunch
         }
 
         val config = ClarityConfig(
@@ -530,7 +530,7 @@ object MainUtils {
     }
 
     fun clearImagesCache() {
-        CoroutineScope(Dispatchers.Main).safeLaunch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             Glide.get(context).clearMemory()
             if (isActive) cancel()
         }
@@ -584,8 +584,8 @@ object MainUtils {
     }
 
     fun addRemoveSearchHistory(text: String, add: Boolean = true) =
-        CoroutineScope(Dispatchers.IO).launch {
-            if (text.trim().length < 3) return@launch
+        CoroutineScope(Dispatchers.IO).safeLaunch {
+            if (text.trim().length < 3) return@safeLaunch
             val list = ArrayList<String>(30)
             val db = searchHistoryDB.firstOrNull()
             db?.forEach { if (it != text) list.add(it) }
@@ -596,7 +596,7 @@ object MainUtils {
         }
 
 
-    fun clearCacheIfSizeIsMoreThen200MB() = CoroutineScope(Dispatchers.IO).launch {
+    fun clearCacheIfSizeIsMoreThen200MB() = CoroutineScope(Dispatchers.IO).safeLaunch {
         fun getDirSize(dir: File?): Long {
             var size: Long = 0
             if (dir != null && dir.isDirectory) {

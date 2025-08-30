@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -42,6 +43,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.YT_WEB_BASE_URL
 import com.rizwansayyed.zene.utils.WebViewUtils.clearWebViewData
 import com.rizwansayyed.zene.utils.WebViewUtils.enable
 import com.rizwansayyed.zene.utils.WebViewUtils.killWebViewData
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.TEMP_ZENE_MUSIC_DATA_LIST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -103,7 +105,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             "ACTION_STOP_SERVICE" -> {
-                clearAll()
+                clearAll(1)
                 return START_NOT_STICKY
             }
         }
@@ -118,17 +120,18 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         playSongs(isNew)
         errorReRun = 0
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             currentPlayingSong?.let { zeneAPI.addHistory(it).catch { }.collectLatest { } }
             if (isActive) cancel()
         }
 
-        foregroundAppStateManager.startActivityStateMonitoring()
+//        foregroundAppStateManager.startActivityStateMonitoring()
 
         return START_STICKY
     }
 
-    fun playSongs(new: Boolean, isRetry: Boolean = false) = CoroutineScope(Dispatchers.IO).launch {
+    fun playSongs(new: Boolean, isRetry: Boolean = false) =
+        CoroutineScope(Dispatchers.IO).safeLaunch {
         if (!isRetry) isNew = new
         searchingSongJob?.cancel()
         clearCache()
@@ -140,7 +143,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (currentPlayingSong?.type() == MusicDataTypes.SONGS) {
             getSimilarSongInfo()
             loadAVideo(currentPlayingSong?.id)
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
                 exoPlayerSession.stop()
             }
             registerEvents(FirebaseEventsParams.PLAYED_SONG)
@@ -163,7 +166,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     inner class WebAppInterface {
         @JavascriptInterface
         fun videoState(playerState: Int, currentTS: String, duration: String, playSpeed: String) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 val isSmooth = smoothSongTransitionSettings.firstOrNull() == true
 
                 val state = YoutubePlayerState.entries.first { it.v == playerState }
@@ -210,7 +213,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         @JavascriptInterface
         fun videoUnAvailable() {
             searchingSongJob?.cancel()
-            searchingSongJob = CoroutineScope(Dispatchers.IO).launch {
+            searchingSongJob = CoroutineScope(Dispatchers.IO).safeLaunch {
                 GetLatestYTMusicIDAPI({
                     playWithNewID(it)
                 }).readLocalID()
@@ -223,7 +226,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         playerService = this
         EmptyServiceNotification.generate(this)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             WebView(this@PlayerForegroundService).apply {
                 enable()
                 addJavascriptInterface(WebAppInterface(), "Zene")
@@ -232,7 +235,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             }
         }
 
-        durationJob = CoroutineScope(Dispatchers.Main).launch {
+        durationJob = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             while (true) {
                 delay(500)
                 if (currentPlayingSong?.type() == MusicDataTypes.SONGS)
@@ -241,14 +244,15 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             musicPlayerDB.catch { }.collectLatest {
                 songsLists = it?.lists?.toTypedArray() ?: emptyArray()
             }
         }
     }
 
-    private fun loadAVideo(videoID: String?) = CoroutineScope(Dispatchers.Main).launch {
+    private fun loadAVideo(videoID: String?) =
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         val htmlContent = getRawFolderString(R.raw.yt_music_player)
         val speed = songSpeedDB.first().name.replace("_", ".")
 
@@ -278,7 +282,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
-    private fun loadVideoQuality() = CoroutineScope(Dispatchers.Main).launch {
+    private fun loadVideoQuality() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         val htmlContent = getRawFolderString(R.raw.yt_player_quality)
         val c = htmlContent.replace("<<Quality>>", "144")
 
@@ -287,7 +291,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         )
     }
 
-    private fun saveEmpty(list: List<ZeneMusicData?>) = CoroutineScope(Dispatchers.IO).launch {
+    private fun saveEmpty(list: List<ZeneMusicData?>) = CoroutineScope(Dispatchers.IO).safeLaunch(Dispatchers.Main) {
         val finalList = ArrayList<ZeneMusicData?>().apply {
             if (!list.any { it?.id == currentPlayingSong?.id }) add(currentPlayingSong)
             addAll(list)
@@ -300,11 +304,11 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
-    private fun getSimilarSongInfo() = CoroutineScope(Dispatchers.IO).launch {
-        currentPlayingSong ?: return@launch
+    private fun getSimilarSongInfo() = CoroutineScope(Dispatchers.IO).safeLaunch {
+        currentPlayingSong ?: return@safeLaunch
 
         saveEmpty(songsLists.asList())
-        if (songsLists.size > 1) return@launch
+        if (songsLists.size > 1) return@safeLaunch
 
         try {
             val lists = zeneAPI.similarPlaylistsSongs(currentPlayingSong!!.id).firstOrNull()
@@ -315,11 +319,11 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
-    private fun getSimilarAISongInfo() = CoroutineScope(Dispatchers.IO).launch {
-        currentPlayingSong ?: return@launch
+    private fun getSimilarAISongInfo() = CoroutineScope(Dispatchers.IO).safeLaunch {
+        currentPlayingSong ?: return@safeLaunch
 
         saveEmpty(songsLists.asList())
-        if (songsLists.size > 1) return@launch
+        if (songsLists.size > 1) return@safeLaunch
 
         try {
             val lists = zeneAPI.similarAISongs(currentPlayingSong!!.artists).firstOrNull()
@@ -330,8 +334,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
-    private fun getMediaPlayerPath() = CoroutineScope(Dispatchers.IO).launch {
-        currentPlayingSong ?: return@launch
+    private fun getMediaPlayerPath() = CoroutineScope(Dispatchers.IO).safeLaunch {
+        currentPlayingSong ?: return@safeLaunch
         saveEmpty(songsLists.asList())
         try {
             val path = zeneAPI.podcastMediaURL(currentPlayingSong!!.id).firstOrNull()
@@ -342,8 +346,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
-    private fun getRadioPlayerPath() = CoroutineScope(Dispatchers.IO).launch {
-        currentPlayingSong ?: return@launch
+    private fun getRadioPlayerPath() = CoroutineScope(Dispatchers.IO).safeLaunch {
+        currentPlayingSong ?: return@safeLaunch
         saveEmpty(songsLists.asList())
         try {
             val path = zeneAPI.radioMediaURL(currentPlayingSong!!.id).firstOrNull()
@@ -354,8 +358,8 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         if (isActive) cancel()
     }
 
-    private fun getAIMusicPlayerPath() = CoroutineScope(Dispatchers.IO).launch {
-        currentPlayingSong ?: return@launch
+    private fun getAIMusicPlayerPath() = CoroutineScope(Dispatchers.IO).safeLaunch {
+        currentPlayingSong ?: return@safeLaunch
         saveEmpty(songsLists.asList())
         try {
             val path = zeneAPI.aiMusicMediaURL(currentPlayingSong!!.id).firstOrNull()
@@ -368,16 +372,19 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun onDestroy() {
         super.onDestroy()
-        clearAll()
+        clearAll(2)
     }
 
     @Suppress("DEPRECATION")
-    fun clearAll() {
-        pause()
-        mediaSession.forceStop()
-        exoPlayerSession.destroy()
+    fun clearAll(int: Int) {
+        Log.d("TAG", "forceStop: eeeee ${int}")
+        CoroutineScope(Dispatchers.IO).safeLaunch(Dispatchers.IO) {
+            pause()
+            mediaSession.forceStop()
+            exoPlayerSession.destroy()
+        }
         durationJob?.cancel()
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             playerWebView?.let {
                 clearWebViewData(it)
                 killWebViewData(it)
@@ -392,23 +399,23 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         stopSelf()
     }
 
-    fun songEnded() = CoroutineScope(Dispatchers.IO).launch {
+    fun songEnded() = CoroutineScope(Dispatchers.IO).safeLaunch {
         if (sleepTimerSelected == SleepTimerEnum.END_OF_TRACK) {
             sleepTimerSelected = SleepTimerEnum.TURN_OFF
             sleepTimerNotification()
-            return@launch
+            return@safeLaunch
         }
 
         val autoPauseSettings = autoPausePlayerSettings.firstOrNull() == true
         if (autoPauseSettings) {
             pause()
-            return@launch
+            return@safeLaunch
         }
 
         val isLoop = isLoopDB.firstOrNull() == true
         if (isLoop) {
             playSongs(false)
-            return@launch
+            return@safeLaunch
         }
 
         toNextSong()
@@ -420,7 +427,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         sleepTimerSelected = minutes
         if (minutes == SleepTimerEnum.END_OF_TRACK) return
         if (minutes == SleepTimerEnum.TURN_OFF) return
-        sleepTimer = CoroutineScope(Dispatchers.IO).launch {
+        sleepTimer = CoroutineScope(Dispatchers.IO).safeLaunch {
             delay(minutes.time.minutes)
             pause()
             sleepTimerNotification()
@@ -430,12 +437,12 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun toNextSong() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             val isShuffle = isShuffleDB.firstOrNull() == true
             if (isShuffle) {
                 currentPlayingSong = smartShuffle.getNextSong()
                 playSongs(false)
-                return@launch
+                return@safeLaunch
             }
 
 
@@ -453,7 +460,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun toBackSong() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
             val info = if (index > 0) songsLists[index - 1] else null
             if (info != null) {
@@ -473,7 +480,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun pause() {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             exoPlayerSession.pause()
             playerWebView?.evaluateJavascript("pauseVideo();", null)
             if (isActive) cancel()
@@ -481,7 +488,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun play() {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             exoPlayerSession.play()
             playerWebView?.evaluateJavascript("playVideo();", null)
             if (isActive) cancel()
@@ -489,7 +496,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun playWithNewID(v: String) {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             if (isNew)
                 playerWebView?.evaluateJavascript("cueVideo(\"${v}\");", null)
             else
@@ -532,7 +539,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun seekTo(v: Long) {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             exoPlayerSession.seekTo(v)
             playerWebView?.evaluateJavascript("seekTo(${v});", null)
             if (isActive) cancel()
@@ -540,7 +547,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun playbackRate(v: String) {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             exoPlayerSession.playRate(v)
             playerWebView?.evaluateJavascript("playbackRate(${v});", null)
             if (isActive) cancel()
@@ -548,7 +555,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun addListsToNext(list: List<ZeneMusicData>) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch(Dispatchers.IO) {
             val index = songsLists.indexOfLast { it?.id == currentPlayingSong?.id }
 
             val arrayList = ArrayList<ZeneMusicData?>()
@@ -583,7 +590,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
             songsLists = l.toTypedArray()
         }
     }
-    fun clearCache() = CoroutineScope(Dispatchers.Main).launch {
+    fun clearCache() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         try {
             withContext(Dispatchers.Main) {
                 WebStorage.getInstance().deleteAllData()
@@ -606,6 +613,6 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        clearAll()
+        clearAll(3)
     }
 }

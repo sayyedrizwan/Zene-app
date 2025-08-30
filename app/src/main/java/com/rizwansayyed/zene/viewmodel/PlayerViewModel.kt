@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -158,7 +159,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
         lyricsJob?.cancel()
         lyricsJob = viewModelScope.safeLaunch  {
             try {
-                withTimeout(10.seconds) {
+                withTimeout(15.seconds) {
                     while (p == null) {
                         delay(1.seconds)
                         if (musicPlayerDB.firstOrNull()?.totalDuration != "0") p =
@@ -170,7 +171,8 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
                         playerLyrics = ResponseResult.Success(it)
                     }
                 }
-            } catch (_: CancellationException) {
+            } catch (e: CancellationException) {
+                playerLyrics = ResponseResult.Error(e)
             } catch (e: Exception) {
                 playerLyrics = ResponseResult.Error(e)
             }

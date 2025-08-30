@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.ui.partycall.PartyCallActivity
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAMessage
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.addAName
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.currentOpenedChatProfile
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +74,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val FCM_LAT = "lat"
         const val FCM_LON = "lon"
 
-        fun subscribeToTopicAll() = CoroutineScope(Dispatchers.IO).launch {
+        fun subscribeToTopicAll() = CoroutineScope(Dispatchers.IO).safeLaunch {
             Firebase.messaging.subscribeToTopic(FCM_TOPIC_ALL).await()
 
             val countryCode = ipDB.firstOrNull()?.countryCode
@@ -88,10 +89,10 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             delay(3.seconds)
             val data = userInfo.firstOrNull()
-            if (data?.isLoggedIn() == false) return@launch
+            if (data?.isLoggedIn() == false) return@safeLaunch
 
             zeneAPI.updateUser().catch { }.collectLatest { }
         }
@@ -139,7 +140,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun accessNewToken() = CoroutineScope(Dispatchers.IO).launch {
+    private fun accessNewToken() = CoroutineScope(Dispatchers.IO).safeLaunch {
         zeneAPI.updateUser().catch {}.collectLatest {
             userInfo = flowOf(it)
         }

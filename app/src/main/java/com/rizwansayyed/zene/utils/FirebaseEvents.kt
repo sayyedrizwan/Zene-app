@@ -19,7 +19,7 @@ object FirebaseEvents {
     }
 
 
-    fun registerEvents(events: FirebaseEventsParams) = CoroutineScope(Dispatchers.IO).launch {
+    fun registerEvents(events: FirebaseEventsParams) = CoroutineScope(Dispatchers.IO).safeLaunch {
         val email = userInfo.firstOrNull()?.email
         val name = userInfo.firstOrNull()?.name
         val firebaseAnalytics = FirebaseAnalytics.getInstance(context)

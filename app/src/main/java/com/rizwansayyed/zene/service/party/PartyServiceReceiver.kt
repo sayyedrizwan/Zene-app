@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.service.notification.clearCallNotification
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,7 @@ class PartyServiceReceiver : BroadcastReceiver() {
         val profilePhoto = i.getStringExtra(Intent.EXTRA_USER) ?: ""
         val name = i.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             zeneAPI.declinePartyCall(email).catch { }.collectLatest { }
 
             registerEvents(FirebaseEventsParams.CONNECT_CALL_DECLINE)

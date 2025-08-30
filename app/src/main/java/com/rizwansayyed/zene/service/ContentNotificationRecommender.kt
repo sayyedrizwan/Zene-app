@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.OT
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -28,7 +29,7 @@ class ContentNotificationRecommender(
         start()
     }
 
-    fun start() = CoroutineScope(Dispatchers.IO).launch {
+    fun start() = CoroutineScope(Dispatchers.IO).safeLaunch {
         zeneAPI.notificationRecommendation().catch { }.collectLatest {
             if (it.title == null && it.body == null) return@collectLatest
 
@@ -44,11 +45,11 @@ class ContentNotificationRecommender(
                     generate()
                 }
 
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.IO).safeLaunch {
                     it.ts?.let { ts -> lastNotificationGeneratedTSDB = flowOf(ts) }
                     if (isActive) cancel()
                 }
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.IO).safeLaunch {
                     it.type?.let { ts -> lastNotificationSuggestedType = flowOf(ts) }
                     if (isActive) cancel()
                 }

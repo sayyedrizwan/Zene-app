@@ -30,11 +30,11 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.VideoCardView
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,7 +84,7 @@ fun VideoPlayerSimilarView(viewModel: PlayingVideoInfoViewModel) {
 
         DisposableEffect(Unit) {
             job?.cancel()
-            job = coroutines.launch {
+            job = coroutines.safeLaunch {
                 while (true) {
                     viewModel.showControlView(true)
                     delay(1.seconds)

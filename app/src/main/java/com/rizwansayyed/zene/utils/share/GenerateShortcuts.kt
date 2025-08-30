@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_MY_LIBRARY
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PODCASTS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SEARCH
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SETTINGS
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.generateShareUrl
 import com.rizwansayyed.zene.widgets.likedsongs.LikedMediaWidgets
 import com.rizwansayyed.zene.widgets.playingsongbig.PlayingSongWidget
@@ -126,7 +127,7 @@ object GenerateShortcuts {
             ShortcutManagerCompat.pushDynamicShortcut(context, shortcutConnect)
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             PlayingSongWidget().updateAll(context)
             PlayingSongWidgetSmall().updateAll(context)
             LikedMediaWidgets().updateAll(context)

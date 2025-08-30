@@ -40,9 +40,9 @@ import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeM
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeMediaThumbnailPreviewCompressed
 import com.rizwansayyed.zene.ui.connect_status.utils.CameraUtils.Companion.vibeVideoFile
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInSeconds
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
@@ -189,7 +189,7 @@ class VideoCapturingUtils(
         }
     }
 
-    fun stopVideo() = CoroutineScope(Dispatchers.Main).launch {
+    fun stopVideo() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         vidRecording?.stop()
         vidRecording?.close()
     }

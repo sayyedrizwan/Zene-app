@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.lastLoadTimeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -39,7 +40,7 @@ class InterstitialAdsUtils(
 
     init {
         interstitialAdsJob?.cancel()
-        interstitialAdsJob = CoroutineScope(Dispatchers.IO).launch {
+        interstitialAdsJob = CoroutineScope(Dispatchers.IO).safeLaunch {
             delay(1.seconds)
             startAds()
 
@@ -51,7 +52,7 @@ class InterstitialAdsUtils(
         override fun onAdLoaded(ad: InterstitialAd) {
             super.onAdLoaded(ad)
 
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
                 val time = withContext(Dispatchers.IO) { lastLoadTimeDB.firstOrNull() }
                 if (time == null) {
                     ad.show(activity)
@@ -66,12 +67,12 @@ class InterstitialAdsUtils(
         }
     }
 
-    private fun startAds() = CoroutineScope(Dispatchers.Main).launch {
+    private fun startAds() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         val isLoggedIn = withContext(Dispatchers.IO) { userInfo.firstOrNull()?.isLoggedIn() }
-        if (BuildConfig.DEBUG) return@launch
-        if (isLoggedIn == false) return@launch
+        if (BuildConfig.DEBUG) return@safeLaunch
+        if (isLoggedIn == false) return@safeLaunch
         val isPremium = withContext(Dispatchers.IO) { isPremiumDB.firstOrNull() }
-        if (isPremium == true) return@launch
+        if (isPremium == true) return@safeLaunch
 
         val request = AdRequest.Builder().build()
         InterstitialAd.load(context, if (showSimple) simpleAdID else adID, request, listener)

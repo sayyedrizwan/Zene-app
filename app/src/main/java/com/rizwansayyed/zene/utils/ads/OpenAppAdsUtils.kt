@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.lastLoadTimeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.timeDifferenceInMinutes
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,7 +36,7 @@ class OpenAppAdsUtils(val activity: Activity) {
 
     init {
         openAdsJob?.cancel()
-        openAdsJob = CoroutineScope(Dispatchers.IO).launch {
+        openAdsJob = CoroutineScope(Dispatchers.IO).safeLaunch {
             delay(1.seconds)
             startAds()
 
@@ -46,7 +47,7 @@ class OpenAppAdsUtils(val activity: Activity) {
     private val listener = object : AppOpenAdLoadCallback() {
         override fun onAdLoaded(ad: AppOpenAd) {
             super.onAdLoaded(ad)
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
                 val time = withContext(Dispatchers.IO) { lastLoadTimeDB.firstOrNull() }
                 if (time == null) {
                     ad.show(activity)
@@ -64,12 +65,12 @@ class OpenAppAdsUtils(val activity: Activity) {
         }
     }
 
-    private fun startAds() = CoroutineScope(Dispatchers.Main).launch {
+    private fun startAds() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         val isLoggedIn = withContext(Dispatchers.IO) { userInfo.firstOrNull()?.isLoggedIn() }
-        if (BuildConfig.DEBUG) return@launch
-        if (isLoggedIn == false) return@launch
+        if (BuildConfig.DEBUG) return@safeLaunch
+        if (isLoggedIn == false) return@safeLaunch
         val isPremium = withContext(Dispatchers.IO) { isPremiumDB.firstOrNull() }
-        if (isPremium == true) return@launch
+        if (isPremium == true) return@safeLaunch
 
         val isMusicPlaying = withContext(Dispatchers.IO) {
             DataStorageManager.musicPlayerDB.firstOrNull()?.isPlaying() == true

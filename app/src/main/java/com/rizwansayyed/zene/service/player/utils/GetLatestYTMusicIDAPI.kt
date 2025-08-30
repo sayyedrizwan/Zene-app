@@ -14,20 +14,37 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.time.Duration.Companion.seconds
 
 class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
+
+    companion object {
+        private val lastRunMap = mutableMapOf<String, Long>()
+        private val COOLDOWN_MS = 3.seconds.inWholeMilliseconds
+
+        suspend fun runOnce(name: String, block: suspend () -> Unit) {
+            val now = System.currentTimeMillis()
+            val lastRun = lastRunMap[name] ?: 0L
+
+            if (now - lastRun >= COOLDOWN_MS) {
+                block()
+                lastRunMap[name] = now
+            }
+        }
+    }
 
     private val ytMusicURL = "https://music.youtube.com/youtubei/v1/search?prettyPrint=false"
     private val ytBaseURL = "https://music.youtube.com"
 
     fun readLocalID() = CoroutineScope(Dispatchers.IO).launch {
         val playerInfo = musicPlayerDB.firstOrNull()
-        val result = getSongDetailsList()
-        val videoID = findMostSuitableVideoId(
-            result, playerInfo?.data?.name ?: "", playerInfo?.data?.artists ?: "",
-        )
-
-        click(videoID ?: "")
+        runOnce(playerInfo?.data?.id ?: "") {
+            val result = getSongDetailsList()
+            val videoID = findMostSuitableVideoId(
+                result, playerInfo?.data?.name ?: "", playerInfo?.data?.artists ?: "",
+            )
+            click(videoID ?: "")
+        }
     }
 
     private suspend fun searchName(): String {
@@ -76,30 +93,36 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
         try {
             val jsonObject = JSONObject(jsonString)
 
-            val tabs =
-                jsonObject.getJSONObject("contents").getJSONObject("tabbedSearchResultsRenderer")
-                    .getJSONArray("tabs")
+            val tabs = jsonObject
+                .getJSONObject("contents")
+                .getJSONObject("tabbedSearchResultsRenderer")
+                .getJSONArray("tabs")
 
             val videos = mutableListOf<VideoInfo>()
 
             for (i in 0 until tabs.length()) {
-                val tab = tabs.getJSONObject(i).getJSONObject("tabRenderer")
-                val sectionList = tab.getJSONObject("content").getJSONObject("sectionListRenderer")
-                val contents = sectionList.getJSONArray("contents")
+                val tab = tabs.getJSONObject(i).optJSONObject("tabRenderer") ?: continue
+                val sectionList =
+                    tab.optJSONObject("content")?.optJSONObject("sectionListRenderer") ?: continue
+                val contents = sectionList.optJSONArray("contents") ?: continue
 
                 for (j in 0 until contents.length()) {
                     val content = contents.getJSONObject(j)
+
                     if (content.has("musicCardShelfRenderer")) {
                         val shelf = content.getJSONObject("musicCardShelfRenderer")
-                        val title =
-                            shelf.getJSONObject("title").getJSONArray("runs").getJSONObject(0)
-                                .getString("text")
-                        val subtitleRuns = shelf.getJSONObject("subtitle").getJSONArray("runs")
+
+                        val runs = shelf.optJSONObject("title")?.optJSONArray("runs") ?: continue
+                        val firstRun = runs.optJSONObject(0) ?: continue
+                        val title = firstRun.optString("text", "")
+
+                        val subtitleRuns =
+                            shelf.optJSONObject("subtitle")?.optJSONArray("runs") ?: continue
                         var artists = ""
                         var views = ""
 
-                        subtitleRuns.forEach { run ->
-                            val text = run.getString("text")
+                        for (k in 0 until subtitleRuns.length()) {
+                            val text = subtitleRuns.getJSONObject(k).optString("text", "")
                             if (text.contains("views")) {
                                 views = text
                             } else if (text != " • " && text != "Video" && !text.matches(Regex("\\d+:\\d+"))) {
@@ -107,39 +130,46 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
                             }
                         }
 
+                        val navEndpoint = firstRun.optJSONObject("navigationEndpoint")
                         val videoId =
-                            shelf.getJSONObject("title").getJSONArray("runs").getJSONObject(0)
-                                .getJSONObject("navigationEndpoint").getJSONObject("watchEndpoint")
-                                .getString("videoId")
+                            navEndpoint?.optJSONObject("watchEndpoint")?.optString("videoId", null)
 
-                        val viewCount = parseViewCount(views)
-
-                        videos.add(VideoInfo(videoId, title, artists, viewCount))
+                        if (videoId != null) {
+                            val viewCount = parseViewCount(views)
+                            videos.add(VideoInfo(videoId, title, artists, viewCount))
+                        }
                     }
 
                     if (content.has("musicShelfRenderer")) {
                         val items =
-                            content.getJSONObject("musicShelfRenderer").getJSONArray("contents")
+                            content.getJSONObject("musicShelfRenderer").optJSONArray("contents")
+                                ?: continue
                         for (k in 0 until items.length()) {
                             val item = items.getJSONObject(k)
-                                .getJSONObject("musicResponsiveListItemRenderer")
+                                .optJSONObject("musicResponsiveListItemRenderer") ?: continue
 
-                            if (!item.has("playlistItemData")) {
-                                continue
-                            }
+                            val playlistData = item.optJSONObject("playlistItemData")
+                            val videoId = playlistData?.optString("videoId", null) ?: continue
 
-                            val title = item.getJSONArray("flexColumns").getJSONObject(0)
-                                .getJSONObject("musicResponsiveListItemFlexColumnRenderer")
-                                .getJSONObject("text").getJSONArray("runs").getJSONObject(0)
-                                .getString("text")
-                            val subtitleRuns = item.getJSONArray("flexColumns").getJSONObject(1)
-                                .getJSONObject("musicResponsiveListItemFlexColumnRenderer")
-                                .getJSONObject("text").getJSONArray("runs")
+                            val flexColumns = item.optJSONArray("flexColumns") ?: continue
+
+                            val title = flexColumns.optJSONObject(0)
+                                ?.optJSONObject("musicResponsiveListItemFlexColumnRenderer")
+                                ?.optJSONObject("text")
+                                ?.optJSONArray("runs")
+                                ?.optJSONObject(0)
+                                ?.optString("text", "") ?: ""
+
+                            val subtitleRuns = flexColumns.optJSONObject(1)
+                                ?.optJSONObject("musicResponsiveListItemFlexColumnRenderer")
+                                ?.optJSONObject("text")
+                                ?.optJSONArray("runs") ?: continue
+
                             var artists = ""
                             var views = ""
 
-                            subtitleRuns.forEach { run ->
-                                val text = run.getString("text")
+                            for (r in 0 until subtitleRuns.length()) {
+                                val text = subtitleRuns.getJSONObject(r).optString("text", "")
                                 if (text.contains("views")) {
                                     views = text
                                 } else if (text != " • " && text != "Video" && !text.matches(Regex("\\d+:\\d+"))) {
@@ -147,35 +177,51 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
                                 }
                             }
 
-                            if (views.isEmpty()) {
-                                continue
-                            }
+                            if (views.isEmpty()) continue
 
-                            val videoId =
-                                item.getJSONObject("playlistItemData").getString("videoId")
                             val viewCount = parseViewCount(views)
-
                             videos.add(VideoInfo(videoId, title, artists, viewCount))
                         }
                     }
                 }
             }
-
-            val matchingVideos = videos.filter { video ->
-                video.title.equals(
-                    songName,
-                    ignoreCase = true
-                ) && video.artists.contains(artistName, ignoreCase = true)
-            }
-
-            return matchingVideos.maxByOrNull { it.viewCount }?.videoId
+            val matchingVideos = filterVideos(videos, songName, artistName)
+            val videoID = matchingVideos.maxByOrNull { it.viewCount }?.videoId
+            return videoID
         } catch (e: Exception) {
             Log.e("JSONParser", "Error parsing JSON: ${e.message}")
             return null
         }
     }
 
-    fun parseViewCount(viewString: String): Long {
+    private fun filterVideos(
+        videos: List<VideoInfo>, songName: String, artistStr: String
+    ): List<VideoInfo> {
+        val requiredArtists = parseArtists(artistStr)
+
+        return videos.filter { video ->
+            val titleLower = video.title.lowercase()
+
+            val hasSong = titleLower.contains(songName.lowercase())
+
+            val hasArtists = requiredArtists.all { artist ->
+                titleLower.contains(artist)
+            }
+
+            hasSong && hasArtists
+        }
+    }
+
+
+    private fun parseArtists(artistStr: String): List<String> {
+        return artistStr
+            .lowercase()
+            .split("&", ",", " and ")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+    }
+
+    private fun parseViewCount(viewString: String): Long {
         return try {
             val numberPart = viewString.replace(" views", "").trim()
             when {

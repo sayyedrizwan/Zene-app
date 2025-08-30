@@ -5,7 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 object SnackBarManager {
     private var snackBarHostState: SnackbarHostState? = null
@@ -14,7 +13,7 @@ object SnackBarManager {
         snackBarHostState = state
     }
 
-    fun showMessage(message: String) = CoroutineScope(Dispatchers.IO).launch {
+    fun showMessage(message: String) = CoroutineScope(Dispatchers.IO).safeLaunch {
         snackBarHostState?.showSnackbar(message)
         if (isActive) cancel()
     }

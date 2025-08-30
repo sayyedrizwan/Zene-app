@@ -28,6 +28,7 @@ import androidx.media3.transformer.VideoEncoderSettings
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -120,7 +121,7 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
                     }
                 }
 
-                CoroutineScope(Dispatchers.Main).launch {
+                CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
                     val mediaItem = MediaItem.Builder().setUri(inputFile.toUri()).build()
                     val editedMediaItem = EditedMediaItem.Builder(mediaItem).build()
                     val encoder =
@@ -141,7 +142,7 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
 
         @OptIn(UnstableApi::class)
         fun cropVideoFile(inputFile: File, start: Float, end: Float, d: (File) -> Unit) =
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
                 vibeVideoCroppedFile.delete()
 
                 val transformerListener = object : Transformer.Listener {
@@ -206,7 +207,7 @@ class CameraUtils(private val ctx: Context, private val previewMain: PreviewView
         circle.visibility = View.VISIBLE
         previewMain.addView(circle)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             delay(1.seconds)
             previewMain.removeView(circle)
         }

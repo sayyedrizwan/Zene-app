@@ -10,13 +10,13 @@ import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.smoothSongTransitionSettings
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class ExoPlaybackService(val context: PlayerForegroundService) {
@@ -43,8 +43,8 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
         mediaSession = MediaSession.Builder(context, exoPlayer!!).build()
     }
 
-    fun startPlaying(path: String?) = CoroutineScope(Dispatchers.Main).launch {
-        path ?: return@launch
+    fun startPlaying(path: String?) = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
+        path ?: return@safeLaunch
 
         val mediaItem = MediaItem.fromUri(path)
         exoPlayer?.setMediaItem(mediaItem)
@@ -54,7 +54,7 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
         if (isActive) cancel()
     }
 
-    fun stop() = CoroutineScope(Dispatchers.Main).launch {
+    fun stop() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         exoPlayer?.pause()
         exoPlayer?.stop()
         exoPlayer?.clearMediaItems()
@@ -110,12 +110,12 @@ class ExoPlaybackService(val context: PlayerForegroundService) {
         exoPlayer?.setPlaybackSpeed(v.toFloatOrNull() ?: 1f)
     }
 
-    fun destroy() = CoroutineScope(Dispatchers.Main).launch {
+    fun destroy() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         mediaSession?.run {
             player.release()
             release()
             mediaSession = null
         }
-        }
+    }
 
 }

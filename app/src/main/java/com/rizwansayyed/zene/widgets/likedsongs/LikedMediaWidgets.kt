@@ -44,6 +44,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import com.rizwansayyed.zene.widgets.utils.GlanceImage
 import com.rizwansayyed.zene.widgets.utils.GlanceImageIcon
@@ -80,7 +81,7 @@ class LikedMediaWidgets : GlanceAppWidget() {
             var isLoading by remember { mutableStateOf(false) }
             var isLoggedIn by remember { mutableStateOf(false) }
 
-            fun getLikesItems() = CoroutineScope(Dispatchers.IO).launch {
+            fun getLikesItems() = CoroutineScope(Dispatchers.IO).safeLaunch {
                 val email = DataStorageManager.userInfo.firstOrNull()
                 val likedPlaylistId = "${email?.email}$LIKED_SONGS_ON_ZENE"
                 if (email?.isLoggedIn() == true) {

@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
@@ -28,6 +29,7 @@ import com.rizwansayyed.zene.service.notification.EmptyServiceNotification.CHANN
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
 import com.rizwansayyed.zene.service.player.PlayerMediaButtonReceiver
 import com.rizwansayyed.zene.ui.main.MainActivity
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -61,7 +63,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
     private fun createMediaSession() {
         if (mediaSession != null) return
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
             mediaSession = MediaSessionCompat(context, CHANNEL_MUSIC_PLAYER_NAME).apply {
                 isActive = true
             }
@@ -352,7 +354,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
 
     fun forceStop() {
         try {
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
                 mediaSession?.setPlaybackState(
                     PlaybackStateCompat.Builder()
                         .setState(PlaybackStateCompat.STATE_STOPPED, 0, 0f)
@@ -363,7 +365,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
                 mediaSession = null
             }
 
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch(Dispatchers.IO) {
                 delay(500)
                 context.stopSelf()
             }
