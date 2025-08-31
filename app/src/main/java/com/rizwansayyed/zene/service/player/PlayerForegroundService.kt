@@ -472,7 +472,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     fun visiblePlayerNotification(
         state: YoutubePlayerState, currentTS: String, duration: String, speed: String
-    ) = CoroutineScope(Dispatchers.IO).launch {
+    ) = CoroutineScope(Dispatchers.IO).safeLaunch {
         mediaSession.apply {
             updateMetadata(currentPlayingSong, duration)
             showNotification(state, currentTS, speed)
@@ -506,7 +506,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun playNext(v: ZeneMusicData) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             val player = musicPlayerDB.firstOrNull()
             val array = ArrayList(player?.lists ?: emptyList())
             val index = player?.lists?.indexOfFirst { it?.id == currentPlayingSong?.id }
@@ -523,7 +523,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun addToQueue(v: ZeneMusicData) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             val player = musicPlayerDB.firstOrNull()
             val array = ArrayList(player?.lists ?: emptyList())
 
@@ -574,7 +574,7 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
     }
 
     override fun addListsToQueue(list: List<ZeneMusicData>) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             val arrayList = ArrayList<ZeneMusicData?>()
 
             arrayList.addAll(songsLists)

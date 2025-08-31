@@ -7,7 +7,6 @@ import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 
 object FirebaseEvents {
 

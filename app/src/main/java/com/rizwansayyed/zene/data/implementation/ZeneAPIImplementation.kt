@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
 import com.rizwansayyed.zene.utils.MainUtils.getDeviceInfo
 import com.rizwansayyed.zene.utils.MainUtils.moshi
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.ShareContentUtils.getUniqueDeviceId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,7 @@ class ZeneAPIImplementation @Inject constructor(
 
     override suspend fun loginUser(tokenID: String, type: String) = flow {
         val ip = ipAPI.get()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             ipDB = flowOf(ip)
         }
 
@@ -66,7 +67,7 @@ class ZeneAPIImplementation @Inject constructor(
 
     override suspend fun updateUser() = flow {
         val ip = ipAPI.get()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             ipDB = flowOf(ip)
         }
         val info = userInfo.firstOrNull()
@@ -92,7 +93,7 @@ class ZeneAPIImplementation @Inject constructor(
 
     override suspend fun updateSubscription(purchaseToken: String, subscriptionId: String?) = flow {
         val ip = ipAPI.get()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             ipDB = flowOf(ip)
         }
         val info = userInfo.firstOrNull()
@@ -1591,7 +1592,7 @@ class ZeneAPIImplementation @Inject constructor(
         val lastTS = lastNotificationGeneratedTSDB.firstOrNull()
         val lastType = lastNotificationSuggestedType.firstOrNull()
         val ip = ipAPI.get()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             ipDB = flowOf(ip)
         }
 

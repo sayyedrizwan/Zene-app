@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.service.player.utils
 
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,7 +13,7 @@ object ServiceStopTimerManager {
 
     fun startTimer(onTimeout: () -> Unit) {
         cancelTimer()
-        runnableJob = CoroutineScope(Dispatchers.IO).launch {
+        runnableJob = CoroutineScope(Dispatchers.IO).safeLaunch {
             delay(25.minutes)
             onTimeout()
         }

@@ -42,6 +42,7 @@ import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.MainActivity
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.widgets.utils.GlanceImage
 import com.rizwansayyed.zene.widgets.utils.GlanceImageIcon
 import com.rizwansayyed.zene.widgets.utils.GlanceTextItemBold
@@ -114,7 +115,7 @@ class PlayingSongWidget : GlanceAppWidget() {
                             if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat,
                             23
                         ) {
-                            coroutine.launch { isLoopDB = flowOf(!isLoopEnabled) }
+                            coroutine.safeLaunch { isLoopDB = flowOf(!isLoopEnabled) }
                         }
 
                         Spacer(GlanceModifier.defaultWeight())
@@ -124,7 +125,7 @@ class PlayingSongWidget : GlanceAppWidget() {
                             if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle,
                             23
                         ) {
-                            coroutine.launch { isShuffleDB = flowOf(!isShuffleEnabled) }
+                            coroutine.safeLaunch { isShuffleDB = flowOf(!isShuffleEnabled) }
                         }
 
                         Spacer(GlanceModifier.defaultWeight())

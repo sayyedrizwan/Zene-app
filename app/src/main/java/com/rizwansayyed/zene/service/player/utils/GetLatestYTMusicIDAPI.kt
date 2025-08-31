@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.service.player.utils
 import android.util.Log
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -36,7 +37,7 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
     private val ytMusicURL = "https://music.youtube.com/youtubei/v1/search?prettyPrint=false"
     private val ytBaseURL = "https://music.youtube.com"
 
-    fun readLocalID() = CoroutineScope(Dispatchers.IO).launch {
+    fun readLocalID() = CoroutineScope(Dispatchers.IO).safeLaunch {
         val playerInfo = musicPlayerDB.firstOrNull()
         runOnce(playerInfo?.data?.id ?: "") {
             val result = getSongDetailsList()

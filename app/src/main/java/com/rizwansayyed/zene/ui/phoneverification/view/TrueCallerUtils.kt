@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.truecaller.android.sdk.oAuth.CodeVerifierUtil
 import com.truecaller.android.sdk.oAuth.TcOAuthCallback
 import com.truecaller.android.sdk.oAuth.TcOAuthData
@@ -25,7 +26,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import java.math.BigInteger
 import java.security.SecureRandom
 import javax.inject.Inject
@@ -37,7 +37,7 @@ class TrueCallerUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     private val tcOAuthCallback = object : TcOAuthCallback {
         override fun onSuccess(tcOAuthData: TcOAuthData) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 zeneAPI.updateTrueCallerNumber(
                     codeVerifier.toString(), tcOAuthData.authorizationCode
                 ).catch {

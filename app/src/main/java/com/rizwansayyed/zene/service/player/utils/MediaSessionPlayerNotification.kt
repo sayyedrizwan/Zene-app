@@ -48,13 +48,13 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     private var doShuffle = false
 
     init {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             DataStorageManager.isLoopDB.collectLatest {
                 doLoop = it
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             DataStorageManager.isShuffleDB.collectLatest {
                 doShuffle = it
             }
@@ -197,7 +197,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
                         }
 
                         KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
-                            CoroutineScope(Dispatchers.IO).launch {
+                            CoroutineScope(Dispatchers.IO).safeLaunch {
                                 if (musicPlayerDB.firstOrNull()?.isPlaying() == true)
                                     PlayerForegroundService.getPlayerS()?.play()
                                 else
@@ -223,14 +223,14 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
             if (action == CATEGORY_APP_MUSIC) {
                 val repeat = extras?.getInt(Intent.ACTION_VIEW) ?: 0
                 if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
-                    CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(Dispatchers.IO).safeLaunch {
                         DataStorageManager.isLoopDB = flowOf(!doLoop)
                         if (isActive) cancel()
                     }
                 }
 
                 if (repeat == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
-                    CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(Dispatchers.IO).safeLaunch {
                         DataStorageManager.isShuffleDB = flowOf(!doShuffle)
                         if (isActive) cancel()
                     }

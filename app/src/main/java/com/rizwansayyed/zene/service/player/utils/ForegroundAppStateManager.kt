@@ -21,7 +21,7 @@ class ForegroundAppStateManager(private val context: PlayerForegroundService) {
     private val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
 
     fun startActivityStateMonitoring() {
-        activityStateChecker = CoroutineScope(Dispatchers.IO).launch {
+        activityStateChecker = CoroutineScope(Dispatchers.IO).safeLaunch {
             while (isActive) {
                 delay(2000)
 
@@ -42,7 +42,7 @@ class ForegroundAppStateManager(private val context: PlayerForegroundService) {
 
     private fun startServiceStopTimer() {
         serviceStopTimer?.cancel()
-        serviceStopTimer = CoroutineScope(Dispatchers.IO).launch {
+        serviceStopTimer = CoroutineScope(Dispatchers.IO).safeLaunch {
             delay(1.seconds)
             if (isActive) {
                 val runningTasks = try {

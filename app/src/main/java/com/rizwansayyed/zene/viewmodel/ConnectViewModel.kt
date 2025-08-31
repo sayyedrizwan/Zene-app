@@ -261,7 +261,7 @@ class ConnectViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface
                 loadingTypeForFile = ""
                 isConnectSharing = ResponseResult.Success(it)
 
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.IO).safeLaunch {
                     delay(1.seconds)
                     if (it.status == true) {
                         NotificationUtils(

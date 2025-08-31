@@ -214,16 +214,6 @@ class MainActivity : FragmentActivity() {
                                 configClarity(this@MainActivity)
                             }
                         } else if (showLogin) LoginView(loginViewModel)
-
-//                        MusicQRScannerApp(
-//                            onRequestPermission = { permission ->
-//                                // Handle permission request
-//                            },
-//                            hasPermission = { permission ->
-//                                ContextCompat.checkSelfPermission(this@MainActivity, permission) ==
-//                                        PackageManager.PERMISSION_GRANTED
-//                            }
-//                        )
                     }
 
                     LaunchedEffect(userInfo?.email) {

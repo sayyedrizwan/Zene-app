@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -61,7 +62,7 @@ class AppleFacebookLoginHandler @Inject constructor(private val zeneAPI: ZeneAPI
         }
 
         override fun onSuccess(result: LoginResult) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 serverLogin(result.accessToken.token, LoginType.FACEBOOK)
                 registerEvents(FirebaseEvents.FirebaseEventsParams.FACEBOOK_LOGIN)
             }
@@ -76,12 +77,12 @@ class AppleFacebookLoginHandler @Inject constructor(private val zeneAPI: ZeneAPI
     }
 
 
-    fun startAppleLogin(activity: Activity) = CoroutineScope(Dispatchers.IO).launch {
+    fun startAppleLogin(activity: Activity) = CoroutineScope(Dispatchers.IO).safeLaunch {
         try {
             val auth = FirebaseAuth.getInstance()
             val result =
                 auth.startActivityForSignInWithProvider(activity, appleProvider.build()).await()
-                    ?: return@launch
+                    ?: return@safeLaunch
 
             val appleCredential = result.credential as? OAuthCredential
             val idToken = appleCredential?.idToken ?: ""
@@ -105,7 +106,7 @@ class AppleFacebookLoginHandler @Inject constructor(private val zeneAPI: ZeneAPI
         }
     }
 
-    fun signInWithEmailLink(email: String, link: Uri) = CoroutineScope(Dispatchers.IO).launch {
+    fun signInWithEmailLink(email: String, link: Uri) = CoroutineScope(Dispatchers.IO).safeLaunch {
         try {
             val response = Firebase.auth.signInWithEmailLink(email, link.toString()).await()
 

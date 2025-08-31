@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 object GenerateShortcuts {
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun generateHomeScreenShortcut(data: ZeneMusicData?) = CoroutineScope(Dispatchers.IO).launch {
+    fun generateHomeScreenShortcut(data: ZeneMusicData?) = CoroutineScope(Dispatchers.IO).safeLaunch {
         val url = generateShareUrl(data)
         val shortcutManager = context.getSystemService(ShortcutManager::class.java)
 

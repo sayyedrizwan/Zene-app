@@ -155,7 +155,7 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         showControlViewJob?.cancel()
         showControlView = doShow
 
-        if (doShow) showControlViewJob = viewModelScope.launch {
+        if (doShow) showControlViewJob = viewModelScope.safeLaunch {
             delay(4.seconds)
             showControlView = false
         }

@@ -68,6 +68,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.GifViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -289,7 +290,7 @@ fun GifAlert(id: Int?, viewModel: GifViewModel, close: (String?) -> Unit) {
 
         LaunchedEffect(search) {
             job?.cancel()
-            job = coroutines.launch {
+            job = coroutines.safeLaunch {
                 delay(1.seconds)
                 viewModel.searchGif(search)
             }

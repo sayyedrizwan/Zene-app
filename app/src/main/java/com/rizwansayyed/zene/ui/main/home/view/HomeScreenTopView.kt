@@ -33,7 +33,6 @@ import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
-import com.rizwansayyed.zene.ui.main.MusicQRScannerApp
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.theme.GoldColor
 import com.rizwansayyed.zene.ui.theme.LuxColor
@@ -59,8 +58,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         Spacer(Modifier.width(10.dp))
         Box(Modifier.clickable { NavigationUtils.triggerHomeNav(NAV_SETTINGS_PAGE) }) {
             GlideImage(
-                userInfo?.photo,
-                userInfo?.name,
+                userInfo?.photo, userInfo?.name,
                 Modifier
                     .clip(RoundedCornerShape(100))
                     .size(40.dp),

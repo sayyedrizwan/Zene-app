@@ -153,7 +153,7 @@ class ConnectSocketChatViewModel : ViewModel() {
                 justLeft = true
                 isTyping = false
                 offJob?.cancel()
-                offJob = CoroutineScope(Dispatchers.IO).launch {
+                offJob = CoroutineScope(Dispatchers.IO).safeLaunch {
                     delay(4.seconds)
                     inLobby = false
                     justLeft = true

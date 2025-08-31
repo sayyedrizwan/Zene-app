@@ -19,7 +19,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -62,7 +61,7 @@ class ZeneBaseApplication : Application() {
 
         override fun onStop(owner: LifecycleOwner) {
             super.onStop(owner)
-            monitorJob = CoroutineScope(Dispatchers.IO).launch {
+            monitorJob = CoroutineScope(Dispatchers.IO).safeLaunch {
                 while (isActive) {
                     delay(2000)
                     val tasks = activityManager.appTasks

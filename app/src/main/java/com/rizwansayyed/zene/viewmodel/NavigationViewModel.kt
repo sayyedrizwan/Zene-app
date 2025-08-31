@@ -95,7 +95,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         showMediaInfoSheet = value
     }
 
-    fun updateArtistsAndAlbums(value: ZeneMusicData?) = viewModelScope.launch {
+    fun updateArtistsAndAlbums(value: ZeneMusicData?) = viewModelScope.safeLaunch {
         val infos = showMediaInfoSheet
         infos?.artistsList = value?.artistsList ?: emptyList()
         infos?.albumInfo = value?.albumInfo

@@ -49,6 +49,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SONG
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_VIDEO
 import com.rizwansayyed.zene.utils.URLSUtils.connectShareURL
+import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -64,11 +65,11 @@ enum class SharingContentType {
 
 object ShareContentUtils {
 
-    fun shareConnectURL() = CoroutineScope(Dispatchers.IO).launch {
-        val userInfo = userInfo.firstOrNull() ?: return@launch
+    fun shareConnectURL() = CoroutineScope(Dispatchers.IO).safeLaunch {
+        val userInfo = userInfo.firstOrNull() ?: return@safeLaunch
         if ((userInfo.username?.length ?: 0) <= 1) {
             context.resources.getString(R.string.enter_a_valid_username)
-            return@launch
+            return@safeLaunch
         }
 
         val url = connectShareURL(userInfo.username ?: "")

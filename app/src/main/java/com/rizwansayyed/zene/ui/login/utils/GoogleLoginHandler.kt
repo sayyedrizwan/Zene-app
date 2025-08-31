@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.utils.FirebaseEvents
 import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -50,7 +51,7 @@ class GoogleLoginHandler @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     ) {
         val credentialManager = CredentialManager.create(activity)
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).safeLaunch {
             try {
                 val result =
                     credentialManager.getCredential(activity, LoginConfig.googleSignInRequest)
@@ -92,7 +93,7 @@ class GoogleLoginHandler @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
     fun handleLegacySignInResult(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).safeLaunch {
                 if (task.result.idToken != null) {
                     serverLogin(task.result.idToken!!, LoginType.GOOGLE)
                     registerEvents(FirebaseEvents.FirebaseEventsParams.GOOGLE_LOGIN)

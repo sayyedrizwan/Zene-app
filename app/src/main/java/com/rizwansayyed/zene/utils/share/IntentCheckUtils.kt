@@ -54,6 +54,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_PRIVACY_POLICY
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SEARCH
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL_SETTINGS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_VIDEO
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -78,7 +79,7 @@ class IntentCheckUtils(
     private val loginViewModel: LoginManagerViewModel
 ) {
 
-    fun call() = CoroutineScope(Dispatchers.IO).launch {
+    fun call() = CoroutineScope(Dispatchers.IO).safeLaunch {
         delay(1.seconds)
 
         if (intent.data.toString().contains("/email-login")
@@ -86,7 +87,7 @@ class IntentCheckUtils(
         ) intent.data?.let { loginViewModel.signInWithEmailLink(it) }
 
         val userInfo = userInfo.firstOrNull()
-        if (userInfo?.isLoggedIn() == false) return@launch
+        if (userInfo?.isLoggedIn() == false) return@safeLaunch
 
         withContext(Dispatchers.Main) {
             if (intent.getStringExtra(FCM_TYPE) == CONNECT_LOCATION_SHARING_TYPE) {
@@ -115,7 +116,7 @@ class IntentCheckUtils(
                 intent.getStringExtra(FCM_EMAIL)?.let {
                     triggerHomeNav("$NAV_CONNECT_PROFILE_PAGE$it")
                 }
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.IO).safeLaunch {
                     delay(1.seconds)
                     intent.getStringExtra(FCM_ID)?.let {
                         withContext(Dispatchers.Main) {

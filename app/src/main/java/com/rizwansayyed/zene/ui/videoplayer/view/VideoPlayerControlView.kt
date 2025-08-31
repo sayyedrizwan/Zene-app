@@ -54,10 +54,10 @@ import com.rizwansayyed.zene.utils.MainUtils.formatDurationsForVideo
 import com.rizwansayyed.zene.utils.MainUtils.hasPIPPermission
 import com.rizwansayyed.zene.utils.MainUtils.openAppSettings
 import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
 import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -135,7 +135,7 @@ fun QualityAndControlVideoView(
                 if (isClosedCaption) viewModel.webView?.evaluateJavascript("disableCaption()", null)
                 else viewModel.webView?.evaluateJavascript("enableCaption()", null)
 
-                coroutine.launch {
+                coroutine.safeLaunch {
                     videoCCDB = flowOf(!isClosedCaption)
                 }
             }

@@ -42,7 +42,6 @@ import com.rizwansayyed.zene.viewmodel.PlayingVideoInfoViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -104,7 +103,7 @@ fun VideoPlayerSpeedView(viewModel: PlayingVideoInfoViewModel) {
 
         VideoSpeedChangeAlert(videoSpeed) {
             val name = it.name.replace("_", ".")
-            coroutines.launch {
+            coroutines.safeLaunch {
                 videoSpeedDB = flowOf(it)
             }
             viewModel.webView?.evaluateJavascript("playbackRate(${name});", null)
@@ -112,7 +111,7 @@ fun VideoPlayerSpeedView(viewModel: PlayingVideoInfoViewModel) {
 
         DisposableEffect(Unit) {
             job?.cancel()
-            job = coroutines.launch {
+            job = coroutines.safeLaunch {
                 while (true) {
                     viewModel.showControlView(true)
                     delay(1.seconds)
