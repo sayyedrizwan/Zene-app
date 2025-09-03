@@ -377,7 +377,6 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
 
     @Suppress("DEPRECATION")
     fun clearAll(int: Int) {
-        Log.d("TAG", "forceStop: eeeee ${int}")
         CoroutineScope(Dispatchers.IO).safeLaunch(Dispatchers.IO) {
             pause()
             mediaSession.forceStop()

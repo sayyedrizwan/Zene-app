@@ -7,6 +7,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.di.utils.AppCrashHandler
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
@@ -77,7 +78,10 @@ class ZeneBaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
+        AppCrashHandler(this).init()
+
         ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
+
     }
 
 }

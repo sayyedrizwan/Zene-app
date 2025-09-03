@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.utils
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,7 +16,7 @@ fun CoroutineScope.safeLaunch(
         try {
             block()
         } catch (e: CancellationException) {
-            print(e)
+            throw e
         } catch (e: Exception) {
             print(e)
         }

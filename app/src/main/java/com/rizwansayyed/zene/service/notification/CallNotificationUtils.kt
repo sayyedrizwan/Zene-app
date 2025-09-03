@@ -13,7 +13,6 @@ import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
 import androidx.core.graphics.drawable.IconCompat
@@ -41,7 +40,7 @@ fun callNotification(
     val b = runBlocking(Dispatchers.IO) {
         try {
             Glide.with(context).asBitmap().load(image).submit(200, 200).get()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             BitmapFactory.decodeResource(context.resources, R.drawable.zene_logo)
         }
     }

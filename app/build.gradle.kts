@@ -171,6 +171,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.glide)
+    implementation(libs.glide.main)
     implementation(libs.jsoup)
 
     implementation(libs.gson)
@@ -234,7 +235,4 @@ dependencies {
     implementation(libs.clarity)
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
-
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-    implementation("com.google.zxing:core:3.5.1")
 }
