@@ -370,7 +370,7 @@ object MainUtils {
             val input = connection.inputStream
             val myBitmap = BitmapFactory.decodeStream(input)
             return@runBlocking myBitmap
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             val icon = BitmapFactory.decodeResource(context.resources, R.drawable.zusers_img)
             return@runBlocking icon
         }
@@ -431,7 +431,7 @@ object MainUtils {
                 } else {
                     ""
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 ""
             }
         }
@@ -488,7 +488,7 @@ object MainUtils {
             } else {
                 String.format(Locale.getDefault(), "%02d:%02d", totalMinutes, totalSecs)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return "0:00"
         }
     }
@@ -523,7 +523,7 @@ object MainUtils {
         return try {
             context.packageManager.getPackageInfo(packageName, 0)
             true
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             false
         }
     }
@@ -555,23 +555,28 @@ object MainUtils {
             Intent(
                 Intent.ACTION_VIEW, "market://details?id=${context.packageName}".toUri()
             ).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(this)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Intent(
                 Intent.ACTION_VIEW,
                 "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
-            ).apply { context.startActivity(this) }
+            ).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            }
         }
     }
 
+
+    @Suppress("DEPRECATION")
     fun vibratePhone() {
         val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
         } else {
-            @Suppress("DEPRECATION")
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 

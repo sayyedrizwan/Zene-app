@@ -38,7 +38,6 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 @Composable
 fun SettingsPersonalInfo(userInfo: UserInfoResponse?) {
     val viewModel: HomeViewModel = hiltViewModel()
-    val context = LocalContext.current
     var nameUpdateView by remember { mutableStateOf(false) }
     var usernameNameUpdateView by remember { mutableStateOf(false) }
 

@@ -48,6 +48,7 @@
     <string name="lyrics_video">Lyrics Video</string>
     <string name="lyrics">Lyrics</string>
     <string name="news">News</string>
+    <string name="new_">New</string>
     <string name="movies">Movies</string>
     <string name="movie">Movie</string>
     <string name="my_library">My Library</string>
@@ -413,6 +414,7 @@
     <string name="storage">Storage</string>
     <string name="earphone_tracker_finder">Earphone tracker &amp; finder</string>
     <string name="equalizer">Equalizer</string>
+    <string name="app_update_available">App Update Available</string>
     <string name="import_playlists">Import Playlists</string>
     <string name="import_playlists_desc">You can import songs to your current playlist, copy this same playlist, or simply add them as liked songs — it\'s totally up to you.</string>
     <string name="are_you_sure_want_to_log_out">Are you sure want to Log Out?</string>
@@ -462,6 +464,7 @@
     <string name="no_coupon_found_try_again">No coupon found, Please verify and try again :(</string>
     <string name="what_our_luxe_users_say">What our luxe users say</string>
     <string name="no_artist_found">No artist found</string>
+    <string name="update_is_downloading_please_wait">Update is downloading. Please wait…</string>
 
 
     <!--    notification channels-->

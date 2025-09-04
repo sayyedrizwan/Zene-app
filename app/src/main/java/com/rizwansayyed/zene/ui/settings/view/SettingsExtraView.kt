@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,13 +62,14 @@ import kotlinx.coroutines.flow.flowOf
 
 
 @Composable
-fun SettingsExtraView() {
+fun SettingsExtraView(isUpdateAvailable: Boolean) {
     val context = LocalActivity.current
     var showStorageSheet by remember { mutableStateOf(false) }
     var feedbackSheet by remember { mutableStateOf(false) }
     var rateUsSheet by remember { mutableStateOf(false) }
     var logoutSheet by remember { mutableStateOf(false) }
     var deleteAccountSheet by remember { mutableStateOf(false) }
+
 
     Spacer(Modifier.height(13.dp))
 
@@ -98,6 +98,8 @@ fun SettingsExtraView() {
         }
     }
 
+    SettingsUpdateVersionView(isUpdateAvailable)
+
     Spacer(Modifier.height(25.dp))
 
     Row(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
@@ -111,12 +113,8 @@ fun SettingsExtraView() {
         )
     }
 
-
     Spacer(Modifier.height(25.dp))
 
-    SettingsUpdateVersionView()
-
-    Spacer(Modifier.height(25.dp))
 
     SettingsExtraView(R.string.help_faq, R.drawable.ic_help_circle) {
         MediaContentUtils.openCustomBrowser(ZENE_FAQ_URL)
