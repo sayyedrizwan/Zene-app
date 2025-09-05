@@ -152,6 +152,7 @@ dependencies {
     implementation(libs.firebase.messaging)
 
     implementation(libs.app.update)
+    implementation(libs.app.review)
 
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.services)

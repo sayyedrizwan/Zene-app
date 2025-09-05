@@ -26,6 +26,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.sponsorAdsDB
+import com.rizwansayyed.zene.ui.main.home.HomeReviewUsView
 import com.rizwansayyed.zene.ui.main.home.HomeSponsorAdsView
 import com.rizwansayyed.zene.ui.main.home.HomeTopHeaderView
 import com.rizwansayyed.zene.ui.main.home.topHeaderAlert
@@ -53,6 +54,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
 
     LazyColumn(Modifier.fillMaxSize(), state) {
         item { HomeTopHeaderView(headerText) }
+        item { HomeReviewUsView() }
 
         when (val v = homeViewModel.homeRecent) {
             ResponseResult.Empty -> {}
