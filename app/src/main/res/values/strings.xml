@@ -414,6 +414,7 @@
     <string name="storage">Storage</string>
     <string name="earphone_tracker_finder">Earphone tracker &amp; finder</string>
     <string name="equalizer">Equalizer</string>
+    <string name="notification">Notification</string>
     <string name="app_update_available">App Update Available</string>
     <string name="import_playlists">Import Playlists</string>
     <string name="import_playlists_desc">You can import songs to your current playlist, copy this same playlist, or simply add them as liked songs — it\'s totally up to you.</string>
@@ -467,7 +468,17 @@
     <string name="update_is_downloading_please_wait">Update is downloading. Please wait…</string>
     <string name="happy_with_the_app">Happy with the app?</string>
     <string name="happy_with_the_app_desc">Drop a quick 5★ with a review — or let us know what we can improve.</string>
-    <string name="please_give_us_good_review">Please give us a good review. We try very tak to keep Zene free.</string>
+    <string name="please_give_us_good_review">Please give us a good review. We try very hard to keep Zene free.</string>
+    <string name="notification_preferences">Notification Preferences</string>
+    <string name="enable_all">Enable all</string>
+    <string name="active_all_notification">Active all notification</string>
+    <string name="email_updates">Email Updates</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="suggestions_and_updates">Suggestions &amp; Updates</string>
+    <string name="suggestions_and_updates_desc">Receive personalized recommendation and newsletter updates via email and notifications.</string>
+
+    <string name="important_updates">Important Updates</string>
+    <string name="important_updates_desc">Receive important updates related to your account</string>
 
 
     <!--    notification channels-->

@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.EMPTY_J
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_LOOP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_POSTED_REVIEW_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_POSTED_REVIEW_TIMESTAMP_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_PREMIUM_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.IS_SHUFFLE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_LOAD_TIME_DB
@@ -84,6 +85,7 @@ object DataStorageManager {
         val LAST_NOTIFICATION_SUGGESTED_TYPE_DB =
             stringPreferencesKey("last_notification_suggested_type_db")
         val LAST_LOAD_TIME_DB = longPreferencesKey("last_load_time_db")
+        val IS_POSTED_REVIEW_TIMESTAMP_DB = longPreferencesKey("is_posted_review_timestamp_db")
         val SIGN_IN_WITH_EMAIL_ADDRESS_DB = stringPreferencesKey("sign_in_with_email_address")
     }
 
@@ -191,6 +193,18 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[IS_POSTED_REVIEW_DB] = value.first()
+            }
+            if (isActive) cancel()
+        }
+
+
+    var isPostedReviewTimestampDB: Flow<Long>
+        get() = context.dataStore.data.map {
+            it[IS_POSTED_REVIEW_TIMESTAMP_DB] ?: 0L
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                value.first()?.let { t -> it[IS_POSTED_REVIEW_TIMESTAMP_DB] = t }
             }
             if (isActive) cancel()
         }

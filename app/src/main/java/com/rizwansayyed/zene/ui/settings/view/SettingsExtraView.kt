@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
+import com.rizwansayyed.zene.ui.settings.dialog.NotificationAlertSettingsView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsDeleteAccountSheetView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsShareSheetView
 import com.rizwansayyed.zene.ui.settings.dialog.SettingsStorageSheetView
@@ -69,6 +70,7 @@ fun SettingsExtraView(isUpdateAvailable: Boolean) {
     var rateUsSheet by remember { mutableStateOf(false) }
     var logoutSheet by remember { mutableStateOf(false) }
     var deleteAccountSheet by remember { mutableStateOf(false) }
+    var notificationAlertDialog by remember { mutableStateOf(false) }
 
 
     Spacer(Modifier.height(13.dp))
@@ -99,6 +101,10 @@ fun SettingsExtraView(isUpdateAvailable: Boolean) {
     }
 
     SettingsUpdateVersionView(isUpdateAvailable)
+
+    SettingsExtraView(R.string.notification, R.drawable.ic_notification_alert) {
+        notificationAlertDialog = true
+    }
 
     Spacer(Modifier.height(25.dp))
 
@@ -153,6 +159,10 @@ fun SettingsExtraView(isUpdateAvailable: Boolean) {
 
     SettingsExtraView(R.string.log_out, R.drawable.ic_logout) {
         logoutSheet = true
+    }
+
+    if (notificationAlertDialog) NotificationAlertSettingsView {
+        notificationAlertDialog = false
     }
 
     if (showStorageSheet) SettingsStorageSheetView {

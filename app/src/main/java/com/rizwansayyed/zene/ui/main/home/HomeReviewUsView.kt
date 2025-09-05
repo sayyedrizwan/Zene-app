@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.dp
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPostedReviewDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPostedReviewTimestampDB
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils
+import com.rizwansayyed.zene.utils.MainUtils.openFeedbackMail
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.flow.flowOf
@@ -40,13 +42,19 @@ fun HomeReviewUsView() {
     val context = LocalActivity.current
     val manager by lazy { ReviewManagerFactory.create(context!!.applicationContext) }
 
-    val isAlreadyGivenReview by isPostedReviewDB.collectAsState(true)
     var timeTookReview by remember { mutableLongStateOf(0L) }
 
+    val isReviewGiven by isPostedReviewDB.collectAsState(initial = false)
+    val lastDismiss by isPostedReviewTimestampDB.collectAsState(initial = 0L)
     val coroutine = rememberCoroutineScope()
 
+    val now = System.currentTimeMillis()
+    val daysPassed = (now - lastDismiss) / (1000 * 60 * 60 * 24)
 
-    if (!isAlreadyGivenReview) Row(
+    val shouldShow = !isReviewGiven && daysPassed >= 25
+
+
+    if (shouldShow) Row(
         Modifier
             .padding(5.dp)
             .clip(RoundedCornerShape(12.dp))
@@ -59,8 +67,18 @@ fun HomeReviewUsView() {
             TextViewNormal(stringResource(R.string.happy_with_the_app_desc), size = 16)
         }
         Spacer(Modifier.width(10.dp))
-        TextViewSemiBold("\uD83D\uDE14", size = 30)
+
+        Box(Modifier.clickable {
+            coroutine.safeLaunch {
+                isPostedReviewTimestampDB = flowOf(System.currentTimeMillis())
+            }
+            openFeedbackMail()
+        }) {
+            TextViewSemiBold("\uD83D\uDE14", size = 30)
+        }
+
         Spacer(Modifier.width(10.dp))
+
         Box(Modifier.clickable {
             timeTookReview = System.currentTimeMillis()
             val request = manager.requestReviewFlow()
@@ -82,6 +100,9 @@ fun HomeReviewUsView() {
                     }
                 } else {
                     MainUtils.openAppOnPlayStore()
+                    coroutine.safeLaunch {
+                        isPostedReviewDB = flowOf(true)
+                    }
                 }
             }
         }) {

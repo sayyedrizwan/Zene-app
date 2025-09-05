@@ -100,10 +100,8 @@ fun ConnectChatSettingsView(
 
             Spacer(Modifier.height(30.dp))
             SettingsViewSwitchItems(
-                R.drawable.ic_message_lock,
-                R.string.lock_message,
-                R.string.lock_message_desc,
-                lockChatSettings
+                R.drawable.ic_message_lock, R.string.lock_message,
+                R.string.lock_message_desc, lockChatSettings
             ) {
                 if (it) {
                     bioAuthMetric.checkAuth { auth ->
