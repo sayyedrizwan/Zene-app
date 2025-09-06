@@ -28,6 +28,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NO
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_SUGGESTED_TYPE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.PAUSE_SONG_HISTORY_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.PUSH_NEWS_LETTER_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SIGN_IN_WITH_EMAIL_ADDRESS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
@@ -74,6 +75,8 @@ object DataStorageManager {
         val IS_PREMIUM_DB = booleanPreferencesKey("is_premium_db")
         val IS_LOOP_DB = booleanPreferencesKey("is_loop_db")
         val VIDEO_PLAYER_CC_DB = booleanPreferencesKey("video_player_cc_db")
+
+        val PUSH_NEWS_LETTER_DB = booleanPreferencesKey("push_news_letter_db")
         val IS_POSTED_REVIEW_DB = booleanPreferencesKey("is_posted_review_db")
         val MUSIC_PLAYER_DB = stringPreferencesKey("music_player_db")
         val AUTO_PAUSE_PLAYER_SETTINGS_DB = booleanPreferencesKey("auto_pause_player_settings_db")
@@ -204,7 +207,7 @@ object DataStorageManager {
         }
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
-                value.first()?.let { t -> it[IS_POSTED_REVIEW_TIMESTAMP_DB] = t }
+                value.first().let { t -> it[IS_POSTED_REVIEW_TIMESTAMP_DB] = t }
             }
             if (isActive) cancel()
         }
@@ -327,6 +330,17 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 value.first()?.let { t -> it[SIGN_IN_WITH_EMAIL_ADDRESS_DB] = t }
+            }
+            if (isActive) cancel()
+        }
+
+    var pushNewsLetterDB: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[PUSH_NEWS_LETTER_DB] ?: true
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[PUSH_NEWS_LETTER_DB] = value.first()
             }
             if (isActive) cancel()
         }

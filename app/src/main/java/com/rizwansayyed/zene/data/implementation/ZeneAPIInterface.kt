@@ -184,4 +184,5 @@ interface ZeneAPIInterface {
     suspend fun deleteAccount(): Flow<StatusTypeResponse>
     suspend fun deleteAccountInfo(): Flow<DeleteAccountInfoResponse>
     suspend fun cancelDeleteAccount(): Flow<StatusTypeResponse>
+    suspend fun updateEmailSubscription(value: Boolean): Flow<StatusTypeResponse>
 }

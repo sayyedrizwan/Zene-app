@@ -135,6 +135,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_SEND_NUMBER_OTP_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_CONNECT_STATUS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_COUPON_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_EMAIL_SUB_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_NAME_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_IMAGE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_UPDATE_PLAYLIST_NAME_API
@@ -769,6 +770,12 @@ interface ZeneAPIService {
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_CANCEL_DELETE_API)
     suspend fun cancelDeleteAccount(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_UPDATE_EMAIL_SUB_API)
+    suspend fun updateEmailSubscription(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
 }

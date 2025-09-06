@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,7 +46,6 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_VIDEOS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -55,7 +53,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -263,11 +260,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun entertainmentMovies() = viewModelScope.safeLaunch  {
-//        val data: MoviesDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
-//        if ((data?.trendingMovies?.size ?: 0) > 0) {
-//            entertainmentMoviesData = ResponseResult.Success(data!!)
-//            return@safeLaunch
-//        }
+        val data: MoviesDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
+        if ((data?.trendingMovies?.size ?: 0) > 0) {
+            entertainmentMoviesData = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
 
         zeneAPI.entertainmentMovies().onStart {
             entertainmentMoviesData = ResponseResult.Loading
@@ -351,6 +348,7 @@ class HomeViewModel @Inject constructor(
             viewModelScope.safeLaunch  {
                 DataStorageManager.userInfo = flowOf(it)
             }
+
             isUserPremium()
         }
     }
@@ -586,6 +584,12 @@ class HomeViewModel @Inject constructor(
             deleteAccountInfo = ResponseResult.Error(it)
         }.collectLatest {
             deleteAccountInfo = ResponseResult.Success(it)
+        }
+    }
+
+    fun updateEmailSubscription(v: Boolean) = viewModelScope.safeLaunch {
+        zeneAPI.updateEmailSubscription(v).catch {}.collectLatest {
+            userInfo()
         }
     }
 }

@@ -15,9 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,18 +31,34 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.datastore.DataStorageManager.pushNewsLetterDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.safeLaunch
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun NotificationAlertSettingsView(close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
+        val homeViewModel: HomeViewModel = hiltViewModel()
 
-        var enableAll by remember { mutableStateOf(true) }
+        val userInfo by userInfo.collectAsState(null)
+
+        var newsLetterEmail by remember { mutableStateOf(true) }
+        val newsLetterPush by pushNewsLetterDB.collectAsState(true)
+
+        val coroutine = rememberCoroutineScope()
+
+        LaunchedEffect(userInfo?.emailSubscribe) {
+            newsLetterEmail = userInfo?.emailSubscribe ?: true
+        }
 
         Box(
             Modifier
@@ -51,14 +70,15 @@ fun NotificationAlertSettingsView(close: () -> Unit) {
             ) {
                 NotificationFieldsOn(
                     R.string.suggestions_and_updates,
-                    R.string.suggestions_and_updates_desc,
-                    enableAll,
-                    enableAll,
+                    R.string.suggestions_and_updates_desc, newsLetterEmail, newsLetterPush,
                     {
-                        enableAll = it
+                        newsLetterEmail = it
+                        homeViewModel.updateEmailSubscription(it)
                     },
                     {
-                        enableAll = it
+                        coroutine.safeLaunch {
+                            pushNewsLetterDB = flowOf(it)
+                        }
                     })
 
 
@@ -74,7 +94,6 @@ fun NotificationAlertSettingsView(close: () -> Unit) {
 
                     )
                 }
-
 
                 Spacer(Modifier.height(50.dp))
 

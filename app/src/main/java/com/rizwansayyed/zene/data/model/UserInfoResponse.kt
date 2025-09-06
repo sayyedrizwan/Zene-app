@@ -5,6 +5,7 @@ data class UserInfoResponse(
     var name: String?,
     val photo: String?,
     var username: String?,
+    var emailSubscribe: Boolean?,
     val phoneNumber: String?,
     var status: String?,
     val authToken: String?,

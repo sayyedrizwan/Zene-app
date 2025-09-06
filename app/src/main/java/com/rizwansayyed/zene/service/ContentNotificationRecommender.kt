@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationGeneratedTSDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationSuggestedType
+import com.rizwansayyed.zene.datastore.DataStorageManager.pushNewsLetterDB
 import com.rizwansayyed.zene.service.notification.NotificationUtils
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.OTHER_NOTIFICATION
 import com.rizwansayyed.zene.service.notification.NotificationUtils.Companion.OTHER_NOTIFICATION_DESC
@@ -18,9 +19,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 class ContentNotificationRecommender(
     private val context: Context, private val zeneAPI: ZeneAPIImplementation
@@ -30,6 +31,8 @@ class ContentNotificationRecommender(
     }
 
     fun start() = CoroutineScope(Dispatchers.IO).safeLaunch {
+        if (pushNewsLetterDB.firstOrNull() == false) return@safeLaunch
+
         zeneAPI.notificationRecommendation().catch { }.collectLatest {
             if (it.title == null && it.body == null) return@collectLatest
 
