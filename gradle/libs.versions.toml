@@ -5,51 +5,51 @@ compilesdk = "36"
 minsdk = "23"
 
 
-appversion = "260"
-versionname = "3.04.132"
+appversion = "261"
+versionname = "3.04.134"
 
-agp = "8.11.1"
+agp = "8.11.2"
 
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.1"
-glide-compose = "1.0.0-beta07"
-glide = "5.0.4"
+glide-compose = "1.0.0-beta08"
+glide = "5.0.5"
 credentials = "1.5.0"
 playandroidservice = "21.4.0"
 datastorePreferences = "1.1.7"
 facebookLogin = "18.1.3"
-firebaseBom = "33.16.0"
+firebaseBom = "34.3.0"
 appUpdate = "2.1.0"
 appReview = "2.0.2"
-gson = "2.13.1"
+gson = "2.13.2"
 hiltAndroid = "2.57.1"
 googleServices = "4.4.3"
-hiltNavigationCompose = "1.2.0"
-kotlin = "2.2.10"
+hiltNavigationCompose = "1.3.0"
+kotlin = "2.2.20"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.3"
-activityCompose = "1.10.1"
-composeBom = "2025.08.01"
+lifecycleRuntimeKtx = "2.9.4"
+activityCompose = "1.11.0"
+composeBom = "2025.09.00"
 googleid = "1.1.1"
-mapsCompose = "6.7.2"
+mapsCompose = "6.10.0"
 media3Exoplayer = "1.8.0"
 moshiKotlin = "1.15.2"
 okhttpBom = "5.1.0"
 processPhoenix = "3.0.0"
 retrofit = "3.0.0"
 playServicesLocation = "21.3.0"
-emoji = "1.5.0"
+emoji = "1.6.0"
 truecaller = "3.1.0"
 socketIoClient = "2.1.2"
-camera = "1.5.0-rc01"
-material3 = "1.4.0-beta03"
+camera = "1.5.0"
+material3 = "1.4.0-rc01"
 webkit = "1.14.0"
-navigation = "2.9.3"
+navigation = "2.9.4"
 paletteKtx = "1.0.0"
-room = "2.7.2"
+room = "2.8.0"
 ksp = "2.2.0-2.0.2"
 storage = "1.6.0"
 colorpickerCompose = "1.1.2"
@@ -64,12 +64,12 @@ securityCrypto = "1.1.0"
 konfettiCompose = "2.0.5"
 
 opencsv = "5.12.0"
-playServicesAds = "24.5.0"
+playServicesAds = "24.6.0"
 firebasePerformance = "2.0.1"
 firebaseCrash = "3.0.6"
 
 billing = "8.0.0"
-clarity = "3.4.5"
+clarity = "3.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -101,7 +101,7 @@ firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 
 app-update = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "appUpdate" }

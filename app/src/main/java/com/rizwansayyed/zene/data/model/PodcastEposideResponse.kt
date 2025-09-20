@@ -119,6 +119,7 @@ data class PodcastEpisodeResponse(
         }
     }
 
+    @Suppress("DEPRECATION")
     fun getAsMusicData(): ZeneMusicData {
         val artists = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY).toString()

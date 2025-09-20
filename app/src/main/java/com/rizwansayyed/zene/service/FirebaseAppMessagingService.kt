@@ -3,10 +3,10 @@ package com.rizwansayyed.zene.service
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.firebase.messaging.ktx.messaging
+import com.google.firebase.messaging.messaging
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.implementation.ZeneAPIImplementation
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
@@ -80,8 +80,6 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             val countryCode = ipDB.firstOrNull()?.countryCode
             if (countryCode != null) Firebase.messaging
                 .subscribeToTopic(FCM_TOPIC_COUNTRY + countryCode.lowercase()).await()
-
-
 
             if (isActive) cancel()
         }

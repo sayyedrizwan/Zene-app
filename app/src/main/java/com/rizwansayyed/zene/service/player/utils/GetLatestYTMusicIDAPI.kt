@@ -1,13 +1,11 @@
 package com.rizwansayyed.zene.service.player.utils
 
-import android.util.Log
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
 import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -133,7 +131,7 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
 
                         val navEndpoint = firstRun.optJSONObject("navigationEndpoint")
                         val videoId =
-                            navEndpoint?.optJSONObject("watchEndpoint")?.optString("videoId", null)
+                            navEndpoint?.optJSONObject("watchEndpoint")?.optString("videoId")
 
                         if (videoId != null) {
                             val viewCount = parseViewCount(views)
@@ -150,7 +148,7 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
                                 .optJSONObject("musicResponsiveListItemRenderer") ?: continue
 
                             val playlistData = item.optJSONObject("playlistItemData")
-                            val videoId = playlistData?.optString("videoId", null) ?: continue
+                            val videoId = playlistData?.optString("videoId") ?: continue
 
                             val flexColumns = item.optJSONArray("flexColumns") ?: continue
 
@@ -189,30 +187,26 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
             val matchingVideos = filterVideos(videos, songName, artistName)
             val videoID = matchingVideos.maxByOrNull { it.viewCount }?.videoId
             return videoID
-        } catch (e: Exception) {
-            Log.e("JSONParser", "Error parsing JSON: ${e.message}")
+        } catch (_: Exception) {
             return null
         }
     }
 
-    private fun filterVideos(
-        videos: List<VideoInfo>, songName: String, artistStr: String
-    ): List<VideoInfo> {
+    private fun filterVideos(videos: List<VideoInfo>, songName: String, artistStr: String): List<VideoInfo> {
         val requiredArtists = parseArtists(artistStr)
+        val songNameLower = songName.lowercase()
 
         return videos.filter { video ->
             val titleLower = video.title.lowercase()
+            val artistsLower = video.artists.lowercase()
 
-            val hasSong = titleLower.contains(songName.lowercase())
-
+            val hasSong = titleLower.contains(songNameLower) || songNameLower.contains(titleLower)
             val hasArtists = requiredArtists.all { artist ->
-                titleLower.contains(artist)
+                titleLower.contains(artist) || artistsLower.contains(artist)
             }
-
             hasSong && hasArtists
         }
     }
-
 
     private fun parseArtists(artistStr: String): List<String> {
         return artistStr

@@ -34,6 +34,7 @@
             function onPlayerError(event) {
                 if ([100, 101, 150].includes(event.data)) {
                     Zene.videoUnAvailable()
+                    return
                 }
                 Zene.onError()
             }

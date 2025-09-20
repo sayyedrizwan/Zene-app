@@ -1586,7 +1586,6 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.updateCoupon(token, body))
     }
 
-
     override suspend fun notificationRecommendation() = flow {
         val info = userInfo.firstOrNull()
         val lastTS = lastNotificationGeneratedTSDB.firstOrNull()
