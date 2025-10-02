@@ -57,7 +57,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 HomeSectionSelector.FEED -> FeedView(homeViewModel)
                 RADIO -> HomeRadioView(homeViewModel)
                 PODCAST -> HomePodcastView(homeViewModel)
-                HomeSectionSelector.LUX -> LuxView()
+                HomeSectionSelector.LUXE -> LuxView()
                 HomeSectionSelector.VIDEO -> HomeVideoView(homeViewModel)
                 HomeSectionSelector.AI_MUSIC -> HomeAIView(homeViewModel)
                 MY_LIBRARY -> HomeMyLibraryView()

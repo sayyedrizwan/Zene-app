@@ -1,7 +1,7 @@
 package com.rizwansayyed.zene.ui.main.home
 
 enum class HomeSectionSelector {
-    LUX, MUSIC, FEED, PODCAST, RADIO, VIDEO, AI_MUSIC, MY_LIBRARY
+    LUXE, MUSIC, FEED, PODCAST, RADIO, VIDEO, AI_MUSIC, MY_LIBRARY
 }
 
 enum class HomeNavSelector {

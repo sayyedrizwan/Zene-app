@@ -72,7 +72,7 @@ val reviews = listOf(
     ),
     ReviewData(
         "Noor El-Sayed",
-        "https://img.zeit.de/2025/12/wie-sie-ihr-herz-verteilt-bild-2/square__960x960",
+        "https://freenaturestock.com/wp-content/uploads/freenaturestock-2315-768x512.jpg",
         "I didn’t expect much for the price, but Zene Premium blew me away. Free music, good podcasts, smooth radio, and peace of mind \uD83D\uDE0A\uD83D\uDCF1."
     ),
     ReviewData(
@@ -85,7 +85,11 @@ val reviews = listOf(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LuxUsersReview() {
-    TextViewBold(stringResource(R.string.what_our_luxe_users_say), 19)
+    Row(Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 4.dp), Arrangement.Start) {
+        TextViewBold(stringResource(R.string.what_our_luxe_users_say), 19)
+    }
     Spacer(Modifier.height(8.dp))
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)

@@ -110,7 +110,7 @@ fun MusicPlayerView(navViewModel: NavigationViewModel) {
                     coroutines.safeLaunch {
                         triggerHomeNav(NAV_MAIN_PAGE)
                         delay(500)
-                        navViewModel.setHomeSections(HomeSectionSelector.LUX)
+                        navViewModel.setHomeSections(HomeSectionSelector.LUXE)
                     }
                 }
             }
