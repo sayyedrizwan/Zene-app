@@ -33,19 +33,23 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
-import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.GoldColor
 import com.rizwansayyed.zene.ui.theme.LuxColor
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.theme.PurpleGrey40
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils
+import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_URL
+import com.rizwansayyed.zene.utils.share.MediaContentUtils
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
     val isPremium by isPremiumDB.collectAsState(true)
+    val copiedSuccessfully = stringResource(R.string.url_also_copied_successfully)
 
     Row(
         Modifier
@@ -121,7 +125,9 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         }
 
         WebCards {
-            viewModel.setHomeSections(HomeSectionSelector.WEB)
+            MainUtils.copyTextToClipboard(ZENE_URL)
+            copiedSuccessfully.toast()
+            MediaContentUtils.openCustomBrowser(ZENE_URL)
         }
 
         Spacer(Modifier.width(15.dp))
@@ -177,7 +183,7 @@ fun WebCards(click: () -> Unit) {
             .padding(horizontal = 8.dp)
             .clip(RoundedCornerShape(13.dp))
             .background(
-                brush = Brush.horizontalGradient(colors = listOf(MainColor, DarkCharcoal, LuxColor))
+                brush = Brush.horizontalGradient(colors = listOf(MainColor, PurpleGrey40, LuxColor))
             )
             .clickable { click() }
             .padding(horizontal = 14.dp, vertical = 3.dp),

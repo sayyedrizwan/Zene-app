@@ -12,11 +12,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.ui.main.feed.FeedView
-import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.*
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.AI_MUSIC
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.FEED
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.LUXE
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MUSIC
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MY_LIBRARY
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.PODCAST
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.RADIO
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.VIDEO
 import com.rizwansayyed.zene.ui.main.home.view.HomeAIView
 import com.rizwansayyed.zene.ui.main.home.view.HomeMusicView
 import com.rizwansayyed.zene.ui.main.home.view.HomeMyLibraryView
@@ -25,7 +28,6 @@ import com.rizwansayyed.zene.ui.main.home.view.HomeRadioView
 import com.rizwansayyed.zene.ui.main.home.view.HomeScreenTopView
 import com.rizwansayyed.zene.ui.main.home.view.HomeVideoView
 import com.rizwansayyed.zene.ui.main.lux.LuxView
-import com.rizwansayyed.zene.ui.main.view.DesktopWebView
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
@@ -33,7 +35,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
-
 
 @Composable
 fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
@@ -63,7 +64,6 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 VIDEO -> HomeVideoView(homeViewModel)
                 AI_MUSIC -> HomeAIView(homeViewModel)
                 MY_LIBRARY -> HomeMyLibraryView()
-                WEB -> DesktopWebView()
             }
         }
     }

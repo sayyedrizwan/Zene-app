@@ -498,6 +498,7 @@
     <string name="suggestions_and_updates_desc">Receive personalized recommendation and newsletter updates via email and notifications.</string>
     <string name="terms_of_service">Terms of Service</string>
     <string name="lux_subscription_footer">New users get a 3-day free trial. You can cancel anytime before the trial ends to avoid charges. After the trial, your subscription will start and renew automatically unless you cancel it through the Play Store or App Store before the current period ends.</string>
+    <string name="url_also_copied_successfully">Url also copied successfully.</string>
 
     <string name="important_updates">Important Updates</string>
     <string name="important_updates_desc">Receive important updates related to your account</string>
