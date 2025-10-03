@@ -12,6 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.ui.main.feed.FeedView
+import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.*
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MUSIC
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MY_LIBRARY
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.PODCAST
@@ -24,6 +25,7 @@ import com.rizwansayyed.zene.ui.main.home.view.HomeRadioView
 import com.rizwansayyed.zene.ui.main.home.view.HomeScreenTopView
 import com.rizwansayyed.zene.ui.main.home.view.HomeVideoView
 import com.rizwansayyed.zene.ui.main.lux.LuxView
+import com.rizwansayyed.zene.ui.main.view.DesktopWebView
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
@@ -54,13 +56,14 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
         ) {
             when (viewModel.homeSection) {
                 MUSIC -> HomeMusicView(homeViewModel)
-                HomeSectionSelector.FEED -> FeedView(homeViewModel)
+                FEED -> FeedView(homeViewModel)
                 RADIO -> HomeRadioView(homeViewModel)
                 PODCAST -> HomePodcastView(homeViewModel)
-                HomeSectionSelector.LUXE -> LuxView()
-                HomeSectionSelector.VIDEO -> HomeVideoView(homeViewModel)
-                HomeSectionSelector.AI_MUSIC -> HomeAIView(homeViewModel)
+                LUXE -> LuxView()
+                VIDEO -> HomeVideoView(homeViewModel)
+                AI_MUSIC -> HomeAIView(homeViewModel)
                 MY_LIBRARY -> HomeMyLibraryView()
+                WEB -> DesktopWebView()
             }
         }
     }

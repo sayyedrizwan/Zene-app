@@ -33,11 +33,11 @@ val nativeAdsAndroidViewMap = HashMap<String, AdView?>()
 
 @Composable
 fun NativeViewAdsCard(id: String?) {
-    Column {
-        (4 downTo 1).forEach { index ->
-            key(index) {
-                BannerAd(bannerAdUnit = bannerAdUnit)
-            }
+//    Column {
+//        (4 downTo 1).forEach { index ->
+//            key(index) {
+//                BannerAd(bannerAdUnit = bannerAdUnit)
+//            }
 //            AndroidView(
 //                modifier = Modifier
 //                    .width(220.dp)
@@ -51,8 +51,8 @@ fun NativeViewAdsCard(id: String?) {
 //                    }
 //                }
 //            )
-        }
-    }
+//        }
+//    }
 }
 
 @Composable

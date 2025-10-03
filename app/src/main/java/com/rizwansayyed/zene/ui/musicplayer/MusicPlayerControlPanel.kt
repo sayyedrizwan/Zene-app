@@ -131,6 +131,7 @@ fun SongSlider(data: MusicPlayerData?, pagerState: PagerState) {
 
 @Composable
 fun PlayerButtonControl(player: MusicPlayerData?) {
+    val coroutine = rememberCoroutineScope()
     val isLoopEnabled by isLoopDB.collectAsState(false)
     val isShuffleEnabled by isShuffleDB.collectAsState(false)
 
@@ -139,7 +140,9 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
             Modifier.clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }) {
-                isLoopDB = flowOf(!isLoopEnabled)
+                coroutine.safeLaunch {
+                    isLoopDB = flowOf(!isLoopEnabled)
+                }
             }) {
             ImageIcon(
                 if (isLoopEnabled) R.drawable.ic_repeat_one else R.drawable.ic_repeat, 22
@@ -191,7 +194,9 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
             Modifier.clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }) {
-                isShuffleDB = flowOf(!isShuffleEnabled)
+                coroutine.safeLaunch {
+                    isShuffleDB = flowOf(!isShuffleEnabled)
+                }
             }) {
             ImageIcon(
                 if (isShuffleEnabled) R.drawable.ic_shuffle_square else R.drawable.ic_shuffle, 22

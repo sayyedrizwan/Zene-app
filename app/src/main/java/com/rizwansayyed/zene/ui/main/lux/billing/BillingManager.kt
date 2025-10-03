@@ -20,7 +20,7 @@ class BillingManager(private val context: Activity, private val token: (String, 
 
     var monthlyCost by mutableStateOf("$0.79")
     var yearlyCost by mutableStateOf("$8.99")
-    var semiAnnualCost by mutableStateOf("$8.99")
+    var semiAnnualCost by mutableStateOf("$4.99")
 
     private val purchase = PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
 

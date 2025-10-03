@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Zene</string>
     <string name="app_name_lux">Zene Luxe</string>
+    <string name="try_app_web">Try Zene Web</string>
     <string name="lux">Luxe</string>
     <string name="lux_tag_line">✨ Say goodbye to ads and keep your vibe flowing 🎶 \nWith Lux, you’ll enjoy pure, seamless listening at a price that feels lighter than your morning coffee ☕️.</string>
     <string name="subscribing_1">😊 Enjoy pure music without any annoying breaks.</string>
@@ -267,6 +268,7 @@
     <string name="cancel_deletion">Cancel Deletion</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
+    <string name="popular">Popular</string>
     <string name="queue_desc">Queue up your favorite playlists and podcasts to play next or at the end without interrupting your current vibe.</string>
     <string name="items">Items</string>
     <string name="close">Close</string>
@@ -402,6 +404,7 @@
     <string name="pinterest">Pinterest</string>
     <string name="list">List</string>
     <string name="ads">Ads</string>
+    <string name="months">Months</string>
     <string name="monthly">Monthly</string>
     <string name="yearly">Yearly</string>
     <string name="semi_annual">Semi Annual</string>

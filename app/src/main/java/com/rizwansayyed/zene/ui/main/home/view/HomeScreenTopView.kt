@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.main.home.view
 
-import android.content.pm.PackageManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -21,11 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
@@ -34,6 +33,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
+import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.GoldColor
 import com.rizwansayyed.zene.ui.theme.LuxColor
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -73,7 +73,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             }
         }
         Spacer(Modifier.width(3.dp))
-        if (isPremium) LuxCards {
+        if (!isPremium) LuxCards {
             viewModel.setHomeSections(HomeSectionSelector.LUXE)
         }
 
@@ -120,6 +120,10 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
             viewModel.setHomeSections(HomeSectionSelector.MY_LIBRARY)
         }
 
+        WebCards {
+            viewModel.setHomeSections(HomeSectionSelector.WEB)
+        }
+
         Spacer(Modifier.width(15.dp))
     }
 }
@@ -163,5 +167,21 @@ fun LuxCards(click: () -> Unit) {
         ImageIcon(R.drawable.ic_crown, 16, GoldColor)
         Spacer(Modifier.width(5.dp))
         TextViewSemiBold(stringResource(R.string.app_name_lux), 13)
+    }
+}
+
+@Composable
+fun WebCards(click: () -> Unit) {
+    Row(
+        Modifier
+            .padding(horizontal = 8.dp)
+            .clip(RoundedCornerShape(13.dp))
+            .background(
+                brush = Brush.horizontalGradient(colors = listOf(MainColor, DarkCharcoal, LuxColor))
+            )
+            .clickable { click() }
+            .padding(horizontal = 14.dp, vertical = 3.dp),
+        Arrangement.Center, Alignment.CenterVertically) {
+        TextViewSemiBold(stringResource(R.string.try_app_web), 13)
     }
 }

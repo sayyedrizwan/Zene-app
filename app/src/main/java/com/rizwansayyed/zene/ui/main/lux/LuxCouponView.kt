@@ -23,9 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.R
@@ -53,9 +51,10 @@ fun LuxCouponView(homeViewModel: HomeViewModel, show: () -> Unit) {
         Alignment.CenterVertically
     ) {
         TextField(
-            TextFieldValue(text = coupon, selection = TextRange(coupon.length)),
+            coupon,
             {
-                coupon = if (it.text.length <= 100) it.text else it.text.take(100)
+                coupon = if (it.length <= 100) it.replace("\n", "")
+                else it.take(100).replace("\n", "")
             },
             Modifier
                 .weight(1f)
