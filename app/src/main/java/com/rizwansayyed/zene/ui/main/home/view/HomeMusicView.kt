@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.utils.ads.BannerAppAd
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -119,6 +120,9 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                     }
                 }
 
+                if (!isPremium) item(key = "home_ads_1") {
+                    BannerAppAd()
+                }
 
                 if ((sponsorAds?.top?.title?.trim()?.length
                         ?: 0) > 2 || sponsorAds?.top?.media?.isNotEmpty() == true
@@ -144,6 +148,10 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             }
                         }
                     }
+                }
+
+                if (!isPremium) item(key = "home_ads_2") {
+                    BannerAppAd()
                 }
 
                 if (v.data.playlists?.isNotEmpty() == true) item(key = 4) {
@@ -183,6 +191,10 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                 }
 
 
+                if (!isPremium) item(key = "home_ads_3") {
+                    BannerAppAd()
+                }
+
                 if (v.data.songsYouMayLike?.isNotEmpty() == true) item(key = 6) {
                     Spacer(Modifier.height(50.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
@@ -213,6 +225,10 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
                             ItemArtistsCardView(z)
                         }
                     }
+                }
+
+                if (!isPremium) item(key = "home_ads_4") {
+                    BannerAppAd()
                 }
 
                 if ((sponsorAds?.bottom?.title?.trim()?.length

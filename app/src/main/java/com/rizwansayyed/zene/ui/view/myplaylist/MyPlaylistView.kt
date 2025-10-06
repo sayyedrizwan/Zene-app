@@ -153,6 +153,7 @@ fun TopLikedView() {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
+    var sortView by remember { mutableStateOf(false) }
     var changeNameView by remember { mutableStateOf(false) }
     var changeImageView by remember { mutableStateOf(false) }
     var deleteView by remember { mutableStateOf(false) }
@@ -240,7 +241,9 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                         }
                     }
 
+
                     Spacer(Modifier.weight(1f))
+
                     if (myLibraryViewModel.myPlaylistSongsList.isNotEmpty()) MiniWithImageAndBorder(
                         R.drawable.ic_play, R.string.play, MainColor
                     ) {
@@ -249,6 +252,41 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                             myLibraryViewModel.myPlaylistSongsList
                         )
                     }
+                }
+
+                Row(
+                    Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth(),
+                    Arrangement.Center, Alignment.CenterVertically
+                ) {
+                    MiniWithImageAndBorder(
+                        R.drawable.ic_arrow_data_transfer, R.string.sort
+                    ) {
+
+                    }
+
+                    MiniWithImageAndBorder(
+                        R.drawable.ic_vertical_scroll, R.string.edit
+                    ) {
+
+                    }
+
+//                    Box(
+//                        Modifier
+//                            .padding(horizontal = 7.dp)
+//                            .clickable { sortView = true }) {
+//                        ImageIcon(R.drawable.ic_arrow_data_transfer, 27)
+//                    }
+//
+//                    Box(
+//                        Modifier
+//                            .padding(horizontal = 7.dp)
+//                            .clickable { sortView = true }) {
+//                        ImageIcon(R.drawable.ic_vertical_scroll, 27)
+//                    }
+
+                    Spacer(Modifier.weight(1f))
                 }
 
                 if (deleteView) TextAlertDialog(
@@ -284,6 +322,11 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                     if (it) myLibraryViewModel.myPlaylistInfo(v.data.id ?: "")
                     changeImageView = false
                 }
+
+//                if (sortView) CustomImageOnMyPlaylist(v.data) {
+//                    if (it) myLibraryViewModel.myPlaylistInfo(v.data.id ?: "")
+//                    changeImageView = false
+//                }
             }
         }
     }

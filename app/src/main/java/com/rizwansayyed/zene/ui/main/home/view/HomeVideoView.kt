@@ -31,6 +31,7 @@ import com.rizwansayyed.zene.ui.view.FullVideoCardView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerVideoLoadingCard
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.VideoCardView
+import com.rizwansayyed.zene.utils.ads.BannerAppAd
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
@@ -115,6 +116,10 @@ fun HomeVideoView(homeViewModel: HomeViewModel) {
                     }
                 }
 
+
+                if (!isPremium) item(key = "video_ads_2") {
+                    BannerAppAd()
+                }
 
                 if (v.data.trendingMusic?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(50.dp))

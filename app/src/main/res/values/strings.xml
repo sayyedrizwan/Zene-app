@@ -202,6 +202,8 @@
     <string name="ent_">ent.</string>
     <string name="grant">Grant</string>
     <string name="play">Play</string>
+    <string name="sort">Sort</string>
+    <string name="edit">Edit</string>
     <string name="watch">Watch</string>
     <string name="start_free_trial">Start free trial</string>
     <string name="playlists">Playlists</string>

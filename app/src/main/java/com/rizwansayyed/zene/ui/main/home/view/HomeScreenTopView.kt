@@ -127,6 +127,7 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         WebCards {
             MainUtils.copyTextToClipboard(ZENE_URL)
             copiedSuccessfully.toast()
+            copiedSuccessfully.toast()
             MediaContentUtils.openCustomBrowser(ZENE_URL)
         }
 
