@@ -118,6 +118,7 @@
     <string name="on_trending">On Trending</string>
     <string name="releasing_on">Releasing On</string>
     <string name="releasing_soon">Releasing Soon</string>
+    <string name="recently_added">Recently Added</string>
     <string name="artist">Artist</string>
     <string name="artists">Artists</string>
     <string name="similar_artists">Similar Artists</string>
@@ -203,6 +204,9 @@
     <string name="grant">Grant</string>
     <string name="play">Play</string>
     <string name="sort">Sort</string>
+    <string name="sort_by">Sort By</string>
+    <string name="custom_order">Custom Order</string>
+    <string name="title">Title</string>
     <string name="edit">Edit</string>
     <string name="watch">Watch</string>
     <string name="start_free_trial">Start free trial</string>

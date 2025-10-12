@@ -18,8 +18,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -153,7 +156,7 @@ fun TopLikedView() {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
-    var sortView by remember { mutableStateOf(false) }
+    val sortView = remember { mutableStateOf(false) }
     var changeNameView by remember { mutableStateOf(false) }
     var changeImageView by remember { mutableStateOf(false) }
     var deleteView by remember { mutableStateOf(false) }
@@ -235,6 +238,9 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                                 .clickable { shareView = true }) {
                             ImageIcon(R.drawable.ic_share, 24)
                         }
+
+                        MenuOptionsItem(sortView)
+
                     } else {
                         LaunchedEffect(Unit) {
                             "not mine save it".toast()
@@ -252,41 +258,6 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                             myLibraryViewModel.myPlaylistSongsList
                         )
                     }
-                }
-
-                Row(
-                    Modifier
-                        .padding(top = 10.dp)
-                        .fillMaxWidth(),
-                    Arrangement.Center, Alignment.CenterVertically
-                ) {
-                    MiniWithImageAndBorder(
-                        R.drawable.ic_arrow_data_transfer, R.string.sort
-                    ) {
-
-                    }
-
-                    MiniWithImageAndBorder(
-                        R.drawable.ic_vertical_scroll, R.string.edit
-                    ) {
-
-                    }
-
-//                    Box(
-//                        Modifier
-//                            .padding(horizontal = 7.dp)
-//                            .clickable { sortView = true }) {
-//                        ImageIcon(R.drawable.ic_arrow_data_transfer, 27)
-//                    }
-//
-//                    Box(
-//                        Modifier
-//                            .padding(horizontal = 7.dp)
-//                            .clickable { sortView = true }) {
-//                        ImageIcon(R.drawable.ic_vertical_scroll, 27)
-//                    }
-
-                    Spacer(Modifier.weight(1f))
                 }
 
                 if (deleteView) TextAlertDialog(
@@ -323,11 +294,43 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                     changeImageView = false
                 }
 
-//                if (sortView) CustomImageOnMyPlaylist(v.data) {
-//                    if (it) myLibraryViewModel.myPlaylistInfo(v.data.id ?: "")
-//                    changeImageView = false
-//                }
+                if (sortView.value) SortPlaylistView(myLibraryViewModel) {
+                    sortView.value = false
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun MenuOptionsItem(sortView: MutableState<Boolean>) {
+    var extraItemMenu by remember { mutableStateOf(false) }
+
+    Box(
+        Modifier
+            .padding(horizontal = 7.dp)
+            .clickable { extraItemMenu = !extraItemMenu }) {
+        ImageIcon(R.drawable.ic_vertical_menu, 24)
+
+        DropdownMenu(
+            expanded = extraItemMenu,
+            onDismissRequest = { extraItemMenu = false },
+            containerColor = Color.DarkGray
+        ) {
+            DropdownMenuItem(
+                text = { TextViewNormal(stringResource(R.string.sort), 15, center = false) },
+                leadingIcon = { ImageIcon(R.drawable.ic_arrow_data_transfer, 19) },
+                onClick = {
+                    extraItemMenu = false
+                    sortView.value = true
+                }
+            )
+
+            DropdownMenuItem(
+                text = { TextViewNormal(stringResource(R.string.edit), 15, center = false) },
+                leadingIcon = { ImageIcon(R.drawable.ic_vertical_scroll, 19) },
+                onClick = { extraItemMenu = false }
+            )
         }
     }
 }

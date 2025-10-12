@@ -33,6 +33,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SIGN_IN_WITH_EMAIL_ADDRESS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SMOOTH_SONG_TRANSITION_SETTINGS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SONG_SPEED_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SORT_MY_PLAYLIST_TYPE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SPONSOR_ADS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.USER_INFO_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.VIDEO_PLAYER_CC_DB
@@ -42,6 +43,7 @@ import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.datastore.model.VideoQualityEnum
 import com.rizwansayyed.zene.datastore.model.VideoSpeedEnum
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.ui.view.myplaylist.SortMyPlaylistType
 import com.rizwansayyed.zene.utils.MainUtils.moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -90,6 +92,7 @@ object DataStorageManager {
         val LAST_LOAD_TIME_DB = longPreferencesKey("last_load_time_db")
         val IS_POSTED_REVIEW_TIMESTAMP_DB = longPreferencesKey("is_posted_review_timestamp_db")
         val SIGN_IN_WITH_EMAIL_ADDRESS_DB = stringPreferencesKey("sign_in_with_email_address")
+        val SORT_MY_PLAYLIST_TYPE_DB = stringPreferencesKey("sort_my_playlist_type")
     }
 
     var sponsorAdsDB: Flow<AndroidSponsorAds?>
@@ -161,6 +164,18 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[VIDEO_QUALITY_DB] = value.first().name
+            }
+            if (isActive) cancel()
+        }
+
+    var sortMyPlaylistTypeDB: Flow<SortMyPlaylistType>
+        get() = context.dataStore.data.map {
+            val q = SortMyPlaylistType.entries.firstOrNull { v -> v.name == it[SORT_MY_PLAYLIST_TYPE_DB] }
+            q ?: SortMyPlaylistType.CUSTOM_ORDER
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[SORT_MY_PLAYLIST_TYPE_DB] = value.first().name
             }
             if (isActive) cancel()
         }
