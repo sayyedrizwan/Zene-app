@@ -38,7 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
@@ -157,6 +157,7 @@ fun TopLikedView() {
 @Composable
 fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
     val sortView = remember { mutableStateOf(false) }
+    val editSortView = remember { mutableStateOf(false) }
     var changeNameView by remember { mutableStateOf(false) }
     var changeImageView by remember { mutableStateOf(false) }
     var deleteView by remember { mutableStateOf(false) }
@@ -239,7 +240,7 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                             ImageIcon(R.drawable.ic_share, 24)
                         }
 
-                        MenuOptionsItem(sortView)
+                        MenuOptionsItem(sortView, editSortView)
 
                     } else {
                         LaunchedEffect(Unit) {
@@ -294,8 +295,12 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                     changeImageView = false
                 }
 
-                if (sortView.value) SortPlaylistView(myLibraryViewModel) {
+                if (sortView.value) SortPlaylistView(myLibraryViewModel, v.data.id ?: "") {
                     sortView.value = false
+                }
+
+                if (editSortView.value) MyPlaylistEditSortView(v.data.id ?: "") {
+                    editSortView.value = false
                 }
             }
         }
@@ -303,7 +308,7 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
 }
 
 @Composable
-private fun MenuOptionsItem(sortView: MutableState<Boolean>) {
+private fun MenuOptionsItem(sortView: MutableState<Boolean>, editSortView: MutableState<Boolean>) {
     var extraItemMenu by remember { mutableStateOf(false) }
 
     Box(
@@ -329,7 +334,10 @@ private fun MenuOptionsItem(sortView: MutableState<Boolean>) {
             DropdownMenuItem(
                 text = { TextViewNormal(stringResource(R.string.edit), 15, center = false) },
                 leadingIcon = { ImageIcon(R.drawable.ic_vertical_scroll, 19) },
-                onClick = { extraItemMenu = false }
+                onClick = {
+                    extraItemMenu = false
+                    editSortView.value = true
+                }
             )
         }
     }

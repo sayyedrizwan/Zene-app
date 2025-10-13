@@ -233,6 +233,8 @@ dependencies {
 
     implementation(libs.opencsv)
 
+    implementation(libs.reorderable)
+
     implementation(libs.billing)
 
     implementation(libs.konfetti.compose)

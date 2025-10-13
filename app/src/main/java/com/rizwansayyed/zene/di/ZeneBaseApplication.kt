@@ -51,7 +51,7 @@ class ZeneBaseApplication : Application() {
     }
 
     private val activityManager by lazy {
-        context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
     }
     private var monitorJob: Job? = null
     val observer = object : DefaultLifecycleObserver {

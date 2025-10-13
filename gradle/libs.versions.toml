@@ -68,6 +68,8 @@ playServicesAds = "24.6.0"
 firebasePerformance = "2.0.1"
 firebaseCrash = "3.0.6"
 
+reorderable = "3.0.0"
+
 billing = "8.0.0"
 clarity = "3.5.1"
 
@@ -184,6 +186,9 @@ konfetti-compose = { module = "nl.dionsegijn:konfetti-compose", version.ref = "k
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 
 opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
+
+
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 clarity = { module = "com.microsoft.clarity:clarity-compose", version.ref = "clarity" }

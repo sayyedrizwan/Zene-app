@@ -3,7 +3,9 @@ package com.rizwansayyed.zene.di.utils
 import android.app.Application
 import android.content.Intent
 import android.os.SystemClock
+import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.ui.main.MainActivity
 import kotlin.time.Duration.Companion.seconds
 
@@ -20,6 +22,7 @@ class AppCrashHandler(private val application: Application) : Thread.UncaughtExc
     }
 
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
+        if (BuildConfig.DEBUG) Log.d("TAG", "uncaughtException: ${throwable.message}")
         val now = SystemClock.elapsedRealtime()
         crashTimes.add(now)
         crashTimes.removeAll { now - it > crashIntervalMs }

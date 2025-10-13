@@ -25,11 +25,12 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SortPlaylistView(viewModel: MyLibraryViewModel, close: () -> Unit) {
+fun SortPlaylistView(viewModel: MyLibraryViewModel, playlistID: String, close: () -> Unit) {
     ModalBottomSheet(
         close,
         contentColor = MainColor,
@@ -56,6 +57,10 @@ fun SortPlaylistView(viewModel: MyLibraryViewModel, close: () -> Unit) {
                         coroutine.safeLaunch {
                             sortMyPlaylistTypeDB = flowOf(SortMyPlaylistType.CUSTOM_ORDER)
                         }
+                        coroutine.safeLaunch {
+                            delay(500)
+                            viewModel.myPlaylistSongsViaSort(playlistID)
+                        }
                     }) {
                 TextViewNormal(stringResource(R.string.custom_order))
                 Spacer(Modifier.weight(1f))
@@ -69,6 +74,10 @@ fun SortPlaylistView(viewModel: MyLibraryViewModel, close: () -> Unit) {
                     .clickable {
                         coroutine.safeLaunch {
                             sortMyPlaylistTypeDB = flowOf(SortMyPlaylistType.TITLE)
+                        }
+                        coroutine.safeLaunch {
+                            delay(500)
+                            viewModel.myPlaylistSongsViaSort(playlistID)
                         }
                     }) {
                 TextViewNormal(stringResource(R.string.title))
@@ -84,6 +93,10 @@ fun SortPlaylistView(viewModel: MyLibraryViewModel, close: () -> Unit) {
                         coroutine.safeLaunch {
                             sortMyPlaylistTypeDB = flowOf(SortMyPlaylistType.ARTIST)
                         }
+                        coroutine.safeLaunch {
+                            delay(500)
+                            viewModel.myPlaylistSongsViaSort(playlistID)
+                        }
                     }) {
                 TextViewNormal(stringResource(R.string.artist))
                 Spacer(Modifier.weight(1f))
@@ -96,6 +109,10 @@ fun SortPlaylistView(viewModel: MyLibraryViewModel, close: () -> Unit) {
                 .clickable {
                     coroutine.safeLaunch {
                         sortMyPlaylistTypeDB = flowOf(SortMyPlaylistType.RECENTLY_ADDED)
+                    }
+                    coroutine.safeLaunch {
+                        delay(500)
+                        viewModel.myPlaylistSongsViaSort(playlistID)
                     }
                 }) {
                 TextViewNormal(stringResource(R.string.recently_added))

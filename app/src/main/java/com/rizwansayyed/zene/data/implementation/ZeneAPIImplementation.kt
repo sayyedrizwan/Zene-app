@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationGeneratedTSDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationSuggestedType
 import com.rizwansayyed.zene.datastore.DataStorageManager.pauseHistorySettings
+import com.rizwansayyed.zene.datastore.DataStorageManager.sortMyPlaylistTypeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
@@ -337,6 +338,7 @@ class ZeneAPIImplementation @Inject constructor(
             put("playlist_id", playlistId)
             put("email", email)
             put("country", country)
+            put("sort", sortMyPlaylistTypeDB.firstOrNull()?.name)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

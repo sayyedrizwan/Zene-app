@@ -139,6 +139,22 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
     private var myPlaylistSongsCheckJob: Job? = null
 
+
+    fun moveItem(from: Int, to: Int) {
+        myPlaylistSongsList.apply {
+            if (from in indices && to in indices) {
+                add(to, removeAt(from))
+            }
+        }
+    }
+
+    fun myPlaylistSongsViaSort(playlistID: String) = viewModelScope.safeLaunch {
+        myPlaylistSongsPage = 0
+        myPlaylistSongsList.clear()
+        myPlaylistSongsCheckJob?.cancel()
+        myPlaylistSongsData(playlistID)
+    }
+
     fun myPlaylistSongsData(playlistID: String) = viewModelScope.safeLaunch {
         myPlaylistSongsCheckJob?.cancel()
         val email = userInfo.firstOrNull()?.email ?: ""
@@ -154,7 +170,12 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             }.collectLatest {
                 myPlaylistSongsPage += 1
                 myPlaylistSongsIsLoading = false
-                myPlaylistSongsList.addAll(it)
+//                myPlaylistSongsList.addAll(it)
+                myPlaylistSongsList.addAll(
+                    it.mapIndexed { index, song ->
+                        song.copy(secId = "${song.id ?: "noid"}_$index")
+                    }
+                )
             }
         }
     }
