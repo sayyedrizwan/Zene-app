@@ -16,6 +16,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.pauseHistorySettings
 import com.rizwansayyed.zene.datastore.DataStorageManager.sortMyPlaylistTypeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.getDeviceFcmToken
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.connect_status.view.saveFileToAppDirectory
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
@@ -51,12 +52,11 @@ class ZeneAPIImplementation @Inject constructor(
             ipDB = flowOf(ip)
         }
 
-        val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
         val json = JSONObject().apply {
             put("token", tokenID)
             put("device_id", getUniqueDeviceId())
             put("type", type)
-            put("fcm_token", fcm)
+            put("fcm_token", getDeviceFcmToken())
             put("ip", ip.query)
             put("device", "Android ${getDeviceInfo()}")
             put("country", "${ip.city}, ${ip.regionName}, ${ip.country}")
@@ -74,14 +74,13 @@ class ZeneAPIImplementation @Inject constructor(
         val info = userInfo.firstOrNull()
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
-        val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
         val location = BackgroundLocationTracking.getLatestLocation()
 
         val json = JSONObject().apply {
             put("email", info?.email ?: "")
             put("name", info?.name ?: "")
             put("device_id", getUniqueDeviceId())
-            put("fcm_token", fcm)
+            put("fcm_token", getDeviceFcmToken())
             put("ip", ip.query)
             put("device", "Android ${getDeviceInfo()}")
             put("country", "${ip.city}, ${ip.regionName}, ${ip.country}")
@@ -100,14 +99,13 @@ class ZeneAPIImplementation @Inject constructor(
         val info = userInfo.firstOrNull()
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
-        val fcm = FirebaseMessaging.getInstance().token.await() ?: ""
         val location = BackgroundLocationTracking.getLatestLocation()
 
         val json = JSONObject().apply {
             put("email", info?.email ?: "")
             put("name", info?.name ?: "")
             put("device_id", getUniqueDeviceId())
-            put("fcm_token", fcm)
+            put("fcm_token", getDeviceFcmToken())
             put("token", purchaseToken)
             put("sub_token", subscriptionId)
             put("ip", ip.query)

@@ -2,8 +2,8 @@ package com.rizwansayyed.zene.service
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.messaging
@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import javax.inject.Inject
@@ -82,6 +81,12 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
                 .subscribeToTopic(FCM_TOPIC_COUNTRY + countryCode.lowercase()).await()
 
             if (isActive) cancel()
+        }
+
+        suspend fun getDeviceFcmToken(): String = try {
+            FirebaseMessaging.getInstance().token.await()
+        } catch (_: Exception) {
+            ""
         }
     }
 
