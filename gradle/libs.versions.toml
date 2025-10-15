@@ -8,7 +8,7 @@ minsdk = "23"
 appversion = "262"
 versionname = "3.04.135"
 
-agp = "8.11.2"
+agp = "8.13.0"
 
 androidImageCropper = "4.6.0"
 exifinterface = "1.4.1"

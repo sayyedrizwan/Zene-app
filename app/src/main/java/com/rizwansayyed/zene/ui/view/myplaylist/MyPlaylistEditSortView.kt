@@ -12,10 +12,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +32,12 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
+import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import java.util.UUID
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -41,6 +46,7 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
         val viewModel: MyLibraryViewModel = hiltViewModel()
         val hapticFeedback = LocalHapticFeedback.current
         val lazyListState = rememberLazyListState()
+        var isBottomTriggered by remember { mutableStateOf(false) }
 
         val reorderableLazyListState = rememberReorderableLazyListState(
             lazyListState = lazyListState,
@@ -71,8 +77,7 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
                                 .fillMaxWidth()
                                 .background(if (isDragging) Color.DarkGray else Color.Transparent)
                                 .padding(horizontal = 10.dp)
-                                .padding(vertical = 16.dp)
-                                .draggableHandle(),
+                                .padding(vertical = 16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             GlideImage(
@@ -86,33 +91,42 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
                             )
 
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = song.name ?: "",
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
+                                TextViewBold(song.name ?: "", 15)
                                 if (!song.artists.isNullOrEmpty()) {
-                                    Text(
-                                        text = song.artists,
-                                        color = Color.Gray,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                                    TextViewNormal(song.artists, 15, Color.Gray)
                                 }
                             }
 
-                            Text(
-                                text = "⋮⋮",
-                                color = Color.Gray,
-                                style = MaterialTheme.typography.titleLarge
-                            )
+                            Box(Modifier.draggableHandle()) {
+                                TextViewBold("⋮⋮", 20)
+                            }
                         }
                     }
                 }
+            }
+
+            if (viewModel.myPlaylistSongsIsLoading) Row(Modifier.align(Alignment.BottomCenter)) {
+                CircularLoadingView()
             }
         }
 
         LaunchedEffect(Unit) {
             viewModel.myPlaylistSongsData(id)
+        }
+
+
+        LaunchedEffect(lazyListState) {
+            snapshotFlow { lazyListState.layoutInfo }.collect { layoutInfo ->
+                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItemsCount = layoutInfo.totalItemsCount
+
+                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
+                    isBottomTriggered = true
+                    viewModel.myPlaylistSongsData(id)
+                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
+                    isBottomTriggered = false
+                }
+            }
         }
     }
 }

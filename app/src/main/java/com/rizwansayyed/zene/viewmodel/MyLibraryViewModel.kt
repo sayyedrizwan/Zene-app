@@ -170,10 +170,10 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             }.collectLatest {
                 myPlaylistSongsPage += 1
                 myPlaylistSongsIsLoading = false
-//                myPlaylistSongsList.addAll(it)
                 myPlaylistSongsList.addAll(
                     it.mapIndexed { index, song ->
-                        song.copy(secId = "${song.id ?: "noid"}_$index")
+                        val newIndex = myPlaylistSongsList.size + index
+                        song.copy(secId = "${song.id ?: "noid"}_$newIndex")
                     }
                 )
             }
