@@ -88,6 +88,7 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         } catch (_: Exception) {
             ""
         }
+        
     }
 
     override fun onNewToken(token: String) {

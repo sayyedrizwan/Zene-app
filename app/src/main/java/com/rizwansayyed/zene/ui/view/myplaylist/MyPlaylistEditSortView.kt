@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view.myplaylist
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -53,7 +55,7 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
             onMove = { from, to ->
                 val fromIndex = from.index
                 val toIndex = to.index
-                viewModel.moveItem(fromIndex, toIndex)
+                viewModel.moveItem(fromIndex, toIndex, id)
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
             }
         )

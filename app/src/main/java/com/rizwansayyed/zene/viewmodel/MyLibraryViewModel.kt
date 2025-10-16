@@ -138,13 +138,21 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     private var myPlaylistSongsPage by mutableIntStateOf(0)
 
     private var myPlaylistSongsCheckJob: Job? = null
+    private var myPlaylistSongsUpdateJob: Job? = null
 
 
-    fun moveItem(from: Int, to: Int) {
+    fun moveItem(from: Int, to: Int, id: String) {
         myPlaylistSongsList.apply {
             if (from in indices && to in indices) {
                 add(to, removeAt(from))
             }
+        }
+        myPlaylistSongsUpdateJob?.cancel()
+
+        myPlaylistSongsUpdateJob = viewModelScope.safeLaunch {
+            delay(2.seconds)
+            val songInfo = myPlaylistSongsList.getOrNull(to) ?: return@safeLaunch
+            zeneAPI.myPlaylistsSongsReorder(songInfo, id, to).catch { }.collectLatest { }
         }
     }
 

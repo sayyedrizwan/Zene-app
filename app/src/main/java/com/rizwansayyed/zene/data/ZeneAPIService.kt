@@ -123,6 +123,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_LOGIN_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_ALL_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_PLAYLISTS_SONGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_PLAYLISTS_SONGS_REORDER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_MY_PLAYLIST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_CREATE_NEW_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_PLAYLISTS_SONG_CHECK_API
@@ -636,6 +637,12 @@ interface ZeneAPIService {
     suspend fun myPlaylistsSongs(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_USER_MY_PLAYLISTS_SONGS_REORDER_API)
+    suspend fun myPlaylistsSongsReorder(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StatusTypeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_PLAYLIST_REMOVE_MEDIA_PLAYLISTS_API)

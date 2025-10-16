@@ -185,4 +185,8 @@ interface ZeneAPIInterface {
     suspend fun deleteAccountInfo(): Flow<DeleteAccountInfoResponse>
     suspend fun cancelDeleteAccount(): Flow<StatusTypeResponse>
     suspend fun updateEmailSubscription(value: Boolean): Flow<StatusTypeResponse>
+
+    suspend fun myPlaylistsSongsReorder(
+        v: ZeneMusicData, pId: String, position: Int
+    ): Flow<StatusTypeResponse>
 }

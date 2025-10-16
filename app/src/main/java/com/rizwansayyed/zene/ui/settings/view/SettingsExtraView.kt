@@ -278,7 +278,10 @@ fun logout(context: Context) {
 
     stopAppService(context)
     CoroutineScope(Dispatchers.IO).safeLaunch {
-        FirebaseMessaging.getInstance().deleteToken()
+        try {
+            FirebaseMessaging.getInstance().deleteToken()
+        } catch (_: Exception) {
+        }
     }
 
     CoroutineScope(Dispatchers.IO).safeLaunch {
