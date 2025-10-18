@@ -1,11 +1,11 @@
 package com.rizwansayyed.zene.ui.videoplayer.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.MotionEvent
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,8 +27,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.datastore.DataStorageManager.videoCCDB
+import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService
-import com.rizwansayyed.zene.ui.main.search.view.removeYoutubeTopView
 import com.rizwansayyed.zene.ui.main.view.AddToPlaylistsView
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
@@ -52,9 +52,19 @@ fun VideoPlayerVideoView(
 
     val coroutine = rememberCoroutineScope()
 
+    fun seekToDuration() = coroutine.safeLaunch(Dispatchers.Main) {
+        viewModel.webView?.evaluateJavascript(
+            "seekTo(\"${viewModel.refreshLastVideoDuration}\")", null
+        )
+        viewModel.refreshLastVideoDuration = 0f
+    }
+
     class WebAppInterface {
         @JavascriptInterface
         fun videoState(playerState: Int, currentTS: String, duration: String, isMuted: Boolean) {
+            if (playerState == YoutubePlayerState.PLAYING.v && viewModel.refreshLastVideoDuration > 0L)
+                seekToDuration()
+
             viewModel.setVideoState(playerState, currentTS, duration, isMuted)
         }
 
@@ -122,8 +132,9 @@ fun VideoPlayerVideoView(
         PlayerForegroundService.getPlayerS()?.pause()
         playerViewModel.likedMediaItem(videoID, MusicDataTypes.VIDEOS)
         job?.cancel()
-        job = coroutine.safeLaunch {
+        job = coroutine.safeLaunch(Dispatchers.Main) {
             while (true) {
+                Log.d("TAG", "VideoPlayerVideoView: rrrrr 111")
                 viewModel.webView?.evaluateJavascript("playingStatus();", null)
                 delay(500)
             }

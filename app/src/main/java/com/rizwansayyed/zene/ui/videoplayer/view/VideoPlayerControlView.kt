@@ -76,10 +76,7 @@ fun VideoPlayerControlView(
         VideoPlayerBottomControl(viewModel, Modifier.align(Alignment.BottomCenter))
 
         QualityAndControlVideoView(
-            viewModel,
-            Modifier.align(Alignment.TopEnd),
-            playerViewModel,
-            videoID
+            viewModel, Modifier.align(Alignment.TopEnd), playerViewModel, videoID
         )
     }
 }

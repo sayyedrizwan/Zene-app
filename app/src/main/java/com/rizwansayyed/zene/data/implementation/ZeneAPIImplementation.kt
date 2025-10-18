@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.implementation
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
@@ -242,7 +243,6 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun myPlaylists(page: Int) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-
         val json = JSONObject().apply {
             put("page", page)
             put("email", email)
@@ -331,12 +331,14 @@ class ZeneAPIImplementation @Inject constructor(
         val token = userInfo.firstOrNull()?.authToken ?: ""
         val country = ipDB.firstOrNull()?.countryCode
 
+        Log.d("TAG", "myPlaylistsSongs: ddata $page")
+
         val json = JSONObject().apply {
             put("page", page)
             put("playlist_id", playlistId)
             put("email", email)
             put("country", country)
-            put("sort", sortMyPlaylistTypeDB.firstOrNull()?.name)
+//            put("sort", sortMyPlaylistTypeDB.firstOrNull()?.name)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

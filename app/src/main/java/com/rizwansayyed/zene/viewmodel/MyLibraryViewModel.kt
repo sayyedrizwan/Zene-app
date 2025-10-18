@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
+import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,13 +48,14 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
     private var historyCheckJob: Job? = null
     fun songHistoryList() {
         historyCheckJob?.cancel()
+
         historyCheckJob = viewModelScope.safeLaunch {
             zeneAPI.getHistory(historyPage).onStart {
+                historyPage += 1
                 historyIsLoading = true
             }.catch {
                 historyIsLoading = false
             }.collectLatest {
-                historyPage += 1
                 historyIsLoading = false
                 historyList.addAll(it)
             }
@@ -71,11 +73,11 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         savedPlaylistCheckJob?.cancel()
         savedPlaylistCheckJob = viewModelScope.safeLaunch {
             zeneAPI.getSavePlaylists(savedPage).onStart {
+                savedPage += 1
                 savedIsLoading = true
             }.catch {
                 savedIsLoading = false
             }.collectLatest {
-                savedPage += 1
                 savedIsLoading = false
                 savedList.addAll(it)
             }
@@ -97,11 +99,11 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
                 myList.clear()
             }
             zeneAPI.myPlaylists(myPage).onStart {
+                myPage += 1
                 myIsLoading = true
             }.catch {
                 myIsLoading = false
             }.collectLatest {
-                myPage += 1
                 myIsLoading = false
                 myList.addAll(it)
             }
@@ -172,11 +174,11 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
 
         myPlaylistSongsCheckJob = viewModelScope.safeLaunch {
             zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
+                myPlaylistSongsPage += 1
                 myPlaylistSongsIsLoading = true
             }.catch {
                 myPlaylistSongsIsLoading = false
             }.collectLatest {
-                myPlaylistSongsPage += 1
                 myPlaylistSongsIsLoading = false
                 myPlaylistSongsList.addAll(
                     it.mapIndexed { index, song ->

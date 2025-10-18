@@ -210,6 +210,7 @@ fun PlayerButtonControl(player: MusicPlayerData?) {
 fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
     var showShareView by remember { mutableStateOf(false) }
     var songSpeedView by remember { mutableStateOf(false) }
+    var sortView by remember { mutableStateOf(false) }
     val videoSpeed by songSpeedDB.collectAsState(null)
     var showTimerSheet by remember { mutableStateOf(false) }
 
@@ -261,6 +262,16 @@ fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
             Modifier.clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }) {
+                sortView = true
+            }) {
+            ImageIcon(R.drawable.ic_vertical_scroll, 23)
+        }
+
+        Spacer(Modifier.width(20.dp))
+        Box(
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
                 songSpeedView = true
             }) {
             ImageIcon(R.drawable.ic_dashboard_speed, 22)
@@ -298,6 +309,9 @@ fun PlayerItemButtonView(player: MusicPlayerData?, viewModel: PlayerViewModel) {
 
     if (showTimerSheet) SleepTimerSheet {
         showTimerSheet = false
+    }
+    if (sortView) MusicPlayerSortView {
+        sortView = false
     }
 
     if (songSpeedView) Dialog(

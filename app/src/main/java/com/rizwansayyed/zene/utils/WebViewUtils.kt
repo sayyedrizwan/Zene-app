@@ -13,7 +13,6 @@ object WebViewUtils {
     fun WebView.enable() = CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
-        settings.setSupportZoom(false)
         settings.mediaPlaybackRequiresUserGesture = false
     }
 

@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.viewmodel
 
-import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -29,10 +28,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -51,6 +52,7 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
     var showLoadingView by mutableStateOf(false)
     var videoCurrentTimestamp by mutableFloatStateOf(0f)
     var videoDuration by mutableFloatStateOf(0f)
+    var refreshLastVideoDuration by mutableFloatStateOf(0f)
     var videoMute by mutableStateOf(false)
     var videoInfo by mutableStateOf<ZeneMusicData?>(null)
     var videoID by mutableStateOf("")
@@ -85,9 +87,11 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
     }
 
     fun loadWebView(startNew: Boolean = true) = viewModelScope.safeLaunch(Dispatchers.Main) {
+        if (!startNew) {
+            refreshLastVideoDuration = videoCurrentTimestamp
+        }
         webView?.setWebChromeClient(object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
-                Log.d("WebView console log:", consoleMessage.message())
                 return true
             }
         })
@@ -95,7 +99,12 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
         webView?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                if (url == YT_WEB_BASE_URL && view.progress == 100) loadMainVideo(startNew)
+                if (url == YT_WEB_BASE_URL && view.progress == 100) CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
+                    loadMainVideo(startNew)
+
+                    if (isActive) cancel()
+                }
                 if (url == YT_VIDEO_BASE_URL && view.progress == 100) showLoadingView(true)
 
                 showLoadingView(true)

@@ -57,7 +57,7 @@ class InterstitialAdsUtils(
                 if (time == null) {
                     ad.show(activity)
                     lastLoadTimeDB = flowOf(System.currentTimeMillis())
-                } else if (timeDifferenceInMinutes(time) >= 3) {
+                } else if (timeDifferenceInMinutes(time) >= 11) {
                     ad.show(activity)
                     lastLoadTimeDB = flowOf(System.currentTimeMillis())
                 }

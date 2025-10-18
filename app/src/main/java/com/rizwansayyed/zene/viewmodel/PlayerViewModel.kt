@@ -136,13 +136,13 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             }
 
             zeneAPI.playlistSongCheck(songId, playlistPage).onStart {
+                playlistPage += 1
                 checksPlaylistsSongListsLoading = true
             }.catch {
                 checksPlaylistsSongListsLoading = false
             }.collectLatest {
                 checksPlaylistsSongListsLoading = false
                 checksPlaylistsSongLists.addAll(it)
-                playlistPage += 1
             }
         }
     }

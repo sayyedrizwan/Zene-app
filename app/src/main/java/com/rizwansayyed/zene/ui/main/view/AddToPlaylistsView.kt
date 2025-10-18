@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,7 +80,7 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
         val playerViewModel: PlayerViewModel = hiltViewModel(key = info?.id)
 
         val state = rememberLazyListState()
-        var isBottomTriggered by remember { mutableStateOf(false) }
+        var lastCallTime by remember { mutableLongStateOf(0L) }
 
         LazyColumn(
             Modifier
@@ -131,6 +132,15 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
                 AddPlaylistItems(it, info, playerViewModel)
             }
 
+            item {
+                LaunchedEffect(Unit) {
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastCallTime > 2000) info?.id?.let {
+                        playerViewModel.playlistSongCheckList(it)
+                    }
+                }
+            }
+
             if (playerViewModel.checksPlaylistsSongListsLoading) item {
                 Spacer(Modifier.height(40.dp))
                 CircularLoadingView()
@@ -141,23 +151,10 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
         }
 
         DisposableEffect(Unit) {
+            lastCallTime = System.currentTimeMillis()
             info?.id?.let { playerViewModel.playlistSongCheckList(it) }
             onDispose {
                 playerViewModel.clearPlaylistInfo()
-            }
-        }
-
-        LaunchedEffect(state) {
-            snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
-                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                val totalItemsCount = layoutInfo.totalItemsCount
-
-                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
-                    isBottomTriggered = true
-                    info?.id?.let { playerViewModel.playlistSongCheckList(it) }
-                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
-                    isBottomTriggered = false
-                }
             }
         }
 

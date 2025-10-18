@@ -25,11 +25,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -76,7 +76,7 @@ fun MyPlaylistView(id: String) {
 
     val context = LocalActivity.current
     val state = rememberLazyListState()
-    var isBottomTriggered by remember { mutableStateOf(false) }
+    var lastCallTime by remember { mutableLongStateOf(0L) }
 
     LazyColumn(
         Modifier
@@ -104,6 +104,13 @@ fun MyPlaylistView(id: String) {
             TextViewNormal(stringResource(R.string.no_items_in_your_playlists), 15, center = true)
         }
 
+        item {
+            LaunchedEffect(Unit) {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastCallTime > 2000)
+                    myLibraryViewModel.myPlaylistSongsData(id)
+            }
+        }
 
         item {
             if (myLibraryViewModel.myPlaylistSongsIsLoading) CircularLoadingView()
@@ -112,28 +119,14 @@ fun MyPlaylistView(id: String) {
         item { Spacer(Modifier.height(300.dp)) }
     }
 
-
     LaunchedEffect(Unit) {
+        lastCallTime = System.currentTimeMillis()
         myLibraryViewModel.myPlaylistSongsData(id)
         myLibraryViewModel.myPlaylistInfo(id)
 
         context?.let { InterstitialAdsUtils(it) }
     }
 
-
-    LaunchedEffect(state) {
-        snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
-            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            val totalItemsCount = layoutInfo.totalItemsCount
-
-            if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
-                isBottomTriggered = true
-                myLibraryViewModel.myPlaylistSongsData(id)
-            } else if (lastVisibleItemIndex < totalItemsCount - 1) {
-                isBottomTriggered = false
-            }
-        }
-    }
 
     BackHandler {
         NavigationUtils.triggerHomeNav(NAV_GO_BACK)

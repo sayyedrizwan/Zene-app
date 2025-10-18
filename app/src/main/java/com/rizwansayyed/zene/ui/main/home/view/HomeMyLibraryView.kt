@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -65,7 +66,6 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.RefreshPlaylistListener
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.setRefreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
@@ -88,7 +88,7 @@ fun HomeMyLibraryView() {
 
     val coroutine = rememberCoroutineScope()
     val state = rememberLazyGridState()
-    var isBottomTriggered by remember { mutableStateOf(false) }
+    var lastCallTime by remember { mutableLongStateOf(0L) }
 
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val columns = remember {
@@ -96,6 +96,15 @@ fun HomeMyLibraryView() {
             screenWidth < 600 -> 2
             screenWidth < 900 -> 3
             else -> 4
+        }
+    }
+
+    fun makeAPIRequest() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastCallTime > 2000) when (viewModel.selectedType) {
+            MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
+            MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
+            MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
         }
     }
 
@@ -117,6 +126,12 @@ fun HomeMyLibraryView() {
                         }
                     }
 
+                    item {
+                        LaunchedEffect(Unit) {
+                            makeAPIRequest()
+                        }
+                    }
+
                     item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.historyIsLoading) CircularLoadingView() }
                 }
 
@@ -133,6 +148,11 @@ fun HomeMyLibraryView() {
                             TextViewNormal(
                                 stringResource(R.string.no_saved_and_save), 15, center = true
                             )
+                        }
+                    }
+                    item {
+                        LaunchedEffect(Unit) {
+                            makeAPIRequest()
                         }
                     }
 
@@ -155,9 +175,16 @@ fun HomeMyLibraryView() {
                         }
                     }
 
+                    item {
+                        LaunchedEffect(Unit) {
+                            makeAPIRequest()
+                        }
+                    }
+
                     item(span = { GridItemSpan(maxLineSpan) }) { if (viewModel.myIsLoading) CircularLoadingView() }
                 }
             }
+
 
             item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(300.dp)) }
         }
@@ -189,28 +216,11 @@ fun HomeMyLibraryView() {
         }
 
         LaunchedEffect(viewModel.selectedType) {
+            lastCallTime = System.currentTimeMillis()
             when (viewModel.selectedType) {
                 MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
                 MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
                 MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
-            }
-        }
-
-        LaunchedEffect(state) {
-            snapshotFlow { state.layoutInfo }.collect { layoutInfo ->
-                val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                val totalItemsCount = layoutInfo.totalItemsCount
-
-                if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
-                    isBottomTriggered = true
-                    when (viewModel.selectedType) {
-                        MyLibraryTypes.HISTORY -> viewModel.songHistoryList()
-                        MyLibraryTypes.SAVED -> viewModel.savedPlaylistsList()
-                        MyLibraryTypes.MY_PLAYLISTS -> viewModel.myPlaylistsList()
-                    }
-                } else if (lastVisibleItemIndex < totalItemsCount - 1) {
-                    isBottomTriggered = false
-                }
             }
         }
 

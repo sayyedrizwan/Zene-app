@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -270,10 +269,13 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
         playerWebView?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                if (url == YT_WEB_BASE_URL && view.progress == 100) {
+                if (url == YT_WEB_BASE_URL && view.progress == 100) CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
                     playerWebView?.loadDataWithBaseURL(
                         YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null
                     )
+
+                    if (isActive) cancel()
                 }
             }
         }

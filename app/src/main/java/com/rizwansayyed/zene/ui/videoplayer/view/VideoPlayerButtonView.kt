@@ -55,21 +55,31 @@ fun VideoPlayerButtonView(viewModel: PlayingVideoInfoViewModel) {
         if (quality == VideoQualityEnum.`1440`) Color.White else Color.Gray
     ) {
         coroutine.safeLaunch { videoQualityDB = flowOf(VideoQualityEnum.`1440`) }
-        viewModel.loadWebView(false)
+
+        coroutine.safeLaunch {
+            delay(500)
+            viewModel.loadWebView(false)
+        }
     }
     Spacer(Modifier.height(14.dp))
     ButtonWithBorder(
         R.string.seven_twenty_p, if (quality == VideoQualityEnum.`720`) Color.White else Color.Gray
     ) {
         coroutine.safeLaunch { videoQualityDB = flowOf(VideoQualityEnum.`720`) }
-        viewModel.loadWebView(false)
+        coroutine.safeLaunch {
+            delay(500)
+            viewModel.loadWebView(false)
+        }
     }
     Spacer(Modifier.height(14.dp))
     ButtonWithBorder(
         R.string.four_eighty_p, if (quality == VideoQualityEnum.`480`) Color.White else Color.Gray
     ) {
         coroutine.safeLaunch { videoQualityDB = flowOf(VideoQualityEnum.`480`) }
-        viewModel.loadWebView(false)
+        coroutine.safeLaunch {
+            delay(500)
+            viewModel.loadWebView(false)
+        }
     }
     Spacer(Modifier.height(14.dp))
 }
