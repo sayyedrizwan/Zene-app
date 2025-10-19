@@ -293,6 +293,7 @@ fun MyPlaylistTopView(myLibraryViewModel: MyLibraryViewModel) {
                 }
 
                 if (editSortView.value) MyPlaylistEditSortView(v.data.id ?: "") {
+                    myLibraryViewModel.myPlaylistSongsViaSort(v.data.id ?: "")
                     editSortView.value = false
                 }
             }

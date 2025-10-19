@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.ui.view.myplaylist
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,16 +26,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
-import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.viewmodel.MyLibraryViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -60,11 +60,21 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
             }
         )
 
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black)
         ) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black)
+                    .padding(horizontal = 10.dp)
+                    .padding(vertical = 16.dp)
+            ) {
+                TextViewBold(stringResource(R.string.reorder_playlist_songs), 21)
+            }
+
             LazyColumn(
                 state = lazyListState,
                 modifier = Modifier
@@ -107,7 +117,7 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
                 }
             }
 
-            if (viewModel.myPlaylistSongsIsLoading) Row(Modifier.align(Alignment.BottomCenter)) {
+            if (viewModel.myPlaylistSongsIsLoading) Row(Modifier) {
                 CircularLoadingView()
             }
         }
