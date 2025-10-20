@@ -63,7 +63,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URI
 import kotlin.time.Duration.Companion.seconds
@@ -164,41 +163,42 @@ class IntentCheckUtils(
                 MediaContentUtils.openCustomBrowser(data.toString())
             }
 
-
             if (data.toString().contains(ZENE_SONG)) {
                 val id = data.toString().substringAfterLast(ZENE_SONG)
-                viewModel.songInfoPlay(id.replace("/", ""))
+                viewModel.songInfoPlay(replaceSlash(id))
             } else if (data.toString().contains(ZENE_RADIO)) {
                 val id = data.toString().substringAfterLast(ZENE_RADIO)
-                viewModel.radioInfoPlay(id.replace("/", ""))
+                viewModel.radioInfoPlay(replaceSlash(id))
             } else if (data.toString().contains(ZENE_VIDEO)) {
-                val id = data.toString().substringAfterLast(ZENE_VIDEO.replace("/", ""))
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_VIDEO))
                 Intent(context, VideoPlayerActivity::class.java).apply {
                     flags = FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.ACTION_VIEW, id)
+                    putExtra(Intent.ACTION_VIEW, replaceSlash(id))
                     context.startActivity(this)
                 }
             } else if (data.toString().contains(ZENE_MIX)) {
-                val id = data.toString().substringAfterLast(ZENE_MIX.replace("/", ""))
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_MIX))
+
                 if (id.contains(MY_PLAYLIST_ID) || id.contains(LIKED_SONGS_ZENE_ID))
-                    triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${id}")
+                    triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${replaceSlash(id)}")
                 else
-                    triggerHomeNav("$NAV_PLAYLIST_PAGE${id}")
+                    triggerHomeNav("$NAV_PLAYLIST_PAGE${replaceSlash(id)}")
             } else if (data.toString().contains(ZENE_ARTIST)) {
-                val id = data.toString().substringAfterLast(ZENE_ARTIST.replace("/", ""))
-                triggerHomeNav("$NAV_ARTIST_PAGE${id}")
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_ARTIST))
+                triggerHomeNav("$NAV_ARTIST_PAGE${replaceSlash(id)}")
             } else if (data.toString().contains(ZENE_PODCAST_SERIES)) {
-                val id = data.toString().substringAfterLast(ZENE_PODCAST_SERIES.replace("/", ""))
-                triggerHomeNav("$NAV_PODCAST_PAGE${id}")
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_PODCAST_SERIES))
+                triggerHomeNav("$NAV_PODCAST_PAGE${replaceSlash(id)}")
             } else if (data.toString().contains(ZENE_PODCAST)) {
-                val id = data.toString().substringAfterLast(ZENE_PODCAST).replace("_", "/")
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_PODCAST))
+                    .replace("_", "/")
                 viewModel.podcastInfoPlay(id)
             } else if (data.toString().contains(ZENE_NEWS)) {
                 val id = data.toString().substringAfterLast(ZENE_NEWS).replace("___","/")
                 val url = String(Base64.decode(id, Base64.NO_WRAP), Charsets.UTF_8)
                 MediaContentUtils.openCustomBrowser(url)
             } else if (data.toString().contains(ZENE_M)) {
-                val id = data.toString().substringAfterLast(ZENE_M.replace("/", ""))
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_M))
                     .replace("___", "/")
                 if (id.contains(ZENE_MOVIE_IF_ENC)) {
                     val cleared = id.substringAfter(ZENE_MOVIE_IF_ENC)
@@ -207,13 +207,17 @@ class IntentCheckUtils(
                 } else
                     triggerHomeNav("$NAV_MOVIES_PAGE${id}")
             } else if (data.toString().contains(ZENE_AI_MUSIC)) {
-                val id = data.toString().substringAfterLast(ZENE_AI_MUSIC.replace("/", ""))
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_AI_MUSIC))
                 viewModel.aiMusicInfoPlay(id)
             }
         }
 
         intent.data = null
     }
+}
+
+private fun replaceSlash(url: String): String {
+    return url.replace("/", "")
 }
 
 private fun getPathFromUrl(url: String): String {
