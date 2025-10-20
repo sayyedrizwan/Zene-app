@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.musicplayer
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,16 +16,18 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,8 +36,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -43,19 +44,39 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.musicPlayerDB
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MusicPlayerSortView(close: () -> Unit) {
     Dialog(close, DialogProperties(usePlatformDefaultWidth = false)) {
         val lazyListState = rememberLazyListState()
+        val coroutine = rememberCoroutineScope()
+        var coroutineJob by remember { mutableStateOf<Job?>(null) }
         val hapticFeedback = LocalHapticFeedback.current
+        val music by musicPlayerDB.collectAsState(null)
         val list = remember { mutableStateListOf<ZeneMusicData?>() }
 
+        fun updateList() {
+            coroutineJob?.cancel()
+            coroutineJob = coroutine.launch {
+                delay(1.seconds)
+                val musicPlayer = musicPlayerDB.firstOrNull()
+                musicPlayer?.lists = list
+                musicPlayerDB = flowOf(musicPlayer)
+            }
+        }
 
         val reorderableLazyListState = rememberReorderableLazyListState(
             lazyListState = lazyListState, onMove = { from, to ->
@@ -64,7 +85,7 @@ fun MusicPlayerSortView(close: () -> Unit) {
                 if (fromIndex in list.indices && toIndex in list.indices) {
                     list.add(toIndex, list.removeAt(fromIndex))
                 }
-//                viewModel.moveItem(fromIndex, toIndex, id)
+                updateList()
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
             })
 
@@ -91,8 +112,8 @@ fun MusicPlayerSortView(close: () -> Unit) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.surface)
-                                .padding(vertical = 8.dp, horizontal = 12.dp),
+                                .background(if (isDragging) MaterialTheme.colorScheme.surface else Color.Transparent)
+                                .padding(vertical = 15.dp, horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             GlideImage(
@@ -111,28 +132,24 @@ fun MusicPlayerSortView(close: () -> Unit) {
                                     .weight(1f)
                                     .padding(end = 8.dp)
                             ) {
-                                Text(
-                                    text = song?.name ?: "",
-                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = song?.artists ?: "",
-                                    style = MaterialTheme.typography.bodySmall.copy(
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    ),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                                TextViewBold(song?.name ?: "", 14, line = 2)
+                                TextViewNormal(song?.artists ?: "", 13, line = 2)
                             }
 
-                            IconButton(onClick = {}) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Remove",
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            if (music?.data == song) {
+                                GlideImage(
+                                    R.raw.wave_animiation,
+                                    "wave",
+                                    Modifier.size(40.dp),
+                                    contentScale = ContentScale.Fit
                                 )
+                            } else {
+                                Row(Modifier.clickable {
+                                    list.removeAt(index)
+                                    updateList()
+                                }) {
+                                    ImageIcon(R.drawable.ic_cancel_close, 18)
+                                }
                             }
 
                             Icon(
