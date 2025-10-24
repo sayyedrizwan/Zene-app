@@ -131,7 +131,6 @@ fun LuxTypeChipsView() {
 private fun LuxeTypeChipsButton(text: Int, selected: LuxeRSVPData, type: MutableState<LuxeRSVPData>) {
     val bgColor = if (selected == type.value) Color.Green.copy(alpha = 0.7f) else Color.DarkGray
 
-
     val icon = when (selected) {
         LuxeRSVPData.SUBSCRIBING -> R.drawable.ic_tick
         LuxeRSVPData.NOT -> R.drawable.ic_cancel_close
