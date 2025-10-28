@@ -123,7 +123,7 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
         }
 
         LaunchedEffect(Unit) {
-            viewModel.myPlaylistSongsData(id)
+            viewModel.myPlaylistSongsData(id, SortMyPlaylistType.CUSTOM_ORDER)
         }
 
 
@@ -134,7 +134,7 @@ fun MyPlaylistEditSortView(id: String, close: () -> Unit) {
 
                 if (lastVisibleItemIndex >= totalItemsCount - 1 && !isBottomTriggered) {
                     isBottomTriggered = true
-                    viewModel.myPlaylistSongsData(id)
+                    viewModel.myPlaylistSongsData(id, SortMyPlaylistType.CUSTOM_ORDER)
                 } else if (lastVisibleItemIndex < totalItemsCount - 1) {
                     isBottomTriggered = false
                 }

@@ -1,8 +1,6 @@
 package com.rizwansayyed.zene.data.implementation
 
 import android.net.Uri
-import android.util.Log
-import com.google.firebase.messaging.FirebaseMessaging
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
@@ -20,6 +18,7 @@ import com.rizwansayyed.zene.datastore.model.MusicPlayerData
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.getDeviceFcmToken
 import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.ui.connect_status.view.saveFileToAppDirectory
+import com.rizwansayyed.zene.ui.view.myplaylist.SortMyPlaylistType
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import com.rizwansayyed.zene.utils.MainUtils.getAddressFromLatLong
@@ -32,8 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -326,19 +323,20 @@ class ZeneAPIImplementation @Inject constructor(
     }
 
 
-    override suspend fun myPlaylistsSongs(playlistId: String, page: Int) = flow {
+    override suspend fun myPlaylistsSongs(
+        playlistId: String, page: Int, customOrder: SortMyPlaylistType?
+    ) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
         val country = ipDB.firstOrNull()?.countryCode
 
-        Log.d("TAG", "myPlaylistsSongs: ddata $page")
 
         val json = JSONObject().apply {
             put("page", page)
             put("playlist_id", playlistId)
             put("email", email)
             put("country", country)
-//            put("sort", sortMyPlaylistTypeDB.firstOrNull()?.name)
+            put("sort", customOrder ?: sortMyPlaylistTypeDB.firstOrNull()?.name)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())

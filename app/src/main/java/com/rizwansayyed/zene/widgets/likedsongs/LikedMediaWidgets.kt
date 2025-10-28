@@ -62,7 +62,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 class LikedMediaWidgets : GlanceAppWidget() {
 
@@ -86,7 +85,7 @@ class LikedMediaWidgets : GlanceAppWidget() {
                 val likedPlaylistId = "${email?.email}$LIKED_SONGS_ON_ZENE"
                 if (email?.isLoggedIn() == true) {
                     itemList.clear()
-                    zeneAPI.repository().myPlaylistsSongs(likedPlaylistId, 0).onStart {
+                    zeneAPI.repository().myPlaylistsSongs(likedPlaylistId, 0, null).onStart {
                         isLoading = true
                     }.catch {
                         isLoading = false

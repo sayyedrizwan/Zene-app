@@ -18,7 +18,7 @@ import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponseItem
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
-import com.rizwansayyed.zene.utils.MainUtils.toast
+import com.rizwansayyed.zene.ui.view.myplaylist.SortMyPlaylistType
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -162,10 +162,12 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         myPlaylistSongsPage = 0
         myPlaylistSongsList.clear()
         myPlaylistSongsCheckJob?.cancel()
-        myPlaylistSongsData(playlistID)
+        delay(500)
+        myPlaylistSongsData(playlistID, null)
     }
 
-    fun myPlaylistSongsData(playlistID: String) = viewModelScope.safeLaunch {
+    fun myPlaylistSongsData(playlistID: String, customOrder: SortMyPlaylistType?) =
+        viewModelScope.safeLaunch {
         myPlaylistSongsCheckJob?.cancel()
         val email = userInfo.firstOrNull()?.email ?: ""
 
@@ -173,7 +175,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             return@safeLaunch
 
         myPlaylistSongsCheckJob = viewModelScope.safeLaunch {
-            zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage).onStart {
+            zeneAPI.myPlaylistsSongs(playlistID, myPlaylistSongsPage, customOrder).onStart {
                 myPlaylistSongsPage += 1
                 myPlaylistSongsIsLoading = true
             }.catch {

@@ -88,7 +88,7 @@ fun MyPlaylistView(id: String) {
         item { Spacer(Modifier.height(100.dp)) }
 
         if (id.contains(LIKED_SONGS_ON_ZENE)) {
-            item { TopLikedView() }
+            item { TopLikedView(myLibraryViewModel, id) }
         } else {
             item { MyPlaylistTopView(myLibraryViewModel) }
         }
@@ -108,7 +108,7 @@ fun MyPlaylistView(id: String) {
             LaunchedEffect(Unit) {
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - lastCallTime > 2000)
-                    myLibraryViewModel.myPlaylistSongsData(id)
+                    myLibraryViewModel.myPlaylistSongsData(id, null)
             }
         }
 
@@ -121,7 +121,7 @@ fun MyPlaylistView(id: String) {
 
     LaunchedEffect(Unit) {
         lastCallTime = System.currentTimeMillis()
-        myLibraryViewModel.myPlaylistSongsData(id)
+        myLibraryViewModel.myPlaylistSongsData(id, null)
         myLibraryViewModel.myPlaylistInfo(id)
 
         context?.let { InterstitialAdsUtils(it) }
@@ -134,14 +134,32 @@ fun MyPlaylistView(id: String) {
 }
 
 @Composable
-fun TopLikedView() {
-    Column(
+fun TopLikedView(myLibraryViewModel: MyLibraryViewModel, id: String) {
+    val sortView = remember { mutableStateOf(false) }
+    val editSortView = remember { mutableStateOf(false) }
+
+
+    Row(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 5.dp)
-            .padding(bottom = 40.dp)
+            .padding(bottom = 40.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         TextViewBoldBig(stringResource(R.string.liked_items), 55)
+
+        Spacer(Modifier.weight(1f))
+
+        MenuOptionsItem(sortView, editSortView)
+    }
+
+    if (sortView.value) SortPlaylistView(myLibraryViewModel, id) {
+        sortView.value = false
+    }
+
+    if (editSortView.value) MyPlaylistEditSortView(id) {
+        myLibraryViewModel.myPlaylistSongsViaSort(id)
+        editSortView.value = false
     }
 }
 

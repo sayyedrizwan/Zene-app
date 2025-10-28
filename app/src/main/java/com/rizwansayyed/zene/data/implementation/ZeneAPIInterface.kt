@@ -41,6 +41,7 @@ import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
+import com.rizwansayyed.zene.ui.view.myplaylist.SortMyPlaylistType
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.ContactData
 import kotlinx.coroutines.flow.Flow
@@ -132,7 +133,7 @@ interface ZeneAPIInterface {
     suspend fun getSavePlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
     suspend fun myPlaylists(page: Int): Flow<SavedPlaylistsPodcastsResponse>
     suspend fun likeSongsCount(): Flow<CountResponse>
-    suspend fun myPlaylistsSongs(playlistId: String, page: Int): Flow<ZeneMusicDataList>
+    suspend fun myPlaylistsSongs(playlistId: String, page: Int, customOrder: SortMyPlaylistType?): Flow<ZeneMusicDataList>
     suspend fun removeMyPlaylistsSongs(
         playlistId: String, songID: String, type: String?
     ): Flow<StatusTypeResponse>
