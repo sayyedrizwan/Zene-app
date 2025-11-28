@@ -30,6 +30,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeReviewUsView
 import com.rizwansayyed.zene.ui.main.home.HomeSponsorAdsView
 import com.rizwansayyed.zene.ui.main.home.HomeTopHeaderView
 import com.rizwansayyed.zene.ui.main.home.topHeaderAlert
+import com.rizwansayyed.zene.ui.settings.dialog.SettingsShareSheetView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
@@ -55,7 +56,7 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
 
     LazyColumn(Modifier.fillMaxSize(), state) {
         item { HomeTopHeaderView(headerText) }
-        item { HomeReviewUsView() }
+//        item { HomeReviewUsView(homeViewModel) }
 
         when (val v = homeViewModel.homeRecent) {
             ResponseResult.Empty -> {}
@@ -270,9 +271,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
         item(key = 13) { Spacer(Modifier.height(300.dp)) }
     }
 
+    if (homeViewModel.askForReview) SettingsShareSheetView {
+        homeViewModel.askForReview = false
+    }
 
     LaunchedEffect(Unit) {
         coroutine.safeLaunch {
+            homeViewModel.askUserForReview()
             headerText = topHeaderAlert()
             if (headerText.length > 3) coroutine.safeLaunch(Dispatchers.Main) {
                 state.animateScrollToItem(0)

@@ -152,7 +152,7 @@ class MyLibraryViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterfa
         myPlaylistSongsUpdateJob?.cancel()
 
         myPlaylistSongsUpdateJob = viewModelScope.safeLaunch {
-            delay(2.seconds)
+            delay(1.5.seconds)
             val songInfo = myPlaylistSongsList.getOrNull(to) ?: return@safeLaunch
             zeneAPI.myPlaylistsSongsReorder(songInfo, id, to).catch { }.collectLatest { }
         }

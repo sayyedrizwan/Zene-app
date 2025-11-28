@@ -31,6 +31,8 @@ import com.rizwansayyed.zene.data.model.VideoDataResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPostedReviewDB
+import com.rizwansayyed.zene.datastore.DataStorageManager.isPostedReviewTimestampDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.sponsorAdsDB
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
@@ -50,6 +52,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
@@ -105,6 +108,9 @@ class HomeViewModel @Inject constructor(
     var deleteAccountInfo by mutableStateOf<ResponseResult<DeleteAccountInfoResponse>>(
         ResponseResult.Empty
     )
+
+
+    var askForReview by mutableStateOf(false)
 
     fun homeRecentData(expireToken: () -> Unit) = viewModelScope.safeLaunch  {
         val data: MusicDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_MUSIC_API)
@@ -590,6 +596,22 @@ class HomeViewModel @Inject constructor(
     fun updateEmailSubscription(v: Boolean) = viewModelScope.safeLaunch {
         zeneAPI.updateEmailSubscription(v).catch {}.collectLatest {
             userInfo()
+        }
+    }
+
+
+    fun askUserForReview() = viewModelScope.safeLaunch {
+        delay(5.seconds)
+        val now = System.currentTimeMillis()
+        val lastDismiss = isPostedReviewTimestampDB.firstOrNull() ?: 0
+        val daysPassed = (now - lastDismiss) / (1000 * 60 * 60 * 24)
+
+        val shouldShow = !isPostedReviewDB.first() && daysPassed >= 6
+
+        if (!shouldShow) return@safeLaunch
+
+        zeneAPI.getHistory(0).catch {}.collectLatest {
+            if (it.size > 5) askForReview = true
         }
     }
 }

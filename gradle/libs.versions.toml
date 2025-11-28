@@ -5,20 +5,20 @@ compilesdk = "36"
 minsdk = "23"
 
 
-appversion = "266"
-versionname = "3.04.142"
+appversion = "267"
+versionname = "3.04.143"
 
-agp = "8.13.0"
+agp = "8.13.1"
 
-androidImageCropper = "4.6.0"
+androidImageCropper = "4.7.0"
 exifinterface = "1.4.1"
 glide-compose = "1.0.0-beta08"
 glide = "5.0.5"
 credentials = "1.5.0"
 playandroidservice = "21.4.0"
-datastorePreferences = "1.1.7"
+datastorePreferences = "1.2.0"
 facebookLogin = "18.1.3"
-firebaseBom = "34.4.0"
+firebaseBom = "34.6.0"
 appUpdate = "2.1.0"
 appReview = "2.0.2"
 gson = "2.13.2"
@@ -30,14 +30,14 @@ coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.4"
-activityCompose = "1.11.0"
-composeBom = "2025.10.01"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.12.0"
+composeBom = "2025.11.01"
 googleid = "1.1.1"
-mapsCompose = "6.12.1"
+mapsCompose = "6.12.2"
 media3Exoplayer = "1.8.0"
 moshiKotlin = "1.15.2"
-okhttpBom = "5.2.1"
+okhttpBom = "5.3.2"
 processPhoenix = "3.0.0"
 retrofit = "3.0.0"
 playServicesLocation = "21.3.0"
@@ -47,12 +47,12 @@ socketIoClient = "2.1.2"
 camera = "1.5.1"
 material3 = "1.4.0"
 webkit = "1.14.0"
-navigation = "2.9.5"
+navigation = "2.9.6"
 paletteKtx = "1.0.0"
-room = "2.8.3"
+room = "2.8.4"
 ksp = "2.2.0-2.0.2"
 storage = "1.6.0"
-colorpickerCompose = "1.1.2"
+colorpickerCompose = "1.1.3"
 hashids = "1.0.3"
 browser = "1.9.0"
 customQrGenerator = "2.0.0-alpha01"
@@ -64,14 +64,14 @@ securityCrypto = "1.1.0"
 konfettiCompose = "2.0.5"
 
 opencsv = "5.12.0"
-playServicesAds = "24.7.0"
-firebasePerformance = "2.0.1"
+playServicesAds = "24.8.0"
+firebasePerformance = "2.0.2"
 firebaseCrash = "3.0.6"
 
 reorderable = "3.0.0"
 
-billing = "8.0.0"
-clarity = "3.6.0"
+billing = "8.1.0"
+clarity = "3.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -186,7 +186,6 @@ konfetti-compose = { module = "nl.dionsegijn:konfetti-compose", version.ref = "k
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 
 opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
-
 
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 

@@ -34,11 +34,12 @@ import com.rizwansayyed.zene.utils.MainUtils
 import com.rizwansayyed.zene.utils.MainUtils.openFeedbackMail
 import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.safeLaunch
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.flowOf
 import kotlin.getValue
 
 @Composable
-fun HomeReviewUsView() {
+fun HomeReviewUsView(homeViewModel: HomeViewModel) {
     val context = LocalActivity.current
     val manager by lazy { ReviewManagerFactory.create(context!!.applicationContext) }
 
@@ -54,7 +55,7 @@ fun HomeReviewUsView() {
     val shouldShow = !isReviewGiven && daysPassed >= 25
 
 
-    if (shouldShow) Row(
+    if (homeViewModel.askForReview) Row(
         Modifier
             .padding(5.dp)
             .clip(RoundedCornerShape(12.dp))
