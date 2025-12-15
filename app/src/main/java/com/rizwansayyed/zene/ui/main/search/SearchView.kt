@@ -225,6 +225,15 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         Spacer(Modifier.height(12.dp))
                         HorizontalShimmerLoadingCard()
                     }
+
+                    item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.ai_music), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalShimmerLoadingCard()
+                    }
                 }
 
                 is ResponseResult.Success -> {
@@ -339,6 +348,25 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                     }
 
+                    if (v.data.podcast?.isNotEmpty() == true) item {
+                        Spacer(Modifier.height(30.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.podcasts), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            itemsIndexed(v.data.podcast) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
+                            }
+                        }
+                    }
+
+
 
                     if (v.data.aiSongs?.isNotEmpty() == true) item {
                         Spacer(Modifier.height(30.dp))
@@ -358,23 +386,6 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                     }
 
-                    if (v.data.podcast?.isNotEmpty() == true) item {
-                        Spacer(Modifier.height(30.dp))
-                        Box(Modifier.padding(horizontal = 6.dp)) {
-                            TextViewBold(stringResource(R.string.podcasts), 23)
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            itemsIndexed(v.data.podcast) { i, z ->
-                                ItemCardView(z)
-
-                                if (!isPremium) {
-                                    if (i == 1) NativeViewAdsCard(z?.id)
-                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
-                                }
-                            }
-                        }
-                    }
 
                     if (v.data.movies?.isNotEmpty() == true) item {
                         Spacer(Modifier.height(30.dp))
