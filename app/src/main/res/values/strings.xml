@@ -255,7 +255,7 @@
     <string name="resend">Resend</string>
     <string name="view">View</string>
     <string name="reorder_playlist_songs">Reorder Playlist Songs</string>
-    <string name="song_s_playback_queue">Song\'s Playback Queue</string>
+    <string name="song_s_playback_queue">Playback Queue</string>
     <string name="upgrade">Upgrade</string>
     <string name="show_all">Show All</string>
     <string name="error_while_authentication">Error while authentication. Try again later.</string>
