@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.scale
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
@@ -28,8 +29,6 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.utils.safeLaunch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun GlanceImage(img: String?, size: Int?, c: Context, h: Int = 5) {
@@ -48,8 +47,23 @@ fun GlanceImage(img: String?, size: Int?, c: Context, h: Int = 5) {
         coroutine.safeLaunch {
             if (img != null) {
                 try {
-                    val b = Glide.with(c).asBitmap().load(img).submit(200, 200).get()
-                    bitmap = b
+                    val targetSize = 70
+
+                    val b = Glide.with(c)
+                        .asBitmap()
+                        .load(img)
+                        .override(targetSize, targetSize)
+                        .encodeQuality(75)
+                        .submit()
+                        .get()
+
+                    val compressedBitmap = if (b.byteCount > 500000) {
+                        compressBitmap(b)
+                    } else {
+                        b
+                    }
+
+                    bitmap = compressedBitmap
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -57,6 +71,39 @@ fun GlanceImage(img: String?, size: Int?, c: Context, h: Int = 5) {
         }
     }
 }
+
+private fun compressBitmap(bitmap: Bitmap, scale: Float = 0.8f): Bitmap {
+    val width = (bitmap.width * scale).toInt()
+    val height = (bitmap.height * scale).toInt()
+    return bitmap.scale(width, height)
+}
+
+//@Composable
+//fun GlanceImage(img: String?, size: Int?, c: Context, h: Int = 5) {
+//    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+//    val coroutine = rememberCoroutineScope()
+//
+//    if (bitmap != null) Image(
+//        provider = ImageProvider(bitmap!!),
+//        contentDescription = null,
+//        contentScale = ContentScale.Crop,
+//        modifier = if (size == null) GlanceModifier.padding(horizontal = h.dp).fillMaxSize()
+//        else GlanceModifier.padding(horizontal = h.dp).size(size.dp).cornerRadius(13.dp)
+//    )
+//
+//    LaunchedEffect(img) {
+//        coroutine.safeLaunch {
+//            if (img != null) {
+//                try {
+//                    val b = Glide.with(c).asBitmap().load(img).submit(200, 200).get()
+//                    bitmap = b
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun GlanceImageIcon(icon: Int, size: Int, click: () -> Unit) {
