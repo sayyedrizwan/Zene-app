@@ -48,6 +48,11 @@ import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
+//@Composable
+//fun EntertainmentNewsView() {
+//
+//}
+
 @Composable
 fun EntertainmentNewsView() {
     val navViewModel : NavigationViewModel = hiltViewModel()
