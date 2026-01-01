@@ -141,7 +141,7 @@ class MainActivity : FragmentActivity() {
                                     when (navigationViewModel.homeNavSection) {
                                         HOME -> HomeView(navigationViewModel, userInfo)
                                         CONNECT -> HomeConnectView()
-                                        ENT -> EntertainmentNewsView()
+                                        ENT -> EntertainmentNewsView(navigationViewModel)
                                         NOTIFICATION ->
                                             NotificationViewScreenView(navigationViewModel)
 

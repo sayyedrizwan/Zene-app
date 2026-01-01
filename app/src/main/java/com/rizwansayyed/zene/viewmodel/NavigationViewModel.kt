@@ -14,6 +14,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.utils.ads.nativeAdsAndroidViewMap
@@ -29,6 +30,7 @@ import javax.inject.Inject
 class NavigationViewModel @Inject constructor() : ViewModel() {
     var homeSection by mutableStateOf(HomeSectionSelector.MUSIC)
     var homeNavSection by mutableStateOf(HomeNavSelector.HOME)
+    var entNavSection by mutableStateOf(EntSectionSelector.DISCOVER)
     var homeNotificationSection by mutableStateOf<IntentFCMNotification?>(null)
     var showMusicPlayer by mutableStateOf(false)
     var showMediaInfoSheet by mutableStateOf<ZeneMusicData?>(null)
@@ -89,6 +91,10 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
 
     fun setHomeInfoNavigation(v: IntentFCMNotification?) {
         homeNotificationSection = v
+    }
+
+    fun setEntNavigation(v: EntSectionSelector) {
+        entNavSection = v
     }
 
     fun setShowMediaInfo(value: ZeneMusicData?) {

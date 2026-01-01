@@ -4,6 +4,10 @@ enum class HomeSectionSelector {
     LUXE, MUSIC, FEED, PODCAST, RADIO, VIDEO, AI_MUSIC, MY_LIBRARY
 }
 
+enum class EntSectionSelector {
+    DISCOVER, BUZZ, DATING, MOVIES, EVENTS, LIFESTYLE
+}
+
 enum class HomeNavSelector {
     HOME, CONNECT, SEARCH, ENT, NOTIFICATION, NONE
 }

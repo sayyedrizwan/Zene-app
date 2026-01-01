@@ -511,6 +511,12 @@
     <string name="important_updates">Important Updates</string>
     <string name="important_updates_desc">Receive important updates related to your account</string>
 
+    <string name="discover">Discover</string>
+    <string name="buzz">Buzz</string>
+    <string name="dating">Dating</string>
+    <string name="events">Events</string>
+    <string name="lifestyle">Lifestyle</string>
+
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>
