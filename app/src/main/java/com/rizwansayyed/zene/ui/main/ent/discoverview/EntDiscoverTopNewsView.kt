@@ -44,11 +44,7 @@ import com.rizwansayyed.zene.ui.view.ImageIcon
 
 @Composable
 fun EntDiscoverTopView() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth().height(550.dp)
-    ) {
-
+    Box(modifier = Modifier.fillMaxWidth().height(550.dp)) {
         NetworkImage(
             url = CelebrityImages.ZENDAYA,
             modifier = Modifier.matchParentSize(),

@@ -35,7 +35,6 @@ object CelebrityImages {
 
 @Composable
 fun EntertainmentDiscoverView() {
-    val listState = rememberLazyListState()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
