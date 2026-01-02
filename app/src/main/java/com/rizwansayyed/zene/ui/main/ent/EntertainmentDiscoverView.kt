@@ -42,26 +42,26 @@ fun EntertainmentDiscoverView() {
             .background(Color.Black),
         contentPadding = PaddingValues(bottom = 250.dp)
     ) {
-        item(key = "1") { EntDiscoverTopView() }
+        item(key = "top") { EntDiscoverTopView() }
 
-        item(key = "2") { EntCelebStoriesView() }
+        item(key = "stories") { EntCelebStoriesView() }
 
-        item(key = "3") { EntTrendingTopicsView() }
+        item(key = "trending") { EntTrendingTopicsView() }
 
-        item(key = "4") { EntCelebDatingView() }
+        item(key = "dating") { EntCelebDatingView() }
 
-        item(key = "5") { EntTrendingMoviesView() }
+        item(key = "movies") { EntTrendingMoviesView() }
 
-        item(key = "6") { EntLatestTrailerView() }
+        item(key = "trailer") { EntLatestTrailerView() }
 
-        item(key = "7") { EntLifestyleView() }
+        item(key = "lifestyle") { EntLifestyleView() }
 
         items(sampleNews, key = { it.title }) { item ->
             NewsRow(item)
             Spacer(modifier = Modifier.height(18.dp))
         }
 
-        item(key = "8") {
+        item(key = "view_all_buzz") {
             ViewAllButton {
 
             }
