@@ -157,7 +157,7 @@ fun ViewAllButton(onClick: () -> Unit) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "View All News",
+                text = "View All Buzz",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.White

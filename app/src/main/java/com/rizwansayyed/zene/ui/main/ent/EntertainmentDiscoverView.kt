@@ -37,11 +37,10 @@ object CelebrityImages {
 fun EntertainmentDiscoverView() {
     val listState = rememberLazyListState()
     LazyColumn(
-        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
-        contentPadding = PaddingValues(bottom = 180.dp)
+        contentPadding = PaddingValues(bottom = 250.dp)
     ) {
         item(key = "1") { EntDiscoverTopView() }
 
