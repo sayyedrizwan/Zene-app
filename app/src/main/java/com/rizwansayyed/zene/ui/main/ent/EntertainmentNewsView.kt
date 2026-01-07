@@ -29,6 +29,7 @@ import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingMoviesView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingTopicsView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.ViewAllButton
 import com.rizwansayyed.zene.ui.main.ent.view.EntertainmentScreenTopView
+import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
@@ -108,7 +109,7 @@ fun EntertainmentNewsView(viewModel: NavigationViewModel) {
 
                     item(key = "view_all_buzz") {
                         ViewAllButton {
-
+                            viewModel.setEntNavigation(EntSectionSelector.BUZZ)
                         }
                     }
                 }
