@@ -9,11 +9,10 @@ import com.rizwansayyed.zene.data.model.ConnectUserInfoResponse
 import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
-import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
+import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MediaStatusTypeResponse
-import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes
@@ -52,8 +51,6 @@ interface ZeneAPIInterface {
     suspend fun recentHome(): Flow<MusicDataResponse>
     suspend fun recentPodcast(): Flow<PodcastDataResponse>
     suspend fun recentRadio(): Flow<RadioDataResponse>
-    suspend fun entertainmentNews(): Flow<EntertainmentDataResponse>
-    suspend fun entertainmentMovies(): Flow<MoviesDataResponse>
     suspend fun homeVideos(): Flow<VideoDataResponse>
     suspend fun updateTrueCallerNumber(codeVerifier: String, code: String): Flow<StatusTypeResponse>
     suspend fun sendVerifyPhoneNumber(number: String): Flow<StatusTypeResponse>
@@ -188,6 +185,11 @@ interface ZeneAPIInterface {
     suspend fun updateEmailSubscription(value: Boolean): Flow<StatusTypeResponse>
 
     suspend fun myPlaylistsSongsReorder(
-        v: ZeneMusicData, pId: String, position: Int
+        v: ZeneMusicData,
+        pId: String,
+        position: Int
     ): Flow<StatusTypeResponse>
+
+
+    suspend fun entDiscoverNews(): Flow<EntertainmentDiscoverResponse>
 }

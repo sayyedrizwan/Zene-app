@@ -17,8 +17,6 @@ import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.AIDataResponse
 import com.rizwansayyed.zene.data.model.ArtistsResponse
 import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
-import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
-import com.rizwansayyed.zene.data.model.MoviesDataResponse
 import com.rizwansayyed.zene.data.model.MoviesTvShowResponse
 import com.rizwansayyed.zene.data.model.MusicDataResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
@@ -39,8 +37,6 @@ import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
@@ -75,12 +71,6 @@ class HomeViewModel @Inject constructor(
     var homeRadio by mutableStateOf<ResponseResult<RadioDataResponse>>(ResponseResult.Empty)
     var searchKeywords by mutableStateOf<ResponseResult<List<String>>>(ResponseResult.Empty)
     var couponApplied by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
-    var entertainmentData by mutableStateOf<ResponseResult<EntertainmentDataResponse>>(
-        ResponseResult.Empty
-    )
-    var entertainmentMoviesData by mutableStateOf<ResponseResult<MoviesDataResponse>>(
-        ResponseResult.Empty
-    )
 
     var searchASongData by mutableStateOf<ResponseResult<ZeneMusicData>>(ResponseResult.Empty)
     var searchData by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
@@ -244,41 +234,6 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             cacheHelper.save(ZENE_RECENT_HOME_RADIO_API, it)
             homeRadio = ResponseResult.Success(it)
-        }
-    }
-
-
-    fun entertainmentNewsData() = viewModelScope.safeLaunch  {
-        val data: EntertainmentDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_API)
-        if ((data?.topNews?.size ?: 0) > 0) {
-            entertainmentData = ResponseResult.Success(data!!)
-            return@safeLaunch
-        }
-
-        zeneAPI.entertainmentNews().onStart {
-            entertainmentData = ResponseResult.Loading
-        }.catch {
-            entertainmentData = ResponseResult.Error(it)
-        }.collectLatest {
-            cacheHelper.save(ZENE_RECENT_HOME_ENTERTAINMENT_API, it)
-            entertainmentData = ResponseResult.Success(it)
-        }
-    }
-
-    fun entertainmentMovies() = viewModelScope.safeLaunch  {
-        val data: MoviesDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
-        if ((data?.trendingMovies?.size ?: 0) > 0) {
-            entertainmentMoviesData = ResponseResult.Success(data!!)
-            return@safeLaunch
-        }
-
-        zeneAPI.entertainmentMovies().onStart {
-            entertainmentMoviesData = ResponseResult.Loading
-        }.catch {
-            entertainmentMoviesData = ResponseResult.Error(it)
-        }.collectLatest {
-            cacheHelper.save(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API, it)
-            entertainmentMoviesData = ResponseResult.Success(it)
         }
     }
 

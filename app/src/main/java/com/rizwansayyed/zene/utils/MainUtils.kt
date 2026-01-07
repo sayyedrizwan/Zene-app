@@ -624,4 +624,11 @@ object MainUtils {
         if (isActive) cancel()
     }
 
+    fun Int.formatNews(): String {
+        return if (this % 1000 == 0) {
+            "${this / 1000}k"
+        } else {
+            String.format(Locale.getDefault(), "%.1fk", this / 1000f)
+        }
+    }
 }

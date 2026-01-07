@@ -32,38 +32,3 @@ object CelebrityImages {
     const val TAYLOR_SWIFT = "https://wallpapercave.com/wp/wp14806034.webp"
     const val HARRY_STYLES = "https://wallpapercave.com/wp/wp2368497.jpg"
 }
-
-@Composable
-fun EntertainmentDiscoverView() {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        contentPadding = PaddingValues(bottom = 250.dp)
-    ) {
-        item(key = "top") { EntDiscoverTopView() }
-
-        item(key = "stories") { EntCelebStoriesView() }
-
-        item(key = "trending") { EntTrendingTopicsView() }
-
-        item(key = "dating") { EntCelebDatingView() }
-
-        item(key = "movies") { EntTrendingMoviesView() }
-
-        item(key = "trailer") { EntLatestTrailerView() }
-
-        item(key = "lifestyle") { EntLifestyleView() }
-
-        items(sampleNews, key = { it.title }) { item ->
-            NewsRow(item)
-            Spacer(modifier = Modifier.height(18.dp))
-        }
-
-        item(key = "view_all_buzz") {
-            ViewAllButton {
-
-            }
-        }
-    }
-}

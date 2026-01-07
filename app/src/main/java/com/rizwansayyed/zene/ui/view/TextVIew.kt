@@ -72,7 +72,8 @@ fun TextViewBold(
         fontWeight = FontWeight.Bold,
         fontFamily = proximanOverFamily,
         textAlign = if (center) TextAlign.Center else null,
-        maxLines = line
+        maxLines = line,
+        overflow = TextOverflow.Ellipsis
     )
 }
 

@@ -516,6 +516,11 @@
     <string name="dating">Dating</string>
     <string name="events">Events</string>
     <string name="lifestyle">Lifestyle</string>
+    <string name="breaking_story">Breaking Story</string>
+    <string name="reading_now">Reading now</string>
+    <string name="trending_topics">Trending Topics</string>
+    <string name="one_trending">#1 TRENDING</string>
+    <string name="trending_">TRENDING</string>
 
 
     <!--    notification channels-->

@@ -191,7 +191,6 @@ reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reo
 
 billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 clarity = { module = "com.microsoft.clarity:clarity-compose", version.ref = "clarity" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

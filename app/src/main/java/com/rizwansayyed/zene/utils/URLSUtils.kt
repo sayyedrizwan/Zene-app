@@ -58,8 +58,6 @@ object URLSUtils {
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
     const val ZENE_RECENT_HOME_RADIO_API = "recent/home-radio"
     const val ZENE_RECENT_HOME_VIDEOS_API = "recent/home-video"
-    const val ZENE_RECENT_HOME_ENTERTAINMENT_API = "recent/home-entertainment"
-    const val ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API = "recent/home-entertainment-movies"
 
     const val ZENE_SEARCH_ALL_API = "search/all"
     const val ZENE_SEARCH_A_SONG_API = "search/a-song"
@@ -154,6 +152,9 @@ object URLSUtils {
     const val ZENE_USER_UPDATE_EMAIL_SUB_API = "users/update-email-subscription"
 
 
+    const val ZENE_ENT_DISCOVER_TRENDING_NEWS_API = "entertainment/discover-trending-news"
+
+
     const val ZENE_NOTIFICATION_RECOMMENDATION_API = "notification/notification-recommendation"
 
     const val ZENE_SPONSOR_ADS_API = "sponsor/ads"
@@ -187,6 +188,10 @@ object URLSUtils {
 
     fun getSearchOnGoogle(q: String): String {
         return "https://www.google.com/search?q=${q.lowercase()}"
+    }
+
+    fun getSearchNewsOnGoogle(q: String): String {
+        return "https://www.google.com/search?q=${q.lowercase()}&tbm=nws"
     }
 }
 

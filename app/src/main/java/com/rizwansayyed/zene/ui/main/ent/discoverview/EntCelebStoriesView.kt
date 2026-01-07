@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.ui.main.ent.CelebrityImages
 import com.rizwansayyed.zene.ui.main.ent.StoryItem
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
 @Composable
 fun EntCelebStoriesView() {
@@ -127,61 +128,3 @@ fun AddStory() {
     }
 }
 
-
-@Composable
-fun BreakingStoryTag() {
-    Row(
-        modifier = Modifier
-            .background(
-                color = Color(0xFFB63A5B), shape = RoundedCornerShape(50)
-            )
-            .padding(horizontal = 14.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Whatshot,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(16.dp)
-        )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(
-            text = "BREAKING STORY",
-            color = Color.White,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-fun ReadingNow() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(14.dp))
-                .background(MainColor)
-                .padding(horizontal = 14.dp, vertical = 9.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person, contentDescription = null, tint = Color.White
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = "+2k Reading now", color = Color.White, fontSize = 14.sp
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .padding(start = 10.dp)
-                .clip(RoundedCornerShape(100))
-                .background(MainColor)
-                .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ImageIcon(R.drawable.ic_arrow_right, 18, Color.White)
-        }
-    }
-}

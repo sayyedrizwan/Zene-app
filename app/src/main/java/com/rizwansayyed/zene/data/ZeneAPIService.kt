@@ -9,6 +9,7 @@ import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
+import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MediaStatusTypeResponse
@@ -67,6 +68,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_ARTISTS_UPDATES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_FOLLOWED_ARTISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_API
@@ -91,8 +93,6 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_PODCAST_MEDIA_URL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO_COUNTRY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO_MEDIA_URL_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RADIO_PODCASTS_CATEGORY_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
@@ -275,18 +275,6 @@ interface ZeneAPIService {
     suspend fun searchPlaces(
         @Header("token") token: String, @Body data: RequestBody
     ): List<SearchPlacesDataResponse>
-
-    @Headers("Content-Type: application/json")
-    @POST(ZENE_RECENT_HOME_ENTERTAINMENT_API)
-    suspend fun entertainmentNews(
-        @Header("token") token: String, @Body data: RequestBody
-    ): EntertainmentDataResponse
-
-    @Headers("Content-Type: application/json")
-    @POST(ZENE_RECENT_HOME_ENTERTAINMENT_MOVIES_API)
-    suspend fun entertainmentMovies(
-        @Header("token") token: String, @Body data: RequestBody
-    ): MoviesDataResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_USER_UPDATE_TRUE_CALLER_API)
@@ -785,4 +773,10 @@ interface ZeneAPIService {
     suspend fun updateEmailSubscription(
         @Header("token") token: String, @Body data: RequestBody
     ): StatusTypeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_DISCOVER_TRENDING_NEWS_API)
+    suspend fun entDiscoverNews(
+        @Header("token") token: String, @Body data: RequestBody
+    ): EntertainmentDiscoverResponse
 }

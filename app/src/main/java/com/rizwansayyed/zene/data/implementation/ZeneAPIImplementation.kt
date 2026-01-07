@@ -543,20 +543,6 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.homeVideos(token, body))
     }
 
-    override suspend fun entertainmentNews() = flow {
-        val email = userInfo.firstOrNull()?.email ?: ""
-        val token = userInfo.firstOrNull()?.authToken ?: ""
-        val country = ipDB.firstOrNull()?.countryCode
-
-        val json = JSONObject().apply {
-            put("email", email)
-            put("country", country)
-        }
-
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.entertainmentNews(token, body))
-    }
-
     override suspend fun search(q: String) = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
@@ -600,20 +586,6 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.searchPlaces(token, body))
-    }
-
-    override suspend fun entertainmentMovies() = flow {
-        val email = userInfo.firstOrNull()?.email ?: ""
-        val token = userInfo.firstOrNull()?.authToken ?: ""
-        val country = ipDB.firstOrNull()?.countryCode
-
-        val json = JSONObject().apply {
-            put("email", email)
-            put("country", country)
-        }
-
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.entertainmentMovies(token, body))
     }
 
     override suspend fun updateTrueCallerNumber(codeVerifier: String, code: String) = flow {
@@ -1702,5 +1674,20 @@ class ZeneAPIImplementation @Inject constructor(
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.updateEmailSubscription(token, body))
+    }
+
+    override suspend fun entDiscoverNews() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.entDiscoverNews(token, body))
     }
 }
