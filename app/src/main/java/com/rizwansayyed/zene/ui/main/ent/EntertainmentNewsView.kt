@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.ui.main.ent.discoverview.EntBuzzNewsViewItem
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntCelebDatingView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntCelebStoriesView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntDiscoverTopView
@@ -27,9 +27,7 @@ import com.rizwansayyed.zene.ui.main.ent.discoverview.EntLatestTrailerView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntLifestyleView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingMoviesView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingTopicsView
-import com.rizwansayyed.zene.ui.main.ent.discoverview.NewsRow
 import com.rizwansayyed.zene.ui.main.ent.discoverview.ViewAllButton
-import com.rizwansayyed.zene.ui.main.ent.discoverview.sampleNews
 import com.rizwansayyed.zene.ui.main.ent.view.EntertainmentScreenTopView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
@@ -94,7 +92,7 @@ fun EntertainmentNewsView(viewModel: NavigationViewModel) {
 
                     item(key = "trending") { EntTrendingTopicsView(v.data) }
 
-                    item(key = "dating") { EntCelebDatingView() }
+                    item(key = "dating") { EntCelebDatingView(v.data) }
 
                     item(key = "movies") { EntTrendingMoviesView() }
 
@@ -102,9 +100,10 @@ fun EntertainmentNewsView(viewModel: NavigationViewModel) {
 
                     item(key = "lifestyle") { EntLifestyleView() }
 
-                    items(sampleNews, key = { it.title }) { item ->
-                        NewsRow(item)
-                        Spacer(modifier = Modifier.height(18.dp))
+                    items(
+                        v.data.news?.drop(1) ?: emptyList(),
+                        key = { "news_${it.name}" }) { item ->
+                        EntBuzzNewsViewItem(item)
                     }
 
                     item(key = "view_all_buzz") {

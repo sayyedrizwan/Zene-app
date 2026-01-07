@@ -28,9 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.rizwansayyed.zene.ui.main.ent.CelebrityImages.HARRY_STYLES
-import com.rizwansayyed.zene.ui.main.ent.CelebrityImages.TAYLOR_SWIFT
-import com.rizwansayyed.zene.ui.main.ent.CelebrityImages.ZENDAYA
 
 data class CelebrityStyle(
     val imageUrl: String,
@@ -40,17 +37,17 @@ data class CelebrityStyle(
 
 val celebs = listOf(
     CelebrityStyle(
-        imageUrl = ZENDAYA,
+        imageUrl = "ZENDAYA",
         name = "Bella Hadid",
         event = "Paris Fashion Week"
     ),
     CelebrityStyle(
-        imageUrl = TAYLOR_SWIFT,
+        imageUrl = "TAYLOR_SWIFT",
         name = "Zendaya",
         event = "Met Gala"
     ),
     CelebrityStyle(
-        imageUrl = HARRY_STYLES,
+        imageUrl = "HARRY_STYLES",
         name = "Hailey Bieber",
         event = "Street Style"
     )

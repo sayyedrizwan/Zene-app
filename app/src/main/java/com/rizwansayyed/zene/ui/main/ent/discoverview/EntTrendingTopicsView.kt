@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,30 +31,11 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.URLSUtils.getSearchNewsOnGoogle
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
 
-val DarkBg = Color(0xFF120A0A)
-val CardBg = Color(0xFF1C1212)
-val AccentRed = Color(0xFFFF5A3C)
-
-val MoviesBlue = Color(0xFF4DA3FF)
-val TvPurple = Color(0xFFB48CFF)
-val AwardsGold = Color(0xFFFFC44D)
-val StreamingGreen = Color(0xFF4DFF9A)
-val GossipPink = Color(0xFFFF6EC7)
-val DisneyTeal = Color(0xFF3ED6C6)
-
 @Composable
 fun EntTrendingTopicsView(data: EntertainmentDiscoverResponse) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
-        ) {
-            Spacer(Modifier.height(30.dp))
-            Box(Modifier.padding(horizontal = 6.dp)) {
-                TextViewBold(stringResource(R.string.trending_topics), 23)
+    Spacer(Modifier.height(30.dp))
+    Box(Modifier.padding(horizontal = 6.dp)) {
+        TextViewBold(stringResource(R.string.trending_topics), 23)
             }
             Spacer(Modifier.height(12.dp))
 
@@ -68,6 +48,7 @@ fun EntTrendingTopicsView(data: EntertainmentDiscoverResponse) {
             items.chunked(2).forEachIndexed { rowIndex, rowItems ->
                 Row(
                     modifier = Modifier
+                        .padding(horizontal = 12.dp)
                         .fillMaxWidth()
                         .height(IntrinsicSize.Min),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -95,9 +76,6 @@ fun EntTrendingTopicsView(data: EntertainmentDiscoverResponse) {
 
                 Spacer(Modifier.height(12.dp))
             }
-
-        }
-    }
 }
 
 
@@ -105,6 +83,7 @@ fun EntTrendingTopicsView(data: EntertainmentDiscoverResponse) {
 fun TrendingMainCard(v: ZeneMusicData) {
     Column(
         modifier = Modifier
+            .padding(horizontal = 12.dp)
             .fillMaxWidth()
             .clickable {
                 v.name?.let {

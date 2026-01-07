@@ -521,6 +521,9 @@
     <string name="trending_topics">Trending Topics</string>
     <string name="one_trending">#1 TRENDING</string>
     <string name="trending_">TRENDING</string>
+    <string name="love_buzz">Love Buzz</string>
+    <string name="view_all_buzz">View All Buzz</string>
+    <string name="ago">ago</string>
 
 
     <!--    notification channels-->

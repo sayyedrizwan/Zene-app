@@ -71,7 +71,7 @@ fun EntDiscoverTopView(data: ZeneMusicData, viewModel: EntertainmentViewModel) {
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(24.dp)
+                .padding(10.dp)
         ) {
             BreakingStoryTag()
             Spacer(Modifier.height(12.dp))

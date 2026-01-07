@@ -18,6 +18,29 @@ data class WhoDatedWhoData(
     val meta: Meta?
 ) {
 
+    fun isAHookup(): Boolean {
+        return meta?.event?.lowercase()?.contains("hookup") ?: false
+    }
+
+    fun isABreakup(): Boolean {
+        return meta?.event?.lowercase()?.contains("breakup") ?: false
+    }
+
+    fun isAEngagement(): Boolean {
+        return meta?.event?.lowercase()?.contains("engagement") ?: false
+    }
+
+    fun isAMarriage(): Boolean {
+        return meta?.event?.lowercase()?.contains("marriage") ?: false
+    }
+
+    fun didHadAChild(): Boolean {
+        return meta?.event?.lowercase()?.contains("child") ?: false
+    }
+    fun didDivorce(): Boolean {
+        return meta?.event?.lowercase()?.contains("divorce") ?: false
+    }
+
     data class Reference(
         val title: String?,
         val url: String?,
