@@ -36,8 +36,8 @@ fun EntTrendingTopicsView(data: EntertainmentDiscoverResponse) {
     Spacer(Modifier.height(30.dp))
     Box(Modifier.padding(horizontal = 6.dp)) {
         TextViewBold(stringResource(R.string.trending_topics), 23)
-            }
-            Spacer(Modifier.height(12.dp))
+    }
+    Spacer(Modifier.height(12.dp))
 
             data.trends?.forEachIndexed { i, v ->
                 if (i == 0) TrendingMainCard(v)

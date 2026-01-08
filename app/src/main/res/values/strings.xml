@@ -140,7 +140,6 @@
     <string name="music_news">Music News</string>
     <string name="no_posts">No Posts</string>
     <string name="no_gif_posted">No GIF Posted</string>
-    <string name="movies_trending_today">Movies/Shows Trending Today</string>
     <string name="top_10_movies_show_in">Top 10 Movies/Shows in</string>
     <string name="songs_for_you">Songs for you</string>
     <string name="your_favourite_artists">Your favourite artists</string>
@@ -524,6 +523,9 @@
     <string name="love_buzz">Love Buzz</string>
     <string name="view_all_buzz">View All Buzz</string>
     <string name="ago">ago</string>
+    <string name="trending_movies_shows_in">Trending Movies/Shows in %s</string>
+    <string name="latest_trailers">Latest Trailers</string>
+    <string name="play_trailer">Play Trailer</string>
 
 
     <!--    notification channels-->

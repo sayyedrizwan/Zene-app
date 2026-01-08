@@ -31,6 +31,8 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
@@ -62,10 +64,7 @@ fun CoupleCard(dated: WhoDatedWhoData) {
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OverlappingAvatars(
-            dated.coupleComparison?.personA?.image ?: "",
-            dated.coupleComparison?.personB?.image ?: ""
-        )
+        OverlappingAvatars(dated)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -78,7 +77,7 @@ fun CoupleCard(dated: WhoDatedWhoData) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun OverlappingAvatars(leftImageUrl: String, rightImageUrl: String) {
+fun OverlappingAvatars(data: WhoDatedWhoData) {
     Box(
         contentAlignment = Alignment.Center
     ) {
@@ -87,7 +86,7 @@ fun OverlappingAvatars(leftImageUrl: String, rightImageUrl: String) {
             horizontalArrangement = Arrangement.spacedBy((-7).dp)
         ) {
             GlideImage(
-                model = leftImageUrl,
+                model = data.coupleComparison?.personA?.image ?: "",
                 contentDescription = null,
                 modifier = Modifier
                     .size(64.dp)
@@ -96,7 +95,7 @@ fun OverlappingAvatars(leftImageUrl: String, rightImageUrl: String) {
             )
 
             GlideImage(
-                model = rightImageUrl,
+                model = data.coupleComparison?.personB?.image ?: "",
                 contentDescription = null,
                 modifier = Modifier
                     .size(64.dp)
@@ -108,15 +107,10 @@ fun OverlappingAvatars(leftImageUrl: String, rightImageUrl: String) {
         Box(
             modifier = Modifier
                 .size(26.dp)
-                .background(Color(0xFFE65C9C), CircleShape),
+                .background(data.relationshipBadge()?.color ?: Color.Black, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(14.dp)
-            )
+            ImageIcon(data.relationshipBadge()?.icon ?: R.drawable.ic_romance_couple, 20,Color.Black)
         }
     }
 }

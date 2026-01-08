@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -29,57 +28,29 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.share.MediaContentUtils
 
 @Composable
-fun EntLatestTrailerView() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .background(Color(0xFF2A141A), CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Movie,
-                contentDescription = null,
-                tint = Color(0xFFE25555)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(10.dp))
-
-        Text(
-            text = "Latest Trailers",
-            color = Color.White,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
-
-        Text(
-            text = "View All",
-            color = Color(0xFFE25555),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.clickable { }
-        )
+fun EntLatestTrailerView(data: EntertainmentDiscoverResponse) {
+    Spacer(Modifier.height(50.dp))
+    Box(Modifier.padding(horizontal = 6.dp)) {
+        TextViewBold(stringResource(R.string.latest_trailers), 23)
     }
+    Spacer(Modifier.height(6.dp))
 
-    FeaturedTrailerCard(
-        imageUrl = "https://img.youtube.com/vi/SBzsqPk8bk4/maxresdefault.jpg",
-        title = "Marvel's\nThunderbolts*",
-        description = "A group of antiheroes goes on missions for the government."
-    )
+    if (data.featuredTrailer?.id != null) FeaturedTrailerCard(data.featuredTrailer)
 
     TrailerRow()
 }
@@ -87,55 +58,43 @@ fun EntLatestTrailerView() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun FeaturedTrailerCard(
-    imageUrl: String,
-    title: String,
-    description: String,
-    onPlayClick: () -> Unit = {}
-) {
+fun FeaturedTrailerCard(trailer: ZeneMusicData) {
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(12.dp)
             .fillMaxWidth()
-            .height(420.dp)
+            .height(450.dp)
+            .clickable {
+                MediaContentUtils.startMedia(trailer)
+            }
             .clip(RoundedCornerShape(28.dp))
     ) {
-
-        // Background image
         GlideImage(
-            model = imageUrl,
-            contentDescription = null,
+            model = trailer.thumbnail,
+            contentDescription = trailer.thumbnail,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
 
-        // Gradient overlay
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            Color.Black.copy(alpha = 0.15f),
-                            Color.Black.copy(alpha = 0.85f)
+                            Color.Black.copy(alpha = 0.15f), Color.Black.copy(alpha = 0.85f)
                         )
                     )
                 )
         )
 
-        // PREMIERE chip
         Box(
             modifier = Modifier
                 .padding(16.dp)
                 .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(50))
                 .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
-            Text(
-                text = "PREMIERE",
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
+            TextViewSemiBold(stringResource(R.string.trending_), size = 15)
         }
 
         Column(
@@ -143,35 +102,19 @@ fun FeaturedTrailerCard(
                 .align(Alignment.BottomStart)
                 .padding(20.dp)
         ) {
+            TextViewBold(trailer.name ?: "", 27, line = 2)
 
-            Text(
-                text = title,
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 30.sp
-            )
+            Spacer(modifier = Modifier.height(15.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = description,
-                color = Color.White.copy(alpha = 0.8f),
-                fontSize = 14.sp,
-                maxLines = 2
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            PlayTrailerButton(onClick = onPlayClick)
+            PlayTrailerButton {
+                MediaContentUtils.startMedia(trailer)
+            }
         }
     }
 }
 
 @Composable
-fun PlayTrailerButton(
-    onClick: () -> Unit
-) {
+fun PlayTrailerButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,18 +125,9 @@ fun PlayTrailerButton(
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.PlayArrow,
-                contentDescription = null,
-                tint = Color(0xFFE25555)
-            )
+            ImageIcon(R.drawable.ic_play, 27, Color.Black)
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Play Trailer",
-                color = Color.Black,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
+            TextViewNormal(stringResource(R.string.play_trailer), 16, Color.Black)
         }
     }
 }

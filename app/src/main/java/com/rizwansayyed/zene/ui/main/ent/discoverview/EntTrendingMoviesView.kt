@@ -1,111 +1,75 @@
 package com.rizwansayyed.zene.ui.main.ent.discoverview
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun EntTrendingMoviesView(modifier: Modifier = Modifier) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Whatshot,
-            contentDescription = null,
-            tint = Color(0xFFE25555)
-        )
+fun EntTrendingMoviesView(data: EntertainmentDiscoverResponse) {
+    val name by ipDB.collectAsState(null)
 
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Text(
-            text = "Trending Shows & Movies",
-            color = Color.White,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
-
-        Text(
-            text = "View All",
-            color = Color(0xFFE25555),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.clickable { }
-        )
+    Spacer(Modifier.height(50.dp))
+    Box(Modifier.padding(horizontal = 6.dp)) {
+        TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
     }
-
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(Modifier.height(12.dp))
 
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            TrendingPosterCard(
-                imageUrl = "https://image.tmdb.org/t/p/w780/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg",
-                rank = "#1"
-            )
-        }
-
-        item {
-            TrendingPosterCard(
-                imageUrl = "https://image.tmdb.org/t/p/w780/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
-                rank = "#2"
-            )
+        itemsIndexed(data.movies ?: emptyList()) { i, v ->
+            TrendingPosterCard(v, i)
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TrendingPosterCard(
-    imageUrl: String,
-    rank: String = "#1"
-) {
-    Box(
-        modifier = Modifier
-            .height(360.dp)
-            .clip(RoundedCornerShape(24.dp))
-    ) {
-
+fun TrendingPosterCard(v: ZeneMusicData, position: Int) {
+    Box(Modifier.clip(RoundedCornerShape(24.dp))) {
         GlideImage(
-            model = imageUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize()
+            model = v.thumbnail,
+            contentDescription = v.name,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .width(300.dp)
         )
 
         Box(
@@ -126,10 +90,7 @@ fun TrendingPosterCard(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(12.dp)
-                .background(
-                    color = Color(0xFFE25555),
-                    shape = RoundedCornerShape(50)
-                )
+                .background(MainColor, RoundedCornerShape(50))
                 .padding(horizontal = 10.dp, vertical = 6.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -140,12 +101,7 @@ fun TrendingPosterCard(
                     modifier = Modifier.size(14.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = rank,
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                TextViewNormal("#${position + 1}", size = 15)
             }
         }
     }

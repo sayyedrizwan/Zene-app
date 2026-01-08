@@ -1,10 +1,15 @@
 package com.rizwansayyed.zene.data.model
 
+import androidx.compose.ui.graphics.Color
+import com.rizwansayyed.zene.R
+
 
 data class EntertainmentDiscoverResponse(
     val isExpire: Boolean?,
+    val featuredTrailer: ZeneMusicData?,
     val news: List<ZeneMusicData>?,
     val trends: List<ZeneMusicData>?,
+    val movies: List<ZeneMusicData>?,
     val dated: List<WhoDatedWhoData>?,
 )
 
@@ -18,27 +23,34 @@ data class WhoDatedWhoData(
     val meta: Meta?
 ) {
 
-    fun isAHookup(): Boolean {
-        return meta?.event?.lowercase()?.contains("hookup") ?: false
-    }
+    data class RelationshipBadge(
+        val color: Color,
+        val icon: Int
+    )
 
-    fun isABreakup(): Boolean {
-        return meta?.event?.lowercase()?.contains("breakup") ?: false
-    }
+    fun relationshipBadge(): RelationshipBadge? = when {
+        meta?.event?.lowercase()?.contains("hookup")
+            ?: false -> RelationshipBadge(Color(0xFFFF8243), R.drawable.ic_bed_love_couple)
 
-    fun isAEngagement(): Boolean {
-        return meta?.event?.lowercase()?.contains("engagement") ?: false
-    }
+        meta?.event?.lowercase()?.contains("dating")
+            ?: false -> RelationshipBadge(Color(0xFFE65C9C), R.drawable.ic_romance_couple)
 
-    fun isAMarriage(): Boolean {
-        return meta?.event?.lowercase()?.contains("marriage") ?: false
-    }
+        meta?.event?.lowercase()?.contains("breakup")
+            ?: false -> RelationshipBadge(Color(0xFFD32F2F), R.drawable.ic_black_broken)
 
-    fun didHadAChild(): Boolean {
-        return meta?.event?.lowercase()?.contains("child") ?: false
-    }
-    fun didDivorce(): Boolean {
-        return meta?.event?.lowercase()?.contains("divorce") ?: false
+        meta?.event?.lowercase()?.contains("engagement") ?: false ->
+            RelationshipBadge(Color(0xFFE51A5B), R.drawable.ic_diamond_ring)
+
+        meta?.event?.lowercase()?.contains("marriage") ?: false ->
+            RelationshipBadge(Color(0xFFFFC107), R.drawable.ic_bride)
+
+        meta?.event?.lowercase()?.contains("child") ?: false ->
+            RelationshipBadge(Color(0xFF64B5F6), R.drawable.ic_child_boy)
+
+        meta?.event?.lowercase()?.contains("divorce") ?: false ->
+            RelationshipBadge(Color(0xFF757575), R.drawable.ic_divorce_person_separate)
+
+        else -> null
     }
 
     data class Reference(

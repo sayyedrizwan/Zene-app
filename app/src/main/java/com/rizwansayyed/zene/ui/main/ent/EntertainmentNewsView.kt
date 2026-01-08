@@ -95,9 +95,9 @@ fun EntertainmentNewsView(viewModel: NavigationViewModel) {
 
                     item(key = "dating") { EntCelebDatingView(v.data) }
 
-                    item(key = "movies") { EntTrendingMoviesView() }
+                    item(key = "movies") { EntTrendingMoviesView(v.data) }
 
-                    item(key = "trailer") { EntLatestTrailerView() }
+                    item(key = "trailer") { EntLatestTrailerView(v.data) }
 
                     item(key = "lifestyle") { EntLifestyleView() }
 
