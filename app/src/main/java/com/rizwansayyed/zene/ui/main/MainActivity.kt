@@ -58,6 +58,7 @@ import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
+import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.HOME
@@ -66,6 +67,7 @@ import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.NOTIFICATION
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.SEARCH
 import com.rizwansayyed.zene.ui.main.home.HomeView
 import com.rizwansayyed.zene.ui.main.search.SearchView
+import com.rizwansayyed.zene.ui.main.store.StoreView
 import com.rizwansayyed.zene.ui.main.view.HomeBottomNavigationView
 import com.rizwansayyed.zene.ui.main.view.LongPressSheetView
 import com.rizwansayyed.zene.ui.main.view.NotificationConnectLocationShare
@@ -147,6 +149,7 @@ class MainActivity : FragmentActivity() {
 
                                         SEARCH -> SearchView(homeViewModel)
                                         NONE -> {}
+                                        HomeNavSelector.STORE -> StoreView()
                                     }
                                 }
                                 composable(NAV_SETTINGS_PAGE) {

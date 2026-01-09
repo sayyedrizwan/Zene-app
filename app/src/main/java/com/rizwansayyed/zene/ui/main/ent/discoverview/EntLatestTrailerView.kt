@@ -127,7 +127,7 @@ fun PlayTrailerButton(onClick: () -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             ImageIcon(R.drawable.ic_play, 27, Color.Black)
             Spacer(modifier = Modifier.width(8.dp))
-            TextViewNormal(stringResource(R.string.play_trailer), 16, Color.Black)
+            TextViewNormal(stringResource(R.string.play_trailer), 19, Color.Black)
         }
     }
 }

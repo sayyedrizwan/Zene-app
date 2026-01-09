@@ -77,6 +77,7 @@ fun HomeBottomNavigationView(
             Alignment.CenterVertically
         ) {
             HomeBottomNavItems(R.drawable.ic_home, R.string.home, HomeNavSelector.HOME, vm)
+            HomeBottomNavItems(R.drawable.ic_hand_bag, R.string.store, HomeNavSelector.STORE, vm)
 //            if (!isDirectToTV()) HomeBottomNavItems(
 //                R.drawable.ic_hotspot, R.string.connect, HomeNavSelector.CONNECT, vm
 //            )

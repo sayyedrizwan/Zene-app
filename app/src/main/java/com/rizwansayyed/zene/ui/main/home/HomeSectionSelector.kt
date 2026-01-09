@@ -9,7 +9,7 @@ enum class EntSectionSelector {
 }
 
 enum class HomeNavSelector {
-    HOME, CONNECT, SEARCH, ENT, NOTIFICATION, NONE
+    HOME, CONNECT, STORE, SEARCH, ENT, NOTIFICATION, NONE
 }
 
 enum class ShortcutSelector {
