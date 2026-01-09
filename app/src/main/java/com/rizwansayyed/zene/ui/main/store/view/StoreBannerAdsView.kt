@@ -45,17 +45,10 @@ private val bannerList = listOf(
     "https://i.ibb.co/twKR8tj0/Gemini-Generated-Image-x5vmf8x5vmf8x5vm-1.png"
 )
 
-@Composable
-fun StoreBannerAdsView() {
-    AutoScrollingBannerPager(bannerList)
-}
-
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun AutoScrollingBannerPager(banners: List<String>, pageDurationMs: Int = 4000) {
-
-    val pagerState = rememberPagerState { banners.size }
+fun StoreBannerAdsView(pageDurationMs: Int = 4000) {
+    val pagerState = rememberPagerState { bannerList.size }
     val progress = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
 
@@ -73,34 +66,29 @@ fun AutoScrollingBannerPager(banners: List<String>, pageDurationMs: Int = 4000) 
     }
 
     LaunchedEffect(pagerState.currentPage) {
-        if (pagerState.isScrollInProgress) return@LaunchedEffect
-
         autoScrollJob?.cancel()
 
         autoScrollJob = scope.launch {
             progress.snapTo(0f)
 
             progress.animateTo(
-                targetValue = 1f, animationSpec = tween(
-                    durationMillis = pageDurationMs, easing = LinearEasing
-                )
+                1f, tween(pageDurationMs, easing = LinearEasing)
             )
-            val nextPage = if (pagerState.currentPage == banners.lastIndex) 0
+            val nextPage = if (pagerState.currentPage == bannerList.lastIndex) 0
             else pagerState.currentPage + 1
 
-            pagerState.scrollToPage(nextPage)
+            scope.launch {
+                pagerState.animateScrollToPage(nextPage)
+            }
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalPager(
             pagerState, Modifier.fillMaxWidth(), PaddingValues(horizontal = 20.dp)
         ) { page ->
             GlideImage(
-                banners[page], null, Modifier
+                bannerList[page], null, Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
             )
@@ -112,7 +100,7 @@ fun AutoScrollingBannerPager(banners: List<String>, pageDurationMs: Int = 4000) 
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            repeat(banners.size) { index ->
+            repeat(bannerList.size) { index ->
                 if (index == pagerState.currentPage) {
                     Box(
                         modifier = Modifier
@@ -137,7 +125,7 @@ fun AutoScrollingBannerPager(banners: List<String>, pageDurationMs: Int = 4000) 
                     )
                 }
 
-                if (index != banners.lastIndex) {
+                if (index != bannerList.lastIndex) {
                     Spacer(Modifier.width(8.dp))
                 }
             }
