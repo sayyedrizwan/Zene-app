@@ -164,6 +164,7 @@
     <string name="enter_a_username">Enter a username</string>
     <string name="add_a_caption">Add a caption…</string>
     <string name="search_s_p_a_etc">Search song, playlist, album, etc..</string>
+    <string name="search_product">Search Product</string>
     <string name="enter_a_coupon_code">Enter a coupon code</string>
     <string name="search_images">Search images</string>
     <string name="emoji_status">Emoji Status</string>
@@ -527,6 +528,7 @@
     <string name="trending_movies_shows_in">Trending Movies/Shows in %s</string>
     <string name="latest_trailers">Latest Trailers</string>
     <string name="play_trailer">Play Trailer</string>
+    <string name="store_thank_you_note">Every purchase through Amazon affiliate helps us keep the app free. thank you for helping us grow!</string>
 
 
     <!--    notification channels-->

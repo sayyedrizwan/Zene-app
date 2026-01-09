@@ -54,7 +54,7 @@ fun SearchBarView(
                 if (search.value.length > 3) onSearch(search.value)
             },
             placeholder = {
-                TextViewNormal(stringResource(R.string.search_s_p_a_etc), 14)
+                TextViewNormal(stringResource(R.string.search_s_p_a_etc), 15)
             },
             trailingIcon = {
                 if (search.value.length > 3) {

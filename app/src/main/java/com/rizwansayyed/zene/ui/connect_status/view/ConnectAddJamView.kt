@@ -25,8 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -90,7 +92,7 @@ fun AddJamDialog(clicked: (ZeneMusicData?) -> Unit) {
                     if (search.length > 3) viewModel.searchZene(search)
                 },
                 placeholder = {
-                    TextViewNormal(stringResource(R.string.search_s_p_a_etc), 14)
+                    TextViewNormal(stringResource(R.string.search_s_p_a_etc), 16)
                 },
                 trailingIcon = {
                     if (search.length > 3) {
@@ -102,6 +104,7 @@ fun AddJamDialog(clicked: (ZeneMusicData?) -> Unit) {
                         }
                     }
                 },
+                textStyle = TextStyle(fontSize = 16.sp, color = Color.White),
                 shape = RoundedCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MainColor,
