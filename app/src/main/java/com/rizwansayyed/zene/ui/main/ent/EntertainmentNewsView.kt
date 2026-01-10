@@ -83,33 +83,44 @@ fun EntertainmentNewsView(viewModel: NavigationViewModel) {
                         .background(DarkCharcoal),
                     contentPadding = PaddingValues(bottom = 250.dp)
                 ) {
-                    item(key = "top") {
-                        v.data.news?.forEachIndexed { i, v ->
+                    if (v.data.news?.isNotEmpty() == true) item(key = "top") {
+                        v.data.news.forEachIndexed { i, v ->
                             if (i == 0) EntDiscoverTopView(v, entViewModel)
                         }
                     }
 
                     item(key = "stories") { EntCelebStoriesView() }
 
-                    item(key = "trending") { EntTrendingTopicsView(v.data) }
+                    if (v.data.trends?.isNotEmpty() == true) item(key = "trending") {
+                        EntTrendingTopicsView(
+                            v.data
+                        )
+                    }
 
-                    item(key = "dating") { EntCelebDatingView(v.data) }
+                    if (v.data.dated?.isNotEmpty() == true) item(key = "dating") {
+                        EntCelebDatingView(
+                            v.data
+                        )
+                    }
 
+                    if (v.data.movies?.isNotEmpty() == true)
                     item(key = "movies") { EntTrendingMoviesView(v.data) }
 
                     item(key = "trailer") { EntLatestTrailerView(v.data) }
 
                     item(key = "lifestyle") { EntLifestyleView() }
 
-                    items(
-                        v.data.news?.drop(1) ?: emptyList(),
-                        key = { "news_${it.name}" }) { item ->
-                        EntBuzzNewsViewItem(item)
-                    }
 
-                    item(key = "view_all_buzz") {
-                        ViewAllButton {
-                            viewModel.setEntNavigation(EntSectionSelector.BUZZ)
+                    if (v.data.news?.isNotEmpty() == true) {
+                        items(
+                            v.data.news.drop(1), key = { "news_${it.name}" }) { item ->
+                            EntBuzzNewsViewItem(item)
+                        }
+
+                        item(key = "view_all_buzz") {
+                            ViewAllButton {
+                                viewModel.setEntNavigation(EntSectionSelector.BUZZ)
+                            }
                         }
                     }
                 }

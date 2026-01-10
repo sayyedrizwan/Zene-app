@@ -38,44 +38,42 @@ fun EntTrendingTopicsView(data: EntertainmentDiscoverResponse) {
         TextViewBold(stringResource(R.string.trending_topics), 23)
     }
     Spacer(Modifier.height(12.dp))
+    data.trends?.forEachIndexed { i, v ->
+        if (i == 0) TrendingMainCard(v)
+    }
 
-            data.trends?.forEachIndexed { i, v ->
-                if (i == 0) TrendingMainCard(v)
-            }
-            Spacer(Modifier.height(20.dp))
+    Spacer(Modifier.height(20.dp))
 
-            val items = data.trends?.drop(1).orEmpty()
-            items.chunked(2).forEachIndexed { rowIndex, rowItems ->
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Min),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    rowItems.forEachIndexed { colIndex, item ->
-                        val globalIndex = rowIndex * 2 + colIndex
-                        item.name?.let {
-                            TrendingSmallCard(
-                                it, globalIndex,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxHeight()
-                            )
-                        }
-                    }
-
-                    if (rowItems.size == 1) {
-                        Spacer(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxHeight()
-                        )
-                    }
+    val items = data.trends?.drop(1).orEmpty()
+    items.chunked(2).forEachIndexed { rowIndex, rowItems ->
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            rowItems.forEachIndexed { colIndex, item ->
+                val globalIndex = rowIndex * 2 + colIndex
+                item.name?.let {
+                    TrendingSmallCard(
+                        it, globalIndex, modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                    )
                 }
-
-                Spacer(Modifier.height(12.dp))
             }
+
+            if (rowItems.size == 1) {
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+    }
 }
 
 
@@ -97,8 +95,7 @@ fun TrendingMainCard(v: ZeneMusicData) {
                     listOf(MainColor, Color.Transparent)
                 ), shape = RoundedCornerShape(24.dp)
             )
-            .padding(20.dp)
-    ) {
+            .padding(20.dp)) {
         TextViewNormal(stringResource(R.string.one_trending), size = 12)
         Spacer(Modifier.height(8.dp))
         v.name?.let { TextViewBold(it, size = 21) }
@@ -120,8 +117,7 @@ fun TrendingSmallCard(
             .border(
                 1.dp, MainColor, RoundedCornerShape(22.dp)
             )
-            .padding(16.dp)
-    ) {
+            .padding(16.dp)) {
         TextViewNormal("#${i + 2} ${stringResource(R.string.trending_)}", size = 12)
         Spacer(Modifier.height(8.dp))
         TextViewBold(title, size = 15)

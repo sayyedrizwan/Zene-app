@@ -89,7 +89,8 @@ fun TextViewSemiBold(
         fontWeight = FontWeight.SemiBold,
         fontFamily = proximanOverFamily,
         textAlign = if (center) TextAlign.Center else null,
-        maxLines = line
+        maxLines = line,
+        overflow = TextOverflow.Ellipsis
     )
 }
 

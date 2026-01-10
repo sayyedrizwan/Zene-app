@@ -35,6 +35,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.ui.main.store.view.StoreBannerAdsView
 import com.rizwansayyed.zene.ui.main.store.view.StoreChipsTypeView
+import com.rizwansayyed.zene.ui.main.store.view.StoreTopDealsView
 import com.rizwansayyed.zene.ui.main.store.view.storeChips
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -110,6 +111,10 @@ fun StoreView() {
         item {
             Spacer(modifier = Modifier.height(5.dp))
             StoreBannerAdsView()
+        }
+        item {
+            Spacer(modifier = Modifier.height(5.dp))
+            StoreTopDealsView()
         }
     }
 }
