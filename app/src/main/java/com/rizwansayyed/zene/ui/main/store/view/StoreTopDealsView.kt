@@ -1,14 +1,13 @@
 package com.rizwansayyed.zene.ui.main.store.view
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -37,13 +36,17 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
 
 data class MerchItem(
     val title: String,
@@ -84,11 +87,6 @@ fun StoreTopDealsView() {
     }
     Spacer(Modifier.height(12.dp))
 
-    ArtistMerchSection(items) { }
-}
-
-@Composable
-fun ArtistMerchSection(items: List<MerchItem>, onItemClick: (MerchItem) -> Unit) {
     val maxHeightPx = remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -96,11 +94,11 @@ fun ArtistMerchSection(items: List<MerchItem>, onItemClick: (MerchItem) -> Unit)
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 1.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
+            contentPadding = PaddingValues(horizontal = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(items) { item ->
-                MerchCard(maxHeightPx, item, { onItemClick(item) })
+                MerchCard(maxHeightPx, item) { }
             }
         }
     }
@@ -108,86 +106,55 @@ fun ArtistMerchSection(items: List<MerchItem>, onItemClick: (MerchItem) -> Unit)
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MerchCard(
-    maxHeightPx: MutableState<Int>,
-    item: MerchItem,
-    onClick: () -> Unit
-) {
+fun MerchCard(maxHeightPx: MutableState<Int>, item: MerchItem, onClick: () -> Unit) {
     val density = LocalDensity.current
     val minHeightDp = with(density) { maxHeightPx.value.toDp() }
 
     Column(
-        modifier = Modifier
-            .width(220.dp)
+        Modifier
+            .width(270.dp)
             .heightIn(min = minHeightDp)
-            .background(Color.Black)
             .onGloballyPositioned {
                 val h = it.size.height
                 if (h > maxHeightPx.value) {
                     maxHeightPx.value = h
                 }
             }
-            .padding(14.dp) // 👈 padding belongs here
+            .padding(5.dp)
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp),
-            contentAlignment = Alignment.TopEnd
-        ) {
+        Box(Modifier.fillMaxWidth(), Alignment.TopEnd) {
             GlideImage(
                 model = item.imageRes,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Fit
             )
-
-            if (item.isOfficial) {
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .background(
-                            Color.Gray.copy(alpha = 0.9f),
-                            RoundedCornerShape(50)
-                        )
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
-                ) {
-                    Text("Official", fontSize = 11.sp, color = Color.White)
-                }
-            }
         }
 
         Spacer(Modifier.height(10.dp))
 
-        Text(
-            item.title,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 10,
-            overflow = TextOverflow.Ellipsis
-        )
+        TextViewBold(item.title, 16)
 
-        Text(
-            item.subtitle,
-            fontSize = 13.sp,
-            color = Color.Gray,
-            maxLines = 10,
-            overflow = TextOverflow.Ellipsis
-        )
+        Row(Modifier.padding(vertical = 5.dp)) {
+            TextViewNormal(item.price, 16)
 
-        Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.width(5.dp))
 
-        Text(
-            item.price,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF3F5BFF)
-        )
+            Text(
+                text = item.price,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                fontFamily = proximanOverFamily,
+                textDecoration = TextDecoration.LineThrough
+            )
+        }
 
-        Spacer(modifier = Modifier.weight(1f)) // ✅ THIS NOW WORKS
+        Spacer(modifier = Modifier.weight(1f))
 
         Button(
             onClick = onClick,
