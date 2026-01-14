@@ -134,7 +134,6 @@ fun VideoPlayerVideoView(
         job?.cancel()
         job = coroutine.safeLaunch(Dispatchers.Main) {
             while (true) {
-                Log.d("TAG", "VideoPlayerVideoView: rrrrr 111")
                 viewModel.webView?.evaluateJavascript("playingStatus();", null)
                 delay(500)
             }

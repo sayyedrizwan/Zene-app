@@ -7,6 +7,7 @@ import com.rizwansayyed.zene.R
 data class EntertainmentDiscoverResponse(
     val isExpire: Boolean?,
     val featuredTrailer: ZeneMusicData?,
+    val trailers:List<ZeneMusicData>?,
     val news: List<ZeneMusicData>?,
     val trends: List<ZeneMusicData>?,
     val movies: List<ZeneMusicData>?,

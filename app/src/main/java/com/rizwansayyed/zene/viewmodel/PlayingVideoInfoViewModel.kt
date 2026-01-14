@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.viewmodel
 
+import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -115,29 +116,28 @@ class PlayingVideoInfoViewModel @Inject constructor(private val zeneAPI: ZeneAPI
 
     private fun loadMainVideo(startNew: Boolean) =
         CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
-        val lastDuration = if (startNew) 0 else videoCurrentTimestamp
-        val htmlContent = getRawFolderString(R.raw.yt_video_player)
-        val speed = videoSpeedDB.first().name.replace("_", ".")
-        val c = htmlContent.replace("<<VideoID>>", videoID)
-            .replace("setDuration = 0", "setDuration = $lastDuration")
-            .replace("setSpeed = 1.0", "setSpeed = $speed")
+            val lastDuration = if (startNew) 0 else videoCurrentTimestamp
+            val htmlContent = getRawFolderString(R.raw.yt_video_player)
+            val speed = videoSpeedDB.first().name.replace("_", ".")
+            val c = htmlContent.replace("<<VideoID>>", videoID)
+                .replace("setDuration = 0", "setDuration = $lastDuration")
+                .replace("setSpeed = 1.0", "setSpeed = $speed")
 
-        webView?.loadDataWithBaseURL(
-            YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null
-        )
-    }
+            webView?.loadDataWithBaseURL(
+                YT_VIDEO_BASE_URL, c, "text/html", "UTF-8", null
+            )
+        }
 
     private fun setQualityAndLoad() =
         CoroutineScope(Dispatchers.Main).safeLaunch(Dispatchers.Main) {
-        val htmlContent = getRawFolderString(R.raw.yt_player_quality)
-        val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
+            val htmlContent = getRawFolderString(R.raw.yt_player_quality)
+            val c = htmlContent.replace("<<Quality>>", videoQualityDB.first().name)
+            webView?.loadDataWithBaseURL(
+                YT_WEB_BASE_URL, c, "text/html", "UTF-8", null
+            )
+        }
 
-        webView?.loadDataWithBaseURL(
-            YT_WEB_BASE_URL, c, "text/html", "UTF-8", null
-        )
-    }
-
-    private fun addToHistory() = viewModelScope.safeLaunch  {
+    private fun addToHistory() = viewModelScope.safeLaunch {
         videoInfo?.let { zeneAPI.addHistory(it).catch { }.collectLatest { } }
     }
 
