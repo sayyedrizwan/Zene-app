@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,9 +34,12 @@ import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.ui.main.store.view.RecommendedItemCard
 import com.rizwansayyed.zene.ui.main.store.view.StoreBannerAdsView
 import com.rizwansayyed.zene.ui.main.store.view.StoreChipsTypeView
+import com.rizwansayyed.zene.ui.main.store.view.StoreDiscoverListView
 import com.rizwansayyed.zene.ui.main.store.view.StoreTopDealsView
+import com.rizwansayyed.zene.ui.main.store.view.itemsShopLists
 import com.rizwansayyed.zene.ui.main.store.view.storeChips
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -112,9 +116,24 @@ fun StoreView() {
             Spacer(modifier = Modifier.height(5.dp))
             StoreBannerAdsView()
         }
+
         item {
             Spacer(modifier = Modifier.height(5.dp))
             StoreTopDealsView()
+        }
+
+
+        item {
+            Spacer(modifier = Modifier.height(15.dp))
+            StoreDiscoverListView()
+        }
+
+        items(itemsShopLists) {
+            RecommendedItemCard(it)
+        }
+
+        items(itemsShopLists) {
+            RecommendedItemCard(it)
         }
     }
 }

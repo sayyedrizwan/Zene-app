@@ -123,10 +123,7 @@ fun CelebrityCard(item: CelebrityStyle) {
 }
 
 @Composable
-fun PagerDots(
-    totalDots: Int,
-    selectedIndex: Int
-) {
+fun PagerDots(totalDots: Int, selectedIndex: Int) {
     Row(
         horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
     ) {
