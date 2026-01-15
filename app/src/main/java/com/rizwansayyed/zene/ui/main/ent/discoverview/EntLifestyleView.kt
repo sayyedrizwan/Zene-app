@@ -23,74 +23,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-
-data class CelebrityStyle(
-    val imageUrl: String,
-    val name: String,
-    val event: String
-)
-
-val celebs = listOf(
-    CelebrityStyle(
-        imageUrl = "ZENDAYA",
-        name = "Bella Hadid",
-        event = "Paris Fashion Week"
-    ),
-    CelebrityStyle(
-        imageUrl = "TAYLOR_SWIFT",
-        name = "Zendaya",
-        event = "Met Gala"
-    ),
-    CelebrityStyle(
-        imageUrl = "HARRY_STYLES",
-        name = "Hailey Bieber",
-        event = "Street Style"
-    )
-)
+import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.view.TextViewLight
+import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
 
 @Composable
-fun EntLifestyleView() {
-    val pagerState = rememberPagerState { celebs.size }
+fun EntLifestyleView(data: List<ZeneMusicData>) {
+    val pagerState = rememberPagerState { data.size }
 
-    Box(modifier = Modifier.fillMaxWidth().padding(top = 30.dp)) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp)
+    ) {
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "CELEBRITY STYLE",
-                color = Color.White,
-                fontSize = 14.sp,
-                letterSpacing = 2.sp
-            )
-
+            TextViewLight(stringResource(R.string.celebrity_style), 17, center = true)
             Spacer(Modifier.height(16.dp))
 
             HorizontalPager(
-                state = pagerState,
-                contentPadding = PaddingValues(horizontal = 34.dp),
+                pagerState,
+                Modifier.fillMaxWidth(),
+                PaddingValues(horizontal = 34.dp),
                 pageSpacing = 16.dp,
-                modifier = Modifier.fillMaxWidth()
             ) { page ->
-                CelebrityCard(celebs[page])
+                CelebrityCard(data[page])
             }
-
             Spacer(Modifier.height(12.dp))
-
-            PagerDots(
-                totalDots = celebs.size,
-                selectedIndex = pagerState.currentPage
-            )
-
+            PagerDots(data.size, pagerState.currentPage)
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -98,25 +66,23 @@ fun EntLifestyleView() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CelebrityCard(item: CelebrityStyle) {
+fun CelebrityCard(item: ZeneMusicData) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
     ) {
         GlideImage(
-            model = item.imageUrl,
+            model = item.thumbnail,
             contentDescription = item.name,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.clip(RoundedCornerShape(15.dp)).height(500.dp)
+            modifier = Modifier
+                .clip(RoundedCornerShape(15.dp))
+                .height(500.dp)
         )
 
         Spacer(Modifier.height(16.dp))
 
-        Text(
-            text = item.name,
-            color = Color.White,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
+        TextViewSemiBold(item.name ?: "", size = 13)
+        TextViewLight(item.artists ?: "", size = 13)
 
         Spacer(Modifier.height(4.dp))
     }

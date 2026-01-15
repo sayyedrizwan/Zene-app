@@ -52,6 +52,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
@@ -154,7 +155,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                             NONE -> {}
                             SONGS, AI_MUSIC -> ImageIcon(R.drawable.ic_music_note, 18)
                             PLAYLISTS, ALBUMS -> ImageIcon(R.drawable.ic_playlist, 18)
-                            ARTISTS -> ImageIcon(R.drawable.ic_artists, 18)
+                            ARTISTS, MusicDataTypes.CELEB_LIFESTYLE -> ImageIcon(R.drawable.ic_artists, 18)
                             PODCAST, PODCAST_CATEGORIES, PODCAST_AUDIO ->
                                 ImageIcon(R.drawable.ic_podcast, 18)
 
@@ -265,7 +266,7 @@ fun ConnectVibeItemOnlyCaption(
                         ALBUMS ->
                             TextViewNormal(stringResource(R.string.album), 14, center = true)
 
-                        ARTISTS ->
+                        ARTISTS, MusicDataTypes.CELEB_LIFESTYLE ->
                             TextViewNormal(stringResource(R.string.artist), 14, center = true)
 
                         PODCAST -> TextViewNormal(

@@ -385,6 +385,7 @@
     <string name="error_sharing_">Error Sharing…</string>
     <string name="enjoy_the_song_on_zene">Enjoy free song %s by %s on Zene</string>
     <string name="enjoy_free_ai_music_on_zene">Enjoy free AI Music, %s on Zene</string>
+    <string name="enjoy_celeb_lifestyle_on_zene">Enjoy %s lifestyle images on Zene</string>
     <string name="enjoy_free_radio_on_zene">Enjoy free radio %s on Zene</string>
     <string name="listen_to_on_zene">Listen to %s on Zene</string>
     <string name="enjoy_free_mix_playlist_album_on_zene">Enjoy free Mix Playlist/Album - %s on Zene</string>
@@ -531,7 +532,7 @@
     <string name="top_deals_on_amazon">Top Deals on Amazon</string>
     <string name="products_you_may_like">Products you may like</string>
     <string name="store_thank_you_note">Every purchase through Amazon affiliate helps us keep the app free. thank you for helping us grow!</string>
-
+    <string name="celebrity_style">Celebrity Style</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

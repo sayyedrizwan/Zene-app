@@ -104,11 +104,12 @@ fun EntertainmentNewsView(viewModel: NavigationViewModel) {
                     }
 
                     if (v.data.movies?.isNotEmpty() == true)
-                    item(key = "movies") { EntTrendingMoviesView(v.data) }
+                        item(key = "movies") { EntTrendingMoviesView(v.data) }
 
                     item(key = "trailer") { EntLatestTrailerView(v.data) }
 
-                    item(key = "lifestyle") { EntLifestyleView() }
+                    if (v.data.lifestyle?.isNotEmpty() == true)
+                        item(key = "lifestyle") { EntLifestyleView(v.data.lifestyle) }
 
 
                     if (v.data.news?.isNotEmpty() == true) {

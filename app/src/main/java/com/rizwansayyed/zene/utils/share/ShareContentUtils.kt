@@ -13,6 +13,7 @@ import androidx.core.graphics.createBitmap
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
@@ -38,6 +39,7 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LIFESTYLE
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MOVIE_IF_ENC
@@ -148,6 +150,9 @@ object ShareContentUtils {
                 context.resources.getString(R.string.about_movie_on_zene), data.name
             )
 
+            MusicDataTypes.CELEB_LIFESTYLE -> String.format(
+                context.resources.getString(R.string.enjoy_celeb_lifestyle_on_zene), data.name
+            )
             AI_MUSIC -> String.format(
                 context.resources.getString(R.string.enjoy_free_ai_music_on_zene), data.name
             )
@@ -238,6 +243,7 @@ object ShareContentUtils {
                     "$ZENE_URL$ZENE_M${data.id}"
             }
             AI_MUSIC -> "$ZENE_URL$ZENE_AI_MUSIC${data.id}"
+            MusicDataTypes.CELEB_LIFESTYLE -> "$ZENE_URL$ZENE_LIFESTYLE${id}"
             TEXT -> ZENE_URL
             null -> ZENE_URL
         }

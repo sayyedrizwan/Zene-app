@@ -26,6 +26,8 @@ object URLSUtils {
     const val ZENE_VIDEO = "/video/"
     const val ZENE_MIX = "/mix/"
     const val ZENE_ARTIST = "/artist/"
+
+    const val ZENE_LIFESTYLE = "/lifestyle/"
     const val ZENE_PODCAST_SERIES = "/podcast-series/"
     const val ZENE_PODCAST = "/podcast/"
     const val ZENE_NEWS = "/news/"
