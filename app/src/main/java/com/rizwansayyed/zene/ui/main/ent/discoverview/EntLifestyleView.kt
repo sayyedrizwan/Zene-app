@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.ent.discoverview
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,17 +17,18 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
@@ -67,8 +69,11 @@ fun EntLifestyleView(data: List<ZeneMusicData>) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CelebrityCard(item: ZeneMusicData) {
+    var fullInfoSheet by remember { mutableStateOf(false) }
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
+        Modifier.clickable {
+            fullInfoSheet = true
+        }, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
             model = item.thumbnail,
@@ -81,7 +86,7 @@ fun CelebrityCard(item: ZeneMusicData) {
 
         Spacer(Modifier.height(16.dp))
 
-        TextViewSemiBold(item.name ?: "", size = 13)
+        TextViewSemiBold(item.name ?: "", size = 16)
         TextViewLight(item.artists ?: "", size = 13)
 
         Spacer(Modifier.height(4.dp))

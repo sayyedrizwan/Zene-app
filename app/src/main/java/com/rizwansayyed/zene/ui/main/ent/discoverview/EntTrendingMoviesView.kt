@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.ent.discoverview
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,9 +35,11 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -62,7 +65,13 @@ fun EntTrendingMoviesView(data: EntertainmentDiscoverResponse) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TrendingPosterCard(v: ZeneMusicData, position: Int) {
-    Box(Modifier.clip(RoundedCornerShape(24.dp))) {
+    Box(
+        Modifier
+            .clip(RoundedCornerShape(24.dp))
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(v) },
+                onClick = { startMedia(v) })
+    ) {
         GlideImage(
             model = v.thumbnail,
             contentDescription = v.name,

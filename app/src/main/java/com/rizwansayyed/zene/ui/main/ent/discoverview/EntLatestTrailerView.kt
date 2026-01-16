@@ -50,7 +50,6 @@ fun EntLatestTrailerView(data: EntertainmentDiscoverResponse) {
     Spacer(Modifier.height(6.dp))
 
     if (data.featuredTrailer?.id != null) FeaturedTrailerCard(data.featuredTrailer)
-
     if (data.trailers?.isNotEmpty() == true) TrailerRow(data.trailers)
 }
 
@@ -149,6 +148,9 @@ fun TrailerThumbnail(data: ZeneMusicData) {
             Modifier
                 .height(160.dp)
                 .clip(RoundedCornerShape(20.dp))
+                .clickable {
+                    MediaContentUtils.startMedia(data)
+                }
         ) {
             GlideImage(
                 model = data.thumbnail,

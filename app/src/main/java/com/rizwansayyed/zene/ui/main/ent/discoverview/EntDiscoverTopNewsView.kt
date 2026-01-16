@@ -30,6 +30,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerInfoSheet
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -135,6 +137,20 @@ fun ReadingNow(viewModel: EntertainmentViewModel, data: ZeneMusicData) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             ImageIcon(R.drawable.ic_arrow_right, 18, Color.White)
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(start = 10.dp)
+                .clip(RoundedCornerShape(100))
+                .clickable {
+                    triggerInfoSheet(data)
+                }
+                .background(MainColor)
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ImageIcon(R.drawable.ic_vertical_menu, 18, Color.White)
         }
     }
 }
