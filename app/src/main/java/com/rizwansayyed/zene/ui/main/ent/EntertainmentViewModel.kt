@@ -12,7 +12,9 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.ui.main.ent.utils.LiveReadersCounter
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,6 +50,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     }
 
     var discover by mutableStateOf<ResponseResult<EntertainmentDiscoverResponse>>(ResponseResult.Empty)
+    var buzzNews by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
 
     fun entDiscoverNews(expireToken: () -> Unit) = viewModelScope.safeLaunch {
@@ -69,6 +72,24 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
             }
             cacheHelper.save(ZENE_ENT_DISCOVER_TRENDING_NEWS_API, it)
             discover = ResponseResult.Success(it)
+        }
+    }
+
+
+    fun entBuzzNews() = viewModelScope.safeLaunch {
+        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_BUZZ_NEWS_API)
+        if ((data?.size ?: 0) > 0) {
+            buzzNews = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
+
+        zeneAPI.entBuzzNews().onStart {
+            buzzNews = ResponseResult.Loading
+        }.catch {
+            buzzNews = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_ENT_BUZZ_NEWS_API, it)
+            buzzNews = ResponseResult.Success(it)
         }
     }
 }

@@ -68,6 +68,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_ARTISTS_UPDATES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_FOLLOWED_ARTISTS_API
@@ -779,4 +780,10 @@ interface ZeneAPIService {
     suspend fun entDiscoverNews(
         @Header("token") token: String, @Body data: RequestBody
     ): EntertainmentDiscoverResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_BUZZ_NEWS_API)
+    suspend fun entBuzzNews(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
 }

@@ -532,7 +532,7 @@
     <string name="top_deals_on_amazon">Top Deals on Amazon</string>
     <string name="products_you_may_like">Products you may like</string>
     <string name="store_thank_you_note">Every purchase through Amazon affiliate helps us keep the app free. thank you for helping us grow!</string>
-    <string name="celebrity_style">Celebrity Style</string>
+    <string name="celebrity_lifestyle">Celebrity Lifestyle</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

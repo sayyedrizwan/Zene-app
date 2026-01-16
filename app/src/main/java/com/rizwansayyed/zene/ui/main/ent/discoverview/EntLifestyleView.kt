@@ -48,7 +48,7 @@ fun EntLifestyleView(data: List<ZeneMusicData>) {
     ) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.height(20.dp))
-            TextViewLight(stringResource(R.string.celebrity_style), 17, center = true)
+            TextViewLight(stringResource(R.string.celebrity_lifestyle), 17, center = true)
             Spacer(Modifier.height(16.dp))
 
             HorizontalPager(

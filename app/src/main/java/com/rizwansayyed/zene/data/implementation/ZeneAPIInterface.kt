@@ -192,4 +192,5 @@ interface ZeneAPIInterface {
 
 
     suspend fun entDiscoverNews(): Flow<EntertainmentDiscoverResponse>
+    suspend fun entBuzzNews(): Flow<ZeneMusicDataList>
 }
