@@ -13,16 +13,13 @@ import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingMoviesView
 
 @Composable
 fun EntertainmentMoviesView(viewModel: EntertainmentViewModel) {
-    LazyColumn(
-        Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 250.dp)
-    ) {
+    LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 250.dp)) {
         when (val v = viewModel.discover) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> items(10) {
                 EntLoadingTrendingMoviesView()
             }
-
             is ResponseResult.Success -> {
                 if (v.data.movies?.isNotEmpty() == true)
                     item(key = "movies") { EntTrendingMoviesView(v.data) }
