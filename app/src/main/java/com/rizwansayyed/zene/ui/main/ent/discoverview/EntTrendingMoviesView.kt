@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,16 +38,43 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
+fun EntLoadingTrendingMoviesView() {
+    val name by ipDB.collectAsState(null)
+
+    Spacer(Modifier.height(20.dp))
+    Box(Modifier.padding(horizontal = 6.dp)) {
+        TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
+    }
+    Spacer(Modifier.height(12.dp))
+
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(6) {
+            ShimmerEffect(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(15.dp))
+                    .size(300.dp, 450.dp)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
 fun EntTrendingMoviesView(data: EntertainmentDiscoverResponse) {
     val name by ipDB.collectAsState(null)
 
-    Spacer(Modifier.height(50.dp))
+    Spacer(Modifier.height(20.dp))
     Box(Modifier.padding(horizontal = 6.dp)) {
         TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
     }
