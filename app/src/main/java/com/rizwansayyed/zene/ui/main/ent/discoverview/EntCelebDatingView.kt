@@ -90,9 +90,7 @@ fun CoupleCard(dated: WhoDatedWhoData) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun OverlappingAvatars(data: WhoDatedWhoData) {
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
+    Box(contentAlignment = Alignment.Center) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy((-7).dp)

@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
+import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
@@ -193,4 +194,6 @@ interface ZeneAPIInterface {
 
     suspend fun entDiscoverNews(): Flow<EntertainmentDiscoverResponse>
     suspend fun entBuzzNews(): Flow<ZeneMusicDataList>
+
+    suspend fun entDating(): Flow<List<WhoDatedWhoData>?>
 }

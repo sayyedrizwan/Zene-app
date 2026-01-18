@@ -27,7 +27,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun EntertainmentNewsView(viewModel: NavigationViewModel) {
+fun EntertainmentView(viewModel: NavigationViewModel) {
     val entViewModel: EntertainmentViewModel = hiltViewModel()
     val context = LocalActivity.current
 
@@ -48,8 +48,8 @@ fun EntertainmentNewsView(viewModel: NavigationViewModel) {
             when (viewModel.entNavSection) {
                 DISCOVER -> EntertainmentDiscoverView(entViewModel, viewModel)
                 BUZZ -> EntertainmentBuzzView(entViewModel)
-                DATING -> {}
-                MOVIES -> {}
+                DATING -> EntertainmentDatingView(entViewModel)
+                MOVIES -> EntertainmentMoviesView(entViewModel)
                 EVENTS -> {}
                 LIFESTYLE -> {}
             }

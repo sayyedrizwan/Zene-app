@@ -57,7 +57,7 @@ import com.rizwansayyed.zene.ui.login.LoginManagerViewModel
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
-import com.rizwansayyed.zene.ui.main.ent.EntertainmentNewsView
+import com.rizwansayyed.zene.ui.main.ent.EntertainmentView
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.CONNECT
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector.ENT
@@ -143,7 +143,7 @@ class MainActivity : FragmentActivity() {
                                     when (navigationViewModel.homeNavSection) {
                                         HOME -> HomeView(navigationViewModel, userInfo)
                                         CONNECT -> HomeConnectView()
-                                        ENT -> EntertainmentNewsView(navigationViewModel)
+                                        ENT -> EntertainmentView(navigationViewModel)
                                         NOTIFICATION ->
                                             NotificationViewScreenView(navigationViewModel)
 

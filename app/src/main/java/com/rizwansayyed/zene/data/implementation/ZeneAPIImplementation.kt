@@ -1705,4 +1705,16 @@ class ZeneAPIImplementation @Inject constructor(
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.entBuzzNews(token, body))
     }
+
+    override suspend fun entDating() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.entDating(token, body))
+    }
 }

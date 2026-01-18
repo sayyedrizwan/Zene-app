@@ -156,6 +156,7 @@ object URLSUtils {
 
     const val ZENE_ENT_DISCOVER_TRENDING_NEWS_API = "entertainment/discover-trending-news"
     const val ZENE_ENT_BUZZ_NEWS_API = "entertainment/buzz-news"
+    const val ZENE_ENT_DATING_API = "entertainment/dating"
 
 
     const val ZENE_NOTIFICATION_RECOMMENDATION_API = "notification/notification-recommendation"

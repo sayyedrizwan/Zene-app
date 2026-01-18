@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
 import com.rizwansayyed.zene.data.model.VideoDataResponse
+import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_INFO_API
@@ -69,6 +70,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_ARTISTS_UPDATES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_FOLLOWED_ARTISTS_API
@@ -786,4 +788,10 @@ interface ZeneAPIService {
     suspend fun entBuzzNews(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_DATING_API)
+    suspend fun entDating(
+        @Header("token") token: String, @Body data: RequestBody
+    ): List<WhoDatedWhoData>?
 }

@@ -47,7 +47,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URI
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun EntBuzzNewsViewItem(item: ZeneMusicData) {
@@ -78,7 +77,7 @@ fun EntBuzzNewsViewItem(item: ZeneMusicData) {
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        GlideImage(
+        if ((item.thumbnail ?: "").trim().length > 3) GlideImage(
             item.thumbnail, "",
             modifier = Modifier
                 .size(60.dp)

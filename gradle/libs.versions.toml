@@ -72,6 +72,7 @@ reorderable = "3.0.0"
 
 billing = "8.3.0"
 clarity = "3.8.0"
+foundation = "1.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -90,6 +91,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 #noinspection CredentialDependency
@@ -191,6 +193,7 @@ reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reo
 
 billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 clarity = { module = "com.microsoft.clarity:clarity-compose", version.ref = "clarity" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
