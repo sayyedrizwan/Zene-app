@@ -136,11 +136,11 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     }
 
     fun entTrailers() = viewModelScope.safeLaunch {
-//        val data: List<WhoDatedWhoData>? = cacheHelper.get(ZENE_ENT_ALL_TRAILERS_API)
-//        if ((data?.size ?: 0) > 0) {
-//            dating = ResponseResult.Success(data!!)
-//            return@safeLaunch
-//        }
+        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_ALL_TRAILERS_API)
+        if ((data?.size ?: 0) > 0) {
+            trailers = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
 
         zeneAPI.entAllTrailers().onStart {
             trailers = ResponseResult.Loading

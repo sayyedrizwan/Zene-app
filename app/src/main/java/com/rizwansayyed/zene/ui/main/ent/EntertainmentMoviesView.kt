@@ -65,7 +65,7 @@ fun EntertainmentMoviesView(viewModel: EntertainmentViewModel) {
                         EntTrailerView()
                     }
 
-                    items(v.data) {
+                    items(v.data, span = { GridItemSpan(2) }) {
                         EntTrailerItemsView(it)
                     }
                 }

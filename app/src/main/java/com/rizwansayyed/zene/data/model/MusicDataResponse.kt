@@ -135,7 +135,7 @@ data class ZeneMusicData(
                     "HH MMM yyy", Locale.getDefault()
                 ).format(Date(epoch * 1000))
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return ""
         }
     }
